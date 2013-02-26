@@ -9,7 +9,10 @@
 	<artifactId>valintalaskenta-service</artifactId>
 	<name>Valintalaskenta :: Service</name>
 	<packaging>war</packaging>
-
+	<properties>
+		<mongodb.host>taulu.hard.ware.fi</mongodb.host>
+		<mongodb.port>27017</mongodb.port>
+	</properties>
 	<repositories>
 		<repository>
 			<id>repo.codahale.com</id>
@@ -215,12 +218,12 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
-		
+
 		<dependency>
-            <groupId>de.flapdoodle.embed</groupId>
-            <artifactId>de.flapdoodle.embed.mongo</artifactId>
-            <version>1.28</version>
-        </dependency>
+			<groupId>de.flapdoodle.embed</groupId>
+			<artifactId>de.flapdoodle.embed.mongo</artifactId>
+			<version>1.28</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.fluttercode.datafactory</groupId>
@@ -229,31 +232,54 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<build>
-		<finalName>${project.artifactId}</finalName>
-	</build>
+
 	<profiles>
 		<profile>
-			<id>startstack</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.mortbay.jetty</groupId>
-						<artifactId>maven-jetty-plugin</artifactId>
+			<id>embedded</id>
 
-					</plugin>
-				</plugins>
-			</build>
-			<dependencies>
-				<dependency>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</dependency>
-				<dependency>
-					<groupId>log4j</groupId>
-					<artifactId>log4j</artifactId>
-				</dependency>
-			</dependencies>
+			<properties>
+				<mongodb.host>localhost</mongodb.host>
+				<mongodb.port>37200</mongodb.port>
+			</properties>
+
 		</profile>
 	</profiles>
+	<build>
+		<finalName>${project.artifactId}</finalName>
+
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<webResources>
+						<resource>
+							<filtering>true</filtering>
+							<directory>src/main/webapp</directory>
+							<includes>
+								<include>**/*.properties</include>
+							</includes>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
