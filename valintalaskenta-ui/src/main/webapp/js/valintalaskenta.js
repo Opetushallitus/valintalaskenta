@@ -8,7 +8,7 @@ app.config(function($routeProvider) {
         $routeProvider.
 
         //front page
-        when('/etusivu', {controller:ValintaryhmaHakukohdeTreeController, templateUrl:TEMPLATE_URL_BASE + 'valintaryhmatlistaus.html'}).
+        when('/etusivu', {controller:ValintaController, templateUrl:TEMPLATE_URL_BASE + 'hakukohde.html'}).
 
         //edit valintaryhma
         when('/valintaryhma/:id', {controller:valintaryhmaController, templateUrl:TEMPLATE_URL_BASE + 'valintaryhmalomake.html'}).
