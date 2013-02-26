@@ -71,7 +71,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             // Haetaan edellinen (pykälää pienemmällä järjestysnumerolla)
             // valinnanvaihe mahdollisen
             // hylkäämisperustetarpeen vuoksi
-            Map<String, Esiintyminen> edellinenValinnanvaihe = hakemusoidHyvaksyttavissaJonoissa(previousValinnanvaihe(
+            Map<String, Esiintyminen> edellinenValinnanvaihe = hakemusoidHyvaksyttavissaJonoissa(edellinenValinnanvaihe(
                     hakukohdeoid, jarjestysnumero));
 
             List<HakemusTyyppi> hakemustyypit = hakukohdeHakemukset.get(hakukohdeoid);
@@ -236,20 +236,19 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     /*
      * Edellinen valinnanvaihe tai null jos ei ole
      */
-    private Hakukohde previousValinnanvaihe(String oid, int jarjestysnumero) {
+    private Hakukohde edellinenValinnanvaihe(String oid, int jarjestysnumero) {
         List<VersiohallintaHakukohde> kaksiEdellistaValinnanvaihetta = datastore
                 .find(VersiohallintaHakukohde.class, "hakukohdeoid", oid).order("jarjestysnumero").limit(2).asList();
-        if (kaksiEdellistaValinnanvaihetta.size() == 0) {
-            // edellistä valinnanvaihetta ei ollut joten
-            // hylkäys/hyväksymisperuste saa tulla suoraan funktiolta
-        } else if (kaksiEdellistaValinnanvaihetta.size() == 1) {
-            if (kaksiEdellistaValinnanvaihetta.get(0).getJarjestysnumero() == jarjestysnumero) {
-                // edellistä valinnanvaihetta ei ollut...
-            } else {
+        // if (kaksiEdellistaValinnanvaihetta.size() == 0) {
+        // edellistä valinnanvaihetta ei ollut joten
+        // hylkäys/hyväksymisperuste saa tulla suoraan funktiolta
+        if (kaksiEdellistaValinnanvaihetta.size() == 1) {
+            assert (kaksiEdellistaValinnanvaihetta.get(0).getJarjestysnumero() <= jarjestysnumero);
+            if (kaksiEdellistaValinnanvaihetta.get(0).getJarjestysnumero() != jarjestysnumero) {
                 assert (kaksiEdellistaValinnanvaihetta.get(0).getHakukohteet().isEmpty() != true);
                 return kaksiEdellistaValinnanvaihetta.get(0).getHakukohteet().last().getHakukohde();
-            }
-        } else {
+            } // else { // edellistä valinnanvaihetta ei ollut... }
+        } else if (kaksiEdellistaValinnanvaihetta.size() > 1) {
             for (VersiohallintaHakukohde k : kaksiEdellistaValinnanvaihetta) {
                 if (k.getJarjestysnumero() != jarjestysnumero) {
                     assert (k.getHakukohteet().isEmpty() != true);

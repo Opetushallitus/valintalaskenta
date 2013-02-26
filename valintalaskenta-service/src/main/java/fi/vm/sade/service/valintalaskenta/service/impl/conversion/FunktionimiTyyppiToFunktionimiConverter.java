@@ -1,13 +1,14 @@
 package fi.vm.sade.service.valintalaskenta.service.impl.conversion;
 
+import org.springframework.core.convert.converter.Converter;
+
 import fi.vm.sade.service.valintaperusteet.model.Funktionimi;
 import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsunimiTyyppi;
-import org.springframework.core.convert.converter.Converter;
 
 /**
  * 
  * @author Jussi Jartamo
- *
+ * 
  */
 public class FunktionimiTyyppiToFunktionimiConverter implements Converter<FunktiokutsunimiTyyppi, Funktionimi> {
 
@@ -76,9 +77,8 @@ public class FunktionimiTyyppiToFunktionimiConverter implements Converter<Funkti
             return Funktionimi.YHTASUURI;
 
         default:
-            new RuntimeException("Switch case not up to date! " + source + " is missing in switch statement!");
+            throw new RuntimeException("Switch case not up to date! " + source + " is missing in switch statement!");
         }
-        return null; // never happens
     }
 
 }

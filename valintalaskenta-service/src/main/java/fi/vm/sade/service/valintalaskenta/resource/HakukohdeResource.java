@@ -2,7 +2,7 @@ package fi.vm.sade.service.valintalaskenta.resource;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -51,7 +51,7 @@ public class HakukohdeResource {
         }
         return Lists.newArrayList(Iterables.transform(versiohallinta,
                 new Function<VersiohallintaHakukohde, Hakukohde>() {
-                    public Hakukohde apply(@Nullable VersiohallintaHakukohde input) {
+                    public Hakukohde apply(@Nonnull VersiohallintaHakukohde input) {
                         assert (input.getHakukohteet().isEmpty() != true);
                         return input.getHakukohteet().last().getHakukohde();
                     }

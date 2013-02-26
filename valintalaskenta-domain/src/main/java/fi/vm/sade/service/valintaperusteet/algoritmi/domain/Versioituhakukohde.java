@@ -19,9 +19,6 @@ public class Versioituhakukohde implements Comparable<Versioituhakukohde> {
 
     @Override
     public int compareTo(Versioituhakukohde o) {
-        if (o == null) {
-            throw new NullPointerException("Versioituhakukohde ei saa olla null");
-        }
         return versio.compareTo(o.versio);
     }
 
