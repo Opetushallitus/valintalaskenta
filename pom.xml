@@ -35,5 +35,6 @@
 		<module>valintalaskenta-domain</module>
 		<module>valintalaskenta-api</module>
 		<module>valintalaskenta-service</module>
+		<module>valintalaskenta-ui</module>
 	</modules>
 </project>
