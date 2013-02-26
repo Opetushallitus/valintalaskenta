@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -51,4 +52,19 @@ public class HakuResource {
                 }));
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{hakuoid}/hakukohde")
+    @JsonView({ JsonViews.Basic.class })
+    public List<Hakukohde> haku(@PathParam("hakuoid") String hakuoid) {
+        List<VersiohallintaHakukohde> versiohallinta = datastore
+                .find(VersiohallintaHakukohde.class, "hakuoid", hakuoid).asList();
+        return Lists.newArrayList(Iterables.transform(versiohallinta,
+                new Function<VersiohallintaHakukohde, Hakukohde>() {
+                    public Hakukohde apply(@Nullable VersiohallintaHakukohde input) {
+                        assert (input.getHakukohteet().isEmpty() != true);
+                        return input.getHakukohteet().last().getHakukohde();
+                    }
+                }));
+    }
 }

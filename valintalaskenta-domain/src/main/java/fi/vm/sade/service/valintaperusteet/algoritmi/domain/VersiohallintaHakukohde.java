@@ -24,6 +24,7 @@ public class VersiohallintaHakukohde {
     @Id
     private ObjectId id;
 
+    private String hakuoid;
     private String hakukohdeoid;
     private int jarjestysnumero;
 
@@ -32,6 +33,14 @@ public class VersiohallintaHakukohde {
 
     public SortedSet<Versioituhakukohde> getHakukohteet() {
         return hakukohteet;
+    }
+
+    public String getHakuoid() {
+        return hakuoid;
+    }
+
+    public void setHakuoid(String hakuoid) {
+        this.hakuoid = hakuoid;
     }
 
     public void setHakukohteet(SortedSet<Versioituhakukohde> hakukohteet) {

@@ -55,6 +55,10 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     private Datastore datastore;
 
     public void suoritaLaskenta(List<HakemusTyyppi> hakemukset, List<ValintaperusteetTyyppi> valintaperusteet) {
+        // Hakuoid ei ole toistaiseksi WSDL:ssä joten käytetään kovakoodattua
+        // arvoa!
+        String hakuoid = "syksynhaku"; // KOVAKOODATTUHAKUOID
+        //
         Map<String, List<HakemusTyyppi>> hakukohdeHakemukset = resolveHakukohdeHakemukset(hakemukset);
 
         FunktioKutsuTyyppiToFunktioKutsuConverter fconverter;
@@ -72,6 +76,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
             List<HakemusTyyppi> hakemustyypit = hakukohdeHakemukset.get(hakukohdeoid);
             Hakukohde uusihakukohde = new Hakukohde();
+            uusihakukohde.setHakuoid(hakuoid);
             uusihakukohde.setOid(valintaperuste.getHakukohdeOid());
             Valinnanvaihe valinnanvaihe = new Valinnanvaihe();
             valinnanvaihe.setJarjestysnumero(jarjestysnumero);
@@ -107,6 +112,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                     .filter("jarjestysnumero", jarjestysnumero).get();
             if (versiohallinta == null) {
                 versiohallinta = new VersiohallintaHakukohde();
+                versiohallinta.setHakuoid(hakuoid);
                 versiohallinta.setHakukohdeoid(hakukohdeoid);
                 versiohallinta.setJarjestysnumero(jarjestysnumero);
             }

@@ -16,6 +16,7 @@ public class Hakukohde {
     @Id
     private ObjectId id;
 
+    private String hakuoid;
     private String oid;
 
     @Embedded
@@ -23,6 +24,14 @@ public class Hakukohde {
 
     public Valinnanvaihe getValinnanvaihe() {
         return valinnanvaihe;
+    }
+
+    public String getHakuoid() {
+        return hakuoid;
+    }
+
+    public void setHakuoid(String hakuoid) {
+        this.hakuoid = hakuoid;
     }
 
     public void setValinnanvaihe(Valinnanvaihe valinnanvaihe) {
