@@ -7,7 +7,7 @@
   </parent>
   <artifactId>valintalaskenta-api</artifactId>
   <name>Valintalaskenta :: API</name>
-	<!--<packaging>bundle</packaging>-->
+	<!--<packaging>jar</packaging>-->
 
 
     <build>
