@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" ng-app="valintaperusteet">
+
+<head>
+    <title>Valintaperusteiden mallinnus</title>
+
+    <script th:src="@{/jslib/jquery-1.8.3/jquery-1.8.3.js}" src="../jslib/jquery-1.8.3/jquery-1.8.3.js"></script>
+    <script th:src="@{/jslib/jquery-1.8.3/jquery.nestable.js}" src="../jslib/jquery-1.8.3/jquery.nestable.js"></script>
+    <script type="text/javascript" th:src="@{/jslib/jquery-ui-1.9.2/jquery-ui.min.js}"  src="../jslib/jquery-ui-1.9.2/jquery-ui.min.js"></script>
+
+
+    <script th:src="@{/jslib/angular-1.0.3/angular.js}" src="../jslib/angular-1.0.3/angular.js"></script>
+    <script th:src="@{/jslib/angular-1.0.3/angular-resource.js}" src="../jslib/angular-1.0.3/angular-resource.js"></script>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/;
+        SERVICE_URL_BASE = /*[[${serviceUrl}]]*/ "/service/";
+        TEMPLATE_URL_BASE = /*[[@{/html/}]]*/ "";
+        /*]]>*/
+    </script>
+    <script th:src="@{/js/valintalaskenta.js}" src="../js/valintalaskenta.js"></script>
+    <script th:src="@{/js/valintaryhmaHakukohdeTree.js}" src="../js/valintaryhmaHakukohdeTree.js"></script>
+    <script th:src="@{/js/valintaryhma.js}" src="../js/valintaryhma.js"></script>
+    <script th:src="@{/js/hakukohde.js}" src="../js/hakukohde.js"></script>
+    <script th:src="@{/js/valinnanvaihe.js}" src="../js/hakukohdevalinnanvaihe.js"></script>
+    <script th:src="@{/js/valintatapajono.js}" src="../js/valintatapajono.js"></script>
+    <script th:src="@{/js/jarjestyskriteeri.js}" src="../js/jarjestyskriteeri.js"></script>
+    <script th:src="@{/js/directives.js}" src="../js/directives.js"></script>
+    <script th:src="@{/js/laskentakaava.js}" src="../js/laskentakaava.js"></script>
+    <script th:src="@{/js/valintaryhmavalinnanvaihe.js}" src="../js/valintaryhmavalinnanvaihe.js"></script>
+	<script th:src="@{/js/valinta.js}" src="../js/valinta.js"></script>
+    <script th:src="@{/js/loading.js}" src="../js/loading.js"></script>
+
+
+
+    <script th:src="@{/js/virkailija.js}" src="../js/virkailija.js"></script>
+
+    <link th:remove="all" href="../css/virkailija.css" rel="stylesheet" type="text/css" />
+    <link th:remove="all" href="../css/proto.css" rel="stylesheet" type="text/css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <div id="wrapper">
+        <div class="popover-host" id="overlay" ng-include="" th:src="'&quot;' + @{/html/popover.html} + '&quot;'" src="'popover.html'"></div>
+        <div>
+            <div id="angularbox" ng-view=""></div>
+        </div>
+        <div style="clear:both;"></div>
+    </div>
+
+    <div ng-controller="LoadingCtrl"><div ng-show="loading" style="position: fixed; left: 0px; top: 0px; display: none; background: gold; padding: 0.3em; font-weight: bold;">käsitellään...</div></div>
+</body>
+
+</html>
