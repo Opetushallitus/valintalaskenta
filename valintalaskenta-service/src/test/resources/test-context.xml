@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ctx="http://www.springframework.org/schema/context"
+	xmlns:cxf="http://camel.apache.org/schema/cxf" xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+       http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+	
+	<ctx:annotation-config></ctx:annotation-config>
+	<ctx:property-placeholder location="classpath:testMongoConfiguration.properties" />
+	<ctx:component-scan base-package="fi.vm.sade.service.valintalaskenta.resource"/>
+	<ctx:component-scan base-package="fi.vm.sade.service.valintalaskenta.service.impl" />
+	<bean id="laskentaService" class="fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaServiceImpl" />
+	<bean id="valintaLaskentaService"
+		class="fi.vm.sade.service.valintalaskenta.service.impl.ValintalaskentaServiceImpl" />
+
+</beans>

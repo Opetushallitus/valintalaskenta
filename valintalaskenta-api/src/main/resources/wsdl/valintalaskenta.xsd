@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema version="1.0"
+        elementFormDefault="unqualified"
+        targetNamespace="http://valintalaskenta.service.sade.vm.fi/messages"
+        xmlns:tns="http://valintalaskenta.service.sade.vm.fi/messages"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:hakemus="http://hakemus.service.sade.vm.fi/schema"
+        xmlns:valintaperusteet="http://valintaperusteet.service.sade.vm.fi/schema">
+
+    <xs:import namespace="http://hakemus.service.sade.vm.fi/schema" schemaLocation="http://pulpetti.hard.ware.fi/haku/wsdl/hakemus.xsd" />
+    <xs:import namespace="http://valintaperusteet.service.sade.vm.fi/schema" schemaLocation="http://pulpetti.hard.ware.fi/valintaperusteet/wsdl/valintaperusteet.xsd" />
+
+    <xs:element name="laske" type="tns:LaskeTyyppi" />
+    <xs:element name="laskeVastaus" type="tns:LaskeVastausTyyppi"/>
+
+    <xs:complexType name="LaskeTyyppi">
+        <xs:sequence>
+            <xs:element name="hakukohdeOid" type="xs:string"/>
+            <xs:element name="valinnanVaihe" type="xs:int"/>
+            <xs:element name="hakemus" type="hakemus:HakemusTyyppi" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="valintaperusteet" type="valintaperusteet:ValintaperusteetTyyppi" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="LaskeVastausTyyppi">
+        <xs:sequence>
+            <xs:element name="status" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema> 
