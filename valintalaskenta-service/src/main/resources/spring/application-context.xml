@@ -8,8 +8,8 @@
 
     <context:annotation-config/>
     <context:property-placeholder location="classpath:mongoConfiguration.properties"/>
-    <context:component-scan base-package="fi.vm.sade.service.valintalaskenta.service.impl"/>
-	<context:component-scan base-package="fi.vm.sade.service.valintalaskenta.resource" />
+    <context:component-scan base-package="fi.vm.sade.valintalaskenta.service.impl"/>
+	<context:component-scan base-package="fi.vm.sade.valintalaskenta.resource" />
     <bean id="laskentaService" class="fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaServiceImpl" />
 
     <import resource="cxf-context.xml" />

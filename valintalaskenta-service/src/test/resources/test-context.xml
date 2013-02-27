@@ -12,10 +12,10 @@
 	
 	<ctx:annotation-config></ctx:annotation-config>
 	<ctx:property-placeholder location="classpath:testMongoConfiguration.properties" />
-	<ctx:component-scan base-package="fi.vm.sade.service.valintalaskenta.resource"/>
-	<ctx:component-scan base-package="fi.vm.sade.service.valintalaskenta.service.impl" />
+	<ctx:component-scan base-package="fi.vm.sade.valintalaskenta.resource"/>
+	<ctx:component-scan base-package="fi.vm.sade.valintalaskenta.service.impl" />
 	<bean id="laskentaService" class="fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaServiceImpl" />
 	<bean id="valintaLaskentaService"
-		class="fi.vm.sade.service.valintalaskenta.service.impl.ValintalaskentaServiceImpl" />
+		class="fi.vm.sade.valintalaskenta.service.impl.ValintalaskentaServiceImpl" />
 
 </beans>
