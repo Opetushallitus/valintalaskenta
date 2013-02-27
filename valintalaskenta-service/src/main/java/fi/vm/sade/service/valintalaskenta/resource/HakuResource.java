@@ -46,7 +46,7 @@ public class HakuResource {
         return Lists.newArrayList(Iterables.transform(versiohallinta,
                 new Function<VersiohallintaHakukohde, Hakukohde>() {
                     public Hakukohde apply(@Nonnull VersiohallintaHakukohde input) {
-                        assert (input.getHakukohteet().isEmpty() != true);
+                        assert (!input.getHakukohteet().isEmpty());
                         return input.getHakukohteet().last().getHakukohde();
                     }
                 }));
@@ -62,7 +62,7 @@ public class HakuResource {
         return Lists.newArrayList(Iterables.transform(versiohallinta,
                 new Function<VersiohallintaHakukohde, Hakukohde>() {
                     public Hakukohde apply(@Nonnull VersiohallintaHakukohde input) {
-                        assert (input.getHakukohteet().isEmpty() != true);
+                        assert (!input.getHakukohteet().isEmpty());
                         return input.getHakukohteet().last().getHakukohde();
                     }
                 }));

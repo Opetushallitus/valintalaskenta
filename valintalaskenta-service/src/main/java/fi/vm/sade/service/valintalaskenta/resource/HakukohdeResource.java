@@ -1,5 +1,6 @@
 package fi.vm.sade.service.valintalaskenta.resource;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -46,13 +47,13 @@ public class HakukohdeResource {
         List<VersiohallintaHakukohde> versiohallinta = datastore.find(VersiohallintaHakukohde.class, "hakukohdeoid",
                 hakukohdeoid).asList();
         if (versiohallinta == null || versiohallinta.size() == 0) {
-            LOGGER.error("Hakukohdetta oid:llä '{}' ei löytynyt! Annetaan palautteena tyhjäviitevastaus!", hakukohdeoid);
-            return null;
+            LOGGER.debug("Hakukohteita oid:llä '{}' ei löytynyt! Annetaan palautteena tyhjä lista!", hakukohdeoid);
+            return Collections.emptyList();
         }
         return Lists.newArrayList(Iterables.transform(versiohallinta,
                 new Function<VersiohallintaHakukohde, Hakukohde>() {
                     public Hakukohde apply(@Nonnull VersiohallintaHakukohde input) {
-                        assert (input.getHakukohteet().isEmpty() != true);
+                        assert (!input.getHakukohteet().isEmpty());
                         return input.getHakukohteet().last().getHakukohde();
                     }
                 }));
