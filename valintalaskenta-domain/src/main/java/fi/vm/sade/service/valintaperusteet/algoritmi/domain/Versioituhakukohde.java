@@ -27,9 +27,13 @@ public class Versioituhakukohde implements Comparable<Versioituhakukohde> {
     public boolean equals(Object obj) {
         if (obj instanceof Versioituhakukohde) {
             Versioituhakukohde vh = (Versioituhakukohde) obj;
-            return this == obj || this.versio == vh.versio;
+            return this == vh;
         }
         return false;
+    }
+
+    public int hashCode() {
+        return versio;
     }
 
     @Embedded

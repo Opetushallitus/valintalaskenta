@@ -17,6 +17,7 @@ import fi.vm.sade.kaava.Laskentakaavavalidaattori;
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
 import fi.vm.sade.service.valintalaskenta.service.ValintalaskentaSuorittajaService;
+import fi.vm.sade.service.valintalaskenta.service.exception.LaskentaVaarantyyppisellaFunktiollaException;
 import fi.vm.sade.service.valintalaskenta.service.impl.conversion.FunktioKutsuTyyppiToFunktioKutsuConverter;
 import fi.vm.sade.service.valintalaskenta.service.impl.conversion.HakemusTyyppiToMapConverter;
 import fi.vm.sade.service.valintaperusteet.algoritmi.domain.Hakukohde;
@@ -175,7 +176,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             jarjestyskriteeritulos.setArvo(laskentatulos.getTulos());
             return jarjestyskriteeritulos;
         default:
-            throw new RuntimeException("Palvelu hyväksyy vain lukuarvofunktioita!");
+            throw new LaskentaVaarantyyppisellaFunktiollaException("Palvelu hyväksyy vain lukuarvofunktioita!");
         }
     }
 
