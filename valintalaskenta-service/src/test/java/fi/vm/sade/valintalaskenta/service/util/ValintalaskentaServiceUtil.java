@@ -9,7 +9,6 @@ import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.FunktioargumenttiTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsunimiTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.JarjestyskriteeriTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.TasasijasaantoTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
@@ -59,7 +58,7 @@ public class ValintalaskentaServiceUtil {
 
     public static FunktiokutsuTyyppi createSummaFunktio(String... tunniste) {
         FunktiokutsuTyyppi funktiokutsu = new FunktiokutsuTyyppi();
-        funktiokutsu.setFunktionimi(FunktiokutsunimiTyyppi.SUMMA);
+        funktiokutsu.setFunktionimi("SUMMA");
         for (int i = 0; i < tunniste.length; ++i) {
             FunktioargumenttiTyyppi arg = ValintalaskentaServiceUtil.createHaelukuarvoArgumentti(tunniste[i], i + 1);
             funktiokutsu.getFunktioargumentit().add(arg);
@@ -107,7 +106,7 @@ public class ValintalaskentaServiceUtil {
     public static FunktioargumenttiTyyppi createHaelukuarvoArgumentti(String tunniste, int indeksi) {
         FunktioargumenttiTyyppi farg1 = new FunktioargumenttiTyyppi();
         FunktiokutsuTyyppi haearvo1 = new FunktiokutsuTyyppi();
-        haearvo1.setFunktionimi(FunktiokutsunimiTyyppi.HAELUKUARVO);
+        haearvo1.setFunktionimi("HAELUKUARVO");
         ValintaperusteviiteTyyppi viite1 = new ValintaperusteviiteTyyppi();
         viite1.setOnPakollinen(true);
         viite1.setTunniste(tunniste);
