@@ -7,7 +7,7 @@ import com.google.code.morphia.annotations.Embedded;
  * @author Jussi Jartamo
  * 
  */
-@Embedded
+@Embedded("Jarjestyskriteeritulos")
 public class Jarjestyskriteeritulos {
 
     private double arvo;

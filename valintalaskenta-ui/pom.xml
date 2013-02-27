@@ -86,32 +86,5 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>startstack-5656</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.mortbay.jetty</groupId>
-                        <artifactId>maven-jetty-plugin</artifactId>
-                        <configuration>
-                            <!--
-                            <webApp> ${basedir}/valintaperusteet-ui/target/valintaperusteet-ui-1.0-SNAPSHOT</webApp>  -->
-                            <contextHandlers>
-                                <contextHandler implementation="org.mortbay.jetty.webapp.WebAppContext">
-                                    <war>${basedir}/../valintaperusteet-service/target/valintaperusteet-service.war</war>
-                                    <contextPath>/service</contextPath>
-                                </contextHandler>
-                            </contextHandlers>
-                            <connectors>
-                                <!-- work around file locking on windows -->
-                                <connector implementation="org.mortbay.jetty.bio.SocketConnector">
-                                    <port>5656</port><!-- this connector defaults to 1300 for some reason -->
-                                </connector>
-                            </connectors>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
     </profiles>
 </project>

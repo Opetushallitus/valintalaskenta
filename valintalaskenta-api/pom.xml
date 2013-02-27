@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>fi.vm.sade.valintaperusteet</groupId>
-    <artifactId>valintaperusteet-algoritmi</artifactId>
+    <artifactId>valintalaskenta</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
   <artifactId>valintalaskenta-api</artifactId>

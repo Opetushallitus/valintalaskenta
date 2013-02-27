@@ -1,9 +1,6 @@
 package fi.vm.sade.service.valintaperusteet.algoritmi.domain;
 
-import org.bson.types.ObjectId;
-
 import com.google.code.morphia.annotations.Embedded;
-import com.google.code.morphia.annotations.Id;
 
 /**
  * 
@@ -12,9 +9,6 @@ import com.google.code.morphia.annotations.Id;
  */
 @Embedded("Hakukohde")
 public class Hakukohde {
-
-    @Id
-    private ObjectId id;
 
     private String hakuoid;
     private String oid;

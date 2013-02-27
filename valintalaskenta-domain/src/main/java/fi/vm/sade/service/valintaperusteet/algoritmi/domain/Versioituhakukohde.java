@@ -17,25 +17,6 @@ public class Versioituhakukohde implements Comparable<Versioituhakukohde> {
 
     private Integer versio;
 
-    public int compareTo(Versioituhakukohde o) {
-        if (equals(o)) {
-            return 0;
-        }
-        return versio.compareTo(o.versio);
-    }
-
-    public boolean equals(Object obj) {
-        if (obj instanceof Versioituhakukohde) {
-            Versioituhakukohde vh = (Versioituhakukohde) obj;
-            return this == vh;
-        }
-        return false;
-    }
-
-    public int hashCode() {
-        return versio;
-    }
-
     @Embedded
     private Hakukohde hakukohde;
 
@@ -53,5 +34,24 @@ public class Versioituhakukohde implements Comparable<Versioituhakukohde> {
 
     public void setVersio(Integer versio) {
         this.versio = versio;
+    }
+
+    public int compareTo(Versioituhakukohde o) {
+        if (equals(o)) {
+            return 0;
+        }
+        return versio.compareTo(o.versio);
+    }
+
+    public boolean equals(Object obj) {
+        if (obj instanceof Versioituhakukohde) {
+            Versioituhakukohde vh = (Versioituhakukohde) obj;
+            return this == vh;
+        }
+        return false;
+    }
+
+    public int hashCode() {
+        return versio;
     }
 }

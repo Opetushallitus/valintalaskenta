@@ -3,11 +3,8 @@ package fi.vm.sade.service.valintaperusteet.algoritmi.domain;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.bson.types.ObjectId;
-
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id;
 
 /**
  * 
@@ -15,14 +12,12 @@ import com.google.code.morphia.annotations.Id;
  * 
  *         Versioi yhden (hakukohdeoid + järjestysnumero) avaimen hakukohteita.
  *         Toteutettu järjestetyllä joukolla jossa viimeisenä
- *         (hakukohteet.last()) on viimeisenä lisätty valinnanvaihe.
+ *         (hakukohteet.last()) on uusimmalla aikaleimalla lisätty
+ *         valinnanvaihe.
  * 
  */
-@Entity("Versiohallinta")
+@Entity("Haku")
 public class VersiohallintaHakukohde {
-
-    @Id
-    private ObjectId id;
 
     private String hakuoid;
     private String hakukohdeoid;

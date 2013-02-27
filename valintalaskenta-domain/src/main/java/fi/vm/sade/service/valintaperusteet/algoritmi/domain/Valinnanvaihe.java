@@ -10,7 +10,7 @@ import com.google.code.morphia.annotations.Embedded;
  * @author Jussi Jartamo
  * 
  */
-@Embedded("ValinnanVaihe")
+@Embedded("Valinnanvaihe")
 public class Valinnanvaihe {
 
     private int jarjestysnumero;
