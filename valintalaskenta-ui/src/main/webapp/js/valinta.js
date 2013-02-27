@@ -1,3 +1,3 @@
-﻿function ValintaController($scope, $location, $routeParams, ValintaryhmaModel) {
+﻿function ValintaController($scope, $location, $routeParams) {
 
 }
