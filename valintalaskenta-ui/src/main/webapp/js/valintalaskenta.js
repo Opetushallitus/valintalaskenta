@@ -9,8 +9,12 @@ app.config(function($routeProvider) {
 
         //front page
         when('/etusivu', {controller:ValintaController, templateUrl:TEMPLATE_URL_BASE + 'hakukohde.html'}).
-
-       
+		when('/hakukohde', {controller:ValintaController, templateUrl:TEMPLATE_URL_BASE + 'hakukohde.html'}).
+		when('/valintaesitys', {controller:ValintaController, templateUrl:TEMPLATE_URL_BASE + 'valintaesitys.html'}).
+		when('/harkinnanvaraisethakijat', {controller:ValintaController, templateUrl:TEMPLATE_URL_BASE + 'harkinnanvaraisethakijat.html'}).
+		when('/pistesyotto', {controller:ValintaController, templateUrl:TEMPLATE_URL_BASE + 'pistesyotto.html'}).
+		when('/valinnanhallinta', {controller:ValintaController, templateUrl:TEMPLATE_URL_BASE + 'valinnanhallinta.html'}).
+		
         //else
         otherwise({redirectTo:'/etusivu'});
 });
