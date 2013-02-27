@@ -22,17 +22,12 @@
 	<script th:src="@{/js/valinta.js}" src="../js/valinta.js"></script>
     <script th:src="@{/js/loading.js}" src="../js/loading.js"></script>
 
-
-
-    <script th:src="@{/js/virkailija.js}" src="../js/virkailija.js"></script>
-
     <link th:remove="all" href="../css/virkailija.css" rel="stylesheet" type="text/css" />
     <link th:remove="all" href="../css/proto.css" rel="stylesheet" type="text/css" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
     <div id="wrapper">
-        <div class="popover-host" id="overlay" ng-include="" th:src="'&quot;' + @{/html/popover.html} + '&quot;'" src="'popover.html'"></div>
         <div>
             <div id="angularbox" ng-view=""></div>
         </div>
