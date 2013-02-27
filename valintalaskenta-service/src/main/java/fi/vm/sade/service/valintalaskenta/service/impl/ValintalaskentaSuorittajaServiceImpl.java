@@ -246,13 +246,13 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         if (kaksiEdellistaValinnanvaihetta.size() == 1) {
             assert (kaksiEdellistaValinnanvaihetta.get(0).getJarjestysnumero() <= jarjestysnumero);
             if (kaksiEdellistaValinnanvaihetta.get(0).getJarjestysnumero() != jarjestysnumero) {
-                assert (kaksiEdellistaValinnanvaihetta.get(0).getHakukohteet().isEmpty() != true);
+                assert (!kaksiEdellistaValinnanvaihetta.get(0).getHakukohteet().isEmpty());
                 return kaksiEdellistaValinnanvaihetta.get(0).getHakukohteet().last().getHakukohde();
             } // else { // edellistä valinnanvaihetta ei ollut... }
         } else if (kaksiEdellistaValinnanvaihetta.size() > 1) {
             for (VersiohallintaHakukohde k : kaksiEdellistaValinnanvaihetta) {
                 if (k.getJarjestysnumero() != jarjestysnumero) {
-                    assert (k.getHakukohteet().isEmpty() != true);
+                    assert (!k.getHakukohteet().isEmpty());
                     return k.getHakukohteet().last().getHakukohde();
                 }
             }
