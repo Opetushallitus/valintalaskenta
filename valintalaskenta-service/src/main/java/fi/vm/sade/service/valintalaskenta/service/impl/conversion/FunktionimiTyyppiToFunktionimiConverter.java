@@ -1,10 +1,9 @@
 package fi.vm.sade.service.valintalaskenta.service.impl.conversion;
 
-import org.springframework.core.convert.converter.Converter;
-
 import fi.vm.sade.service.valintalaskenta.service.exception.ToteutusEiVastaaPalveluRajapintaaException;
 import fi.vm.sade.service.valintaperusteet.model.Funktionimi;
 import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsunimiTyyppi;
+import org.springframework.core.convert.converter.Converter;
 
 /**
  * 
@@ -76,6 +75,8 @@ public class FunktionimiTyyppiToFunktionimiConverter implements Converter<Funkti
             return Funktionimi.TYHJA;
         case YHTASUURI:
             return Funktionimi.YHTASUURI;
+        case HAKUTOIVE:
+            return Funktionimi.HAKUTOIVE;
 
         default:
             throw new ToteutusEiVastaaPalveluRajapintaaException(
