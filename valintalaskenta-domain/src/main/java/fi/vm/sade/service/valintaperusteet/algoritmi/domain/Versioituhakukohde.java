@@ -17,9 +17,19 @@ public class Versioituhakukohde implements Comparable<Versioituhakukohde> {
 
     private Integer versio;
 
-    @Override
     public int compareTo(Versioituhakukohde o) {
+        if (equals(o)) {
+            return 0;
+        }
         return versio.compareTo(o.versio);
+    }
+
+    public boolean equals(Object obj) {
+        if (obj instanceof Versioituhakukohde) {
+            Versioituhakukohde vh = (Versioituhakukohde) obj;
+            return this == obj || this.versio == vh.versio;
+        }
+        return false;
     }
 
     @Embedded
