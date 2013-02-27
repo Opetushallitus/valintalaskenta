@@ -34,7 +34,7 @@ import fi.vm.sade.service.valintaperusteet.model.JsonViews;
 @Path("/hakukohde")
 public class HakukohdeResource {
 
-    protected final static Logger LOGGER = LoggerFactory.getLogger(HakukohdeResource.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(HakukohdeResource.class);
 
     @Autowired
     private Datastore datastore;

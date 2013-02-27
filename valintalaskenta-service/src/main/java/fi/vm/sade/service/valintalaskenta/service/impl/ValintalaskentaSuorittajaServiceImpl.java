@@ -180,7 +180,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         }
     }
 
-    static private class Esiintyminen {
+    private static class Esiintyminen {
         private Integer hyvaksyttavissa;
         private Integer esiintyy;
 

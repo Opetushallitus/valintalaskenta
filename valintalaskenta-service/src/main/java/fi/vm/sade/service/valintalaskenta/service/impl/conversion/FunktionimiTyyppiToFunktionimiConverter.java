@@ -2,6 +2,7 @@ package fi.vm.sade.service.valintalaskenta.service.impl.conversion;
 
 import org.springframework.core.convert.converter.Converter;
 
+import fi.vm.sade.service.valintalaskenta.service.exception.ToteutusEiVastaaPalveluRajapintaaException;
 import fi.vm.sade.service.valintaperusteet.model.Funktionimi;
 import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsunimiTyyppi;
 
@@ -77,7 +78,8 @@ public class FunktionimiTyyppiToFunktionimiConverter implements Converter<Funkti
             return Funktionimi.YHTASUURI;
 
         default:
-            throw new RuntimeException("Switch case not up to date! " + source + " is missing in switch statement!");
+            throw new ToteutusEiVastaaPalveluRajapintaaException(
+                    "Switch-lauseke ei ole ajantasalla! Lausekkeesta puuttuu " + source + "-tyyppi!");
         }
     }
 
