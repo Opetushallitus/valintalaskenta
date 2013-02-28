@@ -5,4 +5,4 @@
 # niin prosessi ei välttämättä vapauta käytettyjä resursseja!
 # 
 cd valintalaskenta-laskenta-service/
-mvn exec:java -Dexec.mainClass="fi.vm.sade.valintalaskenta.app.StartEmbeddedMongo" -Dexec.classpathScope="test"
+mvn compile exec:java -Dexec.mainClass="fi.vm.sade.valintalaskenta.app.StartEmbeddedMongo" -Dexec.classpathScope="test"
