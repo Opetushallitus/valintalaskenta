@@ -2013,7 +2013,6 @@ label, .label {
     .table-frame > .tr > .td {
       display: table-cell;
       vertical-align: top;
-      padding: 0px;
       margin: 0px;
       border-width: 0px; }
 
@@ -3425,7 +3424,6 @@ ul.orgmenu {
   border-top-color: #a9a9a9;
   border-bottom-color: #eeeeee;
   border-radius: 2px;
-  width: 298px;
   padding-left: 30px;
   max-height: 700px;
   overflow: auto; }
