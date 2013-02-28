@@ -1884,6 +1884,82 @@ label, .label {
     border-spacing: 0;
     border: 1px solid #ececec; }
 
+/*** Virkailija-table-4
+************************************************/
+.virkailija-table-4 {
+  width: 100%;
+  border-spacing: 1px;
+  border-collapse: separate; }
+  .virkailija-table-4 tr td,
+  .virkailija-table-4 tr th {
+    line-height: 2.3em;
+    padding: 0 1.5em;
+    vertical-align: middle; }
+  .virkailija-table-4 thead {
+    background-color: #eee;
+    background-image: url(../img/table-header-bg.png);
+    background-repeat: repeat;
+    background-position: left top; }
+    .virkailija-table-4 thead th {
+      border-bottom: 1px solid #c2c2c2;
+      border-top: 1px solid #ececec; }
+    .virkailija-table-4 thead tr:first-of-type th:first-of-type {
+      -moz-border-top-left-radius: 5px;
+      -webkit-border-top-left-radius: 5px;
+      -o-border-top-left-radius: 5px;
+      -ms-border-top-left-radius: 5px;
+      border-top-left-radius: 5px;
+      border-left: 1px solid #ececec; }
+    .virkailija-table-4 thead tr:first-of-type th:last-of-type {
+      -moz-border-top-right-radius: 5px;
+      -webkit-border-top-right-radius: 5px;
+      -o-border-top-right-radius: 5px;
+      -ms-border-top-right-radius: 5px;
+      border-top-right-radius: 5px;
+      border-right: 1px solid #ececec; }
+  .virkailija-table-4 tbody td {
+    border-spacing: 0;
+    border: 1px solid #ececec; }
+  .virkailija-table-4 tbody tr:nth-child(10n-4) td,
+  .virkailija-table-4 tbody tr:nth-child(10n-3) td,
+  .virkailija-table-4 tbody tr:nth-child(10n-2) td,
+  .virkailija-table-4 tbody tr:nth-child(10n-1) td,
+  .virkailija-table-4 tbody tr:nth-child(10n-0) td {
+    background-color: #f8f8f8; }
+  .virkailija-table-4 tbody tr:last-of-type td:first-of-type {
+    -moz-border-bottom-left-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -o-border-bottom-left-radius: 5px;
+    -ms-border-bottom-left-radius: 5px;
+    border-bottom-left-radius: 5px; }
+  .virkailija-table-4 tbody tr:last-of-type td:last-of-type {
+    -moz-border-bottom-right-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    -o-border-bottom-right-radius: 5px;
+    -ms-border-bottom-right-radius: 5px;
+    border-bottom-right-radius: 5px; }
+  .virkailija-table-4 tr td.rule {
+    padding-left: 3em;
+    background-image: url(../img/ketju-saanto.png);
+    background-repeat: no-repeat;
+    background-position: 0.8em center;
+    background-size: 1.5em; }
+  .virkailija-table-4 tr td.follow-up-question {
+    padding-left: 3em;
+    background-image: url(../img/nuoli-jatkokysymys.png);
+    background-repeat: no-repeat;
+    background-position: 0.8em center;
+    background-size: 1em; }
+  .virkailija-table-4 tr td.condition {
+    padding-left: 3em;
+    background-image: url(../img/pykala-ehto.png);
+    background-repeat: no-repeat;
+    background-position: 0.8em center;
+    background-size: 1em; }
+  .virkailija-table-4 input, .virkailija-table-4 select {
+    position: relative;
+    bottom: 2px; }
+
 /*
 	Taulukko tyyli perustietojen näyttämiselle, esim. hakijan henkilötietot
 */
@@ -1926,37 +2002,20 @@ label, .label {
 .form-summary-table .extra {
   padding-left: 1em; }
 
-/*** Grades table / Grading table
-************************************************/
-.applicant-grades thead tr th,
-.applicant-grades thead tr td,
-.applicant-grades tbody tr td,
-.grading-table thead tr th,
-.grading-table thead tr td,
-.grading-table tbody tr td {
-  border: solid 1px #e1e1e1;
-  border-top-color: #ececec;
-  border-bottom-color: #c2c2c2;
-  vertical-align: top;
-  padding: 0.5em 1.5em;
-  line-height: 2em;
-  background-color: #ffffff; }
-.applicant-grades thead tr th,
-.grading-table thead tr th {
-  background-color: #dde9f0;
-  background-image: url(../img/texture-angled-lines.gif);
-  background-repeat: repeat;
-  background-position: top left;
-  font-size: 1.385em;
-  line-height: 1.5em;
-  text-shadow: 0px 1px 1px white; }
-.applicant-grades thead tr td,
-.grading-table thead tr td {
-  background-color: #e3eef3;
-  text-transform: uppercase; }
-.applicant-grades tbody tr:nth-child(even) td,
-.grading-table tbody tr:nth-child(even) td {
-  background-color: #f3f7f9; }
+.table-frame {
+  display: table;
+  width: 100%;
+  padding: 0px;
+  margin: 0px;
+  border-width: 0px; }
+  .table-frame > .tr {
+    display: table-row; }
+    .table-frame > .tr > .td {
+      display: table-cell;
+      vertical-align: top;
+      padding: 0px;
+      margin: 0px;
+      border-width: 0px; }
 
 a.button {
   text-decoration: none;
@@ -3237,21 +3296,27 @@ ul.orgmenu {
 
 /*** Itemtree
 ************************************************/
+.selectlist,
 .treelist {
   list-style-type: none;
   padding: 0 0 0 24px; }
+  .selectlist.collapsible,
   .treelist.collapsible {
     margin-left: 0px;
     padding: 0 0 0 32px; }
+  .selectlist li,
   .treelist li {
     margin: 0.3em 0;
     position: relative;
     list-style: none outside none; }
+    .selectlist li > input[type="checkbox"],
     .treelist li > input[type="checkbox"] {
       vertical-align: middle; }
+  .selectlist .branch,
   .treelist .branch {
     list-style-type: none;
     padding: 0 0 0 24px; }
+  .selectlist .collapse,
   .treelist .collapse {
     background-image: url("../img/itemtree-collapse-sprite.png");
     background-position: left center;
@@ -3262,6 +3327,7 @@ ul.orgmenu {
     position: absolute;
     top: 2px;
     width: 20px; }
+  .selectlist .icon,
   .treelist .icon {
     background-position: left center;
     background-repeat: no-repeat;
@@ -3271,6 +3337,7 @@ ul.orgmenu {
     position: absolute;
     top: 2px;
     width: 20px; }
+    .selectlist .icon.folder,
     .treelist .icon.folder {
       background-image: url("../img/18x18-ui-icons.png");
       /* Temporary image replacement */
@@ -3295,16 +3362,22 @@ ul.orgmenu {
       	}
       }
       */ }
+      .selectlist .icon.folder:hover,
       .treelist .icon.folder:hover {
         background-position: 0px -18px; }
+      .selectlist .icon.folder:active,
       .treelist .icon.folder:active {
         background-position: 0px -36px; }
+      .selectlist .icon.folder.open,
       .treelist .icon.folder.open {
         background-position: -18px 0px; }
+        .selectlist .icon.folder.open:hover,
         .treelist .icon.folder.open:hover {
           background-position: -18px -18px; }
+        .selectlist .icon.folder.open:active,
         .treelist .icon.folder.open:active {
           background-position: -18px -36px; }
+    .selectlist .icon.file,
     .treelist .icon.file {
       background-image: url("../img/18x18-ui-icons.png");
       /* Temporary image replacement */
@@ -3316,26 +3389,72 @@ ul.orgmenu {
       position: absolute;
       top: 5px;
       width: 18px; }
+      .selectlist .icon.file:active,
       .treelist .icon.file:active {
         background-position: -72px -18px; }
+      .selectlist .icon.file.valintaryhma,
       .treelist .icon.file.valintaryhma {
         background-position: -144px 0px; }
+        .selectlist .icon.file.valintaryhma:hover,
         .treelist .icon.file.valintaryhma:hover {
           background-position: -144px -18px; }
+        .selectlist .icon.file.valintaryhma:active,
         .treelist .icon.file.valintaryhma:active {
           background-position: -144px -36px; }
+      .selectlist .icon.file.hakukohde,
       .treelist .icon.file.hakukohde {
         background-position: -54px -18px; }
+        .selectlist .icon.file.hakukohde:hover,
         .treelist .icon.file.hakukohde:hover {
           background-position: -54px -18px; }
+        .selectlist .icon.file.hakukohde:active,
         .treelist .icon.file.hakukohde:active {
           background-position: -54px -36px; }
+  .selectlist .collapsed > .collapse,
   .treelist .collapsed > .collapse {
     background-position: right center; }
+  .selectlist .collapsed > .icon.folder,
   .treelist .collapsed > .icon.folder {
     background-position: right center; }
+  .selectlist .collapsed > .branch,
   .treelist .collapsed > .branch {
     display: none; }
+
+.selectlist {
+  border: solid 1px #d9d9d9;
+  border-top-color: #a9a9a9;
+  border-bottom-color: #eeeeee;
+  border-radius: 2px;
+  width: 298px;
+  padding-left: 30px;
+  max-height: 700px;
+  overflow: auto; }
+  .selectlist li a {
+    color: #3e3e3e;
+    display: block;
+    margin: -0.3em 0px;
+    padding: 0.3em 0px; }
+    .selectlist li a:before {
+      content: '';
+      display: block;
+      width: 30px;
+      height: 100%;
+      position: absolute;
+      left: -30px;
+      top: 0px; }
+  .selectlist li:nth-child(even) a {
+    background-color: #f6f6f6;
+    position: relative; }
+    .selectlist li:nth-child(even) a:before {
+      background-color: #f6f6f6; }
+  .selectlist li a:hover {
+    background-color: #c2e6f1; }
+    .selectlist li a:hover:before {
+      background-color: #c2e6f1; }
+  .selectlist li.active a {
+    background-color: #c2e6f1; }
+    .selectlist li.active a:before {
+      background-color: #c2e6f1; }
 
 /*** Itemtree
 ************************************************/
@@ -3846,22 +3965,25 @@ ul.dropmenu-list {
     background: -moz-linear-gradient(top, #c6c6c6, whitesmoke);
     background: -ms-linear-gradient(top, #c6c6c6, whitesmoke);
     background: -o-linear-gradient(top, #c6c6c6, whitesmoke); }
-.tabs .tab.current {
-  border-top-width: 1px;
-  border-right-width: 1px;
-  border-left-width: 1px;
-  border-bottom-width: 0px;
-  padding-bottom: 2px;
-  position: relative;
-  top: 1px; }
-  .tabs .tab.current span {
-    background: white;
-    background: white;
-    background: -webkit-gradient(linear, left top, left bottom, from(whitesmoke), to(white));
-    background: -webkit-linear-gradient(top, whitesmoke, white);
-    background: -moz-linear-gradient(top, whitesmoke, white);
-    background: -ms-linear-gradient(top, whitesmoke, white);
-    background: -o-linear-gradient(top, whitesmoke, white); }
+  .tabs .tab.current {
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-left-width: 1px;
+    border-bottom-width: 0px;
+    padding-bottom: 2px;
+    position: relative;
+    top: 1px; }
+    .tabs .tab.current span {
+      background: white;
+      background: white;
+      background: -webkit-gradient(linear, left top, left bottom, from(whitesmoke), to(white));
+      background: -webkit-linear-gradient(top, whitesmoke, white);
+      background: -moz-linear-gradient(top, whitesmoke, white);
+      background: -ms-linear-gradient(top, whitesmoke, white);
+      background: -o-linear-gradient(top, whitesmoke, white); }
+  .tabs .tab.disabled span, .tabs .tab.disabled:hover span {
+    background: #f6f6f6;
+    background-image: url("../img/texture-45dg-lines-96ccdb.gif"); }
 
 /*** Popups
 ************************************************/
