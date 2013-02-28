@@ -6,8 +6,8 @@
 		<artifactId>valintalaskenta</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>valintalaskenta-service</artifactId>
-	<name>Valintalaskenta :: Service</name>
+	<artifactId>valintalaskenta-laskenta-service</artifactId>
+	<name>Valintalaskenta :: Laskenta :: Service</name>
 	<packaging>war</packaging>
 	<properties>
 		<mongodb.host>taulu.hard.ware.fi</mongodb.host>
@@ -29,7 +29,7 @@
 
 		<dependency>
 			<groupId>fi.vm.sade.valintaperusteet</groupId>
-			<artifactId>valintalaskenta-api</artifactId>
+			<artifactId>valintalaskenta-laskenta-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

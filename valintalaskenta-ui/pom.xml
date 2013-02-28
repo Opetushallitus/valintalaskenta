@@ -71,7 +71,7 @@
                             <webApp> ${basedir}/valintaperusteet-ui/target/valintaperusteet-ui-1.0-SNAPSHOT</webApp>  -->
                             <contextHandlers>
                                 <contextHandler implementation="org.mortbay.jetty.webapp.WebAppContext">
-                                    <war>${basedir}/../valintalaskenta-service/target/valintalaskenta-service.war</war>
+                                    <war>${basedir}/../valintalaskenta-laskenta-service/target/valintalaskenta-laskenta-service.war</war>
                                     <contextPath>/service</contextPath>
                                 </contextHandler>
                             </contextHandlers>

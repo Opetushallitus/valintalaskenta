@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema
+	version="1.0"
+	elementFormDefault="unqualified"
+	targetNamespace="http://valintalaskenta.tulos.service.sade.vm.fi/schema"
+	xmlns:tns="http://valintalaskenta.tulos.service.sade.vm.fi/schema"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+
+</xs:schema>

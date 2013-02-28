@@ -4,5 +4,5 @@
 # HUOM! Jos sulautetun mongon sulkee muualta kuin ikkunasta 
 # niin prosessi ei välttämättä vapauta käytettyjä resursseja!
 # 
-cd valintalaskenta-service/
+cd valintalaskenta-laskenta-service/
 mvn exec:java -Dexec.mainClass="fi.vm.sade.valintalaskenta.app.StartEmbeddedMongo" -Dexec.classpathScope="test"

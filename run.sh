@@ -1,5 +1,5 @@
 #!/bin/bash -e
-cd valintalaskenta-service/
+cd valintalaskenta-laskenta-service/
 mvn clean install
 cd ..
 cd valintalaskenta-ui/

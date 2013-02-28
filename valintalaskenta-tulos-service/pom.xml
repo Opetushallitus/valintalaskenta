@@ -6,9 +6,9 @@
 		<artifactId>valintalaskenta</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>valintalaskenta-tulosservice</artifactId>
+	<artifactId>valintalaskenta-tulos-service</artifactId>
 	<packaging>war</packaging>
-	<name>Valintalaskenta :: TulosService</name>
+	<name>Valintalaskenta :: Tulos :: Service</name>
 	<properties>
 		<mongodb.host>taulu.hard.ware.fi</mongodb.host>
 		<mongodb.port>27017</mongodb.port>

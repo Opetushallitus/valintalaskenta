@@ -33,9 +33,10 @@
     
 	<modules>
 		<module>valintalaskenta-domain</module>
-		<module>valintalaskenta-api</module>
-		<module>valintalaskenta-service</module>
+		<module>valintalaskenta-laskenta-api</module>
+		<module>valintalaskenta-tulos-api</module>
+		<module>valintalaskenta-laskenta-service</module>
 		<module>valintalaskenta-ui</module>
-		<module>valintalaskenta-tulosservice</module>
+		<module>valintalaskenta-tulos-service</module>
 	</modules>
 </project>

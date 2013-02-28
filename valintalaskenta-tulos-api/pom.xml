@@ -5,8 +5,8 @@
     <artifactId>valintalaskenta</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
-  <artifactId>valintalaskenta-api</artifactId>
-  <name>Valintalaskenta :: API</name>
+  <artifactId>valintalaskenta-tulos-api</artifactId>
+  <name>Valintalaskenta :: Tulos :: API</name>
 	<!--<packaging>jar</packaging>-->
 
 
@@ -24,7 +24,7 @@
                             <sourceRoot>${project.build.directory}/generated-sources/java</sourceRoot>
                             <wsdlOptions>
                                 <wsdlOption>
-                                    <wsdl>${basedir}/src/main/resources/wsdl/valintalaskenta.wsdl</wsdl>
+                                    <wsdl>${basedir}/src/main/resources/wsdl/valintalaskentatulos.wsdl</wsdl>
                                     <bindingFiles>
                                         <bindingFile>src/main/resources/wsdl/binding.xjb</bindingFile>
                                     </bindingFiles>

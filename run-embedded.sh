@@ -2,7 +2,7 @@
 #
 # Sulautettu Mongo täytyy olla käynnissä osoitteessa localhost:37200
 #
-cd valintalaskenta-service/
+cd valintalaskenta-laskenta-service/
 mvn clean install -Pembedded
 cd ..
 cd valintalaskenta-ui/
