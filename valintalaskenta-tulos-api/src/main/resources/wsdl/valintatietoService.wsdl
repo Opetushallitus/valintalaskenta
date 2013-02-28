@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions name="valintatietoService"
+                  targetNamespace="http://valintatiedot.service.sade.vm.fi"
+                  xmlns:tns="http://valintatiedot.service.sade.vm.fi"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:messages="http://valintatiedot.service.sade.vm.fi/messages"
+        >
+
+    <wsdl:types>
+        <xsd:schema targetNamespace="http://valintatiedot.service.sade.vm.fi">
+            <xsd:import namespace="http://valintatiedot.service.sade.vm.fi/messages" schemaLocation="valintatietoService.xsd" />
+        </xsd:schema>
+    </wsdl:types>
+    
+    <wsdl:message name="haeValintatiedot">
+        <wsdl:part name="parameters" element="messages:haeValintatiedot" />
+    </wsdl:message>
+    
+    <wsdl:message name="haeValintatiedotVastaus">
+        <wsdl:part name="parameters" element="messages:haeValintaTiedotVastaus" />
+    </wsdl:message>
+    
+    <wsdl:portType name="ValintatietoService">
+        <wsdl:documentation>Palvelurajapinta, jonka kautta voidaan hakea valintatiedot halutuille hakukohteille.</wsdl:documentation>
+        <wsdl:operation name="haeValintatiedot">
+            <wsdl:input message="tns:haeValintatiedot" />
+            <wsdl:output message="tns:haeValintatiedotVastaus" />
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="ValintatietoServiceSoapBinding" type="tns:ValintatietoService">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
+        <wsdl:operation name="haeValintatiedot">
+            <soap:operation soapAction="" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="ValintatietoService">
+        <wsdl:port name="ValintatietoServicePort" binding="tns:ValintatietoServiceSoapBinding">
+            <soap:address location="http://localhost:8181/cxf/valintatietoService" />
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

@@ -24,7 +24,7 @@
                             <sourceRoot>${project.build.directory}/generated-sources/java</sourceRoot>
                             <wsdlOptions>
                                 <wsdlOption>
-                                    <wsdl>${basedir}/src/main/resources/wsdl/valintalaskentatulos.wsdl</wsdl>
+                                    <wsdl>${basedir}/src/main/resources/wsdl/valintatietoService.wsdl</wsdl>
                                     <bindingFiles>
                                         <bindingFile>src/main/resources/wsdl/binding.xjb</bindingFile>
                                     </bindingFiles>
