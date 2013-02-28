@@ -26,9 +26,6 @@ import de.flapdoodle.embed.mongo.distribution.Version;
 @Configuration
 public class EmbeddedMongoConfiguration {
 
-    @Autowired
-    MongodExecutable mongodExe;
-
     @Bean
     public MongodExecutable getMongodExecutable(@Value("${mongodb.host}") String host,
             @Value("${mongodb.port}") int port) throws IOException {
@@ -41,6 +38,9 @@ public class EmbeddedMongoConfiguration {
         mongodExe.start();
         return mongodExe;
     }
+
+    @Autowired
+    MongodExecutable mongodExe;
 
     @PreDestroy
     public void destroy() {
