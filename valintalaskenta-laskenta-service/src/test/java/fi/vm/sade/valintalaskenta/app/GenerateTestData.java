@@ -1,8 +1,13 @@
 package fi.vm.sade.valintalaskenta.app;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.Random;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -11,6 +16,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 
 import scala.actors.threadpool.Arrays;
+
+import com.google.common.collect.Lists;
+
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintalaskenta.ValintalaskentaService;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
@@ -44,6 +52,25 @@ public class GenerateTestData {
         return p;
     }
 
+    private static String getStringDoubleValue() {
+        return "" + new Double(getNumberBetween(4, 10));
+    }
+
+    private static String[] getAvainArvoPari(String avain) {
+        return new String[] { avain, getStringDoubleValue() };
+    }
+
+    private static final String[] AVAIMET = new String[] { "matematiikka", "aidinkieli", "kuvaamataito", "puukäsityö",
+            "psykologia", "maantieto", "biologia", "filosofia", "historia" };
+
+    private static Set<String> getAvaimia() {
+        SortedSet<String> avaimia = new TreeSet<String>();
+        for (int x = 0; x < 6; ++x) {
+            avaimia.add(AVAIMET[random.nextInt(AVAIMET.length) % AVAIMET.length]);
+        }
+        return avaimia;
+    }
+
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
         ValintalaskentaService valintalaskentaService = new AnnotationConfigApplicationContext(GenerateTestData.class,
@@ -51,23 +78,36 @@ public class GenerateTestData {
 
         Integer jarjestysluku = 1;
         for (int i = 0; i < 10; ++i) {
-            String doubleValue = "" + new Double(getNumberBetween(4, 10));
-
-            String hakukohdeoid = "hakukohde-" + new String(getRandomChars(6));
-            String hakemusoid = "hakemus-" + new String(getRandomChars(6));
-            HakemusTyyppi[] hakemukset = new HakemusTyyppi[] { ValintalaskentaServiceUtil.createHakemusParilla(
-                    hakemusoid, hakukohdeoid, new String[] { "matematiikka", doubleValue }, new String[] {
-                            "aidinkieli", doubleValue }) };
+            String hakukohdeoid = "hakukohdeoid-" + new String(getRandomChars(6));
+            String hakemusoid = "hakemusoid-" + new String(getRandomChars(6));
+            // arvotaan hakijalle satunnaisesti avainarvopareja
+            List<String[]> avainparit = new ArrayList<String[]>();
+            for (String avain : getAvaimia()) {
+                avainparit.add(getAvainArvoPari(avain));
+            }
+            HakemusTyyppi[] hakemukset = new HakemusTyyppi[] { ValintalaskentaServiceUtil
+                    .createHakemusParillaDynaamisesti(hakemusoid, hakukohdeoid, avainparit) };
 
             ValintaperusteetTyyppi valintaperusteet = ValintalaskentaServiceUtil.createValintaperusteet(hakukohdeoid,
                     jarjestysluku);
-            ValintatapajonoJarjestyskriteereillaTyyppi jono = ValintalaskentaServiceUtil
-                    .createValintatapajono("jonooid0");
-            valintaperusteet.getValintatapajonot().add(jono);
-            jono.getJarjestyskriteerit().add(ValintalaskentaServiceUtil.createJarjestyskriteeri());
+            for (int a = 0; a < random.nextInt(5) + 1; ++a) {
 
-            jono.getJarjestyskriteerit().get(0)
-                    .setFunktiokutsu(ValintalaskentaServiceUtil.createSummaFunktio("matematiikka", "aidinkieli"));
+                ValintatapajonoJarjestyskriteereillaTyyppi jono = ValintalaskentaServiceUtil
+                        .createValintatapajono("jonooid-" + new String(getRandomChars(6)));
+                jono.getJarjestyskriteerit().add(ValintalaskentaServiceUtil.createJarjestyskriteeri());
+
+                // tehdään summafunktio satunnaisilla avainarvopareilla
+                // tarkoitus on että satunnaisesti joukko hakijoita tulee
+                // epäonnistumaan avainarvoparin puutteessa
+                List<String> avaimia = Lists.newArrayList(getAvaimia());
+                while (avaimia.size() > 2) {
+                    avaimia.remove(random.nextInt(avaimia.size()) % avaimia.size());
+                }
+                jono.getJarjestyskriteerit().get(0)
+                        .setFunktiokutsu(ValintalaskentaServiceUtil.createSummaFunktio(avaimia.get(0), avaimia.get(1)));
+
+                valintaperusteet.getValintatapajonot().add(jono);
+            }
             valintalaskentaService.laske(hakukohdeoid, jarjestysluku, Arrays.asList(hakemukset),
                     Arrays.asList(new ValintaperusteetTyyppi[] { valintaperusteet }));
         }

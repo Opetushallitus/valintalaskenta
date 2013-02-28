@@ -149,12 +149,6 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             }
             Laskentatulos<Double> laskentatulos = laskentaService.suoritaLasku(hakukohde, hakemus,
                     Laskentadomainkonverteri.muodostaLukuarvolasku(funktiokutsu));
-            /*
-             * Laskentatulos<Double> laskentatulos =
-             * laskentaService.suoritaLasku(
-             * Laskentadomainkonverteri.muodostaLukuarvolasku(funktiokutsu),
-             * arvot);
-             */
             Tila tila = laskentatulos.getTila();
 
             if (Tilatyyppi.HYLATTY.equals(tila.getTilatyyppi())) {
@@ -181,7 +175,10 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             } else {
                 jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.MAARITTELEMATON);
             }
-            jarjestyskriteeritulos.setArvo(laskentatulos.getTulos());
+            Double tulos = laskentatulos.getTulos();
+            if (tulos != null) {
+                jarjestyskriteeritulos.setArvo(tulos);
+            }
             return jarjestyskriteeritulos;
         default:
             throw new LaskentaVaarantyyppisellaFunktiollaException("Palvelu hyväksyy vain lukuarvofunktioita!");

@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.service.util;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -24,6 +25,11 @@ import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskritee
  */
 public class ValintalaskentaServiceUtil {
 
+    public static HakemusTyyppi createHakemusParillaDynaamisesti(String hakemusoid, String hakukohdeoid,
+            List<String[]> avaimet) {
+        return createHakemusTyyppi(hakemusoid, hakukohdeoid, createAvainArvo(avaimet.toArray(new String[][] {})));
+    }
+
     public static HakemusTyyppi createHakemusParilla(String hakemusoid, String hakukohdeoid, String[]... avaimet) {
         return createHakemusTyyppi(hakemusoid, hakukohdeoid, createAvainArvo(avaimet));
     }
@@ -36,6 +42,7 @@ public class ValintalaskentaServiceUtil {
         ValintaperusteetTyyppi valintaperusteet = new ValintaperusteetTyyppi();
         valintaperusteet.setHakukohdeOid(hakukohdeoid);
         valintaperusteet.setValinnanVaiheJarjestysluku(jarjestysluku);
+
         return valintaperusteet;
     }
 
