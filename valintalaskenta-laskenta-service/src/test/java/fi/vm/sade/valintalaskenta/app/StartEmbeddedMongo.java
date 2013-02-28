@@ -12,11 +12,11 @@ import com.sun.xml.messaging.saaj.packaging.mime.util.BASE64DecoderStream;
 
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodStarter;
+import de.flapdoodle.embed.mongo.config.AbstractMongoConfig.Net;
+import de.flapdoodle.embed.mongo.config.AbstractMongoConfig.Storage;
 import de.flapdoodle.embed.mongo.config.AbstractMongoConfig.Timeout;
 import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.config.RuntimeConfig;
-import de.flapdoodle.embed.mongo.config.AbstractMongoConfig.Net;
-import de.flapdoodle.embed.mongo.config.AbstractMongoConfig.Storage;
 import de.flapdoodle.embed.mongo.distribution.Version;
 
 /**
@@ -50,7 +50,7 @@ public class StartEmbeddedMongo {
             mongodExe.start();
         } catch (IOException e1) {
         }
-
+        GenerateTestData.main(new String[] {});
         final Thread mainThread = Thread.currentThread();
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
@@ -65,7 +65,7 @@ public class StartEmbeddedMongo {
         });
 
     }
-    
+
     private static final String ICON = "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBI"
             + "WXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QISDB0G/bFZaAAAAB1pVFh0Q29tbWVudAAAAAAAQ3Jl"
             + "YXRlZCB3aXRoIEdJTVBkLmUHAAAFuUlEQVRYw72Xf2yV1RnHP89571V+FK2isJIKipgME4mBCrQM"
