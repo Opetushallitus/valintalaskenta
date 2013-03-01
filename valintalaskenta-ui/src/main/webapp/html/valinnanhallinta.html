@@ -1,44 +1,26 @@
 ﻿<h1>Valinnat</h1>
 
-<div ng-include="'partials/topNavigation.html'" />
+<div class="width-16-8 margin-vertical-2">
+	<select>
+		<option>Toisen asteen ammatillisen ja lukiokoulutuksen yhteishaku, kevät 2013</option>
+	</select>
+</div>
 
+<div class="clear"></div>
+
+<div class="tabs">
+	<a href="#/hakukohteittain/" class="tab"><span>Hakukohteittain</span></a>
+	<a href="#/henkiloittain/" class="tab"><span>Henkilöittäin</span></a>
+	<a href="#/valinnanhallinta/" class="tab current" style="float:right;"><span>Yhteisvalinnan hallinta</span></a>
+	<!-- <a href="#/valinnanvaihe/:id/laskentakaava" class="tab"><span>Laskentakaavat</span></a>    -->
+</div>
 <div class="tabsheets">
+	
+	<div class="grid16-4" ng-include="'partials/hakukohdelista.html'"></div>
+	<div class="grid16-12">
+		<div ng-include="'partials/hakukohdeNavigation.html'"></div>
 
-    <div class="grid16-4" ng-include="'partials/hakukohdelista.html'"></div>
-
-    <div class="grid16-12">
-        <div ng-include="'partials/hakukohdeNavigation.html'" />
-		
-		<div class="tabsheets">
-
-			<h1>Sosiaali ja terveysoalan perustutkinto, pk<br/>
-			Stadin ammattiopisto, Vilppulantie</h1>
-
-			Ensisijaisesti hakeneet: 225<br/>
-			Kaikki hakeneet: 366<br/>
-
-
-			<div class="width-12-7 margin-vertical-2">
-				<strong>Esivalinta</strong><br/>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut quis posuere nulla. Donec id imperdiet purus. Integer posuere hendrerit orci, quis mollis ante ultricies in.
-			</div>
-
-			<div class="width-12-5 margin-vertical-2">
-				<a href="/sijoittelu" class="button primary small">Käynnistä vaihe</a>	
-			</div>
-
-			<div class="width-12-7 margin-vertical-2 clear">
-				<strong>Varsinainen valinta</strong><br/>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut quis posuere nulla. Donec id imperdiet purus. Integer posuere hendrerit orci, quis mollis ante ultricies in.
-			</div>
-
-			<div class="width-12-5 margin-vertical-2">
-				<span class="button primary small disabled">Käynnistä vaihe</span>
-			</div>
-
-			<div class="clear"></div>
-				
-		</div>
+		<div ng-include="'partials/pistesyotto.html'"></div>
 	</div>
 	<div class="clear"></div>
 </div>
