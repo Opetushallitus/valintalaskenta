@@ -11,21 +11,29 @@
     <xs:element name="haeValintatiedot" type="tns:HaeValintatiedotTyyppi" />
     <xs:element name="haeValintaTiedotVastaus" type="tns:HaeValintatiedotVastausTyyppi" />
 
-    <xs:complexType name="HaeValintatiedotTyyppi">
-        <xs:sequence>
-            <xs:element name="hakuParametrit" type="tns:HakuParametritTyyppi" maxOccurs="1" minOccurs="1" />
-        </xs:sequence>
-    </xs:complexType>
 
-    <xs:complexType name="HakuParametritTyyppi">
-        <xs:sequence>
-            <xs:element minOccurs="0" maxOccurs="1" name="hakukohde" type="xs:string" />
-        </xs:sequence>
-    </xs:complexType>
+    <!-- ÄLÄ IMPLEMENTOI VIELÄ -->
 
     <xs:complexType name="HaeValintatiedotVastausTyyppi">
         <xs:sequence>
             <xs:element name="hakijat" type="valintatiedot:HakukohdeTyyppi" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
+    <xs:complexType name="HaeValintatiedotTyyppi">
+        <xs:sequence>
+            <xs:element name="hakukohdeOid" type="xs:string" maxOccurs="1" minOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+
+
+
+    <!--
+    <xs:complexType name="HakuParametritTyyppi">
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="hakukohde" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+    -->
+
+
 </xs:schema>
