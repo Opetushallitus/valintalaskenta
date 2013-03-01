@@ -19,13 +19,13 @@
 
     <xs:complexType name="HakuParametritTyyppi">
         <xs:sequence>
-            <xs:element minOccurs="0" maxOccurs="unbounded" name="hakukohde" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="hakukohde" type="xs:string" />
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="HaeValintatiedotVastausTyyppi">
         <xs:sequence>
-            <xs:element name="hakijat" type="valintatiedot:HakijatTyyppi" minOccurs="1" maxOccurs="unbounded" />
+            <xs:element name="hakijat" type="valintatiedot:HakukohdeTyyppi" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 </xs:schema>
