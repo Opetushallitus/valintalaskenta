@@ -1571,6 +1571,11 @@ label, .label {
     padding: 0px 17px 0px 0px; }
   .form-row .form-row-content {
     float: left; }
+    .form-row .form-row-content.nofield,
+    .form-row .form-row-content > .nofield {
+      padding-top: 0.385em; }
+    .form-row .form-row-content > span.nofield {
+      display: inline-block; }
 
 /*** Form item structure
 ************************************************/
