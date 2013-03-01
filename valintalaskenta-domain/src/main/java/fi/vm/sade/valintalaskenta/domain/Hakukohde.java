@@ -9,13 +9,19 @@ import com.google.code.morphia.annotations.PrePersist;
  * 
  * @author Jussi Jartamo
  * 
+ *         Tätä sulautettua entiteettiä voisi optimoida niin että oidit on
+ *         transienttejä ja ne asetetaan versioivasta entiteetistä käsin
+ *         palveluhakuja tehtäessä. Eli kun REST-rajapinnasta haetaan tietoa
+ *         niin oidit asetetaan paikoilleen -- oideja ei suotta taltioitaisi
+ *         kantaan toisteisuuden välttämiseksi.
+ * 
  */
 @Embedded("Hakukohde")
 public class Hakukohde {
 
     private Date createdAt;
     private String hakuoid;
-    private String oid;
+    private String hakukohdeoid;
 
     @Embedded
     private Valinnanvaihe valinnanvaihe;
@@ -37,11 +43,11 @@ public class Hakukohde {
     }
 
     public String getOid() {
-        return oid;
+        return hakukohdeoid;
     }
 
     public void setOid(String oid) {
-        this.oid = oid;
+        this.hakukohdeoid = oid;
     }
 
     public Date getCreatedAt() {

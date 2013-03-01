@@ -29,6 +29,9 @@ public class VersiohallintaHakukohde {
     private String hakuoid;
     @Indexed
     private String hakukohdeoid;
+    @Indexed
+    private String valinnanvaiheoid;
+
     private int jarjestysnumero;
 
     @Embedded(concreteClass = java.util.TreeSet.class)
@@ -36,6 +39,14 @@ public class VersiohallintaHakukohde {
 
     public SortedSet<Versioituhakukohde> getHakukohteet() {
         return hakukohteet;
+    }
+
+    public String getValinnanvaiheoid() {
+        return valinnanvaiheoid;
+    }
+
+    public void setValinnanvaiheoid(String valinnanvaiheoid) {
+        this.valinnanvaiheoid = valinnanvaiheoid;
     }
 
     public String getHakuoid() {

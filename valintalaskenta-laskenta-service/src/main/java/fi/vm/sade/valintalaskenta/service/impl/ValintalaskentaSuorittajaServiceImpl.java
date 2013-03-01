@@ -69,6 +69,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         hconverter = new HakemusTyyppiToHakemusConverter();
         for (ValintaperusteetTyyppi valintaperuste : valintaperusteet) {
             String hakukohdeoid = valintaperuste.getHakukohdeOid();
+            String valinnanvaiheoid = valintaperuste.getValinnanVaiheOid();
             int jarjestysnumero = valintaperuste.getValinnanVaiheJarjestysluku();
             // Haetaan edellinen (pykälää pienemmällä järjestysnumerolla)
             // valinnanvaihe mahdollisen
@@ -82,7 +83,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             uusihakukohde.setOid(valintaperuste.getHakukohdeOid());
             Valinnanvaihe valinnanvaihe = new Valinnanvaihe();
             valinnanvaihe.setJarjestysnumero(jarjestysnumero);
-            valinnanvaihe.setValinnanvaiheoid(valintaperuste.getValinnanVaiheOid());
+            valinnanvaihe.setValinnanvaiheoid(valinnanvaiheoid);
             uusihakukohde.setValinnanvaihe(valinnanvaihe);
 
             for (ValintatapajonoJarjestyskriteereillaTyyppi jono : valintaperuste.getValintatapajonot()) {
@@ -118,6 +119,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             if (versiohallinta == null) {
                 versiohallinta = new VersiohallintaHakukohde();
                 versiohallinta.setHakuoid(hakuoid);
+                versiohallinta.setValinnanvaiheoid(valinnanvaiheoid);
                 versiohallinta.setHakukohdeoid(hakukohdeoid);
                 versiohallinta.setJarjestysnumero(jarjestysnumero);
             }
