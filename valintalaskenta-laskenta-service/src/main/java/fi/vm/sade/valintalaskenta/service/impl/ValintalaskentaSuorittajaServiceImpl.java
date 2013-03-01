@@ -78,6 +78,26 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             valinnanvaihe.setValinnanvaiheoid(valinnanvaiheoid);
             uusihakukohde.setValinnanvaihe(valinnanvaihe);
 
+            VersiohallintaHakukohde versiohallinta = datastore
+                    .find(VersiohallintaHakukohde.class, "hakukohdeoid", valintaperuste.getHakukohdeOid())
+                    .filter("jarjestysnumero", jarjestysnumero).get();
+
+            if (versiohallinta == null) {
+                versiohallinta = new VersiohallintaHakukohde();
+                versiohallinta.setHakuoid(hakuoid);
+                versiohallinta.setValinnanvaiheoid(valinnanvaiheoid);
+                versiohallinta.setHakukohdeoid(hakukohdeoid);
+                versiohallinta.setJarjestysnumero(jarjestysnumero);
+            }
+            Versioituhakukohde versioituhakukohde = new Versioituhakukohde();
+            versioituhakukohde.setHakukohde(uusihakukohde);
+            Long versioNumero = 0L;
+            if (!versiohallinta.getHakukohteet().isEmpty()) {
+                versioNumero = versiohallinta.getHakukohteet().last().getVersio() + 1L;
+            }
+            versioituhakukohde.setVersio(versioNumero);
+            versiohallinta.getHakukohteet().add(versioituhakukohde);
+
             for (ValintatapajonoJarjestyskriteereillaTyyppi jono : valintaperuste.getValintatapajonot()) {
                 Valintatapajono valintatapajono = new Valintatapajono();
                 valintatapajono.setOid(jono.getOid());
@@ -101,27 +121,29 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                     }
 
                 }
+                valintatapajono.setVersio(versioNumero);
                 valinnanvaihe.getValintatapajono().add(valintatapajono);
+                datastore.save(valintatapajono);
             }
             LOG.info("Tallennetaan hakukohdetta! Hakukohdeoid {}", uusihakukohde.getOid());
 
-            VersiohallintaHakukohde versiohallinta = datastore
-                    .find(VersiohallintaHakukohde.class, "hakukohdeoid", valintaperuste.getHakukohdeOid())
-                    .filter("jarjestysnumero", jarjestysnumero).get();
-            if (versiohallinta == null) {
-                versiohallinta = new VersiohallintaHakukohde();
-                versiohallinta.setHakuoid(hakuoid);
-                versiohallinta.setValinnanvaiheoid(valinnanvaiheoid);
-                versiohallinta.setHakukohdeoid(hakukohdeoid);
-                versiohallinta.setJarjestysnumero(jarjestysnumero);
-            }
-            Versioituhakukohde versioituhakukohde = new Versioituhakukohde();
-            versioituhakukohde.setHakukohde(uusihakukohde);
-            if (versiohallinta.getHakukohteet().isEmpty()) {
-                versioituhakukohde.setVersio(0);
-            } else {
-                versioituhakukohde.setVersio(versiohallinta.getHakukohteet().last().getVersio() + 1);
-            }
+            /*
+             * VersiohallintaHakukohde versiohallinta = datastore
+             * .find(VersiohallintaHakukohde.class, "hakukohdeoid",
+             * valintaperuste.getHakukohdeOid()) .filter("jarjestysnumero",
+             * jarjestysnumero).get(); if (versiohallinta == null) {
+             * versiohallinta = new VersiohallintaHakukohde();
+             * versiohallinta.setHakuoid(hakuoid);
+             * versiohallinta.setValinnanvaiheoid(valinnanvaiheoid);
+             * versiohallinta.setHakukohdeoid(hakukohdeoid);
+             * versiohallinta.setJarjestysnumero(jarjestysnumero); }
+             * Versioituhakukohde versioituhakukohde = new Versioituhakukohde();
+             * versioituhakukohde.setHakukohde(uusihakukohde); if
+             * (versiohallinta.getHakukohteet().isEmpty()) {
+             * versioituhakukohde.setVersio(0); } else {
+             * versioituhakukohde.setVersio
+             * (versiohallinta.getHakukohteet().last().getVersio() + 1); }
+             */
             versiohallinta.getHakukohteet().add(versioituhakukohde);
             datastore.save(versiohallinta);
 

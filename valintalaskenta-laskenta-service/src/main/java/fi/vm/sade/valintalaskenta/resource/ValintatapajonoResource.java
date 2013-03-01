@@ -14,9 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.code.morphia.Datastore;
+import com.google.common.collect.Sets;
 
 import fi.vm.sade.service.valintaperusteet.model.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
 
 /**
  * 
@@ -35,13 +37,12 @@ public class ValintatapajonoResource {
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
     public List<Jarjestyskriteeritulos> valinnanvaihe(@PathParam("valintatapajonoid") String valintatapajonoid) {
-        /*
-         * VersiohallintaHakukohde versiohallinta =
-         * datastore.find(VersiohallintaHakukohde.class, "valinnanvaiheoid",
-         * valinnanvaiheoid).get(); if (versiohallinta == null) { return
-         * Collections.emptyList(); }
-         */
-        return Collections.emptyList();// versiohallinta.getHakukohteet().last().getHakukohde().getValinnanvaihe().getValintatapajono();
+        // kaikki versiot tästä valintatapajonosta
+        Valintatapajono uusinvalintatapajono = Sets.newTreeSet(
+                datastore.find(Valintatapajono.class, "valintatapajonooid", valintatapajonoid).asList()).last();
+
+        return uusinvalintatapajono == null ? Collections.<Jarjestyskriteeritulos> emptyList() : uusinvalintatapajono
+                .getJarjestyskriteeritulokset();
     }
 
 }

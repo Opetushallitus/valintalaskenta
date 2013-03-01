@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.code.morphia.annotations.Embedded;
+import com.google.code.morphia.annotations.Reference;
 
 /**
  * 
@@ -16,7 +17,7 @@ public class Valinnanvaihe {
     private int jarjestysnumero;
     private String valinnanvaiheoid;
 
-    @Embedded
+    @Reference
     private List<Valintatapajono> valintatapajono = new ArrayList<Valintatapajono>();
 
     public List<Valintatapajono> getValintatapajono() {

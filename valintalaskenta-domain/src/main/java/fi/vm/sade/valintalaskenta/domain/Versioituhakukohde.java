@@ -1,7 +1,6 @@
 package fi.vm.sade.valintalaskenta.domain;
 
 import com.google.code.morphia.annotations.Embedded;
-import com.google.code.morphia.annotations.Entity;
 
 /**
  * 
@@ -12,10 +11,10 @@ import com.google.code.morphia.annotations.Entity;
  *         saatavissa.
  * 
  */
-@Entity("VersioituHakukohde")
+@Embedded("VersioituHakukohde")
 public class Versioituhakukohde implements Comparable<Versioituhakukohde> {
 
-    private Integer versio;
+    private Long versio;
 
     @Embedded
     private Hakukohde hakukohde;
@@ -28,11 +27,11 @@ public class Versioituhakukohde implements Comparable<Versioituhakukohde> {
         this.hakukohde = hakukohde;
     }
 
-    public Integer getVersio() {
+    public Long getVersio() {
         return versio;
     }
 
-    public void setVersio(Integer versio) {
+    public void setVersio(Long versio) {
         this.versio = versio;
     }
 
@@ -52,6 +51,6 @@ public class Versioituhakukohde implements Comparable<Versioituhakukohde> {
     }
 
     public int hashCode() {
-        return versio;
+        return versio.intValue();
     }
 }
