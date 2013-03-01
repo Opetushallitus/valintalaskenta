@@ -15,9 +15,9 @@ import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintalaskenta.ValintalaskentaService;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskriteereillaTyyppi;
-import fi.vm.sade.valintalaskenta.domain.Hakukohde;
 import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.resource.HakukohdeResource;
 import fi.vm.sade.valintalaskenta.service.util.ValintalaskentaServiceUtil;
 
@@ -84,11 +84,10 @@ public class AvainArvojenSyottoOikeilleHakemuksilleTest {
         valintalaskentaService.laske(hakukohdeoid, jarjestysluku, Arrays.asList(hakemukset),
                 Arrays.asList(new ValintaperusteetTyyppi[] { valintaperusteet }));
 
-        List<Hakukohde> hakukohde = hakukohdeResource.hakukohde(hakukohdeoid);
+        List<Valinnanvaihe> hakukohde = hakukohdeResource.hakukohde(hakukohdeoid);
         Assert.assertTrue("Yksi hakukohde ja yksi jono!", hakukohde != null && hakukohde.size() == 1
-                && hakukohde.get(0).getValinnanvaihe().getValintatapajono().size() == 1);
-        for (Jarjestyskriteeritulos tulos : hakukohde.get(0).getValinnanvaihe().getValintatapajono().get(0)
-                .getJarjestyskriteeritulokset()) {
+                && hakukohde.get(0).getValintatapajono().size() == 1);
+        for (Jarjestyskriteeritulos tulos : hakukohde.get(0).getValintatapajono().get(0).getJarjestyskriteeritulokset()) {
             if (hakemusoid1.equals(tulos.getHakemusoid())) {
                 Assert.assertTrue("Hakemus1 hyväksyttävissä",
                         JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA.equals(tulos.getTila()));

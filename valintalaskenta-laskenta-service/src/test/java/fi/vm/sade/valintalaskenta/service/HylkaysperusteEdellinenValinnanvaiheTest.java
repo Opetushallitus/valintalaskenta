@@ -16,9 +16,9 @@ import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintalaskenta.ValintalaskentaService;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskriteereillaTyyppi;
-import fi.vm.sade.valintalaskenta.domain.Hakukohde;
 import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.resource.HakukohdeResource;
 import fi.vm.sade.valintalaskenta.service.util.ValintalaskentaServiceUtil;
 
@@ -81,38 +81,37 @@ public class HylkaysperusteEdellinenValinnanvaiheTest {
                 .setFunktiokutsu(ValintalaskentaServiceUtil.createSummaFunktio("matematiikka", "aidinkieli"));
         valintalaskentaService.laske(hakukohdeoid, jarjestysluku2, Arrays.asList(hakemukset2),
                 Arrays.asList(new ValintaperusteetTyyppi[] { valintaperusteet2 }));
-        List<Hakukohde> hakukohteet = hakukohdeResource.hakukohde(hakukohdeoid);
+        List<Valinnanvaihe> hakukohteet = hakukohdeResource.hakukohde(hakukohdeoid);
         Assert.assertTrue("Pitäisi olla kaksi hakukohdetta ('hakukohdeoid',1) ja ('hakukohdeoid',2)",
                 hakukohteet != null && hakukohteet.size() == 2);
         LOG.info("Hakukohteita {} kpl niin kuin pitääkin!", hakukohteet.size());
-        for (Hakukohde hakukohde : hakukohteet) {
-            for (Jarjestyskriteeritulos tulos : hakukohde.getValinnanvaihe().getValintatapajono().get(0)
-                    .getJarjestyskriteeritulokset()) {
+        for (Valinnanvaihe hakukohde : hakukohteet) {
+            for (Jarjestyskriteeritulos tulos : hakukohde.getValintatapajono().get(0).getJarjestyskriteeritulokset()) {
                 if (hakemusoid1.equals(tulos.getHakemusoid())) {
-                    if (jarjestysluku1.equals(hakukohde.getValinnanvaihe().getJarjestysnumero())) {
+                    if (jarjestysluku1.equals(hakukohde.getJarjestysnumero())) {
                         Assert.assertTrue("Ensimmäisessä vaiheessa ensimmäinen hakemus pitäisi olla hyväksyttävissä!",
                                 JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA.equals(tulos.getTila()));
-                        LOG.info("Tulos järjestysluvulla {} hakemukselle {} on {}", new Object[] {
-                                hakukohde.getValinnanvaihe().getJarjestysnumero(), hakemusoid1, tulos.getTila() });
-                    } else if (jarjestysluku2.equals(hakukohde.getValinnanvaihe().getJarjestysnumero())) {
+                        LOG.info("Tulos järjestysluvulla {} hakemukselle {} on {}",
+                                new Object[] { hakukohde.getJarjestysnumero(), hakemusoid1, tulos.getTila() });
+                    } else if (jarjestysluku2.equals(hakukohde.getJarjestysnumero())) {
                         Assert.assertTrue("Toisessa vaiheessa ensimmäinen hakemus pitäisi olla hylätty!",
                                 JarjestyskriteerituloksenTila.HYLATTY.equals(tulos.getTila()));
-                        LOG.info("Tulos järjestysluvulla {} hakemukselle {} on {}", new Object[] {
-                                hakukohde.getValinnanvaihe().getJarjestysnumero(), hakemusoid1, tulos.getTila() });
+                        LOG.info("Tulos järjestysluvulla {} hakemukselle {} on {}",
+                                new Object[] { hakukohde.getJarjestysnumero(), hakemusoid1, tulos.getTila() });
                     } else {
                         Assert.fail("Järjestysluku ei vastannut kumpaakaan syötetyn valinnanvaiheen järjestyslukua!");
                     }
                 } else if (hakemusoid2.equals(tulos.getHakemusoid())) {
-                    if (jarjestysluku1.equals(hakukohde.getValinnanvaihe().getJarjestysnumero())) {
+                    if (jarjestysluku1.equals(hakukohde.getJarjestysnumero())) {
                         Assert.assertTrue("Ensimmäisessä vaiheessa toinen hakemus pitäisi olla hylätty!",
                                 JarjestyskriteerituloksenTila.HYLATTY.equals(tulos.getTila()));
-                        LOG.info("Tulos järjestysluvulla {} hakemukselle {} on {}", new Object[] {
-                                hakukohde.getValinnanvaihe().getJarjestysnumero(), hakemusoid2, tulos.getTila() });
-                    } else if (jarjestysluku2.equals(hakukohde.getValinnanvaihe().getJarjestysnumero())) {
+                        LOG.info("Tulos järjestysluvulla {} hakemukselle {} on {}",
+                                new Object[] { hakukohde.getJarjestysnumero(), hakemusoid2, tulos.getTila() });
+                    } else if (jarjestysluku2.equals(hakukohde.getJarjestysnumero())) {
                         Assert.assertTrue("Toisessa vaiheessa toinen hakemus pitäisi olla hylätty!",
                                 JarjestyskriteerituloksenTila.HYLATTY.equals(tulos.getTila()));
-                        LOG.info("Tulos järjestysluvulla {} hakemukselle {} on {}", new Object[] {
-                                hakukohde.getValinnanvaihe().getJarjestysnumero(), hakemusoid2, tulos.getTila() });
+                        LOG.info("Tulos järjestysluvulla {} hakemukselle {} on {}",
+                                new Object[] { hakukohde.getJarjestysnumero(), hakemusoid2, tulos.getTila() });
                     } else {
                         Assert.fail("Järjestysluku ei vastannut kumpaakaan syötetyn valinnanvaiheen järjestyslukua!");
                     }

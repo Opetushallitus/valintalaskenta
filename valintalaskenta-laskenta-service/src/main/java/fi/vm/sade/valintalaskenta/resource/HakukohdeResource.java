@@ -22,7 +22,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import fi.vm.sade.service.valintaperusteet.model.JsonViews;
-import fi.vm.sade.valintalaskenta.domain.Hakukohde;
+import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
 
 /**
@@ -43,7 +43,7 @@ public class HakukohdeResource {
     @Path("{hakukohdeoid}/valinnanvaihe")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
-    public List<Hakukohde> hakukohde(@PathParam("hakukohdeoid") String hakukohdeoid) {
+    public List<Valinnanvaihe> hakukohde(@PathParam("hakukohdeoid") String hakukohdeoid) {
         List<VersiohallintaHakukohde> versiohallinta = datastore.find(VersiohallintaHakukohde.class, "hakukohdeoid",
                 hakukohdeoid).asList();
         if (versiohallinta == null || versiohallinta.size() == 0) {
@@ -51,10 +51,10 @@ public class HakukohdeResource {
             return Collections.emptyList();
         }
         return Lists.newArrayList(Iterables.transform(versiohallinta,
-                new Function<VersiohallintaHakukohde, Hakukohde>() {
-                    public Hakukohde apply(@Nonnull VersiohallintaHakukohde input) {
+                new Function<VersiohallintaHakukohde, Valinnanvaihe>() {
+                    public Valinnanvaihe apply(@Nonnull VersiohallintaHakukohde input) {
                         assert (!input.getHakukohteet().isEmpty());
-                        return input.getHakukohteet().last().getHakukohde();
+                        return input.getHakukohteet().last().getHakukohde().getValinnanvaihe();
                     }
                 }));
     }

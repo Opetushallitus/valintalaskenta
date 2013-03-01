@@ -16,7 +16,7 @@ import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintalaskenta.ValintalaskentaService;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskriteereillaTyyppi;
-import fi.vm.sade.valintalaskenta.domain.Hakukohde;
+import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.resource.HakukohdeResource;
 import fi.vm.sade.valintalaskenta.service.util.ValintalaskentaServiceUtil;
 
@@ -65,12 +65,11 @@ public class HakujenVersiointiTest {
             valintalaskentaService.laske(hakukohdeoid, jarjestysluku, Arrays.asList(hakemukset),
                     Arrays.asList(new ValintaperusteetTyyppi[] { valintaperusteet }));
 
-            List<Hakukohde> kohteet = hakukohdeResource.hakukohde(hakukohdeoid);
+            List<Valinnanvaihe> kohteet = hakukohdeResource.hakukohde(hakukohdeoid);
             Assert.assertTrue(
                     "Muutos ei luonut kohteita tai lisäsi kohteiden määrää! Jokainen versioiva muutos ylikirjoittaa edellisen muutoksen, joten jokaisessa vaiheessa Hakukohteita on tasan yksi!",
                     kohteet != null && kohteet.size() == 1);
-            Double summa = kohteet.get(0).getValinnanvaihe().getValintatapajono().get(0).getJarjestyskriteeritulokset()
-                    .get(0).getArvo();
+            Double summa = kohteet.get(0).getValintatapajono().get(0).getJarjestyskriteeritulokset().get(0).getArvo();
             Double tekija = new Double(doubleValue);
             Assert.assertTrue("Jokaisella kierroksella palautuvan summan tulisi olla tekijöiden summa!",
                     summa.equals(tekija + tekija));
