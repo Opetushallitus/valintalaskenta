@@ -4,15 +4,14 @@
 	</div>
 
 
-	<ul class="selectlist">
-		<li><a href=""><span class="icon file"></span><span class="label">Sosiaali ja terveysalan perustutkinto, pk<br/>Stadia ammattiopisto, Vilppulankatu</span></a></li>
-		<li><a href=""><span class="icon file"></span><span class="label">Sosiaali ja terveysalan perustutkinto, pk<br/>Stadia ammattiopisto, Vilppulankatu</span></a></li>
-		<li><a href=""><span class="icon file"></span><span class="label">Sosiaali ja terveysalan perustutkinto, pk<br/>Stadia ammattiopisto, Vilppulankatu</span></a></li>
-		<li><a href=""><span class="icon file"></span><span class="label">Sosiaali ja terveysalan perustutkinto, pk<br/>Stadia ammattiopisto, Vilppulankatu</span></a></li>
-		<li><a href=""><span class="icon file"></span><span class="label">Sosiaali ja terveysalan perustutkinto, pk<br/>Stadia ammattiopisto, Vilppulankatu</span></a></li>
-		<li><a href=""><span class="icon file"></span><span class="label">Sosiaali ja terveysalan perustutkinto, pk<br/>Stadia ammattiopisto, Vilppulankatu</span></a></li>
-		<li><a href=""><span class="icon file"></span><span class="label">Sosiaali ja terveysalan perustutkinto, pk<br/>Stadia ammattiopisto, Vilppulankatu</span></a></li>
-		<li><a href=""><span class="icon file"></span><span class="label">Sosiaali ja terveysalan perustutkinto, pk<br/>Stadia ammattiopisto, Vilppulankatu</span></a></li>
-		<li><a href=""><span class="icon file"></span><span class="label">Sosiaali ja terveysalan perustutkinto, pk<br/>Stadia ammattiopisto, Vilppulankatu</span></a></li>
+	<ul class="selectlist" ng-controller="HakukohteetController">
+		<li ng-repeat="data in model.hakukohteet">
+            <a href="#/haku/{{hakuOid}}/hakukohde/{{data.oid}}/valinnanhallinta">
+                <span class="icon file"></span>
+                <span class="label">
+                    {{data.oid}}
+                </span>
+            </a>
+        </li>
 	</ul>
 

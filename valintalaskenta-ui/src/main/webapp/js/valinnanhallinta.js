@@ -2,6 +2,4 @@
     $scope.hakuOid = $routeParams.hakuOid;
     $scope.hakuOid = "kovakoodaattuOid";
     $scope.hakukohdeOid = $routeParams.hakukohdeOid;
-
-    $scope.hakukohteittainTab = 'current';
 }

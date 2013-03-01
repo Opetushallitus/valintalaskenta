@@ -7,7 +7,7 @@ var TEMPLATE_URL_BASE = TEMPLATE_URL_BASE || ""
 app.config(function($routeProvider) {
         $routeProvider.
 
-        when('/etusivu', {redirectTo:'/haku//hakukohde/valinnanhallinta'}).
+        when('/etusivu', {redirectTo:'/haku//hakukohde//valinnanhallinta'}).
 
         when('/haku/:hakuOid/hakukohde/:hakukohdeOid/valinnanhallinta', {controller:ValinnanhallintaController, templateUrl:TEMPLATE_URL_BASE + 'valinnanhallinta.html'}).
         when('/haku/:hakuOid/hakukohde/:hakukohdeOid/pistesyotto', {controller:PistesyottoController, templateUrl:TEMPLATE_URL_BASE + 'pistesyotto.html'}).
@@ -39,6 +39,13 @@ app.config(function($routeProvider) {
 
 //rest resources
 
+
+
+app.factory('HakuHakukohteet', function($resource) {
+return $resource(SERVICE_URL_BASE + "resources/haku/:parentOid/hakukohde", {parentOid: "@parentOid"}, {
+    get: {method: "GET", isArray: true}
+  });
+});
 
 //Valintaryhma
 app.factory('RootValintaryhmas', function($resource) {
