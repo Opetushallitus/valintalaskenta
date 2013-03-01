@@ -7,10 +7,11 @@
 
 <div class="clear"></div>
 
-<div class="tabs">
-    <a href="#/haku/{{hakuOid}}/" class="tab {{hakukohteittainTab}}"><span>Hakukohteittain</span></a>
+
+<div class="tabs" ng-controller="navigationController">
+    <a ng-class="navClass('hakukohde', 3)" href="#/haku/{{hakuOid}}/hakukohde" class="tab"><span>Hakukohteittain</span></a>
     <!--<a href="#/haku/{{hakuOid}}/henkiloittain/" class="tab disabled"><span>Henkilöittäin</span></a>-->
-    <a class="tab disabled"><span>Henkilöittäin</span></a>
-    <a href="#/haku/{{hakuOid}}/yhteisvalinnanhallinta/" class="tab float-right {{yhteisvalinnahallintaTab}}"><span>Yhteisvalinnan hallinta</span></a>
+    <a ng-class="navClass('henkiloittain', 3)" class="tab disabled"><span>Henkilöittäin</span></a>
+    <a ng-class="navClass('yhteisvalinnanhallinta', 3)" href="#/haku/{{hakuOid}}/yhteisvalinnanhallinta/" class="tab float-right"><span>Yhteisvalinnan hallinta</span></a>
     <!-- <a href="#/valinnanvaihe/:id/laskentakaava" class="tab"><span>Laskentakaavat</span></a>    -->
 </div>
