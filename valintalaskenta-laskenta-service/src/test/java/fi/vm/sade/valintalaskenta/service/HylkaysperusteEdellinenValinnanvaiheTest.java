@@ -47,6 +47,7 @@ public class HylkaysperusteEdellinenValinnanvaiheTest {
         String hakemusoid1 = "hakemusoid1";
         String hakemusoid2 = "hakemusoid2";
         String hakukohdeoid = "hakukohdeoid-" + System.currentTimeMillis();
+        String valinnanvaiheoid = "valinnanvaiheoid-" + System.currentTimeMillis();
 
         // valintalaskenta jarjestysluvulla 1
         // hakemusoid2 epäonnistuu
@@ -56,7 +57,7 @@ public class HylkaysperusteEdellinenValinnanvaiheTest {
                 ValintalaskentaServiceUtil.createHakemus(hakemusoid2, hakukohdeoid, "matematiikka") };
 
         ValintaperusteetTyyppi valintaperusteet1 = ValintalaskentaServiceUtil.createValintaperusteet(hakukohdeoid,
-                jarjestysluku1);
+                valinnanvaiheoid, jarjestysluku1);
         ValintatapajonoJarjestyskriteereillaTyyppi jono1 = ValintalaskentaServiceUtil.createValintatapajono("jonooid0");
         valintaperusteet1.getValintatapajonot().add(jono1);
         jono1.getJarjestyskriteerit().add(ValintalaskentaServiceUtil.createJarjestyskriteeri());
@@ -72,7 +73,7 @@ public class HylkaysperusteEdellinenValinnanvaiheTest {
                 ValintalaskentaServiceUtil.createHakemus(hakemusoid1, hakukohdeoid, "aidinkieli"),
                 ValintalaskentaServiceUtil.createHakemus(hakemusoid2, hakukohdeoid, "matematiikka", "aidinkieli") };
         ValintaperusteetTyyppi valintaperusteet2 = ValintalaskentaServiceUtil.createValintaperusteet(hakukohdeoid,
-                jarjestysluku2);
+                valinnanvaiheoid, jarjestysluku2);
         ValintatapajonoJarjestyskriteereillaTyyppi jono2 = ValintalaskentaServiceUtil.createValintatapajono("jonooid0");
         valintaperusteet2.getValintatapajonot().add(jono2);
         jono2.getJarjestyskriteerit().add(ValintalaskentaServiceUtil.createJarjestyskriteeri());

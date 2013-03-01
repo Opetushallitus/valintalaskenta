@@ -14,12 +14,21 @@ import com.google.code.morphia.annotations.Embedded;
 public class Valinnanvaihe {
 
     private int jarjestysnumero;
+    private String valinnanvaiheoid;
 
     @Embedded
     private List<Valintatapajono> valintatapajono = new ArrayList<Valintatapajono>();
 
     public List<Valintatapajono> getValintatapajono() {
         return valintatapajono;
+    }
+
+    public String getValinnanvaiheoid() {
+        return valinnanvaiheoid;
+    }
+
+    public void setValinnanvaiheoid(String valinnanvaiheoid) {
+        this.valinnanvaiheoid = valinnanvaiheoid;
     }
 
     public void setValintatapajono(List<Valintatapajono> valintatapajono) {

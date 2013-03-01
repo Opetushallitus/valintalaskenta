@@ -44,6 +44,7 @@ public class HakujenVersiointiTest {
     public void testVersionti() {
         String hakemusoid = "hakemusoid1";
         String hakukohdeoid = "hakukohdeoid-" + System.currentTimeMillis();
+        String valinnanvaiheoid = "valinnanvaiheoid-" + System.currentTimeMillis();
         Integer jarjestysluku = 1;
         String[] doubleValues = new String[] { "4.0", "5.0", "6.0", "7.0" };
         for (String doubleValue : doubleValues) {
@@ -53,7 +54,7 @@ public class HakujenVersiointiTest {
                             "aidinkieli", doubleValue }) };
 
             ValintaperusteetTyyppi valintaperusteet = ValintalaskentaServiceUtil.createValintaperusteet(hakukohdeoid,
-                    jarjestysluku);
+                    valinnanvaiheoid, jarjestysluku);
             ValintatapajonoJarjestyskriteereillaTyyppi jono = ValintalaskentaServiceUtil
                     .createValintatapajono("jonooid0");
             valintaperusteet.getValintatapajonot().add(jono);

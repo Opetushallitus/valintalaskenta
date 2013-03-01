@@ -80,6 +80,7 @@ public class GenerateTestData {
         for (int i = 0; i < 10; ++i) {
             String hakukohdeoid = "hakukohdeoid-" + new String(getRandomChars(6));
             String hakemusoid = "hakemusoid-" + new String(getRandomChars(6));
+            String valinnanvaiheoid = "valinnanvaiheoid-" + new String(getRandomChars(6));
             // arvotaan hakijalle satunnaisesti avainarvopareja
             List<String[]> avainparit = new ArrayList<String[]>();
             for (String avain : getAvaimia()) {
@@ -89,7 +90,7 @@ public class GenerateTestData {
                     .createHakemusParillaDynaamisesti(hakemusoid, hakukohdeoid, avainparit) };
 
             ValintaperusteetTyyppi valintaperusteet = ValintalaskentaServiceUtil.createValintaperusteet(hakukohdeoid,
-                    jarjestysluku);
+                    valinnanvaiheoid, jarjestysluku);
             for (int a = 0; a < random.nextInt(5) + 1; ++a) {
 
                 ValintatapajonoJarjestyskriteereillaTyyppi jono = ValintalaskentaServiceUtil

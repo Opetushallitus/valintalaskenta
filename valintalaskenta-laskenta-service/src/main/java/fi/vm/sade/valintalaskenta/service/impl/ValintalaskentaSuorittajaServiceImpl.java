@@ -82,6 +82,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             uusihakukohde.setOid(valintaperuste.getHakukohdeOid());
             Valinnanvaihe valinnanvaihe = new Valinnanvaihe();
             valinnanvaihe.setJarjestysnumero(jarjestysnumero);
+            valinnanvaihe.setValinnanvaiheoid(valintaperuste.getValinnanVaiheOid());
             uusihakukohde.setValinnanvaihe(valinnanvaihe);
 
             for (ValintatapajonoJarjestyskriteereillaTyyppi jono : valintaperuste.getValintatapajonot()) {

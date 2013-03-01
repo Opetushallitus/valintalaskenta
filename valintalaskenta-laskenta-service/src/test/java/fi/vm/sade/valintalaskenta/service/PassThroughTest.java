@@ -46,10 +46,12 @@ public class PassThroughTest {
     public void testHaku() throws IOException {
         final int initialSize = hakuResource.haku().size();
         String hakukohdeoid = "hakukohdeoid" + initialSize + "-" + System.currentTimeMillis();
+        String valinnanvaiheoid = "valinnanvaiheoid-" + System.currentTimeMillis();
         HakemusTyyppi[] hakemukset = new HakemusTyyppi[] {
                 ValintalaskentaServiceUtil.createHakemus("hakemusoid1", hakukohdeoid, "matematiikka", "aidinkieli"),
                 ValintalaskentaServiceUtil.createHakemus("hakemusoid2", hakukohdeoid, "matematiikka", "aidinkieli") };
-        ValintaperusteetTyyppi valintaperusteet = ValintalaskentaServiceUtil.createValintaperusteet(hakukohdeoid, 1);
+        ValintaperusteetTyyppi valintaperusteet = ValintalaskentaServiceUtil.createValintaperusteet(hakukohdeoid,
+                valinnanvaiheoid, 1);
         ValintatapajonoJarjestyskriteereillaTyyppi jono = ValintalaskentaServiceUtil.createValintatapajono("jonooid0");
         valintaperusteet.getValintatapajonot().add(jono);
         JarjestyskriteeriTyyppi jarjestyskriteeri0 = ValintalaskentaServiceUtil.createJarjestyskriteeri();

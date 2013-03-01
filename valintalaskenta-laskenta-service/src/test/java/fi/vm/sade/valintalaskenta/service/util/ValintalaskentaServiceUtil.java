@@ -38,11 +38,12 @@ public class ValintalaskentaServiceUtil {
         return createHakemusTyyppi(hakemusoid, hakukohdeoid, createAvainArvo(avaimet));
     }
 
-    public static ValintaperusteetTyyppi createValintaperusteet(String hakukohdeoid, int jarjestysluku) {
+    public static ValintaperusteetTyyppi createValintaperusteet(String hakukohdeoid, String valinnanvaiheoid,
+            int jarjestysluku) {
         ValintaperusteetTyyppi valintaperusteet = new ValintaperusteetTyyppi();
         valintaperusteet.setHakukohdeOid(hakukohdeoid);
         valintaperusteet.setValinnanVaiheJarjestysluku(jarjestysluku);
-
+        valintaperusteet.setValinnanVaiheOid(valinnanvaiheoid);
         return valintaperusteet;
     }
 

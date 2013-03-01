@@ -43,6 +43,7 @@ public class AvainArvojenSyottoOikeilleHakemuksilleTest {
     @Test
     public void testAvainarvoparitKahdellaHakijalla() {
         String hakukohdeoid = "hakukohdeoid-" + System.currentTimeMillis();
+        String valinnanvaiheoid = "valinnanvaiheoid-" + System.currentTimeMillis();
         String hakemusoid1 = "hakemusoid1";
         String hakemusoid2 = "hakemusoid2";
         String hakemusoid3 = "hakemusoid3";
@@ -73,7 +74,7 @@ public class AvainArvojenSyottoOikeilleHakemuksilleTest {
                     && hakemus3pari1.getArvo().equals("7.0"));
         }
         ValintaperusteetTyyppi valintaperusteet = ValintalaskentaServiceUtil.createValintaperusteet(hakukohdeoid,
-                jarjestysluku);
+                valinnanvaiheoid, jarjestysluku);
         ValintatapajonoJarjestyskriteereillaTyyppi jono1 = ValintalaskentaServiceUtil.createValintatapajono("jonooid0");
         valintaperusteet.getValintatapajonot().add(jono1);
         jono1.getJarjestyskriteerit().add(ValintalaskentaServiceUtil.createJarjestyskriteeri());
