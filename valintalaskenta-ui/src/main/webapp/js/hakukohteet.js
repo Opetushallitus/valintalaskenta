@@ -1,4 +1,4 @@
-app.factory('HakukohteetModel', function(HakuHakukohteet) {
+app.factory('HakukohteetModel', function() {
     var model;
     model = new function(){
         this.hakuoid;
@@ -6,9 +6,9 @@ app.factory('HakukohteetModel', function(HakuHakukohteet) {
 
         function refresh(oid) {
             model.hakuoid = oid;
-            HakuHakukohteet.get({parentOid: oid}, function(result) {
-                model.hakukohteet = result;
-            });
+
+//            Pitäisi hakea tarjonnasta
+            model.hakukohteet = [{"oid": "oid1"}, {"oid": "oid2"}, {"oid": "oid3"}, {"oid": "oid4"}];
         }
 
         this.refreshIfNeeded = function(oid) {
@@ -24,8 +24,8 @@ app.factory('HakukohteetModel', function(HakuHakukohteet) {
 function HakukohteetController($scope, $location, $routeParams, HakukohteetModel) {
    $scope.hakuOid = $routeParams.hakuOid;
    $scope.hakuOid = "syksynhaku";
-   $scope.hakukohdeOid = $routeParams.hakukohdeOid;
    $scope.model = HakukohteetModel;
 
    $scope.model.refreshIfNeeded($scope.hakuOid);
+   console.log($scope.model.hakukohteet);
 }

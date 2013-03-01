@@ -39,14 +39,6 @@ app.config(function($routeProvider) {
 
 //rest resources
 
-
-
-app.factory('HakuHakukohteet', function($resource) {
-return $resource(SERVICE_URL_BASE + "resources/haku/:parentOid/hakukohde", {parentOid: "@parentOid"}, {
-    get: {method: "GET", isArray: true}
-  });
-});
-
 //Valintaryhma
 app.factory('RootValintaryhmas', function($resource) {
 return $resource(SERVICE_URL_BASE + "resources/valintaryhma", {paataso: true}, {
