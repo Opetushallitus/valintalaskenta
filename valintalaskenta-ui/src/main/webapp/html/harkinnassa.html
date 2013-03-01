@@ -1,31 +1,15 @@
 ﻿<h1>Valinnat</h1>
 
-<div class="width-16-8 margin-vertical-2">
-	<select>
-		<option>Toisen asteen ammatillisen ja lukiokoulutuksen yhteishaku, kevät 2013</option>
-	</select>
-</div>
-
 <div class="clear"></div>
 
-<div class="tabs">
-	<a href="#/hakukohteittain/" class="tab current"><span>Hakukohteittain</span></a>
-	<a href="#/henkiloittain/" class="tab"><span>Henkilöittäin</span></a>
-	<a href="#/valinnanhallinta/" class="tab" style="float:right;"><span>Yhteisvalinnan hallinta</span></a>
-	<!-- <a href="#/valinnanvaihe/:id/laskentakaava" class="tab"><span>Laskentakaavat</span></a>    -->
-</div>
-
+<div ng-include="'partials/topNavigation.html'" />
 
 <div class="tabsheets">
 
-	<div class="grid16-4" ng-include="'hakukohdelista.html'"></div>
-	<div class="grid16-12">
-		<div class="tabs">
-			<a href="#/hakukohde/" class="tab"><span>Valinnan hallinta</span></a>
-			<a href="#/pistesyotto/" class="tab"><span>Tietojen syöttäminen</span></a>
-			<a href="#/harkinnanvaraisethakijat/" class="tab current"><span>Harkinnanvaraiset hakijat</span></a>
-			<a href="#/valintaesitys/" class="tab"><span>Valintaesitys</span></a>
-		</div>
+    <div class="grid16-4" ng-include="'partials/hakukohdelista.html'"></div>
+
+    <div class="grid16-12">
+        <div ng-include="'partials/hakukohdeNavigation.html'" />
 
 		<div class="tabsheets">
 			
