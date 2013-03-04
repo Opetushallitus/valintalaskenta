@@ -288,7 +288,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
         for (HakemusTyyppi hakemus : hakemukset) {
 
-            for (HakukohdeTyyppi hakukohde : hakemus.getHakukohde()) {
+            for (HakukohdeTyyppi hakukohde : hakemus.getHakutoive()) {
                 String hakukohdeoid = hakukohde.getHakukohdeOid();
                 if (!hakukohdeHakemukset.containsKey(hakukohdeoid)) {
                     hakukohdeHakemukset.put(hakukohdeoid, new ArrayList<HakemusTyyppi>());

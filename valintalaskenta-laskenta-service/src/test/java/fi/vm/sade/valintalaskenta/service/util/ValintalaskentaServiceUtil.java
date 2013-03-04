@@ -1,20 +1,14 @@
 package fi.vm.sade.valintalaskenta.service.util;
 
+import fi.vm.sade.service.hakemus.schema.AvainArvoTyyppi;
+import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
+import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import fi.vm.sade.service.hakemus.schema.AvainArvoTyyppi;
-import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
-import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.FunktioargumenttiTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.JarjestyskriteeriTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.TasasijasaantoTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteviiteTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskriteereillaTyyppi;
 
 /**
  * 
@@ -54,7 +48,7 @@ public class ValintalaskentaServiceUtil {
         hakukohde1.setPrioriteetti(1);
         HakemusTyyppi hakemus = new HakemusTyyppi();
         hakemus.setHakemusOid(hakemusoid);
-        hakemus.getHakukohde().add(hakukohde1);
+        hakemus.getHakutoive().add(hakukohde1);
         for (Entry<String, String> arvopari : avainArvo.entrySet()) {
             AvainArvoTyyppi uusiavainarvo = new AvainArvoTyyppi();
             uusiavainarvo.setAvain(arvopari.getKey());
