@@ -1,20 +1,26 @@
 ﻿
-app.factory('ValintaesitysModel', function(Hakukohde) {
+app.factory('ValintaesitysModel', function(Hakukohde, Haku) {
 
 	var model = new function() {
 
 		this.hakukohde = {};
 		this.valintatapajonot = [];
 
-		//hakukohteen oid saadaan joskus routeparametrien mukana jonkin kohteen tiedoilla
+		
 		this.refresh = function(hakukohdeOid) {
 			
-
-			
-			Hakukohde.get({hakukohdeoid: "hakukohdeoid-isvjun"}, function(result) {
-				model.hakukohde = result[0];
-				model.valintatapajonot = model.hakukohde.valintatapajono;
+			Haku.get({}, function(result) {
+				var hakukohderesultOid = result[0].oid;
+				
+				//hakukohteen oid saadaan joskus routeparametrien mukana jonkin kohteen tiedoilla
+				Hakukohde.get({hakukohdeoid: hakukohderesultOid}, function(result) {
+					console.log(result);
+					model.hakukohde = result[0];
+					model.valintatapajonot = model.hakukohde.valintatapajono;
+				});
+				
 			});
+			
 			
 		}
 		
