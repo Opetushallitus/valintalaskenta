@@ -1,17 +1,14 @@
-﻿
-	<div class="field-search-containerbox">
-		<input type="text" class="search" />
-	</div>
+﻿<div class="field-search-containerbox">
+    <input type="text" class="search" />
+</div>
 
-
-	<ul class="selectlist" ng-controller="HakukohteetController">
-		<li ng-repeat="data in model.hakukohteet">
-            <a href="#/haku/{{hakuOid}}/hakukohde/{{data.oid}}/valinnanhallinta">
-                <span class="icon file"></span>
-                <span class="label">
-                    {{data.oid}}
-                </span>
-            </a>
-        </li>
-	</ul>
-
+<ul class="selectlist" ng-controller="HakukohteetController">
+    <li ng-repeat="data in model.hakukohteet">
+        <a href="#/haku/{{hakuOid}}/hakukohde/{{data.oid}}/valinnanhallinta">
+            <span class="icon file"></span>
+            <span class="label">
+                {{data.nimi}}
+            </span>
+        </a>
+    </li>
+</ul>

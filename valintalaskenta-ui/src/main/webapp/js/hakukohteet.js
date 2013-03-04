@@ -8,7 +8,11 @@ app.factory('HakukohteetModel', function() {
             model.hakuoid = oid;
 
 //            Pitäisi hakea tarjonnasta
-            model.hakukohteet = [{"oid": "oid1"}, {"oid": "oid2"}, {"oid": "oid3"}, {"oid": "oid4"}];
+            model.hakukohteet = [
+                {"oid": "oid1", "nimi": "Sosiaali ja terveysalan perustutkinto, pk Stadia ammattiopisto, Vilppulankatu"},
+                {"oid": "oid2", "nimi": "Sosiaali ja terveysalan perustutkinto, pk Stadia ammattiopisto, Vilppulankatu"},
+                {"oid": "oid3", "nimi": "Sosiaali ja terveysalan perustutkinto, pk Stadia ammattiopisto, Vilppulankatu"},
+                {"oid": "oid4", "nimi": "Sosiaali ja terveysalan perustutkinto, pk Stadia ammattiopisto, Vilppulankatu"} ];
         }
 
         this.refreshIfNeeded = function(oid) {
@@ -23,7 +27,6 @@ app.factory('HakukohteetModel', function() {
 
 function HakukohteetController($scope, $location, $routeParams, HakukohteetModel) {
    $scope.hakuOid = $routeParams.hakuOid;
-   $scope.hakuOid = "syksynhaku";
    $scope.model = HakukohteetModel;
 
    $scope.model.refreshIfNeeded($scope.hakuOid);

@@ -1,7 +1,5 @@
-
-<div class="width-16-8 margin-vertical-2">
-    <select>
-        <option>Toisen asteen ammatillisen ja lukiokoulutuksen yhteishaku, kevät 2013</option>
+<div class="width-16-8 margin-vertical-2" ng-controller="HakuController">
+    <select ng-model="model.hakuOid" ng-options="i.nimi for i in model.haut">
     </select>
 </div>
 
