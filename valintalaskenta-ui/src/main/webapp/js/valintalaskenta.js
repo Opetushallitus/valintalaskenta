@@ -39,21 +39,42 @@ app.config(function($routeProvider) {
 
 //rest resources
 
+
+//Haku
 app.factory('Haku', function($resource) {
 return $resource(SERVICE_URL_BASE + "resources/haku/", {}, {
     get: {method: "GET", isArray: true}
   });
 });
 
-
-
-
-app.factory('Valintatapajono', function($resource) {
-return $resource(SERVICE_URL_BASE + "resources/valintatapajono/:valintatapajonoOid/valinnanvaihe", {valintatapajonoOid: "@valintatapajonoOid"}, {
-    get: {method: "GET"}
+app.factory('HakuHakukohdeChildren', function($resource) {
+return $resource(SERVICE_URL_BASE + "resources/haku/:hakuOid/hakukohde", {hakuOid: "@hakuOid"}, {
+    get: {method: "GET", isArray: true}
   });
 });
 
 
+//Hakukohde
+app.factory('Hakukohde', function($resource) {
+return $resource(SERVICE_URL_BASE + "resources/hakukohde/:hakukohdeoid/valinnanvaihe", {hakukohdeoid: "@hakukohdeoid"}, {
+    get: {method: "GET", isArray: true}
+  });
+});
+
+
+//Valintatapajono
+app.factory('Valintatapajono', function($resource) {
+return $resource(SERVICE_URL_BASE + "resources/valintatapajono/:valintatapajonoid/jarjestyskriteeritulos", {valintatapajonoid: "@valintatapajonoid"}, {
+    get: {method: "GET", isArray: true}
+  });
+});
+
+
+//Valinnanvaihe
+app.factory('Valinnanvaihe', function($resource) {
+return $resource(SERVICE_URL_BASE + "resources/valinnanvaihe/:valinnanvaiheoid/valintatapajono", {valinnanvaiheoid: "@valinnanvaiheoid"}, {
+    get: {method: "GET", isArray: true}
+  });
+});
 
 

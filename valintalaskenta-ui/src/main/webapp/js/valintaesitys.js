@@ -1,11 +1,20 @@
 ﻿
-app.factory('ValintaesitysModel', function(Haku) {
+app.factory('ValintaesitysModel', function(Hakukohde, Valintatapajono, Valinnanvaihe) {
 
 	var model = new function() {
-
-		Haku.get({}, function(result) {
+		/*
+		Hakukohde.get({hakukohdeoid: "hakukohdeoid-isvjun"}, function(result) {
 			console.log(result);
 		});
+		
+		Valintatapajono.get({valintatapajonoid: "jonooid-fdgajq"}, function(result) {
+			console.log(result);
+		});
+
+		Valinnanvaihe.get({valinnanvaiheoid: "valinnanvaiheoid-zguzjf"}, function(result) {
+			console.log(result);
+		});
+	*/
 
 	};
 
