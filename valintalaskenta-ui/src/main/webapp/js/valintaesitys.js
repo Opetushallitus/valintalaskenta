@@ -13,10 +13,7 @@ app.factory('ValintaesitysModel', function(Hakukohde) {
 			
 			Hakukohde.get({hakukohdeoid: "hakukohdeoid-isvjun"}, function(result) {
 				model.hakukohde = result[0];
-
-
 				model.valintatapajonot = model.hakukohde.valintatapajono;
-				console.log(model.valintatapajonot[0].jarjestyskriteeritulokset[0]);
 			});
 			
 		}
