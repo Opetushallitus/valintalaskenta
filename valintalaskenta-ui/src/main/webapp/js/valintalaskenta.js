@@ -39,38 +39,21 @@ app.config(function($routeProvider) {
 
 //rest resources
 
-//Valintaryhma
-app.factory('RootValintaryhmas', function($resource) {
-return $resource(SERVICE_URL_BASE + "resources/valintaryhma", {paataso: true}, {
+app.factory('Haku', function($resource) {
+return $resource(SERVICE_URL_BASE + "resources/haku/", {}, {
     get: {method: "GET", isArray: true}
-  });
-});
-app.factory('ChildValintaryhmas', function($resource) {
-return $resource(SERVICE_URL_BASE + "resources/valintaryhma/:parentOid/lapsi", {parentOid: "@parentOid"}, {
-    get: {method: "GET", isArray: true},
-    insert: {method: "PUT"}
-  });
-});
-app.factory('ChildHakukohdes', function($resource) {
-return $resource(SERVICE_URL_BASE + "resources/valintaryhma/:oid/hakukohde", {}, {
-    get: {method: "GET", isArray: true}
-  });
-});
-app.factory('Valintaryhma', function($resource) {
-return $resource(SERVICE_URL_BASE + "resources/valintaryhma/:oid", {oid: "@oid"}, {
-    get: {method: "GET"}  ,
-    post:{method: "POST"},
-    insert: {method: "PUT"}
   });
 });
 
-app.factory('ValintaryhmaValinnanvaihe', function($resource) {
-return $resource(SERVICE_URL_BASE + "resources/valintaryhma/:oid/valinnanvaihe", {oid: "@oid"}, {
-    get: {method: "GET", isArray: true}
+
+
+
+app.factory('Valintatapajono', function($resource) {
+return $resource(SERVICE_URL_BASE + "resources/valintatapajono/:valintatapajonoOid/valinnanvaihe", {valintatapajonoOid: "@valintatapajonoOid"}, {
+    get: {method: "GET"}
   });
 });
-app.factory('NewValintaryhmaValinnanvaihe', function($resource) {
-return $resource(SERVICE_URL_BASE + "resources/valintaryhma/:valintaryhmaOid/valinnanvaihe", {valintaryhmaOid: "@valintaryhmaOid"}, {
-    put: {method: "PUT"}
-  });
-});
+
+
+
+

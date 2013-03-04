@@ -27,5 +27,4 @@ function HakukohteetController($scope, $location, $routeParams, HakukohteetModel
    $scope.model = HakukohteetModel;
 
    $scope.model.refreshIfNeeded($scope.hakuOid);
-   console.log($scope.model.hakukohteet);
 }
