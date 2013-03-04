@@ -29,8 +29,6 @@ function HakuController($scope, $location, $routeParams, HakuModel) {
         if(HakuModel.hakuOid !== HakuModel.previous) {
             HakuModel.previous = HakuModel.hakuOid;
             $location.path('/haku/' + HakuModel.hakuOid.oid + '/hakukohde/');
-        } else {
-            console.log("jee");
         }
     });
 }
