@@ -1,20 +1,26 @@
 ﻿
-app.factory('ValintaesitysModel', function(Hakukohde, Valintatapajono, Valinnanvaihe) {
+app.factory('ValintaesitysModel', function(Hakukohde) {
 
 	var model = new function() {
-		/*
-		Hakukohde.get({hakukohdeoid: "hakukohdeoid-isvjun"}, function(result) {
-			console.log(result);
-		});
-		
-		Valintatapajono.get({valintatapajonoid: "jonooid-fdgajq"}, function(result) {
-			console.log(result);
-		});
 
-		Valinnanvaihe.get({valinnanvaiheoid: "valinnanvaiheoid-zguzjf"}, function(result) {
-			console.log(result);
-		});
-	*/
+		this.hakukohde = {};
+		this.valintatapajonot = [];
+
+		//hakukohteen oid saadaan joskus routeparametrien mukana jonkin kohteen tiedoilla
+		this.refresh = function(hakukohdeOid) {
+			
+
+			
+			Hakukohde.get({hakukohdeoid: "hakukohdeoid-isvjun"}, function(result) {
+				model.hakukohde = result[0];
+
+
+				model.valintatapajonot = model.hakukohde.valintatapajono;
+				console.log(model.valintatapajonot[0].jarjestyskriteeritulokset[0]);
+			});
+			
+		}
+		
 
 	};
 
@@ -23,7 +29,13 @@ app.factory('ValintaesitysModel', function(Hakukohde, Valintatapajono, Valinnanv
 
 
 function ValintaesitysController($scope, $location, $routeParams, ValintaesitysModel) {
-    $scope.hakuOid = $routeParams.hakuOid;
-    $scope.model = ValintaesitysModel;
+
     $scope.hakukohdeOid = $routeParams.hakukohdeOid;
+    
+    $scope.model = ValintaesitysModel;
+    $scope.model.refresh($scope.hakukohdeOid);
+
+    $scope.hakukohdeOid = $routeParams.hakukohdeOid;
+
+
 }
