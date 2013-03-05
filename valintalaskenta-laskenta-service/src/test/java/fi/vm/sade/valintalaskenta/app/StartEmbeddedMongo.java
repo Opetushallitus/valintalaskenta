@@ -6,9 +6,8 @@ import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
+import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.commons.io.IOUtils;
-
-import com.sun.xml.messaging.saaj.packaging.mime.util.BASE64DecoderStream;
 
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodStarter;
@@ -32,7 +31,8 @@ public class StartEmbeddedMongo {
     private static final String HOST = "localhost";
 
     public static void main(String[] args) throws IOException {
-        BASE64DecoderStream b0 = new BASE64DecoderStream(new ByteArrayInputStream(ICON.getBytes()));
+
+        Base64InputStream b0 = new Base64InputStream(new ByteArrayInputStream(ICON.getBytes()));
         ImageIcon imageIcon = new ImageIcon(IOUtils.toByteArray(b0));
         JFrame frame = new JFrame("MongoDB");
         frame.setIconImage(imageIcon.getImage());

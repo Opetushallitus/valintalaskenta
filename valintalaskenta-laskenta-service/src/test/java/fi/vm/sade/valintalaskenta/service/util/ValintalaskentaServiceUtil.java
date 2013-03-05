@@ -58,7 +58,7 @@ public class ValintalaskentaServiceUtil {
         HakemusTyyppi hakemus = new HakemusTyyppi();
         hakemus.setHakemusOid(hakemusoid);
         hakemus.setHakijanEtunimi(ETUNIMIA[hakemusoid.hashCode() % ETUNIMIA.length]);
-        hakemus.setHakijanSukunimi(SUKUNIMIA[hakemusoid.hashCode() % ETUNIMIA.length]);
+        hakemus.setHakijanSukunimi(SUKUNIMIA[hakemusoid.hashCode() % SUKUNIMIA.length]);
         hakemus.getHakutoive().add(hakukohde1);
         for (Entry<String, String> arvopari : avainArvo.entrySet()) {
             AvainArvoTyyppi uusiavainarvo = new AvainArvoTyyppi();
