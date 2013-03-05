@@ -1,4 +1,3 @@
-@charset "CP850";
 /* normalize.css v2.0.1 | MIT License | git.io/normalize */
 /* ==========================================================================
    HTML5 display definitions
@@ -829,6 +828,9 @@ table {
   margin-right: 0.625%; }
 
 /* Padding to all directions */
+.padding-0 {
+  padding: 0em; }
+
 .padding-1 {
   padding: 0.5em; }
 
@@ -860,6 +862,10 @@ table {
   padding: 5em; }
 
 /* Vertical paddings */
+.padding-vertical-0 {
+  padding-top: 0em;
+  padding-bottom: 0em; }
+
 .padding-vertical-1 {
   padding-top: 0.5em;
   padding-bottom: 0.5em; }
@@ -901,6 +907,10 @@ table {
   padding-bottom: 5em; }
 
 /* Horizontal paddings */
+.padding-horizontal-0 {
+  padding-left: 0em;
+  padding-right: 0em; }
+
 .padding-horizontal-1 {
   padding-left: 0.5em;
   padding-right: 0.5em; }
@@ -942,6 +952,18 @@ table {
   padding-right: 5em; }
 
 /* Padding for all directions separately */
+.padding-top-0 {
+  padding-top: 0em; }
+
+.padding-right-0 {
+  padding-right: 0em; }
+
+.padding-bottom-0 {
+  padding-bottom: 0em; }
+
+.padding-left-0 {
+  padding-left: 0em; }
+
 .padding-top-1 {
   padding-top: 0.5em; }
 
@@ -1063,6 +1085,9 @@ table {
   padding-left: 5em; }
 
 /* Margin to all directions */
+.margin-0 {
+  margin: 0em; }
+
 .margin-1 {
   margin: 0.5em; }
 
@@ -1094,6 +1119,10 @@ table {
   margin: 5em; }
 
 /* Vertical margins */
+.margin-vertical-0 {
+  margin-top: 0em;
+  margin-bottom: 0em; }
+
 .margin-vertical-1 {
   margin-top: 0.5em;
   margin-bottom: 0.5em; }
@@ -1135,6 +1164,10 @@ table {
   margin-bottom: 5em; }
 
 /* Horizontal margins */
+.margin-horizontal-0 {
+  margin-left: 0em;
+  margin-right: 0em; }
+
 .margin-horizontal-1 {
   margin-left: 0.5em;
   margin-right: 0.5em; }
@@ -1176,6 +1209,18 @@ table {
   margin-right: 5em; }
 
 /* Margins for all directions separately  */
+.margin-top-0 {
+  margin-top: 0em; }
+
+.margin-right-0 {
+  margin-right: 0em; }
+
+.margin-bottom-0 {
+  margin-bottom: 0em; }
+
+.margin-left-0 {
+  margin-left: 0em; }
+
 .margin-top-1 {
   margin-top: 0.5em; }
 

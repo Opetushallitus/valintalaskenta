@@ -23,19 +23,15 @@
 							<th>Hakija</th>
 							<th>Valintatieto</th>
 							<th>Selite</th>
-							<th>Vastaanottotieto</th>
-							<th>Läsnäolotieot</th>
 							<th>Pistemäärä</th>
 						</tr>
 					</thead>
 					<tbody ng-repeat="tulos in valintatapajono.jarjestyskriteeritulokset">
 						<tr>
-							<td>{{tulos.hakemusoid}}</td>
+							<td>{{tulos.sukunimi}}, {{tulos.etunimi}}</td>
 							<td>{{tulos.tila}}</td>
 							<td>{{tulos.kuvaus}}</td>
-							<td></td>
-							<td></td>
-							<td></td>
+							<td>{{tulos.arvo}}</td>
 						</tr>
 					</tbody>
 				</table>

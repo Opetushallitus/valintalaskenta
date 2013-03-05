@@ -14,7 +14,6 @@ app.factory('ValintaesitysModel', function(Hakukohde, Haku) {
 				
 				//hakukohteen oid saadaan joskus routeparametrien mukana jonkin kohteen tiedoilla
 				Hakukohde.get({hakukohdeoid: hakukohderesultOid}, function(result) {
-					console.log(result);
 					model.hakukohde = result[0];
 					model.valintatapajonot = model.hakukohde.valintatapajono;
 				});
