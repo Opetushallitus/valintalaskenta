@@ -6,6 +6,9 @@ import javax.jws.WebService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
+import fi.vm.sade.service.valintalaskenta.ValintalaskentaService;
+import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.valintalaskenta.service.ValintalaskentaSuorittajaService;
 
 /**
@@ -25,5 +28,4 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
         valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperusteet);
         return "Laskenta suoritettu onnistuneesti!";
     }
-
 }
