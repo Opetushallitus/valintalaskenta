@@ -1,6 +1,17 @@
 package fi.vm.sade.valintalaskenta.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.google.code.morphia.Datastore;
+
 import fi.vm.sade.kaava.Laskentadomainkonverteri;
 import fi.vm.sade.kaava.Laskentakaavavalidaattori;
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
@@ -19,20 +30,17 @@ import fi.vm.sade.service.valintaperusteet.schema.JarjestyskriteeriTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskriteereillaTyyppi;
 import fi.vm.sade.service.valintaperusteet.service.validointi.virhe.Validointivirhe;
-import fi.vm.sade.valintalaskenta.domain.*;
+import fi.vm.sade.valintalaskenta.domain.Hakukohde;
+import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
+import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
+import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
 import fi.vm.sade.valintalaskenta.service.ValintalaskentaSuorittajaService;
 import fi.vm.sade.valintalaskenta.service.exception.LaskentaVaarantyyppisellaFunktiollaException;
 import fi.vm.sade.valintalaskenta.service.impl.conversion.FunktioKutsuTyyppiToFunktioKutsuConverter;
 import fi.vm.sade.valintalaskenta.service.impl.conversion.HakemusTyyppiToHakemusConverter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Jussi Jartamo
@@ -117,6 +125,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                         Jarjestyskriteeritulos jarjestyskriteeritulos = suoritaLaskenta(hakukohdeoid, funktiokutsu,
                                 hakemus, edellinenValinnanvaihe != null ? edellinenValinnanvaihe.get(hakemusoid) : null);
                         jarjestyskriteeritulos.setHakemusoid(hakemusoid);
+                        jarjestyskriteeritulos.setEtunimi(hakemustyyppi.getHakijanEtunimi());
+                        jarjestyskriteeritulos.setSukunimi(hakemustyyppi.getHakijanSukunimi());
                         valintatapajono.getJarjestyskriteeritulokset().add(jarjestyskriteeritulos);
                     }
 
@@ -126,24 +136,6 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                 datastore.save(valintatapajono);
             }
             LOG.info("Tallennetaan hakukohdetta! Hakukohdeoid {}", uusihakukohde.getOid());
-
-            /*
-             * VersiohallintaHakukohde versiohallinta = datastore
-             * .find(VersiohallintaHakukohde.class, "hakukohdeoid",
-             * valintaperuste.getHakukohdeOid()) .filter("jarjestysnumero",
-             * jarjestysnumero).get(); if (versiohallinta == null) {
-             * versiohallinta = new VersiohallintaHakukohde();
-             * versiohallinta.setHakuoid(hakuoid);
-             * versiohallinta.setValinnanvaiheoid(valinnanvaiheoid);
-             * versiohallinta.setHakukohdeoid(hakukohdeoid);
-             * versiohallinta.setJarjestysnumero(jarjestysnumero); }
-             * Versioituhakukohde versioituhakukohde = new Versioituhakukohde();
-             * versioituhakukohde.setHakukohde(uusihakukohde); if
-             * (versiohallinta.getHakukohteet().isEmpty()) {
-             * versioituhakukohde.setVersio(0); } else {
-             * versioituhakukohde.setVersio
-             * (versiohallinta.getHakukohteet().last().getVersio() + 1); }
-             */
             versiohallinta.getHakukohteet().add(versioituhakukohde);
             datastore.save(versiohallinta);
 

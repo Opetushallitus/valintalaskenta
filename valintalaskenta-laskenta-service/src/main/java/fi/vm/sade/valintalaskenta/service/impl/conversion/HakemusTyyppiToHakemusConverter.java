@@ -1,12 +1,13 @@
 package fi.vm.sade.valintalaskenta.service.impl.conversion;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.core.convert.converter.Converter;
+
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
-import org.springframework.core.convert.converter.Converter;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 
