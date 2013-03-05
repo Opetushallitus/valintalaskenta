@@ -1,6 +1,5 @@
 package fi.vm.sade.valintalaskenta.resource;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -13,11 +12,9 @@ import org.codehaus.jackson.map.annotate.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.google.code.morphia.Datastore;
-
 import fi.vm.sade.service.valintaperusteet.model.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
-import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
+import fi.vm.sade.valintalaskenta.service.ValintalaskentaTulosService;
 
 /**
  * 
@@ -29,18 +26,13 @@ import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
 public class ValinnanvaiheResource {
 
     @Autowired
-    private Datastore datastore;
+    private ValintalaskentaTulosService tulosService;
 
     @GET
     @Path("{valinnanvaiheoid}/valintatapajono")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
     public List<Valintatapajono> valinnanvaihe(@PathParam("valinnanvaiheoid") String valinnanvaiheoid) {
-        VersiohallintaHakukohde versiohallinta = datastore.find(VersiohallintaHakukohde.class, "valinnanvaiheoid",
-                valinnanvaiheoid).get();
-        if (versiohallinta == null) {
-            return Collections.emptyList();
-        }
-        return versiohallinta.getHakukohteet().last().getHakukohde().getValinnanvaihe().getValintatapajono();
+        return tulosService.haeValintatapajonoValinnanvaiheelle(valinnanvaiheoid);
     }
 }

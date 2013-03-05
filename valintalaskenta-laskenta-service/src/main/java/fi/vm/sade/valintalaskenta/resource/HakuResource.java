@@ -2,7 +2,6 @@ package fi.vm.sade.valintalaskenta.resource;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -15,14 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.google.code.morphia.Datastore;
-import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-
 import fi.vm.sade.service.valintaperusteet.model.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.Hakukohde;
-import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
+import fi.vm.sade.valintalaskenta.service.ValintalaskentaTulosService;
 
 /**
  * 
@@ -36,20 +30,13 @@ public class HakuResource {
     protected static final Logger LOGGER = LoggerFactory.getLogger(HakuResource.class);
 
     @Autowired
-    private Datastore datastore;
+    private ValintalaskentaTulosService tulosService;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
     public List<Hakukohde> haku() {
-        List<VersiohallintaHakukohde> versiohallinta = datastore.find(VersiohallintaHakukohde.class).asList();
-        return Lists.newArrayList(Iterables.transform(versiohallinta,
-                new Function<VersiohallintaHakukohde, Hakukohde>() {
-                    public Hakukohde apply(@Nonnull VersiohallintaHakukohde input) {
-                        assert (!input.getHakukohteet().isEmpty());
-                        return input.getHakukohteet().last().getHakukohde();
-                    }
-                }));
+        return tulosService.haeHakukohteet();
     }
 
     @GET
@@ -57,14 +44,6 @@ public class HakuResource {
     @Path("{hakuoid}/hakukohde")
     @JsonView({ JsonViews.Basic.class })
     public List<Hakukohde> haku(@PathParam("hakuoid") String hakuoid) {
-        List<VersiohallintaHakukohde> versiohallinta = datastore
-                .find(VersiohallintaHakukohde.class, "hakuoid", hakuoid).asList();
-        return Lists.newArrayList(Iterables.transform(versiohallinta,
-                new Function<VersiohallintaHakukohde, Hakukohde>() {
-                    public Hakukohde apply(@Nonnull VersiohallintaHakukohde input) {
-                        assert (!input.getHakukohteet().isEmpty());
-                        return input.getHakukohteet().last().getHakukohde();
-                    }
-                }));
+        return tulosService.haeHakukohteetHaulle(hakuoid);
     }
 }
