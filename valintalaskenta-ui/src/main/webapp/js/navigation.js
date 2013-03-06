@@ -1,4 +1,4 @@
-app.controller('navigationController', ['$scope', '$location', '$routeParams',function ($scope, $location, $routeParams) {
+function navigationController($scope, $location, $routeParams) {
     $scope.hakuOid = $routeParams.hakuOid;
     $scope.hakukohdeOid = $routeParams.hakukohdeOid;
 
@@ -6,4 +6,4 @@ app.controller('navigationController', ['$scope', '$location', '$routeParams',fu
         var currentRoute = $location.path().split('/')[level];
         return page === currentRoute ? 'current' : '';
     };
-}]);
+};
