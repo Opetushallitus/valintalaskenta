@@ -1,24 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema version="1.0"
-        elementFormDefault="unqualified"
-        targetNamespace="http://valintalaskenta.service.sade.vm.fi/messages"
-        xmlns:tns="http://valintalaskenta.service.sade.vm.fi/messages"
-        xmlns:xs="http://www.w3.org/2001/XMLSchema"
-        xmlns:hakemus="http://hakemus.service.sade.vm.fi/schema"
-        xmlns:valintaperusteet="http://valintaperusteet.service.sade.vm.fi/schema">
+           elementFormDefault="unqualified"
+           targetNamespace="http://valintalaskenta.service.sade.vm.fi/messages"
+           xmlns:tns="http://valintalaskenta.service.sade.vm.fi/messages"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:hakemus="http://hakemus.service.sade.vm.fi/schema"
+           xmlns:valintaperusteet="http://valintaperusteet.service.sade.vm.fi/schema"
+           xmlns:xa="http://www.w3.org/2001/XMLSchema">
 
     <xs:import namespace="http://hakemus.service.sade.vm.fi/schema" schemaLocation="http://pulpetti.hard.ware.fi/haku/wsdl/hakemus.xsd" />
     <xs:import namespace="http://valintaperusteet.service.sade.vm.fi/schema" schemaLocation="http://pulpetti.hard.ware.fi/valintaperusteet/wsdl/valintaperusteet.xsd" />
 
-    <xs:element name="laske" type="tns:LaskeTyyppi" />
+    <xs:element name="laske" type="tns:ValintalaskentaTyyppi" />
     <xs:element name="laskeVastaus" type="tns:LaskeVastausTyyppi"/>
+    <xs:element name="valintakokeet" type="tns:ValintalaskentaTyyppi"/>
+    <xs:element name="valintakokeetVastaus" type="tns:ValintakokeetTyyppi"/>
 
-    <xs:complexType name="LaskeTyyppi">
+    <xs:complexType name="ValintalaskentaTyyppi">
         <xs:sequence>
-            <xs:element name="hakukohdeOid" type="xs:string"/>
-            <xs:element name="valinnanVaihe" type="xs:int"/>
             <xs:element name="hakemus" type="hakemus:HakemusTyyppi" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="valintaperusteet" type="valintaperusteet:ValintaperusteetTyyppi" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="valintaperuste" type="valintaperusteet:ValintaperusteetTyyppi" minOccurs="1" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ValintakokeetTyyppi">
+        <xs:sequence>
+            <xs:complexType name="ValinnanVaihe">
+                <xs:sequence>
+                    <xs:complexType name="">
+                        <xs:sequence>
+                            <xs:complexType name="hakija">
+                                <xs:attribute name="hakijaOid" use="required" type="xs:string" />
+                                <xs:attribute name="hakemusOid" use="required" type="xs:string" />
+                            </xs:complexType>
+                        </xs:sequence>
+                        <xa:attribute use="required" name="paasykoeAvain" type="xs:string" />
+                    </xs:complexType>
+                </xs:sequence>
+                <xs:attribute use="required" name="valinnanvaiheOid" type="xs:string"/>
+                <xs:attribute use="optional" name="valinnanvaihe" type="xs:int"/>
+            </xs:complexType>
         </xs:sequence>
     </xs:complexType>
 

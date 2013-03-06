@@ -16,9 +16,14 @@
         <wsdl:message name="laske">
             <wsdl:part name="parameters" element="valintalaskenta:laske" />
         </wsdl:message>
-
         <wsdl:message name="laskeVastaus">
             <wsdl:part name="parameters" element="valintalaskenta:laskeVastaus" />
+        </wsdl:message>
+        <wsdl:message name="paasykokeet">
+            <wsdl:part name="parameters" element="valintalaskenta:paasykokeet" />
+        </wsdl:message>
+        <wsdl:message name="paasykokeetVastaus">
+            <wsdl:part name="parameters" element="valintalaskenta:paasykokeet" />
         </wsdl:message>
 
         <wsdl:portType name="ValintalaskentaService">
@@ -27,11 +32,24 @@
                 <wsdl:input message="tns:laske" />
                 <wsdl:output message="tns:laskeVastaus" />
             </wsdl:operation>
+            <wsdl:operation name="paasykokeet">
+                <wsdl:input message="tns:paasykokeet" />
+                <wsdl:output message="tns:paasykokeetVastaus" />
+            </wsdl:operation>
         </wsdl:portType>
 
         <wsdl:binding name="ValintalaskentaServiceSoapBinding" type="tns:ValintalaskentaService">
             <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
             <wsdl:operation name="laske">
+                <soap:operation soapAction="" style="document" />
+                <wsdl:input>
+                    <soap:body use="literal" />
+                </wsdl:input>
+                <wsdl:output>
+                    <soap:body use="literal" />
+                </wsdl:output>
+            </wsdl:operation>
+            <wsdl:operation name="paasykokeet">
                 <soap:operation soapAction="" style="document" />
                 <wsdl:input>
                     <soap:body use="literal" />
