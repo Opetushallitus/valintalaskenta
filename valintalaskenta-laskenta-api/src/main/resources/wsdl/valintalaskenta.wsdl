@@ -19,23 +19,26 @@
         <wsdl:message name="laskeVastaus">
             <wsdl:part name="parameters" element="valintalaskenta:laskeVastaus" />
         </wsdl:message>
-        <wsdl:message name="paasykokeet">
-            <wsdl:part name="parameters" element="valintalaskenta:paasykokeet" />
+    <!--
+        <wsdl:message name="valintakokeet">
+            <wsdl:part name="parameters" element="valintalaskenta:valintakokeet" />
         </wsdl:message>
-        <wsdl:message name="paasykokeetVastaus">
-            <wsdl:part name="parameters" element="valintalaskenta:paasykokeet" />
+        <wsdl:message name="valintakokeetVastaus">
+            <wsdl:part name="parameters" element="valintalaskenta:valintakokeetVastaus" />
         </wsdl:message>
-
+        -->
         <wsdl:portType name="ValintalaskentaService">
             <wsdl:documentation>Palvelu valintalaskennan suorittamiseen</wsdl:documentation>
             <wsdl:operation name="laske">
                 <wsdl:input message="tns:laske" />
                 <wsdl:output message="tns:laskeVastaus" />
             </wsdl:operation>
-            <wsdl:operation name="paasykokeet">
-                <wsdl:input message="tns:paasykokeet" />
-                <wsdl:output message="tns:paasykokeetVastaus" />
+           <!--
+            <wsdl:operation name="valintakokeet">
+                <wsdl:input message="tns:valintakokeet" />
+                <wsdl:output message="tns:valintakokeetVastaus" />
             </wsdl:operation>
+            -->
         </wsdl:portType>
 
         <wsdl:binding name="ValintalaskentaServiceSoapBinding" type="tns:ValintalaskentaService">
@@ -49,7 +52,9 @@
                     <soap:body use="literal" />
                 </wsdl:output>
             </wsdl:operation>
-            <wsdl:operation name="paasykokeet">
+
+            <!--
+            <wsdl:operation name="valintakokeet">
                 <soap:operation soapAction="" style="document" />
                 <wsdl:input>
                     <soap:body use="literal" />
@@ -58,6 +63,8 @@
                     <soap:body use="literal" />
                 </wsdl:output>
             </wsdl:operation>
+            -->
+
         </wsdl:binding>
 
         <wsdl:service name="ValintalaskentaService">

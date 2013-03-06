@@ -13,16 +13,17 @@
 
     <xs:element name="laske" type="tns:ValintalaskentaTyyppi" />
     <xs:element name="laskeVastaus" type="tns:LaskeVastausTyyppi"/>
+             <!--
     <xs:element name="valintakokeet" type="tns:ValintalaskentaTyyppi"/>
     <xs:element name="valintakokeetVastaus" type="tns:ValintakokeetTyyppi"/>
-
+   -->
     <xs:complexType name="ValintalaskentaTyyppi">
         <xs:sequence>
             <xs:element name="hakemus" type="hakemus:HakemusTyyppi" minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="valintaperuste" type="valintaperusteet:ValintaperusteetTyyppi" minOccurs="1" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
-
+ <!--
     <xs:complexType name="ValintakokeetTyyppi">
         <xs:sequence>
             <xs:complexType name="ValinnanVaihe">
@@ -42,7 +43,7 @@
             </xs:complexType>
         </xs:sequence>
     </xs:complexType>
-
+     -->
     <xs:complexType name="LaskeVastausTyyppi">
         <xs:sequence>
             <xs:element name="status" type="xs:string" />
