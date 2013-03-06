@@ -26,8 +26,6 @@ app.factory('HakukohteetModel', function() {
 });
 
 function HakukohteetController($scope, $location, $routeParams, HakukohteetModel) {
-   $scope.hakuOid = $routeParams.hakuOid;
    $scope.model = HakukohteetModel;
-
-   $scope.model.refreshIfNeeded($scope.hakuOid);
+   $scope.model.refreshIfNeeded($routeParams.hakuOid);
 }

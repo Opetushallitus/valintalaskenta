@@ -8,15 +8,19 @@ basePath = '../../main/webapp/';
 
 // list of files / patterns to load in the browser
 files = [
-
-  'jslib/angular-1.0.3/angular.js',
-  'jslib/angular-1.0.3/angular-*.js',
   JASMINE,
   JASMINE_ADAPTER,
+  'jslib/angular-1.0.3/angular.js',
+  'jslib/angular-1.0.3/angular-bootstrap.js',
+  'jslib/angular-1.0.3/angular-cookies.js',
+  'jslib/angular-1.0.3/angular-loader.js',
+  'jslib/angular-1.0.3/angular-resource.js',
+  'jslib/angular-1.0.3/angular-sanitize.js',
+//  'jslib/angular-1.0.3/angular-scenario.js',
+  'jslib/angular-1.0.3/angular-mocks.js',
   'js/valintalaskenta.js',
   'js/*.js',
   '../../test/ui/unit/**/*.js'
-  
 ];
 
 
@@ -45,7 +49,7 @@ colors = true;
 
 // level of logging
 // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
-logLevel = LOG_INFO;
+logLevel = LOG_DEBUG;
 
 
 // enable / disable watching file and executing tests whenever any file changes
@@ -60,7 +64,7 @@ autoWatch = true;
 // - Safari (only Mac)
 // - PhantomJS
 // - IE (only Windows)
-browsers = ['PhantomJS'];
+browsers = ['Chrome'];
 
 
 // If browser does not capture in given timeout [ms], kill it
