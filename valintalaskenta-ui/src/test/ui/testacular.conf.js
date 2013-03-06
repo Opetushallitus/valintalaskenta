@@ -8,17 +8,13 @@ basePath = '../../main/webapp/';
 
 // list of files / patterns to load in the browser
 files = [
+
   'jslib/angular-1.0.3/angular.js',
   'jslib/angular-1.0.3/angular-*.js',
-  ANGULAR_SCENARIO,
-  ANGULAR_SCENARIO_ADAPTER,
   JASMINE,
   JASMINE_ADAPTER,
-  
-  
-//  'js/valintalaskenta.js',
+  'js/valintalaskenta.js',
   'js/*.js',
-//  '../../test/ui/e2e/**/*.js',
   '../../test/ui/unit/**/*.js'
   
 ];
