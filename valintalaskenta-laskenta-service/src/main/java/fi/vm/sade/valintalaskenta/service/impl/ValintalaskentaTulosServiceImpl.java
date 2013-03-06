@@ -70,7 +70,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     public List<Valinnanvaihe> haeValinnanvaiheetHakukohteelle(String hakukohdeoid) {
         List<VersiohallintaHakukohde> versiohallinta = datastore.find(VersiohallintaHakukohde.class, "hakukohdeoid",
                 hakukohdeoid).asList();
-        if (versiohallinta == null || versiohallinta.size() == 0) {
+        if (versiohallinta == null || versiohallinta.isEmpty()) {
             LOGGER.debug("Hakukohteita oid:llä '{}' ei löytynyt! Annetaan palautteena tyhjä lista!", hakukohdeoid);
             return Collections.emptyList();
         }
