@@ -32,11 +32,9 @@ app.factory('ValintaesitysModel', function(Hakukohde, Haku) {
 
 
 function ValintaesitysController($scope, $location, $routeParams, ValintaesitysModel) {
-	$scope.hakuOid = $routeParams.hakuOid;
     $scope.hakukohdeOid = $routeParams.hakukohdeOid;
     
     $scope.model = ValintaesitysModel;
     $scope.model.refresh($scope.hakukohdeOid);
-
 
 }
