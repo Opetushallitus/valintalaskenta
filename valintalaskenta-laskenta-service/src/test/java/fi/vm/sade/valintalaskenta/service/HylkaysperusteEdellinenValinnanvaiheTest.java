@@ -1,17 +1,5 @@
 package fi.vm.sade.valintalaskenta.service;
 
-import java.util.List;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import scala.actors.threadpool.Arrays;
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintalaskenta.ValintalaskentaService;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
@@ -21,6 +9,17 @@ import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.resource.HakukohdeResource;
 import fi.vm.sade.valintalaskenta.service.util.ValintalaskentaServiceUtil;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import scala.actors.threadpool.Arrays;
+
+import java.util.List;
 
 /**
  * 
@@ -64,7 +63,7 @@ public class HylkaysperusteEdellinenValinnanvaiheTest {
 
         jono1.getJarjestyskriteerit().get(0)
                 .setFunktiokutsu(ValintalaskentaServiceUtil.createSummaFunktio("matematiikka", "aidinkieli"));
-        valintalaskentaService.laske(hakukohdeoid, jarjestysluku1, Arrays.asList(hakemukset1),
+        valintalaskentaService.laske(Arrays.asList(hakemukset1),
                 Arrays.asList(new ValintaperusteetTyyppi[] { valintaperusteet1 }));
         // valintalaskenta jarjestysluvulla 2
         // hakemusoid2 epäonnistuu koska se epäonnistui ensimmäisessä vaiheessa
@@ -79,7 +78,7 @@ public class HylkaysperusteEdellinenValinnanvaiheTest {
         jono2.getJarjestyskriteerit().add(ValintalaskentaServiceUtil.createJarjestyskriteeri());
         jono2.getJarjestyskriteerit().get(0)
                 .setFunktiokutsu(ValintalaskentaServiceUtil.createSummaFunktio("matematiikka", "aidinkieli"));
-        valintalaskentaService.laske(hakukohdeoid, jarjestysluku2, Arrays.asList(hakemukset2),
+        valintalaskentaService.laske(Arrays.asList(hakemukset2),
                 Arrays.asList(new ValintaperusteetTyyppi[] { valintaperusteet2 }));
         List<Valinnanvaihe> hakukohteet = hakukohdeResource.hakukohde(hakukohdeoid);
         Assert.assertTrue("Pitäisi olla kaksi hakukohdetta ('hakukohdeoid',1) ja ('hakukohdeoid',2)",

@@ -1,30 +1,21 @@
 package fi.vm.sade.valintalaskenta.app;
 
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Random;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
-
-import scala.actors.threadpool.Arrays;
-
 import com.google.common.collect.Lists;
-
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintalaskenta.ValintalaskentaService;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskriteereillaTyyppi;
 import fi.vm.sade.valintalaskenta.service.impl.MongoConfigurationImpl;
 import fi.vm.sade.valintalaskenta.service.util.ValintalaskentaServiceUtil;
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
+import scala.actors.threadpool.Arrays;
+
+import java.security.SecureRandom;
+import java.util.*;
 
 /**
  * 
@@ -109,7 +100,7 @@ public class GenerateTestData {
 
                 valintaperusteet.getValintatapajonot().add(jono);
             }
-            valintalaskentaService.laske(hakukohdeoid, jarjestysluku, Arrays.asList(hakemukset),
+            valintalaskentaService.laske(Arrays.asList(hakemukset),
                     Arrays.asList(new ValintaperusteetTyyppi[] { valintaperusteet }));
         }
     }
