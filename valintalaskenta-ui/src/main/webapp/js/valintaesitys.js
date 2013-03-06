@@ -10,6 +10,7 @@ app.factory('ValintaesitysModel', function(Hakukohde, Haku) {
 		this.refresh = function(hakukohdeOid) {
 			
 			Haku.get({}, function(result) {
+
 				var hakukohderesultOid = result[0].oid;
 				
 				//hakukohteen oid saadaan joskus routeparametrien mukana jonkin kohteen tiedoilla
@@ -31,13 +32,11 @@ app.factory('ValintaesitysModel', function(Hakukohde, Haku) {
 
 
 function ValintaesitysController($scope, $location, $routeParams, ValintaesitysModel) {
-
+	$scope.hakuOid = $routeParams.hakuOid;
     $scope.hakukohdeOid = $routeParams.hakukohdeOid;
     
     $scope.model = ValintaesitysModel;
     $scope.model.refresh($scope.hakukohdeOid);
-
-    $scope.hakukohdeOid = $routeParams.hakukohdeOid;
 
 
 }

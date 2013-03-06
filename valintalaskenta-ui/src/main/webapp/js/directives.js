@@ -92,7 +92,7 @@ app.directive('uiSortable', function() {
 );
 
 // tabs
-virkailijaModule.directive('tabs', function() {
+app.directive('tabs', function() {
     return {
       restrict: 'E',
       transclude: true,
@@ -125,7 +125,7 @@ virkailijaModule.directive('tabs', function() {
     };
 });
 
-virkailijaModule.directive('pane', function() {
+app.directive('pane', function() {
     return {
       require: '^tabs',
       restrict: 'E',
