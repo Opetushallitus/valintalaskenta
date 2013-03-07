@@ -2010,6 +2010,55 @@ label, .label {
     position: relative;
     bottom: 2px; }
 
+/*** Dropmenu table
+************************************************/
+/* laskentakaavojen dropdown funktiolistalle */
+table.dropmenu-table {
+  position: relative;
+  z-index: 10;
+  top: -25px;
+  left: -5px;
+  border-collapse: separate;
+  border-spacing: 1px; }
+  table.dropmenu-table thead th {
+    background-image: url(../img/table-header-bg.png);
+    background-repeat: repeat;
+    background-position: left top;
+    text-align: center;
+    border: 1px solid #cccccc;
+    padding: 0.5em 1em 0.5em 1em; }
+  table.dropmenu-table tbody td {
+    padding: 0.5em;
+    background: #eee;
+    border: 1px solid #cccccc;
+    -webkit-transition: 0.1s;
+    -moz-transition: 0.1s;
+    -o-transition: 0.1s;
+    -ms-transition: 0.1s;
+    transition: 0.1s;
+    padding: 0.5em 1.5em 0.5em 1.5em;
+    text-align: center; }
+    table.dropmenu-table tbody td:hover {
+      background-color: #fff5da;
+      -webkit-box-shadow: 0px 0px 2px 0 rgba(0, 0, 0, 0.7) inset;
+      -moz-box-shadow: 0px 0px 2px 0 rgba(0, 0, 0, 0.7) inset;
+      -o-box-shadow: 0px 0px 2px 0 rgba(0, 0, 0, 0.7) inset;
+      -ms-box-shadow: 0px 0px 2px 0 rgba(0, 0, 0, 0.7) inset;
+      box-shadow: 0px 0px 2px 0 rgba(0, 0, 0, 0.7) inset; }
+    table.dropmenu-table tbody td:active {
+      background-color: #999;
+      color: white;
+      -webkit-box-shadow: 0px 0px 1px 0 rgba(0, 0, 0, 0.5) inset;
+      -moz-box-shadow: 0px 0px 1px 0 rgba(0, 0, 0, 0.5) inset;
+      -o-box-shadow: 0px 0px 1px 0 rgba(0, 0, 0, 0.5) inset;
+      -ms-box-shadow: 0px 0px 1px 0 rgba(0, 0, 0, 0.5) inset;
+      box-shadow: 0px 0px 1px 0 rgba(0, 0, 0, 0.5) inset; }
+
+.function table.dropmenu-table {
+  display: none; }
+.function:hover table.dropmenu-table {
+  display: block; }
+
 /*
 	Taulukko tyyli perustietojen näyttämiselle, esim. hakijan henkilötietot
 */
