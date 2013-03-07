@@ -37,17 +37,24 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 		return null;
 	}
 
+    /**
+     * Metodi ottaa hakemuksen, valintaperusteet ja tallentaa kantaan yhden hakijan tiedot
+     * @param hakemus
+     * @param valintaperuste
+     * @return
+     */
 	@Override
 	@WebResult(name = "status", targetNamespace = "")
 	@RequestWrapper(localName = "valintakokeet", targetNamespace = "http://valintalaskenta.service.sade.vm.fi/messages", className = "fi.vm.sade.service.valintalaskenta.messages.ValintalaskentaTyyppi")
 	@WebMethod
 	@ResponseWrapper(localName = "valintakokeetVastaus", targetNamespace = "http://valintalaskenta.service.sade.vm.fi/messages", className = "fi.vm.sade.service.valintalaskenta.messages.LaskeVastausTyyppi")
-	public String valintakokeet(@WebParam(name = "hakemus", targetNamespace = "") List<HakemusTyyppi> hakemus, @WebParam(name = "valintaperuste", targetNamespace = "") List<ValintaperusteetTyyppi> valintaperuste) {
+	public String valintakokeet(@WebParam(name = "hakemus", targetNamespace = "") HakemusTyyppi hakemus, @WebParam(name = "valintaperuste", targetNamespace = "") List<ValintaperusteetTyyppi> valintaperuste) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	// @Override
+
+    // @Override
 	// public String laske(@WebParam(name = "hakemus", targetNamespace = "")
 	// List<HakemusTyyppi> hakemus, @WebParam(name = "valintaperuste",
 	// targetNamespace = "") List<ValintaperusteetTyyppi> valintaperuste) {
