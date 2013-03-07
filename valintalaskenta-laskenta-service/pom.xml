@@ -170,17 +170,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<version>${hibernate.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-ehcache</artifactId>
-			<version>${hibernate.version}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>fi.vm.sade.generic</groupId>
 			<artifactId>generic-service</artifactId>
 		</dependency>
