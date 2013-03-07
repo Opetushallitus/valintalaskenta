@@ -1,15 +1,9 @@
 package fi.vm.sade.valintalaskenta.service.impl.conversion;
 
-import org.springframework.core.convert.converter.Converter;
-
 import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
 import fi.vm.sade.service.valintaperusteet.model.Funktionimi;
-import fi.vm.sade.service.valintaperusteet.schema.ArvokonverteriparametriTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ArvovalikonverteriparametriTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.FunktioargumenttiTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.SyoteparametriTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteviiteTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.*;
+import org.springframework.core.convert.converter.Converter;
 
 /**
  * 
@@ -30,15 +24,15 @@ public class FunktioKutsuTyyppiToFunktioKutsuConverter implements Converter<Funk
         target.setFunktionimi(Funktionimi.valueOf(source.getFunktionimi()));
         target.setId(target.getId());
 
-        ArvokonverteriparametriTyyppiToArvokonverteriparametriConverter arvoparamConverter = new ArvokonverteriparametriTyyppiToArvokonverteriparametriConverter();
+        ArvokonvertteriparametriTyyppiToArvokonvertteriparametriConverter arvoparamConverter = new ArvokonvertteriparametriTyyppiToArvokonvertteriparametriConverter();
 
-        for (ArvokonverteriparametriTyyppi k : source.getArvokonverteriparametrit()) {
-            target.getArvokonverteriparametrit().add(arvoparamConverter.convert(k));
+        for (ArvokonvertteriparametriTyyppi k : source.getArvokonvertteriparametrit()) {
+            target.getArvokonvertteriparametrit().add(arvoparamConverter.convert(k));
         }
 
-        ArvovalikonverteriparametriTyyppiToArvovalikonverteriparametriConverter arvovaliparamConverter = new ArvovalikonverteriparametriTyyppiToArvovalikonverteriparametriConverter();
-        for (ArvovalikonverteriparametriTyyppi k : source.getArvovalikonverteriparametrit()) {
-            target.getArvovalikonverteriparametrit().add(arvovaliparamConverter.convert(k));
+        ArvovalikonvertteriparametriTyyppiToArvovalikonvertteriparametriConverter arvovaliparamConverter = new ArvovalikonvertteriparametriTyyppiToArvovalikonvertteriparametriConverter();
+        for (ArvovalikonvertteriparametriTyyppi k : source.getArvovalikonvertteriparametrit()) {
+            target.getArvovalikonvertteriparametrit().add(arvovaliparamConverter.convert(k));
         }
 
         SyoteparametriTyyppiToSyoteparametriConverter sparamConverter;
