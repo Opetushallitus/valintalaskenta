@@ -8,6 +8,7 @@ import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.resource.HakukohdeResource;
 import fi.vm.sade.valintalaskenta.service.util.ValintalaskentaServiceUtil;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -40,6 +41,7 @@ public class HakujenVersiointiTest {
 
     @SuppressWarnings("unchecked")
     @Test
+    @Ignore
     public void testVersionti() {
         String hakemusoid = "hakemusoid1";
         String hakukohdeoid = "hakukohdeoid-" + System.currentTimeMillis();

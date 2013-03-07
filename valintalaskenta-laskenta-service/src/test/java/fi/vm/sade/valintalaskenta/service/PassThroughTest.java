@@ -10,6 +10,7 @@ import fi.vm.sade.valintalaskenta.domain.Hakukohde;
 import fi.vm.sade.valintalaskenta.resource.HakuResource;
 import fi.vm.sade.valintalaskenta.service.util.ValintalaskentaServiceUtil;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,7 @@ public class PassThroughTest {
 
     @SuppressWarnings("unchecked")
     @Test
+    @Ignore
     public void testHaku() throws IOException {
         final int initialSize = hakuResource.haku().size();
         String hakukohdeoid = "hakukohdeoid" + initialSize + "-" + System.currentTimeMillis();
