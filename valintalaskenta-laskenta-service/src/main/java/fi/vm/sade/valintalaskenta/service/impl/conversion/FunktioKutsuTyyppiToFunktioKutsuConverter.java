@@ -6,9 +6,7 @@ import fi.vm.sade.service.valintaperusteet.schema.*;
 import org.springframework.core.convert.converter.Converter;
 
 /**
- * 
  * @author Jussi Jartamo
- * 
  */
 public class FunktioKutsuTyyppiToFunktioKutsuConverter implements Converter<FunktiokutsuTyyppi, Funktiokutsu> {
 
@@ -40,11 +38,12 @@ public class FunktioKutsuTyyppiToFunktioKutsuConverter implements Converter<Funk
         for (SyoteparametriTyyppi s : source.getSyoteparametrit()) {
             target.getSyoteparametrit().add(sparamConverter.convert(s));
         }
-        ValintaperusteViiteTyyppiToValintaperusteViiteConverter vConverter;
-        vConverter = new ValintaperusteViiteTyyppiToValintaperusteViiteConverter();
-        for (ValintaperusteviiteTyyppi t : source.getValintaperusteviite()) {
-            target.getValintaperusteet().add(vConverter.convert(t));
+
+        if (source.getValintaperusteviite() != null) {
+            ValintaperusteViiteTyyppiToValintaperusteViiteConverter vConverter = new ValintaperusteViiteTyyppiToValintaperusteViiteConverter();
+            target.setValintaperuste(vConverter.convert(source.getValintaperusteviite()));
         }
+
         return target;
     }
 }
