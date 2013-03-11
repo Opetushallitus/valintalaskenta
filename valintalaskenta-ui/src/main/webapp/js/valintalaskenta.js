@@ -46,6 +46,11 @@ return $resource(TARJONTA_URL_BASE + "hakukohde", {}, {
   });
 });
 
+app.factory('tarjontaHakukohde', function($resource) {
+return $resource(TARJONTA_URL_BASE + "hakukohde/:hakukohdeoid", {hakukohdeoid: "@hakukohdeoid"}, {
+    get: {method: "GET"}
+  });
+});
 
 
 //Hakukohde
