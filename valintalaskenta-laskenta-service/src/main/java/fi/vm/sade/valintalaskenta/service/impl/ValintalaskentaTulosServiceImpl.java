@@ -1,9 +1,8 @@
 package fi.vm.sade.valintalaskenta.service.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import javax.annotation.Nonnull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.code.morphia.Datastore;
-import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import fi.vm.sade.valintalaskenta.domain.Hakukohde;
@@ -37,50 +33,45 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     private Datastore datastore;
 
     public List<Hakukohde> haeHakukohteet() {
-        List<VersiohallintaHakukohde> versiohallinta = datastore.find(VersiohallintaHakukohde.class).asList();
-        return Lists.newArrayList(Iterables.transform(versiohallinta,
-                new Function<VersiohallintaHakukohde, Hakukohde>() {
-                    public Hakukohde apply(@Nonnull VersiohallintaHakukohde input) {
-                        assert (!input.getHakukohteet().isEmpty());
-                        return input.getHakukohteet().last().getHakukohde();
-                    }
-                }));
+        List<VersiohallintaHakukohde> versiohallinnat = datastore.find(VersiohallintaHakukohde.class).asList();
+        List<Hakukohde> hakukohteet = new ArrayList<Hakukohde>();
+        for (VersiohallintaHakukohde versiohallinta : versiohallinnat) {
+            hakukohteet.add(versiohallinta.getHakukohteet().last().getHakukohde());
+        }
+        return hakukohteet;
     }
 
     public List<Hakukohde> haeHakukohteetHaulle(String hakuoid) {
-        List<VersiohallintaHakukohde> versiohallinta = datastore
-                .find(VersiohallintaHakukohde.class, "hakuoid", hakuoid).asList();
-        return Lists.newArrayList(Iterables.transform(versiohallinta,
-                new Function<VersiohallintaHakukohde, Hakukohde>() {
-                    public Hakukohde apply(@Nonnull VersiohallintaHakukohde input) {
-                        assert (!input.getHakukohteet().isEmpty());
-                        return input.getHakukohteet().last().getHakukohde();
-                    }
-                }));
+        List<VersiohallintaHakukohde> versiohallinnat = datastore.find(VersiohallintaHakukohde.class, "hakuoid",
+                hakuoid).asList();
+        List<Hakukohde> hakukohteet = new ArrayList<Hakukohde>();
+        for (VersiohallintaHakukohde versiohallinta : versiohallinnat) {
+            hakukohteet.add(versiohallinta.getHakukohteet().last().getHakukohde());
+        }
+        return hakukohteet;
     }
 
     public List<Jarjestyskriteeritulos> haeJarjestyskriteerituloksetValintatapajonolle(String valintatapajonooid) {
         Valintatapajono uusinvalintatapajono = Sets.newTreeSet(
                 datastore.find(Valintatapajono.class, "valintatapajonooid", valintatapajonooid).asList()).last();
-
-        return uusinvalintatapajono == null ? Collections.<Jarjestyskriteeritulos> emptyList() : uusinvalintatapajono
-                .getJarjestyskriteeritulokset();
+        if (uusinvalintatapajono == null) {
+            return Collections.<Jarjestyskriteeritulos> emptyList();
+        }
+        return uusinvalintatapajono.getJarjestyskriteeritulokset();
     }
 
     public List<Valinnanvaihe> haeValinnanvaiheetHakukohteelle(String hakukohdeoid) {
-        List<VersiohallintaHakukohde> versiohallinta = datastore.find(VersiohallintaHakukohde.class, "hakukohdeoid",
+        List<VersiohallintaHakukohde> versiohallinnat = datastore.find(VersiohallintaHakukohde.class, "hakukohdeoid",
                 hakukohdeoid).asList();
-        if (versiohallinta == null || versiohallinta.isEmpty()) {
+        if (versiohallinnat == null || versiohallinnat.isEmpty()) {
             LOGGER.debug("Hakukohteita oid:llä '{}' ei löytynyt! Annetaan palautteena tyhjä lista!", hakukohdeoid);
             return Collections.emptyList();
         }
-        return Lists.newArrayList(Iterables.transform(versiohallinta,
-                new Function<VersiohallintaHakukohde, Valinnanvaihe>() {
-                    public Valinnanvaihe apply(@Nonnull VersiohallintaHakukohde input) {
-                        assert (!input.getHakukohteet().isEmpty());
-                        return input.getHakukohteet().last().getHakukohde().getValinnanvaihe();
-                    }
-                }));
+        List<Valinnanvaihe> valinnanvaiheet = new ArrayList<Valinnanvaihe>();
+        for (VersiohallintaHakukohde versiohallinta : versiohallinnat) {
+            valinnanvaiheet.add(versiohallinta.getHakukohteet().last().getHakukohde().getValinnanvaihe());
+        }
+        return valinnanvaiheet;
     }
 
     public List<Valintatapajono> haeValintatapajonoValinnanvaiheelle(String valinnanvaiheoid) {
