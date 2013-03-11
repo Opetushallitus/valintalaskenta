@@ -14,7 +14,7 @@
 	<ctx:property-placeholder location="classpath:testMongoConfiguration.properties" />
 	
 	<bean id="testikanta" class="fi.vm.sade.valintalaskenta.service.testdb.EmbeddedMongoConfiguration" />
-	
+	<ctx:component-scan base-package="fi.vm.sade.valintalaskenta.dao.impl"/>
 	<ctx:component-scan base-package="fi.vm.sade.valintalaskenta.service.impl" />
 	<ctx:component-scan base-package="fi.vm.sade.valintalaskenta.resource"/>
 	

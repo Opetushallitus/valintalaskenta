@@ -1,7 +1,5 @@
 package fi.vm.sade.valintalaskenta.service.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -10,13 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.code.morphia.Datastore;
-import com.google.common.collect.Sets;
 
+import fi.vm.sade.valintalaskenta.dao.HakukohdeDAO;
+import fi.vm.sade.valintalaskenta.dao.JarjestyskriteeritulosDAO;
+import fi.vm.sade.valintalaskenta.dao.ValinnanvaiheDAO;
+import fi.vm.sade.valintalaskenta.dao.ValintatapajonoDAO;
 import fi.vm.sade.valintalaskenta.domain.Hakukohde;
 import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
-import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
 import fi.vm.sade.valintalaskenta.service.ValintalaskentaTulosService;
 
 /**
@@ -32,55 +32,38 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     @Autowired
     private Datastore datastore;
 
+    @Autowired
+    private HakukohdeDAO hakukohdeDAO;
+
+    @Autowired
+    private JarjestyskriteeritulosDAO jarjestyskriteeritulosDAO;
+
+    @Autowired
+    private ValinnanvaiheDAO valinnanvaiheDAO;
+
+    @Autowired
+    private ValintatapajonoDAO valintatapajonoDAO;
+
     public List<Hakukohde> haeHakukohteet() {
-        List<VersiohallintaHakukohde> versiohallinnat = datastore.find(VersiohallintaHakukohde.class).asList();
-        List<Hakukohde> hakukohteet = new ArrayList<Hakukohde>();
-        for (VersiohallintaHakukohde versiohallinta : versiohallinnat) {
-            hakukohteet.add(versiohallinta.getHakukohteet().last().getHakukohde());
-        }
-        return hakukohteet;
+        return hakukohdeDAO.readAll();
     }
 
     public List<Hakukohde> haeHakukohteetHaulle(String hakuoid) {
-        List<VersiohallintaHakukohde> versiohallinnat = datastore.find(VersiohallintaHakukohde.class, "hakuoid",
-                hakuoid).asList();
-        List<Hakukohde> hakukohteet = new ArrayList<Hakukohde>();
-        for (VersiohallintaHakukohde versiohallinta : versiohallinnat) {
-            hakukohteet.add(versiohallinta.getHakukohteet().last().getHakukohde());
-        }
-        return hakukohteet;
+        return hakukohdeDAO.readByHakuOid(hakuoid);
+
     }
 
     public List<Jarjestyskriteeritulos> haeJarjestyskriteerituloksetValintatapajonolle(String valintatapajonooid) {
-        Valintatapajono uusinvalintatapajono = Sets.newTreeSet(
-                datastore.find(Valintatapajono.class, "valintatapajonooid", valintatapajonooid).asList()).last();
-        if (uusinvalintatapajono == null) {
-            return Collections.<Jarjestyskriteeritulos> emptyList();
-        }
-        return uusinvalintatapajono.getJarjestyskriteeritulokset();
+        return jarjestyskriteeritulosDAO.readByValintatapajonoOid(valintatapajonooid);
     }
 
     public List<Valinnanvaihe> haeValinnanvaiheetHakukohteelle(String hakukohdeoid) {
-        List<VersiohallintaHakukohde> versiohallinnat = datastore.find(VersiohallintaHakukohde.class, "hakukohdeoid",
-                hakukohdeoid).asList();
-        if (versiohallinnat == null || versiohallinnat.isEmpty()) {
-            LOGGER.debug("Hakukohteita oid:llä '{}' ei löytynyt! Annetaan palautteena tyhjä lista!", hakukohdeoid);
-            return Collections.emptyList();
-        }
-        List<Valinnanvaihe> valinnanvaiheet = new ArrayList<Valinnanvaihe>();
-        for (VersiohallintaHakukohde versiohallinta : versiohallinnat) {
-            valinnanvaiheet.add(versiohallinta.getHakukohteet().last().getHakukohde().getValinnanvaihe());
-        }
-        return valinnanvaiheet;
+        return valinnanvaiheDAO.readByHakukohdeOid(hakukohdeoid);
+
     }
 
     public List<Valintatapajono> haeValintatapajonoValinnanvaiheelle(String valinnanvaiheoid) {
-        VersiohallintaHakukohde versiohallinta = datastore.find(VersiohallintaHakukohde.class, "valinnanvaiheoid",
-                valinnanvaiheoid).get();
-        if (versiohallinta == null) {
-            return Collections.emptyList();
-        }
-        return versiohallinta.getHakukohteet().last().getHakukohde().getValinnanvaihe().getValintatapajono();
+        return valintatapajonoDAO.readByValinnanvaiheOid(valinnanvaiheoid);
     }
 
 }

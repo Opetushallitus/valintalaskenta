@@ -1,14 +1,13 @@
 package fi.vm.sade.valintalaskenta.domain;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 import org.bson.types.ObjectId;
 
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Indexed;
+
+import fi.vm.sade.valintalaskenta.domain.collection.VersioSet;
 
 /**
  * 
@@ -34,10 +33,10 @@ public class VersiohallintaHakukohde {
 
     private int jarjestysnumero;
 
-    @Embedded(concreteClass = java.util.TreeSet.class)
-    private SortedSet<Versioituhakukohde> hakukohteet = new TreeSet<Versioituhakukohde>();
+    @Embedded(concreteClass = VersioSet.class)
+    private VersioSet<Versioituhakukohde> hakukohteet = new VersioSet<Versioituhakukohde>();
 
-    public SortedSet<Versioituhakukohde> getHakukohteet() {
+    public VersioSet<Versioituhakukohde> getHakukohteet() {
         return hakukohteet;
     }
 
@@ -57,7 +56,7 @@ public class VersiohallintaHakukohde {
         this.hakuoid = hakuoid;
     }
 
-    public void setHakukohteet(SortedSet<Versioituhakukohde> hakukohteet) {
+    public void setHakukohteet(VersioSet<Versioituhakukohde> hakukohteet) {
         this.hakukohteet = hakukohteet;
     }
 
