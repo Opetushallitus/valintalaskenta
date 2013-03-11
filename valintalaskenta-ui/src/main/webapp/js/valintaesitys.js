@@ -7,26 +7,18 @@ app.factory('ValintaesitysModel', function(Hakukohde, Haku) {
 		this.valintatapajonot = [];
 		
 		this.refresh = function(hakukohdeOid) {
-			/*
-			console.log("here");
-			Haku.get({}, function(result) {
-				console.log(result);
+			
+			Hakukohde.get({hakukohdeoid: hakukohdeOid}, function(result) {
+				model.valintatapajonot = result[0].valintatapajono;
 			});
 			
-			/*
-			Haku.get({}, function(result) {
-				console.log(result);
-				//var hakukohderesultOid = result[0].oid;
-				/*
-				//hakukohteen oid saadaan joskus routeparametrien mukana jonkin kohteen tiedoilla
-				Hakukohde.get({hakukohdeoid: hakukohderesultOid}, function(result) {
-					model.hakukohde = result[0];
-					model.valintatapajonot = model.hakukohde.valintatapajono;
-				});
-				
-			});
-			*/
+		}
+
+		this.refreshIfNeeded = function(hakukohdeOid) {
 			
+			if( model.hakukohde.oid !== hakukohdeOid ) {
+				model.refresh(hakukohdeOid);
+			}
 		}
 		
 
@@ -39,6 +31,6 @@ app.factory('ValintaesitysModel', function(Hakukohde, Haku) {
 function ValintaesitysController($scope, $location, $routeParams, ValintaesitysModel) {
     $scope.hakukohdeOid = $routeParams.hakukohdeOid;
     $scope.model = ValintaesitysModel;
-    $scope.model.refresh($scope.hakukohdeOid);
+    $scope.model.refreshIfNeeded($scope.hakukohdeOid);
 
 }
