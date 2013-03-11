@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.google.code.morphia.Datastore;
-
 import fi.vm.sade.kaava.Laskentadomainkonvertteri;
 import fi.vm.sade.kaava.Laskentakaavavalidaattori;
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
@@ -30,6 +28,8 @@ import fi.vm.sade.service.valintaperusteet.schema.JarjestyskriteeriTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskriteereillaTyyppi;
 import fi.vm.sade.service.valintaperusteet.service.validointi.virhe.Validointivirhe;
+import fi.vm.sade.valintalaskenta.dao.ValintatapajonoDAO;
+import fi.vm.sade.valintalaskenta.dao.VersiohallintaHakukohdeDAO;
 import fi.vm.sade.valintalaskenta.domain.Hakukohde;
 import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
@@ -54,7 +54,13 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     private LaskentaService laskentaService;
 
     @Autowired
-    private Datastore datastore;
+    private VersiohallintaHakukohdeDAO versiohallintaHakukohdeDAO;
+
+    @Autowired
+    private ValintatapajonoDAO valintatapajonoDAO;
+
+    // @Autowired
+    // private Datastore datastore;
 
     public void suoritaLaskenta(List<HakemusTyyppi> hakemukset, List<ValintaperusteetTyyppi> valintaperusteet) {
         // Hakuoid ei ole toistaiseksi WSDL:ssä joten käytetään kovakoodattua
@@ -86,9 +92,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             valinnanvaihe.setValinnanvaiheoid(valinnanvaiheoid);
             uusihakukohde.setValinnanvaihe(valinnanvaihe);
 
-            VersiohallintaHakukohde versiohallinta = datastore
-                    .find(VersiohallintaHakukohde.class, "hakukohdeoid", valintaperuste.getHakukohdeOid())
-                    .filter("jarjestysnumero", jarjestysnumero).get();
+            VersiohallintaHakukohde versiohallinta = versiohallintaHakukohdeDAO.readByHakukohdeOidAndJarjestysnumero(
+                    valintaperuste.getHakukohdeOid(), jarjestysnumero);
 
             if (versiohallinta == null) {
                 versiohallinta = new VersiohallintaHakukohde();
@@ -133,12 +138,11 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                 }
                 valintatapajono.setVersio(versioNumero);
                 valinnanvaihe.getValintatapajono().add(valintatapajono);
-                datastore.save(valintatapajono);
+                valintatapajonoDAO.createOrUpdate(valintatapajono);
             }
             LOG.info("Tallennetaan hakukohdetta! Hakukohdeoid {}", uusihakukohde.getOid());
             versiohallinta.getHakukohteet().add(versioituhakukohde);
-            datastore.save(versiohallinta);
-
+            versiohallintaHakukohdeDAO.createOrUpdate(versiohallinta);
         }
     }
 
@@ -252,8 +256,9 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
      * Edellinen valinnanvaihe tai null jos ei ole
      */
     private Hakukohde edellinenValinnanvaihe(String oid, int jarjestysnumero) {
-        List<VersiohallintaHakukohde> kaksiEdellistaValinnanvaihetta = datastore
-                .find(VersiohallintaHakukohde.class, "hakukohdeoid", oid).order("jarjestysnumero").limit(2).asList();
+
+        List<VersiohallintaHakukohde> kaksiEdellistaValinnanvaihetta = versiohallintaHakukohdeDAO
+                .findTwoLatestByHakukohdeOid(oid);
         // if (kaksiEdellistaValinnanvaihetta.size() == 0) {
         // edellistä valinnanvaihetta ei ollut joten
         // hylkäys/hyväksymisperuste saa tulla suoraan funktiolta

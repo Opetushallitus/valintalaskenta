@@ -12,4 +12,6 @@ import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
 public interface ValintatapajonoDAO {
 
     List<Valintatapajono> readByValinnanvaiheOid(String valinnanvaiheOid);
+
+    void createOrUpdate(Valintatapajono v);
 }

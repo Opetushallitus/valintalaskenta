@@ -31,4 +31,8 @@ public class ValintatapajonoDAOImpl implements ValintatapajonoDAO {
         }
         return versiohallinta.getHakukohteet().haeUusinVersio().getHakukohde().getValinnanvaihe().getValintatapajono();
     }
+
+    public void createOrUpdate(Valintatapajono v) {
+        datastore.save(v);
+    }
 }
