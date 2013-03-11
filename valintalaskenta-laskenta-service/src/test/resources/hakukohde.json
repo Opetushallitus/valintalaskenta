@@ -1,0 +1,378 @@
+[ {
+  "oid" : "1.2.246.562.14.39251489298",
+  "hakukohdeNimi" : "463 Musiikkiteknologian koulutusohjelma, pk (Musiikkialan perustutkinto)#1",
+  "hakukohdeKoodistoNimi" : "Musiikkiteknologian koulutusohjelma, pk (Musiikkialan perustutkinto)  Kevät 2013 SAVE_AS_READY",
+  "hakukohteenHakuOid" : "1.2.246.562.5.50476818906",
+  "hakukohteenHaunNimi" : null,
+  "hakukohteenTila" : "JULKAISTU",
+  "hakukohteenKoulutusOidit" : [ "1.2.246.562.5.16376054546", "1.2.246.562.5.65762090259" ],
+  "aloituspaikat" : 5,
+  "valinnanAloituspaikat" : 5,
+  "hakukelpoisuusVaatimukset" : null,
+  "lisatiedot" : {
+    "teksti" : [ {
+      "value" : "",
+      "kieliKoodi" : "uri: Suomi 5936#1"
+    } ]
+  },
+  "liitteidenToimitusOsoite" : {
+    "osoiteRivi" : "Mansku 3",
+    "lisaOsoiteRivi" : null,
+    "postinumero" : "00100 HELSINKI 10639",
+    "postitoimipaikka" : "HELSINKI"
+  },
+  "sahkoinenToimitusOsoite" : null,
+  "liitteidenToimitusPvm" : null,
+  "kaytetaanHaunPaattymisenAikaa" : false,
+  "hakukohdeKoulutukses" : [ ],
+  "valintaperustekuvausKoodiUri" : "t2_valintaperustekuvaus/T01#1",
+  "soraKuvausKoodiUri" : "t2_valintaperustekuvaus/T01#1"
+}, {
+  "oid" : "1.2.246.562.14.44850476415",
+  "hakukohdeNimi" : "460 Musiikin koulutusohjelma, pk (Musiikkialan perustutkinto)#1",
+  "hakukohdeKoodistoNimi" : "Musiikin koulutusohjelma, pk (Musiikkialan perustutkinto)  Kevät 2013 SAVE_AS_READY",
+  "hakukohteenHakuOid" : "1.2.246.562.5.50476818906",
+  "hakukohteenHaunNimi" : null,
+  "hakukohteenTila" : "JULKAISTU",
+  "hakukohteenKoulutusOidit" : [ "1.2.246.562.5.13618947603" ],
+  "aloituspaikat" : 15,
+  "valinnanAloituspaikat" : 15,
+  "hakukelpoisuusVaatimukset" : null,
+  "lisatiedot" : {
+    "teksti" : [ {
+      "value" : "",
+      "kieliKoodi" : "uri: Suomi 5936#1"
+    } ]
+  },
+  "liitteidenToimitusOsoite" : {
+    "osoiteRivi" : "Mansku 1",
+    "lisaOsoiteRivi" : null,
+    "postinumero" : "00100 HELSINKI 10639",
+    "postitoimipaikka" : "HELSINKI"
+  },
+  "sahkoinenToimitusOsoite" : null,
+  "liitteidenToimitusPvm" : null,
+  "kaytetaanHaunPaattymisenAikaa" : false,
+  "hakukohdeKoulutukses" : [ ],
+  "valintaperustekuvausKoodiUri" : "t2_valintaperustekuvaus/T01#1",
+  "soraKuvausKoodiUri" : "t2_valintaperustekuvaus/T01#1"
+}, {
+  "oid" : "1.2.246.562.14.557030470710",
+  "hakukohdeNimi" : "162 Tuotteen suunnittelun ja valmistuksen koulutusohjelma, er (Käsi- ja taideteollisuusalan perustutkinto)#1",
+  "hakukohdeKoodistoNimi" : "Tuotteen suunnittelun ja valmistuksen koulutusohjelma, er (Käsi- ja taideteollisuusalan perustutkinto)  Kevät 2013 SAVE_AS_READY",
+  "hakukohteenHakuOid" : "1.2.246.562.5.50476818906",
+  "hakukohteenHaunNimi" : null,
+  "hakukohteenTila" : "JULKAISTU",
+  "hakukohteenKoulutusOidit" : [ "1.2.246.562.5.17519157931", "1.2.246.562.5.48178084827" ],
+  "aloituspaikat" : 30,
+  "valinnanAloituspaikat" : 100,
+  "hakukelpoisuusVaatimukset" : null,
+  "lisatiedot" : {
+    "teksti" : [ {
+      "value" : "",
+      "kieliKoodi" : "uri: Suomi 5936#1"
+    } ]
+  },
+  "liitteidenToimitusOsoite" : {
+    "osoiteRivi" : "Mansku 2",
+    "lisaOsoiteRivi" : null,
+    "postinumero" : "00100 HELSINKI 10639",
+    "postitoimipaikka" : "HELSINKI"
+  },
+  "sahkoinenToimitusOsoite" : null,
+  "liitteidenToimitusPvm" : null,
+  "kaytetaanHaunPaattymisenAikaa" : false,
+  "hakukohdeKoulutukses" : [ ],
+  "valintaperustekuvausKoodiUri" : null,
+  "soraKuvausKoodiUri" : null
+}, {
+  "oid" : "1.2.246.562.14.673437691210",
+  "hakukohdeNimi" : "987 Talonrakennus ja ympäristösuunnittelu, yo#1",
+  "hakukohdeKoodistoNimi" : "Talonrakennus ja ympäristösuunnittelu, yo  Kevät 2013 SAVE_AS_READY",
+  "hakukohteenHakuOid" : "1.2.246.562.5.50476818906",
+  "hakukohteenHaunNimi" : null,
+  "hakukohteenTila" : "JULKAISTU",
+  "hakukohteenKoulutusOidit" : [ "1.2.246.562.5.574796577110", "1.2.246.562.5.24563894369" ],
+  "aloituspaikat" : 11,
+  "valinnanAloituspaikat" : 11,
+  "hakukelpoisuusVaatimukset" : null,
+  "lisatiedot" : {
+    "teksti" : [ {
+      "value" : "",
+      "kieliKoodi" : "uri: Suomi 5936#1"
+    } ]
+  },
+  "liitteidenToimitusOsoite" : {
+    "osoiteRivi" : "sada",
+    "lisaOsoiteRivi" : "asd",
+    "postinumero" : "00007 HELSINKI 10631",
+    "postitoimipaikka" : "HELSINKI"
+  },
+  "sahkoinenToimitusOsoite" : null,
+  "liitteidenToimitusPvm" : null,
+  "kaytetaanHaunPaattymisenAikaa" : false,
+  "hakukohdeKoulutukses" : [ ],
+  "valintaperustekuvausKoodiUri" : "t2_valintaperustekuvaus/T02#1",
+  "soraKuvausKoodiUri" : "t2_valintaperustekuvaus/T02#1"
+}, {
+  "oid" : "1.2.246.562.14.20634284259",
+  "hakukohdeNimi" : "400 Sirkusalan perustutkinto, yo#1",
+  "hakukohdeKoodistoNimi" : "Sirkusalan perustutkinto, yo   2013 SAVE_AS_DRAFT",
+  "hakukohteenHakuOid" : "1.2.246.562.5.50476818906",
+  "hakukohteenHaunNimi" : null,
+  "hakukohteenTila" : "LUONNOS",
+  "hakukohteenKoulutusOidit" : [ "1.2.246.562.5.50895097769" ],
+  "aloituspaikat" : 7,
+  "valinnanAloituspaikat" : 9,
+  "hakukelpoisuusVaatimukset" : null,
+  "lisatiedot" : {
+    "teksti" : [ {
+      "value" : "",
+      "kieliKoodi" : "uri: Suomi 5936#1"
+    } ]
+  },
+  "liitteidenToimitusOsoite" : {
+    "osoiteRivi" : "hhjghjg",
+    "lisaOsoiteRivi" : null,
+    "postinumero" : "00002 HELSINKI 10630",
+    "postitoimipaikka" : "HELSINKI"
+  },
+  "sahkoinenToimitusOsoite" : "",
+  "liitteidenToimitusPvm" : null,
+  "kaytetaanHaunPaattymisenAikaa" : false,
+  "hakukohdeKoulutukses" : [ ],
+  "valintaperustekuvausKoodiUri" : "t2_valintaperustekuvaus/T01#1",
+  "soraKuvausKoodiUri" : "t2_valintaperustekuvaus/T01#1"
+}, {
+  "oid" : "1.2.246.562.14.384870565910",
+  "hakukohdeNimi" : "398 Sirkusalan perustutkinto, pk#1",
+  "hakukohdeKoodistoNimi" : "Sirkusalan perustutkinto, pk   2013 SAVE_AS_READY",
+  "hakukohteenHakuOid" : "1.2.246.562.5.50476818906",
+  "hakukohteenHaunNimi" : null,
+  "hakukohteenTila" : "VALMIS",
+  "hakukohteenKoulutusOidit" : [ "1.2.246.562.5.72257827039" ],
+  "aloituspaikat" : 111,
+  "valinnanAloituspaikat" : 1,
+  "hakukelpoisuusVaatimukset" : null,
+  "lisatiedot" : {
+    "teksti" : [ {
+      "value" : "<p>Vastoin yleist&auml; uskomusta, Lorem Ipsum ei ole vain sattumanvarainen teksti. Sill&auml; on pitk&auml;t juuret klassisesta latinalaisesta kirjallisuudesta vuonna 45 eKr alkaen, tehden siit&auml; yli 2000 vuotta vanhan. Richard McClintock, latinalainen professori Hampden-Sydneyn yliopistossa Virginiassa, etsi yhden vaikeaselkoisimmista latinalaisista sanoista, consectetur, Lorem Ipsumin kappaleesta ja etsi lainauksia sanasta klassisessa kirjallisuudessa l&ouml;yt&auml;en varman l&auml;hteen. Lorem Ipsum tulee osista 1.10.32 ja 1.10.33 \"de Finibus Bonorum et Malorum\":ksesta (The Extremes of Good and Evil), jonka teki Cicero vuonna 45 eKr. T&auml;m&auml; kirja on tutkielma etiikasta, joka oli hyvin yleist&auml; Renesanssin aikana. Ensimm&auml;inen Lorem Ipsumin rivi, \"Lorem ipsum dolor sit amet..\", tulee rivist&auml; joka on osassa 1.10.32.</p>",
+      "kieliKoodi" : "uri: Suomi 5936#1"
+    } ]
+  },
+  "liitteidenToimitusOsoite" : {
+    "osoiteRivi" : "Liiteiden osoite",
+    "lisaOsoiteRivi" : "osoiterivi 2",
+    "postinumero" : "00010 POSTI KULJETUSALUE/HELSINKI 11214",
+    "postitoimipaikka" : "POSTI KULJETUSALUE/HELSINKI"
+  },
+  "sahkoinenToimitusOsoite" : null,
+  "liitteidenToimitusPvm" : 1362088800000,
+  "kaytetaanHaunPaattymisenAikaa" : true,
+  "hakukohdeKoulutukses" : [ ],
+  "valintaperustekuvausKoodiUri" : "t2_valintaperustekuvaus/T01#1",
+  "soraKuvausKoodiUri" : "t2_valintaperustekuvaus/T01#1"
+}, {
+  "oid" : "1.2.246.562.14.50848941626",
+  "hakukohdeNimi" : "492 Musiikkiteknologian koulutusohjelma sekä lukio, pk (Musiikkialan perustutkinto)#1",
+  "hakukohdeKoodistoNimi" : "Musiikkiteknologian koulutusohjelma sekä lukio, pk (Musiikkialan perustutkinto)  Kevät 2013 SAVE_AS_DRAFT",
+  "hakukohteenHakuOid" : "1.2.246.562.5.50476818906",
+  "hakukohteenHaunNimi" : null,
+  "hakukohteenTila" : "JULKAISTU",
+  "hakukohteenKoulutusOidit" : [ "1.2.246.562.5.11050193207", "1.2.246.562.5.13618947603" ],
+  "aloituspaikat" : 11,
+  "valinnanAloituspaikat" : 11,
+  "hakukelpoisuusVaatimukset" : null,
+  "lisatiedot" : {
+    "teksti" : [ {
+      "value" : "",
+      "kieliKoodi" : "uri: Suomi 5936#1"
+    } ]
+  },
+  "liitteidenToimitusOsoite" : {
+    "osoiteRivi" : "aada",
+    "lisaOsoiteRivi" : "dasdad",
+    "postinumero" : "00003 HELSINKI 11212",
+    "postitoimipaikka" : "HELSINKI"
+  },
+  "sahkoinenToimitusOsoite" : null,
+  "liitteidenToimitusPvm" : null,
+  "kaytetaanHaunPaattymisenAikaa" : false,
+  "hakukohdeKoulutukses" : [ ],
+  "valintaperustekuvausKoodiUri" : "t2_valintaperustekuvaus/T01#1",
+  "soraKuvausKoodiUri" : "t2_valintaperustekuvaus/T01#1"
+}, {
+  "oid" : "1.2.246.562.14.19957491665",
+  "hakukohdeNimi" : "259 Sosiaali- ja terveysalan perustutkinto sekä lukio, pk#1",
+  "hakukohdeKoodistoNimi" : "Sosiaali- ja terveysalan perustutkinto sekä lukio, pk  Kevät 2013 SAVE_AS_READY",
+  "hakukohteenHakuOid" : "1.2.246.562.5.50476818906",
+  "hakukohteenHaunNimi" : null,
+  "hakukohteenTila" : "JULKAISTU",
+  "hakukohteenKoulutusOidit" : [ "1.2.246.562.5.94074999197" ],
+  "aloituspaikat" : 10,
+  "valinnanAloituspaikat" : 5,
+  "hakukelpoisuusVaatimukset" : null,
+  "lisatiedot" : {
+    "teksti" : [ {
+      "value" : "",
+      "kieliKoodi" : "uri: Suomi 5936#1"
+    } ]
+  },
+  "liitteidenToimitusOsoite" : {
+    "osoiteRivi" : "Katu 12",
+    "lisaOsoiteRivi" : null,
+    "postinumero" : "00550 HELSINKI 11096",
+    "postitoimipaikka" : "HELSINKI"
+  },
+  "sahkoinenToimitusOsoite" : null,
+  "liitteidenToimitusPvm" : 1362088800000,
+  "kaytetaanHaunPaattymisenAikaa" : true,
+  "hakukohdeKoulutukses" : [ ],
+  "valintaperustekuvausKoodiUri" : "t2_valintaperustekuvaus/T01#1",
+  "soraKuvausKoodiUri" : "t2_valintaperustekuvaus/T01#1"
+}, {
+  "oid" : "1.2.246.562.14.94689257247",
+  "hakukohdeNimi" : "462 Musiikin koulutusohjelma, yo (Musiikkialan perustutkinto)#1",
+  "hakukohdeKoodistoNimi" : "Musiikin koulutusohjelma, yo (Musiikkialan perustutkinto)  Kevät 2013 SAVE_AS_READY",
+  "hakukohteenHakuOid" : "1.2.246.562.5.50476818906",
+  "hakukohteenHaunNimi" : null,
+  "hakukohteenTila" : "JULKAISTU",
+  "hakukohteenKoulutusOidit" : [ "1.2.246.562.5.45294783258", "1.2.246.562.5.63901051985" ],
+  "aloituspaikat" : 10,
+  "valinnanAloituspaikat" : 10,
+  "hakukelpoisuusVaatimukset" : null,
+  "lisatiedot" : {
+    "teksti" : [ {
+      "value" : "",
+      "kieliKoodi" : "uri: Suomi 5936#1"
+    } ]
+  },
+  "liitteidenToimitusOsoite" : {
+    "osoiteRivi" : "Mansku 2",
+    "lisaOsoiteRivi" : null,
+    "postinumero" : "00100 HELSINKI 10639",
+    "postitoimipaikka" : "HELSINKI"
+  },
+  "sahkoinenToimitusOsoite" : null,
+  "liitteidenToimitusPvm" : null,
+  "kaytetaanHaunPaattymisenAikaa" : false,
+  "hakukohdeKoulutukses" : [ ],
+  "valintaperustekuvausKoodiUri" : "t2_valintaperustekuvaus/T01#1",
+  "soraKuvausKoodiUri" : "t2_valintaperustekuvaus/T01#1"
+}, {
+  "oid" : "1.2.246.562.14.79893512065",
+  "hakukohdeNimi" : "101 Kaivosalan perustutkinto, pk#1",
+  "hakukohdeKoodistoNimi" : "Kaivosalan perustutkinto, pk  Kevät 2013 SAVE_AS_DRAFT",
+  "hakukohteenHakuOid" : "1.2.246.562.5.50476818906",
+  "hakukohteenHaunNimi" : null,
+  "hakukohteenTila" : "JULKAISTU",
+  "hakukohteenKoulutusOidit" : [ "1.2.246.562.5.47639190447" ],
+  "aloituspaikat" : 11,
+  "valinnanAloituspaikat" : 1,
+  "hakukelpoisuusVaatimukset" : null,
+  "lisatiedot" : {
+    "teksti" : [ {
+      "value" : "",
+      "kieliKoodi" : "uri: Suomi 5936#1"
+    } ]
+  },
+  "liitteidenToimitusOsoite" : {
+    "osoiteRivi" : "asdas",
+    "lisaOsoiteRivi" : "asd",
+    "postinumero" : "00000 Ei tiedossa 10713",
+    "postitoimipaikka" : "Ei tiedossa"
+  },
+  "sahkoinenToimitusOsoite" : null,
+  "liitteidenToimitusPvm" : null,
+  "kaytetaanHaunPaattymisenAikaa" : false,
+  "hakukohdeKoulutukses" : [ ],
+  "valintaperustekuvausKoodiUri" : "t2_valintaperustekuvaus/T01#1",
+  "soraKuvausKoodiUri" : "t2_valintaperustekuvaus/T01#1"
+}, {
+  "oid" : "1.2.246.562.14.71344129359",
+  "hakukohdeNimi" : "157 Tuotteen suunnittelun ja valmistuksen koulutusohjelma, pk (Käsi- ja taideteollisuusalan perustutkinto)#1",
+  "hakukohdeKoodistoNimi" : "Tuotteen suunnittelun ja valmistuksen koulutusohjelma, pk (Käsi- ja taideteollisuusalan perustutkinto)  Kevät 2013 SAVE_AS_READY",
+  "hakukohteenHakuOid" : "1.2.246.562.5.50476818906",
+  "hakukohteenHaunNimi" : null,
+  "hakukohteenTila" : "JULKAISTU",
+  "hakukohteenKoulutusOidit" : [ "1.2.246.562.5.574796577110" ],
+  "aloituspaikat" : 24,
+  "valinnanAloituspaikat" : 25,
+  "hakukelpoisuusVaatimukset" : null,
+  "lisatiedot" : {
+    "teksti" : [ {
+      "value" : "",
+      "kieliKoodi" : "uri: Suomi 5936#1"
+    } ]
+  },
+  "liitteidenToimitusOsoite" : {
+    "osoiteRivi" : "Mansku 1",
+    "lisaOsoiteRivi" : null,
+    "postinumero" : "00100 HELSINKI 10639",
+    "postitoimipaikka" : "HELSINKI"
+  },
+  "sahkoinenToimitusOsoite" : null,
+  "liitteidenToimitusPvm" : null,
+  "kaytetaanHaunPaattymisenAikaa" : false,
+  "hakukohdeKoulutukses" : [ ],
+  "valintaperustekuvausKoodiUri" : "t2_valintaperustekuvaus/T01#1",
+  "soraKuvausKoodiUri" : "t2_valintaperustekuvaus/T01#1"
+}, {
+  "oid" : "1.2.246.562.14.15772084438",
+  "hakukohdeNimi" : "222 Hammastekniikan perustutkinto, pk#1",
+  "hakukohdeKoodistoNimi" : "Hammastekniikan perustutkinto, pk  Syksy 2013 SAVE_AS_READY",
+  "hakukohteenHakuOid" : "1.2.246.562.5.35286627829",
+  "hakukohteenHaunNimi" : null,
+  "hakukohteenTila" : "VALMIS",
+  "hakukohteenKoulutusOidit" : [ "1.2.246.562.5.54546008621" ],
+  "aloituspaikat" : 20,
+  "valinnanAloituspaikat" : 10,
+  "hakukelpoisuusVaatimukset" : null,
+  "lisatiedot" : {
+    "teksti" : [ {
+      "value" : "",
+      "kieliKoodi" : "uri: Suomi 5936#1"
+    } ]
+  },
+  "liitteidenToimitusOsoite" : {
+    "osoiteRivi" : "Katu 12",
+    "lisaOsoiteRivi" : null,
+    "postinumero" : "00550 HELSINKI 11096",
+    "postitoimipaikka" : "HELSINKI"
+  },
+  "sahkoinenToimitusOsoite" : null,
+  "liitteidenToimitusPvm" : 1364763600000,
+  "kaytetaanHaunPaattymisenAikaa" : true,
+  "hakukohdeKoulutukses" : [ ],
+  "valintaperustekuvausKoodiUri" : "t2_valintaperustekuvaus/T01#1",
+  "soraKuvausKoodiUri" : "t2_valintaperustekuvaus/T01#1"
+}, {
+  "oid" : "1.2.246.562.14.99143956672",
+  "hakukohdeNimi" : "tutkintonimikkeet/10099#1",
+  "hakukohdeKoodistoNimi" : "PianonvirittÃ¤jÃ¤   2013 SAVE_AS_READY",
+  "hakukohteenHakuOid" : "1.2.246.562.5.50476818906",
+  "hakukohteenHaunNimi" : null,
+  "hakukohteenTila" : "VALMIS",
+  "hakukohteenKoulutusOidit" : [ "1.2.246.562.5.11050193207" ],
+  "aloituspaikat" : 24,
+  "valinnanAloituspaikat" : 24,
+  "hakukelpoisuusVaatimukset" : null,
+  "lisatiedot" : {
+    "teksti" : [ {
+      "value" : "",
+      "kieliKoodi" : "uri: Suomi 5936#1"
+    } ]
+  },
+  "liitteidenToimitusOsoite" : {
+    "osoiteRivi" : "Mansku 1",
+    "lisaOsoiteRivi" : null,
+    "postinumero" : "00100 HELSINKI 10639",
+    "postitoimipaikka" : "HELSINKI"
+  },
+  "sahkoinenToimitusOsoite" : null,
+  "liitteidenToimitusPvm" : null,
+  "kaytetaanHaunPaattymisenAikaa" : false,
+  "hakukohdeKoulutukses" : [ ],
+  "valintaperustekuvausKoodiUri" : null,
+  "soraKuvausKoodiUri" : null
+} ]

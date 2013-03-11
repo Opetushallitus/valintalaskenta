@@ -1,28 +1,35 @@
 package fi.vm.sade.valintalaskenta.app;
 
-import java.security.SecureRandom;
+import static fi.vm.sade.valintalaskenta.app.GenerateTestData.getNumberBetween;
+import static fi.vm.sade.valintalaskenta.app.GenerateTestData.random;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Random;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.core.io.ClassPathResource;
 
 import scala.actors.threadpool.Arrays;
 
 import com.google.common.collect.Lists;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintalaskenta.ValintalaskentaService;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskriteereillaTyyppi;
+import fi.vm.sade.valintalaskenta.dto.HakukohdeDto;
 import fi.vm.sade.valintalaskenta.service.impl.MongoConfigurationImpl;
 import fi.vm.sade.valintalaskenta.service.util.ValintalaskentaServiceUtil;
 
@@ -30,17 +37,13 @@ import fi.vm.sade.valintalaskenta.service.util.ValintalaskentaServiceUtil;
  * 
  * @author Jussi Jartamo
  * 
- *         Luo satunnaista testidataa paikalliseen sulautettuun mongokantaan.
- *         Sovelluksen saa suorittaa useamman kerran. Joka kerralla luodaan 10
- *         laskentaa.
- * 
  */
 @Configuration
 @ImportResource({ "classpath:test-generator-context.xml" })
-public class GenerateTestData {
+public class GenerateTestDataToTestDatabase {
 
-    private static final String HOST = "localhost";
-    private static final Integer PORT = 37200;
+    private static final String HOST = "taulu.hard.ware.fi";
+    private static final Integer PORT = 27017;
 
     @Bean
     public PropertyPlaceholderConfigurer getPropertyPlaceholderConfigurer() {
@@ -71,16 +74,20 @@ public class GenerateTestData {
         return avaimia;
     }
 
-    @SuppressWarnings("unchecked")
-    public static void main(String[] args) {
-        ValintalaskentaService valintalaskentaService = new AnnotationConfigApplicationContext(GenerateTestData.class,
-                MongoConfigurationImpl.class).getBean(ValintalaskentaService.class);
+    public static void main(String[] args) throws JsonSyntaxException, IOException {
+        HakukohdeDto[] hakukohteet = new Gson().fromJson(
+                IOUtils.toString(new ClassPathResource("hakukohde.json").getInputStream()), HakukohdeDto[].class);
+
+        ValintalaskentaService valintalaskentaService = new AnnotationConfigApplicationContext(
+                GenerateTestDataToTestDatabase.class, MongoConfigurationImpl.class)
+                .getBean(ValintalaskentaService.class);
 
         Integer jarjestysluku = 1;
         for (int i = 0; i < 10; ++i) {
-            String hakukohdeoid = "hakukohdeoid-" + new String(getRandomChars(6));
-            String hakemusoid = "hakemusoid-" + new String(getRandomChars(6));
-            String valinnanvaiheoid = "valinnanvaiheoid-" + new String(getRandomChars(6));
+
+            String hakukohdeoid = hakukohteet[i % hakukohteet.length].getOid();
+            String hakemusoid = "hakemusoid-" + new String(GenerateTestData.getRandomChars(6));
+            String valinnanvaiheoid = "valinnanvaiheoid-" + new String(GenerateTestData.getRandomChars(6));
             // arvotaan hakijalle satunnaisesti avainarvopareja
             List<String[]> avainparit = new ArrayList<String[]>();
             for (String avain : getAvaimia()) {
@@ -94,7 +101,7 @@ public class GenerateTestData {
             for (int a = 0; a < random.nextInt(5) + 1; ++a) {
 
                 ValintatapajonoJarjestyskriteereillaTyyppi jono = ValintalaskentaServiceUtil
-                        .createValintatapajono("jonooid-" + new String(getRandomChars(6)));
+                        .createValintatapajono("jonooid-" + new String(GenerateTestData.getRandomChars(6)));
                 jono.getJarjestyskriteerit().add(ValintalaskentaServiceUtil.createJarjestyskriteeri());
 
                 // tehdään summafunktio satunnaisilla avainarvopareilla
@@ -112,55 +119,7 @@ public class GenerateTestData {
             valintalaskentaService.laske(Arrays.asList(hakemukset),
                     Arrays.asList(new ValintaperusteetTyyppi[] { valintaperusteet }));
         }
+
     }
 
-    public static Random random = new SecureRandom();
-
-    public static int getNumberBetween(int min, int max) {
-
-        if (max < min) {
-            throw new IllegalArgumentException(String.format("Minimum must be less than minimum (min=%d, max=%d)", min,
-                    max));
-        }
-
-        return min + random.nextInt(max - min);
-    }
-
-    public static String getRandomChars(int length) {
-        return getRandomChars(length, length);
-    }
-
-    public static char getRandomChar() {
-        return (char) (random.nextInt(26) + 'a');
-    }
-
-    public static String getRandomChars(int minLength, int maxLength) {
-        validateMinMaxParams(minLength, maxLength);
-        StringBuilder sb = new StringBuilder(maxLength);
-
-        int length = minLength;
-        if (maxLength != minLength) {
-            length = length + random.nextInt(maxLength - minLength);
-        }
-        while (length > 0) {
-            sb.append(getRandomChar());
-            length--;
-        }
-        return sb.toString();
-    }
-
-    private static void validateMinMaxParams(int minLength, int maxLength) {
-        if (minLength < 0) {
-            throw new IllegalArgumentException("Minimum length must be a non-negative number");
-        }
-
-        if (maxLength < 0) {
-            throw new IllegalArgumentException("Maximum length must be a non-negative number");
-        }
-
-        if (maxLength < minLength) {
-            throw new IllegalArgumentException(String.format(
-                    "Minimum length must be less than maximum length (min=%d, max=%d)", minLength, maxLength));
-        }
-    }
 }

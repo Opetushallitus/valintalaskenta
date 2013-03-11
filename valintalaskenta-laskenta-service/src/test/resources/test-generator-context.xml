@@ -11,6 +11,7 @@
 
 	
 	<ctx:annotation-config/>
+	<ctx:component-scan base-package="fi.vm.sade.valintalaskenta.dao.impl"/>
 	
 	<bean class="fi.vm.sade.valintalaskenta.service.impl.ValintalaskentaSuorittajaServiceImpl" />
 	
