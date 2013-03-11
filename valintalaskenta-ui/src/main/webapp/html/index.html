@@ -11,9 +11,13 @@
 
     <script th:src="@{/jslib/angular-1.0.3/angular.js}" src="../jslib/angular-1.0.3/angular.js"></script>
     <script th:src="@{/jslib/angular-1.0.3/angular-resource.js}" src="../jslib/angular-1.0.3/angular-resource.js"></script>
-
+    
     <script th:inline="javascript">
+        var tarjontaService = "http://luokka.hard.ware.fi\\:8181/tarjonta-service/rest/"
+
         /*<![CDATA[*/;
+
+        TARJONTA_URL_BASE = tarjontaService; 
         SERVICE_URL_BASE = /*[[${serviceUrl}]]*/ "/service/";
         TEMPLATE_URL_BASE = /*[[@{/html/}]]*/ "";
         /*]]>*/

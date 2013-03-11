@@ -1,5 +1,5 @@
 <div class="width-16-8 margin-vertical-2" ng-controller="HakuController">
-        <select ng-model="model.hakuOid" ng-options="i.nimi for i in model.haut">
+        <select ng-model="model.hakuOid" ng-options="haku.haunKielistetytNimet[1].nimi for haku in model.haut">
     </select>
 </div>
 

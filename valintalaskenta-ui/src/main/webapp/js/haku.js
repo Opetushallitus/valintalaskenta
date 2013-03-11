@@ -1,26 +1,21 @@
-app.factory('HakuModel', function() {
+app.factory('HakuModel', function(Haku) {
     var model;
     model = new function() {
         this.hakuOid = {};
         this.haut = [];
 
-        this.init = function(oid) {
-            if(model.haut.length <= 0) {
-                model.haut = [
-                        {"oid": "oid1", "nimi": "Toisen asteen ammatillisen ja lukiokoulutuksen yhteishaku, kevät 2013"},
-                        {"oid": "oid2", "nimi": "oid2"},
-                        {"oid": "oid3", "nimi": "oid3"},
-                        {"oid": "oid4", "nimi": "oid4"}
-                    ];
-                model.hakuOid = model.haut[0];
-                model.haut.forEach(function(haku){
-                    if(haku.oid == oid) {
-                        model.hakuOid = haku;
-                    }
-                });
+        this.refresh = function() {
+            Haku.get({}, function(result) {
+                model.haut = result;
+            });
+        }
 
+        this.refreshIfNeeded = function(hakuOid) {
+            if(model.hakuoid !== hakuOid) {
+                model.refresh();
             }
         }
+
     };
 
     return model;
@@ -28,10 +23,12 @@ app.factory('HakuModel', function() {
 
 function HakuController($scope, $location, $routeParams, HakuModel) {
     $scope.model = HakuModel;
-    HakuModel.init($routeParams.hakuOid);
+    $scope.model.refreshIfNeeded($routeParams.hakuOid);
+    /*
     $scope.$watch('model.hakuOid', function() {
         if(HakuModel.hakuOid.oid != $routeParams.hakuOid) {
             $location.path('/haku/' + HakuModel.hakuOid.oid + '/hakukohde/');
         }
     });
+    */
 }

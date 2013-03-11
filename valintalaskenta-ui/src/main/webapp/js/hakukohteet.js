@@ -1,24 +1,22 @@
-app.factory('HakukohteetModel', function() {
+app.factory('HakukohteetModel', function(Haku, allHakukohteet) {
     var model;
     model = new function(){
-        this.hakuoid;
+        
         this.hakukohteet = [];
 
-        function refresh(oid) {
-            model.hakuoid = oid;
+        this.refresh = function(hakuOid) {
+            model.hakuoid = hakuOid;
 
-//            Pitäisi hakea tarjonnasta
-            model.hakukohteet = [
-                {"oid": "oid1", "nimi": "Sosiaali ja terveysalan perustutkinto, pk Stadia ammattiopisto, Vilppulankatu"},
-                {"oid": "oid2", "nimi": "Sosiaali ja terveysalan perustutkinto, pk Stadia ammattiopisto, Vilppulankatu"},
-                {"oid": "oid3", "nimi": "Sosiaali ja terveysalan perustutkinto, pk Stadia ammattiopisto, Vilppulankatu"},
-                {"oid": "oid4", "nimi": "Sosiaali ja terveysalan perustutkinto, pk Stadia ammattiopisto, Vilppulankatu"} ];
-        }
+            allHakukohteet.get({}, function(result) {
+                model.hakukohteet = result;
+                //console.log(result);
+            });
+           
 
-        this.refreshIfNeeded = function(oid) {
-            if(oid != model.hakuoid) {
-                refresh(oid);
-            }
+        };
+
+        this.refreshIfNeeded = function(hakuOid) {
+            model.refresh(hakuOid);
         };
     };
 
@@ -27,6 +25,7 @@ app.factory('HakukohteetModel', function() {
 
 function HakukohteetController($scope, $location, $routeParams, HakukohteetModel) {
    $scope.hakuOid = $routeParams.hakuOid;
+
    $scope.hakukohdeOid = $routeParams.hakukohdeOid;
 
    $scope.model = HakukohteetModel;

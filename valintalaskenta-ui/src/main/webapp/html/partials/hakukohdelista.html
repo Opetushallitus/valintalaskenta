@@ -4,11 +4,11 @@
 	</div>
 
 	<ul class="selectlist">
-	    <li ng-repeat="data in model.hakukohteet | filter:searchWord">
-	        <a href="#/haku/{{hakuOid}}/hakukohde/{{data.oid}}/valinnanhallinta">
+	    <li ng-repeat="hakukohde in model.hakukohteet | filter:searchWord">
+	        <a href="#/haku/{{hakuOid}}/hakukohde/{{hakukohde.oid}}/valinnanhallinta">
 	            <span class="icon file"></span>
 	            <span class="label">
-	                {{data.nimi}}
+	                {{hakukohde.hakukohdeNimi}}
 	            </span>
 	        </a>
 	    </li>

@@ -7,6 +7,7 @@ var TEMPLATE_URL_BASE = TEMPLATE_URL_BASE || "";
 app.config(function($routeProvider) {
         $routeProvider.
 
+        
         when('/haku/:hakuOid/hakukohde/', {controller:HakukohdeController, templateUrl:TEMPLATE_URL_BASE + 'hakukohde.html'}).
         when('/haku/:hakuOid/hakukohde/:hakukohdeOid/valinnanhallinta', {controller:ValinnanhallintaController, templateUrl:TEMPLATE_URL_BASE + 'valinnanhallinta.html'}).
         when('/haku/:hakuOid/hakukohde/:hakukohdeOid/pistesyotto', {controller:PistesyottoController, templateUrl:TEMPLATE_URL_BASE + 'pistesyotto.html'}).
@@ -23,22 +24,28 @@ app.config(function($routeProvider) {
         otherwise({redirectTo:'/haku//hakukohde/'});
 });
 
-
+ 
 //rest resources
-
-
-//Haku
 app.factory('Haku', function($resource) {
-return $resource(SERVICE_URL_BASE + "resources/haku/", {}, {
+  return $resource(TARJONTA_URL_BASE + "haku", {}, {
     get: {method: "GET", isArray: true}
   });
 });
+
 
 app.factory('HakuHakukohdeChildren', function($resource) {
-return $resource(SERVICE_URL_BASE + "resources/haku/:hakuOid/hakukohde", {hakuOid: "@hakuOid"}, {
+return $resource(TARJONTA_URL_BASE + "haku/:hakuOid/hakukohde", {hakuOid: "@hakuOid"}, {
     get: {method: "GET", isArray: true}
   });
 });
+
+//Kaikki hakukohteet
+app.factory('allHakukohteet', function($resource) {
+return $resource(TARJONTA_URL_BASE + "hakukohde", {}, {
+    get: {method: "GET", isArray: true}
+  });
+});
+
 
 
 //Hakukohde
@@ -63,5 +70,4 @@ return $resource(SERVICE_URL_BASE + "resources/valinnanvaihe/:valinnanvaiheoid/v
     get: {method: "GET", isArray: true}
   });
 });
-
 
