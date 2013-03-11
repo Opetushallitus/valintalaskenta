@@ -1,14 +1,8 @@
 package fi.vm.sade.valintalaskenta.service;
 
-import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
-import fi.vm.sade.service.valintalaskenta.ValintalaskentaService;
-import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskriteereillaTyyppi;
-import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.resource.HakukohdeResource;
-import fi.vm.sade.valintalaskenta.service.util.ValintalaskentaServiceUtil;
+import java.util.List;
+
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -16,9 +10,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import scala.actors.threadpool.Arrays;
 
-import java.util.List;
+import scala.actors.threadpool.Arrays;
+import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
+import fi.vm.sade.service.valintalaskenta.ValintalaskentaService;
+import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskriteereillaTyyppi;
+import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.resource.HakukohdeResource;
+import fi.vm.sade.valintalaskenta.service.util.ValintalaskentaServiceUtil;
 
 /**
  * 
@@ -41,7 +41,6 @@ public class HakujenVersiointiTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    @Ignore
     public void testVersionti() {
         String hakemusoid = "hakemusoid1";
         String hakukohdeoid = "hakukohdeoid-" + System.currentTimeMillis();
@@ -63,7 +62,8 @@ public class HakujenVersiointiTest {
 
             jono.getJarjestyskriteerit().get(0)
                     .setFunktiokutsu(ValintalaskentaServiceUtil.createSummaFunktio("matematiikka", "aidinkieli"));
-            valintalaskentaService.laske(Arrays.asList(hakemukset), Arrays.asList(new ValintaperusteetTyyppi[]{valintaperusteet}));
+            valintalaskentaService.laske(Arrays.asList(hakemukset),
+                    Arrays.asList(new ValintaperusteetTyyppi[] { valintaperusteet }));
 
             List<Valinnanvaihe> kohteet = hakukohdeResource.hakukohde(hakukohdeoid);
             Assert.assertTrue(

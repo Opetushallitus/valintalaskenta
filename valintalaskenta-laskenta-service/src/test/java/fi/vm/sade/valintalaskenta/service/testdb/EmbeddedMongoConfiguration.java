@@ -1,4 +1,4 @@
-package fi.vm.sade.valintalaskenta.service.impl;
+package fi.vm.sade.valintalaskenta.service.testdb;
 
 import java.io.IOException;
 

@@ -1,5 +1,16 @@
 package fi.vm.sade.valintalaskenta.service;
 
+import java.io.IOException;
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import scala.actors.threadpool.Arrays;
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintalaskenta.ValintalaskentaService;
 import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
@@ -9,17 +20,6 @@ import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskritee
 import fi.vm.sade.valintalaskenta.domain.Hakukohde;
 import fi.vm.sade.valintalaskenta.resource.HakuResource;
 import fi.vm.sade.valintalaskenta.service.util.ValintalaskentaServiceUtil;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import scala.actors.threadpool.Arrays;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * 
@@ -43,7 +43,6 @@ public class PassThroughTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    @Ignore
     public void testHaku() throws IOException {
         final int initialSize = hakuResource.haku().size();
         String hakukohdeoid = "hakukohdeoid" + initialSize + "-" + System.currentTimeMillis();

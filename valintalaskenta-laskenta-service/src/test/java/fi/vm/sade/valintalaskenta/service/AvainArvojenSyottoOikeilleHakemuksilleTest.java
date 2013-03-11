@@ -1,5 +1,15 @@
 package fi.vm.sade.valintalaskenta.service;
 
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import scala.actors.threadpool.Arrays;
 import fi.vm.sade.service.hakemus.schema.AvainArvoTyyppi;
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintalaskenta.ValintalaskentaService;
@@ -10,16 +20,6 @@ import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.resource.HakukohdeResource;
 import fi.vm.sade.valintalaskenta.service.util.ValintalaskentaServiceUtil;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import scala.actors.threadpool.Arrays;
-
-import java.util.List;
 
 /**
  * 
@@ -41,7 +41,6 @@ public class AvainArvojenSyottoOikeilleHakemuksilleTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    @Ignore
     public void testAvainarvoparitKahdellaHakijalla() {
         String hakukohdeoid = "hakukohdeoid-" + System.currentTimeMillis();
         String valinnanvaiheoid = "valinnanvaiheoid-" + System.currentTimeMillis();

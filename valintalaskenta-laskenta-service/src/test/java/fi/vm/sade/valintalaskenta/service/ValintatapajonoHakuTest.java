@@ -14,7 +14,7 @@ import fi.vm.sade.valintalaskenta.resource.ValintatapajonoResource;
  * @author Jussi Jartamo
  * 
  *         Luo ja versioi valintatapajonoja. Testaa että uusimman version
- *         järjesteyskriteeritulokset palautuu valintatapajonohaulla
+ *         järjesteyskriteeritulokset palautuu valintatapajonohaulla.
  * 
  */
 @ContextConfiguration(locations = "classpath:test-context.xml")
