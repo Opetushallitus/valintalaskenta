@@ -15,7 +15,7 @@
             <plugin>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-codegen-plugin</artifactId>
-                <version>${cxf.version}</version>
+                <version>${cxf.codegen.version}</version>
                 <executions>
                     <execution>
                         <id>generate-wsdl</id>
