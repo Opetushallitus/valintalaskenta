@@ -1,9 +1,10 @@
 package fi.vm.sade.valintalaskenta.domain;
 
-import java.util.Date;
-
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.PrePersist;
+import org.codehaus.jackson.map.annotate.JsonView;
+
+import java.util.Date;
 
 /**
  * 
@@ -19,11 +20,17 @@ import com.google.code.morphia.annotations.PrePersist;
 @Embedded("Hakukohde")
 public class Hakukohde {
 
+    @JsonView(JsonViews.Basic.class)
     private Date createdAt;
+
+    @JsonView(JsonViews.Basic.class)
     private String hakuoid;
+
+    @JsonView(JsonViews.Basic.class)
     private String hakukohdeoid;
 
     @Embedded
+    @JsonView(JsonViews.Basic.class)
     private Valinnanvaihe valinnanvaihe;
 
     public Valinnanvaihe getValinnanvaihe() {

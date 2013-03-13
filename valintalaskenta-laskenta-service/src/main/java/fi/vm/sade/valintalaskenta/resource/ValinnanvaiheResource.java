@@ -1,20 +1,18 @@
 package fi.vm.sade.valintalaskenta.resource;
 
-import java.util.List;
+import fi.vm.sade.valintalaskenta.domain.JsonViews;
+import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
+import fi.vm.sade.valintalaskenta.service.ValintalaskentaTulosService;
+import org.codehaus.jackson.map.annotate.JsonView;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import org.codehaus.jackson.map.annotate.JsonView;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import fi.vm.sade.service.valintaperusteet.model.JsonViews;
-import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
-import fi.vm.sade.valintalaskenta.service.ValintalaskentaTulosService;
+import java.util.List;
 
 /**
  * 

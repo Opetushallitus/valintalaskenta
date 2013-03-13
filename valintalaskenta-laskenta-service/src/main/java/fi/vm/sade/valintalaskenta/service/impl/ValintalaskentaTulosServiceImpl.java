@@ -4,10 +4,10 @@ import fi.vm.sade.valintalaskenta.dao.HakukohdeDAO;
 import fi.vm.sade.valintalaskenta.dao.JarjestyskriteeritulosDAO;
 import fi.vm.sade.valintalaskenta.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.dao.ValintatapajonoDAO;
-import fi.vm.sade.valintalaskenta.domain.Hakukohde;
 import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
 import fi.vm.sade.valintalaskenta.service.ValintalaskentaTulosService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,11 +38,11 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     @Autowired
     private ValintatapajonoDAO valintatapajonoDAO;
 
-    public List<Hakukohde> haeHakukohteet() {
+    public List<Versioituhakukohde> haeHakukohteet() {
         return hakukohdeDAO.readAll();
     }
 
-    public List<Hakukohde> haeHakukohteetHaulle(String hakuoid) {
+    public List<Versioituhakukohde> haeHakukohteetHaulle(String hakuoid) {
         return hakukohdeDAO.readByHakuOid(hakuoid);
 
     }

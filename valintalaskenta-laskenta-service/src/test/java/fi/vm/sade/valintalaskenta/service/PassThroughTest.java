@@ -1,25 +1,24 @@
 package fi.vm.sade.valintalaskenta.service;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import scala.actors.threadpool.Arrays;
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintalaskenta.ValintalaskentaService;
 import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.JarjestyskriteeriTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskriteereillaTyyppi;
-import fi.vm.sade.valintalaskenta.domain.Hakukohde;
+import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
 import fi.vm.sade.valintalaskenta.resource.HakuResource;
 import fi.vm.sade.valintalaskenta.service.util.ValintalaskentaServiceUtil;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import scala.actors.threadpool.Arrays;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * 
@@ -60,10 +59,10 @@ public class PassThroughTest {
         jarjestyskriteeri0.setFunktiokutsu(funktiokutsu);
         valintalaskentaService.laske(Arrays.asList(hakemukset),
                 Arrays.asList(new ValintaperusteetTyyppi[] { valintaperusteet }));
-        List<Hakukohde> hakukohteet = hakuResource.haku();
+        List<Versioituhakukohde> hakukohteet = hakuResource.haku();
         Assert.assertTrue("Hakukohteet ei lisääntynyt yhdellä!", hakukohteet.size() == initialSize + 1);
-        for (Hakukohde haku : hakukohteet) {
-            if (hakukohdeoid.equals(haku.getOid())) {
+        for (Versioituhakukohde haku : hakukohteet) {
+            if (hakukohdeoid.equals(haku.getHakukohde().getOid())) {
                 return;
             }
         }

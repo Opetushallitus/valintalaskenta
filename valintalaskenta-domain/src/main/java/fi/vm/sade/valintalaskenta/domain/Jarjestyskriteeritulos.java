@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain;
 
 import com.google.code.morphia.annotations.Embedded;
+import org.codehaus.jackson.map.annotate.JsonView;
 
 /**
  * 
@@ -10,12 +11,25 @@ import com.google.code.morphia.annotations.Embedded;
 @Embedded("Jarjestyskriteeritulos")
 public class Jarjestyskriteeritulos {
 
+    @JsonView(JsonViews.Basic.class)
     private double arvo;
+
+    @JsonView(JsonViews.Basic.class)
     private int prioriteetti;
+
+    @JsonView(JsonViews.Basic.class)
     private JarjestyskriteerituloksenTila tila;
+
+    @JsonView(JsonViews.Basic.class)
     private String kuvaus;
+
+    @JsonView(JsonViews.Basic.class)
     private String hakemusoid;
+
+    @JsonView(JsonViews.Basic.class)
     private String etunimi;
+
+    @JsonView(JsonViews.Basic.class)
     private String sukunimi;
 
     public String getEtunimi() {

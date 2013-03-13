@@ -1,10 +1,11 @@
 package fi.vm.sade.valintalaskenta.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Reference;
+import org.codehaus.jackson.map.annotate.JsonView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -14,10 +15,14 @@ import com.google.code.morphia.annotations.Reference;
 @Embedded("Valinnanvaihe")
 public class Valinnanvaihe {
 
+    @JsonView(JsonViews.Basic.class)
     private int jarjestysnumero;
+
+    @JsonView(JsonViews.Basic.class)
     private String valinnanvaiheoid;
 
     @Reference
+    @JsonView(JsonViews.Basic.class)
     private List<Valintatapajono> valintatapajono = new ArrayList<Valintatapajono>();
 
     public List<Valintatapajono> getValintatapajono() {

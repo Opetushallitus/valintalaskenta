@@ -1,14 +1,14 @@
 package fi.vm.sade.valintalaskenta.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bson.types.ObjectId;
-
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Indexed;
+import org.bson.types.ObjectId;
+import org.codehaus.jackson.map.annotate.JsonView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -25,14 +25,26 @@ public class Valintatapajono implements Comparable<Valintatapajono> {
     private ObjectId id;
 
     @Indexed(unique = false, dropDups = false)
+    @JsonView(JsonViews.Basic.class)
     private String valintatapajonooid;
+
+    @JsonView(JsonViews.Basic.class)
     private Long versio;
+
+    @JsonView(JsonViews.Basic.class)
     private String nimi;
+
+    @JsonView(JsonViews.Basic.class)
     private int prioriteetti;
+
+    @JsonView(JsonViews.Basic.class)
     private int aloituspaikat;
+
+    @JsonView(JsonViews.Basic.class)
     private boolean siirretaanSijoitteluun;
 
     @Embedded
+    @JsonView(JsonViews.Basic.class)
     private List<Jarjestyskriteeritulos> jarjestyskriteeritulokset = new ArrayList<Jarjestyskriteeritulos>();
 
     public String getNimi() {

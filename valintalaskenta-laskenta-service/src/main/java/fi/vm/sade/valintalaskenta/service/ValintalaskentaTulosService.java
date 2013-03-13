@@ -1,17 +1,17 @@
 package fi.vm.sade.valintalaskenta.service;
 
-import java.util.List;
-
-import fi.vm.sade.valintalaskenta.domain.Hakukohde;
 import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
+
+import java.util.List;
 
 public interface ValintalaskentaTulosService {
 
-    List<Hakukohde> haeHakukohteet();
+    List<Versioituhakukohde> haeHakukohteet();
 
-    List<Hakukohde> haeHakukohteetHaulle(String hakuoid);
+    List<Versioituhakukohde> haeHakukohteetHaulle(String hakuoid);
 
     List<Valinnanvaihe> haeValinnanvaiheetHakukohteelle(String hakukohdeoid);
 

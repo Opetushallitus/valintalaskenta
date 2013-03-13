@@ -1,16 +1,14 @@
 package fi.vm.sade.valintalaskenta.dao.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.code.morphia.Datastore;
+import fi.vm.sade.valintalaskenta.dao.HakukohdeDAO;
+import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
+import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.google.code.morphia.Datastore;
-
-import fi.vm.sade.valintalaskenta.dao.HakukohdeDAO;
-import fi.vm.sade.valintalaskenta.domain.Hakukohde;
-import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -23,18 +21,18 @@ public class HakukohdeDAOImpl implements HakukohdeDAO {
     @Autowired
     private Datastore datastore;
 
-    public List<Hakukohde> readAll() {
+    public List<Versioituhakukohde> readAll() {
         return filterUusinVersioOnly(datastore.find(VersiohallintaHakukohde.class).asList());
     }
 
-    public List<Hakukohde> readByHakuOid(String hakuoid) {
+    public List<Versioituhakukohde> readByHakuOid(String hakuoid) {
         return filterUusinVersioOnly(datastore.find(VersiohallintaHakukohde.class, "hakuoid", hakuoid).asList());
     }
 
-    private List<Hakukohde> filterUusinVersioOnly(List<VersiohallintaHakukohde> versiohallinnat) {
-        List<Hakukohde> hakukohteet = new ArrayList<Hakukohde>();
+    private List<Versioituhakukohde> filterUusinVersioOnly(List<VersiohallintaHakukohde> versiohallinnat) {
+        List<Versioituhakukohde> hakukohteet = new ArrayList<Versioituhakukohde>();
         for (VersiohallintaHakukohde versiohallinta : versiohallinnat) {
-            hakukohteet.add(versiohallinta.getHakukohteet().haeUusinVersio().getHakukohde());
+            hakukohteet.add(versiohallinta.getHakukohteet().haeUusinVersio());
         }
         return hakukohteet;
     }

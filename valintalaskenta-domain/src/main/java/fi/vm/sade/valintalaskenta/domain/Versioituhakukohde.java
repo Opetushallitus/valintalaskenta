@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain;
 
 import com.google.code.morphia.annotations.Embedded;
+import org.codehaus.jackson.map.annotate.JsonView;
 
 /**
  * 
@@ -14,9 +15,11 @@ import com.google.code.morphia.annotations.Embedded;
 @Embedded("VersioituHakukohde")
 public class Versioituhakukohde implements Comparable<Versioituhakukohde> {
 
+    @JsonView(JsonViews.Basic.class)
     private Long versio;
 
     @Embedded
+    @JsonView(JsonViews.Basic.class)
     private Hakukohde hakukohde;
 
     public Hakukohde getHakukohde() {
