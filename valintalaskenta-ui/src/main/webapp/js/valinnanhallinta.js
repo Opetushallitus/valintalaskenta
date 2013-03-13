@@ -1,6 +1,7 @@
 ﻿app.factory('ValinnanhallintaModel', function(ValinnanvaiheListFromValintaperusteet, ValintalaskentaAktivointi) {
 
-	var model = new function() {
+	var model;
+	model = new function() {
 
 		this.hakukohde = {};
         this.hakukohdeOid = '';
@@ -28,10 +29,7 @@
 
 	};
 
-
-
 	return model;
-
 });
 
 function ValinnanhallintaController($scope, $location, $routeParams, ValinnanhallintaModel) {

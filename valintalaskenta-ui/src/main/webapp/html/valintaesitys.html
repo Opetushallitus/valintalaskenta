@@ -14,31 +14,31 @@
 			Stadin ammattiopisto, Vilppulantie</h1>
 
 			<p><a href="#" class="button small disabled">Hyväksy valintaesitys</a> Hyväksytty 12.6.2013 / PI</p>
-			
-			<div ng-repeat="valintatapajono in model.valintatapajonot">
-				<h3>Valintatapajono: {{valintatapajono.nimi}}</h3>
-				<table class="virkailija-table-1">
-					<thead>
-						<tr>
-							<th>Hakija</th>
-							<th>Valintatieto</th>
-							<th>Selite</th>
-							<th>Pistemäärä</th>
-						</tr>
-					</thead>
-					<tbody ng-repeat="tulos in valintatapajono.jarjestyskriteeritulokset">
-						<tr>
-							<td>{{tulos.sukunimi}}, {{tulos.etunimi}}</td>
-							<td>{{tulos.tila}}</td>
-							<td>{{tulos.kuvaus}}</td>
-							<td>{{tulos.arvo}}</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			
+
+            <div ng-repeat="valinnanvaihe in model.valinnanvaiheet">
+                <div ng-repeat="valintatapajono in valinnanvaihe.valintatapajono">
+                    <h3>Valintatapajono: {{valintatapajono.nimi}}</h3>
+                    <table class="virkailija-table-1">
+                        <thead>
+                            <tr>
+                                <th>Hakija</th>
+                                <th>Valintatieto</th>
+                                <th>Selite</th>
+                                <th>Pistemäärä</th>
+                            </tr>
+                        </thead>
+                        <tbody ng-repeat="tulos in valintatapajono.jarjestyskriteeritulokset">
+                            <tr>
+                                <td>{{tulos.sukunimi}}, {{tulos.etunimi}}</td>
+                                <td>{{tulos.tila}}</td>
+                                <td>{{tulos.kuvaus}}</td>
+                                <td>{{tulos.arvo}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 		</div>
-	
 	</div>
 	<div class="clear"></div>
 </div>

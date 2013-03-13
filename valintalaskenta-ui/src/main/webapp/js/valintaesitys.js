@@ -1,22 +1,22 @@
-﻿
-app.factory('ValintaesitysModel', function(ValinnanvaiheListByHakukohde, Haku) {
+﻿app.factory('ValintaesitysModel', function(ValinnanvaiheListByHakukohde) {
+	var model;
+	model = new function() {
 
-	var model = new function() {
-
-		this.hakukohde = {};
-		this.valintatapajonot = [];
+		this.hakukohdeOid = {};
+		this.valinnanvaiheet = [];
 		
 		this.refresh = function(hakukohdeOid) {
-
-            ValinnanvaiheListByHakukohde.get({hakukohdeoid: hakukohdeOid}, function(result) {
-				model.valintatapajonot = result[0].valintatapajono;
+            model.hakukohdeOid = hakukohdeOid;
+			ValinnanvaiheListByHakukohde.get({hakukohdeoid: hakukohdeOid}, function(result) {
+			    model.valinnanvaiheet = result;
+			    console.log(model.valinnanvaiheet);
 			});
 			
 		}
 
 		this.refreshIfNeeded = function(hakukohdeOid) {
 			
-			if( model.hakukohde.oid !== hakukohdeOid ) {
+			if( model.hakukohdeOid != hakukohdeOid ) {
 				model.refresh(hakukohdeOid);
 			}
 		}
