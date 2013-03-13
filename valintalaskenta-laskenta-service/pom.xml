@@ -174,10 +174,18 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>fi.vm.sade.generic</groupId>
-			<artifactId>generic-service</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>fi.vm.sade.generic</groupId>
+            <artifactId>generic-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fi.vm.sade.generic</groupId>
+            <artifactId>dependencies-service</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
