@@ -5,6 +5,7 @@ app.factory('HakuModel', function(Haku) {
         this.haut = [];
 
         this.init = function(oid) {
+            // Ladataan haut vain kerran. Haut tuskin muuttuvat kovinkaan usein.
             if(model.haut.length <= 0) {
                 Haku.get({}, function(result) {
                     model.haut = result;
@@ -25,6 +26,7 @@ app.factory('HakuModel', function(Haku) {
 function HakuController($scope, $location, $routeParams, HakuModel) {
     $scope.model = HakuModel;
     HakuModel.init($routeParams.hakuOid);
+
     $scope.$watch('model.hakuOid', function() {
         if(HakuModel.hakuOid.oid &&
             HakuModel.hakuOid.oid != "undefined" &&

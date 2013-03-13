@@ -32,8 +32,9 @@
 	return model;
 });
 
-function ValinnanhallintaController($scope, $location, $routeParams, ValinnanhallintaModel) {
+function ValinnanhallintaController($scope, $location, $routeParams, ValinnanhallintaModel, HakukohdeModel) {
 	$scope.model = ValinnanhallintaModel;
-
+    $scope.hakukohdeModel = HakukohdeModel;
+    HakukohdeModel.refreshIfNeeded($routeParams.hakukohdeOid);
 	$scope.model.refreshIfNeeded($routeParams.hakukohdeOid);
 }

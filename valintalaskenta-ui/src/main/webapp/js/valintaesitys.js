@@ -13,12 +13,13 @@
 			
 		}
 
-		this.refreshIfNeeded = function(hakukohdeOid) {
-			
-			if( model.hakukohdeOid != hakukohdeOid ) {
-				model.refresh(hakukohdeOid);
-			}
-		}
+// Kai tämä on hyvä joka kerta refreshata, niin ei tarvi painaa alt+f5/cmd+r
+//		this.refreshIfNeeded = function(hakukohdeOid) {
+//
+//			if( model.hakukohdeOid != hakukohdeOid ) {
+//				model.refresh(hakukohdeOid);
+//			}
+//		}
 		
 
 	};
@@ -27,9 +28,11 @@
 });
 
 
-function ValintaesitysController($scope, $location, $routeParams, ValintaesitysModel) {
+function ValintaesitysController($scope, $location, $routeParams, ValintaesitysModel, HakukohdeModel) {
     $scope.hakukohdeOid = $routeParams.hakukohdeOid;
     $scope.model = ValintaesitysModel;
-    $scope.model.refreshIfNeeded($scope.hakukohdeOid);
+    $scope.hakukohdeModel = HakukohdeModel;
+    HakukohdeModel.refreshIfNeeded($routeParams.hakukohdeOid);
+    $scope.model.refresh($scope.hakukohdeOid);
 
 }

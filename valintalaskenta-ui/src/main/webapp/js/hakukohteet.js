@@ -7,7 +7,6 @@ app.factory('HakukohteetModel', function(Haku, HakuHakukohdeChildren) {
 
         this.refresh = function(hakuOid) {
             model.hakuOid = hakuOid;
-
             HakuHakukohdeChildren.get({"hakuOid": hakuOid}, function(result) {
                 model.hakukohteet = result;
             });
@@ -27,6 +26,9 @@ function HakukohteetController($scope, $location, $routeParams, HakukohteetModel
 
    $scope.hakuOid = $routeParams.hakuOid;
    $scope.hakukohdeOid = $routeParams.hakukohdeOid;
+
+   // Muistetaan millä alasivulla ollaan, kun vaihdetaan hakukohdetta.
+   $scope.subpage = $location.path().split('/')[5] || 'perustiedot';
 
    $scope.model = HakukohteetModel;
    $scope.model.refreshIfNeeded($routeParams.hakuOid);

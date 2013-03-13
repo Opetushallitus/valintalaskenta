@@ -8,12 +8,13 @@
 
 app.factory('HakukohdeModel', function(tarjontaHakukohde) {
 
-    var model = new function() {
+    var model;
+    model = new function() {
 
         this.hakukohde = {};
 
         this.refresh = function(hakukohdeOid) {
-            if( hakukohdeOid !== undefined) {
+            if( hakukohdeOid !== "undefined") {
                 tarjontaHakukohde.get({hakukohdeoid: hakukohdeOid}, function(result) {
                     model.hakukohde = result;
                 });
@@ -21,7 +22,6 @@ app.factory('HakukohdeModel', function(tarjontaHakukohde) {
         }
 
         this.refreshIfNeeded = function(hakukohdeOid) {
-
             if(model.hakukohde.oid !== hakukohdeOid) {
                 model.refresh(hakukohdeOid);
             }
@@ -29,10 +29,7 @@ app.factory('HakukohdeModel', function(tarjontaHakukohde) {
 
     };
 
-
-
     return model;
-
 });
 
 function HakukohdePerustiedot($scope, $location, $routeParams, HakukohdeModel) {
