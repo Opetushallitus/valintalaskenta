@@ -14,9 +14,13 @@
     
     <script th:inline="javascript">
         var tarjontaService = "http://luokka.hard.ware.fi\\:8181/tarjonta-service/rest/"
+        var valintaperusteetService = "/valintaperusteet-service/"
+        var valintalaskentaKoosteService = "/valintalaskentakoostepalvelu/"
 
         /*<![CDATA[*/;
         TARJONTA_URL_BASE = tarjontaService;
+        VALINTAPERUSTEET_URL_BASE = valintaperusteetService;
+        VALINTALASKENTAKOOSTE_URL_BASE = valintalaskentaKoosteService;
         SERVICE_URL_BASE = /*[[${serviceUrl}]]*/ "/valintalaskenta-service/";
         TEMPLATE_URL_BASE = /*[[@{/html/}]]*/ "";
         /*]]>*/
@@ -29,6 +33,7 @@
 	<script th:src="@{/js/valinnanhallinta.js}" src="../js/valinnanhallinta.js"></script>
 	<script th:src="@{/js/yhteisvalinnanhallinta.js}" src="../js/yhteisvalinnanhallinta.js"></script>
     <script th:src="@{/js/hakukohde.js}" src="../js/hakukohde.js"></script>
+    <script th:src="@{/js/hakukohdeyleistiedot.js}" src="../js/hakukohdeyleistiedot.js"></script>
 
 	<script th:src="@{/js/hakukohteet.js}" src="../js/hakukohteet.js"></script>
 	<script th:src="@{/js/haku.js}" src="../js/haku.js"></script>

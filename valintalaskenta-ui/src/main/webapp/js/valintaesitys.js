@@ -1,5 +1,5 @@
 ﻿
-app.factory('ValintaesitysModel', function(Hakukohde, Haku) {
+app.factory('ValintaesitysModel', function(ValinnanvaiheListByHakukohde, Haku) {
 
 	var model = new function() {
 
@@ -7,8 +7,8 @@ app.factory('ValintaesitysModel', function(Hakukohde, Haku) {
 		this.valintatapajonot = [];
 		
 		this.refresh = function(hakukohdeOid) {
-			
-			Hakukohde.get({hakukohdeoid: hakukohdeOid}, function(result) {
+
+            ValinnanvaiheListByHakukohde.get({hakukohdeoid: hakukohdeOid}, function(result) {
 				model.valintatapajonot = result[0].valintatapajono;
 			});
 			

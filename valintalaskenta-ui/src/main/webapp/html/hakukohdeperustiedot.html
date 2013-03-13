@@ -1,0 +1,26 @@
+<h1>Valinnat</h1>
+
+
+<div ng-include="'partials/topNavigation.html'"></div>
+<div class="clear"></div>
+
+<div class="tabsheets">
+
+    <div class="grid16-4" ng-include="'partials/hakukohdelista.html'"></div>
+    <div class="grid16-12">
+        <div ng-include="'partials/hakukohdeNavigation.html'"></div>
+        <div class="tabsheets">
+            <h1>{{model.hakukohde.hakukohdeNimi}}</h1>
+            <div class="margin-vertical-2">
+                Ensisijaisesti hakeneet: 45<br/>
+                Kaikki hakeneet: 225<br/>
+            </div>
+
+            <div class="clear"></div>
+        </div>
+    </div>
+    <div class="clear"></div>
+
+
+</div>
+

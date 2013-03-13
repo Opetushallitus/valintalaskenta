@@ -11,20 +11,14 @@
 		<div ng-include="'partials/hakukohdeNavigation.html'"></div>
 		<div class="tabsheets">
 			<h1>{{model.hakukohde.hakukohdeNimi}}</h1>
-			<div class="margin-vertical-2">
-				Ensisijaisesti hakeneet: 45<br/>
-				Kaikki hakeneet: 225<br/>
-			</div>
 
-			<div class="margin-bottom-2">
+			<div class="margin-bottom-2" ng-repeat="valinnanvaihe in model.valinnanvaiheList">
 				<div class="width-12-6">
-					<h3 class="margin-top-0">valinta</h3>
-					<a href="#">syötä pistetietoja</a>
-					<a href="#">pistejärjestys</a>
+					<h3 class="margin-top-0">{{valinnanvaihe.nimi}}</h3>
 				</div>
 
 				<div class="width-12-6">
-                    <a href="/valintalaskentakoostepalvelu/resources/valintalaskenta/aktivoi?hakukohdeOid=1.2.246.562.14.673437691210&valinnanvaihe=0" class="button small">staattinen toiminto</a>
+                    <a ng-click="model.kaynnistaValintalaskenta($index)" class="button small">Käynnistä laskenta</a>
 
 					<!-- <button class="small btn">Käynnistä vaihe</button>  -->
 				</div>

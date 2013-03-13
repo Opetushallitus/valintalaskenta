@@ -1,19 +1,26 @@
-﻿app.factory('ValinnanhallintaModel', function(tarjontaHakukohde) {
+﻿app.factory('ValinnanhallintaModel', function(ValinnanvaiheListFromValintaperusteet, ValintalaskentaAktivointi) {
 
 	var model = new function() {
 
 		this.hakukohde = {};
+        this.hakukohdeOid = '';
 
 		this.refresh = function(hakukohdeOid) {
 			if( hakukohdeOid !== undefined) {
-				tarjontaHakukohde.get({hakukohdeoid: hakukohdeOid}, function(result) {
-					model.hakukohde = result;
+                ValinnanvaiheListFromValintaperusteet.get({hakukohdeoid: hakukohdeOid}, function(result) {
+					model.valinnanvaiheList = result;
 				});
 			}
 		}
 
-		this.refreshIfNeeded = function(hakukohdeOid) {
+        this.kaynnistaValintalaskenta = function(valinnanvaihe) {
+            ValintalaskentaAktivointi.aktivoi({hakukohdeOid: this.hakukohdeOid, valinnanvaihe: valinnanvaihe}, function() {
 
+            });
+        }
+
+		this.refreshIfNeeded = function(hakukohdeOid) {
+            this.hakukohdeOid = hakukohdeOid;
 			if(model.hakukohde.oid !== hakukohdeOid) {
 				model.refresh(hakukohdeOid);
 			}

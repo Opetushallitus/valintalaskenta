@@ -2,6 +2,10 @@ var app = angular.module('valintalaskenta', ['ngResource', 'loading']);
 
 var SERVICE_URL_BASE = SERVICE_URL_BASE || "";
 var TEMPLATE_URL_BASE = TEMPLATE_URL_BASE || "";
+var VALINTAPERUSTEET_URL_BASE = VALINTAPERUSTEET_URL_BASE || "";
+var VALINTALASKENTAKOOSTE_URL_BASE = VALINTALASKENTAKOOSTE_URL_BASE || "";
+var TARJONTA_URL_BASE = TARJONTA_URL_BASE || "";
+
 
 //Route configuration
 app.config(function($routeProvider) {
@@ -9,6 +13,7 @@ app.config(function($routeProvider) {
 
         
         when('/haku/:hakuOid/hakukohde/', {controller:HakukohdeController, templateUrl:TEMPLATE_URL_BASE + 'hakukohde.html'}).
+        when('/haku/:hakuOid/hakukohde/:hakukohdeOid/perustiedot', {controller:HakukohdePerustiedot, templateUrl:TEMPLATE_URL_BASE + 'hakukohdeperustiedot.html'}).
         when('/haku/:hakuOid/hakukohde/:hakukohdeOid/valinnanhallinta', {controller:ValinnanhallintaController, templateUrl:TEMPLATE_URL_BASE + 'valinnanhallinta.html'}).
         when('/haku/:hakuOid/hakukohde/:hakukohdeOid/pistesyotto', {controller:PistesyottoController, templateUrl:TEMPLATE_URL_BASE + 'pistesyotto.html'}).
         when('/haku/:hakuOid/hakukohde/:hakukohdeOid/harkinnanvaraiset/pistelaskennassa', {controller:PistelaskentaController, templateUrl:TEMPLATE_URL_BASE + 'pistelaskennassa.html'}).
@@ -53,15 +58,22 @@ return $resource(TARJONTA_URL_BASE + "hakukohde/:hakukohdeoid", {hakukohdeoid: "
 });
 
 
-//Hakukohde
-app.factory('Hakukohde', function($resource) {
+//One does not simply call 'ValinnanVaiheList' 'Hakukohde'
+app.factory('ValinnanvaiheListByHakukohde', function($resource) {
 return $resource(SERVICE_URL_BASE + "resources/hakukohde/:hakukohdeoid/valinnanvaihe", {hakukohdeoid: "@hakukohdeoid"}, {
     get: {method: "GET", isArray: true}
   });
 });
 
+//One does not simply call 'ValinnanVaiheList' 'Hakukohde'
+app.factory('ValinnanvaiheListFromValintaperusteet', function($resource) {
+    return $resource(VALINTAPERUSTEET_URL_BASE + "resources/hakukohde/:hakukohdeoid/valinnanvaihe", {hakukohdeoid: "@hakukohdeoid"}, {
+        get: {method: "GET", isArray: true}
+    });
+});
 
-//Valintatapajono
+
+// Järjstyskriteeritulokset
 app.factory('Valintatapajono', function($resource) {
 return $resource(SERVICE_URL_BASE + "resources/valintatapajono/:valintatapajonoid/jarjestyskriteeritulos", {valintatapajonoid: "@valintatapajonoid"}, {
     get: {method: "GET", isArray: true}
@@ -69,10 +81,15 @@ return $resource(SERVICE_URL_BASE + "resources/valintatapajono/:valintatapajonoi
 });
 
 
-//Valinnanvaihe
-app.factory('Valinnanvaihe', function($resource) {
+//Valintatapajonot
+app.factory('ValintatapajonoListByValinnanvaihe', function($resource) {
 return $resource(SERVICE_URL_BASE + "resources/valinnanvaihe/:valinnanvaiheoid/valintatapajono", {valinnanvaiheoid: "@valinnanvaiheoid"}, {
     get: {method: "GET", isArray: true}
   });
 });
 
+app.factory('ValintalaskentaAktivointi', function($resource) {
+    return $resource(VALINTALASKENTAKOOSTE_URL_BASE + "resources/valintalaskenta/aktivoi", {}, {
+        aktivoi: {method: "GET"}
+    })
+})
