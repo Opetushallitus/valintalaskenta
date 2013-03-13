@@ -16,8 +16,10 @@
 			<p><a href="#" class="button small disabled">Hyväksy valintaesitys</a> Hyväksytty 12.6.2013 / PI</p>
 
             <div ng-repeat="valinnanvaihe in model.valinnanvaiheet">
+                <h3>Valinnanvaihe OID: <span ng-bind="valinnanvaihe.valinnanvaiheoid">-</span></h3>
+                <h3>Päivämäärä: <span ng-bind="valinnanvaihe.createdAt | date:'dd.MM.yyyy HH:mm:ss'">-</span></H3>
                 <div ng-repeat="valintatapajono in valinnanvaihe.valintatapajono">
-                    <h3>Valintatapajono: {{valintatapajono.nimi}}</h3>
+                    <h3>Valintatapajono: {{valintatapajono.nimi}} (v.{{valintatapajono.versio}})</h3>
                     <table class="virkailija-table-1">
                         <thead>
                             <tr>

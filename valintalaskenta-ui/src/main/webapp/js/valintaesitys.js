@@ -9,7 +9,6 @@
             model.hakukohdeOid = hakukohdeOid;
 			ValinnanvaiheListByHakukohde.get({hakukohdeoid: hakukohdeOid}, function(result) {
 			    model.valinnanvaiheet = result;
-			    console.log(model.valinnanvaiheet);
 			});
 			
 		}
