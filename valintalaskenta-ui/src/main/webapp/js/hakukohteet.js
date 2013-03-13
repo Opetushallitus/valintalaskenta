@@ -1,22 +1,22 @@
-app.factory('HakukohteetModel', function(Haku, allHakukohteet) {
+app.factory('HakukohteetModel', function(Haku, HakuHakukohdeChildren) {
     var model;
     model = new function(){
-        
+
+        this.hakuOid = {};
         this.hakukohteet = [];
 
         this.refresh = function(hakuOid) {
-            model.hakuoid = hakuOid;
+            model.hakuOid = hakuOid;
 
-            allHakukohteet.get({}, function(result) {
+            HakuHakukohdeChildren.get({"hakuOid": hakuOid}, function(result) {
                 model.hakukohteet = result;
-                //console.log(result);
             });
-           
-
         };
 
         this.refreshIfNeeded = function(hakuOid) {
-            model.refresh(hakuOid);
+            if(hakuOid && hakuOid != "undefined" && hakuOid != model.hakuOid) {
+                model.refresh(hakuOid);
+            }
         };
     };
 
@@ -24,8 +24,8 @@ app.factory('HakukohteetModel', function(Haku, allHakukohteet) {
 });
 
 function HakukohteetController($scope, $location, $routeParams, HakukohteetModel) {
-   $scope.hakuOid = $routeParams.hakuOid;
 
+   $scope.hakuOid = $routeParams.hakuOid;
    $scope.hakukohdeOid = $routeParams.hakukohdeOid;
 
    $scope.model = HakukohteetModel;

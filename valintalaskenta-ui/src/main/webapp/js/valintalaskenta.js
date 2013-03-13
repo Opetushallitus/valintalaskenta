@@ -40,11 +40,11 @@ return $resource(TARJONTA_URL_BASE + "haku/:hakuOid/hakukohde", {hakuOid: "@haku
 });
 
 //Kaikki hakukohteet
-app.factory('allHakukohteet', function($resource) {
-return $resource(TARJONTA_URL_BASE + "hakukohde", {}, {
-    get: {method: "GET", isArray: true}
-  });
-});
+//app.factory('allHakukohteet', function($resource) {
+//return $resource(TARJONTA_URL_BASE + "hakukohde", {}, {
+//    get: {method: "GET", isArray: true}
+//  });
+//});
 
 app.factory('tarjontaHakukohde', function($resource) {
 return $resource(TARJONTA_URL_BASE + "hakukohde/:hakukohdeoid", {hakukohdeoid: "@hakukohdeoid"}, {

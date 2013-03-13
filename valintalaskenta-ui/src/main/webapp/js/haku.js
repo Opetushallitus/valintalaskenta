@@ -4,18 +4,19 @@ app.factory('HakuModel', function(Haku) {
         this.hakuOid = {};
         this.haut = [];
 
-        this.refresh = function() {
-            Haku.get({}, function(result) {
-                model.haut = result;
-            });
-        }
-
-        this.refreshIfNeeded = function(hakuOid) {
-            if(model.hakuoid !== hakuOid) {
-                model.refresh();
+        this.init = function(oid) {
+            if(model.haut.length <= 0) {
+                Haku.get({}, function(result) {
+                    model.haut = result;
+                    model.hakuOid = model.haut[0];
+                    model.haut.forEach(function(haku){
+                        if(haku.oid == oid) {
+                            model.hakuOid = haku;
+                        }
+                    });
+                });
             }
         }
-
     };
 
     return model;
@@ -23,12 +24,12 @@ app.factory('HakuModel', function(Haku) {
 
 function HakuController($scope, $location, $routeParams, HakuModel) {
     $scope.model = HakuModel;
-    $scope.model.refreshIfNeeded($routeParams.hakuOid);
-    /*
+    HakuModel.init($routeParams.hakuOid);
     $scope.$watch('model.hakuOid', function() {
-        if(HakuModel.hakuOid.oid != $routeParams.hakuOid) {
+        if(HakuModel.hakuOid.oid &&
+            HakuModel.hakuOid.oid != "undefined" &&
+            HakuModel.hakuOid.oid != $routeParams.hakuOid) {
             $location.path('/haku/' + HakuModel.hakuOid.oid + '/hakukohde/');
         }
     });
-    */
 }
