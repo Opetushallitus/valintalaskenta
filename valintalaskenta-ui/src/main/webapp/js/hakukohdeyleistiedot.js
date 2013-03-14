@@ -7,7 +7,6 @@
  */
 
 app.factory('HakukohdeModel', function(tarjontaHakukohde) {
-
     var model;
     model = new function() {
 
@@ -32,8 +31,7 @@ app.factory('HakukohdeModel', function(tarjontaHakukohde) {
     return model;
 });
 
-function HakukohdePerustiedot($scope, $location, $routeParams, HakukohdeModel) {
+function HakukohdeController($scope, $location, $routeParams, HakukohdeModel) {
     $scope.model = HakukohdeModel;
-
     $scope.model.refreshIfNeeded($routeParams.hakukohdeOid);
 }
