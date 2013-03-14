@@ -89,7 +89,7 @@
                                 <!--valintalaskenta ja sen tulokset -->
                                 <contextHandler implementation="org.mortbay.jetty.webapp.WebAppContext">
                                     <war>${basedir}/../valintalaskenta-laskenta-service/target/valintalaskenta-laskenta-service.war</war>
-                                    <contextPath>/valintalaskenta-service</contextPath>
+                                    <contextPath>/valintalaskenta-laskenta-service</contextPath>
                                 </contextHandler>
 
                                 <!--kayttoliittymat -->
