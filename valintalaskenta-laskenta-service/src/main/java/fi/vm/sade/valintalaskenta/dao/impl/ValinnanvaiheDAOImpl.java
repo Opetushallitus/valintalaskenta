@@ -28,8 +28,10 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         List<VersiohallintaHakukohde> versiohallinnat = datastore.find(VersiohallintaHakukohde.class, "hakukohdeoid",
                 hakukohdeoid).asList();
         if (versiohallinnat == null || versiohallinnat.isEmpty()) {
+            System.out.println("versionhallinat tyhja");
             return Collections.emptyList();
         }
+        System.out.println("versionhallinat " + versiohallinnat.size());
         List<Valinnanvaihe> valinnanvaiheet = new ArrayList<Valinnanvaihe>();
         for (VersiohallintaHakukohde versiohallinta : versiohallinnat) {
             valinnanvaiheet.add(versiohallinta.getHakukohteet().haeUusinVersio().getHakukohde().getValinnanvaihe());
