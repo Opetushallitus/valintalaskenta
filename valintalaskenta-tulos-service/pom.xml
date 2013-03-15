@@ -8,7 +8,7 @@
 	</parent>
 	<artifactId>valintalaskenta-tulos-service</artifactId>
 	<packaging>war</packaging>
-	<name>Valintalaskenta :: Tulos :: Service</name>
+	<name>Valintalaskenta :: Tulos Service</name>
 	<properties>
 		<mongodb.host>taulu.hard.ware.fi</mongodb.host>
 		<mongodb.port>27017</mongodb.port>
