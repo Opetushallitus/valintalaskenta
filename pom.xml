@@ -5,8 +5,8 @@
     <artifactId>valintaperusteet</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
-  <artifactId>valintalaskenta</artifactId>
-  <name>Valintalaskenta</name>
+  <artifactId>valintalaskentabuild</artifactId>
+  <name>Valintalaskenta :: Main build</name>
   <packaging>pom</packaging>
   
   <repositories>

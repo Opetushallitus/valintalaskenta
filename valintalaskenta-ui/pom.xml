@@ -82,7 +82,7 @@
 
                                 <!-- valintaperusteet -->
                                 <contextHandler implementation="org.mortbay.jetty.webapp.WebAppContext">
-                                    <war>${basedir}/../../valintaperusteet-service/target/valintaperusteet-service.war</war>
+                                    <war>${basedir}/../../valintaperusteet/valintaperusteet-service/target/valintaperusteet-service.war</war>
                                     <contextPath>/valintaperusteet-service</contextPath>
                                 </contextHandler>
 
@@ -94,7 +94,7 @@
 
                                 <!--kayttoliittymat -->
                                 <contextHandler implementation="org.mortbay.jetty.webapp.WebAppContext">
-                                    <resourceBase>${basedir}/../../valintaperusteet-ui/target/valintaperusteet-ui/</resourceBase>
+                                    <resourceBase>${basedir}/../../valintaperusteet/valintaperusteet-ui/target/valintaperusteet-ui/</resourceBase>
                                     <contextPath>/valintaperusteet-ui</contextPath>
                                 </contextHandler>
 
