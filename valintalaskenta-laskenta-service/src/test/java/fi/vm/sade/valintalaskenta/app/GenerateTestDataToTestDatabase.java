@@ -93,8 +93,12 @@ public class GenerateTestDataToTestDatabase {
             for (String avain : getAvaimia()) {
                 avainparit.add(getAvainArvoPari(avain));
             }
-            HakemusTyyppi[] hakemukset = new HakemusTyyppi[] { ValintalaskentaServiceUtil
-                    .createHakemusParillaDynaamisesti(hakemusoid, hakukohdeoid, avainparit) };
+            List<HakemusTyyppi> hakemukset = new ArrayList<HakemusTyyppi>();
+            int c = random.nextInt(100);
+            for (int b = 0; b < c; ++b) {
+                hakemukset.add(ValintalaskentaServiceUtil.createHakemusParillaDynaamisesti(hakemusoid, hakukohdeoid,
+                        avainparit));
+            }
 
             ValintaperusteetTyyppi valintaperusteet = ValintalaskentaServiceUtil.createValintaperusteet(hakukohdeoid,
                     valinnanvaiheoid, jarjestysluku);
@@ -116,8 +120,7 @@ public class GenerateTestDataToTestDatabase {
 
                 valintaperusteet.getValintatapajonot().add(jono);
             }
-            valintalaskentaService.laske(Arrays.asList(hakemukset),
-                    Arrays.asList(new ValintaperusteetTyyppi[] { valintaperusteet }));
+            valintalaskentaService.laske(hakemukset, Arrays.asList(new ValintaperusteetTyyppi[] { valintaperusteet }));
         }
 
     }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -21,6 +23,8 @@ import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
 @Repository
 public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ValinnanvaiheDAOImpl.class);
+
     @Autowired
     private Datastore datastore;
 
@@ -28,10 +32,10 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         List<VersiohallintaHakukohde> versiohallinnat = datastore.find(VersiohallintaHakukohde.class, "hakukohdeoid",
                 hakukohdeoid).asList();
         if (versiohallinnat == null || versiohallinnat.isEmpty()) {
-            System.out.println("versionhallinat tyhja");
+            LOGGER.info("versionhallinat tyhja");
             return Collections.emptyList();
         }
-        System.out.println("versionhallinat " + versiohallinnat.size());
+        LOGGER.info("versiohallinnat määrä on {}", versiohallinnat.size());
         List<Valinnanvaihe> valinnanvaiheet = new ArrayList<Valinnanvaihe>();
         for (VersiohallintaHakukohde versiohallinta : versiohallinnat) {
             valinnanvaiheet.add(versiohallinta.getHakukohteet().haeUusinVersio().getHakukohde().getValinnanvaihe());
