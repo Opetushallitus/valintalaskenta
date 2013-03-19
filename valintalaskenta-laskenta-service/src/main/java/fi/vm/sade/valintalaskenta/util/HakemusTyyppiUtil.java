@@ -1,4 +1,4 @@
-package fi.vm.sade.valintalaskenta.service.impl.conversion;
+package fi.vm.sade.valintalaskenta.util;
 
 import java.util.HashMap;
 import java.util.Map;

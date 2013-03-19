@@ -1,13 +1,20 @@
 package fi.vm.sade.valintalaskenta.service.impl.conversion;
 
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
+
 import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
 import fi.vm.sade.service.valintaperusteet.model.Funktionimi;
-import fi.vm.sade.service.valintaperusteet.schema.*;
-import org.springframework.core.convert.converter.Converter;
+import fi.vm.sade.service.valintaperusteet.schema.ArvokonvertteriparametriTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.ArvovalikonvertteriparametriTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.FunktioargumenttiTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.SyoteparametriTyyppi;
 
 /**
  * @author Jussi Jartamo
  */
+@Component("FunktioKutsuKonvertteri")
 public class FunktioKutsuTyyppiToFunktioKutsuConverter implements Converter<FunktiokutsuTyyppi, Funktiokutsu> {
 
     public Funktiokutsu convert(FunktiokutsuTyyppi source) {

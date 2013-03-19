@@ -1,5 +1,16 @@
 package fi.vm.sade.valintalaskenta.service.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import fi.vm.sade.kaava.Laskentadomainkonvertteri;
 import fi.vm.sade.kaava.Laskentakaavavalidaattori;
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
@@ -20,17 +31,19 @@ import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskritee
 import fi.vm.sade.service.valintaperusteet.service.validointi.virhe.Validointivirhe;
 import fi.vm.sade.valintalaskenta.dao.ValintatapajonoDAO;
 import fi.vm.sade.valintalaskenta.dao.VersiohallintaHakukohdeDAO;
-import fi.vm.sade.valintalaskenta.domain.*;
+import fi.vm.sade.valintalaskenta.domain.Hakukohde;
+import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
+import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
+import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
+import fi.vm.sade.valintalaskenta.laskenta.Esiintyminen;
+import fi.vm.sade.valintalaskenta.laskenta.HakemusHelper;
 import fi.vm.sade.valintalaskenta.service.ValintalaskentaSuorittajaService;
 import fi.vm.sade.valintalaskenta.service.exception.LaskentaVaarantyyppisellaFunktiollaException;
 import fi.vm.sade.valintalaskenta.service.impl.conversion.FunktioKutsuTyyppiToFunktioKutsuConverter;
 import fi.vm.sade.valintalaskenta.service.impl.conversion.HakemusTyyppiToHakemusConverter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 /**
  * @author Jussi Jartamo
@@ -49,8 +62,11 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     @Autowired
     private ValintatapajonoDAO valintatapajonoDAO;
 
-    // @Autowired
-    // private Datastore datastore;
+    @Autowired
+    private HakemusTyyppiToHakemusConverter hakemusConverter;
+
+    @Autowired
+    private FunktioKutsuTyyppiToFunktioKutsuConverter funktiokutsuConverter;
 
     public void suoritaLaskenta(List<HakemusTyyppi> hakemukset, List<ValintaperusteetTyyppi> valintaperusteet) {
         // Hakuoid ei ole toistaiseksi WSDL:ssä joten käytetään kovakoodattua
@@ -58,11 +74,6 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         String hakuoid = "syksynhaku"; // KOVAKOODATTUHAKUOID
         //
         Map<String, List<HakemusTyyppi>> hakukohdeHakemukset = resolveHakukohdeHakemukset(hakemukset);
-
-        FunktioKutsuTyyppiToFunktioKutsuConverter fconverter;
-        fconverter = new FunktioKutsuTyyppiToFunktioKutsuConverter();
-        HakemusTyyppiToHakemusConverter hconverter;
-        hconverter = new HakemusTyyppiToHakemusConverter();
         for (ValintaperusteetTyyppi valintaperuste : valintaperusteet) {
             String hakukohdeoid = valintaperuste.getHakukohdeOid();
             String valinnanvaiheoid = valintaperuste.getValinnanVaiheOid();
@@ -73,42 +84,16 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             Map<String, Esiintyminen> edellinenValinnanvaihe = hakemusoidHyvaksyttavissaJonoissa(edellinenValinnanvaihe(
                     hakukohdeoid, jarjestysnumero));
 
-            // hakemusoid -> hakemustyyppi
-            Map<String, HakemusTyyppi> hakemustyypit = new HashMap<String, HakemusTyyppi>();
-            // hakemusoid -> laskennan hakemus
-            Map<String, Hakemus> laskentahakemukset = new HashMap<String, Hakemus>();
-
+            HakemusHelper hakemusKatko = new HakemusHelper();
             for (HakemusTyyppi h : hakukohdeHakemukset.get(hakukohdeoid)) {
-                laskentahakemukset.put(h.getHakemusOid(), hconverter.convert(h));
-                hakemustyypit.put(h.getHakemusOid(), h);
+                hakemusKatko.setHakemusOidHakemukset(h.getHakemusOid(), hakemusConverter.convert(h), h);
             }
 
-            Hakukohde uusihakukohde = new Hakukohde();
-            uusihakukohde.setHakuoid(hakuoid);
-            uusihakukohde.setOid(valintaperuste.getHakukohdeOid());
-            Valinnanvaihe valinnanvaihe = new Valinnanvaihe();
-            valinnanvaihe.setJarjestysnumero(jarjestysnumero);
-            valinnanvaihe.setValinnanvaiheoid(valinnanvaiheoid);
-            uusihakukohde.setValinnanvaihe(valinnanvaihe);
-
-            VersiohallintaHakukohde versiohallinta = versiohallintaHakukohdeDAO.readByHakukohdeOidAndJarjestysnumero(
-                    valintaperuste.getHakukohdeOid(), jarjestysnumero);
-
-            if (versiohallinta == null) {
-                versiohallinta = new VersiohallintaHakukohde();
-                versiohallinta.setHakuoid(hakuoid);
-                versiohallinta.setValinnanvaiheoid(valinnanvaiheoid);
-                versiohallinta.setHakukohdeoid(hakukohdeoid);
-                versiohallinta.setJarjestysnumero(jarjestysnumero);
-            }
-            Versioituhakukohde versioituhakukohde = new Versioituhakukohde();
-            versioituhakukohde.setHakukohde(uusihakukohde);
-            Long versioNumero = 0L;
-            if (!versiohallinta.getHakukohteet().isEmpty()) {
-                versioNumero = versiohallinta.getHakukohteet().last().getVersio() + 1L;
-            }
-            versioituhakukohde.setVersio(versioNumero);
-            versiohallinta.getHakukohteet().add(versioituhakukohde);
+            // päivittää tai luo uuden versioidun hakukohteen
+            VersiohallintaHakukohde versiohallinta = paivitaTaiLuoVersioituhakukohde(hakuoid, hakukohdeoid,
+                    valinnanvaiheoid, jarjestysnumero);
+            Versioituhakukohde versioituhakukohde = versiohallinta.getHakukohteet().haeUusinVersio();
+            Valinnanvaihe valinnanvaihe = versioituhakukohde.getHakukohde().getValinnanvaihe();
 
             for (ValintatapajonoJarjestyskriteereillaTyyppi jono : valintaperuste.getValintatapajonot()) {
                 Valintatapajono valintatapajono = new Valintatapajono();
@@ -118,102 +103,83 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                 valintatapajono.setPrioriteetti(jono.getPrioriteetti());
                 valintatapajono.setAloituspaikat(jono.getAloituspaikat());
 
-                for (Hakemus h : laskentahakemukset.values()) {
+                for (Hakemus h : hakemusKatko.getHakemukset()) {
                     String hakemusoid = h.oid();
                     for (JarjestyskriteeriTyyppi j : jono.getJarjestyskriteerit()) {
-                        Funktiokutsu funktiokutsu = fconverter.convert(j.getFunktiokutsu());
+                        Funktiokutsu funktiokutsu = funktiokutsuConverter.convert(j.getFunktiokutsu());
 
                         // Suoritetaan todellinen laskenta haetuille arvoille
-                        Jarjestyskriteeritulos jarjestyskriteeritulos = suoritaLaskenta(hakukohdeoid, funktiokutsu,
-                                h, laskentahakemukset.values(),
+                        Jarjestyskriteeritulos jarjestyskriteeritulos = suoritaLaskenta(hakukohdeoid, funktiokutsu, h,
+                                hakemusKatko.getHakemukset(),
                                 edellinenValinnanvaihe != null ? edellinenValinnanvaihe.get(hakemusoid) : null);
                         jarjestyskriteeritulos.setHakemusoid(hakemusoid);
-                        jarjestyskriteeritulos.setEtunimi(hakemustyypit.get(hakemusoid).getHakijanEtunimi());
-                        jarjestyskriteeritulos.setSukunimi(hakemustyypit.get(hakemusoid).getHakijanSukunimi());
+                        jarjestyskriteeritulos.setEtunimi(hakemusKatko.getEtunimi(hakemusoid));
+                        jarjestyskriteeritulos.setSukunimi(hakemusKatko.getSukunimi(hakemusoid));
                         valintatapajono.getJarjestyskriteeritulokset().add(jarjestyskriteeritulos);
                     }
 
                 }
-                valintatapajono.setVersio(versioNumero);
+                valintatapajono.setVersio(versioituhakukohde.getVersio());
                 valinnanvaihe.getValintatapajono().add(valintatapajono);
                 valintatapajonoDAO.createOrUpdate(valintatapajono);
             }
-            LOG.info("Tallennetaan hakukohdetta! Hakukohdeoid {}", uusihakukohde.getOid());
+            // LOG.info("Tallennetaan hakukohdetta! Hakukohdeoid {}",
+            // uusihakukohde.getOid());
             versiohallinta.getHakukohteet().add(versioituhakukohde);
             versiohallintaHakukohdeDAO.createOrUpdate(versiohallinta);
         }
     }
 
     private Jarjestyskriteeritulos suoritaLaskenta(String hakukohde, Funktiokutsu funktiokutsu,
-                                                   Hakemus kasiteltavaHakemus, Collection<Hakemus> kaikkiHakemukset,
-                                                   Esiintyminen esiintyminen) {
+            Hakemus kasiteltavaHakemus, Collection<Hakemus> kaikkiHakemukset, Esiintyminen esiintyminen) {
         Funktiotyyppi tyyppi = funktiokutsu.getFunktionimi().getTyyppi();
         Jarjestyskriteeritulos jarjestyskriteeritulos = new Jarjestyskriteeritulos();
 
         switch (tyyppi) {
-            case LUKUARVOFUNKTIO:
-                Funktiokutsu f = Laskentakaavavalidaattori.validoiLaskettavaKaava(funktiokutsu);
-                for (Funktioargumentti farg : f.getFunktioargumentit()) {
-                    for (Abstraktivalidointivirhe v : farg.getFunktiokutsuChild().getValidointivirheet()) {
-                        Validointivirhe vv = (Validointivirhe) v;
-                        LOG.debug("Tyyppi {}, viesti {}", new Object[]{vv.getVirhetyyppi(), vv.getVirheviesti()});
-                    }
+        case LUKUARVOFUNKTIO:
+            Funktiokutsu f = Laskentakaavavalidaattori.validoiLaskettavaKaava(funktiokutsu);
+            for (Funktioargumentti farg : f.getFunktioargumentit()) {
+                for (Abstraktivalidointivirhe v : farg.getFunktiokutsuChild().getValidointivirheet()) {
+                    Validointivirhe vv = (Validointivirhe) v;
+                    LOG.debug("Tyyppi {}, viesti {}", new Object[] { vv.getVirhetyyppi(), vv.getVirheviesti() });
                 }
-                Laskentatulos<Double> laskentatulos = laskentaService.suoritaLasku(hakukohde, kasiteltavaHakemus,
-                        kaikkiHakemukset, Laskentadomainkonvertteri.muodostaLukuarvolasku(funktiokutsu));
-                Tila tila = laskentatulos.getTila();
+            }
+            Laskentatulos<Double> laskentatulos = laskentaService.suoritaLasku(hakukohde, kasiteltavaHakemus,
+                    kaikkiHakemukset, Laskentadomainkonvertteri.muodostaLukuarvolasku(funktiokutsu));
+            Tila tila = laskentatulos.getTila();
 
-                if (Tilatyyppi.HYLATTY.equals(tila.getTilatyyppi())) {
-                    jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.HYLATTY);
-                    if (tila instanceof Hylattytila) {
-                        Hylattytila hylattytila = (Hylattytila) tila;
-                        jarjestyskriteeritulos.setKuvaus(hylattytila.getKuvaus());
-                    }
-                } else if (Tilatyyppi.HYVAKSYTTAVISSA.equals(tila.getTilatyyppi())) {
-                    // edelliseen valinnanvaiheeseen liittyvän
-                    // hylkäämisperusteen käsittely
-                    if (esiintyminen == null || esiintyminen.hyvaksyttavissa > 0) {
-                        jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA);
-                    } else {
-                        if (esiintyminen.hyvaksyttavissa == 0 && esiintyminen.esiintyy > 0) {
-                            // hylätään koska ei ollut kertaakaan
-                            // hyvaksyttavissä edellisessä
-                            // valinnanvaiheessa
-                            jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.HYLATTY);
-                            jarjestyskriteeritulos
-                                    .setKuvaus("Hylätty koska edellisessä valinnanvaiheessa oli hylätty kaikissa jonoissa!");
-                        }
-                    }
+            if (Tilatyyppi.HYLATTY.equals(tila.getTilatyyppi())) {
+                jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.HYLATTY);
+                if (tila instanceof Hylattytila) {
+                    Hylattytila hylattytila = (Hylattytila) tila;
+                    jarjestyskriteeritulos.setKuvaus(hylattytila.getKuvaus());
+                }
+            } else if (Tilatyyppi.HYVAKSYTTAVISSA.equals(tila.getTilatyyppi())) {
+                // edelliseen valinnanvaiheeseen liittyvän
+                // hylkäämisperusteen käsittely
+                if (esiintyminen == null || esiintyminen.getHyvaksyttavissa() > 0) {
+                    jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA);
                 } else {
-                    jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.MAARITTELEMATON);
+                    if (esiintyminen.getHyvaksyttavissa() == 0 && esiintyminen.getEsiintyy() > 0) {
+                        // hylätään koska ei ollut kertaakaan
+                        // hyvaksyttavissä edellisessä
+                        // valinnanvaiheessa
+                        jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.HYLATTY);
+                        jarjestyskriteeritulos
+                                .setKuvaus("Hylätty koska edellisessä valinnanvaiheessa oli hylätty kaikissa jonoissa!");
+                    }
                 }
-                Double tulos = laskentatulos.getTulos();
-                if (tulos != null) {
-                    jarjestyskriteeritulos.setArvo(tulos);
-                }
-                return jarjestyskriteeritulos;
-            default:
-                throw new LaskentaVaarantyyppisellaFunktiollaException("Palvelu hyväksyy vain lukuarvofunktioita!");
+            } else {
+                jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.MAARITTELEMATON);
+            }
+            Double tulos = laskentatulos.getTulos();
+            if (tulos != null) {
+                jarjestyskriteeritulos.setArvo(tulos);
+            }
+            return jarjestyskriteeritulos;
+        default:
+            throw new LaskentaVaarantyyppisellaFunktiollaException("Palvelu hyväksyy vain lukuarvofunktioita!");
         }
-    }
-
-    private static class Esiintyminen {
-        private Integer hyvaksyttavissa;
-        private Integer esiintyy;
-
-        public Esiintyminen(Integer hyvaksyttavissa, Integer esiintyy) {
-            this.hyvaksyttavissa = hyvaksyttavissa;
-            this.esiintyy = esiintyy;
-        }
-
-        public void inkrementoiEsiintyminen() {
-            ++esiintyy;
-        }
-
-        public void inkrementoiHyvaksyttavissa() {
-            ++hyvaksyttavissa;
-        }
-
     }
 
     private Map<String, Esiintyminen> hakemusoidHyvaksyttavissaJonoissa(Hakukohde hakukohde) {
@@ -295,4 +261,41 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         return hakukohdeHakemukset;
     }
 
+    /**
+     * @param hakuoid
+     * @param hakukohdeoid
+     * @param valinnanvaiheoid
+     * @param jarjestysnumero
+     * @return Päivitetty tai uusi versioituhakukode
+     */
+    private VersiohallintaHakukohde paivitaTaiLuoVersioituhakukohde(String hakuoid, String hakukohdeoid,
+            String valinnanvaiheoid, int jarjestysnumero) {
+        Hakukohde uusihakukohde = new Hakukohde();
+        uusihakukohde.setHakuoid(hakuoid);
+        uusihakukohde.setOid(hakukohdeoid);
+        Valinnanvaihe valinnanvaihe = new Valinnanvaihe();
+        valinnanvaihe.setJarjestysnumero(jarjestysnumero);
+        valinnanvaihe.setValinnanvaiheoid(valinnanvaiheoid);
+        uusihakukohde.setValinnanvaihe(valinnanvaihe);
+
+        VersiohallintaHakukohde versiohallinta = versiohallintaHakukohdeDAO.readByHakukohdeOidAndJarjestysnumero(
+                hakukohdeoid, jarjestysnumero);
+        //
+        if (versiohallinta == null) {
+            versiohallinta = new VersiohallintaHakukohde();
+            versiohallinta.setHakuoid(hakuoid);
+            versiohallinta.setValinnanvaiheoid(valinnanvaiheoid);
+            versiohallinta.setHakukohdeoid(hakukohdeoid);
+            versiohallinta.setJarjestysnumero(jarjestysnumero);
+        }
+        Versioituhakukohde versioituhakukohde = new Versioituhakukohde();
+        versioituhakukohde.setHakukohde(uusihakukohde);
+        Long versioNumero = 0L;
+        if (!versiohallinta.getHakukohteet().isEmpty()) {
+            versioNumero = versiohallinta.getHakukohteet().haeUusinVersio().getVersio() + 1L;
+        }
+        versioituhakukohde.setVersio(versioNumero);
+        versiohallinta.getHakukohteet().add(versioituhakukohde);
+        return versiohallinta;
+    }
 }

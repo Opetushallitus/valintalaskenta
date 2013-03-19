@@ -46,20 +46,4 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
         return "Onnistui!";
     }
 
-    // @Override
-    // public String laske(@WebParam(name = "hakemus", targetNamespace = "")
-    // List<HakemusTyyppi> hakemus, @WebParam(name = "valintaperuste",
-    // targetNamespace = "") List<ValintaperusteetTyyppi> valintaperuste) {
-    // valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste);
-    // return "Laskenta suoritettu onnistuneesti!"; }
-    //
-    // @Override
-    // public String laske(@WebParam(name = "hakukohdeOid", targetNamespace =
-    // "") String s, @WebParam(name = "valinnanVaihe", targetNamespace = "") int
-    // i, @WebParam(name = "hakemus", targetNamespace = "") List<HakemusTyyppi>
-    // hakemusTyyppis, @WebParam(name = "valintaperusteet", targetNamespace =
-    // "") List<ValintaperusteetTyyppi> valintaperusteetTyyppis) {
-    // return null; //To change body of implemented methods use File | Settings
-    // | File Templates.
-    // }
 }

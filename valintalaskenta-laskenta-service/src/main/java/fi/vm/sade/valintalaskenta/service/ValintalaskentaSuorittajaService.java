@@ -14,6 +14,11 @@ import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
  */
 public interface ValintalaskentaSuorittajaService {
 
+    /**
+     * 
+     * @param hakemukset
+     * @param valintaperusteet
+     */
     void suoritaLaskenta(List<HakemusTyyppi> hakemukset, List<ValintaperusteetTyyppi> valintaperusteet);
 
 }

@@ -4,16 +4,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
+import fi.vm.sade.valintalaskenta.util.HakemusTyyppiUtil;
 
 /**
  * 
  * @author Jussi Jartamo
  * 
  */
+@Component("HakemusKonvertteri")
 public class HakemusTyyppiToHakemusConverter implements Converter<HakemusTyyppi, Hakemus> {
 
     public Hakemus convert(HakemusTyyppi source) {

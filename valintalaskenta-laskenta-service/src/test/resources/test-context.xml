@@ -12,6 +12,20 @@
 	
 	<ctx:annotation-config/>
 	<ctx:property-placeholder location="classpath:testMongoConfiguration.properties" />
+	<ctx:component-scan base-package="fi.vm.sade.valintalaskenta.service.impl.conversion"/>
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+	    <property name="converters">
+	        <list>
+	            <ref bean="ArvokonvertteriparametriKonvertteri"/>
+	            <ref bean="ArvovalikonvertteriparametriKonvertteri"/>
+	            <ref bean="FunktioargumenttiKonvertteri"/>
+	            <ref bean="FunktioKutsuKonvertteri"/>
+	            <ref bean="HakemusKonvertteri"/>
+	            <ref bean="SyoteparametriKonvertteri"/>
+	            <ref bean="ValintaperusteViiteKonvertteri"/>
+	        </list>
+	    </property>
+	</bean>
 	
 	<bean id="testikanta" class="fi.vm.sade.valintalaskenta.service.testdb.EmbeddedMongoConfiguration" />
 	<ctx:component-scan base-package="fi.vm.sade.valintalaskenta.dao.impl"/>

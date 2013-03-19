@@ -8,6 +8,21 @@
 
     <context:annotation-config/>
     <context:property-placeholder location="classpath:mongoConfiguration.properties"/>
+    <context:component-scan base-package="fi.vm.sade.valintalaskenta.service.impl.conversion"/>
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+	    <property name="converters">
+	        <list>
+	            <ref bean="ArvokonvertteriparametriKonvertteri"/>
+	            <ref bean="ArvovalikonvertteriparametriKonvertteri"/>
+	            <ref bean="FunktioargumenttiKonvertteri"/>
+	            <ref bean="FunktioKutsuKonvertteri"/>
+	            <ref bean="HakemusKonvertteri"/>
+	            <ref bean="SyoteparametriKonvertteri"/>
+	            <ref bean="ValintaperusteViiteKonvertteri"/>
+	        </list>
+	    </property>
+	</bean>
+	
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.dao.impl"/>
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.service.impl"/>
 	<context:component-scan base-package="fi.vm.sade.valintalaskenta.resource" />

@@ -1,14 +1,17 @@
 package fi.vm.sade.valintalaskenta.service.impl.conversion;
 
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
+
 import fi.vm.sade.service.valintaperusteet.model.Arvovalikonvertteriparametri;
 import fi.vm.sade.service.valintaperusteet.schema.ArvovalikonvertteriparametriTyyppi;
-import org.springframework.core.convert.converter.Converter;
 
 /**
  * 
  * @author Jussi Jartamo
- *
+ * 
  */
+@Component("ArvovalikonvertteriparametriKonvertteri")
 public class ArvovalikonvertteriparametriTyyppiToArvovalikonvertteriparametriConverter implements
         Converter<ArvovalikonvertteriparametriTyyppi, Arvovalikonvertteriparametri> {
 
