@@ -2,8 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>fi.vm.sade.valintaperusteet</groupId>
-    <artifactId>valintalaskenta</artifactId>
+    <artifactId>valintalaskentabuild</artifactId>
     <version>1.0-SNAPSHOT</version>
+	<relativePath>..</relativePath>
   </parent>
   <artifactId>valintalaskenta-tulos-api</artifactId>
   <name>Valintalaskenta :: Tulos :: API</name>
