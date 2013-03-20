@@ -6,14 +6,23 @@ package fi.vm.sade.valintalaskenta;
  * Time: 14.09
  */
 
+import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.Provider;
+
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.Provider;
-
+/**
+ * 
+ * @author Jussi Jartamo
+ * 
+ * @Deprecated Asenna selaimeen esimerkiksi JSONView liitännäinen niin ei
+ *             tarvitse ohjelmallisesti PrettyPrintata JSON:ia.
+ * 
+ */
+@Deprecated
 @Component
 @Provider
 public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
@@ -25,7 +34,8 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
         objectMapper.configure(SerializationConfig.Feature.DEFAULT_VIEW_INCLUSION, false);
         objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        // FIXME: Tämä tulostaa jsonin nätimmässä muodossa. Varmaan pois tuotannosta..
+        // FIXME: Tämä tulostaa jsonin nätimmässä muodossa. Varmaan pois
+        // tuotannosta..
         objectMapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
     }
 
@@ -34,4 +44,3 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
         return objectMapper;
     }
 }
-

@@ -7,9 +7,7 @@
             http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:annotation-config/>
-	<import resource="application-context-db.xml" />
-    <import resource="application-context-service.xml" />
-    <import resource="application-context-tulos.xml" />
-    <import resource="application-context-ws.xml" />
+    <context:property-placeholder location="classpath:mongoConfiguration.properties"/>
+    <context:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.context"/>
     
 </beans>
