@@ -1,4 +1,4 @@
-package fi.vm.sade.valintalaskenta.laskenta.test;
+package fi.vm.sade.valintalaskenta.laskenta.service;
 
 import java.util.Arrays;
 import java.util.List;

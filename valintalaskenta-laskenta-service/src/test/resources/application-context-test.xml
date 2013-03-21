@@ -17,7 +17,7 @@
 		<prop key="mongodb.host">localhost</prop>
 		<prop key="mongodb.port">33720</prop>
 	</util:properties>
-	<bean id="embeddedMongoDBConfiguration" class="fi.vm.sade.valintalaskenta.laskenta.test.EmbeddedMongoConfiguration"/>
+	<bean id="embeddedMongoDBConfiguration" class="fi.vm.sade.valintalaskenta.laskenta.service.EmbeddedMongoConfiguration"/>
 	<context:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.context"/>
 	<!--
 		Tehdasluokat testidatan generointiin. Tehdasluokat toimii suoraan kontekstista nykimällä context.getBean('TestObjectNeededToBeCreated'.class) 

@@ -1,4 +1,4 @@
-package fi.vm.sade.valintalaskenta.laskenta.test;
+package fi.vm.sade.valintalaskenta.laskenta.service;
 
 import java.util.Arrays;
 
@@ -18,7 +18,6 @@ import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskriteereillaTyyppi;
 import fi.vm.sade.valintalaskenta.dao.VersiohallintaHakukohdeDAO;
 import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
-import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaSuorittajaService;
 
 /**
  * 
@@ -64,6 +63,7 @@ public class LaskentaSuoriutuuKantaanTesti {
 
         VersiohallintaHakukohde versiohallinta = versiohallintaDAO.readByHakukohdeOidAndJarjestysnumero(
                 hakukohde.getHakukohdeOid(), valintaperusteet.getValinnanVaiheJarjestysluku());
+
         Assert.notNull(versiohallinta, "Kannassa täytyy olla versiohallinta suoritetun laskennan jäljiltä!");
 
     }
