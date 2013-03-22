@@ -20,6 +20,7 @@ app.config(function($routeProvider) {
         when('/haku/:hakuOid/hakukohde/:hakukohdeOid/harkinnanvaraiset/harkinnassa', {controller:HarkinnassaController, templateUrl:TEMPLATE_URL_BASE + 'harkinnassa.html'}).
         when('/haku/:hakuOid/hakukohde/:hakukohdeOid/valintaesitys', {controller:ValintaesitysController, templateUrl:TEMPLATE_URL_BASE + 'valintaesitys.html'}).
 
+
         //when('/haku/:hakuOid/henkiloittain', {controller:HenkiloController, templateUrl:TEMPLATE_URL_BASE + 'henkiloittain.html'}).
         //when('/haku/:hakuOid/henkiloittain/mitätuleekin', {controller:HenkiloController, templateUrl:TEMPLATE_URL_BASE + 'henkiloittain.html'}).
 
@@ -44,19 +45,11 @@ return $resource(TARJONTA_URL_BASE + "haku/:hakuOid/hakukohde", {hakuOid: "@haku
   });
 });
 
-//Kaikki hakukohteet
-//app.factory('allHakukohteet', function($resource) {
-//return $resource(TARJONTA_URL_BASE + "hakukohde", {}, {
-//    get: {method: "GET", isArray: true}
-//  });
-//});
-
 app.factory('tarjontaHakukohde', function($resource) {
 return $resource(TARJONTA_URL_BASE + "hakukohde/:hakukohdeoid", {hakukohdeoid: "@hakukohdeoid"}, {
     get: {method: "GET"}
   });
 });
-
 
 //One does not simply call 'ValinnanVaiheList' 'Hakukohde'
 app.factory('ValinnanvaiheListByHakukohde', function($resource) {
@@ -73,7 +66,7 @@ app.factory('ValinnanvaiheListFromValintaperusteet', function($resource) {
 });
 
 
-// Järjstyskriteeritulokset
+// Järjestyskriteeritulokset
 app.factory('Valintatapajono', function($resource) {
 return $resource(SERVICE_URL_BASE + "resources/valintatapajono/:valintatapajonoid/jarjestyskriteeritulos", {valintatapajonoid: "@valintatapajonoid"}, {
     get: {method: "GET", isArray: true}
@@ -92,4 +85,23 @@ app.factory('ValintalaskentaAktivointi', function($resource) {
     return $resource(VALINTALASKENTAKOOSTE_URL_BASE + "resources/valintalaskenta/aktivoi", {}, {
         aktivoi: {method: "GET"}
     })
-})
+});
+
+app.factory('KaikkiHakemukset', function($resource) {
+    return $resource(HAKEMUS_URL_BASE + "applications/", {}, {
+        get: {method: "GET", isArray: true}
+    });
+});
+
+app.factory('Hakemus', function($resource) {
+    return $resource(HAKEMUS_URL_BASE + "applications/:oid", {oid: "@oid"}, {
+        get: {method: "GET"}
+    });
+});
+
+app.factory('HakemusKey', function($resource) {
+    return $resource(HAKEMUS_URL_BASE + "applications/:oid/:key", {oid: "@oid", key: "@key"}, {
+        get: {method: "GET"},
+        put: {method: "PUT"}
+    });
+});
