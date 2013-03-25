@@ -10,7 +10,6 @@ app.factory('HakemusModel', function(Hakemus, KaikkiHakemukset) {
 		this.refresh = function() {
 			KaikkiHakemukset.get({}, function(result) {
 				model.hakemukset = result;
-				console.log(model.hakemukset);
 			});
 		};
 	};
