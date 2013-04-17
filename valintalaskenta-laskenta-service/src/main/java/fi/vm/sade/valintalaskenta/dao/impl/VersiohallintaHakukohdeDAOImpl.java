@@ -15,7 +15,7 @@ import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
  * @author Jussi Jartamo
  * 
  */
-@Repository
+@Repository("VersiohallintaHakukohdeDAO")
 public class VersiohallintaHakukohdeDAOImpl implements VersiohallintaHakukohdeDAO {
 
     @Autowired

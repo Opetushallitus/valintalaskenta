@@ -13,7 +13,7 @@ import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
  * @author Jussi Jartamo
  * 
  */
-@Repository
+@Repository("ValintatapajonoDAO")
 public class ValintatapajonoDAOImpl implements ValintatapajonoDAO {
 
     @Autowired

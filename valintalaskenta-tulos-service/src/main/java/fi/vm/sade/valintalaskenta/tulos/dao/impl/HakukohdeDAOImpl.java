@@ -1,9 +1,10 @@
-package fi.vm.sade.valintalaskenta.dao.impl;
+package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
 import com.google.code.morphia.Datastore;
-import fi.vm.sade.valintalaskenta.dao.HakukohdeDAO;
 import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
 import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
+import fi.vm.sade.valintalaskenta.tulos.dao.HakukohdeDAO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

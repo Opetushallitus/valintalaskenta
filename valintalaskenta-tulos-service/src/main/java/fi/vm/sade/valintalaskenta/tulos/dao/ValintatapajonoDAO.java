@@ -1,4 +1,4 @@
-package fi.vm.sade.valintalaskenta.dao;
+package fi.vm.sade.valintalaskenta.tulos.dao;
 
 import java.util.List;
 

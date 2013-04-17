@@ -1,4 +1,4 @@
-package fi.vm.sade.valintalaskenta.dao.impl;
+package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,9 +11,9 @@ import org.springframework.stereotype.Repository;
 
 import com.google.code.morphia.Datastore;
 
-import fi.vm.sade.valintalaskenta.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
+import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
 
 /**
  * 

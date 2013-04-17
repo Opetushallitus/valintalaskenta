@@ -7,14 +7,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import fi.vm.sade.valintalaskenta.dao.HakukohdeDAO;
-import fi.vm.sade.valintalaskenta.dao.JarjestyskriteeritulosDAO;
-import fi.vm.sade.valintalaskenta.dao.ValinnanvaiheDAO;
-import fi.vm.sade.valintalaskenta.dao.ValintatapajonoDAO;
 import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
 import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
+import fi.vm.sade.valintalaskenta.tulos.dao.HakukohdeDAO;
+import fi.vm.sade.valintalaskenta.tulos.dao.JarjestyskriteeritulosDAO;
+import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
+import fi.vm.sade.valintalaskenta.tulos.dao.ValintatapajonoDAO;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 
 /**
