@@ -36,7 +36,6 @@
 		<module>valintalaskenta-laskenta-api</module>
 		<module>valintalaskenta-tulos-api</module>
 		<module>valintalaskenta-laskenta-service</module>
-		<module>valintalaskenta-ui</module>
 		<module>valintalaskenta-tulos-service</module>
 	</modules>
 </project>
