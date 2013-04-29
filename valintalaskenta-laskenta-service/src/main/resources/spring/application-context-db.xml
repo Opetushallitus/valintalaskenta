@@ -7,7 +7,6 @@
             http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:annotation-config/>
-    <context:property-placeholder location="classpath:mongoConfiguration.properties"/>
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.context"/>
     
 </beans>

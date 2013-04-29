@@ -23,14 +23,14 @@ public class MongoConfigurationImpl {
     private static final Logger LOG = LoggerFactory.getLogger(MongoConfigurationImpl.class);
 
     @Bean
-    public Mongo mongo(@Value("${mongodb.host}") String host, @Value("${mongodb.port}") int port)
+    public Mongo mongo(@Value("${valintalaskenta-laskenta-service.mongodb.host}") String host, @Value("${valintalaskenta-laskenta-service.mongodb.port}") int port)
             throws UnknownHostException {
         LOG.info("Otetaan yhteys Mongokantaan osoitteessa {}:{}", new Object[] { host, port });
         return new Mongo(host, port);
     }
 
     @Bean
-    public Datastore createEmbeddedDatastore(@Value("${mongodb.dbname:valintalaskentadb}") String dbname, Mongo mongo) {
+    public Datastore createEmbeddedDatastore(@Value("${valintalaskenta-laskenta-service.mongodb.dbname:valintalaskentadb}") String dbname, Mongo mongo) {
         Morphia morphia = new Morphia();
         return morphia.createDatastore(mongo, dbname);
     }

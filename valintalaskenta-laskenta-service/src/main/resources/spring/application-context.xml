@@ -7,6 +7,20 @@
             http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:annotation-config/>
+
+    <context:property-placeholder
+            location="classpath:valintalaskenta-laskenta-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/valintalaskenta-laskenta-service.properties, file:///${user.home:''}/oph-configuration/override.properties"
+            ignore-resource-not-found="true"
+            properties-ref="defaultProps"/>
+
+    <bean id="defaultProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="properties">
+            <util:properties local-override="true">
+
+            </util:properties>
+        </property>
+    </bean>
+
 	<import resource="application-context-db.xml" />
     <import resource="application-context-service.xml" />
     <import resource="application-context-tulos.xml" />
