@@ -38,7 +38,11 @@
 			<artifactId>valintaperusteet-laskenta</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
+        <dependency>
+            <groupId>fi.vm.sade.valintaperusteet</groupId>
+            <artifactId>valintalaskenta-tulos-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
 
 		<dependency>

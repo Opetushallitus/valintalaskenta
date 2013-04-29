@@ -16,11 +16,7 @@
     <import resource="classpath:META-INF/cxf/cxf-extension-http.xml" />
 	
 	<bean id="valintalaskentaServiceImpl" class="fi.vm.sade.valintalaskenta.laskenta.service.impl.ValintalaskentaServiceImpl"/>
-	
-    <jaxws:endpoint id="valintalaskentaService"  
-    				address="/"
-                    implementor="#valintalaskentaServiceImpl"
-                     >
-    </jaxws:endpoint>
+    <jaxws:endpoint id="valintalaskentaService" address="/valintalaskentaService"  implementor="#valintalaskentaServiceImpl"/>
+
     
 </beans>
