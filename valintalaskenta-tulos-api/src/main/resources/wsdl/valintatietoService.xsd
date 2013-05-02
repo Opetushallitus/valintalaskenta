@@ -21,7 +21,7 @@
     </xs:complexType>
     <xs:complexType name="HaeValintatiedotTyyppi">
         <xs:sequence>
-            <xs:element name="hakukohdeOid" type="xs:string" maxOccurs="1" minOccurs="1" />
+            <xs:element name="hakuOid" type="xs:string" maxOccurs="1" minOccurs="1" />
         </xs:sequence>
     </xs:complexType>
 
