@@ -1,12 +1,9 @@
 package fi.vm.sade.valintalaskenta.laskenta.testdata;
 
-import java.util.UUID;
-
+import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.stereotype.Component;
-
 import scala.actors.threadpool.AtomicInteger;
-import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 
 /**
  * 
@@ -25,9 +22,6 @@ public class ValintaperusteetTyyppiFactory implements FactoryBean<Valintaperuste
     public ValintaperusteetTyyppi getObject() throws Exception {
         ValintaperusteetTyyppi valintaperusteettyyppi = new ValintaperusteetTyyppi();
         valintaperusteettyyppi.setHakukohdeOid(null);
-        valintaperusteettyyppi.setValinnanVaiheJarjestysluku(COUNTER.incrementAndGet());
-        valintaperusteettyyppi.setValinnanVaiheOid(UUID.randomUUID().toString());
-        // valintaperusteettyyppi.getValintatapajonot();
         return valintaperusteettyyppi;
     }
 

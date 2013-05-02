@@ -1,7 +1,14 @@
 package fi.vm.sade.valintalaskenta.laskenta.service;
 
-import java.util.Arrays;
-
+import fi.vm.sade.service.hakemus.schema.AvainArvoTyyppi;
+import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
+import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.JarjestyskriteeriTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.TavallinenValinnanVaiheTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskriteereillaTyyppi;
+import fi.vm.sade.valintalaskenta.dao.VersiohallintaHakukohdeDAO;
+import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.Assert;
 
-import fi.vm.sade.service.hakemus.schema.AvainArvoTyyppi;
-import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
-import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.JarjestyskriteeriTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskriteereillaTyyppi;
-import fi.vm.sade.valintalaskenta.dao.VersiohallintaHakukohdeDAO;
-import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
+import java.util.Arrays;
 
 /**
  * 
@@ -55,14 +55,17 @@ public class LaskentaSuoriutuuKantaanTesti {
         ValintatapajonoJarjestyskriteereillaTyyppi jarjestyskriteeri = context
                 .getBean(ValintatapajonoJarjestyskriteereillaTyyppi.class);
         jarjestyskriteeri.getJarjestyskriteerit().add(context.getBean(JarjestyskriteeriTyyppi.class));
+        TavallinenValinnanVaiheTyyppi vaihe = context.getBean(TavallinenValinnanVaiheTyyppi.class);
+        vaihe.getValintatapajono().add(jarjestyskriteeri);
+
         ValintaperusteetTyyppi valintaperusteet = context.getBean(ValintaperusteetTyyppi.class);
-        valintaperusteet.getValintatapajonot().add(jarjestyskriteeri);
+        valintaperusteet.setValinnanVaihe(vaihe);
         valintaperusteet.setHakukohdeOid(hakukohde.getHakukohdeOid());
 
         valintalaskentaService.suoritaLaskenta(Arrays.asList(hakemus0, hakemus1), Arrays.asList(valintaperusteet));
 
         VersiohallintaHakukohde versiohallinta = versiohallintaDAO.readByHakukohdeOidAndJarjestysnumero(
-                hakukohde.getHakukohdeOid(), valintaperusteet.getValinnanVaiheJarjestysluku());
+                hakukohde.getHakukohdeOid(), valintaperusteet.getValinnanVaihe().getValinnanVaiheJarjestysluku());
 
         Assert.notNull(versiohallinta, "Kannassa täytyy olla versiohallinta suoritetun laskennan jäljiltä!");
 

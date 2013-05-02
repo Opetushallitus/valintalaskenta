@@ -1,8 +1,15 @@
 package fi.vm.sade.valintalaskenta.laskenta.service;
 
-import java.util.Arrays;
-import java.util.List;
-
+import fi.vm.sade.service.hakemus.schema.AvainArvoTyyppi;
+import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
+import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.JarjestyskriteeriTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.TavallinenValinnanVaiheTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskriteereillaTyyppi;
+import fi.vm.sade.valintalaskenta.dao.VersiohallintaHakukohdeDAO;
+import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
+import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,21 +18,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fi.vm.sade.service.hakemus.schema.AvainArvoTyyppi;
-import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
-import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.JarjestyskriteeriTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskriteereillaTyyppi;
-import fi.vm.sade.valintalaskenta.dao.VersiohallintaHakukohdeDAO;
-import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
-import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
-import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaSuorittajaService;
+import java.util.Arrays;
+import java.util.List;
 
 /**
- * 
  * @author Jussi Jartamo
- * 
+ *         <p/>
  *         Testaa että versiointi toimii. Luo useita peräkkäisiä versioita
  *         samasta valinnanvaiheesta ja verifioi, että uusin versio on aina
  *         uusin versio ja että versiojärjestys säilyy oikeana.
@@ -61,7 +59,7 @@ public class VersiointiToimiiTesti {
             valintalaskentaService.suoritaLaskenta(Arrays.asList(hakemusjollelaskentasuoritetaan),
                     Arrays.asList(valintaperusteet));
             VersiohallintaHakukohde versiohallinta = versiohallintaDAO.readByHakukohdeOidAndJarjestysnumero(
-                    hakukohde.getHakukohdeOid(), valintaperusteet.getValinnanVaiheJarjestysluku());
+                    hakukohde.getHakukohdeOid(), valintaperusteet.getValinnanVaihe().getValinnanVaiheJarjestysluku());
             Assert.assertTrue("Joka kierroksella versioiden määrän pitää lisääntyä yhdellä!", versiohallinta
                     .getHakukohteet().size() - 1 == kierros);
             Versioituhakukohde vanhinversioituhakukohde = versiohallinta.getHakukohteet().haeVanhinVersio();
@@ -82,8 +80,12 @@ public class VersiointiToimiiTesti {
         ValintatapajonoJarjestyskriteereillaTyyppi jarjestyskriteeri = context
                 .getBean(ValintatapajonoJarjestyskriteereillaTyyppi.class);
         jarjestyskriteeri.getJarjestyskriteerit().add(context.getBean(JarjestyskriteeriTyyppi.class));
+
+        TavallinenValinnanVaiheTyyppi vaihe = context.getBean(TavallinenValinnanVaiheTyyppi.class);
+        vaihe.getValintatapajono().add(jarjestyskriteeri);
+
         ValintaperusteetTyyppi valintaperusteet = context.getBean(ValintaperusteetTyyppi.class);
-        valintaperusteet.getValintatapajonot().add(jarjestyskriteeri);
+        valintaperusteet.setValinnanVaihe(vaihe);
         valintaperusteet.setHakukohdeOid(hakukohde.getHakukohdeOid());
         return valintaperusteet;
     }
