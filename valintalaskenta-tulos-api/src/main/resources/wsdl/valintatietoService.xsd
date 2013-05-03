@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema elementFormDefault="unqualified"
+           targetNamespace="http://valintatiedot.service.sade.vm.fi/messages" version="1.0"
+           xmlns:tns="http://valintatiedot.service.sade.vm.fi/messages"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:valintatiedot="http://valintatiedot.service.sade.vm.fi/schema"
+        >
+
+    <xs:import namespace="http://valintatiedot.service.sade.vm.fi/schema" schemaLocation="valintatiedot.xsd" />
+
+    <xs:element name="haeValintatiedot" type="tns:HaeValintatiedotTyyppi" />
+    <xs:element name="haeValintaTiedotVastaus" type="tns:HaeValintatiedotVastausTyyppi" />
+
+
+    <!-- ÄLÄ IMPLEMENTOI VIELÄ -->
+
+    <xs:complexType name="HaeValintatiedotVastausTyyppi">
+        <xs:sequence>
+            <xs:element name="hakijat" type="valintatiedot:HakukohdeTyyppi" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="HaeValintatiedotTyyppi">
+        <xs:sequence>
+            <xs:element name="hakuOid" type="xs:string" maxOccurs="1" minOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+
+
+
+    <!--
+    <xs:complexType name="HakuParametritTyyppi">
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="hakukohde" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+    -->
+
+
+</xs:schema>
