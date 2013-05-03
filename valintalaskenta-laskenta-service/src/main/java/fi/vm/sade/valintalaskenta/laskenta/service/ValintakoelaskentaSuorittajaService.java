@@ -12,5 +12,5 @@ import java.util.List;
  */
 public interface ValintakoelaskentaSuorittajaService {
 
-    String laske(HakemusTyyppi hakemus,  List<ValintaperusteetTyyppi> valintaperusteet);
+    void laske(HakemusTyyppi hakemus,  List<ValintaperusteetTyyppi> valintaperusteet);
 }
