@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import fi.vm.sade.valintalaskenta.domain.Hakukohde;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     @Autowired
     private Datastore datastore;
 
+    @Override
     public List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid) {
         List<VersiohallintaHakukohde> versiohallinnat = datastore.find(VersiohallintaHakukohde.class, "hakukohdeoid",
                 hakukohdeoid).asList();
@@ -39,6 +41,22 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         List<Valinnanvaihe> valinnanvaiheet = new ArrayList<Valinnanvaihe>();
         for (VersiohallintaHakukohde versiohallinta : versiohallinnat) {
             valinnanvaiheet.add(versiohallinta.getHakukohteet().haeUusinVersio().getHakukohde().getValinnanvaihe());
+        }
+        return valinnanvaiheet;
+    }
+
+    @Override
+    public List<Hakukohde> readByHakuOid(String hakuoid) {
+        List<VersiohallintaHakukohde> versiohallinnat = datastore.find(VersiohallintaHakukohde.class, "hakuoid",
+                hakuoid).asList();
+        if (versiohallinnat == null || versiohallinnat.isEmpty()) {
+            LOGGER.info("versionhallinat tyhja");
+            return Collections.emptyList();
+        }
+        LOGGER.info("versiohallinnat määrä on {}", versiohallinnat.size());
+        List<Hakukohde> valinnanvaiheet = new ArrayList<Hakukohde>();
+        for (VersiohallintaHakukohde versiohallinta : versiohallinnat) {
+            valinnanvaiheet.add(versiohallinta.getHakukohteet().haeUusinVersio().getHakukohde());
         }
         return valinnanvaiheet;
     }
