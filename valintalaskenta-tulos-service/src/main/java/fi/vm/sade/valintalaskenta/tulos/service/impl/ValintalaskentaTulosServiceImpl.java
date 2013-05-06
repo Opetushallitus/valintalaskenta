@@ -2,6 +2,8 @@ package fi.vm.sade.valintalaskenta.tulos.service.impl;
 
 import java.util.List;
 
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
+import fi.vm.sade.valintalaskenta.tulos.dao.*;
 import fi.vm.sade.valintalaskenta.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,10 @@ import fi.vm.sade.valintalaskenta.tulos.dao.HakukohdeDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.JarjestyskriteeritulosDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.ValintatapajonoDAO;
+import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 
 /**
@@ -36,6 +42,9 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     @Autowired
     private ValintatapajonoDAO valintatapajonoDAO;
 
+    @Autowired
+    private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
+
     @Override
     public List<Versioituhakukohde> haeHakukohteet() {
         return hakukohdeDAO.readAll();
@@ -52,6 +61,11 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
+    public List<ValintakoeOsallistuminen> haeValintakoeOsallistumiset() {
+        return valintakoeOsallistuminenDAO.findAll();
+    }
+
+    @Override
     public List<Valinnanvaihe> haeValinnanvaiheetHakukohteelle(String hakukohdeoid) {
         return valinnanvaiheDAO.readByHakukohdeOid(hakukohdeoid);
     }
@@ -64,6 +78,16 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     @Override
     public List<Hakukohde> haeLasketutValinnanvaiheetHaulle(String hakuOid) {
         return valinnanvaiheDAO.readByHakuOid(hakuOid);
+    }
+
+    @Override
+    public List<ValintakoeOsallistuminen> haeValintakoeOsallistumiset(String hakijaoid) {
+        return valintakoeOsallistuminenDAO.findByHakijaOid(hakijaoid);
+    }
+
+    @Override
+    public List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakutoive(String hakukohdeOid) {
+        return valintakoeOsallistuminenDAO.findByHakutoive(hakukohdeOid);
     }
 
 }
