@@ -2,26 +2,21 @@ package fi.vm.sade.valintalaskenta.laskenta.service;
 
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
-import fi.vm.sade.service.valintaperusteet.laskenta.Totuusarvofunktio;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.Laskentatulos;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hyvaksyttavissatila;
-import fi.vm.sade.service.valintaperusteet.model.Funktionimi;
-import fi.vm.sade.service.valintaperusteet.schema.*;
+import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.ValintakoeTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.ValintakoeValinnanVaiheTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.valintalaskenta.dao.ValintakoeOsallistuminenDAO;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValinnanVaihe;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
-import fi.vm.sade.valintalaskenta.laskenta.service.impl.ValintakoelaskentaSuorittajaServiceImpl;
-import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.FunktioKutsuTyyppiToFunktioKutsuConverter;
-import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.HakemusTyyppiToHakemusConverter;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
+import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
+import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoeosallistumislaskin;
+import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.ValintakoelaskentaSuorittajaServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.springframework.test.util.ReflectionTestUtils;
+import scala.actors.threadpool.Arrays;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,103 +35,116 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
     private ValintakoelaskentaSuorittajaService valintakoelaskentaSuorittajaService;
 
-    private FunktioKutsuTyyppiToFunktioKutsuConverter funktiokutsuConverter;
-    private HakemusTyyppiToHakemusConverter hakemusConverter;
-    private LaskentaService laskentaServiceMock;
     private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAOMock;
-
-
-    private static FunktiokutsuTyyppi totuusarvoFalse;
-    private static FunktiokutsuTyyppi totuusarvoTrue;
-
-    static {
-        totuusarvoFalse = new FunktiokutsuTyyppi();
-        totuusarvoFalse.setFunktionimi(Funktionimi.TOTUUSARVO.name());
-        SyoteparametriTyyppi param1 = new SyoteparametriTyyppi();
-        param1.setAvain("totuusarvo");
-        param1.setArvo(Boolean.FALSE.toString());
-        totuusarvoFalse.getSyoteparametrit().add(param1);
-
-        totuusarvoTrue = new FunktiokutsuTyyppi();
-        totuusarvoTrue.setFunktionimi(Funktionimi.TOTUUSARVO.name());
-        SyoteparametriTyyppi param2 = new SyoteparametriTyyppi();
-        param2.setAvain("totuusarvo");
-        param2.setArvo(Boolean.TRUE.toString());
-        totuusarvoTrue.getSyoteparametrit().add(param2);
-    }
+    private Valintakoeosallistumislaskin valintakoeosallistumislaskinMock;
 
     @Before
     public void setUp() {
         valintakoelaskentaSuorittajaService = new ValintakoelaskentaSuorittajaServiceImpl();
 
-        funktiokutsuConverter = new FunktioKutsuTyyppiToFunktioKutsuConverter();
-        hakemusConverter = new HakemusTyyppiToHakemusConverter();
-        laskentaServiceMock = mock(LaskentaService.class);
         valintakoeOsallistuminenDAOMock = mock(ValintakoeOsallistuminenDAO.class);
+        valintakoeosallistumislaskinMock = mock(Valintakoeosallistumislaskin.class);
 
-        ReflectionTestUtils.setField(valintakoelaskentaSuorittajaService, "funktiokutsuConverter", funktiokutsuConverter);
-        ReflectionTestUtils.setField(valintakoelaskentaSuorittajaService, "hakemusConverter", hakemusConverter);
-        ReflectionTestUtils.setField(valintakoelaskentaSuorittajaService, "laskentaService", laskentaServiceMock);
-        ReflectionTestUtils.setField(valintakoelaskentaSuorittajaService, "valintakoeOsallistuminenDAO", valintakoeOsallistuminenDAOMock);
+        ReflectionTestUtils.setField(valintakoelaskentaSuorittajaService, "valintakoeOsallistuminenDAO",
+                valintakoeOsallistuminenDAOMock);
+        ReflectionTestUtils.setField(valintakoelaskentaSuorittajaService, "valintakoeosallistumislaskin",
+                valintakoeosallistumislaskinMock);
     }
 
+    private static HakemusTyyppi luoHakemus(String hakemusOid, String hakijaOid) {
+        HakemusTyyppi hakemus = new HakemusTyyppi();
+        hakemus.setHakemusOid(hakemusOid);
+        hakemus.setHakijaOid(hakijaOid);
+
+        return hakemus;
+    }
+
+    private static HakemusTyyppi luoHakemus(String hakemusOid, String hakijaOid, String... hakutoiveet) {
+        HakemusTyyppi hakemus = luoHakemus(hakemusOid, hakijaOid);
+
+        int i = 1;
+        for (String hakutoive : hakutoiveet) {
+            HakukohdeTyyppi toive = new HakukohdeTyyppi();
+            toive.setHakukohdeOid(hakutoive);
+            toive.setPrioriteetti(i);
+            hakemus.getHakutoive().add(toive);
+            ++i;
+        }
+
+        return hakemus;
+    }
+
+    private static HakemusTyyppi luoHakemus(String hakemusOid, String hakijaOid, HakukohdeTyyppi... hakutoiveet) {
+        HakemusTyyppi hakemus = luoHakemus(hakemusOid, hakijaOid);
+        hakemus.getHakutoive().addAll(Arrays.asList(hakutoiveet));
+
+        return hakemus;
+    }
+
+    private static ValintaperusteetTyyppi luoValintaperusteet(String hakuOid, String hakukohdeOid,
+                                                              String valinnanVaiheOid,
+                                                              int valinnanVaiheJarjestysluku,
+                                                              String... valintakoeTunnisteet) {
+        ValintaperusteetTyyppi perusteet = new ValintaperusteetTyyppi();
+        perusteet.setHakukohdeOid(hakukohdeOid);
+        perusteet.setHakuOid(hakuOid);
+        perusteet.setValinnanVaihe(luoValinnanVaihe(valinnanVaiheOid,
+                valinnanVaiheJarjestysluku,
+                valintakoeTunnisteet));
+
+        return perusteet;
+    }
+
+    private static ValintakoeValinnanVaiheTyyppi luoValinnanVaihe(String valinnanVaiheOid, int jarjestysluku,
+                                                                  String... valintakoeTunnisteet) {
+        ValintakoeValinnanVaiheTyyppi vaihe = new ValintakoeValinnanVaiheTyyppi();
+        vaihe.setValinnanVaiheOid(valinnanVaiheOid);
+        vaihe.setValinnanVaiheJarjestysluku(jarjestysluku);
+
+        for (String tunniste : valintakoeTunnisteet) {
+            vaihe.getValintakoe().add(luoValintakoe(tunniste, tunniste));
+        }
+
+        return vaihe;
+    }
+
+    private static ValintakoeTyyppi luoValintakoe(String valintakoeOid, String tunniste) {
+        ValintakoeTyyppi koe = new ValintakoeTyyppi();
+        koe.setFunktiokutsu(new FunktiokutsuTyyppi());
+        koe.setTunniste(tunniste);
+        koe.setOid(valintakoeOid);
+        return koe;
+    }
 
     @Test
-    public void test() {
-        final HakemusTyyppi hakemus = new HakemusTyyppi();
-        hakemus.setHakemusOid("hakemusOid");
-        hakemus.setHakijaOid("hakijaOid");
+    public void testHakijaOsallistuuVainKorkeammanHakutoiveenValintakokeeseen() {
 
-        HakukohdeTyyppi hakukohde1 = new HakukohdeTyyppi();
-        hakukohde1.setHakukohdeOid("hakukohdeOid1");
-        hakukohde1.setPrioriteetti(1);
+        final String hakukohdeOid1 = "hakukohdeOid1";
+        final String hakukohdeOid2 = "hakukohdeOid2";
 
-        HakukohdeTyyppi hakukohde2 = new HakukohdeTyyppi();
-        hakukohde2.setHakukohdeOid("hakukohdeOid2");
-        hakukohde2.setPrioriteetti(2);
-
-        hakemus.getHakutoive().add(hakukohde1);
-        hakemus.getHakutoive().add(hakukohde2);
+        final HakemusTyyppi hakemus = luoHakemus("hakemusOid", "hakijaOid", hakukohdeOid1, hakukohdeOid2);
 
         final String hakuOid = "hakuOid";
+        final String valintakoetunniste = "valintakoetunniste";
 
-        ValintaperusteetTyyppi valintaperusteet1 = new ValintaperusteetTyyppi();
-        valintaperusteet1.setHakukohdeOid(hakukohde1.getHakukohdeOid());
-        valintaperusteet1.setHakuOid(hakuOid);
+        final String valinnanVaiheOid1 = "valinnanVaiheOid1";
+        final int valinnanVaiheJarjestysluku1 = 1;
 
-        ValintakoeValinnanVaiheTyyppi valinnanVaihe1 = new ValintakoeValinnanVaiheTyyppi();
-        valinnanVaihe1.setValinnanVaiheOid("valinnanVaiheOid1");
-        valinnanVaihe1.setValinnanVaiheJarjestysluku(1);
-        valintaperusteet1.setValinnanVaihe(valinnanVaihe1);
+        ValintaperusteetTyyppi valintaperusteet1 = luoValintaperusteet(hakuOid, hakukohdeOid1, valinnanVaiheOid1,
+                valinnanVaiheJarjestysluku1, valintakoetunniste);
 
-        final String valintakoeTunniste = "valintakoetunniste";
+        final String valinnanVaiheOid2 = "valinnanVaiheOid2";
+        final int valinnanVaiheJarjestysluku2 = 2;
 
-        ValintakoeTyyppi koe1 = new ValintakoeTyyppi();
-        koe1.setTunniste(valintakoeTunniste);
-        koe1.setOid("valintakoeOid1");
-        koe1.setFunktiokutsu(totuusarvoTrue);
-        valinnanVaihe1.getValintakoe().add(koe1);
 
-        ValintaperusteetTyyppi valintaperusteet2 = new ValintaperusteetTyyppi();
-        valintaperusteet2.setHakukohdeOid(hakukohde2.getHakukohdeOid());
-        valintaperusteet2.setHakuOid(hakuOid);
+        ValintaperusteetTyyppi valintaperusteet2 = luoValintaperusteet(hakuOid, hakukohdeOid2, valinnanVaiheOid2,
+                valinnanVaiheJarjestysluku2, valintakoetunniste);
 
-        ValintakoeValinnanVaiheTyyppi valinnanVaihe2 = new ValintakoeValinnanVaiheTyyppi();
-        valinnanVaihe2.setValinnanVaiheOid("valinnanVaiheOid2");
-        valinnanVaihe2.setValinnanVaiheJarjestysluku(2);
-        valintaperusteet2.setValinnanVaihe(valinnanVaihe2);
+        when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(eq(hakukohdeOid1),
+                Matchers.<HakemusTyyppi>any(), Matchers.<FunktiokutsuTyyppi>any())).thenReturn(true);
 
-        ValintakoeTyyppi koe2 = new ValintakoeTyyppi();
-        koe2.setTunniste(valintakoeTunniste);
-        koe2.setOid("valintakoeOid2");
-        koe2.setFunktiokutsu(totuusarvoFalse);
-        valinnanVaihe2.getValintakoe().add(koe2);
-
-        final Laskentatulos<Boolean> tulos1 = new Laskentatulos<Boolean>(new Hyvaksyttavissatila(), true);
-        when(laskentaServiceMock.suoritaLasku(eq(hakukohde1.getHakukohdeOid()), Matchers.<Hakemus>any(), Matchers.<Totuusarvofunktio>any())).thenReturn(tulos1);
-
-        final Laskentatulos<Boolean> tulos2 = new Laskentatulos<Boolean>(new Hyvaksyttavissatila(), false);
-        when(laskentaServiceMock.suoritaLasku(eq(hakukohde2.getHakukohdeOid()), Matchers.<Hakemus>any(), Matchers.<Totuusarvofunktio>any())).thenReturn(tulos2);
+        when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(eq(hakukohdeOid2),
+                Matchers.<HakemusTyyppi>any(), Matchers.<FunktiokutsuTyyppi>any())).thenReturn(true);
 
         when(valintakoeOsallistuminenDAOMock.readByHakuOidAndHakemusOid(anyString(), anyString())).thenReturn(null);
 
@@ -164,34 +172,40 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         });
         {
             Hakutoive hakutoive1 = hakutoiveet.get(0);
-            assertEquals(hakutoive1.getHakukohdeOid(), hakukohde1.getHakukohdeOid());
+            assertEquals(hakutoive1.getHakukohdeOid(), hakukohdeOid1);
             assertEquals(1, hakutoive1.getValinnanVaiheet().size());
 
             ValinnanVaihe vaihe1 = hakutoive1.getValinnanVaiheet().get(0);
-            assertEquals(valinnanVaihe1.getValinnanVaiheOid(), vaihe1.getValinnanVaiheOid());
-            assertEquals(valinnanVaihe1.getValinnanVaiheJarjestysluku(), vaihe1.getValinnanVaiheJarjestysluku().intValue());
+            assertEquals(valinnanVaiheOid1, vaihe1.getValinnanVaiheOid());
+            assertEquals(valinnanVaiheJarjestysluku1, vaihe1.getValinnanVaiheJarjestysluku().intValue());
             assertEquals(1, vaihe1.getValintakokeet().size());
 
             Valintakoe vk1 = vaihe1.getValintakokeet().get(0);
-            assertEquals(koe1.getOid(), vk1.getValintakoeOid());
-            assertEquals(koe1.getTunniste(), vk1.getValintakoeTunniste());
+            assertEquals(valintakoetunniste, vk1.getValintakoeOid());
+            assertEquals(valintakoetunniste, vk1.getValintakoeTunniste());
+            assertEquals(Osallistuminen.OSALLISTUU, vk1.getOsallistuminen());
         }
 
         {
             Hakutoive hakutoive2 = hakutoiveet.get(1);
-            assertEquals(hakutoive2.getHakukohdeOid(), hakukohde2.getHakukohdeOid());
+            assertEquals(hakukohdeOid2, hakutoive2.getHakukohdeOid());
             assertEquals(1, hakutoive2.getValinnanVaiheet().size());
 
             ValinnanVaihe vaihe2 = hakutoive2.getValinnanVaiheet().get(0);
-            assertEquals(valinnanVaihe2.getValinnanVaiheOid(), vaihe2.getValinnanVaiheOid());
-            assertEquals(valinnanVaihe2.getValinnanVaiheJarjestysluku(), vaihe2.getValinnanVaiheJarjestysluku().intValue());
+            assertEquals(valinnanVaiheOid2, vaihe2.getValinnanVaiheOid());
+            assertEquals(valinnanVaiheJarjestysluku2, vaihe2.getValinnanVaiheJarjestysluku().intValue());
             assertEquals(1, vaihe2.getValintakokeet().size());
 
             Valintakoe vk2 = vaihe2.getValintakokeet().get(0);
-            assertEquals(koe2.getOid(), vk2.getValintakoeOid());
-            assertEquals(koe2.getTunniste(), vk2.getValintakoeTunniste());
+            assertEquals(valintakoetunniste, vk2.getValintakoeOid());
+            assertEquals(valintakoetunniste, vk2.getValintakoeTunniste());
+            assertEquals(Osallistuminen.EI_OSALLISTU, vk2.getOsallistuminen());
         }
     }
 
+    @Test
+    public void testHakijaOsallistuuVainKorkeimmanPakollisenHakutoiveenValintakokeeseen() {
+
+    }
 
 }

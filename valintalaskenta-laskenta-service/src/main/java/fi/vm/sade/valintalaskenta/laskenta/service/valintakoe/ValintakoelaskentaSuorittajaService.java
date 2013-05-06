@@ -1,4 +1,4 @@
-package fi.vm.sade.valintalaskenta.laskenta.service;
+package fi.vm.sade.valintalaskenta.laskenta.service.valintakoe;
 
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;

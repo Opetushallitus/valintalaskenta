@@ -1,22 +1,15 @@
-package fi.vm.sade.valintalaskenta.laskenta.service.impl;
+package fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl;
 
-import fi.vm.sade.kaava.Laskentadomainkonvertteri;
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.Laskentatulos;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
-import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
 import fi.vm.sade.service.valintaperusteet.schema.ValintakoeTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintakoeValinnanVaiheTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.valintalaskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
-import fi.vm.sade.valintalaskenta.laskenta.service.ValintakoelaskentaSuorittajaService;
-import fi.vm.sade.valintalaskenta.laskenta.service.exception.LaskentaVaarantyyppisellaFunktiollaException;
-import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.FunktioKutsuTyyppiToFunktioKutsuConverter;
-import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.HakemusTyyppiToHakemusConverter;
-import fi.vm.sade.valintalaskenta.laskenta.service.impl.util.HakukohdeValintakoeData;
+import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
+import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoeosallistumislaskin;
+import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.HakukohdeValintakoeData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,16 +24,10 @@ import java.util.*;
 public class ValintakoelaskentaSuorittajaServiceImpl implements ValintakoelaskentaSuorittajaService {
 
     @Autowired
-    private LaskentaService laskentaService;
-
-    @Autowired
-    private FunktioKutsuTyyppiToFunktioKutsuConverter funktiokutsuConverter;
-
-    @Autowired
-    private HakemusTyyppiToHakemusConverter hakemusConverter;
-
-    @Autowired
     private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
+
+    @Autowired
+    private Valintakoeosallistumislaskin valintakoeosallistumislaskin;
 
     @Override
     public void laske(HakemusTyyppi hakemus, List<ValintaperusteetTyyppi> valintaperusteet) {
@@ -54,8 +41,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                 ValintakoeValinnanVaiheTyyppi vaihe = (ValintakoeValinnanVaiheTyyppi) vp.getValinnanVaihe();
 
                 for (ValintakoeTyyppi koe : vaihe.getValintakoe()) {
-                    boolean tulos = laskeKaava(vp.getHakukohdeOid(), hakemus,
-                            funktiokutsuConverter.convert(koe.getFunktiokutsu()));
+                    boolean tulos = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
+                            vp.getHakukohdeOid(), hakemus, koe.getFunktiokutsu());
 
                     HakukohdeValintakoeData container = new HakukohdeValintakoeData();
                     container.setHakuOid(vp.getHakuOid());
@@ -80,6 +67,9 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         for (Map.Entry<String, List<HakukohdeValintakoeData>> entry : valintakoeData.entrySet()) {
             List<HakukohdeValintakoeData> kokeet = entry.getValue();
 
+            // Käydään hakijan hakutoiveet läpi prioriteetin mukaan ja asetetaan kullekin hakukohteelle
+            // valintakoekohtainen osallistumistieto
+
             Collections.sort(kokeet, new Comparator<HakukohdeValintakoeData>() {
                 @Override
                 public int compare(HakukohdeValintakoeData o1, HakukohdeValintakoeData o2) {
@@ -88,6 +78,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                 }
             });
 
+            // Jos hakija osallistuu korkeamman prioriteetin hakuktoiveen valintakokeeseen, hakija ei osallistu
+            // pienemmällä prioriteetilla oleviin samoihin valintakokeisiin.
             boolean osallistuminenLoydetty = false;
             for (HakukohdeValintakoeData c : kokeet) {
                 if (!osallistuminenLoydetty && Osallistuminen.OSALLISTUU.equals(c.getOsallistuminen())) {
@@ -108,7 +100,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
             }
         }
 
-        for(ValintakoeOsallistuminen osallistuminen : osallistumisetByHaku.values()) {
+        for (ValintakoeOsallistuminen osallistuminen : osallistumisetByHaku.values()) {
             valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen);
         }
     }
@@ -192,26 +184,5 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         }
 
         return toiveetMap;
-    }
-
-    protected boolean laskeKaava(String hakukohdeOid, HakemusTyyppi hakemus, Funktiokutsu funktiokutsu) {
-        switch (funktiokutsu.getFunktionimi().getTyyppi()) {
-            case TOTUUSARVOFUNKTIO:
-                Laskentatulos<Boolean> tulos = laskentaService.suoritaLasku(hakukohdeOid,
-                        hakemusConverter.convert(hakemus),
-                        Laskentadomainkonvertteri.muodostaTotuusarvolasku(funktiokutsu));
-
-                // Jos tulosta ei ole saatu laskettua (ts. sitä ei ole) tai jos tuloksen tila on hylätty, voidaan
-                // olettaa, että henkilön pitää osallistua valintakokeeseen
-                if (tulos.getTulos() == null || Tila.Tilatyyppi.HYLATTY.equals(tulos.getTila().getTilatyyppi())) {
-                    return true;
-                } else {
-                    // muussa tapauksessa palautetaan laskettu tulos
-                    return tulos.getTulos();
-                }
-
-            default:
-                throw new LaskentaVaarantyyppisellaFunktiollaException("Palvelu hyväksyy vain totuusarvofunktioita!");
-        }
     }
 }
