@@ -3,8 +3,6 @@ package fi.vm.sade.valintalaskenta.laskenta.service;
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ValintakoeTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ValintakoeValinnanVaiheTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.valintalaskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
@@ -17,10 +15,10 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.springframework.test.util.ReflectionTestUtils;
-import scala.actors.threadpool.Arrays;
 
 import java.util.*;
 
+import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -47,71 +45,6 @@ public class ValintakoelaskentaSuorittajaServiceTest {
                 valintakoeOsallistuminenDAOMock);
         ReflectionTestUtils.setField(valintakoelaskentaSuorittajaService, "valintakoeosallistumislaskin",
                 valintakoeosallistumislaskinMock);
-    }
-
-    private static HakemusTyyppi luoHakemus(String hakemusOid, String hakijaOid) {
-        HakemusTyyppi hakemus = new HakemusTyyppi();
-        hakemus.setHakemusOid(hakemusOid);
-        hakemus.setHakijaOid(hakijaOid);
-
-        return hakemus;
-    }
-
-    private static HakemusTyyppi luoHakemus(String hakemusOid, String hakijaOid, String... hakutoiveet) {
-        HakemusTyyppi hakemus = luoHakemus(hakemusOid, hakijaOid);
-
-        int i = 1;
-        for (String hakutoive : hakutoiveet) {
-            HakukohdeTyyppi toive = new HakukohdeTyyppi();
-            toive.setHakukohdeOid(hakutoive);
-            toive.setPrioriteetti(i);
-            hakemus.getHakutoive().add(toive);
-            ++i;
-        }
-
-        return hakemus;
-    }
-
-    private static HakemusTyyppi luoHakemus(String hakemusOid, String hakijaOid, HakukohdeTyyppi... hakutoiveet) {
-        HakemusTyyppi hakemus = luoHakemus(hakemusOid, hakijaOid);
-        hakemus.getHakutoive().addAll(Arrays.asList(hakutoiveet));
-
-        return hakemus;
-    }
-
-    private static ValintaperusteetTyyppi luoValintaperusteet(String hakuOid, String hakukohdeOid,
-                                                              String valinnanVaiheOid,
-                                                              int valinnanVaiheJarjestysluku,
-                                                              String... valintakoeTunnisteet) {
-        ValintaperusteetTyyppi perusteet = new ValintaperusteetTyyppi();
-        perusteet.setHakukohdeOid(hakukohdeOid);
-        perusteet.setHakuOid(hakuOid);
-        perusteet.setValinnanVaihe(luoValinnanVaihe(valinnanVaiheOid,
-                valinnanVaiheJarjestysluku,
-                valintakoeTunnisteet));
-
-        return perusteet;
-    }
-
-    private static ValintakoeValinnanVaiheTyyppi luoValinnanVaihe(String valinnanVaiheOid, int jarjestysluku,
-                                                                  String... valintakoeTunnisteet) {
-        ValintakoeValinnanVaiheTyyppi vaihe = new ValintakoeValinnanVaiheTyyppi();
-        vaihe.setValinnanVaiheOid(valinnanVaiheOid);
-        vaihe.setValinnanVaiheJarjestysluku(jarjestysluku);
-
-        for (String tunniste : valintakoeTunnisteet) {
-            vaihe.getValintakoe().add(luoValintakoe(tunniste, tunniste));
-        }
-
-        return vaihe;
-    }
-
-    private static ValintakoeTyyppi luoValintakoe(String valintakoeOid, String tunniste) {
-        ValintakoeTyyppi koe = new ValintakoeTyyppi();
-        koe.setFunktiokutsu(new FunktiokutsuTyyppi());
-        koe.setTunniste(tunniste);
-        koe.setOid(valintakoeOid);
-        return koe;
     }
 
     @Test
@@ -199,26 +132,6 @@ public class ValintakoelaskentaSuorittajaServiceTest {
             assertEquals(valintakoetunniste, vk2.getValintakoeTunniste());
             assertEquals(Osallistuminen.EI_OSALLISTU, vk2.getOsallistuminen());
         }
-    }
-
-    private HakukohdeTyyppi luoHakukohdeTyyppi(String hakukohdeOid, int prioriteetti) {
-        HakukohdeTyyppi hakukohde = new HakukohdeTyyppi();
-        hakukohde.setHakukohdeOid(hakukohdeOid);
-        hakukohde.setPrioriteetti(prioriteetti);
-
-        return hakukohde;
-    }
-
-    private HakukohdeValintakoeData luoHakukohdeValintakoeData(String hakukohdeOid,
-                                                               Osallistuminen osallistuminen,
-                                                               String valintakoeTunniste) {
-
-        HakukohdeValintakoeData koe = new HakukohdeValintakoeData();
-        koe.setHakukohdeOid(hakukohdeOid);
-        koe.setOsallistuminen(osallistuminen);
-        koe.setValintakoeTunniste(valintakoeTunniste);
-
-        return koe;
     }
 
     @Test

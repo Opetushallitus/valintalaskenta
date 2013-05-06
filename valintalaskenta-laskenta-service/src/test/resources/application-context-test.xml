@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:util="http://www.springframework.org/schema/util"
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
             http://www.springframework.org/schema/context
-            http://www.springframework.org/schema/context/spring-context.xsd
-            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+            http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:annotation-config/>
     <!--
     	Sulautetun Mongo-kannan pystyyn virittäminen testejä varten 
      -->
-    <context:property-placeholder properties-ref="embeddedMongoProps"/>
-	<util:properties id="embeddedMongoProps">
-		<prop key="mongodb.host">localhost</prop>
-		<prop key="mongodb.port">33720</prop>
-	</util:properties>
-	<bean id="embeddedMongoDBConfiguration" class="fi.vm.sade.valintalaskenta.laskenta.service.EmbeddedMongoConfiguration"/>
-	<context:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.context"/>
+    <bean id="mongodFactory" class="de.flapdoodle.embed.mongo.tests.MongodForTestsFactory" destroy-method="shutdown" />
+
+    <bean id="mongo" class="com.mongodb.Mongo" factory-bean="mongodFactory" factory-method="newMongo" />
+    <bean id="morphia" class="com.google.code.morphia.Morphia" />
+    <bean id="datastore" factory-bean="morphia" factory-method="createDatastore">
+        <constructor-arg type="com.mongodb.Mongo" ref="mongo" />
+        <constructor-arg type="java.lang.String" value="valintalaskenta" />
+    </bean>
+
 	<!--
 		Tehdasluokat testidatan generointiin. Tehdasluokat toimii suoraan kontekstista nykimällä context.getBean('TestObjectNeededToBeCreated'.class) 
 	 -->

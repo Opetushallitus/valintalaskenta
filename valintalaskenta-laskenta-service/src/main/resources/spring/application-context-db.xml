@@ -7,6 +7,14 @@
             http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:annotation-config/>
-    <context:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.context"/>
-    
+
+    <bean id="mongo" class="com.mongodb.Mongo" scope="singleton">
+        <constructor-arg type="java.lang.String" value="${valintalaskenta-laskenta-service.mongodb.host}" />
+        <constructor-arg type="int" value="${valintalaskenta-laskenta-service.mongodb.port}" />
+    </bean>
+    <bean id="morphia" class="com.google.code.morphia.Morphia" />
+    <bean id="datastore" factory-bean="morphia" factory-method="createDatastore">
+        <constructor-arg type="com.mongodb.Mongo" ref="mongo" />
+        <constructor-arg type="java.lang.String" value="${valintalaskenta-laskenta-service.mongodb.dbname}" />
+    </bean>
 </beans>
