@@ -10,6 +10,17 @@
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.dao"/>
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.service.impl"/>
 	<context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.resource" />
+    <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.service.impl.converters"/>
+
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <list>
+                <ref bean="hakukohdeHakukohdeTyyppiConverter"/>
+                <ref bean="valinnanvaiheValinnanvaiheTyyppiConverter"/>
+                <ref bean="valintatapajonoValintatapajonoTyyppiConverter"/>
+            </list>
+        </property>
+    </bean>
 
     <import resource="application-context-tulos-ws.xml" />
 
