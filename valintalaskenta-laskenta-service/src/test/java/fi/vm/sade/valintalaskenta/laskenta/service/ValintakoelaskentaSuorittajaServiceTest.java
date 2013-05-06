@@ -11,6 +11,7 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoeosallistumislaskin;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.ValintakoelaskentaSuorittajaServiceImpl;
+import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.HakukohdeValintakoeData;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -18,10 +19,7 @@ import org.mockito.Matchers;
 import org.springframework.test.util.ReflectionTestUtils;
 import scala.actors.threadpool.Arrays;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -117,7 +115,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     }
 
     @Test
-    public void testHakijaOsallistuuVainKorkeammanHakutoiveenValintakokeeseen() {
+    public void testBasic() {
 
         final String hakukohdeOid1 = "hakukohdeOid1";
         final String hakukohdeOid2 = "hakukohdeOid2";
@@ -141,10 +139,10 @@ public class ValintakoelaskentaSuorittajaServiceTest {
                 valinnanVaiheJarjestysluku2, valintakoetunniste);
 
         when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(eq(hakukohdeOid1),
-                Matchers.<HakemusTyyppi>any(), Matchers.<FunktiokutsuTyyppi>any())).thenReturn(true);
+                Matchers.<HakemusTyyppi>any(), Matchers.<FunktiokutsuTyyppi>any())).thenReturn(Osallistuminen.OSALLISTUU);
 
         when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(eq(hakukohdeOid2),
-                Matchers.<HakemusTyyppi>any(), Matchers.<FunktiokutsuTyyppi>any())).thenReturn(true);
+                Matchers.<HakemusTyyppi>any(), Matchers.<FunktiokutsuTyyppi>any())).thenReturn(Osallistuminen.OSALLISTUU);
 
         when(valintakoeOsallistuminenDAOMock.readByHakuOidAndHakemusOid(anyString(), anyString())).thenReturn(null);
 
@@ -203,9 +201,140 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         }
     }
 
-    @Test
-    public void testHakijaOsallistuuVainKorkeimmanPakollisenHakutoiveenValintakokeeseen() {
+    private HakukohdeTyyppi luoHakukohdeTyyppi(String hakukohdeOid, int prioriteetti) {
+        HakukohdeTyyppi hakukohde = new HakukohdeTyyppi();
+        hakukohde.setHakukohdeOid(hakukohdeOid);
+        hakukohde.setPrioriteetti(prioriteetti);
 
+        return hakukohde;
     }
 
+    private HakukohdeValintakoeData luoHakukohdeValintakoeData(String hakukohdeOid,
+                                                               Osallistuminen osallistuminen,
+                                                               String valintakoeTunniste) {
+
+        HakukohdeValintakoeData koe = new HakukohdeValintakoeData();
+        koe.setHakukohdeOid(hakukohdeOid);
+        koe.setOsallistuminen(osallistuminen);
+        koe.setValintakoeTunniste(valintakoeTunniste);
+
+        return koe;
+    }
+
+    @Test
+    public void testAsetaOsallistumisetKokeisiin() {
+        Map<String, HakukohdeTyyppi> hakuToiveetByOid = new HashMap<String, HakukohdeTyyppi>();
+
+        final String hakukohdeOid1 = "hakukohdeOid1";
+        final String hakukohdeOid2 = "hakukohdeOid2";
+        final String hakukohdeOid3 = "hakukohdeOid3";
+
+        hakuToiveetByOid.put(hakukohdeOid1, luoHakukohdeTyyppi(hakukohdeOid1, 1));
+        hakuToiveetByOid.put(hakukohdeOid3, luoHakukohdeTyyppi(hakukohdeOid2, 3));
+        hakuToiveetByOid.put(hakukohdeOid2, luoHakukohdeTyyppi(hakukohdeOid3, 2));
+
+
+        final String valintakoetunniste = "valintakoetunniste";
+
+        {
+            List<HakukohdeValintakoeData> kokeet = new ArrayList<HakukohdeValintakoeData>();
+            kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid1, Osallistuminen.OSALLISTUU, valintakoetunniste));
+            kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid2, Osallistuminen.OSALLISTUU, valintakoetunniste));
+            kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid3, Osallistuminen.OSALLISTUU, valintakoetunniste));
+
+            // Testataan protected-metodia. Aika jännä viritys.
+            ReflectionTestUtils.invokeMethod(valintakoelaskentaSuorittajaService, "asetaOsallistumisetKokeisiin",
+                    kokeet, hakuToiveetByOid);
+
+            assertEquals(3, kokeet.size());
+            assertEquals(hakukohdeOid1, kokeet.get(0).getHakukohdeOid());
+            assertEquals(Osallistuminen.OSALLISTUU, kokeet.get(0).getOsallistuminen());
+
+            assertEquals(hakukohdeOid2, kokeet.get(1).getHakukohdeOid());
+            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(1).getOsallistuminen());
+
+            assertEquals(hakukohdeOid3, kokeet.get(2).getHakukohdeOid());
+            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(2).getOsallistuminen());
+        }
+
+        {
+            List<HakukohdeValintakoeData> kokeet = new ArrayList<HakukohdeValintakoeData>();
+            kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid1, Osallistuminen.EI_OSALLISTU, valintakoetunniste));
+            kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid2, Osallistuminen.OSALLISTUU, valintakoetunniste));
+            kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid3, Osallistuminen.OSALLISTUU, valintakoetunniste));
+
+            ReflectionTestUtils.invokeMethod(valintakoelaskentaSuorittajaService, "asetaOsallistumisetKokeisiin",
+                    kokeet, hakuToiveetByOid);
+
+            assertEquals(3, kokeet.size());
+            assertEquals(hakukohdeOid1, kokeet.get(0).getHakukohdeOid());
+            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(0).getOsallistuminen());
+
+            assertEquals(hakukohdeOid2, kokeet.get(1).getHakukohdeOid());
+            assertEquals(Osallistuminen.OSALLISTUU, kokeet.get(1).getOsallistuminen());
+
+            assertEquals(hakukohdeOid3, kokeet.get(2).getHakukohdeOid());
+            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(2).getOsallistuminen());
+        }
+
+        {
+            List<HakukohdeValintakoeData> kokeet = new ArrayList<HakukohdeValintakoeData>();
+            kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid1, Osallistuminen.EI_OSALLISTU, valintakoetunniste));
+            kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid2, Osallistuminen.EI_OSALLISTU, valintakoetunniste));
+            kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid3, Osallistuminen.OSALLISTUU, valintakoetunniste));
+
+            ReflectionTestUtils.invokeMethod(valintakoelaskentaSuorittajaService, "asetaOsallistumisetKokeisiin",
+                    kokeet, hakuToiveetByOid);
+
+            assertEquals(3, kokeet.size());
+            assertEquals(hakukohdeOid1, kokeet.get(0).getHakukohdeOid());
+            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(0).getOsallistuminen());
+
+            assertEquals(hakukohdeOid2, kokeet.get(1).getHakukohdeOid());
+            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(1).getOsallistuminen());
+
+            assertEquals(hakukohdeOid3, kokeet.get(2).getHakukohdeOid());
+            assertEquals(Osallistuminen.OSALLISTUU, kokeet.get(2).getOsallistuminen());
+        }
+
+        {
+            List<HakukohdeValintakoeData> kokeet = new ArrayList<HakukohdeValintakoeData>();
+            kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid1, Osallistuminen.EI_OSALLISTU, valintakoetunniste));
+            kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid2, Osallistuminen.EI_OSALLISTU, valintakoetunniste));
+            kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid3, Osallistuminen.EI_OSALLISTU, valintakoetunniste));
+
+            ReflectionTestUtils.invokeMethod(valintakoelaskentaSuorittajaService, "asetaOsallistumisetKokeisiin",
+                    kokeet, hakuToiveetByOid);
+
+            assertEquals(3, kokeet.size());
+            assertEquals(hakukohdeOid1, kokeet.get(0).getHakukohdeOid());
+            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(0).getOsallistuminen());
+
+            assertEquals(hakukohdeOid2, kokeet.get(1).getHakukohdeOid());
+            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(1).getOsallistuminen());
+
+            assertEquals(hakukohdeOid3, kokeet.get(2).getHakukohdeOid());
+            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(2).getOsallistuminen());
+        }
+
+        {
+            List<HakukohdeValintakoeData> kokeet = new ArrayList<HakukohdeValintakoeData>();
+            kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid1, Osallistuminen.OSALLISTUU, valintakoetunniste));
+            kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid2, Osallistuminen.EI_OSALLISTU, valintakoetunniste));
+            kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid3, Osallistuminen.EI_OSALLISTU, valintakoetunniste));
+
+            ReflectionTestUtils.invokeMethod(valintakoelaskentaSuorittajaService, "asetaOsallistumisetKokeisiin",
+                    kokeet, hakuToiveetByOid);
+
+            assertEquals(3, kokeet.size());
+            assertEquals(hakukohdeOid1, kokeet.get(0).getHakukohdeOid());
+            assertEquals(Osallistuminen.OSALLISTUU, kokeet.get(0).getOsallistuminen());
+
+            assertEquals(hakukohdeOid2, kokeet.get(1).getHakukohdeOid());
+            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(1).getOsallistuminen());
+
+            assertEquals(hakukohdeOid3, kokeet.get(2).getHakukohdeOid());
+            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(2).getOsallistuminen());
+        }
+    }
 }

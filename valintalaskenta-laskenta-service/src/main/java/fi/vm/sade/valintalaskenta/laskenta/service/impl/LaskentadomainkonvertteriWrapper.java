@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * Time: 9.07
  */
 @Component
-public class LaskendomainkonvertteriWrapper {
+public class LaskentadomainkonvertteriWrapper {
 
     public Totuusarvofunktio muodostaTotuusarvolasku(Funktiokutsu funktiokutsu) {
         return Laskentadomainkonvertteri.muodostaTotuusarvolasku(funktiokutsu);

@@ -41,55 +41,33 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                 ValintakoeValinnanVaiheTyyppi vaihe = (ValintakoeValinnanVaiheTyyppi) vp.getValinnanVaihe();
 
                 for (ValintakoeTyyppi koe : vaihe.getValintakoe()) {
-                    boolean tulos = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
+                    Osallistuminen osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
                             vp.getHakukohdeOid(), hakemus, koe.getFunktiokutsu());
 
-                    HakukohdeValintakoeData container = new HakukohdeValintakoeData();
-                    container.setHakuOid(vp.getHakuOid());
-                    container.setHakukohdeOid(vp.getHakukohdeOid());
-                    container.setOsallistuminen(tulos ? Osallistuminen.OSALLISTUU : Osallistuminen.EI_OSALLISTU);
-                    container.setValinnanVaiheJarjestysNro(vaihe.getValinnanVaiheJarjestysluku());
-                    container.setValinnanVaiheOid(vaihe.getValinnanVaiheOid());
-                    container.setValintakoeTunniste(koe.getTunniste());
-                    container.setValintakoeOid(koe.getOid());
+                    HakukohdeValintakoeData data = new HakukohdeValintakoeData();
+                    data.setHakuOid(vp.getHakuOid());
+                    data.setHakukohdeOid(vp.getHakukohdeOid());
+                    data.setOsallistuminen(osallistuminen);
+                    data.setValinnanVaiheJarjestysNro(vaihe.getValinnanVaiheJarjestysluku());
+                    data.setValinnanVaiheOid(vaihe.getValinnanVaiheOid());
+                    data.setValintakoeTunniste(koe.getTunniste());
+                    data.setValintakoeOid(koe.getOid());
 
                     if (!valintakoeData.containsKey(koe.getTunniste())) {
                         valintakoeData.put(koe.getTunniste(), new ArrayList<HakukohdeValintakoeData>());
                     }
 
-                    valintakoeData.get(koe.getTunniste()).add(container);
+                    valintakoeData.get(koe.getTunniste()).add(data);
                 }
             }
         }
 
-        Map<String, ValintakoeOsallistuminen> osallistumisetByHaku = new HashMap<String, ValintakoeOsallistuminen>();
 
+        Map<String, ValintakoeOsallistuminen> osallistumisetByHaku = new HashMap<String, ValintakoeOsallistuminen>();
         for (Map.Entry<String, List<HakukohdeValintakoeData>> entry : valintakoeData.entrySet()) {
             List<HakukohdeValintakoeData> kokeet = entry.getValue();
 
-            // Käydään hakijan hakutoiveet läpi prioriteetin mukaan ja asetetaan kullekin hakukohteelle
-            // valintakoekohtainen osallistumistieto
-
-            Collections.sort(kokeet, new Comparator<HakukohdeValintakoeData>() {
-                @Override
-                public int compare(HakukohdeValintakoeData o1, HakukohdeValintakoeData o2) {
-                    return hakutoiveetByOid.get(o1.getHakukohdeOid()).getPrioriteetti() - hakutoiveetByOid
-                            .get(o2.getHakukohdeOid()).getPrioriteetti();
-                }
-            });
-
-            // Jos hakija osallistuu korkeamman prioriteetin hakuktoiveen valintakokeeseen, hakija ei osallistu
-            // pienemmällä prioriteetilla oleviin samoihin valintakokeisiin.
-            boolean osallistuminenLoydetty = false;
-            for (HakukohdeValintakoeData c : kokeet) {
-                if (!osallistuminenLoydetty && Osallistuminen.OSALLISTUU.equals(c.getOsallistuminen())) {
-                    osallistuminenLoydetty = true;
-                    continue;
-                }
-
-                c.setOsallistuminen(Osallistuminen.EI_OSALLISTU);
-            }
-
+            asetaOsallistumisetKokeisiin(kokeet, hakutoiveetByOid);
             for (HakukohdeValintakoeData c : kokeet) {
                 if (!osallistumisetByHaku.containsKey(c.getHakuOid())) {
                     osallistumisetByHaku.put(c.getHakuOid(), luoValintakoeOsallistuminen(c, hakemus));
@@ -104,6 +82,34 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
             valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen);
         }
     }
+
+    protected void asetaOsallistumisetKokeisiin(List<HakukohdeValintakoeData> kokeet,
+                                                final Map<String, HakukohdeTyyppi> hakukohteetByOid) {
+
+        // Käydään hakijan hakutoiveet läpi prioriteetin mukaan ja asetetaan kullekin hakukohteelle
+        // valintakoekohtainen osallistumistieto
+
+        Collections.sort(kokeet, new Comparator<HakukohdeValintakoeData>() {
+            @Override
+            public int compare(HakukohdeValintakoeData o1, HakukohdeValintakoeData o2) {
+                return hakukohteetByOid.get(o1.getHakukohdeOid()).getPrioriteetti() - hakukohteetByOid
+                        .get(o2.getHakukohdeOid()).getPrioriteetti();
+            }
+        });
+
+        // Jos hakija osallistuu korkeamman prioriteetin hakuktoiveen valintakokeeseen, hakija ei osallistu
+        // pienemmällä prioriteetilla oleviin samoihin valintakokeisiin.
+        boolean osallistuminenLoydetty = false;
+        for (HakukohdeValintakoeData d : kokeet) {
+            if (!osallistuminenLoydetty && Osallistuminen.OSALLISTUU.equals(d.getOsallistuminen())) {
+                osallistuminenLoydetty = true;
+                continue;
+            }
+
+            d.setOsallistuminen(Osallistuminen.EI_OSALLISTU);
+        }
+    }
+
 
     protected ValintakoeOsallistuminen luoValintakoeOsallistuminen(HakukohdeValintakoeData data, HakemusTyyppi hakemus) {
         ValintakoeOsallistuminen osallistuminen =

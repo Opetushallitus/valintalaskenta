@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.laskenta.service.valintakoe;
 
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 
 /**
  * User: wuoti
@@ -10,6 +11,6 @@ import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
  */
 public interface Valintakoeosallistumislaskin {
 
-    boolean laskeOsallistuminenYhdelleHakukohteelle(String hakukohdeOid, HakemusTyyppi hakemus,
+    Osallistuminen laskeOsallistuminenYhdelleHakukohteelle(String hakukohdeOid, HakemusTyyppi hakemus,
                                                     FunktiokutsuTyyppi kaava);
 }
