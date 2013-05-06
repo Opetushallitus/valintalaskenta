@@ -1,4 +1,4 @@
-package fi.vm.sade.valintalaskenta.laskenta.service.impl.util;
+package fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util;
 
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 
