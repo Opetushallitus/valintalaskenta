@@ -1,0 +1,37 @@
+{
+	"ValintakoeOsallistuminen":
+			[
+				{
+                    "hakuOid":     "oid1"
+                    ,"hakemusOid":  "oid1"
+                    ,"hakijaOid":   "oid1"
+                    ,"hakutoiveet":
+                        [
+                            {"hakukohdeOid": "oid1"},
+                            {"hakukohdeOid": "oid2"}
+                        ]
+				},
+				{
+                    "hakijaOid":   "oid1"
+				},
+				{
+                    "hakuOid":     "oid2"
+                    ,"hakemusOid":  "oid2"
+                    ,"hakijaOid":   "oid2"
+                    ,"hakutoiveet":
+                        [
+                            {"hakukohdeOid": "oid1"}
+                        ]
+				},
+				{
+                    "hakuOid":     "oid3"
+                    ,"hakemusOid":  "oid3"
+                    ,"hakijaOid":   "oid3"
+				},
+				{
+                    "hakuOid":     "oid4"
+                    ,"hakemusOid":  "oid4"
+                    ,"hakijaOid":   "oid4"
+				}
+			]
+}

@@ -5,6 +5,7 @@ import java.util.*;
 
 import javax.jws.WebParam;
 
+import fi.vm.sade.service.valintaperusteet.schema.TasasijasaantoTyyppi;
 import fi.vm.sade.service.valintatiedot.ValintatietoService;
 import fi.vm.sade.service.valintatiedot.schema.HakijaTyyppi;
 import fi.vm.sade.service.valintatiedot.schema.HakukohdeTyyppi;
@@ -80,6 +81,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             ht.setOid(a.getHakemusoid());
             ht.setJonosija((int)a.getArvo());
             valintatapajonoTyyppi.getHakija().add(ht);
+            valintatapajonoTyyppi.setTasasijasaanto(TasasijasaantoTyyppi.ARVONTA);
         }
 
         return valintatapajonoTyyppi;
