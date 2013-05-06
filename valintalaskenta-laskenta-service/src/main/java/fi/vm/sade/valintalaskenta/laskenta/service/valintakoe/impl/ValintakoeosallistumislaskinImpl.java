@@ -12,12 +12,14 @@ import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.FunktioKutsuT
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.HakemusTyyppiToHakemusConverter;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoeosallistumislaskin;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * User: wuoti
  * Date: 6.5.2013
  * Time: 9.02
  */
+@Service
 public class ValintakoeosallistumislaskinImpl implements Valintakoeosallistumislaskin {
 
     @Autowired
