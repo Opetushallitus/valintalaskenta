@@ -155,7 +155,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
             kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid2, Osallistuminen.OSALLISTUU, valintakoetunniste));
             kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid3, Osallistuminen.OSALLISTUU, valintakoetunniste));
 
-            // Testataan protected-metodia. Aika jännä viritys.
+            // Testataan protected-metodia. Tää on vähän kyseenalaista.
             ReflectionTestUtils.invokeMethod(valintakoelaskentaSuorittajaService, "asetaOsallistumisetKokeisiin",
                     kokeet, hakuToiveetByOid);
 

@@ -6,6 +6,8 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * User: wuoti
  * Date: 2.5.2013
@@ -16,6 +18,11 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
 
     @Autowired
     private Datastore morphiaDS;
+
+    @Override
+    public List<ValintakoeOsallistuminen> readAll() {
+        return morphiaDS.find(ValintakoeOsallistuminen.class).asList();
+    }
 
     @Override
     public ValintakoeOsallistuminen readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid) {
