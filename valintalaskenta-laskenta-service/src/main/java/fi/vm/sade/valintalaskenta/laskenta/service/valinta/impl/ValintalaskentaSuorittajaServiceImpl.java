@@ -59,12 +59,10 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     private FunktioKutsuTyyppiToFunktioKutsuConverter funktiokutsuConverter;
 
     public void suoritaLaskenta(List<HakemusTyyppi> hakemukset, List<ValintaperusteetTyyppi> valintaperusteet) {
-        // Hakuoid ei ole toistaiseksi WSDL:ssä joten käytetään kovakoodattua
-        // arvoa!
-        String hakuoid = "syksynhaku"; // KOVAKOODATTUHAKUOID
-        //
         Map<String, List<HakemusTyyppi>> hakukohdeHakemukset = resolveHakukohdeHakemukset(hakemukset);
         for (ValintaperusteetTyyppi valintaperuste : valintaperusteet) {
+
+            String hakuOid = valintaperuste.getHakuOid();
 
             // Laskentaa voi suorittaa vain ns. tavallisille valinnan vaiheille. Toisin sanoen ei
             // valintakoevalinnanvaiheille.
@@ -87,7 +85,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                 }
 
                 // päivittää tai luo uuden versioidun hakukohteen
-                VersiohallintaHakukohde versiohallinta = paivitaTaiLuoVersioituhakukohde(hakuoid, hakukohdeoid,
+                VersiohallintaHakukohde versiohallinta = paivitaTaiLuoVersioituhakukohde(hakuOid, hakukohdeoid,
                         valinnanvaiheoid, jarjestysnumero);
                 Versioituhakukohde versioituhakukohde = versiohallinta.getHakukohteet().haeUusinVersio();
                 Valinnanvaihe valinnanvaihe = versioituhakukohde.getHakukohde().getValinnanvaihe();
