@@ -62,6 +62,12 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         Map<String, List<HakemusTyyppi>> hakukohdeHakemukset = resolveHakukohdeHakemukset(hakemukset);
         for (ValintaperusteetTyyppi valintaperuste : valintaperusteet) {
 
+            // Jos hakukohteelle määritettyjä hakemuksia ei ole annettu, skipataan laskennassa eteenpäin
+            if(!hakukohdeHakemukset.containsKey(valintaperuste.getHakukohdeOid())
+                    || hakukohdeHakemukset.get(valintaperuste.getHakukohdeOid()).size() == 0) {
+                continue;
+            }
+
             String hakuOid = valintaperuste.getHakuOid();
 
             // Laskentaa voi suorittaa vain ns. tavallisille valinnan vaiheille. Toisin sanoen ei
