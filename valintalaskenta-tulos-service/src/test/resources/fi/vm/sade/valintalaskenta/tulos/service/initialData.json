@@ -7,7 +7,25 @@
                     ,"hakijaOid":   "oid1"
                     ,"hakutoiveet":
                         [
-                            {"hakukohdeOid": "oid1"},
+                            {
+                                "hakukohdeOid": "oid1"
+                                ,"valinnanVaiheet":
+                                [
+                                    {
+                                        "valinnanVaiheOid": "oid1"
+                                        ,"valinnanVaiheJarjestysluku": 1
+                                        ,"valintakokeet":
+                                        [
+                                            {
+                                                "valintakoeOid": "oid1"
+                                                ,"valintakoeTunniste": "t1"
+                                                ,"osallistuminen": "OSALLISTUU"
+                                            }
+                                        ]
+                                    }
+
+                                ]
+                            },
                             {"hakukohdeOid": "oid2"}
                         ]
 				},
