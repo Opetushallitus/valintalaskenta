@@ -27,6 +27,9 @@ public class Jarjestyskriteeritulos {
     private String hakemusoid;
 
     @JsonView(JsonViews.Basic.class)
+    private String hakijaoid;
+
+    @JsonView(JsonViews.Basic.class)
     private String etunimi;
 
     @JsonView(JsonViews.Basic.class)
@@ -88,4 +91,11 @@ public class Jarjestyskriteeritulos {
         this.prioriteetti = prioriteetti;
     }
 
+    public String getHakijaoid() {
+        return hakijaoid;
+    }
+
+    public void setHakijaoid(String hakijaoid) {
+        this.hakijaoid = hakijaoid;
+    }
 }

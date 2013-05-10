@@ -81,7 +81,8 @@ public class ValintatietoServiceImpl implements ValintatietoService {
                 ht.setTila(HakemusTilaTyyppi.valueOf(a.getTila().name()));
             }
 
-            ht.setOid(a.getHakemusoid());
+            ht.setHakemusOid(a.getHakemusoid());
+            ht.setOid(a.getHakijaoid());
             ht.setJonosija((int)a.getArvo());
             valintatapajonoTyyppi.getHakija().add(ht);
             valintatapajonoTyyppi.setTasasijasaanto(TasasijasaantoTyyppi.ARVONTA);
