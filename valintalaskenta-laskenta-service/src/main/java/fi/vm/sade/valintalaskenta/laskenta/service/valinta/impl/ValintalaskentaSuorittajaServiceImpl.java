@@ -60,7 +60,6 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
     public void suoritaLaskenta(List<HakemusTyyppi> hakemukset, List<ValintaperusteetTyyppi> valintaperusteet) {
 
-        LOG.info("suoritaLaskenta: hakemukset" + hakemukset.size() + " perusteet" + valintaperusteet.size());
 
         Map<String, List<HakemusTyyppi>> hakukohdeHakemukset = resolveHakukohdeHakemukset(hakemukset);
         for (ValintaperusteetTyyppi valintaperuste : valintaperusteet) {

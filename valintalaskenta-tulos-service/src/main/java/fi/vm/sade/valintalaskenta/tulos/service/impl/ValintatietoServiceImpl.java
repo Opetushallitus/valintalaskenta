@@ -7,10 +7,7 @@ import javax.jws.WebParam;
 
 import fi.vm.sade.service.valintaperusteet.schema.TasasijasaantoTyyppi;
 import fi.vm.sade.service.valintatiedot.ValintatietoService;
-import fi.vm.sade.service.valintatiedot.schema.HakijaTyyppi;
-import fi.vm.sade.service.valintatiedot.schema.HakukohdeTyyppi;
-import fi.vm.sade.service.valintatiedot.schema.ValinnanvaiheTyyppi;
-import fi.vm.sade.service.valintatiedot.schema.ValintatapajonoTyyppi;
+import fi.vm.sade.service.valintatiedot.schema.*;
 import fi.vm.sade.valintalaskenta.domain.Hakukohde;
 import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
@@ -77,7 +74,13 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             HakijaTyyppi ht = new HakijaTyyppi();
             // ht.setPrioriteetti(a.getPrioriteetti());
             //    ht.setPisteet(a.getArvo());
-            //  ht.setTila(a.getTila());
+
+            if(a.getTila() == null) {
+                ht.setTila(HakemusTilaTyyppi.MAARITTELEMATON);
+            }   else {
+                ht.setTila(HakemusTilaTyyppi.valueOf(a.getTila().name()));
+            }
+
             ht.setOid(a.getHakemusoid());
             ht.setJonosija((int)a.getArvo());
             valintatapajonoTyyppi.getHakija().add(ht);

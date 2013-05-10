@@ -58,11 +58,20 @@
     </xs:complexType>
 
     <xs:complexType name="HakijaTyyppi">
-		<xs:attribute name="jonosija" type="xs:int" use="required" />
-        <xs:attribute name="oid" type="xs:string" use="required" />
+	    <xs:attribute name="oid" type="xs:string" use="required" />
+        <xs:attribute name="hakemusOid" type="xs:string" use="optional" />
+        <xs:attribute name="jonosija" type="xs:int" use="required" />
         <xs:attribute name="prioriteetti" type="xs:int" use="required" />
         <xs:attribute name="pisteet" type="xs:float" use="required" />
-        <xs:attribute name="tila" type="xs:string"/>
+        <xs:attribute name="tila" type="tns:HakemusTilaTyyppi"/>
 	</xs:complexType>
+
+    <xs:simpleType name="HakemusTilaTyyppi">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="HYVAKSYTTAVISSA"/>
+            <xs:enumeration value="MAARITTELEMATON"/>
+            <xs:enumeration value="HYLATTY"/>
+        </xs:restriction>
+    </xs:simpleType>
 
 </xs:schema> 
