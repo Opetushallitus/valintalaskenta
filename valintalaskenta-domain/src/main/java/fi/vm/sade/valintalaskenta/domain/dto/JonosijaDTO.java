@@ -15,7 +15,7 @@ import java.util.TreeSet;
  * Time: 9:50
  * To change this template use File | Settings | File Templates.
  */
-public class JonosijaDTO implements Comparable<JonosijaDTO> {
+public class JonosijaDTO {
 
     private int jonosija;
 
@@ -58,37 +58,7 @@ public class JonosijaDTO implements Comparable<JonosijaDTO> {
         this.hakemusOid = hakemusOid;
     }
 
-    @Override
-    public int compareTo(JonosijaDTO other) {
 
-        TreeSet<Integer> keys = new TreeSet<Integer>();
-        keys.addAll(this.jarjestyskriteerit.keySet());
-        keys.addAll(other.jarjestyskriteerit.keySet());
-        for(Integer i : keys) {
-            Jarjestyskriteeritulos thisValue =  null;
-            if(this.getJarjestyskriteerit().containsKey(i)){
-                thisValue = this.getJarjestyskriteerit().get(i);
-            }
-            Jarjestyskriteeritulos otherValue =  null;
-            if(other.getJarjestyskriteerit().containsKey(i)){
-                otherValue = this.getJarjestyskriteerit().get(i);
-            }
-            if(thisValue == null && otherValue == null) {
-                continue;
-            } else if(thisValue == null) {
-                return -1;
-            } else if(otherValue == null) {
-                return 1;
-            } else if(otherValue.getArvo() == thisValue.getArvo()) {
-                continue;
-            } else if(otherValue.getArvo() > thisValue.getArvo()) {
-                return -1;
-            }else if(otherValue.getArvo() < thisValue.getArvo()) {
-                return  -1;
-            }
-        }
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
-    }
 
     public int getJonosija() {
         return jonosija;

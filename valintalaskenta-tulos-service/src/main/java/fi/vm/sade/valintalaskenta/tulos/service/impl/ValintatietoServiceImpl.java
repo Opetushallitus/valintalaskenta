@@ -11,6 +11,7 @@ import fi.vm.sade.service.valintatiedot.schema.*;
 import fi.vm.sade.valintalaskenta.domain.Hakukohde;
 import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.comparator.JonosijaDTOComparator;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.apache.commons.lang.StringUtils;
@@ -35,7 +36,12 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 
     @Override
     public List<HakukohdeTyyppi> haeValintatiedot(@WebParam(name = "hakuOid", targetNamespace = "") String hakuOid) {
+
+     System.out.println("STARTTI" + hakuOid);
+
         List<Hakukohde> a = tulosService.haeLasketutValinnanvaiheetHaulle(hakuOid);
+
+        System.out.println("hakukohteita: " + a.size());
 
         Map<String, HakukohdeTyyppi> hakukohdeMap = new HashMap<String, HakukohdeTyyppi>();
 
@@ -75,11 +81,13 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             valintatapajonoTyyppi.setTasasijasaanto(TasasijasaantoTyyppi.valueOf(vt.getTasasijasaanto().name()));
         }
 
+        System.out.println("hakemuksia " + vt.getJarjestyskriteeritulokset().size());
 
-        TreeSet<JonosijaDTO> jonosijat = new TreeSet<JonosijaDTO>();
+        ArrayList<JonosijaDTO> jonosijat = new ArrayList<JonosijaDTO>();
         for(Jarjestyskriteeritulos a : vt.getJarjestyskriteeritulokset()) {
             JonosijaDTO dto = containsJonosijaDTO(jonosijat, a);
             if(dto == null) {
+                System.out.println("Luodaan DTO");
                 dto = new JonosijaDTO();
                 dto.setHakemusOid(a.getHakemusoid());
                 dto.setHakijaOid(a.getHakijaoid());
@@ -92,17 +100,24 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             dto.getJarjestyskriteerit().put(a.getPrioriteetti(), a);
         }
 
+
+        JonosijaDTOComparator comparator = new JonosijaDTOComparator();
+       Collections.sort(jonosijat, comparator);
+
         int i = 1;
         JonosijaDTO previous = null;
         Iterator<JonosijaDTO> it = jonosijat.iterator();
         while(it.hasNext()) {
             JonosijaDTO dto = it.next();
-            if(previous != null && previous.compareTo(dto) != 0) {
+            if(previous != null && comparator.compare(previous, dto) != 0) {
                 i++;
             }
             dto.setJonosija(i);
             previous = dto;
         }
+
+        System.out.println("Jonosijojen maara" + jonosijat.size());
+
       for(JonosijaDTO dto : jonosijat) {
           HakijaTyyppi ht = new HakijaTyyppi();
           ht.setPrioriteetti(dto.getPrioriteetti());
@@ -119,16 +134,22 @@ public class ValintatietoServiceImpl implements ValintatietoService {
           ht.setJonosija(dto.getJonosija());
           valintatapajonoTyyppi.getHakija().add(ht);
       }
+        System.out.println("HERE WE ARE");
+
+       for(HakijaTyyppi ht : valintatapajonoTyyppi.getHakija()) {
+           System.out.println("HAKIJA: " + ht.getHakemusOid() + ht.getOid());
+
+       }
 
         return valintatapajonoTyyppi;
     }
 
 
-    private JonosijaDTO containsJonosijaDTO(TreeSet<JonosijaDTO> jonosijat, Jarjestyskriteeritulos a)  {
+    private JonosijaDTO containsJonosijaDTO(ArrayList<JonosijaDTO> jonosijat, Jarjestyskriteeritulos a)  {
         for(JonosijaDTO dto : jonosijat) {
-            if(    StringUtils.isNotBlank(a.getHakemusoid()) && a.getHakemusoid().equals(dto.getHakemusOid())
+            if(  (StringUtils.isNotBlank(a.getHakemusoid()) && a.getHakemusoid().equals(dto.getHakemusOid()))
                     ||
-                    StringUtils.isNotBlank(a.getHakijaoid()) && a.getHakijaoid().equals(dto.getHakijaOid())
+                    (StringUtils.isNotBlank(a.getHakijaoid()) && a.getHakijaoid().equals(dto.getHakijaOid()))
                     ) {
                 return dto;
             }
