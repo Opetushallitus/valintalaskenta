@@ -43,6 +43,9 @@ public class Valintatapajono implements Comparable<Valintatapajono> {
     @JsonView(JsonViews.Basic.class)
     private boolean siirretaanSijoitteluun;
 
+    @JsonView(JsonViews.Basic.class)
+    private Tasasijasaanto tasasijasaanto;
+
     @Embedded
     @JsonView(JsonViews.Basic.class)
     private List<Jarjestyskriteeritulos> jarjestyskriteeritulokset = new ArrayList<Jarjestyskriteeritulos>();
@@ -128,5 +131,13 @@ public class Valintatapajono implements Comparable<Valintatapajono> {
 
     public int hashCode() {
         return versio.intValue();
+    }
+
+    public Tasasijasaanto getTasasijasaanto() {
+        return tasasijasaanto;
+    }
+
+    public void setTasasijasaanto(Tasasijasaanto tasasijasaanto) {
+        this.tasasijasaanto = tasasijasaanto;
     }
 }
