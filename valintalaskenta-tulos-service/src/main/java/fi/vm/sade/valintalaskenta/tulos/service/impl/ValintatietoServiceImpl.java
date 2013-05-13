@@ -11,7 +11,9 @@ import fi.vm.sade.service.valintatiedot.schema.*;
 import fi.vm.sade.valintalaskenta.domain.Hakukohde;
 import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 
@@ -68,33 +70,71 @@ public class ValintatietoServiceImpl implements ValintatietoService {
         valintatapajonoTyyppi.setNimi(vt.getNimi());
         valintatapajonoTyyppi.setPrioriteetti(vt.getPrioriteetti());
         valintatapajonoTyyppi.setSiirretaanSijoitteluun(vt.isSiirretaanSijoitteluun());
+        valintatapajonoTyyppi.setTasasijasaanto(TasasijasaantoTyyppi.ARVONTA);
         if(vt.getTasasijasaanto() != null) {
             valintatapajonoTyyppi.setTasasijasaanto(TasasijasaantoTyyppi.valueOf(vt.getTasasijasaanto().name()));
         }
 
 
-
-        for(Jarjestyskriteeritulos a : vt.getJarjestyskriteeritulokset())       {
-            HakijaTyyppi ht = new HakijaTyyppi();
-            // ht.setPrioriteetti(a.getPrioriteetti());
-            //    ht.setPisteet(a.getArvo());
-
-            if(a.getTila() == null) {
-                ht.setTila(HakemusTilaTyyppi.MAARITTELEMATON);
-            }   else {
-                ht.setTila(HakemusTilaTyyppi.valueOf(a.getTila().name()));
+        TreeSet<JonosijaDTO> jonosijat = new TreeSet<JonosijaDTO>();
+        for(Jarjestyskriteeritulos a : vt.getJarjestyskriteeritulokset()) {
+            JonosijaDTO dto = containsJonosijaDTO(jonosijat, a);
+            if(dto == null) {
+                dto = new JonosijaDTO();
+                dto.setHakemusOid(a.getHakemusoid());
+                dto.setHakijaOid(a.getHakijaoid());
+                dto.setTila (a.getTila());
+                dto.setEtunimi(a.getEtunimi());
+                dto.setSukunimi(a.getSukunimi());
+                dto.setPrioriteetti(a.getPrioriteetti())  ;
+                jonosijat.add(dto);
             }
-
-            ht.setHakemusOid(a.getHakemusoid());
-            ht.setOid(a.getHakijaoid());
-            ht.setJonosija((int)a.getArvo());
-            valintatapajonoTyyppi.getHakija().add(ht);
-            valintatapajonoTyyppi.setTasasijasaanto(TasasijasaantoTyyppi.ARVONTA);
+            dto.getJarjestyskriteerit().put(a.getPrioriteetti(), a);
         }
+
+        int i = 1;
+        JonosijaDTO previous = null;
+        Iterator<JonosijaDTO> it = jonosijat.iterator();
+        while(it.hasNext()) {
+            JonosijaDTO dto = it.next();
+            if(previous != null && previous.compareTo(dto) != 0) {
+                i++;
+            }
+            dto.setJonosija(i);
+            previous = dto;
+        }
+      for(JonosijaDTO dto : jonosijat) {
+          HakijaTyyppi ht = new HakijaTyyppi();
+          ht.setPrioriteetti(dto.getPrioriteetti());
+          //ht.setPisteet(dto.getArvo());
+
+          if(dto.getTila() == null) {
+              ht.setTila(HakemusTilaTyyppi.MAARITTELEMATON);
+          }   else {
+              ht.setTila(HakemusTilaTyyppi.valueOf(dto.getTila().name()));
+          }
+
+          ht.setHakemusOid(dto.getHakemusOid());
+          ht.setOid(dto.getHakijaOid());
+          ht.setJonosija(dto.getJonosija());
+          valintatapajonoTyyppi.getHakija().add(ht);
+      }
 
         return valintatapajonoTyyppi;
     }
 
+
+    private JonosijaDTO containsJonosijaDTO(TreeSet<JonosijaDTO> jonosijat, Jarjestyskriteeritulos a)  {
+        for(JonosijaDTO dto : jonosijat) {
+            if(    StringUtils.isNotBlank(a.getHakemusoid()) && a.getHakemusoid().equals(dto.getHakemusOid())
+                    ||
+                    StringUtils.isNotBlank(a.getHakijaoid()) && a.getHakijaoid().equals(dto.getHakijaOid())
+                    ) {
+                return dto;
+            }
+        }
+        return null;
+    }
 
 }
 
