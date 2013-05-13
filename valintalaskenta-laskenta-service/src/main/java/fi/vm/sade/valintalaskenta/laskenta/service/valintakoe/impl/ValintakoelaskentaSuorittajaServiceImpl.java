@@ -118,10 +118,11 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
 
         if (osallistuminen == null) {
             osallistuminen = new ValintakoeOsallistuminen();
-            osallistuminen.setHakemusOid(hakemus.getHakemusOid());
-            osallistuminen.setHakijaOid(hakemus.getHakijaOid());
-            osallistuminen.setHakuOid(data.getHakuOid());
         }
+
+        osallistuminen.setHakuOid(data.getHakuOid());
+        osallistuminen.setHakemusOid(hakemus.getHakemusOid());
+        osallistuminen.setHakijaOid(hakemus.getHakijaOid());
 
         return osallistuminen;
     }
@@ -137,9 +138,9 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
 
         if (toive == null) {
             toive = new Hakutoive();
-            toive.setHakukohdeOid(data.getHakukohdeOid());
             osallistuminen.getHakutoiveet().add(toive);
         }
+        toive.setHakukohdeOid(data.getHakukohdeOid());
 
         haeTaiLuoValinnanVaihe(toive, data);
     }
@@ -156,10 +157,10 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
 
         if (vaihe == null) {
             vaihe = new ValinnanVaihe();
-            vaihe.setValinnanVaiheOid(data.getValinnanVaiheOid());
-            vaihe.setValinnanVaiheJarjestysluku(data.getValinnanVaiheJarjestysNro());
             hakutoive.getValinnanVaiheet().add(vaihe);
         }
+        vaihe.setValinnanVaiheOid(data.getValinnanVaiheOid());
+        vaihe.setValinnanVaiheJarjestysluku(data.getValinnanVaiheJarjestysNro());
 
         haeTaiLuoValintakoe(vaihe, data);
     }
@@ -175,11 +176,12 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
 
         if (koe == null) {
             koe = new Valintakoe();
-            koe.setOsallistuminen(data.getOsallistuminen());
-            koe.setValintakoeOid(data.getValintakoeOid());
-            koe.setValintakoeTunniste(data.getValintakoeTunniste());
             valinnanVaihe.getValintakokeet().add(koe);
         }
+
+        koe.setOsallistuminen(data.getOsallistuminen());
+        koe.setValintakoeOid(data.getValintakoeOid());
+        koe.setValintakoeTunniste(data.getValintakoeTunniste());
     }
 
 
