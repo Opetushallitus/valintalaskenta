@@ -7,7 +7,7 @@
             http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:annotation-config/>
-
+	<context:property-placeholder/>
     <bean id="mongo" class="com.mongodb.Mongo" scope="singleton">
         <constructor-arg type="java.lang.String" value="${valintalaskenta-laskenta-service.mongodb.host}" />
         <constructor-arg type="int" value="${valintalaskenta-laskenta-service.mongodb.port}" />

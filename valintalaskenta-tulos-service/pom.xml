@@ -22,7 +22,7 @@
 	</repositories>
 
 	<dependencies>
-        <!-- Internal -->
+		<!-- Internal -->
 		<dependency>
 			<groupId>fi.vm.sade.valintaperusteet</groupId>
 			<artifactId>valintalaskenta-domain</artifactId>
