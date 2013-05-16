@@ -1,5 +1,15 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.it;
 
+import java.util.Arrays;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.Assert;
+
 import fi.vm.sade.service.hakemus.schema.AvainArvoTyyppi;
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
@@ -10,15 +20,6 @@ import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskritee
 import fi.vm.sade.valintalaskenta.dao.VersiohallintaHakukohdeDAO;
 import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.ValintalaskentaSuorittajaService;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.util.Assert;
-
-import java.util.Arrays;
 
 /**
  * 
