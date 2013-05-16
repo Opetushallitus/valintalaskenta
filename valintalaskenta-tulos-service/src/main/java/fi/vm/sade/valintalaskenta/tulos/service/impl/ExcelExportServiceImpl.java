@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.tulos.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import fi.vm.sade.valintalaskenta.domain.Jonosija;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +15,9 @@ import fi.vm.sade.valintalaskenta.tulos.service.ExcelExportService;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 
 /**
- * 
+ *
  * @author Jussi Jartamo
- * 
+ *
  */
 @Service
 public class ExcelExportServiceImpl implements ExcelExportService {
@@ -30,19 +31,23 @@ public class ExcelExportServiceImpl implements ExcelExportService {
         List<ValintatulosDTO> tulokset = new ArrayList<ValintatulosDTO>();
         StringBuilder builder = new StringBuilder();
         builder.append("<table>");
+
         List<Valinnanvaihe> valinnanvaiheet = tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
-        if (!valinnanvaiheet.isEmpty()) {
-            // viimeisen valinnanvaiheen...
-            Valinnanvaihe vaihe = valinnanvaiheet.get(0);
-            if (!vaihe.getValintatapajono().isEmpty()) {
-                // viimeinen valintatapajono...
-                Valintatapajono jono = vaihe.getValintatapajono().get(0);
-                if (!jono.getJarjestyskriteeritulokset().isEmpty()) {
-                    Jarjestyskriteeritulos tulos = jono.getJarjestyskriteeritulokset().get(0);
+
+        for(Valinnanvaihe valinnanvaihe : valinnanvaiheet) {
+            for(Valintatapajono jono : valinnanvaihe.getValintatapajono()){
+
+                builder.append("<tr></tr><tr><td>");
+                builder.append(jono.getNimi());
+                builder.append("</td><td></td><td></td><td></td></tr>");
+
+                ValintatapajonoHelper.sortJonosijat(jono.getJonosijat());
+                for(Jonosija jonosija : jono.getJonosijat()) {
                     builder.append("<tr>");
-                    builder.append("<td>").append(tulos.getEtunimi()).append("</td>");
-                    builder.append("<td>").append(tulos.getSukunimi()).append("</td>");
-                    builder.append("<td>").append(tulos.getTila()).append("</td>");
+                    builder.append("<td>").append(jonosija.getJonosija()).append("</td>");
+                    builder.append("<td>").append(jonosija.getEtunimi()).append("</td>");
+                    builder.append("<td>").append(jonosija.getSukunimi()).append("</td>");
+                    builder.append("<td>").append(jonosija.getTuloksenTila()).append("</td>");
                     builder.append("</tr>");
                 }
             }

@@ -67,12 +67,12 @@ public class VersiointiToimiiTesti {
             Assert.assertTrue(
                     "Vanhimman version laskennan tuloksen hakemuksenoid täytyy olla aina sama kuin ensimmäisellä hakemuksella, jolle laskenta suoritettiin!",
                     vanhinversioituhakukohde.getHakukohde().getValinnanvaihe().getValintatapajono().get(0)
-                            .getJarjestyskriteeritulokset().get(0).getHakemusoid().equals(hakemus0.getHakemusOid()));
+                            .getJonosijat().get(0).getHakemusoid().equals(hakemus0.getHakemusOid()));
             Versioituhakukohde uusinversioituhakukohde = versiohallinta.getHakukohteet().haeUusinVersio();
             Assert.assertTrue(
                     "Uusimman version laskennan tuloksen hakemuksenoid täytyy olla aina sama kuin viimeiseksi lasketulla hakemuksella!",
                     uusinversioituhakukohde.getHakukohde().getValinnanvaihe().getValintatapajono().get(0)
-                            .getJarjestyskriteeritulokset().get(0).getHakemusoid()
+                            .getJonosijat().get(0).getHakemusoid()
                             .equals(hakemusjollelaskentasuoritetaan.getHakemusOid()));
         }
     }

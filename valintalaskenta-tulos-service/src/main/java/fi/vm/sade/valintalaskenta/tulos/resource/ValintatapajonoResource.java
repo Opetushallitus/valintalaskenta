@@ -28,7 +28,7 @@ public class ValintatapajonoResource {
 
     @Autowired
     private ValintalaskentaTulosService tulosService;
-
+  /*
     @GET
     @Path("{valintatapajonoid}/jarjestyskriteeritulos")
     @Produces(MediaType.APPLICATION_JSON)
@@ -37,5 +37,5 @@ public class ValintatapajonoResource {
         // kaikki versiot tästä valintatapajonosta
         return tulosService.haeJarjestyskriteerituloksetValintatapajonolle(valintatapajonoid);
     }
-
+    */
 }

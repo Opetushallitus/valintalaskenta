@@ -20,10 +20,12 @@ import java.util.TreeMap;
  */
 public class Jonosija {
 
+    //TODO REFAKTOROI JOHONKIN wrapperiin pois domainista
     @Transient //lasketaan erikseen joka kerta exportissa
     @JsonView(JsonViews.Basic.class)
     private int jonosija;
 
+    //TODO REFAKTOROI JOHONKIN wrapperiin pois domainista
     @Transient //lasketaan erikseen joka kerta exportissa
     @JsonView(JsonViews.Basic.class)
     private JarjestyskriteerituloksenTila tuloksenTila;

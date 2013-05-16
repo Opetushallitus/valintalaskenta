@@ -68,7 +68,6 @@ public class ValintatietoServiceImpl implements ValintatietoService {
     private ValintatapajonoTyyppi createValintatapajonoTyyppi(fi.vm.sade.valintalaskenta.domain.Valintatapajono vt) {
         ValintatapajonoTyyppi valintatapajonoTyyppi = new ValintatapajonoTyyppi();
         valintatapajonoTyyppi.setOid(vt.getOid());
-        //  valintatapajonoTyyppi.setKuvaus(vt.get);
         valintatapajonoTyyppi.setAloituspaikat(vt.getAloituspaikat());
         valintatapajonoTyyppi.setNimi(vt.getNimi());
         valintatapajonoTyyppi.setPrioriteetti(vt.getPrioriteetti());
@@ -77,48 +76,24 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             valintatapajonoTyyppi.setTasasijasaanto(TasasijasaantoTyyppi.valueOf(vt.getTasasijasaanto().name()));
         }
 
+        //Sorttaa jonosijat ja laita oikea jonosija tulos niille
         List<Jonosija> jonosijat = vt.getJonosijat();
+        ValintatapajonoHelper.sortJonosijat(jonosijat);
 
-       JonosijaComparator comparator = new JonosijaComparator();
-       Collections.sort(jonosijat, comparator);
+        for(Jonosija jonosija : jonosijat) {
+            HakijaTyyppi ht = new HakijaTyyppi();
+            ht.setPrioriteetti(jonosija.getPrioriteetti());
 
-        int i = 1;
-        Jonosija previous = null;
-        Iterator<Jonosija> it = jonosijat.iterator();
-        while(it.hasNext()) {
-            Jonosija dto = it.next();
-            if(previous != null && comparator.compare(previous, dto) != 0) {
-                i++;
+            if(jonosija.getTuloksenTila() == null) {
+                ht.setTila(HakemusTilaTyyppi.MAARITTELEMATON);
+            }   else {
+                ht.setTila(HakemusTilaTyyppi.valueOf(jonosija.getTuloksenTila().name()));
             }
-            dto.setJonosija(i);
-            previous = dto;
+            ht.setHakemusOid(jonosija.getHakemusoid());
+            ht.setOid(jonosija.getHakijaoid());
+            ht.setJonosija(jonosija.getJonosija());
+            valintatapajonoTyyppi.getHakija().add(ht);
         }
-
-
-      for(Jonosija dto : jonosijat) {
-          HakijaTyyppi ht = new HakijaTyyppi();
-          ht.setPrioriteetti(dto.getPrioriteetti());
-          //ht.setPisteet(dto.getArvo());
-
-          if(dto.getTuloksenTila() == null) {
-              ht.setTila(HakemusTilaTyyppi.MAARITTELEMATON);
-          }   else {
-              ht.setTila(HakemusTilaTyyppi.valueOf(dto.getTuloksenTila().name()));
-          }
-
-          ht.setHakemusOid(dto.getHakemusoid());
-          ht.setOid(dto.getHakijaoid());
-          ht.setJonosija(dto.getJonosija());
-          valintatapajonoTyyppi.getHakija().add(ht);
-      }
-
-        /*
-       for(HakijaTyyppi ht : valintatapajonoTyyppi.getHakija()) {
-           System.out.println("HAKIJA: " + ht.getHakemusOid() + ht.getOid());
-
-       }
-          */
-
         return valintatapajonoTyyppi;
     }
 
