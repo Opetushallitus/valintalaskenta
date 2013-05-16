@@ -19,7 +19,7 @@ public interface ValintalaskentaTulosService {
 
     List<Valintatapajono> haeValintatapajonoValinnanvaiheelle(String valinnanvaiheoid);
 
-    List<Jarjestyskriteeritulos> haeJarjestyskriteerituloksetValintatapajonolle(String valintatapajonooid);
+    List<Jonosija> haeJarjestyskriteerituloksetValintatapajonolle(String valintatapajonooid);
 
     List<ValintakoeOsallistuminen> haeValintakoeOsallistumiset();
 

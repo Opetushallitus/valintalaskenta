@@ -15,57 +15,10 @@ public class Jarjestyskriteeritulos {
     private double arvo;
 
     @JsonView(JsonViews.Basic.class)
-    private int prioriteetti;
-
-    @JsonView(JsonViews.Basic.class)
     private JarjestyskriteerituloksenTila tila;
 
     @JsonView(JsonViews.Basic.class)
     private String kuvaus;
-
-    @JsonView(JsonViews.Basic.class)
-    private String hakemusoid;
-
-    @JsonView(JsonViews.Basic.class)
-    private String hakijaoid;
-
-    @JsonView(JsonViews.Basic.class)
-    private String etunimi;
-
-    @JsonView(JsonViews.Basic.class)
-    private String sukunimi;
-
-    public String getEtunimi() {
-        return etunimi;
-    }
-
-    public void setEtunimi(String etunimi) {
-        this.etunimi = etunimi;
-    }
-
-    public String getSukunimi() {
-        return sukunimi;
-    }
-
-    public void setSukunimi(String sukunimi) {
-        this.sukunimi = sukunimi;
-    }
-
-    public String getKuvaus() {
-        return kuvaus;
-    }
-
-    public void setKuvaus(String kuvaus) {
-        this.kuvaus = kuvaus;
-    }
-
-    public String getHakemusoid() {
-        return hakemusoid;
-    }
-
-    public void setHakemusoid(String hakemusoid) {
-        this.hakemusoid = hakemusoid;
-    }
 
     public double getArvo() {
         return arvo;
@@ -83,19 +36,11 @@ public class Jarjestyskriteeritulos {
         this.tila = tila;
     }
 
-    public int getPrioriteetti() {
-        return prioriteetti;
+    public String getKuvaus() {
+        return kuvaus;
     }
 
-    public void setPrioriteetti(int prioriteetti) {
-        this.prioriteetti = prioriteetti;
-    }
-
-    public String getHakijaoid() {
-        return hakijaoid;
-    }
-
-    public void setHakijaoid(String hakijaoid) {
-        this.hakijaoid = hakijaoid;
+    public void setKuvaus(String kuvaus) {
+        this.kuvaus = kuvaus;
     }
 }

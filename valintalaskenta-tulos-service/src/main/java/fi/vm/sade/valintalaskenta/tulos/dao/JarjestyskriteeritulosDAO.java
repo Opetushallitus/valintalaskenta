@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.tulos.dao;
 import java.util.List;
 
 import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.Jonosija;
 
 /**
  * 
@@ -13,8 +14,9 @@ public interface JarjestyskriteeritulosDAO {
 
     /**
      * 
+     *
      * @param valintatapajonooid
      * @return
      */
-    List<Jarjestyskriteeritulos> readByValintatapajonoOid(String valintatapajonooid);
+    List<Jonosija> readByValintatapajonoOid(String valintatapajonooid);
 }

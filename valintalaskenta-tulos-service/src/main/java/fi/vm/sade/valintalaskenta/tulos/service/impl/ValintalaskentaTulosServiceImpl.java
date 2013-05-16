@@ -14,7 +14,6 @@ import fi.vm.sade.valintalaskenta.tulos.dao.HakukohdeDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.JarjestyskriteeritulosDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.ValintatapajonoDAO;
-import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
 import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
@@ -56,7 +55,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
-    public List<Jarjestyskriteeritulos> haeJarjestyskriteerituloksetValintatapajonolle(String valintatapajonooid) {
+    public List<Jonosija> haeJarjestyskriteerituloksetValintatapajonolle(String valintatapajonooid) {
         return jarjestyskriteeritulosDAO.readByValintatapajonoOid(valintatapajonooid);
     }
 

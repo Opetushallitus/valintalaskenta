@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
+ *
  * @author Jussi Jartamo
- * 
+ *
  */
 @Entity("Valintatapajono")
 // ei haluta tupla indexiä koska haku tehdään lähes aina pelkällä oid:lla
@@ -46,9 +46,9 @@ public class Valintatapajono implements Comparable<Valintatapajono> {
     @JsonView(JsonViews.Basic.class)
     private Tasasijasaanto tasasijasaanto;
 
-    @Embedded
     @JsonView(JsonViews.Basic.class)
-    private List<Jarjestyskriteeritulos> jarjestyskriteeritulokset = new ArrayList<Jarjestyskriteeritulos>();
+    @Embedded
+    private List <Jonosija> jonosijat = new ArrayList<Jonosija>();
 
     public String getNimi() {
         return nimi;
@@ -90,13 +90,6 @@ public class Valintatapajono implements Comparable<Valintatapajono> {
         this.prioriteetti = prioriteetti;
     }
 
-    public List<Jarjestyskriteeritulos> getJarjestyskriteeritulokset() {
-        return jarjestyskriteeritulokset;
-    }
-
-    public void setJarjestyskriteeritulokset(List<Jarjestyskriteeritulos> jarjestyskriteeritulokset) {
-        this.jarjestyskriteeritulokset = jarjestyskriteeritulokset;
-    }
 
     public String getOid() {
         return valintatapajonooid;
@@ -139,5 +132,13 @@ public class Valintatapajono implements Comparable<Valintatapajono> {
 
     public void setTasasijasaanto(Tasasijasaanto tasasijasaanto) {
         this.tasasijasaanto = tasasijasaanto;
+    }
+
+    public List<Jonosija> getJonosijat() {
+        return jonosijat;
+    }
+
+    public void setJonosijat(List<Jonosija> jonosijat) {
+        this.jonosijat = jonosijat;
     }
 }

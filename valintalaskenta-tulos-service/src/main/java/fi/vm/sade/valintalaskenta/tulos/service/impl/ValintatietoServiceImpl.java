@@ -10,8 +10,9 @@ import fi.vm.sade.service.valintatiedot.ValintatietoService;
 import fi.vm.sade.service.valintatiedot.schema.*;
 import fi.vm.sade.valintalaskenta.domain.Hakukohde;
 import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.comparator.JonosijaDTOComparator;
+import fi.vm.sade.valintalaskenta.domain.comparator.JonosijaComparator;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.apache.commons.lang.StringUtils;
@@ -37,11 +38,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
     @Override
     public List<HakukohdeTyyppi> haeValintatiedot(@WebParam(name = "hakuOid", targetNamespace = "") String hakuOid) {
 
-     System.out.println("STARTTI" + hakuOid);
-
         List<Hakukohde> a = tulosService.haeLasketutValinnanvaiheetHaulle(hakuOid);
-
-        System.out.println("hakukohteita: " + a.size());
 
         Map<String, HakukohdeTyyppi> hakukohdeMap = new HashMap<String, HakukohdeTyyppi>();
 
@@ -76,39 +73,20 @@ public class ValintatietoServiceImpl implements ValintatietoService {
         valintatapajonoTyyppi.setNimi(vt.getNimi());
         valintatapajonoTyyppi.setPrioriteetti(vt.getPrioriteetti());
         valintatapajonoTyyppi.setSiirretaanSijoitteluun(vt.isSiirretaanSijoitteluun());
-        valintatapajonoTyyppi.setTasasijasaanto(TasasijasaantoTyyppi.ARVONTA);
         if(vt.getTasasijasaanto() != null) {
             valintatapajonoTyyppi.setTasasijasaanto(TasasijasaantoTyyppi.valueOf(vt.getTasasijasaanto().name()));
         }
 
-        System.out.println("hakemuksia " + vt.getJarjestyskriteeritulokset().size());
+        List<Jonosija> jonosijat = vt.getJonosijat();
 
-        ArrayList<JonosijaDTO> jonosijat = new ArrayList<JonosijaDTO>();
-        for(Jarjestyskriteeritulos a : vt.getJarjestyskriteeritulokset()) {
-            JonosijaDTO dto = containsJonosijaDTO(jonosijat, a);
-            if(dto == null) {
-                System.out.println("Luodaan DTO");
-                dto = new JonosijaDTO();
-                dto.setHakemusOid(a.getHakemusoid());
-                dto.setHakijaOid(a.getHakijaoid());
-                dto.setTila (a.getTila());
-                dto.setEtunimi(a.getEtunimi());
-                dto.setSukunimi(a.getSukunimi());
-                dto.setPrioriteetti(a.getPrioriteetti())  ;
-                jonosijat.add(dto);
-            }
-            dto.getJarjestyskriteerit().put(a.getPrioriteetti(), a);
-        }
-
-
-        JonosijaDTOComparator comparator = new JonosijaDTOComparator();
+       JonosijaComparator comparator = new JonosijaComparator();
        Collections.sort(jonosijat, comparator);
 
         int i = 1;
-        JonosijaDTO previous = null;
-        Iterator<JonosijaDTO> it = jonosijat.iterator();
+        Jonosija previous = null;
+        Iterator<Jonosija> it = jonosijat.iterator();
         while(it.hasNext()) {
-            JonosijaDTO dto = it.next();
+            Jonosija dto = it.next();
             if(previous != null && comparator.compare(previous, dto) != 0) {
                 i++;
             }
@@ -116,46 +94,34 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             previous = dto;
         }
 
-        System.out.println("Jonosijojen maara" + jonosijat.size());
 
-      for(JonosijaDTO dto : jonosijat) {
+      for(Jonosija dto : jonosijat) {
           HakijaTyyppi ht = new HakijaTyyppi();
           ht.setPrioriteetti(dto.getPrioriteetti());
           //ht.setPisteet(dto.getArvo());
 
-          if(dto.getTila() == null) {
+          if(dto.getTuloksenTila() == null) {
               ht.setTila(HakemusTilaTyyppi.MAARITTELEMATON);
           }   else {
-              ht.setTila(HakemusTilaTyyppi.valueOf(dto.getTila().name()));
+              ht.setTila(HakemusTilaTyyppi.valueOf(dto.getTuloksenTila().name()));
           }
 
-          ht.setHakemusOid(dto.getHakemusOid());
-          ht.setOid(dto.getHakijaOid());
+          ht.setHakemusOid(dto.getHakemusoid());
+          ht.setOid(dto.getHakijaoid());
           ht.setJonosija(dto.getJonosija());
           valintatapajonoTyyppi.getHakija().add(ht);
       }
-        System.out.println("HERE WE ARE");
 
+        /*
        for(HakijaTyyppi ht : valintatapajonoTyyppi.getHakija()) {
            System.out.println("HAKIJA: " + ht.getHakemusOid() + ht.getOid());
 
        }
+          */
 
         return valintatapajonoTyyppi;
     }
 
-
-    private JonosijaDTO containsJonosijaDTO(ArrayList<JonosijaDTO> jonosijat, Jarjestyskriteeritulos a)  {
-        for(JonosijaDTO dto : jonosijat) {
-            if(  (StringUtils.isNotBlank(a.getHakemusoid()) && a.getHakemusoid().equals(dto.getHakemusOid()))
-                    ||
-                    (StringUtils.isNotBlank(a.getHakijaoid()) && a.getHakijaoid().equals(dto.getHakijaOid()))
-                    ) {
-                return dto;
-            }
-        }
-        return null;
-    }
 
 }
 

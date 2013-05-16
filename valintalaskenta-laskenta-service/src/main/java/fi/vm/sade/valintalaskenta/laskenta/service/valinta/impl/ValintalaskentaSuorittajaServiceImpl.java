@@ -23,7 +23,6 @@ import fi.vm.sade.valintalaskenta.dao.ValintatapajonoDAO;
 import fi.vm.sade.valintalaskenta.dao.VersiohallintaHakukohdeDAO;
 import fi.vm.sade.valintalaskenta.domain.*;
 import fi.vm.sade.valintalaskenta.laskenta.Esiintyminen;
-import fi.vm.sade.valintalaskenta.laskenta.HakemusHelper;
 import fi.vm.sade.valintalaskenta.laskenta.service.exception.LaskentaVaarantyyppisellaFunktiollaException;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.FunktioKutsuTyyppiToFunktioKutsuConverter;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.HakemusTyyppiToHakemusConverter;
@@ -58,85 +57,96 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     @Autowired
     private FunktioKutsuTyyppiToFunktioKutsuConverter funktiokutsuConverter;
 
-    public void suoritaLaskenta(List<HakemusTyyppi> hakemukset, List<ValintaperusteetTyyppi> valintaperusteet) {
+    /**
+     * TODO
+     *
+     * edellinenValinnanvaihe on refaktoroitava koodista pois
+     * tehdaan niin etta lasketaan tulokset ensin koko setille ja sen jalkeen toisessa loopissa mietitaan onko tila hyvaksyttavissa vai hylatty
+     *
+     * @param kaikkiHakemukset
+     * @param valintaperusteet
+     */
+    public void suoritaLaskenta(List<HakemusTyyppi> kaikkiHakemukset, List<ValintaperusteetTyyppi> valintaperusteet) {
 
+        //<hakukohdeoid, list<Hakemuswrapper> >
+        Map<String, List<HakemusWrapper>> hakemuksetHakukohteittain = jarjestaHakemuksetHakukohteittain(kaikkiHakemukset);
 
-        Map<String, List<HakemusTyyppi>> hakukohdeHakemukset = resolveHakukohdeHakemukset(hakemukset);
         for (ValintaperusteetTyyppi valintaperuste : valintaperusteet) {
 
-            // Jos hakukohteelle määritettyjä hakemuksia ei ole annettu, skipataan laskennassa eteenpäin
-            if(!hakukohdeHakemukset.containsKey(valintaperuste.getHakukohdeOid())
-                    || hakukohdeHakemukset.get(valintaperuste.getHakukohdeOid()).size() == 0) {
+            String hakuOid = valintaperuste.getHakuOid();
+            List<HakemusWrapper> hakemukset = hakemuksetHakukohteittain.get(hakuOid);
+            if(hakemukset == null || hakemukset.size() <= 0) {
                 continue;
             }
-
-            String hakuOid = valintaperuste.getHakuOid();
-
-            // Laskentaa voi suorittaa vain ns. tavallisille valinnan vaiheille. Toisin sanoen ei
-            // valintakoevalinnanvaiheille.
-            if (valintaperuste.getValinnanVaihe() instanceof TavallinenValinnanVaiheTyyppi) {
-                TavallinenValinnanVaiheTyyppi vaihe = (TavallinenValinnanVaiheTyyppi) valintaperuste.getValinnanVaihe();
-
-                String hakukohdeoid = valintaperuste.getHakukohdeOid();
-                String valinnanvaiheoid = vaihe.getValinnanVaiheOid();
-                int jarjestysnumero = vaihe.getValinnanVaiheJarjestysluku();
-
-                // Haetaan edellinen (pykälää pienemmällä järjestysnumerolla)
-                // valinnanvaihe mahdollisen
-                // hylkäämisperustetarpeen vuoksi
-                Map<String, Esiintyminen> edellinenValinnanvaihe = hakemusoidHyvaksyttavissaJonoissa(edellinenValinnanvaihe(
-                        hakukohdeoid, jarjestysnumero));
-
-                HakemusHelper hakemusKatko = new HakemusHelper();
-                for (HakemusTyyppi h : hakukohdeHakemukset.get(hakukohdeoid)) {
-                    hakemusKatko.setHakemusOidHakemukset(h.getHakemusOid(), hakemusConverter.convert(h), h);
-                }
-
-                // päivittää tai luo uuden versioidun hakukohteen
-                VersiohallintaHakukohde versiohallinta = paivitaTaiLuoVersioituhakukohde(hakuOid, hakukohdeoid,
-                        valinnanvaiheoid, jarjestysnumero);
-                Versioituhakukohde versioituhakukohde = versiohallinta.getHakukohteet().haeUusinVersio();
-                Valinnanvaihe valinnanvaihe = versioituhakukohde.getHakukohde().getValinnanvaihe();
-
-                for (ValintatapajonoJarjestyskriteereillaTyyppi jono : vaihe.getValintatapajono()) {
-                    Valintatapajono valintatapajono = new Valintatapajono();
-                    valintatapajono.setOid(jono.getOid());
-                    valintatapajono.setNimi(jono.getNimi());
-                    valintatapajono.setSiirretaanSijoitteluun(jono.isSiirretaanSijoitteluun());
-                    valintatapajono.setPrioriteetti(jono.getPrioriteetti());
-                    valintatapajono.setAloituspaikat(jono.getAloituspaikat());
-
-                    for (Hakemus h : hakemusKatko.getHakemukset()) {
-                        String hakemusoid = h.oid();
-                        for (JarjestyskriteeriTyyppi j : jono.getJarjestyskriteerit()) {
-                            Funktiokutsu funktiokutsu = funktiokutsuConverter.convert(j.getFunktiokutsu());
-
-                            // Suoritetaan todellinen laskenta haetuille arvoille
-                            Jarjestyskriteeritulos jarjestyskriteeritulos = suoritaLaskenta(hakukohdeoid, funktiokutsu, h,
-                                    hakemusKatko.getHakemukset(),
-                                    edellinenValinnanvaihe != null ? edellinenValinnanvaihe.get(hakemusoid) : null);
-                            jarjestyskriteeritulos.setHakemusoid(hakemusoid);
-                            jarjestyskriteeritulos.setEtunimi(hakemusKatko.getEtunimi(hakemusoid));
-                            jarjestyskriteeritulos.setSukunimi(hakemusKatko.getSukunimi(hakemusoid));
-                            valintatapajono.getJarjestyskriteeritulokset().add(jarjestyskriteeritulos);
-                        }
-
-                    }
-                    valintatapajono.setVersio(versioituhakukohde.getVersio());
-                    valinnanvaihe.getValintatapajono().add(valintatapajono);
-                    valintatapajonoDAO.createOrUpdate(valintatapajono);
-
-                }
-                // LOG.info("Tallennetaan hakukohdetta! Hakukohdeoid {}",
-                // uusihakukohde.getOid());
-                versiohallinta.getHakukohteet().add(versioituhakukohde);
-                versiohallintaHakukohdeDAO.createOrUpdate(versiohallinta);
+            if (!(valintaperuste.getValinnanVaihe() instanceof TavallinenValinnanVaiheTyyppi)) {
+                continue; // Laskentaa voi suorittaa vain ns. tavallisille valinnan vaiheille. Toisin sanoen ei valintakoevalinnanvaiheille.
             }
+
+            TavallinenValinnanVaiheTyyppi vaihe = (TavallinenValinnanVaiheTyyppi) valintaperuste.getValinnanVaihe();
+
+            String hakukohdeoid = valintaperuste.getHakukohdeOid();
+            String valinnanvaiheoid = vaihe.getValinnanVaiheOid();
+            int jarjestysnumero = vaihe.getValinnanVaiheJarjestysluku();
+
+
+            Map<String, Esiintyminen> edellinenValinnanvaihe = hakemusoidHyvaksyttavissaJonoissa(edellinenValinnanvaihe(
+                    hakukohdeoid, jarjestysnumero));
+
+            VersiohallintaHakukohde versiohallinta = paivitaTaiLuoVersioituhakukohde(hakuOid, hakukohdeoid,
+                    valinnanvaiheoid, jarjestysnumero);
+            Versioituhakukohde versioituhakukohde = versiohallinta.getHakukohteet().haeUusinVersio();
+            Valinnanvaihe valinnanvaihe = versioituhakukohde.getHakukohde().getValinnanvaihe();
+
+            for (ValintatapajonoJarjestyskriteereillaTyyppi jono : vaihe.getValintatapajono()) {
+                Valintatapajono valintatapajono = new Valintatapajono();
+                valintatapajono.setOid(jono.getOid());
+                valintatapajono.setNimi(jono.getNimi());
+                valintatapajono.setSiirretaanSijoitteluun(jono.isSiirretaanSijoitteluun());
+                valintatapajono.setPrioriteetti(jono.getPrioriteetti());
+                valintatapajono.setAloituspaikat(jono.getAloituspaikat());
+
+
+                for (HakemusWrapper h : hakemukset) {
+                    Jonosija jonosija = new Jonosija();
+                    jonosija.setEtunimi(h.getHakemusTyyppi().getHakijanEtunimi());
+                    jonosija.setSukunimi(h.getHakemusTyyppi().getHakijanSukunimi());
+                    jonosija.setHakemusoid(h.getHakemusTyyppi().getHakemusOid());
+                    jonosija.setHakijaoid(h.getHakemusTyyppi().getHakijaOid());
+                    Integer hakutoive = haeHakutoiveNumero(h, hakukohdeoid);
+                    jonosija.setPrioriteetti(hakutoive);
+
+                    for (JarjestyskriteeriTyyppi j : jono.getJarjestyskriteerit()) {
+                        Funktiokutsu funktiokutsu = funktiokutsuConverter.convert(j.getFunktiokutsu());
+                        Jarjestyskriteeritulos jarjestyskriteeritulos = suoritaLaskenta(hakukohdeoid, funktiokutsu, h,
+                                hakemukset,
+                                edellinenValinnanvaihe != null ? edellinenValinnanvaihe.get(h.getHakemusTyyppi().getHakemusOid()) : null);
+
+                        jonosija.getJarjestyskriteerit().put(j.getPrioriteetti(), jarjestyskriteeritulos);
+                    }
+
+                }
+                valintatapajono.setVersio(versioituhakukohde.getVersio());
+                valinnanvaihe.getValintatapajono().add(valintatapajono);
+                valintatapajonoDAO.createOrUpdate(valintatapajono);
+
+            }
+            versiohallinta.getHakukohteet().add(versioituhakukohde);
+            versiohallintaHakukohdeDAO.createOrUpdate(versiohallinta);
+
         }
     }
 
+    private Integer haeHakutoiveNumero(HakemusWrapper h, String hakukohdeOid) {
+        for(HakukohdeTyyppi hkt : h.getHakemusTyyppi().getHakutoive()) {
+            if(hkt.getHakukohdeOid().equals(hakukohdeOid)) {
+                return hkt.getPrioriteetti();
+            }
+        }
+        return null;
+    }
+
     private Jarjestyskriteeritulos suoritaLaskenta(String hakukohde, Funktiokutsu funktiokutsu,
-                                                   Hakemus kasiteltavaHakemus, Collection<Hakemus> kaikkiHakemukset, Esiintyminen esiintyminen) {
+                                                   HakemusWrapper kasiteltavaHakemus, List<HakemusWrapper> kaikkiHakemukset, Esiintyminen esiintyminen) {
         Funktiotyyppi tyyppi = funktiokutsu.getFunktionimi().getTyyppi();
         Jarjestyskriteeritulos jarjestyskriteeritulos = new Jarjestyskriteeritulos();
 
@@ -149,8 +159,15 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                         LOG.debug("Tyyppi {}, viesti {}", new Object[]{vv.getVirhetyyppi(), vv.getVirheviesti()});
                     }
                 }
-                Laskentatulos<Double> laskentatulos = laskentaService.suoritaLasku(hakukohde, kasiteltavaHakemus,
-                        kaikkiHakemukset, Laskentadomainkonvertteri.muodostaLukuarvolasku(funktiokutsu));
+
+
+                List<Hakemus> kaikkiLaskentaHakemukset = new ArrayList<Hakemus>();
+                for(HakemusWrapper wrapper : kaikkiHakemukset) {
+                    kaikkiLaskentaHakemukset.add(wrapper.getLaskentahakemus());
+                }
+
+                Laskentatulos<Double> laskentatulos = laskentaService.suoritaLasku(hakukohde, kasiteltavaHakemus.getLaskentahakemus(),
+                        kaikkiLaskentaHakemukset, Laskentadomainkonvertteri.muodostaLukuarvolasku(funktiokutsu));
                 Tila tila = laskentatulos.getTila();
 
                 if (Tilatyyppi.HYLATTY.equals(tila.getTilatyyppi())) {
@@ -187,17 +204,17 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         }
     }
 
+
+    //REFAKTORITAVA
     private Map<String, Esiintyminen> hakemusoidHyvaksyttavissaJonoissa(Hakukohde hakukohde) {
         if (hakukohde == null) {
             return null;
         }
         Map<String, Esiintyminen> hakemusoidHyvaksyttyJonoissa = new HashMap<String, Esiintyminen>();
         for (Valintatapajono jono : hakukohde.getValinnanvaihe().getValintatapajono()) {
-            for (Jarjestyskriteeritulos tulos : jono.getJarjestyskriteeritulokset()) {
-                // jos hyväksyttävissä lisätään hyväksyntä
+            for (Jonosija tulos : jono.getJonosijat()) {
                 String hakemusoid = tulos.getHakemusoid();
-                if (JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA.equals(tulos.getTila())) {
-
+                if (JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA.equals(tulos.getJarjestyskriteerit().get(1).getTila())) {
                     if (hakemusoidHyvaksyttyJonoissa.containsKey(hakemusoid)) {
                         Esiintyminen esiintyminen = hakemusoidHyvaksyttyJonoissa.get(hakemusoid);
                         esiintyminen.inkrementoiEsiintyminen();
@@ -249,22 +266,25 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         return null;
     }
 
-    // hakukohdeoid -> Hakemus ja avainarvoparit
-    private Map<String, List<HakemusTyyppi>> resolveHakukohdeHakemukset(List<HakemusTyyppi> hakemukset) {
-        Map<String, List<HakemusTyyppi>> hakukohdeHakemukset = new HashMap<String, List<HakemusTyyppi>>();
-
+    private Map<String, List<HakemusWrapper>> jarjestaHakemuksetHakukohteittain(List<HakemusTyyppi> hakemukset) {
+        Map<String, List<HakemusWrapper>> hakukohdeHakemukset = new HashMap<String, List<HakemusWrapper>>();
         for (HakemusTyyppi hakemus : hakemukset) {
-
             for (HakukohdeTyyppi hakukohde : hakemus.getHakutoive()) {
                 String hakukohdeoid = hakukohde.getHakukohdeOid();
                 if (!hakukohdeHakemukset.containsKey(hakukohdeoid)) {
-                    hakukohdeHakemukset.put(hakukohdeoid, new ArrayList<HakemusTyyppi>());
+                    hakukohdeHakemukset.put(hakukohdeoid, new ArrayList<HakemusWrapper>());
                 }
-                hakukohdeHakemukset.get(hakukohdeoid).add(hakemus);
+                HakemusWrapper h = new HakemusWrapper();
+                h.setHakemusTyyppi(hakemus);
+                h.setLaskentahakemus(hakemusConverter.convert(hakemus));
+
+                hakukohdeHakemukset.get(hakukohdeoid).add(h);
             }
         }
         return hakukohdeHakemukset;
     }
+
+
 
     /**
      * @param hakuoid

@@ -1,4 +1,4 @@
-package fi.vm.sade.valintalaskenta.laskenta;
+/**package fi.vm.sade.valintalaskenta.laskenta;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -7,13 +7,13 @@ import java.util.Map;
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
 
-/**
+
  * 
  * @author Jussi Jartamo
  * 
  *         Apuluokka hakemusten käsittelyyn. Tarjoaa säiliön ja rajapinnan sekä
  *         hakemustyypin että hakemuksen tietojen hakuun hakemusoid:lla.
- */
+X
 public class HakemusHelper {
 
     // hakemusoid -> hakemustyyppi
@@ -38,3 +38,4 @@ public class HakemusHelper {
         return laskentahakemukset.values();
     }
 }
+*/

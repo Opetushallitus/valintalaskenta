@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain.comparator;
 
 import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 
 import java.util.Comparator;
@@ -13,9 +14,9 @@ import java.util.TreeSet;
  * Time: 14:13
  * To change this template use File | Settings | File Templates.
  */
-public class JonosijaDTOComparator implements Comparator<JonosijaDTO>{
+public class JonosijaComparator implements Comparator<Jonosija>{
     @Override
-    public int compare(JonosijaDTO thiz, JonosijaDTO other) {
+    public int compare(Jonosija thiz, Jonosija other) {
 
         TreeSet<Integer> keys = new TreeSet<Integer>();
         keys.addAll(thiz.getJarjestyskriteerit().keySet());
