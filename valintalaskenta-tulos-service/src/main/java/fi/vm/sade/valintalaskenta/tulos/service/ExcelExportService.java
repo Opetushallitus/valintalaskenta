@@ -8,5 +8,5 @@ package fi.vm.sade.valintalaskenta.tulos.service;
  */
 public interface ExcelExportService {
 
-    String export();
+    String export(String hakukohdeoid);
 }
