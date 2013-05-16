@@ -44,7 +44,7 @@ public class JonosijaComparator implements Comparator<Jonosija>{
                 return  -1;
             }
         }
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return 0;
     }
 
 }

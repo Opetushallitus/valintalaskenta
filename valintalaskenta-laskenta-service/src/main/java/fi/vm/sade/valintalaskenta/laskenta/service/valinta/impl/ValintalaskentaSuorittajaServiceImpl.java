@@ -1,10 +1,8 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import fi.vm.sade.valintalaskenta.domain.comparator.JonosijaComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,8 +141,12 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                     }
 
                 }
+
+                jarjestaJaLisaaJonosijaNumero(valintatapajono.getJonosijat());
+
                 valintatapajono.setVersio(versioituhakukohde.getVersio());
                 valinnanvaihe.getValintatapajono().add(valintatapajono);
+
                 valintatapajonoDAO.createOrUpdate(valintatapajono);
 
             }
@@ -153,6 +155,25 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
         }
     }
+
+     private void jarjestaJaLisaaJonosijaNumero(List<Jonosija> jonosijat) {
+
+        JonosijaComparator comparator = new JonosijaComparator();
+        Collections.sort(jonosijat, comparator);
+
+        int i = 1;
+        Jonosija previous = null;
+        Iterator<Jonosija> it = jonosijat.iterator();
+        while(it.hasNext()) {
+            Jonosija dto = it.next();
+            if(previous != null && comparator.compare(previous, dto) != 0) {
+                i++;
+            }
+            dto.setJonosija(i);
+            previous = dto;
+        }
+    }
+
 
     private Integer haeHakutoiveNumero(HakemusWrapper h, String hakukohdeOid) {
         for (HakukohdeTyyppi hkt : h.getHakemusTyyppi().getHakutoive()) {

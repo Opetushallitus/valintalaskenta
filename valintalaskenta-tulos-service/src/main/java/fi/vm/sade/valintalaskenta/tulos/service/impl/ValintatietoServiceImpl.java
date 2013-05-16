@@ -9,13 +9,9 @@ import fi.vm.sade.service.valintaperusteet.schema.TasasijasaantoTyyppi;
 import fi.vm.sade.service.valintatiedot.ValintatietoService;
 import fi.vm.sade.service.valintatiedot.schema.*;
 import fi.vm.sade.valintalaskenta.domain.Hakukohde;
-import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.comparator.JonosijaComparator;
-import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 
@@ -78,7 +74,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 
         //Sorttaa jonosijat ja laita oikea jonosija tulos niille
         List<Jonosija> jonosijat = vt.getJonosijat();
-        ValintatapajonoHelper.sortJonosijat(jonosijat);
+      //  ValintatapajonoHelper.sortJonosijat(jonosijat);
 
         for(Jonosija jonosija : jonosijat) {
             HakijaTyyppi ht = new HakijaTyyppi();

@@ -7,7 +7,6 @@ import fi.vm.sade.valintalaskenta.domain.Jonosija;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
 import fi.vm.sade.valintalaskenta.tulos.dto.ValintatulosDTO;
@@ -41,7 +40,6 @@ public class ExcelExportServiceImpl implements ExcelExportService {
                 builder.append(jono.getNimi());
                 builder.append("</td><td></td><td></td><td></td></tr>");
 
-                ValintatapajonoHelper.sortJonosijat(jono.getJonosijat());
                 for(Jonosija jonosija : jono.getJonosijat()) {
                     builder.append("<tr>");
                     builder.append("<td>").append(jonosija.getJonosija()).append("</td>");
