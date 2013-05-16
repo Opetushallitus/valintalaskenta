@@ -121,6 +121,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
                 for (HakemusWrapper h : hakemukset) {
                     Jonosija jonosija = new Jonosija();
+                    valintatapajono.getJonosijat().add(jonosija);
                     jonosija.setEtunimi(h.getHakemusTyyppi().getHakijanEtunimi());
                     jonosija.setSukunimi(h.getHakemusTyyppi().getHakijanSukunimi());
                     jonosija.setHakemusoid(h.getHakemusTyyppi().getHakemusOid());

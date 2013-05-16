@@ -8,6 +8,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import fi.vm.sade.valintalaskenta.domain.Jonosija;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,6 +34,15 @@ public class ValinnanvaiheResource {
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
     public List<Valintatapajono> valinnanvaihe(@PathParam("valinnanvaiheoid") String valinnanvaiheoid) {
-        return tulosService.haeValintatapajonoValinnanvaiheelle(valinnanvaiheoid);
+        List<Valintatapajono>  tulos =   tulosService.haeValintatapajonoValinnanvaiheelle(valinnanvaiheoid);
+
+        for(Valintatapajono valintatapajono : tulos) {
+         System.out.println("JONOSIJAT SIZE: " + valintatapajono.getJonosijat().size());
+            for(Jonosija s : valintatapajono.getJonosijat()) {
+                System.out.println( s.getJonosija() + " " + s.getHakemusoid()) ;
+            }
+        }
+
+        return tulos;
     }
 }
