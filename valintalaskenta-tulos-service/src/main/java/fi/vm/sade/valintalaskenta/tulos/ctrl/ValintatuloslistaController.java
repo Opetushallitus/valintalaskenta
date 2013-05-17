@@ -29,7 +29,7 @@ public class ValintatuloslistaController {
     ExcelExportService excelService;
 
     /**
-     * @return Excel Jiran formaatissa
+     * @return LASKENNAN TULOKSET EXCEL
      */
     @RequestMapping(value = "valintatuloslista.xls", method = GET)
     public ResponseEntity<String> valintatuloslista(@RequestParam("hakukohdeOid") String hakukohdeOid) {
@@ -37,7 +37,18 @@ public class ValintatuloslistaController {
         LOG.debug("Excel hakukohteelle {}", hakukohdeOid);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Disposition", "attachment; filename*=UTF-8''valintatuloslista.xls;");
-        return new ResponseEntity<String>(excelService.export(hakukohdeOid), headers, HttpStatus.OK);
+        return new ResponseEntity<String>(excelService.exportTulokset(hakukohdeOid), headers, HttpStatus.OK);
     }
 
+    /**
+     * @return VALINTAKOE EXCEL
+     */
+    @RequestMapping(value = "valintakoeosallistujatlista.xls", method = GET)
+    public ResponseEntity<String> valintakoetuloslista(@RequestParam("hakukohdeOid") String hakukohdeOid) {
+        assert (hakukohdeOid != null);
+        LOG.debug("Excel hakukohteelle {}", hakukohdeOid);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Disposition", "attachment; filename*=UTF-8''valintakoeosallistujatlista.xls;");
+        return new ResponseEntity<String>(excelService.exportKoeOsallistujat(hakukohdeOid), headers, HttpStatus.OK);
+    }
 }
