@@ -79,8 +79,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             String hakukohdeOid = valintaperuste.getHakukohdeOid();
             String hakuoid = valintaperuste.getHakuOid();
             List<HakemusWrapper> hakemukset = hakemuksetHakukohteittain.get(hakukohdeOid);
-            if (hakemukset == null || hakemukset.isEmpty()) { // hakemukset.size()
-                                                              // <= 0
+            if (hakemukset == null || hakemukset.isEmpty()) {
                 continue;
             }
             if (!(valintaperuste.getValinnanVaihe() instanceof TavallinenValinnanVaiheTyyppi)) {

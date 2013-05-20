@@ -34,10 +34,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
     @Override
     public List<HakukohdeTyyppi> haeValintatiedot(@WebParam(name = "hakuOid", targetNamespace = "") String hakuOid) {
 
-        System.out.println("HAETAAN HAKU OIDILLA: " + hakuOid);
         List<Hakukohde> a = tulosService.haeLasketutValinnanvaiheetHaulle(hakuOid);
-
-        System.out.println("HAKUKOHDETULKSET:" +a.size())  ;
 
         Map<String, HakukohdeTyyppi> hakukohdeMap = new HashMap<String, HakukohdeTyyppi>();
 
@@ -51,7 +48,6 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             }
             ht.getValinnanvaihe().add(createValinnanvaiheTyyppi(v.getValinnanvaihe()));
         }
-        System.out.println("Hakukohteet: " +hakukohdeMap.values().size()) ;
 
         return new ArrayList(hakukohdeMap.values());
     }
