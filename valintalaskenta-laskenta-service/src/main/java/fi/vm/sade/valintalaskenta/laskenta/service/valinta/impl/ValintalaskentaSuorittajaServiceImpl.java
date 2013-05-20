@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl;
 
 import java.util.*;
 
+import fi.vm.sade.valintalaskenta.domain.*;
 import fi.vm.sade.valintalaskenta.domain.comparator.JonosijaComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,14 +30,6 @@ import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskritee
 import fi.vm.sade.service.valintaperusteet.service.validointi.virhe.Validointivirhe;
 import fi.vm.sade.valintalaskenta.dao.ValintatapajonoDAO;
 import fi.vm.sade.valintalaskenta.dao.VersiohallintaHakukohdeDAO;
-import fi.vm.sade.valintalaskenta.domain.Hakukohde;
-import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
-import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
-import fi.vm.sade.valintalaskenta.domain.Jonosija;
-import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
-import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
-import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
 import fi.vm.sade.valintalaskenta.laskenta.Esiintyminen;
 import fi.vm.sade.valintalaskenta.laskenta.service.exception.LaskentaVaarantyyppisellaFunktiollaException;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.FunktioKutsuTyyppiToFunktioKutsuConverter;
@@ -84,6 +77,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         for (ValintaperusteetTyyppi valintaperuste : valintaperusteet) {
 
             String hakukohdeOid = valintaperuste.getHakukohdeOid();
+            String hakuoid = valintaperuste.getHakuOid();
             List<HakemusWrapper> hakemukset = hakemuksetHakukohteittain.get(hakukohdeOid);
             if (hakemukset == null || hakemukset.isEmpty()) { // hakemukset.size()
                                                               // <= 0
@@ -104,7 +98,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             Map<String, Esiintyminen> edellinenValinnanvaihe = hakemusoidHyvaksyttavissaJonoissa(edellinenValinnanvaihe(
                     hakukohdeoid, jarjestysnumero));
 
-            VersiohallintaHakukohde versiohallinta = paivitaTaiLuoVersioituhakukohde(hakukohdeOid, hakukohdeoid,
+            VersiohallintaHakukohde versiohallinta = paivitaTaiLuoVersioituhakukohde(hakuoid, hakukohdeoid,
                     valinnanvaiheoid, jarjestysnumero);
             Versioituhakukohde versioituhakukohde = versiohallinta.getHakukohteet().haeUusinVersio();
             Valinnanvaihe valinnanvaihe = versioituhakukohde.getHakukohde().getValinnanvaihe();
@@ -116,6 +110,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                 valintatapajono.setSiirretaanSijoitteluun(jono.isSiirretaanSijoitteluun());
                 valintatapajono.setPrioriteetti(jono.getPrioriteetti());
                 valintatapajono.setAloituspaikat(jono.getAloituspaikat());
+                valintatapajono.setTasasijasaanto(Tasasijasaanto.valueOf(jono.getTasasijasaanto().name()));
 
                 for (HakemusWrapper h : hakemukset) {
                     Jonosija jonosija = new Jonosija();
