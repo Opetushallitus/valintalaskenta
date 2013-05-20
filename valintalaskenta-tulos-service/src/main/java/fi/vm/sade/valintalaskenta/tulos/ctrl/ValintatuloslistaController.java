@@ -38,10 +38,8 @@ public class ValintatuloslistaController {
     @ResponseBody
     @RequestMapping(value = "valintalaskentatulos.xls", method = GET, produces = "application/vnd.ms-excel" )
     public String valintalaskentatulos(@RequestParam("hakukohdeOid") String hakukohdeOid) {
-        assert (hakukohdeOid != null);
         LOG.debug("Excel hakukohteelle {}", hakukohdeOid);
         return excelService.exportValintalaskentatulos(hakukohdeOid);
-
     }
 
     /**
@@ -50,7 +48,6 @@ public class ValintatuloslistaController {
     @ResponseBody
     @RequestMapping(value = "valintakoetulos.xls", method = GET, produces = "application/vnd.ms-excel" )
     public String valintakoetulos(@RequestParam("hakukohdeOid") String hakukohdeOid) {
-        assert (hakukohdeOid != null);
         LOG.debug("Excel hakukohteelle {}", hakukohdeOid);
         return excelService.exportValintakoetulos(hakukohdeOid);
     }
