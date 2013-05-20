@@ -8,8 +8,8 @@ package fi.vm.sade.valintalaskenta.tulos.service;
  */
 public interface ExcelExportService {
 
-    String exportTulokset(String hakukohdeoid);
+    String exportValintalaskentatulos(String hakukohdeoid);
 
-    String exportKoeOsallistujat(String hakukohdeoid);
+    String exportValintakoetulos(String hakukohdeOid);
 
 }
