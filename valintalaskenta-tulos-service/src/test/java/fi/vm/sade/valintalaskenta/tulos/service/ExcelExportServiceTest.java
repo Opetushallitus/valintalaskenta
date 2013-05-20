@@ -60,8 +60,8 @@ public class ExcelExportServiceTest {
 
         Assert.assertFalse(
                 "Valid Excel export should not equal invalid!",
-                exportService.exportTulokset(VALID_HAKUKOHDEOID).equals(
-                        exportService.exportTulokset(INVALID_HAKUKOHDEOID)));
+                exportService.exportValintalaskentatulos(VALID_HAKUKOHDEOID).equals(
+                        exportService.exportValintalaskentatulos(INVALID_HAKUKOHDEOID)));
 
     }
 }
