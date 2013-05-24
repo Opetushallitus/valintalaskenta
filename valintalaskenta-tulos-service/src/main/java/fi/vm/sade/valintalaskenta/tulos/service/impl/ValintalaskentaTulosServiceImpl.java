@@ -1,28 +1,19 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl;
 
-import java.util.List;
-
+import fi.vm.sade.valintalaskenta.domain.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.tulos.dao.*;
-import fi.vm.sade.valintalaskenta.domain.*;
+import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
+import fi.vm.sade.valintalaskenta.tulos.service.exception.ValintatapajonoEiOleOlemassaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import fi.vm.sade.valintalaskenta.tulos.dao.HakukohdeDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.JarjestyskriteeritulosDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.ValintatapajonoDAO;
-import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
-import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
-import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
+import java.util.List;
 
 /**
- *
  * @author Jussi Jartamo
- *
  */
 @Service
 public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosService {
@@ -87,6 +78,29 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     @Override
     public List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakutoive(String hakukohdeOid) {
         return valintakoeOsallistuminenDAO.findByHakutoive(hakukohdeOid);
+    }
+
+    @Override
+    public Valintatapajono muutaJarjestyskriteerinArvo(String valintatapajonoOid, String hakemusOid,
+                                                       Integer jarjestyskriteeriPrioriteetti, Double arvo) {
+        Valintatapajono jono = valintatapajonoDAO.findByValintatapajonoOidHakemusOidAndJarjestyskriteeriPrioriteetti(
+                valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti);
+
+        if (jono == null) {
+            throw new ValintatapajonoEiOleOlemassaException("Valintatapajonoa ei ole olemassa");
+        }
+
+        for (Jonosija s : jono.getJonosijat()) {
+            if (hakemusOid.equals(s.getHakemusoid())) {
+                Jarjestyskriteeritulos kriteeri = s.getJarjestyskriteerit().get(jarjestyskriteeriPrioriteetti);
+                kriteeri.setArvo(arvo);
+                break;
+            }
+        }
+
+        valintatapajonoDAO.saveOrUpdate(jono);
+
+        return jono;
     }
 
 }

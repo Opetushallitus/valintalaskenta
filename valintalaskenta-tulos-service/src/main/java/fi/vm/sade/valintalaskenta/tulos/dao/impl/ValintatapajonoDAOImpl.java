@@ -1,21 +1,17 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
 import com.google.code.morphia.Datastore;
-
 import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
 import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
 import fi.vm.sade.valintalaskenta.tulos.dao.ValintatapajonoDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
- * 
  * @author Jussi Jartamo
- * 
  */
 @Repository
 public class ValintatapajonoDAOImpl implements ValintatapajonoDAO {
@@ -32,4 +28,20 @@ public class ValintatapajonoDAOImpl implements ValintatapajonoDAO {
         return versiohallinta.getHakukohteet().haeUusinVersio().getHakukohde().getValinnanvaihe().getValintatapajono();
     }
 
+    @Override
+    public Valintatapajono findByValintatapajonoOidHakemusOidAndJarjestyskriteeriPrioriteetti(String valintatapajonoOid, String hakemusOid, Integer jarjestyskriteeriPrioriteetti) {
+        return datastore.find(Valintatapajono.class)
+                .filter("valintatapajonooid", valintatapajonoOid)
+                .filter("jonosijat.hakemusoid", hakemusOid)
+                .filter("jonosijat.jarjestyskriteerit." + jarjestyskriteeriPrioriteetti + " exists", true)
+                .order("-versio").limit(1)
+                .get();
+    }
+
+    @Override
+    public void saveOrUpdate(Valintatapajono jono) {
+
+
+        datastore.save(jono);
+    }
 }

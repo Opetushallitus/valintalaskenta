@@ -1,26 +1,15 @@
 package fi.vm.sade.valintalaskenta.tulos.resource;
 
-import java.util.List;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
-import fi.vm.sade.valintalaskenta.domain.Jonosija;
-import org.codehaus.jackson.map.annotate.JsonView;
+import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
+import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
-import fi.vm.sade.valintalaskenta.domain.JsonViews;
-import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 
 /**
- * 
  * @author Jussi Jartamo
- * 
  */
 @Component
 @Path("/valintatapajono")
@@ -38,4 +27,16 @@ public class ValintatapajonoResource {
         return tulosService.haeJarjestyskriteerituloksetValintatapajonolle(valintatapajonoid);
     }
     */
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/arvo")
+    public Valintatapajono muutaJarjestyskriteerinArvo(@PathParam("valintatapajonoOid") String valintatapajonoOid,
+                                                       @PathParam("hakemusOid") String hakemusOid,
+                                                       @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
+                                                       Double arvo) {
+        return tulosService.muutaJarjestyskriteerinArvo(valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, arvo);
+    }
+
 }

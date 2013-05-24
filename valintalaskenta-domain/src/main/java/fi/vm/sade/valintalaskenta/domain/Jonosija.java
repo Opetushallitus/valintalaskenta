@@ -2,22 +2,17 @@ package fi.vm.sade.valintalaskenta.domain;
 
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Transient;
-import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
-import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
 import org.codehaus.jackson.map.annotate.JsonView;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Created with IntelliJ IDEA.
  * User: kkammone
  * Date: 13.5.2013
  * Time: 9:50
- * To change this template use File | Settings | File Templates.
  */
+@Embedded("Jonosija")
 public class Jonosija {
 
     //TODO REFAKTOROI JOHONKIN wrapperiin pois domainista
