@@ -32,9 +32,12 @@ public class ValintatietoServiceImpl implements ValintatietoService {
     private ConversionService conversionService;
 
     @Override
-    public List<HakukohdeTyyppi> haeValintatiedot(@WebParam(name = "hakuOid", targetNamespace = "") String hakuOid) {
+    public HakuTyyppi haeValintatiedot(@WebParam(name = "hakuOid", targetNamespace = "") String hakuOid) {
 
         List<Hakukohde> a = tulosService.haeLasketutValinnanvaiheetHaulle(hakuOid);
+
+        HakuTyyppi hakuTyyppi = new HakuTyyppi();
+        hakuTyyppi.setHakuOid(hakuOid);
 
         Map<String, HakukohdeTyyppi> hakukohdeMap = new HashMap<String, HakukohdeTyyppi>();
 
@@ -43,13 +46,14 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             if(ht == null) {
                 ht = new HakukohdeTyyppi();
                 ht.setOid(v.getOid());
-                ht.setHakukohteenHakuOid(v.getHakuoid());
                 hakukohdeMap.put(v.getOid(), ht);
             }
             ht.getValinnanvaihe().add(createValinnanvaiheTyyppi(v.getValinnanvaihe()));
         }
 
-        return new ArrayList(hakukohdeMap.values());
+        hakuTyyppi.getHakukohteet().addAll(new ArrayList(hakukohdeMap.values()));
+
+        return hakuTyyppi;
     }
 
     private ValinnanvaiheTyyppi createValinnanvaiheTyyppi(Valinnanvaihe valinnanvaihe) {
@@ -75,7 +79,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 
         //Sorttaa jonosijat ja laita oikea jonosija tulos niille
         List<Jonosija> jonosijat = vt.getJonosijat();
-      //  ValintatapajonoHelper.sortJonosijat(jonosijat);
+        //  ValintatapajonoHelper.sortJonosijat(jonosijat);
 
         for(Jonosija jonosija : jonosijat) {
             HakijaTyyppi ht = new HakijaTyyppi();

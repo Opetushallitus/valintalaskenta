@@ -16,7 +16,7 @@
 
     <xs:complexType name="HaeValintatiedotVastausTyyppi">
         <xs:sequence>
-            <xs:element name="hakijat" type="valintatiedot:HakukohdeTyyppi" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="haku" type="valintatiedot:HakuTyyppi" minOccurs="0" maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="HaeValintatiedotTyyppi">

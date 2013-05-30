@@ -9,24 +9,20 @@
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
 >
     <xs:import namespace="http://valintaperusteet.service.sade.vm.fi/schema" schemaLocation="http://pulpetti.hard.ware.fi/valintaperusteet/wsdl/valintaperusteet.xsd" />
-    <xs:import namespace="http://service.tarjonta.sade.vm.fi/types" schemaLocation="http://pulpetti.hard.ware.fi/tarjonta/wsdl/tarjonta.xsd" />
 
-    <xs:complexType name="HakijatTyyppi">
-		<xs:sequence >
-			<xs:element name="hakijat" type="tns:HakijaTyyppi" minOccurs="0" maxOccurs="unbounded"/>		
-		</xs:sequence>
-        <xs:attribute name="hakukohdeOid" type="xs:string" use="required" />
-	</xs:complexType>
+    <xs:complexType name="HakuTyyppi">
+        <xs:sequence>
+             <xs:element type="tns:HakukohdeTyyppi" name="hakukohteet" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="hakuOid" type="xs:string"  use="required"/>
+    </xs:complexType>
 
     <xs:complexType name="HakukohdeTyyppi">
-        <xs:complexContent>
-            <xs:extension base="tarjonta:HakukohdeTyyppi">
-                <xs:sequence>
-                    <xs:element name="hakijaryhma" type="tns:HakijaryhmaTyyppi" minOccurs="0" maxOccurs="unbounded"/>
-                    <xs:element name="valinnanvaihe" type="tns:ValinnanvaiheTyyppi" minOccurs="1" maxOccurs="unbounded"/>
-                </xs:sequence>
-            </xs:extension>
-        </xs:complexContent>
+        <xs:sequence>
+            <xs:element name="hakijaryhma" type="tns:HakijaryhmaTyyppi" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="valinnanvaihe" type="tns:ValinnanvaiheTyyppi" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="oid" type="xs:string" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="ValinnanvaiheTyyppi">
@@ -37,16 +33,6 @@
         <xs:attribute name="valinnanvaihe" type="xs:int" use="required"/>
     </xs:complexType>
 
-    <xs:complexType name="HakijaryhmaTyyppi">
-        <xs:sequence>
-            <xs:element name="hakijaOid" type="xs:string"  minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-        <xs:attribute name="oid" type="xs:string" use="required"/>
-        <xs:attribute name="prioriteetti" type="xs:int" use="required"/>
-        <xs:attribute name="paikat" type="xs:int" use="required" />
-        <xs:attribute name="nimi" type="xs:string" use="optional"/>
-    </xs:complexType>
-
     <xs:complexType name="ValintatapajonoTyyppi">
         <xs:complexContent>
             <xs:extension base="valintaperusteet:ValintatapajonoTyyppi">
@@ -55,6 +41,16 @@
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="HakijaryhmaTyyppi">
+        <xs:sequence>
+            <xs:element name="hakijaOid" type="xs:string"  minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="oid" type="xs:string" use="required"/>
+        <xs:attribute name="prioriteetti" type="xs:int" use="required"/>
+        <xs:attribute name="paikat" type="xs:int" use="required" />
+        <xs:attribute name="nimi" type="xs:string" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="HakijaTyyppi">
