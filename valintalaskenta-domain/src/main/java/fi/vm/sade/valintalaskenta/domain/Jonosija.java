@@ -44,7 +44,7 @@ public class Jonosija {
     private int prioriteetti; //hakutoive
 
     @Embedded
-    private Map<Integer, Jarjestyskriteeritulos> jarjestyskriteerit = new TreeMap<Integer, Jarjestyskriteeritulos>();
+    private TreeMap<Integer, Jarjestyskriteeritulos> jarjestyskriteerit = new TreeMap<Integer, Jarjestyskriteeritulos>();
 
     public int getJonosija() {
         return jonosija;
@@ -94,11 +94,11 @@ public class Jonosija {
         this.sukunimi = sukunimi;
     }
 
-    public Map<Integer, Jarjestyskriteeritulos> getJarjestyskriteerit() {
+    public TreeMap<Integer, Jarjestyskriteeritulos> getJarjestyskriteerit() {
         return jarjestyskriteerit;
     }
 
-    public void setJarjestyskriteerit(Map<Integer, Jarjestyskriteeritulos> jarjestyskriteerit) {
+    public void setJarjestyskriteerit(TreeMap<Integer, Jarjestyskriteeritulos> jarjestyskriteerit) {
         this.jarjestyskriteerit = jarjestyskriteerit;
     }
 
