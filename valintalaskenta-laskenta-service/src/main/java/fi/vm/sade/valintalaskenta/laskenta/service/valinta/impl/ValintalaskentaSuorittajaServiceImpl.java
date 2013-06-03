@@ -165,8 +165,9 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             }
             dto.setJonosija(i);
 
-            Jarjestyskriteeritulos Jarjestyskriteeritulos = dto.getJarjestyskriteerit().firstEntry().getValue();
-            dto.setTuloksenTila(Jarjestyskriteeritulos.getTila());
+            Jarjestyskriteeritulos tulos = dto.getJarjestyskriteerit().firstEntry().getValue();
+            System.out.println("JARJESTA::" + tulos.getTila());
+            dto.setTuloksenTila(tulos.getTila());
 
             previous = dto;
         }

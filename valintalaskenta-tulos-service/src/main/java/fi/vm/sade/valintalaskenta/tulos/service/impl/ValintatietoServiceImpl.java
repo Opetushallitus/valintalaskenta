@@ -85,6 +85,8 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             HakijaTyyppi ht = new HakijaTyyppi();
             ht.setPrioriteetti(jonosija.getPrioriteetti());
 
+            System.out.println("TILAAA" + jonosija.getTuloksenTila());
+
             if(jonosija.getTuloksenTila() == null) {
                 ht.setTila(HakemusTilaTyyppi.MAARITTELEMATON);
             }   else {
