@@ -28,7 +28,7 @@ public class JonosijaComparator implements Comparator<Jonosija>{
             }
             Jarjestyskriteeritulos otherValue =  null;
             if(other.getJarjestyskriteerit().containsKey(i)){
-                otherValue = thiz.getJarjestyskriteerit().get(i);
+                otherValue = other.getJarjestyskriteerit().get(i);
             }
             if(thisValue == null && otherValue == null) {
                 continue;
