@@ -7,6 +7,8 @@ import org.codehaus.jackson.map.annotate.JsonView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
@@ -21,6 +23,7 @@ import java.util.List;
  */
 @Component
 @Path("/hakukohde")
+@PreAuthorize("isAuthenticated()")
 public class HakukohdeResource {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(HakukohdeResource.class);
@@ -32,6 +35,7 @@ public class HakukohdeResource {
     @Path("{hakukohdeoid}/valinnanvaihe")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
+    @Secured({"ROLE_APP_VALINTALASKENTA_READ", "ROLE_APP_VALINTALASKENTA_READ_UPDATE", "ROLE_APP_VALINTALASKENTA_CRUD"})
     public List<Valinnanvaihe> hakukohde(@PathParam("hakukohdeoid") String hakukohdeoid) {
 
         List<Valinnanvaihe> tulos = tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
