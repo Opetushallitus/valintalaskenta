@@ -160,13 +160,15 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         Iterator<Jonosija> it = jonosijat.iterator();
         while(it.hasNext()) {
             Jonosija dto = it.next();
+            System.out.println("jarjesta oid["+dto.getHakemusoid()+"]");
+
+
             if(previous != null && comparator.compare(previous, dto) != 0) {
                 i++;
             }
             dto.setJonosija(i);
 
             Jarjestyskriteeritulos tulos = dto.getJarjestyskriteerit().firstEntry().getValue();
-            System.out.println("JARJESTA::" + tulos.getTila());
             dto.setTuloksenTila(tulos.getTila());
 
             previous = dto;
