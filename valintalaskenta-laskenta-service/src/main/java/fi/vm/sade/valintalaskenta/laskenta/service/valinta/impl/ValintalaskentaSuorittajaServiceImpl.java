@@ -160,7 +160,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         Iterator<Jonosija> it = jonosijat.iterator();
         while(it.hasNext()) {
             Jonosija dto = it.next();
-            System.out.println("jarjesta oid["+dto.getHakemusoid()+"]");
+            System.out.println("jarjesta oid["+dto.getHakemusoid()+"]" + i );
 
 
             if(previous != null && comparator.compare(previous, dto) != 0) {
