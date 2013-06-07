@@ -39,7 +39,7 @@ public class JonosijaComparator implements Comparator<Jonosija>{
             } else if(otherValue.getArvo() == thisValue.getArvo()) {
                 continue;
             } else if(otherValue.getArvo() > thisValue.getArvo()) {
-                return -1;
+                return 1;
             }else if(otherValue.getArvo() < thisValue.getArvo()) {
                 return  -1;
             }
