@@ -3,10 +3,15 @@ package fi.vm.sade.valintalaskenta.tulos.resource;
 import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+
+import static fi.vm.sade.valintalaskenta.tulos.resource.roles.ValintojenToteuttaminenRole.CRUD;
+import static fi.vm.sade.valintalaskenta.tulos.resource.roles.ValintojenToteuttaminenRole.READ;
+import static fi.vm.sade.valintalaskenta.tulos.resource.roles.ValintojenToteuttaminenRole.UPDATE;
 
 /**
  * @author Jussi Jartamo
@@ -32,6 +37,7 @@ public class ValintatapajonoResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/arvo")
+    @Secured({UPDATE, CRUD})
     public Valintatapajono muutaJarjestyskriteerinArvo(@PathParam("valintatapajonoOid") String valintatapajonoOid,
                                                        @PathParam("hakemusOid") String hakemusOid,
                                                        @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,

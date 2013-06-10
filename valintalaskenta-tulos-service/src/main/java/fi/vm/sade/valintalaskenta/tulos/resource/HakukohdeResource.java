@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.tulos.resource;
 
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.tulos.resource.roles.ValintojenToteuttaminenRole;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.slf4j.Logger;
@@ -17,6 +18,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
+
+import static fi.vm.sade.valintalaskenta.tulos.resource.roles.ValintojenToteuttaminenRole.*;
 
 /**
  * @author Jussi Jartamo
@@ -35,7 +38,7 @@ public class HakukohdeResource {
     @Path("{hakukohdeoid}/valinnanvaihe")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
-    @Secured({"ROLE_APP_VALINTALASKENTA_READ", "ROLE_APP_VALINTALASKENTA_READ_UPDATE", "ROLE_APP_VALINTALASKENTA_CRUD"})
+    @Secured({READ, UPDATE, CRUD})
     public List<Valinnanvaihe> hakukohde(@PathParam("hakukohdeoid") String hakukohdeoid) {
 
         List<Valinnanvaihe> tulos = tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
