@@ -60,7 +60,7 @@
         <xs:attribute name="prioriteetti" type="xs:int" use="required" />
         <xs:attribute name="pisteet" type="xs:float" use="required" />
         <xs:attribute name="tila" type="tns:HakemusTilaTyyppi"/>
-        <xs:attribute name="harkinnanvarainen" type="xs:boolean" use="optional" default="false" />
+        <xs:attribute name="harkinnanvarainen" type="xs:boolean" use="optional" />
 	</xs:complexType>
 
     <xs:simpleType name="HakemusTilaTyyppi">
