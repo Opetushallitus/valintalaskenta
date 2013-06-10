@@ -93,7 +93,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             ht.setHakemusOid(jonosija.getHakemusoid());
             ht.setOid(jonosija.getHakijaoid());
             ht.setJonosija(jonosija.getJonosija());
-            if(jonosija.isHarkinnanvarainen()!= null && jonosija.isHarkinnanvarainen()) {
+            if(jonosija.isHarkinnanvarainen()) {
                ht.setHarkinnanvarainen(Boolean.TRUE);
             }
 
