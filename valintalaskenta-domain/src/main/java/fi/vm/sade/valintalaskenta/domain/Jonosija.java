@@ -39,6 +39,9 @@ public class Jonosija {
     @JsonView(JsonViews.Basic.class)
     private int prioriteetti; //hakutoive
 
+    @JsonView(JsonViews.Basic.class)
+    private boolean harkinnanvarainen = false;
+
     @Embedded
     private TreeMap<Integer, Jarjestyskriteeritulos> jarjestyskriteerit = new TreeMap<Integer, Jarjestyskriteeritulos>();
 
@@ -112,5 +115,13 @@ public class Jonosija {
 
     public void setTuloksenTila(JarjestyskriteerituloksenTila tuloksenTila) {
         this.tuloksenTila = tuloksenTila;
+    }
+
+    public boolean isHarkinnanvarainen() {
+        return harkinnanvarainen;
+    }
+
+    public void setHarkinnanvarainen(boolean harkinnanvarainen) {
+        this.harkinnanvarainen = harkinnanvarainen;
     }
 }

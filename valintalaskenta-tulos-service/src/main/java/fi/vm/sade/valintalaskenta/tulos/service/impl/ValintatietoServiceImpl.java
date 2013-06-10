@@ -85,8 +85,6 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             HakijaTyyppi ht = new HakijaTyyppi();
             ht.setPrioriteetti(jonosija.getPrioriteetti());
 
-            System.out.println("TILAAA" + jonosija.getTuloksenTila());
-
             if(jonosija.getTuloksenTila() == null) {
                 ht.setTila(HakemusTilaTyyppi.MAARITTELEMATON);
             }   else {
@@ -95,6 +93,11 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             ht.setHakemusOid(jonosija.getHakemusoid());
             ht.setOid(jonosija.getHakijaoid());
             ht.setJonosija(jonosija.getJonosija());
+            if(jonosija.isHarkinnanvarainen()) {
+               ht.setHarkinnanvarainen(Boolean.TRUE);
+            }
+
+
             valintatapajonoTyyppi.getHakija().add(ht);
         }
         return valintatapajonoTyyppi;
