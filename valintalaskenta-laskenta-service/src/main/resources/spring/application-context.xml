@@ -15,16 +15,19 @@
 		location="classpath:valintalaskenta-laskenta-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/valintalaskenta-laskenta-service.properties, file:///${user.home:''}/oph-configuration/override.properties"
 		ignore-resource-not-found="true" properties-ref="defaultProps" />
 
-	<bean id="defaultProps"
-		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-		<property name="properties">
-			<util:properties local-override="true">
+    <bean id="defaultProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="properties">
+            <util:properties local-override="true">
+                <prop key="cas_key">valintalaskenta-service</prop>
+                <prop key="cas_service">${cas.service.valintalaskenta-service}</prop>
+                <prop key="spring_security_default_access">permitAll</prop>
+            </util:properties>
+        </property>
+    </bean>
+    <import resource="file:///${user.home:''}/oph-configuration/security-context-backend.xml"/>
 
-			</util:properties>
-		</property>
-	</bean>
 
-	<import resource="application-context-db.xml" />
+    <import resource="application-context-db.xml" />
 	<import resource="application-context-service.xml" />
 	<import resource="application-context-tulos.xml" />
 	<import resource="application-context-ws.xml" />
