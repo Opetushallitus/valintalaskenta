@@ -16,6 +16,8 @@ public class HakemusWrapper {
 
     private Hakemus laskentahakemus;
 
+    private boolean harkinnanvaraisuus = false;
+
     public HakemusTyyppi getHakemusTyyppi() {
         return hakemusTyyppi;
     }
@@ -30,5 +32,13 @@ public class HakemusWrapper {
 
     public void setLaskentahakemus(Hakemus laskentahakemus) {
         this.laskentahakemus = laskentahakemus;
+    }
+
+    public boolean isHarkinnanvaraisuus() {
+        return harkinnanvaraisuus;
+    }
+
+    public void setHarkinnanvaraisuus(boolean harkinnanvaraisuus) {
+        this.harkinnanvaraisuus = harkinnanvaraisuus;
     }
 }
