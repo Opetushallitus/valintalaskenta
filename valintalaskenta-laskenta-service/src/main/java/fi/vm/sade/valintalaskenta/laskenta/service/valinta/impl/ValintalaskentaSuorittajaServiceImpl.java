@@ -118,8 +118,6 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                     jonosija.setSukunimi(h.getHakemusTyyppi().getHakijanSukunimi());
                     jonosija.setHakemusoid(h.getHakemusTyyppi().getHakemusOid());
                     jonosija.setHakijaoid(h.getHakemusTyyppi().getHakijaOid());
-
-                    jonosija.setHarkinnanvarainen(h.isHarkinnanvaraisuus());
                     Integer hakutoive = haeHakutoiveNumero(h, hakukohdeoid);
                     jonosija.setPrioriteetti(hakutoive);
 
@@ -162,6 +160,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         Iterator<Jonosija> it = jonosijat.iterator();
         while(it.hasNext()) {
             Jonosija dto = it.next();
+            System.out.println("jarjesta oid["+dto.getHakemusoid()+"]" + i );
+
 
             if(previous != null && comparator.compare(previous, dto) != 0) {
                 i++;
@@ -317,7 +317,6 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                 HakemusWrapper h = new HakemusWrapper();
                 h.setHakemusTyyppi(hakemus);
                 h.setLaskentahakemus(hakemusConverter.convert(hakemus));
-                h.setHarkinnanvaraisuus(hakukohde.isHarkinnanvaraisuus());
 
                 hakukohdeHakemukset.get(hakukohdeoid).add(h);
             }
