@@ -4,20 +4,21 @@ import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
-import static fi.vm.sade.valintalaskenta.tulos.resource.roles.ValintojenToteuttaminenRole.CRUD;
-import static fi.vm.sade.valintalaskenta.tulos.resource.roles.ValintojenToteuttaminenRole.READ;
-import static fi.vm.sade.valintalaskenta.tulos.resource.roles.ValintojenToteuttaminenRole.UPDATE;
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.CRUD;
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.UPDATE;
 
 /**
  * @author Jussi Jartamo
  */
 @Component
-@Path("/valintatapajono")
+@Path("valintatapajono")
+@PreAuthorize("isAuthenticated()")
 public class ValintatapajonoResource {
 
     @Autowired

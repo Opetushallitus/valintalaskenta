@@ -13,15 +13,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 
-import static fi.vm.sade.valintalaskenta.tulos.resource.roles.ValintojenToteuttaminenRole.CRUD;
-import static fi.vm.sade.valintalaskenta.tulos.resource.roles.ValintojenToteuttaminenRole.READ;
-import static fi.vm.sade.valintalaskenta.tulos.resource.roles.ValintojenToteuttaminenRole.UPDATE;
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.CRUD;
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ;
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.UPDATE;
 
 /**
  * 
@@ -29,7 +30,8 @@ import static fi.vm.sade.valintalaskenta.tulos.resource.roles.ValintojenToteutta
  * 
  */
 @Component
-@Path("/haku")
+@Path("haku")
+@PreAuthorize("isAuthenticated()")
 public class HakuResource {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(HakuResource.class);
