@@ -18,6 +18,7 @@
     <bean id="defaultProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="properties">
             <util:properties local-override="true">
+                <prop key="cas_mode">front</prop>
                 <prop key="cas_key">valintalaskenta-service</prop>
                 <prop key="cas_service">${cas.service.valintalaskenta-service}</prop>
                 <prop key="spring_security_default_access">permitAll</prop>
