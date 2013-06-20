@@ -14,6 +14,12 @@ import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
+
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.CRUD;
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ;
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.UPDATE;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,6 +28,7 @@ import org.springframework.core.convert.ConversionService;
  * Time: 13:24
  * To change this template use File | Settings | File Templates.
  */
+@PreAuthorize("isAuthenticated()")
 public class ValintatietoServiceImpl implements ValintatietoService {
 
 
@@ -32,6 +39,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
     private ConversionService conversionService;
 
     @Override
+    @Secured({READ, UPDATE, CRUD})
     public HakuTyyppi haeValintatiedot(@WebParam(name = "hakuOid", targetNamespace = "") String hakuOid) {
 
         List<Hakukohde> a = tulosService.haeLasketutValinnanvaiheetHaulle(hakuOid);

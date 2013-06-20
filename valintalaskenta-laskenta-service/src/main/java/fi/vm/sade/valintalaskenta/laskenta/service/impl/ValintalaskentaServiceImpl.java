@@ -6,15 +6,22 @@ import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.ValintalaskentaSuorittajaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import java.util.List;
 
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.CRUD;
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ;
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.UPDATE;
+
 /**
  * @author Jussi Jartamo
  */
 @WebService(endpointInterface = "fi.vm.sade.service.valintalaskenta.ValintalaskentaService")
+@PreAuthorize("isAuthenticated()")
 public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 
     @Autowired
@@ -24,6 +31,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     private ValintakoelaskentaSuorittajaService valintakoelaskentaSuorittajaService;
 
     @Override
+    @Secured({CRUD})
     public String laske(@WebParam(name = "hakemus", targetNamespace = "") List<HakemusTyyppi> hakemus,
                         @WebParam(name = "valintaperuste", targetNamespace = "") List<ValintaperusteetTyyppi> valintaperuste) {
         valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste);
@@ -39,6 +47,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
      * @return
      */
     @Override
+    @Secured({CRUD})
     public String valintakokeet(@WebParam(name = "hakemus", targetNamespace = "") HakemusTyyppi hakemus,
                                 @WebParam(name = "valintaperuste", targetNamespace = "") List<ValintaperusteetTyyppi> valintaperuste) {
         valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste);
