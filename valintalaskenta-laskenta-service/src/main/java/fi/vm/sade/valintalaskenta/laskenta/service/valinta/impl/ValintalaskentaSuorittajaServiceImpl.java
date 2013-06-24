@@ -110,6 +110,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                 valintatapajono.setPrioriteetti(jono.getPrioriteetti());
                 valintatapajono.setAloituspaikat(jono.getAloituspaikat());
                 valintatapajono.setTasasijasaanto(Tasasijasaanto.valueOf(jono.getTasasijasaanto().name()));
+                valintatapajono.setEiVarasijatayttoa(jono.isEiVarasijatayttoa());
 
                 for (HakemusWrapper h : hakemukset) {
                     Jonosija jonosija = new Jonosija();
