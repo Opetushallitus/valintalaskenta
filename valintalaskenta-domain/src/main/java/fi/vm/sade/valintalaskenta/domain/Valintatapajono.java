@@ -47,6 +47,9 @@ public class Valintatapajono implements Comparable<Valintatapajono> {
     private Tasasijasaanto tasasijasaanto;
 
     @JsonView(JsonViews.Basic.class)
+    private Boolean eiVarasijatayttoa;
+
+    @JsonView(JsonViews.Basic.class)
     @Embedded
     private List <Jonosija> jonosijat = new ArrayList<Jonosija>();
 
@@ -140,5 +143,13 @@ public class Valintatapajono implements Comparable<Valintatapajono> {
 
     public void setJonosijat(List<Jonosija> jonosijat) {
         this.jonosijat = jonosijat;
+    }
+
+    public Boolean getEiVarasijatayttoa() {
+        return eiVarasijatayttoa;
+    }
+
+    public void setEiVarasijatayttoa(Boolean eiVarasijatayttoa) {
+        this.eiVarasijatayttoa = eiVarasijatayttoa;
     }
 }
