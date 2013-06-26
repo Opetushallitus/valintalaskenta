@@ -28,7 +28,7 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
  * Time: 13:24
  * To change this template use File | Settings | File Templates.
  */
-@PreAuthorize("isAuthenticated()")
+//@PreAuthorize("isAuthenticated()")
 public class ValintatietoServiceImpl implements ValintatietoService {
 
 
@@ -39,7 +39,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
     private ConversionService conversionService;
 
     @Override
-    @Secured({READ, UPDATE, CRUD})
+//    @Secured({READ, UPDATE, CRUD})
     public HakuTyyppi haeValintatiedot(@WebParam(name = "hakuOid", targetNamespace = "") String hakuOid) {
 
         List<Hakukohde> a = tulosService.haeLasketutValinnanvaiheetHaulle(hakuOid);

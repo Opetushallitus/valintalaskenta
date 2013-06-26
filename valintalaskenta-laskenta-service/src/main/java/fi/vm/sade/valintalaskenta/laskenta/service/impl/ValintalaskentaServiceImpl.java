@@ -21,7 +21,7 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
  * @author Jussi Jartamo
  */
 @WebService(endpointInterface = "fi.vm.sade.service.valintalaskenta.ValintalaskentaService")
-@PreAuthorize("isAuthenticated()")
+//@PreAuthorize("isAuthenticated()")
 public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 
     @Autowired
@@ -31,7 +31,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     private ValintakoelaskentaSuorittajaService valintakoelaskentaSuorittajaService;
 
     @Override
-    @Secured({CRUD})
+//    @Secured({CRUD})
     public String laske(@WebParam(name = "hakemus", targetNamespace = "") List<HakemusTyyppi> hakemus,
                         @WebParam(name = "valintaperuste", targetNamespace = "") List<ValintaperusteetTyyppi> valintaperuste) {
         valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste);
@@ -47,7 +47,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
      * @return
      */
     @Override
-    @Secured({CRUD})
+//    @Secured({CRUD})
     public String valintakokeet(@WebParam(name = "hakemus", targetNamespace = "") HakemusTyyppi hakemus,
                                 @WebParam(name = "valintaperuste", targetNamespace = "") List<ValintaperusteetTyyppi> valintaperuste) {
         valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste);
