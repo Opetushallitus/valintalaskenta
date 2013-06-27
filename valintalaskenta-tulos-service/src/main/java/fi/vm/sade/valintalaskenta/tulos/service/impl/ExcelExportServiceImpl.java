@@ -39,7 +39,7 @@ public class ExcelExportServiceImpl implements ExcelExportService {
 
                 builder.append("<tr></tr><tr><td>");
                 builder.append(jono.getNimi());
-                builder.append("</td><td></td><td></td><td></td></tr>");
+                builder.append("</td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>\n");
 
                 for (Jonosija jonosija : jono.getJonosijat()) {
 
@@ -47,8 +47,12 @@ public class ExcelExportServiceImpl implements ExcelExportService {
                     builder.append("<td>").append(jonosija.getJonosija()).append("</td>");
                     builder.append("<td>").append(jonosija.getEtunimi()).append("</td>");
                     builder.append("<td>").append(jonosija.getSukunimi()).append("</td>");
+                    builder.append("<td>").append(jonosija.getHakemusoid()).append("</td>");
                     builder.append("<td>").append(jonosija.getTuloksenTila()).append("</td>");
-                    builder.append("</tr>");
+                    builder.append("<td>").append(jonosija.getJarjestyskriteerit().firstEntry().getValue().getArvo()).append("</td>");
+                    builder.append("<td>").append(jonosija.isHarkinnanvarainen()).append("</td>");
+
+                    builder.append("</tr>\n");
                 }
             }
         }
@@ -56,13 +60,7 @@ public class ExcelExportServiceImpl implements ExcelExportService {
         return builder.toString();
     }
 
-    // Hakemus OID Valintakoe OID Valintakoetunniste Osallistuminen Laskettu pvm
-    // <td>{{koe.hakemusOid}}</td>
-    // <td>{{koe.valintakoeOid}}</td>
-    // <td>{{koe.valintakoeTunniste}}</td>
-    // <td>{{koe.osallistuminen}}</td>
-    // <td><span
-    // ng-bind="koe.createdAt | date:'dd.MM.yyyy HH:mm:ss'">-</span></td>
+
     @Override
     public String exportValintakoetulos(String hakukohdeOid) {
         SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
