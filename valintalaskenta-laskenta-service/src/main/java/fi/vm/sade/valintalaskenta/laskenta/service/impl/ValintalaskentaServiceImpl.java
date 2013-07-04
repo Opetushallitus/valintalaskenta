@@ -5,6 +5,8 @@ import fi.vm.sade.service.valintalaskenta.ValintalaskentaService;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.ValintalaskentaSuorittajaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +26,8 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 //@PreAuthorize("isAuthenticated()")
 public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 
+    private static final Logger logger = LoggerFactory.getLogger(ValintalaskentaServiceImpl.class);
+
     @Autowired
     private ValintalaskentaSuorittajaService valintalaskentaSuorittaja;
 
@@ -34,8 +38,13 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 //    @Secured({CRUD})
     public String laske(@WebParam(name = "hakemus", targetNamespace = "") List<HakemusTyyppi> hakemus,
                         @WebParam(name = "valintaperuste", targetNamespace = "") List<ValintaperusteetTyyppi> valintaperuste) {
-        valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste);
-        return "Onnistui!";
+        try {
+            valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste);
+            return "Onnistui!";
+        } catch (Exception e) {
+            logger.error("Laskenta epäonnistui", e);
+            return "Epäonnistui!";
+        }
     }
 
     /**
@@ -50,8 +59,13 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 //    @Secured({CRUD})
     public String valintakokeet(@WebParam(name = "hakemus", targetNamespace = "") HakemusTyyppi hakemus,
                                 @WebParam(name = "valintaperuste", targetNamespace = "") List<ValintaperusteetTyyppi> valintaperuste) {
-        valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste);
-        return "Onnistui!";
+        try {
+            valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste);
+            return "Onnistui!";
+        } catch (Exception e) {
+            logger.error("Valintakoevaihe epäonnistui", e);
+            return "Epäonnistui!";
+        }
     }
 
 }
