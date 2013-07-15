@@ -10,6 +10,16 @@
         <wsdl:types>
             <xsd:schema targetNamespace="http://valintalaskenta.service.sade.vm.fi">
                 <xsd:import namespace="http://valintalaskenta.service.sade.vm.fi/messages" schemaLocation="valintalaskenta.xsd" />
+                <xsd:element name="laskeFault">
+                	<xsd:complexType>
+                		<xsd:sequence>
+
+                			<xsd:element name="laskeFault"
+                				type="valintalaskenta:GenericFaultInfo">
+                			</xsd:element>
+                		</xsd:sequence>
+                	</xsd:complexType>
+                </xsd:element>
             </xsd:schema>
         </wsdl:types>
 
@@ -26,12 +36,16 @@
             <wsdl:part name="parameters" element="valintalaskenta:valintakokeetVastaus" />
         </wsdl:message>
 
+        <wsdl:message name="laskeFault">
+        	<wsdl:part name="parameters" element="tns:laskeFault"></wsdl:part>
+        </wsdl:message>
         <wsdl:portType name="ValintalaskentaService">
             <wsdl:documentation>Palvelu valintalaskennan suorittamiseen</wsdl:documentation>
             <wsdl:operation name="laske">
                 <wsdl:input message="tns:laske" />
                 <wsdl:output message="tns:laskeVastaus" />
-            </wsdl:operation>
+            <wsdl:fault name="fault" message="tns:laskeFault"></wsdl:fault>
+        </wsdl:operation>
             <wsdl:operation name="valintakokeet">
                 <wsdl:input message="tns:valintakokeet" />
                 <wsdl:output message="tns:valintakokeetVastaus" />
