@@ -1,16 +1,15 @@
 package fi.vm.sade.valintalaskenta.domain;
 
-import com.google.code.morphia.annotations.Embedded;
-import com.google.code.morphia.annotations.Transient;
-import org.codehaus.jackson.map.annotate.JsonView;
-
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 
+import org.codehaus.jackson.map.annotate.JsonView;
+
+import com.google.code.morphia.annotations.Embedded;
+
 /**
- * User: kkammone
- * Date: 13.5.2013
- * Time: 9:50
+ * User: kkammone Date: 13.5.2013 Time: 9:50
  */
 @Embedded("Jonosija")
 public class Jonosija {
@@ -37,13 +36,25 @@ public class Jonosija {
     private String sukunimi;
 
     @JsonView(JsonViews.Basic.class)
-    private int prioriteetti; //hakutoive
+    private int prioriteetti; // hakutoive
 
     @JsonView(JsonViews.Basic.class)
     private boolean harkinnanvarainen = false;
 
+    // @JsonSerialize(using = HtmlSerializer.class)
+    @Embedded
+    private List<String> historiat = new ArrayList<String>();
+
     @Embedded
     private TreeMap<Integer, Jarjestyskriteeritulos> jarjestyskriteerit = new TreeMap<Integer, Jarjestyskriteeritulos>();
+
+    public List<String> getHistoriat() {
+        return historiat;
+    }
+
+    public void setHistoriat(List<String> historiat) {
+        this.historiat = historiat;
+    }
 
     public int getJonosija() {
         return jonosija;
