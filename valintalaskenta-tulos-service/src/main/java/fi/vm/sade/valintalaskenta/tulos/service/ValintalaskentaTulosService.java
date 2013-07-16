@@ -1,9 +1,14 @@
 package fi.vm.sade.valintalaskenta.tulos.service;
 
-import fi.vm.sade.valintalaskenta.domain.*;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
-
+import java.math.BigDecimal;
 import java.util.List;
+
+import fi.vm.sade.valintalaskenta.domain.Hakukohde;
+import fi.vm.sade.valintalaskenta.domain.Jonosija;
+import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 
 public interface ValintalaskentaTulosService {
 
@@ -26,5 +31,5 @@ public interface ValintalaskentaTulosService {
     List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakutoive(String hakukohdeOid);
 
     Valintatapajono muutaJarjestyskriteerinArvo(String valintatapajonoOid, String hakemusOid,
-                                                Integer jarjestyskriteeriPrioriteetti, Double arvo);
+            Integer jarjestyskriteeriPrioriteetti, BigDecimal arvo);
 }

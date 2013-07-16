@@ -1,5 +1,7 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion;
 
+import java.math.BigDecimal;
+
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -17,8 +19,8 @@ public class ArvovalikonvertteriparametriTyyppiToArvovalikonvertteriparametriCon
 
     public Arvovalikonvertteriparametri convert(ArvovalikonvertteriparametriTyyppi source) {
         Arvovalikonvertteriparametri target = new Arvovalikonvertteriparametri();
-        target.setMaxValue(source.getMaksimiarvo());
-        target.setMinValue(source.getMinimiarvo());
+        target.setMaxValue(new BigDecimal(source.getMaksimiarvo()));
+        target.setMinValue(new BigDecimal(source.getMinimiarvo()));
         target.setPalautaHaettuArvo(source.isPalautaHaettuArvo());
         target.setPaluuarvo(source.getPaluuarvo());
         target.setHylkaysperuste(source.isHylkaysperuste());

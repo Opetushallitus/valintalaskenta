@@ -1,9 +1,13 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl;
 
-import java.util.*;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import fi.vm.sade.valintalaskenta.domain.*;
-import fi.vm.sade.valintalaskenta.domain.comparator.JonosijaComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +34,16 @@ import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskritee
 import fi.vm.sade.service.valintaperusteet.service.validointi.virhe.Validointivirhe;
 import fi.vm.sade.valintalaskenta.dao.ValintatapajonoDAO;
 import fi.vm.sade.valintalaskenta.dao.VersiohallintaHakukohdeDAO;
+import fi.vm.sade.valintalaskenta.domain.Hakukohde;
+import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
+import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.Jonosija;
+import fi.vm.sade.valintalaskenta.domain.Tasasijasaanto;
+import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
+import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
+import fi.vm.sade.valintalaskenta.domain.comparator.JonosijaComparator;
 import fi.vm.sade.valintalaskenta.laskenta.Esiintyminen;
 import fi.vm.sade.valintalaskenta.laskenta.service.exception.LaskentaVaarantyyppisellaFunktiollaException;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.FunktioKutsuTyyppiToFunktioKutsuConverter;
@@ -122,16 +136,19 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                     Integer hakutoive = haeHakutoiveNumero(h, hakukohdeoid);
                     jonosija.setPrioriteetti(hakutoive);
 
+                    // StringBuffer historia = new StringBuffer();
                     for (JarjestyskriteeriTyyppi j : jono.getJarjestyskriteerit()) {
                         Funktiokutsu funktiokutsu = funktiokutsuConverter.convert(j.getFunktiokutsu());
+                        StringBuffer historia = new StringBuffer();
                         Jarjestyskriteeritulos jarjestyskriteeritulos = suoritaLaskenta(
                                 hakukohdeoid,
                                 funktiokutsu,
                                 h,
                                 hakemukset,
                                 edellinenValinnanvaihe != null ? edellinenValinnanvaihe.get(h.getHakemusTyyppi()
-                                        .getHakemusOid()) : null);
-
+                                        .getHakemusOid()) : null, historia);
+                        assert (jarjestyskriteeritulos != null);
+                        jonosija.getHistoriat().add(historia.toString());
                         jonosija.getJarjestyskriteerit().put(j.getPrioriteetti(), jarjestyskriteeritulos);
                     }
 
@@ -151,31 +168,38 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         }
     }
 
-     private void jarjestaJaLisaaJonosijaNumero(List<Jonosija> jonosijat) {
-
+    private void jarjestaJaLisaaJonosijaNumero(List<Jonosija> jonosijat) {
+        if (jonosijat == null || jonosijat.isEmpty() || jonosijat.size() < 2) { // ei
+                                                                                // tehda
+            // jarjestelya
+            // yhdelle
+            // jonosijalle
+            return;
+        }
         JonosijaComparator comparator = new JonosijaComparator();
         Collections.sort(jonosijat, comparator);
 
         int i = 1;
         Jonosija previous = null;
         Iterator<Jonosija> it = jonosijat.iterator();
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             Jonosija dto = it.next();
-            System.out.println("jarjesta oid["+dto.getHakemusoid()+"]" + i );
+            System.out.println("jarjesta oid[" + dto.getHakemusoid() + "]" + i);
 
-
-            if(previous != null && comparator.compare(previous, dto) != 0) {
+            if (previous != null && comparator.compare(previous, dto) != 0) {
                 i++;
             }
             dto.setJonosija(i);
 
-            Jarjestyskriteeritulos tulos = dto.getJarjestyskriteerit().firstEntry().getValue();
-            dto.setTuloksenTila(tulos.getTila());
+            if (!dto.getJarjestyskriteerit().isEmpty() && dto.getJarjestyskriteerit().firstEntry().getValue() != null) {
+                dto.setTuloksenTila(dto.getJarjestyskriteerit().firstEntry().getValue().getTila());
+            } else {
+                //
+            }
 
             previous = dto;
         }
     }
-
 
     private Integer haeHakutoiveNumero(HakemusWrapper h, String hakukohdeOid) {
         for (HakukohdeTyyppi hkt : h.getHakemusTyyppi().getHakutoive()) {
@@ -187,7 +211,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     }
 
     private Jarjestyskriteeritulos suoritaLaskenta(String hakukohde, Funktiokutsu funktiokutsu,
-            HakemusWrapper kasiteltavaHakemus, List<HakemusWrapper> kaikkiHakemukset, Esiintyminen esiintyminen) {
+            HakemusWrapper kasiteltavaHakemus, List<HakemusWrapper> kaikkiHakemukset, Esiintyminen esiintyminen,
+            StringBuffer laskentaHistoria) {
         Funktiotyyppi tyyppi = funktiokutsu.getFunktionimi().getTyyppi();
         Jarjestyskriteeritulos jarjestyskriteeritulos = new Jarjestyskriteeritulos();
 
@@ -206,9 +231,9 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                 kaikkiLaskentaHakemukset.add(wrapper.getLaskentahakemus());
             }
 
-            Laskentatulos<Double> laskentatulos = laskentaService.suoritaLasku(hakukohde,
+            Laskentatulos<BigDecimal> laskentatulos = laskentaService.suoritaLasku(hakukohde,
                     kasiteltavaHakemus.getLaskentahakemus(), kaikkiLaskentaHakemukset,
-                    Laskentadomainkonvertteri.muodostaLukuarvolasku(funktiokutsu));
+                    Laskentadomainkonvertteri.muodostaLukuarvolasku(funktiokutsu), laskentaHistoria);
             Tila tila = laskentatulos.getTila();
 
             if (Tilatyyppi.HYLATTY.equals(tila.getTilatyyppi())) {
@@ -235,7 +260,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             } else {
                 jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.MAARITTELEMATON);
             }
-            Double tulos = laskentatulos.getTulos();
+            BigDecimal tulos = laskentatulos.getTulos();
             if (tulos != null) {
                 jarjestyskriteeritulos.setArvo(tulos);
             }
@@ -254,25 +279,32 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         for (Valintatapajono jono : hakukohde.getValinnanvaihe().getValintatapajono()) {
             for (Jonosija tulos : jono.getJonosijat()) {
                 String hakemusoid = tulos.getHakemusoid();
-                if (JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA
-                        .equals(tulos.getJarjestyskriteerit().get(1).getTila())) {
-                    if (hakemusoidHyvaksyttyJonoissa.containsKey(hakemusoid)) {
-                        Esiintyminen esiintyminen = hakemusoidHyvaksyttyJonoissa.get(hakemusoid);
-                        esiintyminen.inkrementoiEsiintyminen();
-                        esiintyminen.inkrementoiHyvaksyttavissa();
-                        hakemusoidHyvaksyttyJonoissa.put(hakemusoid, esiintyminen);
-                    } else {
-                        // ensiesiintyminen ja hyväksyttävissä
-                        hakemusoidHyvaksyttyJonoissa.put(hakemusoid, new Esiintyminen(1, 1));
-                    }
+                if (tulos.getJarjestyskriteerit().size() < 2) {
+                    // ei esiinny mutta hyvaksyttavissa
+                    // LOG.warn("JONOSIJALLA EI OLE EDELTÄVIÄ JÄRJESTYSKRITEEREITÄ (jonosija={}, kuvaus={})",
+                    // new Object[] { tulos.getJonosija(), tulos.getKuvaus() });
+                    hakemusoidHyvaksyttyJonoissa.put(hakemusoid, new Esiintyminen(0, 0));
                 } else {
-                    if (!hakemusoidHyvaksyttyJonoissa.containsKey(hakemusoid)) {
-                        // esiintyy mutta ei ole hyväksyttävissä
-                        hakemusoidHyvaksyttyJonoissa.put(hakemusoid, new Esiintyminen(0, 1));
+                    if (JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA.equals(tulos.getJarjestyskriteerit().get(1)
+                            .getTila())) {
+                        if (hakemusoidHyvaksyttyJonoissa.containsKey(hakemusoid)) {
+                            Esiintyminen esiintyminen = hakemusoidHyvaksyttyJonoissa.get(hakemusoid);
+                            esiintyminen.inkrementoiEsiintyminen();
+                            esiintyminen.inkrementoiHyvaksyttavissa();
+                            hakemusoidHyvaksyttyJonoissa.put(hakemusoid, esiintyminen);
+                        } else {
+                            // ensiesiintyminen ja hyväksyttävissä
+                            hakemusoidHyvaksyttyJonoissa.put(hakemusoid, new Esiintyminen(1, 1));
+                        }
                     } else {
-                        Esiintyminen esiintyminen = hakemusoidHyvaksyttyJonoissa.get(hakemusoid);
-                        esiintyminen.inkrementoiEsiintyminen();
-                        hakemusoidHyvaksyttyJonoissa.put(hakemusoid, esiintyminen);
+                        if (!hakemusoidHyvaksyttyJonoissa.containsKey(hakemusoid)) {
+                            // esiintyy mutta ei ole hyväksyttävissä
+                            hakemusoidHyvaksyttyJonoissa.put(hakemusoid, new Esiintyminen(0, 1));
+                        } else {
+                            Esiintyminen esiintyminen = hakemusoidHyvaksyttyJonoissa.get(hakemusoid);
+                            esiintyminen.inkrementoiEsiintyminen();
+                            hakemusoidHyvaksyttyJonoissa.put(hakemusoid, esiintyminen);
+                        }
                     }
                 }
             }

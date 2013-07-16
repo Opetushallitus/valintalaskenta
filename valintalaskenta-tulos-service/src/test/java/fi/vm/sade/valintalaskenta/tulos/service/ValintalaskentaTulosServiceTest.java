@@ -1,14 +1,13 @@
 package fi.vm.sade.valintalaskenta.tulos.service;
 
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
-import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
-import fi.vm.sade.valintalaskenta.domain.Jonosija;
-import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
-import fi.vm.sade.valintalaskenta.tulos.dao.ValintatapajonoDAO;
-import fi.vm.sade.valintalaskenta.tulos.service.exception.ValintatapajonoEiOleOlemassaException;
+import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.math.BigDecimal;
+import java.util.List;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,10 +16,16 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.List;
+import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
+import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
-import static org.junit.Assert.*;
+import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.Jonosija;
+import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
+import fi.vm.sade.valintalaskenta.tulos.dao.ValintatapajonoDAO;
+import fi.vm.sade.valintalaskenta.tulos.service.exception.ValintatapajonoEiOleOlemassaException;
 
 @ContextConfiguration(locations = "classpath:application-context-test.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -70,32 +75,30 @@ public class ValintalaskentaTulosServiceTest {
         final String valintatapajonoOid = "valintatapajonooid1";
         final String hakemusOid = "hakemusoid1";
         final Integer jarjestyskriteeriPrioriteetti = 0;
-        final double uusiArvo = 100.0;
+        final BigDecimal uusiArvo = new BigDecimal("100.0");
 
         Valintatapajono jono = valintatapajonoDAO.findByValintatapajonoOidHakemusOidAndJarjestyskriteeriPrioriteetti(
-                valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti
-        );
+                valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti);
 
         boolean found = false;
         for (Jonosija s : jono.getJonosijat()) {
             if (hakemusOid.equals(s.getHakemusoid())) {
                 Jarjestyskriteeritulos tulos = s.getJarjestyskriteerit().get(jarjestyskriteeriPrioriteetti);
-                assertFalse(uusiArvo == tulos.getArvo());
+                assertFalse(uusiArvo.equals(tulos.getArvo()));
                 found = true;
             }
         }
 
         assertTrue(found);
 
-
-        jono = valintalaskentaTulosService
-                .muutaJarjestyskriteerinArvo(valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, uusiArvo);
+        jono = valintalaskentaTulosService.muutaJarjestyskriteerinArvo(valintatapajonoOid, hakemusOid,
+                jarjestyskriteeriPrioriteetti, uusiArvo);
 
         found = false;
         for (Jonosija s : jono.getJonosijat()) {
             if (hakemusOid.equals(s.getHakemusoid())) {
                 Jarjestyskriteeritulos tulos = s.getJarjestyskriteerit().get(jarjestyskriteeriPrioriteetti);
-                assertEquals(uusiArvo, tulos.getArvo(), 0.1);
+                assertTrue(uusiArvo.equals(tulos.getArvo()));// , 0.1);
                 found = true;
             }
         }
@@ -109,8 +112,8 @@ public class ValintalaskentaTulosServiceTest {
         final String valintatapajonoOid = "valintatapajonooid1";
         final String hakemusOid = "hakemusoid1";
         final Integer jarjestyskriteeriPrioriteetti = 1;
-        final double uusiArvo = 100.0;
-        valintalaskentaTulosService
-                .muutaJarjestyskriteerinArvo(valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, uusiArvo);
+        final BigDecimal uusiArvo = new BigDecimal("100.0");
+        valintalaskentaTulosService.muutaJarjestyskriteerinArvo(valintatapajonoOid, hakemusOid,
+                jarjestyskriteeriPrioriteetti, uusiArvo);
     }
 }

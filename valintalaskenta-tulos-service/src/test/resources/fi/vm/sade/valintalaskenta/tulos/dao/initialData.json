@@ -9,7 +9,7 @@
 			                "hakemusoid" : "hakemusoid1",
 			                "jarjestyskriteerit" : {
 			                    0 : {
-			                        "arvo" : 10.0
+			                        "arvo" : "10.0"
 			                    }
 			                }
 			            },
@@ -17,7 +17,7 @@
 			                "hakemusoid" : "hakemusoid2",
 			                "jarjestyskriteerit" : {
 			                    0 : {
-			                        "arvo" : 20.0
+			                        "arvo" : "20.0"
 			                    }
 			                }
 			            }

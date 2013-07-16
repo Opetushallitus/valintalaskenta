@@ -1,16 +1,27 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl;
 
-import fi.vm.sade.valintalaskenta.domain.*;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
-import fi.vm.sade.valintalaskenta.tulos.dao.*;
-import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
-import fi.vm.sade.valintalaskenta.tulos.service.exception.ValintatapajonoEiOleOlemassaException;
+import java.math.BigDecimal;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import fi.vm.sade.valintalaskenta.domain.Hakukohde;
+import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.Jonosija;
+import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
+import fi.vm.sade.valintalaskenta.tulos.dao.HakukohdeDAO;
+import fi.vm.sade.valintalaskenta.tulos.dao.JarjestyskriteeritulosDAO;
+import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
+import fi.vm.sade.valintalaskenta.tulos.dao.ValintakoeOsallistuminenDAO;
+import fi.vm.sade.valintalaskenta.tulos.dao.ValintatapajonoDAO;
+import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
+import fi.vm.sade.valintalaskenta.tulos.service.exception.ValintatapajonoEiOleOlemassaException;
 
 /**
  * @author Jussi Jartamo
@@ -82,7 +93,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
     @Override
     public Valintatapajono muutaJarjestyskriteerinArvo(String valintatapajonoOid, String hakemusOid,
-                                                       Integer jarjestyskriteeriPrioriteetti, Double arvo) {
+            Integer jarjestyskriteeriPrioriteetti, BigDecimal arvo) {
         Valintatapajono jono = valintatapajonoDAO.findByValintatapajonoOidHakemusOidAndJarjestyskriteeriPrioriteetti(
                 valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti);
 

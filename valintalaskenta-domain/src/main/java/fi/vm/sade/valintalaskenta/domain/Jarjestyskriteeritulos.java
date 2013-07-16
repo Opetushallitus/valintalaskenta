@@ -1,7 +1,13 @@
 package fi.vm.sade.valintalaskenta.domain;
 
-import com.google.code.morphia.annotations.Embedded;
+import java.math.BigDecimal;
+
 import org.codehaus.jackson.map.annotate.JsonView;
+
+import com.google.code.morphia.annotations.Converters;
+import com.google.code.morphia.annotations.Embedded;
+
+import fi.vm.sade.valintalaskenta.domain.converter.BigDecimalConverter;
 
 /**
  * 
@@ -9,10 +15,11 @@ import org.codehaus.jackson.map.annotate.JsonView;
  * 
  */
 @Embedded("Jarjestyskriteeritulos")
+@Converters(BigDecimalConverter.class)
 public class Jarjestyskriteeritulos {
 
     @JsonView(JsonViews.Basic.class)
-    private double arvo;
+    private BigDecimal arvo;
 
     @JsonView(JsonViews.Basic.class)
     private JarjestyskriteerituloksenTila tila;
@@ -20,11 +27,11 @@ public class Jarjestyskriteeritulos {
     @JsonView(JsonViews.Basic.class)
     private String kuvaus;
 
-    public double getArvo() {
+    public BigDecimal getArvo() {
         return arvo;
     }
 
-    public void setArvo(double arvo) {
+    public void setArvo(BigDecimal arvo) {
         this.arvo = arvo;
     }
 
