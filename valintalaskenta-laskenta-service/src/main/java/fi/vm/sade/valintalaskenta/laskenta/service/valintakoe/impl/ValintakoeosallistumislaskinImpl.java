@@ -1,5 +1,8 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Laskentatulos;
@@ -12,13 +15,9 @@ import fi.vm.sade.valintalaskenta.laskenta.service.impl.Laskentadomainkonvertter
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.FunktioKutsuTyyppiToFunktioKutsuConverter;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.HakemusTyyppiToHakemusConverter;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoeosallistumislaskin;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
- * User: wuoti
- * Date: 6.5.2013
- * Time: 9.02
+ * User: wuoti Date: 6.5.2013 Time: 9.02
  */
 @Service
 public class ValintakoeosallistumislaskinImpl implements Valintakoeosallistumislaskin {
@@ -37,25 +36,26 @@ public class ValintakoeosallistumislaskinImpl implements Valintakoeosallistumisl
 
     @Override
     public Osallistuminen laskeOsallistuminenYhdelleHakukohteelle(String hakukohdeOid, HakemusTyyppi hakemus,
-                                                                  FunktiokutsuTyyppi kaava) {
+            FunktiokutsuTyyppi kaava) {
         Funktiokutsu funktiokutsu = funktiokutsuConverter.convert(kaava);
 
         switch (funktiokutsu.getFunktionimi().getTyyppi()) {
-            case TOTUUSARVOFUNKTIO:
-                Laskentatulos<Boolean> tulos = laskentaService.suoritaLasku(hakukohdeOid,
-                        hakemusConverter.convert(hakemus),
-                        laskentadomainkonvertteriWrapper.muodostaTotuusarvolasku(funktiokutsu));
+        case TOTUUSARVOFUNKTIO:
+            Laskentatulos<Boolean> tulos = laskentaService.suoritaLasku(hakukohdeOid,
+                    hakemusConverter.convert(hakemus),
+                    laskentadomainkonvertteriWrapper.muodostaTotuusarvolasku(funktiokutsu), new StringBuffer());
 
-                // Jos tulosta ei ole saatu laskettua (ts. sitä ei ole) tai jos tuloksen tila on hylätty, voidaan
-                // olettaa, että henkilön pitää osallistua valintakokeeseen
-                if (tulos.getTulos() == null || Tila.Tilatyyppi.HYLATTY.equals(tulos.getTila().getTilatyyppi())) {
-                    return Osallistuminen.OSALLISTUU;
-                } else {
-                    return tulos.getTulos() ? Osallistuminen.OSALLISTUU : Osallistuminen.EI_OSALLISTU;
-                }
+            // Jos tulosta ei ole saatu laskettua (ts. sitä ei ole) tai jos
+            // tuloksen tila on hylätty, voidaan
+            // olettaa, että henkilön pitää osallistua valintakokeeseen
+            if (tulos.getTulos() == null || Tila.Tilatyyppi.HYLATTY.equals(tulos.getTila().getTilatyyppi())) {
+                return Osallistuminen.OSALLISTUU;
+            } else {
+                return tulos.getTulos() ? Osallistuminen.OSALLISTUU : Osallistuminen.EI_OSALLISTU;
+            }
 
-            default:
-                throw new LaskentaVaarantyyppisellaFunktiollaException("Palvelu hyväksyy vain totuusarvofunktioita!");
+        default:
+            throw new LaskentaVaarantyyppisellaFunktiollaException("Palvelu hyväksyy vain totuusarvofunktioita!");
         }
     }
 }
