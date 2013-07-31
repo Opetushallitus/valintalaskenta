@@ -8,6 +8,7 @@
                   xmlns:messages="http://valintatiedot.service.sade.vm.fi/messages"
         >
 
+    
     <wsdl:types>
         <xsd:schema targetNamespace="http://valintatiedot.service.sade.vm.fi">
             <xsd:import namespace="http://valintatiedot.service.sade.vm.fi/messages" schemaLocation="valintatietoService.xsd" />
@@ -23,10 +24,10 @@
     </wsdl:message>
     
     <wsdl:message name="haeValintatiedotHakukohteelle">
-        <wsdl:part name="parameters" element="messages:haeValintaTiedotHakukohteelle" />
+        <wsdl:part name="parameters" element="messages:haeValintatiedotHakukohteelle" />
     </wsdl:message>
     <wsdl:message name="haeValintatiedotHakukohteelleVastaus">
-        <wsdl:part name="parameters" element="messages:haeValintaTiedotHakukohteelleVastaus" />
+        <wsdl:part name="parameters" element="messages:haeValintatiedotHakukohteelleVastaus" />
     </wsdl:message>
     
     
@@ -41,7 +42,11 @@
             <wsdl:output message="tns:haeValintatiedotHakukohteelleVastaus" />
         </wsdl:operation>
     </wsdl:portType>
-
+	
+	<wsdl:binding name="ValintatietoServiceSoapBinding" type="tns:ValintatietoService">
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
+	</wsdl:binding>
+	
     <wsdl:binding name="ValintatietoServiceSoapBinding" type="tns:ValintatietoService">
         <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
         <wsdl:operation name="haeValintatiedot">
@@ -62,8 +67,9 @@
                 <soap:body use="literal" />
             </wsdl:output>
         </wsdl:operation>
+        
     </wsdl:binding>
-
+ 
     <wsdl:service name="ValintatietoService">
         <wsdl:port name="ValintatietoServicePort" binding="tns:ValintatietoServiceSoapBinding">
             <soap:address location="http://localhost:8181/cxf/valintatietoService" />

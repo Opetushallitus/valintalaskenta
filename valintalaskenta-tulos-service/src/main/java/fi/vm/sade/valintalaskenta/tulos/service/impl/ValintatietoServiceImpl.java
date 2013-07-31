@@ -9,11 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.jws.WebMethod;
 import javax.jws.WebParam;
-import javax.jws.WebResult;
-import javax.jws.soap.SOAPBinding;
-import javax.jws.soap.SOAPBinding.ParameterStyle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
@@ -22,17 +18,21 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import fi.vm.sade.service.valintaperusteet.schema.TasasijasaantoTyyppi;
 import fi.vm.sade.service.valintatiedot.ValintatietoService;
-import fi.vm.sade.service.valintatiedot.messages.HaeValintatiedotHakukohteelleTyyppi;
-import fi.vm.sade.service.valintatiedot.messages.HaeValintatiedotHakukohteelleVastausTyyppi;
+import fi.vm.sade.service.valintatiedot.schema.HakemusOsallistuminenTyyppi;
 import fi.vm.sade.service.valintatiedot.schema.HakemusTilaTyyppi;
 import fi.vm.sade.service.valintatiedot.schema.HakijaTyyppi;
 import fi.vm.sade.service.valintatiedot.schema.HakuTyyppi;
 import fi.vm.sade.service.valintatiedot.schema.HakukohdeTyyppi;
+import fi.vm.sade.service.valintatiedot.schema.Osallistuminen;
 import fi.vm.sade.service.valintatiedot.schema.ValinnanvaiheTyyppi;
 import fi.vm.sade.service.valintatiedot.schema.ValintatapajonoTyyppi;
 import fi.vm.sade.valintalaskenta.domain.Hakukohde;
 import fi.vm.sade.valintalaskenta.domain.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValinnanVaihe;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 
 /**
@@ -49,13 +49,36 @@ public class ValintatietoServiceImpl implements ValintatietoService {
     private ConversionService conversionService;
 
     @Override
-    @SOAPBinding(parameterStyle = ParameterStyle.BARE)
-    @WebResult(name = "haeValintaTiedotHakukohteelleVastaus", targetNamespace = "http://valintatiedot.service.sade.vm.fi/messages", partName = "parameters")
-    @WebMethod
-    public HaeValintatiedotHakukohteelleVastausTyyppi haeValintatiedotHakukohteelle(
-            HaeValintatiedotHakukohteelleTyyppi parameters) {
-        // TODO Auto-generated method stub
-        return null;
+    @Secured({ READ, UPDATE, CRUD })
+    public List<HakemusOsallistuminenTyyppi> haeValintatiedotHakukohteelle(
+            @WebParam(name = "hakukohdeOid", targetNamespace = "") String hakukohdeOid) {
+        List<HakemusOsallistuminenTyyppi> osallistumiset = new ArrayList<HakemusOsallistuminenTyyppi>();
+        List<ValintakoeOsallistuminen> valinnanvaiheet = tulosService
+                .haeValintakoeOsallistumisetByHakutoive(hakukohdeOid);
+        for (ValintakoeOsallistuminen koetulos : valinnanvaiheet) {
+            for (Hakutoive hakutoive : koetulos.getHakutoiveet()) {
+                for (ValinnanVaihe vaihe : hakutoive.getValinnanVaiheet()) {
+                    for (Valintakoe valintakoe : vaihe.getValintakokeet()) {
+                        HakemusOsallistuminenTyyppi h = new HakemusOsallistuminenTyyppi();
+                        h.setHakemusOid(koetulos.getHakemusOid());
+                        switch (valintakoe.getOsallistuminen()) {
+                        case OSALLISTUU:
+                            h.setOsallistuminen(Osallistuminen.OSALLISTUU);
+                            break;
+                        case EI_OSALLISTU:
+                            h.setOsallistuminen(Osallistuminen.EI_OSALLISTU);
+                            break;
+                        default:
+                            h.setOsallistuminen(Osallistuminen.MAARITTELEMATON);
+                            break;
+                        }
+                        osallistumiset.add(h);
+                    }
+                }
+            }
+        }
+
+        return osallistumiset;
     }
 
     @Override
