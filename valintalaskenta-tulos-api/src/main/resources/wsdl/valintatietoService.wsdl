@@ -22,17 +22,38 @@
         <wsdl:part name="parameters" element="messages:haeValintaTiedotVastaus" />
     </wsdl:message>
     
+    <wsdl:message name="haeValintatiedotHakukohteelle">
+        <wsdl:part name="parameters" element="messages:haeValintaTiedotHakukohteelle" />
+    </wsdl:message>
+    <wsdl:message name="haeValintatiedotHakukohteelleVastaus">
+        <wsdl:part name="parameters" element="messages:haeValintaTiedotHakukohteelleVastaus" />
+    </wsdl:message>
+    
+    
     <wsdl:portType name="ValintatietoService">
         <wsdl:documentation>Palvelurajapinta, jonka kautta voidaan hakea valintatiedot halutuille hakukohteille.</wsdl:documentation>
         <wsdl:operation name="haeValintatiedot">
             <wsdl:input message="tns:haeValintatiedot" />
             <wsdl:output message="tns:haeValintatiedotVastaus" />
         </wsdl:operation>
+        <wsdl:operation name="haeValintatiedotHakukohteelle">
+            <wsdl:input message="tns:haeValintatiedotHakukohteelle" />
+            <wsdl:output message="tns:haeValintatiedotHakukohteelleVastaus" />
+        </wsdl:operation>
     </wsdl:portType>
 
     <wsdl:binding name="ValintatietoServiceSoapBinding" type="tns:ValintatietoService">
         <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
         <wsdl:operation name="haeValintatiedot">
+            <soap:operation soapAction="" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="haeValintatiedotHakukohteelle">
             <soap:operation soapAction="" style="document" />
             <wsdl:input>
                 <soap:body use="literal" />
