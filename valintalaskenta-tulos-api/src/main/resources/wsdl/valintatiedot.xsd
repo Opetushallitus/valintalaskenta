@@ -65,7 +65,7 @@
 
     <xs:simpleType name="HakemusTilaTyyppi">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="HYVAKSYTTAVISSA_HARKINNANVARAISESTI"/>
+            <xs:enumeration value="HYVAKSYTTY_HARKINNANVARAISESTI"/>
             <xs:enumeration value="HYVAKSYTTAVISSA"/>
             <xs:enumeration value="MAARITTELEMATON"/>
             <xs:enumeration value="HYLATTY"/>

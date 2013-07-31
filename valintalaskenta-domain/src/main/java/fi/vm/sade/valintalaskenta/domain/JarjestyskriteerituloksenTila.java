@@ -6,5 +6,5 @@ package fi.vm.sade.valintalaskenta.domain;
  * 
  */
 public enum JarjestyskriteerituloksenTila {
-    HYVAKSYTTAVISSA, HYLATTY, MAARITTELEMATON
+    HYVAKSYTTY_HARKINNANVARAISESTI, HYVAKSYTTAVISSA, HYLATTY, MAARITTELEMATON
 }
