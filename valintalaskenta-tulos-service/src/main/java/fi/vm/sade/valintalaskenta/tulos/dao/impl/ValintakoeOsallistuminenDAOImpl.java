@@ -1,16 +1,14 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
-import com.google.code.morphia.Datastore;
-import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
-import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
-import fi.vm.sade.valintalaskenta.tulos.dao.ValintakoeOsallistuminenDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.ValintatapajonoDAO;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collections;
-import java.util.List;
+import com.google.code.morphia.Datastore;
+
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
+import fi.vm.sade.valintalaskenta.tulos.dao.ValintakoeOsallistuminenDAO;
 
 @Repository
 public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminenDAO {
@@ -30,6 +28,7 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
 
     @Override
     public List<ValintakoeOsallistuminen> findByHakutoive(String hakukohdeOid) {
-        return datastore.find(ValintakoeOsallistuminen.class).field("hakutoiveet.hakukohdeOid").equal(hakukohdeOid).asList();
+        return datastore.find(ValintakoeOsallistuminen.class).field("hakutoiveet.hakukohdeOid").equal(hakukohdeOid)
+                .asList();
     }
 }

@@ -53,7 +53,8 @@ public class ValintatietoServiceImpl implements ValintatietoService {
     @Override
     @Secured({ READ, UPDATE, CRUD })
     public List<HakemusOsallistuminenTyyppi> haeValintatiedotHakukohteelle(
-            @WebParam(name = "hakukohdeOid", targetNamespace = "") String hakukohdeOid) {
+            @WebParam(name = "hakukohdeOid", targetNamespace = "") String hakukohdeOid,
+            @WebParam(name = "valintakoeOid", targetNamespace = "") String valintakoeOid) {
         List<HakemusOsallistuminenTyyppi> osallistumiset = new ArrayList<HakemusOsallistuminenTyyppi>();
         List<ValintakoeOsallistuminen> valinnanvaiheet = tulosService
                 .haeValintakoeOsallistumisetByHakutoive(hakukohdeOid);
@@ -61,20 +62,22 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             for (Hakutoive hakutoive : koetulos.getHakutoiveet()) {
                 for (ValinnanVaihe vaihe : hakutoive.getValinnanVaiheet()) {
                     for (Valintakoe valintakoe : vaihe.getValintakokeet()) {
-                        HakemusOsallistuminenTyyppi h = new HakemusOsallistuminenTyyppi();
-                        h.setHakemusOid(koetulos.getHakemusOid());
-                        switch (valintakoe.getOsallistuminen()) {
-                        case OSALLISTUU:
-                            h.setOsallistuminen(Osallistuminen.OSALLISTUU);
-                            break;
-                        case EI_OSALLISTU:
-                            h.setOsallistuminen(Osallistuminen.EI_OSALLISTU);
-                            break;
-                        default:
-                            h.setOsallistuminen(Osallistuminen.MAARITTELEMATON);
-                            break;
+                        if (valintakoeOid.equals(valintakoe.getValintakoeOid())) {
+                            HakemusOsallistuminenTyyppi h = new HakemusOsallistuminenTyyppi();
+                            h.setHakemusOid(koetulos.getHakemusOid());
+                            switch (valintakoe.getOsallistuminen()) {
+                            case OSALLISTUU:
+                                h.setOsallistuminen(Osallistuminen.OSALLISTUU);
+                                break;
+                            case EI_OSALLISTU:
+                                h.setOsallistuminen(Osallistuminen.EI_OSALLISTU);
+                                break;
+                            default:
+                                h.setOsallistuminen(Osallistuminen.MAARITTELEMATON);
+                                break;
+                            }
+                            osallistumiset.add(h);
                         }
-                        osallistumiset.add(h);
                     }
                 }
             }
