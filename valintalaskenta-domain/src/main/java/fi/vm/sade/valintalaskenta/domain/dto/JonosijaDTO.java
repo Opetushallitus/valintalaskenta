@@ -1,21 +1,16 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
-import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
-import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
-import fi.vm.sade.valintalaskenta.domain.JsonViews;
+import java.util.List;
+import java.util.TreeMap;
+
 import org.codehaus.jackson.map.annotate.JsonView;
 
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
+import fi.vm.sade.valintalaskenta.domain.JsonViews;
 
 /**
- * Created with IntelliJ IDEA.
- * User: kkammone
- * Date: 13.5.2013
- * Time: 9:50
- * To change this template use File | Settings | File Templates.
+ * Created with IntelliJ IDEA. User: kkammone Date: 13.5.2013 Time: 9:50 To
+ * change this template use File | Settings | File Templates.
  */
 public class JonosijaDTO {
 
@@ -46,6 +41,15 @@ public class JonosijaDTO {
     @JsonView(JsonViews.Basic.class)
     private JarjestyskriteerituloksenTila tuloksenTila;
 
+    private List<String> historia;
+
+    public List<String> getHistoria() {
+        return historia;
+    }
+
+    public void setHistoria(List<String> historia) {
+        this.historia = historia;
+    }
 
     public TreeMap<Integer, JarjestyskriteeritulosDTO> getJarjestyskriteerit() {
         return jarjestyskriteerit;
@@ -70,8 +74,6 @@ public class JonosijaDTO {
     public void setHakemusOid(String hakemusOid) {
         this.hakemusOid = hakemusOid;
     }
-
-
 
     public int getJonosija() {
         return jonosija;
