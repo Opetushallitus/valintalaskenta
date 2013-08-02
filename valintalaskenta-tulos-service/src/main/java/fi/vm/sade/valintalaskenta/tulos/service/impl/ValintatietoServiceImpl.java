@@ -41,6 +41,11 @@ public class ValintatietoServiceImpl implements ValintatietoService {
     private ConversionService conversionService;
 
     @Override
+    public List<HakemusOsallistuminenTyyppi> haeValintatiedotHakukohteelle(@WebParam(name = "hakukohdeOid", targetNamespace = "") String hakukohdeOid) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     @Secured({READ, UPDATE, CRUD})
     public HakuTyyppi haeValintatiedot(@WebParam(name = "hakuOid", targetNamespace = "") String hakuOid) {
 
