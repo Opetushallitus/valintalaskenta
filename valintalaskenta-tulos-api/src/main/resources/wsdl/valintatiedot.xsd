@@ -25,6 +25,19 @@
         <xs:attribute name="oid" type="xs:string" use="required"/>
     </xs:complexType>
 
+	<xs:complexType name="HakemusOsallistuminenTyyppi">
+		<xs:attribute name="hakemusOid" type="xs:string" use="required" />
+		<xs:attribute name="osallistuminen" type="tns:Osallistuminen" use="required" />
+	</xs:complexType>
+
+	<xs:simpleType name="Osallistuminen">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="OSALLISTUU" />
+			<xs:enumeration value="EI_OSALLISTU" />
+			<xs:enumeration value="MAARITTELEMATON" />
+		</xs:restriction>
+	</xs:simpleType>
+	
     <xs:complexType name="ValinnanvaiheTyyppi">
         <xs:sequence>
             <xs:element name="valintatapajono" type="tns:ValintatapajonoTyyppi" minOccurs="1" maxOccurs="unbounded"/>
