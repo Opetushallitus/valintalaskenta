@@ -2,6 +2,8 @@ package fi.vm.sade.valintalaskenta.domain.dto;
 
 import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.JsonViews;
+import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.List;
 import java.util.Map;
@@ -17,28 +19,39 @@ import java.util.TreeSet;
  */
 public class JonosijaDTO {
 
+    @JsonView(JsonViews.Basic.class)
     private int jonosija;
 
+    @JsonView(JsonViews.Basic.class)
     private String hakemusOid;
 
+    @JsonView(JsonViews.Basic.class)
     private String hakijaOid;
 
-    private Map<Integer, Jarjestyskriteeritulos> jarjestyskriteerit = new TreeMap<Integer, Jarjestyskriteeritulos>();
+    @JsonView(JsonViews.Basic.class)
+    private TreeMap<Integer, JarjestyskriteeritulosDTO> jarjestyskriteerit = new TreeMap<Integer, JarjestyskriteeritulosDTO>();
 
+    @JsonView(JsonViews.Basic.class)
     private int prioriteetti;
 
+    @JsonView(JsonViews.Basic.class)
     private String sukunimi;
 
+    @JsonView(JsonViews.Basic.class)
     private String etunimi;
 
-    private JarjestyskriteerituloksenTila tila;
+    @JsonView(JsonViews.Basic.class)
+    private boolean harkinnanvarainen = false;
+
+    @JsonView(JsonViews.Basic.class)
+    private JarjestyskriteerituloksenTila tuloksenTila;
 
 
-    public Map<Integer, Jarjestyskriteeritulos> getJarjestyskriteerit() {
+    public TreeMap<Integer, JarjestyskriteeritulosDTO> getJarjestyskriteerit() {
         return jarjestyskriteerit;
     }
 
-    public void setJarjestyskriteerit(Map<Integer, Jarjestyskriteeritulos> jarjestyskriteerit) {
+    public void setJarjestyskriteerit(TreeMap<Integer, JarjestyskriteeritulosDTO> jarjestyskriteerit) {
         this.jarjestyskriteerit = jarjestyskriteerit;
     }
 
@@ -68,10 +81,6 @@ public class JonosijaDTO {
         this.jonosija = jonosija;
     }
 
-    public void setTila(JarjestyskriteerituloksenTila tila) {
-        this.tila = tila;
-    }
-
     public void setEtunimi(String etunimi) {
         this.etunimi = etunimi;
     }
@@ -96,7 +105,19 @@ public class JonosijaDTO {
         return etunimi;
     }
 
-    public JarjestyskriteerituloksenTila getTila() {
-        return tila;
+    public JarjestyskriteerituloksenTila getTuloksenTila() {
+        return tuloksenTila;
+    }
+
+    public void setTuloksenTila(JarjestyskriteerituloksenTila tuloksenTila) {
+        this.tuloksenTila = tuloksenTila;
+    }
+
+    public boolean isHarkinnanvarainen() {
+        return harkinnanvarainen;
+    }
+
+    public void setHarkinnanvarainen(boolean harkinnanvarainen) {
+        this.harkinnanvarainen = harkinnanvarainen;
     }
 }

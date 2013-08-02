@@ -11,6 +11,8 @@ import fi.vm.sade.service.valintatiedot.schema.*;
 import fi.vm.sade.valintalaskenta.domain.Hakukohde;
 import fi.vm.sade.valintalaskenta.domain.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.converter.JonosijaToJonosijaDTOConverter;
+import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
@@ -87,10 +89,13 @@ public class ValintatietoServiceImpl implements ValintatietoService {
         }
 
         //Sorttaa jonosijat ja laita oikea jonosija tulos niille
+        JonosijaToJonosijaDTOConverter converter = new JonosijaToJonosijaDTOConverter();
         List<Jonosija> jonosijat = vt.getJonosijat();
+        List<JonosijaDTO> jonosijaDTOs = converter.jarjestaJaLisaaJonosijaNumero(jonosijat);
+
         //  ValintatapajonoHelper.sortJonosijat(jonosijat);
 
-        for(Jonosija jonosija : jonosijat) {
+        for(JonosijaDTO jonosija : jonosijaDTOs) {
             HakijaTyyppi ht = new HakijaTyyppi();
             ht.setPrioriteetti(jonosija.getPrioriteetti());
 
@@ -99,8 +104,8 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             }   else {
                 ht.setTila(HakemusTilaTyyppi.valueOf(jonosija.getTuloksenTila().name()));
             }
-            ht.setHakemusOid(jonosija.getHakemusoid());
-            ht.setOid(jonosija.getHakijaoid());
+            ht.setHakemusOid(jonosija.getHakemusOid());
+            ht.setOid(jonosija.getHakijaOid());
             ht.setJonosija(jonosija.getJonosija());
             if(jonosija.isHarkinnanvarainen()) {
                ht.setHarkinnanvarainen(Boolean.TRUE);

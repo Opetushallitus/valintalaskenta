@@ -6,14 +6,16 @@ import java.util.TreeSet;
 import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.Jonosija;
+import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteeritulosDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 
 /**
  * Created with IntelliJ IDEA. User: kkammone Date: 13.5.2013 Time: 14:13 To
  * change this template use File | Settings | File Templates.
  */
-public class JonosijaComparator implements Comparator<Jonosija> {
+public class JonosijaDTOComparator implements Comparator<JonosijaDTO> {
     @Override
-    public int compare(Jonosija thiz, Jonosija other) {
+    public int compare(JonosijaDTO thiz, JonosijaDTO other) {
 
         boolean thizHarkinanvaraisestiHyvaksytty = (thiz.getTuloksenTila() != null && thiz.getTuloksenTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI) ||
                 thiz.getJarjestyskriteerit().get(1) != null &&  thiz.getJarjestyskriteerit().get(1).getTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI;
@@ -35,19 +37,19 @@ public class JonosijaComparator implements Comparator<Jonosija> {
         keys.addAll(thiz.getJarjestyskriteerit().keySet());
         keys.addAll(other.getJarjestyskriteerit().keySet());
         for (Integer i : keys) {
-            Jarjestyskriteeritulos thisValue = null;
+            JarjestyskriteeritulosDTO thisValue = null;
             if (thiz.getJarjestyskriteerit().containsKey(i)) {
                 thisValue = thiz.getJarjestyskriteerit().get(i);
             }
-            Jarjestyskriteeritulos otherValue = null;
+            JarjestyskriteeritulosDTO otherValue = null;
             if (other.getJarjestyskriteerit().containsKey(i)) {
                 otherValue = other.getJarjestyskriteerit().get(i);
             }
-            if (thisValue == null && otherValue == null) {
+            if ( (thisValue == null||thisValue.getArvo() ==null) && (otherValue == null || otherValue.getArvo() ==null) ) {
                 continue;
-            } else if (thisValue == null) {
+            } else if (thisValue == null || thisValue.getArvo() == null) {
                 return -1;
-            } else if (otherValue == null) {
+            } else if (otherValue == null|| otherValue.getArvo() == null) {
                 return 1;
             } else if (otherValue.getArvo().equals(thisValue.getArvo())) {
                 continue;

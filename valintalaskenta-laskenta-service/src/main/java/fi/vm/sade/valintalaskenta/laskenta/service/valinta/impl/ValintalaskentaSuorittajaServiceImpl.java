@@ -43,7 +43,6 @@ import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
 import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
 import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
-import fi.vm.sade.valintalaskenta.domain.comparator.JonosijaComparator;
 import fi.vm.sade.valintalaskenta.laskenta.Esiintyminen;
 import fi.vm.sade.valintalaskenta.laskenta.service.exception.LaskentaVaarantyyppisellaFunktiollaException;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.FunktioKutsuTyyppiToFunktioKutsuConverter;
@@ -154,8 +153,6 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
                 }
 
-                jarjestaJaLisaaJonosijaNumero(valintatapajono.getJonosijat());
-
                 valintatapajono.setVersio(versioituhakukohde.getVersio());
                 valinnanvaihe.getValintatapajono().add(valintatapajono);
 
@@ -168,33 +165,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         }
     }
 
-    private void jarjestaJaLisaaJonosijaNumero(List<Jonosija> jonosijat) {
-        if (jonosijat == null || jonosijat.isEmpty()) {
-            return;
-        }
-        JonosijaComparator comparator = new JonosijaComparator();
-        Collections.sort(jonosijat, comparator);
 
-        int i = 1;
-        Jonosija previous = null;
-        Iterator<Jonosija> it = jonosijat.iterator();
-        while (it.hasNext()) {
-            Jonosija dto = it.next();
-
-            if (previous != null && comparator.compare(previous, dto) != 0) {
-                i++;
-            }
-            dto.setJonosija(i);
-
-            if (!dto.getJarjestyskriteerit().isEmpty() && dto.getJarjestyskriteerit().firstEntry().getValue() != null) {
-                dto.setTuloksenTila(dto.getJarjestyskriteerit().firstEntry().getValue().getTila());
-            } else {
-                //
-            }
-
-            previous = dto;
-        }
-    }
 
     private Integer haeHakutoiveNumero(HakemusWrapper h, String hakukohdeOid) {
         for (HakukohdeTyyppi hkt : h.getHakemusTyyppi().getHakutoive()) {

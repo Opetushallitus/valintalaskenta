@@ -14,14 +14,14 @@ import com.google.code.morphia.annotations.Embedded;
 @Embedded("Jonosija")
 public class Jonosija {
 
-    @JsonView(JsonViews.Basic.class)
-    private int jonosija;
+   // @JsonView(JsonViews.Basic.class)
+   // private int jonosija;
 
-    @JsonView(JsonViews.Basic.class)
-    private JarjestyskriteerituloksenTila tuloksenTila;
+   // @JsonView(JsonViews.Basic.class)
+   // private JarjestyskriteerituloksenTila tuloksenTila;
 
-    @JsonView(JsonViews.Basic.class)
-    private String kuvaus;
+   // @JsonView(JsonViews.Basic.class)
+   // private String kuvaus;
 
     @JsonView(JsonViews.Basic.class)
     private String hakemusoid;
@@ -56,21 +56,21 @@ public class Jonosija {
         this.historiat = historiat;
     }
 
-    public int getJonosija() {
-        return jonosija;
-    }
+ //   public int getJonosija() {
+  //      return jonosija;
+   // }
 
-    public void setJonosija(int jonosija) {
-        this.jonosija = jonosija;
-    }
+   // public void setJonosija(int jonosija) {
+    //    this.jonosija = jonosija;
+    //}
 
-    public String getKuvaus() {
-        return kuvaus;
-    }
+   // public String getKuvaus() {
+   //     return kuvaus;
+   // }
 
-    public void setKuvaus(String kuvaus) {
-        this.kuvaus = kuvaus;
-    }
+   // public void setKuvaus(String kuvaus) {
+   //     this.kuvaus = kuvaus;
+   // }
 
     public String getHakemusoid() {
         return hakemusoid;
@@ -120,13 +120,13 @@ public class Jonosija {
         this.prioriteetti = prioriteetti;
     }
 
-    public JarjestyskriteerituloksenTila getTuloksenTila() {
-        return tuloksenTila;
-    }
+   // public JarjestyskriteerituloksenTila getTuloksenTila() {
+    //    return tuloksenTila;
+   // }
 
-    public void setTuloksenTila(JarjestyskriteerituloksenTila tuloksenTila) {
-        this.tuloksenTila = tuloksenTila;
-    }
+   // public void setTuloksenTila(JarjestyskriteerituloksenTila tuloksenTila) {
+   //     this.tuloksenTila = tuloksenTila;
+   // }
 
     public boolean isHarkinnanvarainen() {
         return harkinnanvarainen;
