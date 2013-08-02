@@ -41,14 +41,14 @@ public class JonosijaDTO {
     @JsonView(JsonViews.Basic.class)
     private JarjestyskriteerituloksenTila tuloksenTila;
 
-    private List<String> historia;
+    private List<String> historiat;
 
-    public List<String> getHistoria() {
-        return historia;
+    public List<String> getHistoriat() {
+        return historiat;
     }
 
-    public void setHistoria(List<String> historia) {
-        this.historia = historia;
+    public void setHistoriat(List<String> historiat) {
+        this.historiat = historiat;
     }
 
     public TreeMap<Integer, JarjestyskriteeritulosDTO> getJarjestyskriteerit() {

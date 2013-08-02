@@ -70,7 +70,7 @@ public class JonosijaToJonosijaDTOConverter {
             dto.setHakijaOid(jonosija.getHakemusoid());
             dto.setPrioriteetti(jonosija.getPrioriteetti());
             dto.setSukunimi(jonosija.getSukunimi());
-            dto.setHistoria(jonosija.getHistoriat());
+            dto.setHistoriat(jonosija.getHistoriat());
 
             for (Integer i : jonosija.getJarjestyskriteerit().keySet()) {
                 Jarjestyskriteeritulos jktulos = jonosija.getJarjestyskriteerit().get(i);
