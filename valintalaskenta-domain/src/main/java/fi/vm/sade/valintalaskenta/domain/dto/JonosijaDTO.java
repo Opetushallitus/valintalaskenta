@@ -41,7 +41,11 @@ public class JonosijaDTO {
     @JsonView(JsonViews.Basic.class)
     private JarjestyskriteerituloksenTila tuloksenTila;
 
+    @JsonView(JsonViews.Basic.class)
     private List<String> historiat;
+
+    @JsonView(JsonViews.Basic.class)
+    private boolean muokattu = false;
 
     public List<String> getHistoriat() {
         return historiat;
@@ -121,5 +125,13 @@ public class JonosijaDTO {
 
     public void setHarkinnanvarainen(boolean harkinnanvarainen) {
         this.harkinnanvarainen = harkinnanvarainen;
+    }
+
+    public boolean isMuokattu() {
+        return muokattu;
+    }
+
+    public void setMuokattu(boolean muokattu) {
+        this.muokattu = muokattu;
     }
 }

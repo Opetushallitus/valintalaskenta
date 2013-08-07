@@ -1,4 +1,4 @@
-package fi.vm.sade.valintalaskenta.tulos.resource;
+/*package fi.vm.sade.valintalaskenta.tulos.resource;
 
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
@@ -20,9 +20,9 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ;
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.UPDATE;
 
-/**
+**
  * @author Jussi Jartamo
- */
+ *
 @Component
 @Path("valinnanvaihe")
 @PreAuthorize("isAuthenticated()")
@@ -41,3 +41,4 @@ public class ValinnanvaiheResource {
         return tulos;
     }
 }
+  */

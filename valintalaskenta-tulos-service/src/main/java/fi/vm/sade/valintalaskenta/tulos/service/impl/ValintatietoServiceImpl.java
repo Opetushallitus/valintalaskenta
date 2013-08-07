@@ -5,12 +5,13 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.UPDATE;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.jws.WebParam;
 
+import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.security.access.annotation.Secured;
@@ -26,10 +27,6 @@ import fi.vm.sade.service.valintatiedot.schema.HakukohdeTyyppi;
 import fi.vm.sade.service.valintatiedot.schema.Osallistuminen;
 import fi.vm.sade.service.valintatiedot.schema.ValinnanvaiheTyyppi;
 import fi.vm.sade.service.valintatiedot.schema.ValintatapajonoTyyppi;
-import fi.vm.sade.valintalaskenta.domain.Hakukohde;
-import fi.vm.sade.valintalaskenta.domain.Jonosija;
-import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.converter.JonosijaToJonosijaDTOConverter;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValinnanVaihe;
@@ -66,15 +63,15 @@ public class ValintatietoServiceImpl implements ValintatietoService {
                             HakemusOsallistuminenTyyppi h = new HakemusOsallistuminenTyyppi();
                             h.setHakemusOid(koetulos.getHakemusOid());
                             switch (valintakoe.getOsallistuminen()) {
-                            case OSALLISTUU:
-                                h.setOsallistuminen(Osallistuminen.OSALLISTUU);
-                                break;
-                            case EI_OSALLISTU:
-                                h.setOsallistuminen(Osallistuminen.EI_OSALLISTU);
-                                break;
-                            default:
-                                h.setOsallistuminen(Osallistuminen.MAARITTELEMATON);
-                                break;
+                                case OSALLISTUU:
+                                    h.setOsallistuminen(Osallistuminen.OSALLISTUU);
+                                    break;
+                                case EI_OSALLISTU:
+                                    h.setOsallistuminen(Osallistuminen.EI_OSALLISTU);
+                                    break;
+                                default:
+                                    h.setOsallistuminen(Osallistuminen.MAARITTELEMATON);
+                                    break;
                             }
                             osallistumiset.add(h);
                         }
@@ -86,43 +83,41 @@ public class ValintatietoServiceImpl implements ValintatietoService {
         return osallistumiset;
     }
 
+
+
     @Override
     @Secured({ READ, UPDATE, CRUD })
     public HakuTyyppi haeValintatiedot(@WebParam(name = "hakuOid", targetNamespace = "") String hakuOid) {
 
-        List<Hakukohde> a = tulosService.haeLasketutValinnanvaiheetHaulle(hakuOid);
+        List<HakukohdeDTO> a = tulosService.haeLasketutValinnanvaiheetHaulle(hakuOid);
 
         HakuTyyppi hakuTyyppi = new HakuTyyppi();
         hakuTyyppi.setHakuOid(hakuOid);
 
-        Map<String, HakukohdeTyyppi> hakukohdeMap = new HashMap<String, HakukohdeTyyppi>();
+        for (HakukohdeDTO v : a) {
+            HakukohdeTyyppi ht = new HakukohdeTyyppi();
+            ht.setOid(v.getOid());
+            hakuTyyppi.getHakukohteet().add(ht);
 
-        for (Hakukohde v : a) {
-            HakukohdeTyyppi ht = hakukohdeMap.get(v.getOid());
-            if (ht == null) {
-                ht = new HakukohdeTyyppi();
-                ht.setOid(v.getOid());
-                hakukohdeMap.put(v.getOid(), ht);
+            for(ValinnanvaiheDTO valinnanvaiheDTO: v.getValinnanvaihe()) {
+                ht.getValinnanvaihe().add(createValinnanvaiheTyyppi(valinnanvaiheDTO));
+
             }
-            ht.getValinnanvaihe().add(createValinnanvaiheTyyppi(v.getValinnanvaihe()));
         }
-
-        hakuTyyppi.getHakukohteet().addAll(new ArrayList(hakukohdeMap.values()));
-
         return hakuTyyppi;
     }
 
-    private ValinnanvaiheTyyppi createValinnanvaiheTyyppi(Valinnanvaihe valinnanvaihe) {
+    private ValinnanvaiheTyyppi createValinnanvaiheTyyppi(ValinnanvaiheDTO valinnanvaihe) {
         ValinnanvaiheTyyppi v = new ValinnanvaiheTyyppi();
         v.setValinnanvaihe(valinnanvaihe.getJarjestysnumero());
         v.setValinnanvaiheOid(valinnanvaihe.getValinnanvaiheoid());
-        for (fi.vm.sade.valintalaskenta.domain.Valintatapajono vt : valinnanvaihe.getValintatapajono()) {
+        for (ValintatapajonoDTO vt : valinnanvaihe.getValintatapajono()) {
             v.getValintatapajono().add(createValintatapajonoTyyppi(vt));
         }
         return v;
     }
 
-    private ValintatapajonoTyyppi createValintatapajonoTyyppi(fi.vm.sade.valintalaskenta.domain.Valintatapajono vt) {
+    private ValintatapajonoTyyppi createValintatapajonoTyyppi(ValintatapajonoDTO vt) {
         ValintatapajonoTyyppi valintatapajonoTyyppi = new ValintatapajonoTyyppi();
         valintatapajonoTyyppi.setOid(vt.getOid());
         valintatapajonoTyyppi.setAloituspaikat(vt.getAloituspaikat());
@@ -134,14 +129,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             valintatapajonoTyyppi.setTasasijasaanto(TasasijasaantoTyyppi.valueOf(vt.getTasasijasaanto().name()));
         }
 
-        // Sorttaa jonosijat ja laita oikea jonosija tulos niille
-        JonosijaToJonosijaDTOConverter converter = new JonosijaToJonosijaDTOConverter();
-        List<Jonosija> jonosijat = vt.getJonosijat();
-        List<JonosijaDTO> jonosijaDTOs = converter.jarjestaJaLisaaJonosijaNumero(jonosijat);
-
-        // ValintatapajonoHelper.sortJonosijat(jonosijat);
-
-        for (JonosijaDTO jonosija : jonosijaDTOs) {
+        for (JonosijaDTO jonosija : vt.getJonosijat()) {
             HakijaTyyppi ht = new HakijaTyyppi();
             ht.setPrioriteetti(jonosija.getPrioriteetti());
 

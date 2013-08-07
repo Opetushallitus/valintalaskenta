@@ -39,9 +39,11 @@ public class ValintatapajonoDAOImpl implements ValintatapajonoDAO {
     }
 
     @Override
-    public void saveOrUpdate(Valintatapajono jono) {
-
-
-        datastore.save(jono);
+    public Valintatapajono findByOid(String valintatapajonoOid) {
+        return datastore.find(Valintatapajono.class)
+                .filter("valintatapajonooid", valintatapajonoOid)
+                .order("-versio").limit(1)
+                .get();
     }
+
 }

@@ -1,8 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.resource;
 
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
-import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.converter.JonosijaToJonosijaDTOConverter;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.codehaus.jackson.map.annotate.JsonView;
@@ -41,8 +39,6 @@ public class HakukohdeResource {
     @JsonView({JsonViews.Basic.class})
     @Secured({READ, UPDATE, CRUD})
     public List<ValinnanvaiheDTO> hakukohde(@PathParam("hakukohdeoid") String hakukohdeoid) {
-        List<Valinnanvaihe> tulos = tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
-        JonosijaToJonosijaDTOConverter c = new JonosijaToJonosijaDTOConverter();
-        return c.jarjestaValinnanvaiheJaLisaaJonosijaNumero(tulos);
+        return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
     }
 }

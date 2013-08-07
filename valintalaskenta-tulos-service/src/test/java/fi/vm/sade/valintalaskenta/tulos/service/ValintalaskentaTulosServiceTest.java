@@ -44,13 +44,14 @@ public class ValintalaskentaTulosServiceTest {
     @Rule
     public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
 
+    /*
     @Test
     @UsingDataSet(locations = "initialData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void haeValintakoeOsallistumisetTest() {
         List<ValintakoeOsallistuminen> kaikki = valintalaskentaTulosService.haeValintakoeOsallistumiset();
         assertEquals(5, kaikki.size());
     }
-
+      *
     @Test
     @UsingDataSet(locations = "initialData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void haeValintakoeOsallistumisetByOidTest() {
@@ -69,6 +70,7 @@ public class ValintalaskentaTulosServiceTest {
         assertEquals(1, kaikki.size());
     }
 
+    /*
     @Test
     @UsingDataSet(locations = "muutaJarjestyskriteerinArvoData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testMuutaJarjestyskriteerinArvo() {
@@ -105,7 +107,7 @@ public class ValintalaskentaTulosServiceTest {
 
         assertTrue(found);
     }
-
+      */
     @Test(expected = ValintatapajonoEiOleOlemassaException.class)
     @UsingDataSet(locations = "muutaJarjestyskriteerinArvoData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testMuutaJarjestyskriteerinArvoNotFound() {

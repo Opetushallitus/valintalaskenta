@@ -13,5 +13,5 @@ public interface ValintatapajonoDAO {
 
     Valintatapajono findByValintatapajonoOidHakemusOidAndJarjestyskriteeriPrioriteetti(String valintatapajonoOid, String hakemusOid, Integer jarjestyskriteeriPrioriteetti);
 
-    void saveOrUpdate(Valintatapajono jono);
+    Valintatapajono findByOid(String valintatapajonoOid);
 }
