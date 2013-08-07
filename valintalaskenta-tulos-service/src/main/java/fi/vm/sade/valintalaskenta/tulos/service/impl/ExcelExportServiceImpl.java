@@ -1,21 +1,19 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl;
 
-import java.text.SimpleDateFormat;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
-import fi.vm.sade.valintalaskenta.domain.converter.JonosijaToJonosijaDTOConverter;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValinnanVaihe;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.tulos.service.ExcelExportService;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * 
@@ -33,18 +31,17 @@ public class ExcelExportServiceImpl implements ExcelExportService {
         StringBuilder builder = new StringBuilder();
         builder.append("<table>");
 
-        List<Valinnanvaihe> valinnanvaiheet = tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
+        List<ValinnanvaiheDTO> valinnanvaiheet = tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
 
-        for (Valinnanvaihe valinnanvaihe : valinnanvaiheet) {
-            for (Valintatapajono jono : valinnanvaihe.getValintatapajono()) {
+        for (ValinnanvaiheDTO valinnanvaihe : valinnanvaiheet) {
+            for (ValintatapajonoDTO jono : valinnanvaihe.getValintatapajono()) {
 
                 builder.append("<tr></tr><tr><td>");
                 builder.append(jono.getNimi());
                 builder.append("</td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>\n");
 
-                JonosijaToJonosijaDTOConverter a = new JonosijaToJonosijaDTOConverter();
 
-                for (JonosijaDTO jonosija : a.jarjestaJaLisaaJonosijaNumero(jono.getJonosijat())) {
+                for (JonosijaDTO jonosija : jono.getJonosijat()) {
 
                     builder.append("<tr>");
                     builder.append("<td>").append(jonosija.getJonosija()).append("</td>");

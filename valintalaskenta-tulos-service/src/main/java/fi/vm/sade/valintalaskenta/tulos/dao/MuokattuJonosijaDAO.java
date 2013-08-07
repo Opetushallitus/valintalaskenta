@@ -1,10 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.dao;
 
 import fi.vm.sade.valintalaskenta.domain.MuokattuJonosija;
-import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
-import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
-
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,4 +33,7 @@ public interface MuokattuJonosijaDAO {
      */
     void saveOrUpdate(MuokattuJonosija muokattuJonosija);
 
+    java.util.List<MuokattuJonosija> readByHakuOid(String hakuOid);
+
+    java.util.List<MuokattuJonosija> readByhakukohdeOid(String hakukohdeOid);
 }

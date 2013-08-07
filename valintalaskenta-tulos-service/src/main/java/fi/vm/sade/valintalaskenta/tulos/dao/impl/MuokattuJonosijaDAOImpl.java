@@ -33,6 +33,21 @@ public class MuokattuJonosijaDAOImpl implements MuokattuJonosijaDAO {
     }  */
 
     @Override
+    public List<MuokattuJonosija> readByHakuOid(String hakuOid) {
+        return datastore.find(MuokattuJonosija.class)
+                .filter("hakuOid", hakuOid)
+                .asList();
+    }
+
+    @Override
+    public List<MuokattuJonosija> readByhakukohdeOid(String hakukohdeOid) {
+        return datastore.find(MuokattuJonosija.class)
+                .filter("hakukohdeOid", hakukohdeOid)
+                .asList();
+    }
+
+
+    @Override
     public MuokattuJonosija readByValintatapajonoOid(String valintatapajonoOid, String hakemusOid) {
         return datastore.find(MuokattuJonosija.class)
                 .filter("valintatapajonoOid", valintatapajonoOid)

@@ -7,8 +7,6 @@ import com.google.code.morphia.annotations.Indexed;
 import org.bson.types.ObjectId;
 import org.codehaus.jackson.map.annotate.JsonView;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.TreeMap;
 
 /**
@@ -22,6 +20,10 @@ public class MuokattuJonosija {
 
     @Indexed(unique = false, dropDups = false)
     @JsonView(JsonViews.Basic.class)
+    private String hakukohdeOid;
+
+    @Indexed(unique = false, dropDups = false)
+    @JsonView(JsonViews.Basic.class)
     private String hakuOid;
 
     @Indexed(unique = false, dropDups = false)
@@ -31,25 +33,25 @@ public class MuokattuJonosija {
     @JsonView(JsonViews.Basic.class)
     private String hakemusOid;
 
-    @JsonView(JsonViews.Basic.class)
-    private String hakijaoid;
+ //   @JsonView(JsonViews.Basic.class)
+   // private String hakijaoid;
 
     @JsonView(JsonViews.Basic.class)
-    private int prioriteetti; // hakutoive
+    private Integer prioriteetti; // hakutoive
 
     @JsonView(JsonViews.Basic.class)
-    private boolean harkinnanvarainen = false;
+    private Boolean harkinnanvarainen;
 
     @Embedded
     private TreeMap<Integer, Jarjestyskriteeritulos> jarjestyskriteerit = new TreeMap<Integer, Jarjestyskriteeritulos>();
 
-    public String getHakijaoid() {
-        return hakijaoid;
-    }
+  //  public String getHakijaoid() {
+   //     return hakijaoid;
+  //  }
 
-    public void setHakijaoid(String hakijaoid) {
-        this.hakijaoid = hakijaoid;
-    }
+  //  public void setHakijaoid(String hakijaoid) {
+  //      this.hakijaoid = hakijaoid;
+  //  }
 
     public TreeMap<Integer, Jarjestyskriteeritulos> getJarjestyskriteerit() {
         return jarjestyskriteerit;
@@ -59,21 +61,9 @@ public class MuokattuJonosija {
         this.jarjestyskriteerit = jarjestyskriteerit;
     }
 
-    public int getPrioriteetti() {
-        return prioriteetti;
-    }
 
-    public void setPrioriteetti(int prioriteetti) {
-        this.prioriteetti = prioriteetti;
-    }
 
-    public boolean isHarkinnanvarainen() {
-        return harkinnanvarainen;
-    }
 
-    public void setHarkinnanvarainen(boolean harkinnanvarainen) {
-        this.harkinnanvarainen = harkinnanvarainen;
-    }
 
 
     public String getValintatapajonoOid() {
@@ -98,5 +88,29 @@ public class MuokattuJonosija {
 
     public void setHakuOid(String hakuOid) {
         this.hakuOid = hakuOid;
+    }
+
+    public String getHakukohdeOid() {
+        return hakukohdeOid;
+    }
+
+    public void setHakukohdeOid(String hakukohdeOid) {
+        this.hakukohdeOid = hakukohdeOid;
+    }
+
+    public Boolean getHarkinnanvarainen() {
+        return harkinnanvarainen;
+    }
+
+    public void setHarkinnanvarainen(Boolean harkinnanvarainen) {
+        this.harkinnanvarainen = harkinnanvarainen;
+    }
+
+    public Integer getPrioriteetti() {
+        return prioriteetti;
+    }
+
+    public void setPrioriteetti(Integer prioriteetti) {
+        this.prioriteetti = prioriteetti;
     }
 }

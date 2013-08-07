@@ -1,13 +1,11 @@
 package fi.vm.sade.valintalaskenta.tulos.service;
 
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.math.BigDecimal;
-import java.util.List;
-
+import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
+import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+import fi.vm.sade.valintalaskenta.tulos.dao.ValintatapajonoDAO;
+import fi.vm.sade.valintalaskenta.tulos.service.exception.ValintatapajonoEiOleOlemassaException;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,16 +14,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+import java.math.BigDecimal;
 
-import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
-import fi.vm.sade.valintalaskenta.domain.Jonosija;
-import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
-import fi.vm.sade.valintalaskenta.tulos.dao.ValintatapajonoDAO;
-import fi.vm.sade.valintalaskenta.tulos.service.exception.ValintatapajonoEiOleOlemassaException;
+import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 
 @ContextConfiguration(locations = "classpath:application-context-test.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -108,6 +99,7 @@ public class ValintalaskentaTulosServiceTest {
         assertTrue(found);
     }
       */
+    @Ignore
     @Test(expected = ValintatapajonoEiOleOlemassaException.class)
     @UsingDataSet(locations = "muutaJarjestyskriteerinArvoData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testMuutaJarjestyskriteerinArvoNotFound() {
