@@ -107,9 +107,8 @@ public class ValintatulosConverterImpl implements ValintatulosConverter{
         return list;
     }
     @Override
-    public void sort(ValintatapajonoDTO valintatapajonoDTO) {
+    public void sort( List<JonosijaDTO> list) {
 
-        List<JonosijaDTO> list = valintatapajonoDTO.getJonosijat();
 
         JonosijaDTOComparator comparator = new JonosijaDTOComparator();
         Collections.sort(list, comparator);

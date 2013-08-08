@@ -83,7 +83,6 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             applyMuokatutJonosijat(hakukohde.getValinnanvaihe(),a);
         }
     }
-
     private void applyMuokatutJonosijat(List<ValinnanvaiheDTO> b, List<MuokattuJonosija> a) {
         for(ValinnanvaiheDTO dto : b) {
             for(ValintatapajonoDTO valintatapajonoDTO :  dto.getValintatapajono()) {
@@ -94,7 +93,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                         }
                     }
                 }
-                valintatulosConverter.sort(valintatapajonoDTO);
+                valintatulosConverter.sort(valintatapajonoDTO.getJonosijat());
             }
         }
     }

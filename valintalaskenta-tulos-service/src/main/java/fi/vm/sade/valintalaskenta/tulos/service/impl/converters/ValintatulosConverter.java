@@ -21,7 +21,7 @@ import java.util.List;
 public interface ValintatulosConverter {
 
 
-    void sort(ValintatapajonoDTO valintatapajonoDTO);
+    void sort(List<JonosijaDTO> list);
 
     List<JonosijaDTO> convertJonosija(List<Jonosija> jonosijat);
 
