@@ -1,13 +1,11 @@
 package fi.vm.sade.valintalaskenta.domain.comparator;
 
-import java.util.Comparator;
-import java.util.TreeSet;
-
 import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
-import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
-import fi.vm.sade.valintalaskenta.domain.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteeritulosDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
+
+import java.util.Comparator;
+import java.util.TreeSet;
 
 /**
  * Created with IntelliJ IDEA. User: kkammone Date: 13.5.2013 Time: 14:13 To
@@ -18,19 +16,19 @@ public class JonosijaDTOComparator implements Comparator<JonosijaDTO> {
     public int compare(JonosijaDTO thiz, JonosijaDTO other) {
 
         boolean thizHarkinanvaraisestiHyvaksytty = (thiz.getTuloksenTila() != null && thiz.getTuloksenTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI) ||
-                thiz.getJarjestyskriteerit().get(1) != null &&  thiz.getJarjestyskriteerit().get(1).getTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI;
+                thiz.getJarjestyskriteerit().get(0) != null &&  thiz.getJarjestyskriteerit().get(0).getTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI;
 
         boolean otherHarkinanvaraisestiHyvaksytty = other.getTuloksenTila() != null && other.getTuloksenTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI ||
-                other.getJarjestyskriteerit().get(1) != null &&  other.getJarjestyskriteerit().get(1).getTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI;
+                other.getJarjestyskriteerit().get(0) != null &&  other.getJarjestyskriteerit().get(0).getTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI;
 
 
         //harkinanvaraisesti hyvaksytyt ovat aina listan karjessa.
         if( thizHarkinanvaraisestiHyvaksytty && otherHarkinanvaraisestiHyvaksytty) {
             //do nothing;
         }   else if(thizHarkinanvaraisestiHyvaksytty) {
-            return 1;
-        }   else if(otherHarkinanvaraisestiHyvaksytty) {
             return -1;
+        }   else if(otherHarkinanvaraisestiHyvaksytty) {
+            return 1;
         }
 
         TreeSet<Integer> keys = new TreeSet<Integer>();
