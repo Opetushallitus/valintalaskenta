@@ -1,9 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl;
 
 import fi.vm.sade.valintalaskenta.domain.*;
-import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.tulos.dao.*;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
@@ -77,17 +75,34 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
     private void applyMuokatutJonosijatToValinannvaihe(String hakukohdeoid, List<ValinnanvaiheDTO> b) {
         List<MuokattuJonosija> a = muokattuJonosijaDAO.readByhakukohdeOid(hakukohdeoid);
-
-
-
-
+        for(ValinnanvaiheDTO dto : b) {
+            for(ValintatapajonoDTO valintatapajonoDTO :  dto.getValintatapajono()) {
+                for(JonosijaDTO jonosija : valintatapajonoDTO.getJonosijat()) {
+                    for(MuokattuJonosija muokattuJonosija : a) {
+                        if(muokattuJonosija.getHakemusOid().equals(jonosija.getHakemusOid()) && valintatapajonoDTO.getOid().equals(muokattuJonosija.getValintatapajonoOid())) {
+                            applyJonosija(jonosija, muokattuJonosija);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void applyMuokatutJonosijatToHakukohde(String hakuOid, List<HakukohdeDTO> b) {
         List<MuokattuJonosija> a = muokattuJonosijaDAO.readByHakuOid(hakuOid);
-
-
-
+        for(HakukohdeDTO hakukohde : b) {
+            for(ValinnanvaiheDTO dto : hakukohde.getValinnanvaihe()) {
+                for(ValintatapajonoDTO valintatapajonoDTO :  dto.getValintatapajono()) {
+                    for(JonosijaDTO jonosija : valintatapajonoDTO.getJonosijat()) {
+                        for(MuokattuJonosija muokattuJonosija : a) {
+                            if(muokattuJonosija.getHakemusOid().equals(jonosija.getHakemusOid()) && valintatapajonoDTO.getOid().equals(muokattuJonosija.getValintatapajonoOid())) {
+                                applyJonosija(jonosija, muokattuJonosija);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void applyJonosija(JonosijaDTO jonosijaDTO, MuokattuJonosija muokattuJonosija){
@@ -97,13 +112,35 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             jonosijaDTO.setHarkinnanvarainen(muokattuJonosija.getHarkinnanvarainen());
             jonosijaMuokattu = true;
         }
+        if(muokattuJonosija.getPrioriteetti() != null) {
+            jonosijaDTO.setPrioriteetti(muokattuJonosija.getPrioriteetti());
+            jonosijaMuokattu = true;
+        }
 
+        for(Integer i : muokattuJonosija.getJarjestyskriteerit().keySet()) {
+            Jarjestyskriteeritulos muokattuJarjestyskriteeritulos = muokattuJonosija.getJarjestyskriteerit().get(i);
 
-
+            JarjestyskriteeritulosDTO alkuperainenJarjestyskriteeritulosDTO = jonosijaDTO.getJarjestyskriteerit().get(i);
+            if(alkuperainenJarjestyskriteeritulosDTO == null ) {
+                alkuperainenJarjestyskriteeritulosDTO = new JarjestyskriteeritulosDTO();
+                jonosijaDTO.getJarjestyskriteerit().put(i, alkuperainenJarjestyskriteeritulosDTO);
+            }
+            if(muokattuJarjestyskriteeritulos.getArvo() != null) {
+                alkuperainenJarjestyskriteeritulosDTO.setArvo(muokattuJarjestyskriteeritulos.getArvo());
+                jonosijaMuokattu = true;
+            }
+            if(muokattuJarjestyskriteeritulos.getKuvaus() != null) {
+                alkuperainenJarjestyskriteeritulosDTO.setKuvaus(muokattuJarjestyskriteeritulos.getKuvaus());
+                jonosijaMuokattu = true;
+            }
+            if(muokattuJarjestyskriteeritulos.getTila() != null) {
+                alkuperainenJarjestyskriteeritulosDTO.setTila(muokattuJarjestyskriteeritulos.getTila());
+                jonosijaMuokattu = true;
+            }
+        }
         if(jonosijaMuokattu) {
             jonosijaDTO.setMuokattu(true);
         }
-
     }
 
 
