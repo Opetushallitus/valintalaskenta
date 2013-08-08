@@ -1,10 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.dao;
 
-import fi.vm.sade.valintalaskenta.domain.Hakukohde;
 import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
-import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
-
-import java.util.List;
+import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
 
 /**
  * 
@@ -25,5 +22,5 @@ public interface HakukohdeDAO {
      */
    // List<Versioituhakukohde> readAll();
 
-    Hakukohde findByValintatapajono(Valintatapajono valintatapajono);
+    VersiohallintaHakukohde findByValintatapajono(Valintatapajono valintatapajono);
 }

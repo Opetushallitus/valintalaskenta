@@ -33,9 +33,7 @@
     <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
         <property name="converters">
             <list>
-                <ref bean="hakukohdeHakukohdeTyyppiConverter"/>
-                <ref bean="valinnanvaiheValinnanvaiheTyyppiConverter"/>
-                <ref bean="valintatapajonoValintatapajonoTyyppiConverter"/>
+
             </list>
         </property>
     </bean>

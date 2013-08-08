@@ -1,14 +1,11 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
 import com.google.code.morphia.Datastore;
-import fi.vm.sade.valintalaskenta.domain.*;
+import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
 import fi.vm.sade.valintalaskenta.tulos.dao.HakukohdeDAO;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -32,9 +29,13 @@ public class HakukohdeDAOImpl implements HakukohdeDAO {
      * @return
      */
     @Override
-    public Hakukohde findByValintatapajono(Valintatapajono valintatapajono) {
-        return datastore.find(Hakukohde.class)
-                .filter("valinnanvaihe.valintatapajono", valintatapajono)
+    public VersiohallintaHakukohde findByValintatapajono(Valintatapajono valintatapajono) {
+
+
+
+
+        return  datastore.find(VersiohallintaHakukohde.class)
+                .filter("hakukohteet.hakukohde.valinnanvaihe.valintatapajono", valintatapajono)
                 .get();
 
     }
