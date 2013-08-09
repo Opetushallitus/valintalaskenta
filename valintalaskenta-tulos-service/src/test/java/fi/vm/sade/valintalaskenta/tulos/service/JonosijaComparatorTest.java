@@ -8,6 +8,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA. User: kkammone
  * 
@@ -91,7 +93,8 @@ public class JonosijaComparatorTest {
         }
 
 
-        java.util.List<JonosijaDTO> a = valintatulosConverter.jarjestaJaLisaaJonosijaNumero(list);
+        List<JonosijaDTO> a = valintatulosConverter.convertJonosija(list);
+        valintatulosConverter.sort(a);
 
         for (fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO j : a) {
             System.out.println("After sort: " + j.getHakemusOid());

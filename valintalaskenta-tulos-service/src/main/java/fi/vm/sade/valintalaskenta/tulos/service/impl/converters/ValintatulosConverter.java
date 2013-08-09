@@ -20,12 +20,14 @@ import java.util.List;
  */
 public interface ValintatulosConverter {
 
-    List<ValinnanvaiheDTO> jarjestaValinnanvaiheJaLisaaJonosijaNumero(List<Valinnanvaihe> valinnanVaiheList);
 
-    List<ValintatapajonoDTO> jarjestaValintapajonoJaLisaaJonosijaNumero(List<Valintatapajono> valintapajonoList);
+    void sort(List<JonosijaDTO> list);
 
-    List<JonosijaDTO> jarjestaJaLisaaJonosijaNumero(List<Jonosija> jonosijat);
+    List<JonosijaDTO> convertJonosija(List<Jonosija> jonosijat);
 
-    List<HakukohdeDTO> jarjestaHakukohteetJaLisaaJonosijaNumero(List<Hakukohde> a);
+    List<ValintatapajonoDTO> convertValintatapajono(List<Valintatapajono> valintapajonoList);
 
+    List<HakukohdeDTO> convertHakukohde(List<Hakukohde> a);
+
+    List<ValinnanvaiheDTO> convertValinnanvaiheList(List<Valinnanvaihe> valinnanVaiheList);
 }
