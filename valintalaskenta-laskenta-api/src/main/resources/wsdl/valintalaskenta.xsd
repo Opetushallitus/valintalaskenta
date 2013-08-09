@@ -6,12 +6,12 @@
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            xmlns:hakemus="http://hakemus.service.sade.vm.fi/schema"
            xmlns:valintaperusteet="http://valintaperusteet.service.sade.vm.fi/schema"
-           xmlns:xa="http://www.w3.org/2001/XMLSchema">
+        >
 
     <xs:import namespace="http://hakemus.service.sade.vm.fi/schema"
                schemaLocation="http://pulpetti.hard.ware.fi/haku/wsdl/hakemus.xsd"/>
     <xs:import namespace="http://valintaperusteet.service.sade.vm.fi/schema"
-               schemaLocation="file:///Users/wuoti/dev/projects/oph/git/valintaperusteet/valintaperusteet/valintaperusteet-api/src/main/resources/wsdl/valintaperusteet.xsd"/>
+               schemaLocation="http://pulpetti.hard.ware.fi/valintaperusteet/wsdl/valintaperusteet.xsd"/>
 
     <xs:element name="laske" type="tns:ValintalaskentaTyyppi"/>
     <xs:element name="laskeVastaus" type="tns:VastausTyyppi"/>
