@@ -8,10 +8,12 @@
            xmlns:valintaperusteet="http://valintaperusteet.service.sade.vm.fi/schema"
            xmlns:xa="http://www.w3.org/2001/XMLSchema">
 
-    <xs:import namespace="http://hakemus.service.sade.vm.fi/schema" schemaLocation="http://pulpetti.hard.ware.fi/haku/wsdl/hakemus.xsd" />
-    <xs:import namespace="http://valintaperusteet.service.sade.vm.fi/schema" schemaLocation="http://pulpetti.hard.ware.fi/valintaperusteet/wsdl/valintaperusteet.xsd" />
+    <xs:import namespace="http://hakemus.service.sade.vm.fi/schema"
+               schemaLocation="http://pulpetti.hard.ware.fi/haku/wsdl/hakemus.xsd"/>
+    <xs:import namespace="http://valintaperusteet.service.sade.vm.fi/schema"
+               schemaLocation="file:///Users/wuoti/dev/projects/oph/git/valintaperusteet/valintaperusteet/valintaperusteet-api/src/main/resources/wsdl/valintaperusteet.xsd"/>
 
-    <xs:element name="laske" type="tns:ValintalaskentaTyyppi" />
+    <xs:element name="laske" type="tns:ValintalaskentaTyyppi"/>
     <xs:element name="laskeVastaus" type="tns:VastausTyyppi"/>
     <xs:element name="valintakokeet" type="tns:ValintakoelaskentaTyyppi"/>
     <xs:element name="valintakokeetVastaus" type="tns:VastausTyyppi"/>
@@ -19,35 +21,35 @@
 
     <xs:complexType name="ValintalaskentaTyyppi">
         <xs:sequence>
-            <xs:element name="hakemus" type="hakemus:HakemusTyyppi" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="valintaperuste" type="valintaperusteet:ValintaperusteetTyyppi" minOccurs="1" maxOccurs="unbounded" />
+            <xs:element name="hakemus" type="hakemus:HakemusTyyppi" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="valintaperuste" type="valintaperusteet:ValintaperusteetTyyppi" minOccurs="1"
+                        maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ValintakoelaskentaTyyppi">
         <xs:sequence>
-            <xs:element name="hakemus" type="hakemus:HakemusTyyppi" minOccurs="0" maxOccurs="1" />
-            <xs:element name="valintaperuste" type="valintaperusteet:ValintaperusteetTyyppi" minOccurs="1" maxOccurs="unbounded" />
+            <xs:element name="hakemus" type="hakemus:HakemusTyyppi" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="valintaperuste" type="valintaperusteet:ValintaperusteetTyyppi" minOccurs="1"
+                        maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
 
     <xs:complexType name="VastausTyyppi">
         <xs:sequence>
-            <xs:element name="status" type="xs:string" />
+            <xs:element name="status" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
-	
-	<xs:complexType name="GenericFaultInfo">
+
+    <xs:complexType name="GenericFaultInfo">
         <xs:sequence>
             <xs:element name="errorCode" type="xs:string"></xs:element>
             <xs:element name="explanation" type="xs:string"
-                maxOccurs="1" minOccurs="0"></xs:element>
+                        maxOccurs="1" minOccurs="0"></xs:element>
         </xs:sequence>
     </xs:complexType>
-	
 
 
-
-	<xs:element name="laskeFault" type="tns:GenericFaultInfo"></xs:element>
+    <xs:element name="laskeFault" type="tns:GenericFaultInfo"></xs:element>
 </xs:schema> 
