@@ -30,10 +30,6 @@ public class HakukohdeDAOImpl implements HakukohdeDAO {
      */
     @Override
     public VersiohallintaHakukohde findByValintatapajono(Valintatapajono valintatapajono) {
-
-
-
-
         return  datastore.find(VersiohallintaHakukohde.class)
                 .filter("hakukohteet.hakukohde.valinnanvaihe.valintatapajono", valintatapajono)
                 .get();

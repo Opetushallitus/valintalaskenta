@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ValintakoeOsallistuminenDAO {
 
-    List<ValintakoeOsallistuminen> findAll();
+  //  List<ValintakoeOsallistuminen> findAll();
 
     List<ValintakoeOsallistuminen> findByHakijaOid(String hakijaoid);
 

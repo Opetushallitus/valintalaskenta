@@ -2,13 +2,9 @@ package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
 import com.google.code.morphia.Datastore;
 import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
-import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
 import fi.vm.sade.valintalaskenta.tulos.dao.ValintatapajonoDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author Jussi Jartamo
@@ -19,6 +15,7 @@ public class ValintatapajonoDAOImpl implements ValintatapajonoDAO {
     @Autowired
     private Datastore datastore;
 
+    /*
     public List<Valintatapajono> readByValinnanvaiheOid(String valinnanvaiheOid) {
         VersiohallintaHakukohde versiohallinta = datastore.find(VersiohallintaHakukohde.class, "valinnanvaiheoid",
                 valinnanvaiheOid).get();
@@ -27,7 +24,7 @@ public class ValintatapajonoDAOImpl implements ValintatapajonoDAO {
         }
         return versiohallinta.getHakukohteet().haeUusinVersio().getHakukohde().getValinnanvaihe().getValintatapajono();
     }
-
+      */
     @Override
     public Valintatapajono findByValintatapajonoOidHakemusOidAndJarjestyskriteeriPrioriteetti(String valintatapajonoOid, String hakemusOid, Integer jarjestyskriteeriPrioriteetti) {
         return datastore.find(Valintatapajono.class)
