@@ -89,7 +89,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter{
             dto.setHakijaOid(jonosija.getHakemusoid());
             dto.setPrioriteetti(jonosija.getPrioriteetti());
             dto.setSukunimi(jonosija.getSukunimi());
-            dto.setHistoriat(jonosija.getHistoriat());
+            //dto.setHistoriat(jonosija.getHistoriat());
 
             for (Integer i : jonosija.getJarjestyskriteerit().keySet()) {
                 Jarjestyskriteeritulos jktulos = jonosija.getJarjestyskriteerit().get(i);

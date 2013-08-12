@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import fi.vm.sade.valintalaskenta.dao.JonosijaHistoriaDAO;
+import fi.vm.sade.valintalaskenta.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,15 +36,6 @@ import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskritee
 import fi.vm.sade.service.valintaperusteet.service.validointi.virhe.Validointivirhe;
 import fi.vm.sade.valintalaskenta.dao.ValintatapajonoDAO;
 import fi.vm.sade.valintalaskenta.dao.VersiohallintaHakukohdeDAO;
-import fi.vm.sade.valintalaskenta.domain.Hakukohde;
-import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
-import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
-import fi.vm.sade.valintalaskenta.domain.Jonosija;
-import fi.vm.sade.valintalaskenta.domain.Tasasijasaanto;
-import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
-import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
-import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
 import fi.vm.sade.valintalaskenta.laskenta.Esiintyminen;
 import fi.vm.sade.valintalaskenta.laskenta.service.exception.LaskentaVaarantyyppisellaFunktiollaException;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.FunktioKutsuTyyppiToFunktioKutsuConverter;
@@ -71,6 +64,9 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
     @Autowired
     private FunktioKutsuTyyppiToFunktioKutsuConverter funktiokutsuConverter;
+
+    @Autowired
+    private JonosijaHistoriaDAO jonosijaHistoriaDAO;
 
     /**
      * TODO
@@ -147,7 +143,12 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                                 edellinenValinnanvaihe != null ? edellinenValinnanvaihe.get(h.getHakemusTyyppi()
                                         .getHakemusOid()) : null, historia);
                         assert (jarjestyskriteeritulos != null);
-                        jonosija.getHistoriat().add(historia.toString());
+
+                        JonosijaHistoria jonosijaHistoria = new JonosijaHistoria();
+                        jonosijaHistoria.setHistoria(historia.toString());
+                        jonosijaHistoriaDAO.create(jonosijaHistoria);
+
+                        jonosija.getHistoriat().add(jonosijaHistoria);
                         jonosija.getJarjestyskriteerit().put(j.getPrioriteetti(), jarjestyskriteeritulos);
                     }
 

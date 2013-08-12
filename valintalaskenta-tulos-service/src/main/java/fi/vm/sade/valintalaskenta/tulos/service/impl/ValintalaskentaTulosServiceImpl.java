@@ -43,6 +43,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     @Autowired
     private ValintatulosConverter valintatulosConverter;
 
+    @Autowired
+    private JonosijaHistoriaTulosDAO jonosijaHistoriaTulosDAO;
 
     /*
     public List<Versioituhakukohde> haeHakukohteet() {
@@ -163,6 +165,11 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     @Override
     public List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakutoive(String hakukohdeOid) {
         return valintakoeOsallistuminenDAO.findByHakutoive(hakukohdeOid);
+    }
+
+    @Override
+    public List<JonosijaHistoria> haeJonosijaHistoria(String valintatapajonoOid, Integer versio, String hakemusOid) {
+        return jonosijaHistoriaTulosDAO.findByValintatapajonoAndVersioAndHakemusOid(valintatapajonoOid, versio, hakemusOid);
     }
 
     @Override

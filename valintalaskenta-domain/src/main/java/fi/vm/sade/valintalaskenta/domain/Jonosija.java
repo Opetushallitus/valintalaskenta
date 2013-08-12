@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import com.google.code.morphia.annotations.Reference;
 import org.codehaus.jackson.map.annotate.JsonView;
 
 import com.google.code.morphia.annotations.Embedded;
@@ -42,17 +43,17 @@ public class Jonosija {
     private boolean harkinnanvarainen = false;
 
     // @JsonSerialize(using = HtmlSerializer.class)
-    @Embedded
-    private List<String> historiat = new ArrayList<String>();
+    @Reference
+    private List<JonosijaHistoria> historiat = new ArrayList<JonosijaHistoria>();
 
     @Embedded
     private TreeMap<Integer, Jarjestyskriteeritulos> jarjestyskriteerit = new TreeMap<Integer, Jarjestyskriteeritulos>();
 
-    public List<String> getHistoriat() {
+    public List<JonosijaHistoria> getHistoriat() {
         return historiat;
     }
 
-    public void setHistoriat(List<String> historiat) {
+    public void setHistoriat(List<JonosijaHistoria> historiat) {
         this.historiat = historiat;
     }
 
