@@ -1,9 +1,9 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
-import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
 import org.codehaus.jackson.map.annotate.JsonView;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class HakukohdeDTO {
     private String hakukohdeoid;
 
     @JsonView(JsonViews.Basic.class)
-    private List<ValinnanvaiheDTO> valinnanvaihe;
+    private List<ValinnanvaiheDTO> valinnanvaihe = new ArrayList<ValinnanvaiheDTO>();
 
     public String getHakuoid() {
         return hakuoid;
