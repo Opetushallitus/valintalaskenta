@@ -5,6 +5,7 @@ import fi.vm.sade.valintalaskenta.domain.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.JonosijaHistoria;
 import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
 import fi.vm.sade.valintalaskenta.tulos.dao.JonosijaHistoriaTulosDAO;
+import fi.vm.sade.valintalaskenta.tulos.dao.ValintatapajonoDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -20,14 +21,11 @@ import java.util.List;
 public class JonosijaHistoriaTulosDAOImpl implements JonosijaHistoriaTulosDAO {
 
     @Autowired
-    private Datastore datastore;
+    private ValintatapajonoDAO valintatapajonoDAO;
 
     @Override
-    public List<JonosijaHistoria> findByValintatapajonoAndVersioAndHakemusOid(String valintatapajonoOid, Integer versio, String hakemusOid) {
-        Valintatapajono valintatapajono = datastore.find(Valintatapajono.class)
-                .filter("valintatapajonooid", valintatapajonoOid)
-                .filter("versio", versio)
-                .get();
+    public List<JonosijaHistoria> findByValintatapajonoAndVersioAndHakemusOid(String valintatapajonoOid, String hakemusOid) {
+        Valintatapajono valintatapajono = valintatapajonoDAO.findByOid(valintatapajonoOid);
         for (Jonosija jonosija : valintatapajono.getJonosijat()) {
             if(jonosija.getHakemusoid().equals(hakemusOid)) {
                 return jonosija.getHistoriat();

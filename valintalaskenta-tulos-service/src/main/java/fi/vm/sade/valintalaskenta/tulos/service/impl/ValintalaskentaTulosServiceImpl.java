@@ -168,8 +168,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
-    public List<JonosijaHistoria> haeJonosijaHistoria(String valintatapajonoOid, Integer versio, String hakemusOid) {
-        return jonosijaHistoriaTulosDAO.findByValintatapajonoAndVersioAndHakemusOid(valintatapajonoOid, versio, hakemusOid);
+    public List<JonosijaHistoria> haeJonosijaHistoria(String valintatapajonoOid, String hakemusOid) {
+        return jonosijaHistoriaTulosDAO.findByValintatapajonoAndVersioAndHakemusOid(valintatapajonoOid, hakemusOid);
     }
 
     @Override

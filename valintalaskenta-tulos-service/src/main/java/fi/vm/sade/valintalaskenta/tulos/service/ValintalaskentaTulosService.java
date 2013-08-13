@@ -34,7 +34,7 @@ public interface ValintalaskentaTulosService {
 
     List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakutoive(String hakukohdeOid);
 
-    List<JonosijaHistoria> haeJonosijaHistoria(String valintatapajonoOid, Integer versio, String hakemusOid);
+    List<JonosijaHistoria> haeJonosijaHistoria(String valintatapajonoOid, String hakemusOid);
 
     //  List<ValintakoeOsallistuminen> haeValintakoeOsallistumiset();
 

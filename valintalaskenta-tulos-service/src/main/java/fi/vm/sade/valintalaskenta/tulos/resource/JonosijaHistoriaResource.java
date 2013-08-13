@@ -38,12 +38,12 @@ public class JonosijaHistoriaResource {
     private ValintalaskentaTulosService tulosService;
 
     @GET
-    @Path("{valintatapajonoOid}/{versio}/{hakemusOid}")
+    @Path("{valintatapajonoOid}/{hakemusOid}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
     @Secured({READ, UPDATE, CRUD})
-    public List<JonosijaHistoria> listJonosijaHistoria(@PathParam("valintatapajonoOid") String valintatapajonoOid, @PathParam("versio")Integer versio, @PathParam("hakemusOid") String hakemusOid) {
-        return tulosService.haeJonosijaHistoria(valintatapajonoOid, versio, hakemusOid);
+    public List<JonosijaHistoria> listJonosijaHistoria(@PathParam("valintatapajonoOid") String valintatapajonoOid, @PathParam("hakemusOid") String hakemusOid) {
+        return tulosService.haeJonosijaHistoria(valintatapajonoOid, hakemusOid);
     }
 
 }

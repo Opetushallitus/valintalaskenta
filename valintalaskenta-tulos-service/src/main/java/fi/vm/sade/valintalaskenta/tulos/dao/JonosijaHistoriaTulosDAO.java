@@ -10,5 +10,5 @@ import java.util.List;
  * Time: 2:20 PM
  */
 public interface JonosijaHistoriaTulosDAO {
-    List<JonosijaHistoria> findByValintatapajonoAndVersioAndHakemusOid(String valintatapajonoOid, Integer versio, String hakemusOid);
+    List<JonosijaHistoria> findByValintatapajonoAndVersioAndHakemusOid(String valintatapajonoOid, String hakemusOid);
 }
