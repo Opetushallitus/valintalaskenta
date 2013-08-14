@@ -7,6 +7,8 @@ import com.google.code.morphia.annotations.Indexed;
 import org.bson.types.ObjectId;
 import org.codehaus.jackson.map.annotate.JsonView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 
 /**
@@ -45,6 +47,9 @@ public class MuokattuJonosija {
     @Embedded
     private TreeMap<Integer, Jarjestyskriteeritulos> jarjestyskriteerit = new TreeMap<Integer, Jarjestyskriteeritulos>();
 
+    @Embedded
+    private List<LogEntry> logEntries = new ArrayList<LogEntry>();
+
   //  public String getHakijaoid() {
    //     return hakijaoid;
   //  }
@@ -60,11 +65,6 @@ public class MuokattuJonosija {
     public void setJarjestyskriteerit(TreeMap<Integer, Jarjestyskriteeritulos> jarjestyskriteerit) {
         this.jarjestyskriteerit = jarjestyskriteerit;
     }
-
-
-
-
-
 
     public String getValintatapajonoOid() {
         return valintatapajonoOid;
@@ -112,5 +112,13 @@ public class MuokattuJonosija {
 
     public void setPrioriteetti(Integer prioriteetti) {
         this.prioriteetti = prioriteetti;
+    }
+
+    public List<LogEntry> getLogEntries() {
+        return logEntries;
+    }
+
+    public void setLogEntries(List<LogEntry> logEntries) {
+        this.logEntries = logEntries;
     }
 }

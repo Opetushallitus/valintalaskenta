@@ -43,8 +43,9 @@ public class ValintatapajonoResource {
                                                         @PathParam("valintatapajonoOid") String valintatapajonoOid,
                                                         @PathParam("hakemusOid") String hakemusOid,
                                                         @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
-                                                        BigDecimal arvo) {
-        return tulosService.muutaJarjestyskriteerinArvo( valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, arvo);
+                                                        BigDecimal arvo,
+                                                        @QueryParam("selite") String selite) {
+        return tulosService.muutaJarjestyskriteerinArvo( valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, arvo, selite);
     }
 
 
@@ -52,7 +53,7 @@ public class ValintatapajonoResource {
      * @param valintatapajonoOid
      * @param hakemusOid
      * @param jarjestyskriteeriPrioriteetti
-     * @param arvo
+     * @param tila
      * @return
      */
     @POST
@@ -64,7 +65,8 @@ public class ValintatapajonoResource {
                                                         @PathParam("valintatapajonoOid") String valintatapajonoOid,
                                                         @PathParam("hakemusOid") String hakemusOid,
                                                         @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
-                                                        String arvo) {
-        return tulosService.muutaJarjestyskriteerinTila( valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, JarjestyskriteerituloksenTila.valueOf(arvo));
+                                                        String tila,
+                                                        @QueryParam("selite") String selite) {
+        return tulosService.muutaJarjestyskriteerinTila( valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, JarjestyskriteerituloksenTila.valueOf(tila), selite);
     }
 }

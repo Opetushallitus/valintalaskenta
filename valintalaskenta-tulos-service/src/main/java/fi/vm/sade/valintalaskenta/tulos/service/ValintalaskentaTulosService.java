@@ -23,10 +23,10 @@ public interface ValintalaskentaTulosService {
 
 
 
-    MuokattuJonosija muutaJarjestyskriteerinArvo (String valintatapajonoOid, String hakemusOid,
-            Integer jarjestyskriteeriPrioriteetti, BigDecimal arvo);
+    MuokattuJonosija muutaJarjestyskriteerinArvo(String valintatapajonoOid, String hakemusOid,
+                                                 Integer jarjestyskriteeriPrioriteetti, BigDecimal arvo, String selite);
 
-    MuokattuJonosija muutaJarjestyskriteerinTila( String valintatapajonoOid, String hakemusOid, Integer jarjestyskriteeriPrioriteetti, JarjestyskriteerituloksenTila arvo);
+    MuokattuJonosija muutaJarjestyskriteerinTila(String valintatapajonoOid, String hakemusOid, Integer jarjestyskriteeriPrioriteetti, JarjestyskriteerituloksenTila arvo, String selite);
 
 
 

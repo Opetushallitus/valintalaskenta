@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl;
 
+import fi.vm.sade.security.service.authz.util.AuthorizationUtil;
 import fi.vm.sade.valintalaskenta.domain.*;
 import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -176,7 +178,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     public MuokattuJonosija muutaJarjestyskriteerinArvo(String valintatapajonoOid,
                                                         String hakemusOid,
                                                         Integer jarjestyskriteeriPrioriteetti,
-                                                        BigDecimal arvo) {
+                                                        BigDecimal arvo,
+                                                        String selite) {
 
         Valintatapajono valintatapajono = valintatapajonoDAO.findByOid(valintatapajonoOid);
         VersiohallintaHakukohde hakukohde =  hakukohdeDAO.findByValintatapajono(valintatapajono);
@@ -186,6 +189,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         if(muokattuJonosija == null) {
             muokattuJonosija = new MuokattuJonosija();
         }
+
         muokattuJonosija.setHakemusOid(hakemusOid);
         muokattuJonosija.setValintatapajonoOid(valintatapajonoOid);
         muokattuJonosija.setHakuOid(hakukohde.getHakuoid());
@@ -199,13 +203,25 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         jarjestyskriteeritulos.setKuvaus("Muokattu käsin");
         jarjestyskriteeritulos.setArvo(arvo);
 
+        addLogEntry(selite, muokattuJonosija);
+
         muokattuJonosijaDAO.saveOrUpdate(muokattuJonosija);
 
         return muokattuJonosija;
     }
 
+    private void addLogEntry(String selite, MuokattuJonosija muokattuJonosija) {
+        LogEntry logEntry = new LogEntry();
+
+        logEntry.setLuotu(new Date());
+        logEntry.setMuokkaaja(AuthorizationUtil.getCurrentUser());
+        logEntry.setSelite(selite);
+
+        muokattuJonosija.getLogEntries().add(logEntry);
+    }
+
     @Override
-    public MuokattuJonosija muutaJarjestyskriteerinTila(String valintatapajonoOid, String hakemusOid, Integer jarjestyskriteeriPrioriteetti, JarjestyskriteerituloksenTila arvo) {
+    public MuokattuJonosija muutaJarjestyskriteerinTila(String valintatapajonoOid, String hakemusOid, Integer jarjestyskriteeriPrioriteetti, JarjestyskriteerituloksenTila arvo, String selite) {
 
         Valintatapajono valintatapajono = valintatapajonoDAO.findByOid(valintatapajonoOid);
         VersiohallintaHakukohde hakukohde =  hakukohdeDAO.findByValintatapajono(valintatapajono);
@@ -227,6 +243,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         }
         jarjestyskriteeritulos.setKuvaus("Muokattu käsin");
         jarjestyskriteeritulos.setTila(arvo);
+
+        addLogEntry(selite, muokattuJonosija);
 
         muokattuJonosijaDAO.saveOrUpdate(muokattuJonosija);
 
