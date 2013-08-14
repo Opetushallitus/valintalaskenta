@@ -20,6 +20,7 @@ public class    LogEntry {
 
     private Date luotu;
     private String muokkaaja;
+    private String muutos;
     private String selite;
 
     public Date getLuotu() {
@@ -52,5 +53,13 @@ public class    LogEntry {
 
     public void setId(ObjectId id) {
         this.id = id;
+    }
+
+    public String getMuutos() {
+        return muutos;
+    }
+
+    public void setMuutos(String muutos) {
+        this.muutos = muutos;
     }
 }
