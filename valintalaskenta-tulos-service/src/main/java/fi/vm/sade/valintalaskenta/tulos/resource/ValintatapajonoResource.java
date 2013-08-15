@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.tulos.resource;
 
 import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.MuokattuJonosija;
+import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.math.BigDecimal;
 
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.CRUD;
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.UPDATE;
@@ -37,36 +37,14 @@ public class ValintatapajonoResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/arvo")
+    @Path("{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/jonosija")
     @Secured({ UPDATE, CRUD })
-    public MuokattuJonosija muutaJarjestyskriteerinArvo(
+    public MuokattuJonosija muutaJonosija(
                                                         @PathParam("valintatapajonoOid") String valintatapajonoOid,
                                                         @PathParam("hakemusOid") String hakemusOid,
                                                         @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
-                                                        BigDecimal arvo,
+                                                        MuokattuJonosijaDTO arvo,
                                                         @QueryParam("selite") String selite) {
-        return tulosService.muutaJarjestyskriteerinArvo( valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, arvo, selite);
-    }
-
-
-    /**
-     * @param valintatapajonoOid
-     * @param hakemusOid
-     * @param jarjestyskriteeriPrioriteetti
-     * @param tila
-     * @return
-     */
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/tila")
-    @Secured({ UPDATE, CRUD })
-    public MuokattuJonosija muutaJarjestyskriteerinTila(
-                                                        @PathParam("valintatapajonoOid") String valintatapajonoOid,
-                                                        @PathParam("hakemusOid") String hakemusOid,
-                                                        @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
-                                                        String tila,
-                                                        @QueryParam("selite") String selite) {
-        return tulosService.muutaJarjestyskriteerinTila( valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, JarjestyskriteerituloksenTila.valueOf(tila), selite);
+        return tulosService.muutaJarjestyskriteeri(valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, arvo, selite);
     }
 }

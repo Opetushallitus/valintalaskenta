@@ -5,6 +5,7 @@ import java.util.List;
 
 import fi.vm.sade.valintalaskenta.domain.*;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 
@@ -23,11 +24,8 @@ public interface ValintalaskentaTulosService {
 
 
 
-    MuokattuJonosija muutaJarjestyskriteerinArvo(String valintatapajonoOid, String hakemusOid,
-                                                 Integer jarjestyskriteeriPrioriteetti, BigDecimal arvo, String selite);
-
-    MuokattuJonosija muutaJarjestyskriteerinTila(String valintatapajonoOid, String hakemusOid, Integer jarjestyskriteeriPrioriteetti, JarjestyskriteerituloksenTila arvo, String selite);
-
+    MuokattuJonosija muutaJarjestyskriteeri(String valintatapajonoOid, String hakemusOid,
+                                            Integer jarjestyskriteeriPrioriteetti, MuokattuJonosijaDTO arvo, String selite);
 
 
     List<ValintakoeOsallistuminen> haeValintakoeOsallistumiset(String hakijaoid);
