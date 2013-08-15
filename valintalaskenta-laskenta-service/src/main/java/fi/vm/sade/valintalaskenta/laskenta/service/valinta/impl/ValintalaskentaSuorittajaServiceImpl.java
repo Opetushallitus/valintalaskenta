@@ -2,14 +2,10 @@ package fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import fi.vm.sade.valintalaskenta.dao.JonosijaHistoriaDAO;
-import fi.vm.sade.valintalaskenta.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +30,19 @@ import fi.vm.sade.service.valintaperusteet.schema.TavallinenValinnanVaiheTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskriteereillaTyyppi;
 import fi.vm.sade.service.valintaperusteet.service.validointi.virhe.Validointivirhe;
+import fi.vm.sade.valintalaskenta.dao.JonosijaHistoriaDAO;
 import fi.vm.sade.valintalaskenta.dao.ValintatapajonoDAO;
 import fi.vm.sade.valintalaskenta.dao.VersiohallintaHakukohdeDAO;
+import fi.vm.sade.valintalaskenta.domain.Hakukohde;
+import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
+import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.Jonosija;
+import fi.vm.sade.valintalaskenta.domain.JonosijaHistoria;
+import fi.vm.sade.valintalaskenta.domain.Tasasijasaanto;
+import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
+import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
 import fi.vm.sade.valintalaskenta.laskenta.Esiintyminen;
 import fi.vm.sade.valintalaskenta.laskenta.service.exception.LaskentaVaarantyyppisellaFunktiollaException;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.FunktioKutsuTyyppiToFunktioKutsuConverter;
@@ -166,8 +173,6 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         }
     }
 
-
-
     private Integer haeHakutoiveNumero(HakemusWrapper h, String hakukohdeOid) {
         for (HakukohdeTyyppi hkt : h.getHakemusTyyppi().getHakutoive()) {
             if (hkt.getHakukohdeOid().equals(hakukohdeOid)) {
@@ -252,8 +257,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                     // new Object[] { tulos.getJonosija(), tulos.getKuvaus() });
                     hakemusoidHyvaksyttyJonoissa.put(hakemusoid, new Esiintyminen(0, 0));
                 } else {
-                    if (JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA.equals(tulos.getJarjestyskriteerit().get(1)
-                            .getTila())) {
+                    if (JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA.equals(tulos.getJarjestyskriteerit().firstEntry()
+                            .getValue().getTila())) {
                         if (hakemusoidHyvaksyttyJonoissa.containsKey(hakemusoid)) {
                             Esiintyminen esiintyminen = hakemusoidHyvaksyttyJonoissa.get(hakemusoid);
                             esiintyminen.inkrementoiEsiintyminen();
