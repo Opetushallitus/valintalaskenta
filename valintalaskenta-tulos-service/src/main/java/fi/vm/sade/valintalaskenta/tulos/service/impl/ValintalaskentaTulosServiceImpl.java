@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -175,11 +174,11 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
-    public MuokattuJonosija muutaJarjestyskriteerinArvo(String valintatapajonoOid,
-                                                        String hakemusOid,
-                                                        Integer jarjestyskriteeriPrioriteetti,
-                                                        BigDecimal arvo,
-                                                        String selite) {
+    public MuokattuJonosija muutaJarjestyskriteeri(String valintatapajonoOid,
+                                                   String hakemusOid,
+                                                   Integer jarjestyskriteeriPrioriteetti,
+                                                   MuokattuJonosijaDTO jonosija,
+                                                   String selite) {
 
         Valintatapajono valintatapajono = valintatapajonoDAO.findByOid(valintatapajonoOid);
         VersiohallintaHakukohde hakukohde =  hakukohdeDAO.findByValintatapajono(valintatapajono);
@@ -201,9 +200,10 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             muokattuJonosija.getJarjestyskriteerit().put(jarjestyskriteeriPrioriteetti, jarjestyskriteeritulos);
         }
         jarjestyskriteeritulos.setKuvaus("Muokattu käsin");
-        jarjestyskriteeritulos.setArvo(arvo);
+        jarjestyskriteeritulos.setArvo(jonosija.getArvo());
+        jarjestyskriteeritulos.setTila(jonosija.getTila());
 
-        addLogEntry(selite, muokattuJonosija, "jarjestyskriteeriPrioriteetti: " + jarjestyskriteeriPrioriteetti + " arvo: " + arvo);
+        addLogEntry(selite, muokattuJonosija, "jarjestyskriteeriPrioriteetti: " + jarjestyskriteeriPrioriteetti + " arvo: " + jonosija.getArvo()+ " tila: " + jonosija.getTila().name());
 
         muokattuJonosijaDAO.saveOrUpdate(muokattuJonosija);
 
@@ -220,39 +220,5 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
         muokattuJonosija.getLogEntries().add(logEntry);
     }
-
-    @Override
-    public MuokattuJonosija muutaJarjestyskriteerinTila(String valintatapajonoOid, String hakemusOid, Integer jarjestyskriteeriPrioriteetti, JarjestyskriteerituloksenTila tila, String selite) {
-
-        Valintatapajono valintatapajono = valintatapajonoDAO.findByOid(valintatapajonoOid);
-        VersiohallintaHakukohde hakukohde =  hakukohdeDAO.findByValintatapajono(valintatapajono);
-
-        MuokattuJonosija muokattuJonosija;
-        muokattuJonosija = muokattuJonosijaDAO.readByValintatapajonoOid(valintatapajonoOid, hakemusOid);
-        if(muokattuJonosija == null) {
-            muokattuJonosija = new MuokattuJonosija();
-        }
-        muokattuJonosija.setHakemusOid(hakemusOid);
-        muokattuJonosija.setValintatapajonoOid(valintatapajonoOid);
-        muokattuJonosija.setHakuOid(hakukohde.getHakuoid());
-        muokattuJonosija.setHakukohdeOid(hakukohde.getHakukohdeoid());
-
-        Jarjestyskriteeritulos jarjestyskriteeritulos = muokattuJonosija.getJarjestyskriteerit().get(jarjestyskriteeriPrioriteetti);;
-        if(jarjestyskriteeritulos == null) {
-            jarjestyskriteeritulos = new Jarjestyskriteeritulos();
-            muokattuJonosija.getJarjestyskriteerit().put(jarjestyskriteeriPrioriteetti, jarjestyskriteeritulos);
-        }
-        jarjestyskriteeritulos.setKuvaus("Muokattu käsin");
-        jarjestyskriteeritulos.setTila(tila);
-
-        addLogEntry(selite, muokattuJonosija, "jarjestyskriteeriPrioriteetti: " + jarjestyskriteeriPrioriteetti + " tila: " + tila.name());
-
-        muokattuJonosijaDAO.saveOrUpdate(muokattuJonosija);
-
-        return muokattuJonosija;
-    }
-
-
-
 
 }

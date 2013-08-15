@@ -21,6 +21,7 @@ import fi.vm.sade.service.valintaperusteet.laskenta.api.Laskentatulos;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hylattytila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila.Tilatyyppi;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Virhetila;
 import fi.vm.sade.service.valintaperusteet.model.Abstraktivalidointivirhe;
 import fi.vm.sade.service.valintaperusteet.model.Funktioargumentti;
 import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
@@ -77,7 +78,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
     /**
      * TODO
-     * 
+     * <p/>
      * edellinenValinnanvaihe on refaktoroitava koodista pois tehdaan niin etta
      * lasketaan tulokset ensin koko setille ja sen jalkeen toisessa loopissa
      * mietitaan onko tila hyvaksyttavissa vai hylatty
@@ -214,13 +215,19 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                     Hylattytila hylattytila = (Hylattytila) tila;
                     jarjestyskriteeritulos.setKuvaus(hylattytila.getKuvaus());
                 }
+            } else if (Tilatyyppi.VIRHE.equals(tila.getTilatyyppi())) {
+                jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.VIRHE);
+                if (tila instanceof Virhetila) {
+                    Virhetila virhetila = (Virhetila) tila;
+                    jarjestyskriteeritulos.setKuvaus(virhetila.getKuvaus());
+                }
             } else if (Tilatyyppi.HYVAKSYTTAVISSA.equals(tila.getTilatyyppi())) {
                 // edelliseen valinnanvaiheeseen liittyvän
                 // hylkäämisperusteen käsittely
                 if (esiintyminen == null || esiintyminen.getHyvaksyttavissa() > 0) {
                     jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA);
                 } else {
-                    if (esiintyminen.getHyvaksyttavissa() == 0 && esiintyminen.getEsiintyy() > 0) {
+                    if (esiintyminen.getHyvaksyttavissa().equals(0) && esiintyminen.getEsiintyy() > 0) {
                         // hylätään koska ei ollut kertaakaan
                         // hyvaksyttavissä edellisessä
                         // valinnanvaiheessa

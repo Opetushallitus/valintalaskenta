@@ -86,7 +86,7 @@ public class ValintalaskentaTulosServiceTest {
 
         assertTrue(found);
 
-        jono = valintalaskentaTulosService.muutaJarjestyskriteerinArvo(valintatapajonoOid, hakemusOid,
+        jono = valintalaskentaTulosService.muutaJarjestyskriteeri(valintatapajonoOid, hakemusOid,
                 jarjestyskriteeriPrioriteetti, uusiArvo);
 
         found = false;
@@ -108,7 +108,7 @@ public class ValintalaskentaTulosServiceTest {
         final String hakemusOid = "hakemusoid1";
         final Integer jarjestyskriteeriPrioriteetti = 1;
         final BigDecimal uusiArvo = new BigDecimal("100.0");
-        valintalaskentaTulosService.muutaJarjestyskriteerinArvo(valintatapajonoOid, hakemusOid,
+        valintalaskentaTulosService.muutaJarjestyskriteeri(valintatapajonoOid, hakemusOid,
                 jarjestyskriteeriPrioriteetti, uusiArvo);
     }
     */
