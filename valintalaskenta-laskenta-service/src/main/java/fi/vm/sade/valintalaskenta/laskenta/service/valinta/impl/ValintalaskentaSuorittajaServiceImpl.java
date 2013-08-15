@@ -1,20 +1,5 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import fi.vm.sade.valintalaskenta.dao.JonosijaHistoriaDAO;
-import fi.vm.sade.valintalaskenta.domain.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import fi.vm.sade.kaava.Laskentadomainkonvertteri;
 import fi.vm.sade.kaava.Laskentakaavavalidaattori;
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
@@ -25,6 +10,7 @@ import fi.vm.sade.service.valintaperusteet.laskenta.api.Laskentatulos;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hylattytila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila.Tilatyyppi;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Virhetila;
 import fi.vm.sade.service.valintaperusteet.model.Abstraktivalidointivirhe;
 import fi.vm.sade.service.valintaperusteet.model.Funktioargumentti;
 import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
@@ -34,13 +20,25 @@ import fi.vm.sade.service.valintaperusteet.schema.TavallinenValinnanVaiheTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskriteereillaTyyppi;
 import fi.vm.sade.service.valintaperusteet.service.validointi.virhe.Validointivirhe;
+import fi.vm.sade.valintalaskenta.dao.JonosijaHistoriaDAO;
 import fi.vm.sade.valintalaskenta.dao.ValintatapajonoDAO;
 import fi.vm.sade.valintalaskenta.dao.VersiohallintaHakukohdeDAO;
+import fi.vm.sade.valintalaskenta.domain.*;
 import fi.vm.sade.valintalaskenta.laskenta.Esiintyminen;
 import fi.vm.sade.valintalaskenta.laskenta.service.exception.LaskentaVaarantyyppisellaFunktiollaException;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.FunktioKutsuTyyppiToFunktioKutsuConverter;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.HakemusTyyppiToHakemusConverter;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.ValintalaskentaSuorittajaService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Jussi Jartamo
@@ -70,11 +68,11 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
     /**
      * TODO
-     * 
+     * <p/>
      * edellinenValinnanvaihe on refaktoroitava koodista pois tehdaan niin etta
      * lasketaan tulokset ensin koko setille ja sen jalkeen toisessa loopissa
      * mietitaan onko tila hyvaksyttavissa vai hylatty
-     * 
+     *
      * @param kaikkiHakemukset
      * @param valintaperusteet
      */
@@ -93,8 +91,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             }
             if (!(valintaperuste.getValinnanVaihe() instanceof TavallinenValinnanVaiheTyyppi)) {
                 continue; // Laskentaa voi suorittaa vain ns. tavallisille
-                          // valinnan vaiheille. Toisin sanoen ei
-                          // valintakoevalinnanvaiheille.
+                // valinnan vaiheille. Toisin sanoen ei
+                // valintakoevalinnanvaiheille.
             }
 
             TavallinenValinnanVaiheTyyppi vaihe = (TavallinenValinnanVaiheTyyppi) valintaperuste.getValinnanVaihe();
@@ -167,7 +165,6 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     }
 
 
-
     private Integer haeHakutoiveNumero(HakemusWrapper h, String hakukohdeOid) {
         for (HakukohdeTyyppi hkt : h.getHakemusTyyppi().getHakutoive()) {
             if (hkt.getHakukohdeOid().equals(hakukohdeOid)) {
@@ -178,62 +175,68 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     }
 
     private Jarjestyskriteeritulos suoritaLaskenta(String hakukohde, Funktiokutsu funktiokutsu,
-            HakemusWrapper kasiteltavaHakemus, List<HakemusWrapper> kaikkiHakemukset, Esiintyminen esiintyminen,
-            StringBuffer laskentaHistoria) {
+                                                   HakemusWrapper kasiteltavaHakemus, List<HakemusWrapper> kaikkiHakemukset, Esiintyminen esiintyminen,
+                                                   StringBuffer laskentaHistoria) {
         Funktiotyyppi tyyppi = funktiokutsu.getFunktionimi().getTyyppi();
         Jarjestyskriteeritulos jarjestyskriteeritulos = new Jarjestyskriteeritulos();
 
         switch (tyyppi) {
-        case LUKUARVOFUNKTIO:
-            Funktiokutsu f = Laskentakaavavalidaattori.validoiLaskettavaKaava(funktiokutsu);
-            for (Funktioargumentti farg : f.getFunktioargumentit()) {
-                for (Abstraktivalidointivirhe v : farg.getFunktiokutsuChild().getValidointivirheet()) {
-                    Validointivirhe vv = (Validointivirhe) v;
-                    LOG.debug("Tyyppi {}, viesti {}", new Object[] { vv.getVirhetyyppi(), vv.getVirheviesti() });
-                }
-            }
-
-            List<Hakemus> kaikkiLaskentaHakemukset = new ArrayList<Hakemus>();
-            for (HakemusWrapper wrapper : kaikkiHakemukset) {
-                kaikkiLaskentaHakemukset.add(wrapper.getLaskentahakemus());
-            }
-
-            Laskentatulos<BigDecimal> laskentatulos = laskentaService.suoritaLasku(hakukohde,
-                    kasiteltavaHakemus.getLaskentahakemus(), kaikkiLaskentaHakemukset,
-                    Laskentadomainkonvertteri.muodostaLukuarvolasku(funktiokutsu), laskentaHistoria);
-            Tila tila = laskentatulos.getTila();
-
-            if (Tilatyyppi.HYLATTY.equals(tila.getTilatyyppi())) {
-                jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.HYLATTY);
-                if (tila instanceof Hylattytila) {
-                    Hylattytila hylattytila = (Hylattytila) tila;
-                    jarjestyskriteeritulos.setKuvaus(hylattytila.getKuvaus());
-                }
-            } else if (Tilatyyppi.HYVAKSYTTAVISSA.equals(tila.getTilatyyppi())) {
-                // edelliseen valinnanvaiheeseen liittyvän
-                // hylkäämisperusteen käsittely
-                if (esiintyminen == null || esiintyminen.getHyvaksyttavissa() > 0) {
-                    jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA);
-                } else {
-                    if (esiintyminen.getHyvaksyttavissa() == 0 && esiintyminen.getEsiintyy() > 0) {
-                        // hylätään koska ei ollut kertaakaan
-                        // hyvaksyttavissä edellisessä
-                        // valinnanvaiheessa
-                        jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.HYLATTY);
-                        jarjestyskriteeritulos
-                                .setKuvaus("Hylätty koska edellisessä valinnanvaiheessa oli hylätty kaikissa jonoissa!");
+            case LUKUARVOFUNKTIO:
+                Funktiokutsu f = Laskentakaavavalidaattori.validoiLaskettavaKaava(funktiokutsu);
+                for (Funktioargumentti farg : f.getFunktioargumentit()) {
+                    for (Abstraktivalidointivirhe v : farg.getFunktiokutsuChild().getValidointivirheet()) {
+                        Validointivirhe vv = (Validointivirhe) v;
+                        LOG.debug("Tyyppi {}, viesti {}", new Object[]{vv.getVirhetyyppi(), vv.getVirheviesti()});
                     }
                 }
-            } else {
-                jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.MAARITTELEMATON);
-            }
-            BigDecimal tulos = laskentatulos.getTulos();
-            if (tulos != null) {
-                jarjestyskriteeritulos.setArvo(tulos);
-            }
-            return jarjestyskriteeritulos;
-        default:
-            throw new LaskentaVaarantyyppisellaFunktiollaException("Palvelu hyväksyy vain lukuarvofunktioita!");
+
+                List<Hakemus> kaikkiLaskentaHakemukset = new ArrayList<Hakemus>();
+                for (HakemusWrapper wrapper : kaikkiHakemukset) {
+                    kaikkiLaskentaHakemukset.add(wrapper.getLaskentahakemus());
+                }
+
+                Laskentatulos<BigDecimal> laskentatulos = laskentaService.suoritaLasku(hakukohde,
+                        kasiteltavaHakemus.getLaskentahakemus(), kaikkiLaskentaHakemukset,
+                        Laskentadomainkonvertteri.muodostaLukuarvolasku(funktiokutsu), laskentaHistoria);
+                Tila tila = laskentatulos.getTila();
+
+                if (Tilatyyppi.HYLATTY.equals(tila.getTilatyyppi())) {
+                    jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.HYLATTY);
+                    if (tila instanceof Hylattytila) {
+                        Hylattytila hylattytila = (Hylattytila) tila;
+                        jarjestyskriteeritulos.setKuvaus(hylattytila.getKuvaus());
+                    }
+                } else if (Tilatyyppi.VIRHE.equals(tila.getTilatyyppi())) {
+                    jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.VIRHE);
+                    if (tila instanceof Virhetila) {
+                        Virhetila virhetila = (Virhetila) tila;
+                        jarjestyskriteeritulos.setKuvaus(virhetila.getKuvaus());
+                    }
+                } else if (Tilatyyppi.HYVAKSYTTAVISSA.equals(tila.getTilatyyppi())) {
+                    // edelliseen valinnanvaiheeseen liittyvän
+                    // hylkäämisperusteen käsittely
+                    if (esiintyminen == null || esiintyminen.getHyvaksyttavissa() > 0) {
+                        jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA);
+                    } else {
+                        if (esiintyminen.getHyvaksyttavissa().equals(0) && esiintyminen.getEsiintyy() > 0) {
+                            // hylätään koska ei ollut kertaakaan
+                            // hyvaksyttavissä edellisessä
+                            // valinnanvaiheessa
+                            jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.HYLATTY);
+                            jarjestyskriteeritulos
+                                    .setKuvaus("Hylätty koska edellisessä valinnanvaiheessa oli hylätty kaikissa jonoissa!");
+                        }
+                    }
+                } else {
+                    jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.MAARITTELEMATON);
+                }
+                BigDecimal tulos = laskentatulos.getTulos();
+                if (tulos != null) {
+                    jarjestyskriteeritulos.setArvo(tulos);
+                }
+                return jarjestyskriteeritulos;
+            default:
+                throw new LaskentaVaarantyyppisellaFunktiollaException("Palvelu hyväksyy vain lukuarvofunktioita!");
         }
     }
 
@@ -332,7 +335,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
      * @return Päivitetty tai uusi versioituhakukode
      */
     private VersiohallintaHakukohde paivitaTaiLuoVersioituhakukohde(String hakuoid, String hakukohdeoid,
-            String valinnanvaiheoid, int jarjestysnumero) {
+                                                                    String valinnanvaiheoid, int jarjestysnumero) {
         Hakukohde uusihakukohde = new Hakukohde();
         uusihakukohde.setHakuoid(hakuoid);
         uusihakukohde.setOid(hakukohdeoid);
