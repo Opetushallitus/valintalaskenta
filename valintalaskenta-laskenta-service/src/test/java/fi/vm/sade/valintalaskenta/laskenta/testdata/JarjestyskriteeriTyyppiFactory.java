@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta.testdata;
 
+import fi.vm.sade.service.valintaperusteet.schema.ValintaperustelahdeTyyppi;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ public class JarjestyskriteeriTyyppiFactory implements FactoryBean<Jarjestyskrit
         funktiokutsutyyppi.setFunktionimi("HAELUKUARVO");
         ValintaperusteviiteTyyppi viite1 = new ValintaperusteviiteTyyppi();
         viite1.setOnPakollinen(true);
+        viite1.setLahde(ValintaperustelahdeTyyppi.HAETTAVA_ARVO);
         viite1.setTunniste("Matematiikka");
         funktiokutsutyyppi.setValintaperusteviite(viite1);
         jarjestyskriteerityyppi.setFunktiokutsu(funktiokutsutyyppi);

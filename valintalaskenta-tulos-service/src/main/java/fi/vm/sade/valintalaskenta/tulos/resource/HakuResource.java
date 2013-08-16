@@ -1,3 +1,4 @@
+/*
 package fi.vm.sade.valintalaskenta.tulos.resource;
 
 import java.util.List;
@@ -24,11 +25,11 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ;
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.UPDATE;
 
-/**
+**
  * 
  * @author Jussi Jartamo
  * 
- */
+ *
 @Component
 @Path("haku")
 @PreAuthorize("isAuthenticated()")
@@ -55,4 +56,6 @@ public class HakuResource {
     public List<Versioituhakukohde> haku(@PathParam("hakuoid") String hakuoid) {
         return tulosService.haeHakukohteetHaulle(hakuoid);
     }
+
 }
+    */

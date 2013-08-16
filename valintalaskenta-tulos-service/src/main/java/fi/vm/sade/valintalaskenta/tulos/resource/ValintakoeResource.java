@@ -16,9 +16,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.CRUD;
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ;
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.UPDATE;
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.*;
 
 @Component
 @Path("valintakoe")
@@ -28,20 +26,21 @@ public class ValintakoeResource {
     @Autowired
     private ValintalaskentaTulosService tulosService;
 
+    /*
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("hakija")
     @JsonView({ JsonViews.Basic.class })
-    @Secured({READ, UPDATE, CRUD})
+    @Secured({ READ, UPDATE, CRUD })
     public List<ValintakoeOsallistuminen> kaikki() {
         return tulosService.haeValintakoeOsallistumiset();
-    }
+    } */
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("hakija/{hakijaOid}")
     @JsonView({ JsonViews.Basic.class })
-    @Secured({READ, UPDATE, CRUD})
+    @Secured({ READ, UPDATE, CRUD })
     public List<ValintakoeOsallistuminen> haku(@PathParam("hakijaOid") String hakijaOid) {
         return tulosService.haeValintakoeOsallistumiset(hakijaOid);
     }
@@ -50,7 +49,7 @@ public class ValintakoeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("hakutoive/{hakukohdeOid}")
     @JsonView({ JsonViews.Basic.class })
-    @Secured({READ, UPDATE, CRUD})
+    @Secured({ READ, UPDATE, CRUD })
     public List<ValintakoeOsallistuminen> hakuByHakutoive(@PathParam("hakukohdeOid") String hakukohdeOid) {
         return tulosService.haeValintakoeOsallistumisetByHakutoive(hakukohdeOid);
     }

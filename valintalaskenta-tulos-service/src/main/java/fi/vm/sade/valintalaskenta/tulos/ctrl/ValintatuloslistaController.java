@@ -8,24 +8,19 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import fi.vm.sade.valintalaskenta.tulos.service.ExcelExportService;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import fi.vm.sade.valintalaskenta.tulos.service.ExcelExportService;
+
 /**
- *
+ * 
  * @author Jussi Jartamo
- *
+ * 
  *         Exporter for - valintakoetulos - valintalaskentatulos -
  *         sijoitteluntulos
  */
@@ -42,8 +37,8 @@ public class ValintatuloslistaController {
      * @return LASKENNAN TULOKSET EXCEL
      */
     @ResponseBody
-    @RequestMapping(value = "valintalaskentatulos.xls", method = GET, produces = "application/vnd.ms-excel" )
-    @Secured({READ, UPDATE, CRUD})
+    @RequestMapping(value = "valintalaskentatulos.xls", method = GET, produces = "application/vnd.ms-excel")
+    @Secured({ READ, UPDATE, CRUD })
     public String valintalaskentatulos(@RequestParam("hakukohdeOid") String hakukohdeOid) {
         LOG.debug("Excel hakukohteelle {}", hakukohdeOid);
         return excelService.exportValintalaskentatulos(hakukohdeOid);
@@ -53,11 +48,12 @@ public class ValintatuloslistaController {
      * @return VALINTAKOE EXCEL
      */
     @ResponseBody
-    @RequestMapping(value = "valintakoetulos.xls", method = GET, produces = "application/vnd.ms-excel" )
-    @Secured({READ, UPDATE, CRUD})
-    public String valintakoetulos(@RequestParam("hakukohdeOid") String hakukohdeOid) {
+    @RequestMapping(value = "valintakoetulos.xls", method = GET, produces = "application/vnd.ms-excel")
+    @Secured({ READ, UPDATE, CRUD })
+    public String valintakoetulos(@RequestParam("hakukohdeOid") String hakukohdeOid,
+            @RequestParam("valintakoeOid") String valintakoeOid) {
         LOG.debug("Excel hakukohteelle {}", hakukohdeOid);
-        return excelService.exportValintakoetulos(hakukohdeOid);
+        return excelService.exportValintakoetulos(hakukohdeOid, valintakoeOid);
     }
 
 }

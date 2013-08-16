@@ -1,44 +1,65 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
-import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
-import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
-
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
-import java.util.TreeSet;
+
+import org.codehaus.jackson.map.annotate.JsonView;
+
+import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
+import fi.vm.sade.valintalaskenta.domain.JsonViews;
 
 /**
- * Created with IntelliJ IDEA.
- * User: kkammone
- * Date: 13.5.2013
- * Time: 9:50
- * To change this template use File | Settings | File Templates.
+ * Created with IntelliJ IDEA. User: kkammone Date: 13.5.2013 Time: 9:50 To
+ * change this template use File | Settings | File Templates.
  */
 public class JonosijaDTO {
 
+    @JsonView(JsonViews.Basic.class)
     private int jonosija;
 
+    @JsonView(JsonViews.Basic.class)
     private String hakemusOid;
 
+    @JsonView(JsonViews.Basic.class)
     private String hakijaOid;
 
-    private Map<Integer, Jarjestyskriteeritulos> jarjestyskriteerit = new TreeMap<Integer, Jarjestyskriteeritulos>();
+    @JsonView(JsonViews.Basic.class)
+    private TreeMap<Integer, JarjestyskriteeritulosDTO> jarjestyskriteerit = new TreeMap<Integer, JarjestyskriteeritulosDTO>();
 
+    @JsonView(JsonViews.Basic.class)
     private int prioriteetti;
 
+    @JsonView(JsonViews.Basic.class)
     private String sukunimi;
 
+    @JsonView(JsonViews.Basic.class)
     private String etunimi;
 
-    private JarjestyskriteerituloksenTila tila;
+    @JsonView(JsonViews.Basic.class)
+    private boolean harkinnanvarainen = false;
 
+    @JsonView(JsonViews.Basic.class)
+    private JarjestyskriteerituloksenTila tuloksenTila;
 
-    public Map<Integer, Jarjestyskriteeritulos> getJarjestyskriteerit() {
+    @JsonView(JsonViews.Basic.class)
+    private List<String> historiat;
+
+    @JsonView(JsonViews.Basic.class)
+    private boolean muokattu = false;
+
+    public List<String> getHistoriat() {
+        return historiat;
+    }
+
+    public void setHistoriat(List<String> historiat) {
+        this.historiat = historiat;
+    }
+
+    public TreeMap<Integer, JarjestyskriteeritulosDTO> getJarjestyskriteerit() {
         return jarjestyskriteerit;
     }
 
-    public void setJarjestyskriteerit(Map<Integer, Jarjestyskriteeritulos> jarjestyskriteerit) {
+    public void setJarjestyskriteerit(TreeMap<Integer, JarjestyskriteeritulosDTO> jarjestyskriteerit) {
         this.jarjestyskriteerit = jarjestyskriteerit;
     }
 
@@ -58,18 +79,12 @@ public class JonosijaDTO {
         this.hakemusOid = hakemusOid;
     }
 
-
-
     public int getJonosija() {
         return jonosija;
     }
 
     public void setJonosija(int jonosija) {
         this.jonosija = jonosija;
-    }
-
-    public void setTila(JarjestyskriteerituloksenTila tila) {
-        this.tila = tila;
     }
 
     public void setEtunimi(String etunimi) {
@@ -96,7 +111,27 @@ public class JonosijaDTO {
         return etunimi;
     }
 
-    public JarjestyskriteerituloksenTila getTila() {
-        return tila;
+    public JarjestyskriteerituloksenTila getTuloksenTila() {
+        return tuloksenTila;
+    }
+
+    public void setTuloksenTila(JarjestyskriteerituloksenTila tuloksenTila) {
+        this.tuloksenTila = tuloksenTila;
+    }
+
+    public boolean isHarkinnanvarainen() {
+        return harkinnanvarainen;
+    }
+
+    public void setHarkinnanvarainen(boolean harkinnanvarainen) {
+        this.harkinnanvarainen = harkinnanvarainen;
+    }
+
+    public boolean isMuokattu() {
+        return muokattu;
+    }
+
+    public void setMuokattu(boolean muokattu) {
+        this.muokattu = muokattu;
     }
 }

@@ -1,23 +1,11 @@
 package fi.vm.sade.valintalaskenta.laskenta.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.test.util.ReflectionTestUtils;
-
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintaperusteet.laskenta.Totuusarvofunktio;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Laskentatulos;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hylattytila;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hyvaksyttavissatila;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.PakollinenValintaperusteHylkays;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.*;
 import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
 import fi.vm.sade.service.valintaperusteet.model.Funktionimi;
 import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
@@ -28,6 +16,14 @@ import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.FunktioKutsuT
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.HakemusTyyppiToHakemusConverter;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoeosallistumislaskin;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.ValintakoeosallistumislaskinImpl;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * User: wuoti Date: 6.5.2013 Time: 9.59
@@ -96,7 +92,7 @@ public class ValintakoeosallistumislaskinTest {
     public void testTilaHylattyFalse() {
         final String hakukohdeOid = "hakukohdeOid1";
 
-        valmisteleStubit(hakukohdeOid, new Hylattytila("oid", "kuvaus", new PakollinenValintaperusteHylkays("")), false);
+        valmisteleStubit(hakukohdeOid, new Hylattytila("kuvaus", new PakollinenValintaperusteHylkays("")), false);
         Osallistuminen osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
                 hakukohdeOid, new HakemusTyyppi(), new FunktiokutsuTyyppi());
         assertEquals(Osallistuminen.OSALLISTUU, osallistuminen);
@@ -106,10 +102,30 @@ public class ValintakoeosallistumislaskinTest {
     public void testTilaHylattyTrue() {
         final String hakukohdeOid = "hakukohdeOid1";
 
-        valmisteleStubit(hakukohdeOid, new Hylattytila("oid", "kuvaus", new PakollinenValintaperusteHylkays("")), true);
+        valmisteleStubit(hakukohdeOid, new Hylattytila("kuvaus", new PakollinenValintaperusteHylkays("")), true);
         Osallistuminen osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
                 hakukohdeOid, new HakemusTyyppi(), new FunktiokutsuTyyppi());
         assertEquals(Osallistuminen.OSALLISTUU, osallistuminen);
+    }
+
+    @Test
+    public void testTilaVirheTrue() {
+        final String hakukohdeOid = "hakukohdeOid1";
+
+        valmisteleStubit(hakukohdeOid, new Virhetila("kuvaus", new ArvokonvertointiVirhe("")), true);
+        Osallistuminen osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
+                hakukohdeOid, new HakemusTyyppi(), new FunktiokutsuTyyppi());
+        assertEquals(Osallistuminen.MAARITTELEMATON, osallistuminen);
+    }
+
+    @Test
+    public void testTilaVirheFalse() {
+        final String hakukohdeOid = "hakukohdeOid1";
+
+        valmisteleStubit(hakukohdeOid, new Virhetila("kuvaus", new ArvokonvertointiVirhe("")), false);
+        Osallistuminen osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
+                hakukohdeOid, new HakemusTyyppi(), new FunktiokutsuTyyppi());
+        assertEquals(Osallistuminen.MAARITTELEMATON, osallistuminen);
     }
 
     @Test(expected = LaskentaVaarantyyppisellaFunktiollaException.class)

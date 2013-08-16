@@ -10,6 +10,6 @@ public interface ExcelExportService {
 
     String exportValintalaskentatulos(String hakukohdeoid);
 
-    String exportValintakoetulos(String hakukohdeOid);
+    String exportValintakoetulos(String hakukohdeOid, String valintakoeOid);
 
 }

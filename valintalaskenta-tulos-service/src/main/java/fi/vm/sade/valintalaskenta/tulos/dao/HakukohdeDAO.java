@@ -1,8 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.dao;
 
-import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
-
-import java.util.List;
+import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
 
 /**
  * 
@@ -15,12 +14,13 @@ public interface HakukohdeDAO {
      * @param hakuoid
      * @return Hakukohteet (uusimmalla versiolla) tietyllä hakuoidilla
      */
-    List<Versioituhakukohde> readByHakuOid(String hakuoid);
+   // List<Versioituhakukohde> readByHakuOid(String hakuoid);
 
     /**
      * 
      * @return Kaikki hakukohteet (uusimmalla versiolla) kaikissa hauissa
      */
-    List<Versioituhakukohde> readAll();
+   // List<Versioituhakukohde> readAll();
 
+    VersiohallintaHakukohde findByValintatapajono(Valintatapajono valintatapajono);
 }

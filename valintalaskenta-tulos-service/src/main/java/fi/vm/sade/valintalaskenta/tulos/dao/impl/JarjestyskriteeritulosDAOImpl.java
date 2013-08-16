@@ -1,17 +1,9 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
-import java.util.Collections;
-import java.util.List;
-
-import fi.vm.sade.valintalaskenta.domain.Jonosija;
+import com.google.code.morphia.Datastore;
+import fi.vm.sade.valintalaskenta.tulos.dao.JarjestyskriteeritulosDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import com.google.code.morphia.Datastore;
-
-import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
-import fi.vm.sade.valintalaskenta.domain.collection.VersioSet;
-import fi.vm.sade.valintalaskenta.tulos.dao.JarjestyskriteeritulosDAO;
 
 /**
  * 
@@ -24,6 +16,7 @@ public class JarjestyskriteeritulosDAOImpl implements JarjestyskriteeritulosDAO 
     @Autowired
     private Datastore datastore;
 
+    /*
     public List<Jonosija> readByValintatapajonoOid(String valintatapajonooid) {
         // valintatapajonoille on toteutettu java.lang.Comparable, joka
         // järjestää ne versioittain ensimmäinen versio ensimmäisenä ja
@@ -35,5 +28,5 @@ public class JarjestyskriteeritulosDAOImpl implements JarjestyskriteeritulosDAO 
         }
         return uusinvalintatapajono.getJonosijat();
     }
-
+      */
 }

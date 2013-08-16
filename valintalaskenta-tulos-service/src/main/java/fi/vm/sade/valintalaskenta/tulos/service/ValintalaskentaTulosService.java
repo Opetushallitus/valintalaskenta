@@ -3,33 +3,37 @@ package fi.vm.sade.valintalaskenta.tulos.service;
 import java.math.BigDecimal;
 import java.util.List;
 
-import fi.vm.sade.valintalaskenta.domain.Hakukohde;
-import fi.vm.sade.valintalaskenta.domain.Jonosija;
-import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
-import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
+import fi.vm.sade.valintalaskenta.domain.*;
+import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 
 public interface ValintalaskentaTulosService {
 
-    List<Versioituhakukohde> haeHakukohteet();
 
-    List<Versioituhakukohde> haeHakukohteetHaulle(String hakuoid);
+ //   List<Versioituhakukohde> haeHakukohteet();
+ //  List<Versioituhakukohde> haeHakukohteetHaulle(String hakuoid);
+ //  List<Valintatapajono> haeValintatapajonoValinnanvaiheelle(String valinnanvaiheoid);
+ //  List<Jonosija> haeJarjestyskriteerituloksetValintatapajonolle(String valintatapajonooid);
 
-    List<Valinnanvaihe> haeValinnanvaiheetHakukohteelle(String hakukohdeoid);
 
-    List<Valintatapajono> haeValintatapajonoValinnanvaiheelle(String valinnanvaiheoid);
+    List<ValinnanvaiheDTO> haeValinnanvaiheetHakukohteelle(String hakukohdeoid);
 
-    List<Jonosija> haeJarjestyskriteerituloksetValintatapajonolle(String valintatapajonooid);
+    List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid);
 
-    List<ValintakoeOsallistuminen> haeValintakoeOsallistumiset();
 
-    List<Hakukohde> haeLasketutValinnanvaiheetHaulle(String hakuOid);
+
+    MuokattuJonosija muutaJarjestyskriteeri(String valintatapajonoOid, String hakemusOid,
+                                            Integer jarjestyskriteeriPrioriteetti, MuokattuJonosijaDTO arvo, String selite);
+
 
     List<ValintakoeOsallistuminen> haeValintakoeOsallistumiset(String hakijaoid);
 
     List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakutoive(String hakukohdeOid);
 
-    Valintatapajono muutaJarjestyskriteerinArvo(String valintatapajonoOid, String hakemusOid,
-            Integer jarjestyskriteeriPrioriteetti, BigDecimal arvo);
+    List<JonosijaHistoria> haeJonosijaHistoria(String valintatapajonoOid, String hakemusOid);
+
+    //  List<ValintakoeOsallistuminen> haeValintakoeOsallistumiset();
+
 }

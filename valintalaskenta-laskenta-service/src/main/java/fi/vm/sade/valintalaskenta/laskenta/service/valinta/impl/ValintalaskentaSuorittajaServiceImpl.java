@@ -2,9 +2,7 @@ package fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +21,7 @@ import fi.vm.sade.service.valintaperusteet.laskenta.api.Laskentatulos;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hylattytila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila.Tilatyyppi;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Virhetila;
 import fi.vm.sade.service.valintaperusteet.model.Abstraktivalidointivirhe;
 import fi.vm.sade.service.valintaperusteet.model.Funktioargumentti;
 import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
@@ -32,18 +31,19 @@ import fi.vm.sade.service.valintaperusteet.schema.TavallinenValinnanVaiheTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskriteereillaTyyppi;
 import fi.vm.sade.service.valintaperusteet.service.validointi.virhe.Validointivirhe;
+import fi.vm.sade.valintalaskenta.dao.JonosijaHistoriaDAO;
 import fi.vm.sade.valintalaskenta.dao.ValintatapajonoDAO;
 import fi.vm.sade.valintalaskenta.dao.VersiohallintaHakukohdeDAO;
 import fi.vm.sade.valintalaskenta.domain.Hakukohde;
 import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.Jonosija;
+import fi.vm.sade.valintalaskenta.domain.JonosijaHistoria;
 import fi.vm.sade.valintalaskenta.domain.Tasasijasaanto;
 import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
 import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
 import fi.vm.sade.valintalaskenta.domain.Versioituhakukohde;
-import fi.vm.sade.valintalaskenta.domain.comparator.JonosijaComparator;
 import fi.vm.sade.valintalaskenta.laskenta.Esiintyminen;
 import fi.vm.sade.valintalaskenta.laskenta.service.exception.LaskentaVaarantyyppisellaFunktiollaException;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.FunktioKutsuTyyppiToFunktioKutsuConverter;
@@ -73,9 +73,12 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     @Autowired
     private FunktioKutsuTyyppiToFunktioKutsuConverter funktiokutsuConverter;
 
+    @Autowired
+    private JonosijaHistoriaDAO jonosijaHistoriaDAO;
+
     /**
      * TODO
-     * 
+     * <p/>
      * edellinenValinnanvaihe on refaktoroitava koodista pois tehdaan niin etta
      * lasketaan tulokset ensin koko setille ja sen jalkeen toisessa loopissa
      * mietitaan onko tila hyvaksyttavissa vai hylatty
@@ -148,13 +151,16 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                                 edellinenValinnanvaihe != null ? edellinenValinnanvaihe.get(h.getHakemusTyyppi()
                                         .getHakemusOid()) : null, historia);
                         assert (jarjestyskriteeritulos != null);
-                        jonosija.getHistoriat().add(historia.toString());
+
+                        JonosijaHistoria jonosijaHistoria = new JonosijaHistoria();
+                        jonosijaHistoria.setHistoria(historia.toString());
+                        jonosijaHistoriaDAO.create(jonosijaHistoria);
+
+                        jonosija.getHistoriat().add(jonosijaHistoria);
                         jonosija.getJarjestyskriteerit().put(j.getPrioriteetti(), jarjestyskriteeritulos);
                     }
 
                 }
-
-                jarjestaJaLisaaJonosijaNumero(valintatapajono.getJonosijat());
 
                 valintatapajono.setVersio(versioituhakukohde.getVersio());
                 valinnanvaihe.getValintatapajono().add(valintatapajono);
@@ -165,39 +171,6 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             versiohallinta.getHakukohteet().add(versioituhakukohde);
             versiohallintaHakukohdeDAO.createOrUpdate(versiohallinta);
 
-        }
-    }
-
-    private void jarjestaJaLisaaJonosijaNumero(List<Jonosija> jonosijat) {
-        if (jonosijat == null || jonosijat.isEmpty() || jonosijat.size() < 2) { // ei
-                                                                                // tehda
-            // jarjestelya
-            // yhdelle
-            // jonosijalle
-            return;
-        }
-        JonosijaComparator comparator = new JonosijaComparator();
-        Collections.sort(jonosijat, comparator);
-
-        int i = 1;
-        Jonosija previous = null;
-        Iterator<Jonosija> it = jonosijat.iterator();
-        while (it.hasNext()) {
-            Jonosija dto = it.next();
-            System.out.println("jarjesta oid[" + dto.getHakemusoid() + "]" + i);
-
-            if (previous != null && comparator.compare(previous, dto) != 0) {
-                i++;
-            }
-            dto.setJonosija(i);
-
-            if (!dto.getJarjestyskriteerit().isEmpty() && dto.getJarjestyskriteerit().firstEntry().getValue() != null) {
-                dto.setTuloksenTila(dto.getJarjestyskriteerit().firstEntry().getValue().getTila());
-            } else {
-                //
-            }
-
-            previous = dto;
         }
     }
 
@@ -242,13 +215,19 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                     Hylattytila hylattytila = (Hylattytila) tila;
                     jarjestyskriteeritulos.setKuvaus(hylattytila.getKuvaus());
                 }
+            } else if (Tilatyyppi.VIRHE.equals(tila.getTilatyyppi())) {
+                jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.VIRHE);
+                if (tila instanceof Virhetila) {
+                    Virhetila virhetila = (Virhetila) tila;
+                    jarjestyskriteeritulos.setKuvaus(virhetila.getKuvaus());
+                }
             } else if (Tilatyyppi.HYVAKSYTTAVISSA.equals(tila.getTilatyyppi())) {
                 // edelliseen valinnanvaiheeseen liittyvän
                 // hylkäämisperusteen käsittely
                 if (esiintyminen == null || esiintyminen.getHyvaksyttavissa() > 0) {
                     jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA);
                 } else {
-                    if (esiintyminen.getHyvaksyttavissa() == 0 && esiintyminen.getEsiintyy() > 0) {
+                    if (esiintyminen.getHyvaksyttavissa().equals(0) && esiintyminen.getEsiintyy() > 0) {
                         // hylätään koska ei ollut kertaakaan
                         // hyvaksyttavissä edellisessä
                         // valinnanvaiheessa
@@ -285,8 +264,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                     // new Object[] { tulos.getJonosija(), tulos.getKuvaus() });
                     hakemusoidHyvaksyttyJonoissa.put(hakemusoid, new Esiintyminen(0, 0));
                 } else {
-                    if (JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA.equals(tulos.getJarjestyskriteerit().get(1)
-                            .getTila())) {
+                    if (JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA.equals(tulos.getJarjestyskriteerit().firstEntry()
+                            .getValue().getTila())) {
                         if (hakemusoidHyvaksyttyJonoissa.containsKey(hakemusoid)) {
                             Esiintyminen esiintyminen = hakemusoidHyvaksyttyJonoissa.get(hakemusoid);
                             esiintyminen.inkrementoiEsiintyminen();
