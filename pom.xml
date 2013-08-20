@@ -24,9 +24,9 @@
                 <version>${camel.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.google.code.morphia</groupId>
-                <artifactId>morphia</artifactId>
-                <version>0.99.1-SNAPSHOT</version>
+            	<groupId>com.google.code.morphia</groupId>
+            	<artifactId>morphia</artifactId>
+            	<version>0.102</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
