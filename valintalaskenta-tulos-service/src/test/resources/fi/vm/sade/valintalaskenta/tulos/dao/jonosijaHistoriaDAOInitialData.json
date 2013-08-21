@@ -1,0 +1,52 @@
+{
+    "Valintatapajono":
+            [
+                {
+                    "valintatapajonooid" : "valintatapajonooid1",
+                    "versio" : 1,
+                    "jonosijat" : [
+                        {
+                            "hakemusoid" : "hakemusoid1",
+                            "historiat" : [
+                                { "$ref" : "JonosijaHistoria", "$id" : { "$oid" : "52139e1eec975d4bfcb01247" } }
+                            ]
+                        },
+                        {
+                            "hakemusoid" : "hakemusoid2",
+                            "historiat" : [
+                                { "$ref" : "JonosijaHistoria", "$id" : { "$oid" : "52139e1fec975d4bfcb01248" } }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "valintatapajonooid" : "valintatapajonooid1",
+                    "versio" : 2,
+                    "jonosijat" : [
+                        {
+                            "hakemusoid" : "hakemusoid1",
+                            "historiat" : [ 
+                                { "$ref" : "JonosijaHistoria", "$id" : { "$oid" : "52139e20ec975d4bfcb01249" } },
+                                { "$ref" : "JonosijaHistoria", "$id" : { "$oid" : "52139e20ec975d4bfcb0124a" } }
+                            ]
+                        },
+                        {
+                            "hakemusoid" : "hakemusoid2",
+                            "historiat" : [
+                                { "$ref" : "JonosijaHistoria", "$id" : { "$oid" : "52139e20ec975d4bfcb0124b" } },
+                                { "$ref" : "JonosijaHistoria", "$id" : { "$oid" : "52139e20ec975d4bfcb0124c" } }
+                            ]
+                        }
+                    ]
+                }
+            ],
+    "JonosijaHistoria":
+            [
+                { "_id" : { "$oid" : "52139e20ec975d4bfcb01247" }, "historia" : "historia1" },
+                { "_id" : { "$oid" : "52139e20ec975d4bfcb01248" }, "historia" : "historia2" },
+                { "_id" : { "$oid" : "52139e20ec975d4bfcb01249" }, "historia" : "historia3" },
+                { "_id" : { "$oid" : "52139e20ec975d4bfcb0124a" }, "historia" : "historia4" },
+                { "_id" : { "$oid" : "52139e20ec975d4bfcb0124b" }, "historia" : "historia5" },
+                { "_id" : { "$oid" : "52139e20ec975d4bfcb0124c" }, "historia" : "historia6" }
+            ]
+}
