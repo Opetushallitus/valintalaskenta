@@ -86,7 +86,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter{
             JonosijaDTO dto = new JonosijaDTO();
             dto.setEtunimi(jonosija.getEtunimi());
             dto.setHakemusOid(jonosija.getHakemusoid());
-            dto.setHakijaOid(jonosija.getHakemusoid());
+            dto.setHakijaOid(jonosija.getHakijaoid());
             dto.setPrioriteetti(jonosija.getPrioriteetti());
             dto.setSukunimi(jonosija.getSukunimi());
             //dto.setHistoriat(jonosija.getHistoriat());
