@@ -150,6 +150,25 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
+    public List<Valintatapajono> haeVirheetHakukohteelle(String hakukohdeoid) {
+
+        List<Valinnanvaihe> a = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeoid);
+        for(Valinnanvaihe vv : a) {
+            for (Valintatapajono valintatapajono : vv.getValintatapajono()) {
+                for (Jonosija jonosija : valintatapajono.getJonosijat()) {
+                    for (Jarjestyskriteeritulos jarjestyskriteeritulos : jonosija.getJarjestyskriteerit().values()) {
+                        if(jarjestyskriteeritulos.getTila().equals(JarjestyskriteerituloksenTila.VIRHE)) {
+
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    @Override
     public List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid) {
         List<Hakukohde> a = valinnanvaiheDAO.readByHakuOid(hakuOid);
         List<HakukohdeDTO> b = valintatulosConverter.convertHakukohde(a);

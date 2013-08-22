@@ -95,6 +95,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
             String hakukohdeOid = valintaperuste.getHakukohdeOid();
             String hakuoid = valintaperuste.getHakuOid();
+            String tarjoajaOid = valintaperuste.getTarjoajaOid();
             List<HakemusWrapper> hakemukset = hakemuksetHakukohteittain.get(hakukohdeOid);
             if (hakemukset == null || hakemukset.isEmpty()) {
                 continue;
@@ -107,15 +108,14 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
             TavallinenValinnanVaiheTyyppi vaihe = (TavallinenValinnanVaiheTyyppi) valintaperuste.getValinnanVaihe();
 
-            String hakukohdeoid = valintaperuste.getHakukohdeOid();
             String valinnanvaiheoid = vaihe.getValinnanVaiheOid();
             int jarjestysnumero = vaihe.getValinnanVaiheJarjestysluku();
 
             Map<String, Esiintyminen> edellinenValinnanvaihe = hakemusoidHyvaksyttavissaJonoissa(edellinenValinnanvaihe(
-                    hakukohdeoid, jarjestysnumero));
+                    hakukohdeOid, jarjestysnumero));
 
-            VersiohallintaHakukohde versiohallinta = paivitaTaiLuoVersioituhakukohde(hakuoid, hakukohdeoid,
-                    valinnanvaiheoid, jarjestysnumero);
+            VersiohallintaHakukohde versiohallinta = paivitaTaiLuoVersioituhakukohde(hakuoid, hakukohdeOid,
+                    valinnanvaiheoid, tarjoajaOid, jarjestysnumero);
             Versioituhakukohde versioituhakukohde = versiohallinta.getHakukohteet().haeUusinVersio();
             Valinnanvaihe valinnanvaihe = versioituhakukohde.getHakukohde().getValinnanvaihe();
 
@@ -136,7 +136,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                     jonosija.setSukunimi(h.getHakemusTyyppi().getHakijanSukunimi());
                     jonosija.setHakemusoid(h.getHakemusTyyppi().getHakemusOid());
                     jonosija.setHakijaoid(h.getHakemusTyyppi().getHakijaOid());
-                    Integer hakutoive = haeHakutoiveNumero(h, hakukohdeoid);
+                    Integer hakutoive = haeHakutoiveNumero(h, hakukohdeOid);
                     jonosija.setPrioriteetti(hakutoive);
 
                     // StringBuffer historia = new StringBuffer();
@@ -144,7 +144,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                         Funktiokutsu funktiokutsu = funktiokutsuConverter.convert(j.getFunktiokutsu());
                         StringBuffer historia = new StringBuffer();
                         Jarjestyskriteeritulos jarjestyskriteeritulos = suoritaLaskenta(
-                                hakukohdeoid,
+                                hakukohdeOid,
                                 funktiokutsu,
                                 h,
                                 hakemukset,
@@ -344,10 +344,11 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
      * @return Päivitetty tai uusi versioituhakukode
      */
     private VersiohallintaHakukohde paivitaTaiLuoVersioituhakukohde(String hakuoid, String hakukohdeoid,
-            String valinnanvaiheoid, int jarjestysnumero) {
+            String valinnanvaiheoid, String tarjoajaOid, int jarjestysnumero) {
         Hakukohde uusihakukohde = new Hakukohde();
         uusihakukohde.setHakuoid(hakuoid);
         uusihakukohde.setOid(hakukohdeoid);
+        uusihakukohde.setTarjoajaoid(tarjoajaOid);
         Valinnanvaihe valinnanvaihe = new Valinnanvaihe();
         valinnanvaihe.setJarjestysnumero(jarjestysnumero);
         valinnanvaihe.setValinnanvaiheoid(valinnanvaiheoid);
