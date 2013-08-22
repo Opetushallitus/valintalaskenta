@@ -11,4 +11,5 @@ public class ValintojenToteuttaminenRole {
     public static final String READ = "ROLE_APP_VALINTOJENTOTEUTTAMINEN_READ";
     public static final String UPDATE = "ROLE_APP_VALINTOJENTOTEUTTAMINEN_READ_UPDATE";
     public static final String CRUD = "ROLE_APP_VALINTOJENTOTEUTTAMINEN_CRUD";
+    public static final String OPH_CRUD = "ROLE_APP_VALINTOJENTOTEUTTAMINEN_CRUD_1.2.246.562.10.00000000001";
 }

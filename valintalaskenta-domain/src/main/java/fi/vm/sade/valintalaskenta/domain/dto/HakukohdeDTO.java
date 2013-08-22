@@ -19,6 +19,9 @@ public class HakukohdeDTO {
     private String hakuoid;
 
     @JsonView(JsonViews.Basic.class)
+    private String tarjoajaoid;
+
+    @JsonView(JsonViews.Basic.class)
     private String hakukohdeoid;
 
     @JsonView(JsonViews.Basic.class)
@@ -55,5 +58,13 @@ public class HakukohdeDTO {
 
     public void setValinnanvaihe(List<ValinnanvaiheDTO> valinnanvaihe) {
         this.valinnanvaihe = valinnanvaihe;
+    }
+
+    public String getTarjoajaoid() {
+        return tarjoajaoid;
+    }
+
+    public void setTarjoajaoid(String tarjoajaoid) {
+        this.tarjoajaoid = tarjoajaoid;
     }
 }

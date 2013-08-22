@@ -23,6 +23,7 @@
             <xs:element name="valinnanvaihe" type="tns:ValinnanvaiheTyyppi" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="oid" type="xs:string" use="required"/>
+        <xs:attribute name="tarjoajaOid" type="xs:string"/>
     </xs:complexType>
 
 	<xs:complexType name="HakemusOsallistuminenTyyppi">

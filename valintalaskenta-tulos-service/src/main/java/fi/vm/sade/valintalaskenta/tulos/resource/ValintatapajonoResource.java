@@ -1,6 +1,5 @@
 package fi.vm.sade.valintalaskenta.tulos.resource;
 
-import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
@@ -12,8 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.CRUD;
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.UPDATE;
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.OPH_CRUD;
 
 /**
  * @author Jussi Jartamo
@@ -38,7 +36,7 @@ public class ValintatapajonoResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/jonosija")
-    @Secured({ UPDATE, CRUD })
+    @Secured({ OPH_CRUD })
     public MuokattuJonosija muutaJonosija(
                                                         @PathParam("valintatapajonoOid") String valintatapajonoOid,
                                                         @PathParam("hakemusOid") String hakemusOid,

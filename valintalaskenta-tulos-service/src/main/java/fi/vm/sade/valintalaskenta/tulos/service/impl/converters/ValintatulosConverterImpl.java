@@ -23,6 +23,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter{
             HakukohdeDTO ht = hakukohdeMap.get(v.getOid());
             if (ht == null) {
                 ht = new HakukohdeDTO();
+                ht.setTarjoajaoid(v.getTarjoajaoid());
                 ht.setOid(v.getOid());
                 ht.setHakuoid(v.getHakuoid());
                 ht.setCreatedAt(v.getCreatedAt());
