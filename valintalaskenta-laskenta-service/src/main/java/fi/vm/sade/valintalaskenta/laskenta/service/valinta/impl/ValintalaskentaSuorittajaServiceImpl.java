@@ -360,6 +360,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         if (versiohallinta == null) {
             versiohallinta = new VersiohallintaHakukohde();
             versiohallinta.setHakuoid(hakuoid);
+            versiohallinta.setTarjoajaoid(tarjoajaOid);
             versiohallinta.setValinnanvaiheoid(valinnanvaiheoid);
             versiohallinta.setHakukohdeoid(hakukohdeoid);
             versiohallinta.setJarjestysnumero(jarjestysnumero);
