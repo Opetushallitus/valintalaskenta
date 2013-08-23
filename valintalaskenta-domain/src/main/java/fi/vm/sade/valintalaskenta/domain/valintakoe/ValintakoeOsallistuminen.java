@@ -24,8 +24,18 @@ public class ValintakoeOsallistuminen {
     private ObjectId id;
 
     private String hakuOid;
+
+    @JsonView(JsonViews.Basic.class)
     private String hakemusOid;
+
+    @JsonView(JsonViews.Basic.class)
     private String hakijaOid;
+
+    @JsonView(JsonViews.Basic.class)
+    private String etunimi;
+
+    @JsonView(JsonViews.Basic.class)
+    private String sukunimi;
 
     @JsonView(JsonViews.Basic.class)
     private Date createdAt;
@@ -84,5 +94,21 @@ public class ValintakoeOsallistuminen {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getSukunimi() {
+        return sukunimi;
+    }
+
+    public void setSukunimi(String sukunimi) {
+        this.sukunimi = sukunimi;
+    }
+
+    public String getEtunimi() {
+        return etunimi;
+    }
+
+    public void setEtunimi(String etunimi) {
+        this.etunimi = etunimi;
     }
 }
