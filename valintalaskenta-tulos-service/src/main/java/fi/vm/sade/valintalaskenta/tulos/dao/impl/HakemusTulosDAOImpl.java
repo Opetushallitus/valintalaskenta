@@ -1,7 +1,9 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -36,19 +38,18 @@ public class HakemusTulosDAOImpl implements HakemusTulosDAO {
     }
 
     @Override
-    public Collection<String> findValintatapajonoOidsByHakemusOid(String hakemusOid) {
+    public Set<String> findValintatapajonoOidsByHakemusOid(String hakemusOid) {
         Collection<String> oidit = Collections2.transform(findByHakemusOid(hakemusOid),
                 new Function<Valintatapajono, String>() {
                     public String apply(@Nullable Valintatapajono jono) {
                         return jono.getOid();
                     }
                 });
-        return oidit;
+        return new HashSet<String>(oidit);
     }
 
     @Override
-    public List<VersiohallintaHakukohde> findPartialByValinnanvaiheOid(String hakuOid, Collection<String> oidit) {
-        return datastore.find(VersiohallintaHakukohde.class).field("hakuoid").equal(hakuOid).field("valinnanvaiheoid")
-                .in(oidit).asList();
+    public List<VersiohallintaHakukohde> findByValinnanvaiheOid(String hakuOid) {
+        return datastore.find(VersiohallintaHakukohde.class).field("hakuoid").equal(hakuOid).asList();
     }
 }

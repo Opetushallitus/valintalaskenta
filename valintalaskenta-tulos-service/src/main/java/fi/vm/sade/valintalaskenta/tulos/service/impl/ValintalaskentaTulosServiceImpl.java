@@ -2,8 +2,10 @@ package fi.vm.sade.valintalaskenta.tulos.service.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -11,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import scala.actors.threadpool.Arrays;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -80,30 +84,40 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     private HakemusTulosDAO hakemusTulosDAO;
 
     public HakemusDTO haeTuloksetHakemukselle(final String hakuOid, final String hakemusOid) {
-        Collection<String> oidit = hakemusTulosDAO.findValintatapajonoOidsByHakemusOid(hakemusOid);
+        final Set<String> oidit = hakemusTulosDAO.findValintatapajonoOidsByHakemusOid(hakemusOid);
+        if (oidit == null || oidit.isEmpty()) {
+            LOGGER.debug("Ei oideja! Haku {} ja hakemus {}", new Object[] { hakuOid, hakemusOid });
+            return new HakemusDTO(hakuOid, hakemusOid, Collections.<HakukohdeDTO> emptyList());
+        } else {
+            LOGGER.debug("Oideja loytyi {}", Arrays.toString(oidit.toArray()));
+        }
+        List<VersiohallintaHakukohde> hakukohteet = hakemusTulosDAO.findByValinnanvaiheOid(hakuOid);
+        if (hakukohteet == null || hakukohteet.isEmpty()) {
+            LOGGER.debug("Ei hakukohteita! Haku {} ja hakemus {} ja oidit {}", new Object[] { hakuOid, hakemusOid,
+                    Arrays.toString(oidit.toArray()) });
+            return new HakemusDTO(hakuOid, hakemusOid, Collections.<HakukohdeDTO> emptyList());
+        }
 
-        List<VersiohallintaHakukohde> hakukohteet = hakemusTulosDAO.findPartialByValinnanvaiheOid(hakuOid, oidit);
         List<HakukohdeDTO> dtot = new ArrayList<HakukohdeDTO>();
         for (VersiohallintaHakukohde haku : hakukohteet) {
 
             Hakukohde hakukohde = haku.getHakukohteet().haeUusinVersio().getHakukohde();
-
-            HakukohdeDTO h = new HakukohdeDTO();
-            h.setCreatedAt(hakukohde.getCreatedAt());
-            h.setHakuoid(hakukohde.getHakuoid());
-            h.setTarjoajaoid(hakukohde.getTarjoajaoid());
-            h.setOid(hakukohde.getOid());
-
-            List<ValinnanvaiheDTO> valinnanvaiheet = new ArrayList<ValinnanvaiheDTO>();
             Valinnanvaihe valinnanvaihe = hakukohde.getValinnanvaihe();
-            ValinnanvaiheDTO v = new ValinnanvaiheDTO();
-            v.setCreatedAt(valinnanvaihe.getCreatedAt());
-            v.setJarjestysnumero(valinnanvaihe.getJarjestysnumero());
-            v.setValinnanvaiheoid(valinnanvaihe.getValinnanvaiheoid());
-            valinnanvaiheet.add(v);
-            h.setValinnanvaihe(valinnanvaiheet);
+
+            valinnanvaihe.getValintatapajono();
+            Collection<Valintatapajono> valintatapajonot = Collections2.filter(valinnanvaihe.getValintatapajono(),
+                    new Predicate<Valintatapajono>() {
+                        public boolean apply(@Nullable Valintatapajono j) {
+                            return oidit.contains(j.getOid());
+                        }
+
+                    });
+            if (valintatapajonot.isEmpty()) {
+                continue;
+            }
             List<ValintatapajonoDTO> jonot = new ArrayList<ValintatapajonoDTO>();
-            for (Valintatapajono jono : valinnanvaihe.getValintatapajono()) {
+            for (Valintatapajono jono : valintatapajonot) {
+
                 ValintatapajonoDTO j = new ValintatapajonoDTO();
                 j.setAloituspaikat(jono.getAloituspaikat());
                 j.setEiVarasijatayttoa(jono.getEiVarasijatayttoa());
@@ -122,7 +136,20 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                 j.setJonosijat(valintatulosConverter.convertJonosija(jonosijat));
                 jonot.add(j);
             }
+            ValinnanvaiheDTO v = new ValinnanvaiheDTO();
+            v.setCreatedAt(valinnanvaihe.getCreatedAt());
+            v.setJarjestysnumero(valinnanvaihe.getJarjestysnumero());
+            v.setValinnanvaiheoid(valinnanvaihe.getValinnanvaiheoid());
+            List<ValinnanvaiheDTO> valinnanvaiheet = new ArrayList<ValinnanvaiheDTO>();
+            valinnanvaiheet.add(v);
+            HakukohdeDTO h = new HakukohdeDTO();
+            h.setCreatedAt(hakukohde.getCreatedAt());
+            h.setHakuoid(hakukohde.getHakuoid());
+            h.setTarjoajaoid(hakukohde.getTarjoajaoid());
+            h.setOid(hakukohde.getOid());
+            h.setValinnanvaihe(valinnanvaiheet);
             v.setValintatapajono(jonot);
+            dtot.add(h);
         }
         return new HakemusDTO(hakuOid, hakemusOid, dtot);
     }

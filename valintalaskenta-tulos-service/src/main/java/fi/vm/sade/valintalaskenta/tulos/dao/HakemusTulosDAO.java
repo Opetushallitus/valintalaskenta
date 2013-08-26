@@ -1,7 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.dao;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
 import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
@@ -16,7 +16,7 @@ public interface HakemusTulosDAO {
 
     List<Valintatapajono> findByHakemusOid(String hakemusOid);
 
-    Collection<String> findValintatapajonoOidsByHakemusOid(String hakemusOid);
+    Set<String> findValintatapajonoOidsByHakemusOid(String hakemusOid);
 
-    List<VersiohallintaHakukohde> findPartialByValinnanvaiheOid(String hakuOid, Collection<String> valinnanvaiheOid);
+    List<VersiohallintaHakukohde> findByValinnanvaiheOid(String hakuOid);
 }

@@ -34,7 +34,7 @@ public class HakemusResource {
     private ValintalaskentaTulosService tulosService;
 
     @GET
-    @Path("{hakemusoid}")
+    @Path("{hakuoid}/{hakemusoid}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
     @Secured({ READ, UPDATE, CRUD })
