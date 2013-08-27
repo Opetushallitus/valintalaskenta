@@ -1,10 +1,6 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
-import com.google.code.morphia.annotations.Embedded;
-import com.google.code.morphia.annotations.PrePersist;
-import com.google.code.morphia.annotations.Reference;
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
-import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
 import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.ArrayList;

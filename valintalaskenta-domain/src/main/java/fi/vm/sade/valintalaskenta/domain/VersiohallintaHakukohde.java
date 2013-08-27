@@ -28,16 +28,26 @@ public class VersiohallintaHakukohde {
     private String hakuoid;
     @Indexed
     private String hakukohdeoid;
+
     @Indexed
     private String valinnanvaiheoid;
 
     private int jarjestysnumero;
+    private String tarjoajaoid;
 
     @Embedded(concreteClass = VersioSet.class)
     private VersioSet<Versioituhakukohde> hakukohteet = new VersioSet<Versioituhakukohde>();
 
     public VersioSet<Versioituhakukohde> getHakukohteet() {
         return hakukohteet;
+    }
+
+    public String getTarjoajaoid() {
+        return tarjoajaoid;
+    }
+
+    public void setTarjoajaoid(String tarjoajaoid) {
+        this.tarjoajaoid = tarjoajaoid;
     }
 
     public String getValinnanvaiheoid() {

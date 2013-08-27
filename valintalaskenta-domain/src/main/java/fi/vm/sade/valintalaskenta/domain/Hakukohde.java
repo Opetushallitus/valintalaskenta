@@ -29,6 +29,9 @@ public class Hakukohde {
     @JsonView(JsonViews.Basic.class)
     private String hakukohdeoid;
 
+    @JsonView(JsonViews.Basic.class)
+    private String tarjoajaoid;
+
     @Embedded
     @JsonView(JsonViews.Basic.class)
     private Valinnanvaihe valinnanvaihe;
@@ -63,6 +66,14 @@ public class Hakukohde {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getTarjoajaoid() {
+        return tarjoajaoid;
+    }
+
+    public void setTarjoajaoid(String tarjoajaoid) {
+        this.tarjoajaoid = tarjoajaoid;
     }
 
     @PrePersist

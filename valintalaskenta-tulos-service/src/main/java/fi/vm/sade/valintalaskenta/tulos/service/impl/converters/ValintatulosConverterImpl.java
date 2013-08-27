@@ -1,11 +1,26 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl.converters;
 
-import fi.vm.sade.valintalaskenta.domain.*;
-import fi.vm.sade.valintalaskenta.domain.comparator.JonosijaDTOComparator;
-import fi.vm.sade.valintalaskenta.domain.dto.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import fi.vm.sade.valintalaskenta.domain.Hakukohde;
+import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.Jonosija;
+import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.comparator.JonosijaDTOComparator;
+import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteeritulosDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
 
 /**
  * Created with IntelliJ IDEA. User: kkammone Date: 1.8.2013 Time: 12:48 To
@@ -13,7 +28,7 @@ import java.util.*;
  */
 
 @Component
-public class ValintatulosConverterImpl implements ValintatulosConverter{
+public class ValintatulosConverterImpl implements ValintatulosConverter {
 
     @Override
     public List<HakukohdeDTO> convertHakukohde(List<Hakukohde> a) {
@@ -23,6 +38,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter{
             HakukohdeDTO ht = hakukohdeMap.get(v.getOid());
             if (ht == null) {
                 ht = new HakukohdeDTO();
+                ht.setTarjoajaoid(v.getTarjoajaoid());
                 ht.setOid(v.getOid());
                 ht.setHakuoid(v.getHakuoid());
                 ht.setCreatedAt(v.getCreatedAt());
@@ -42,19 +58,20 @@ public class ValintatulosConverterImpl implements ValintatulosConverter{
             return list;
         }
         for (Valinnanvaihe valinnanVaihe : valinnanVaiheList) {
-            list.add( convertValinnanvaihe(valinnanVaihe));
+            list.add(convertValinnanvaihe(valinnanVaihe));
         }
         return list;
     }
 
-    public ValinnanvaiheDTO convertValinnanvaihe(Valinnanvaihe valinnanvaihe){
+    public ValinnanvaiheDTO convertValinnanvaihe(Valinnanvaihe valinnanvaihe) {
         ValinnanvaiheDTO dto = new ValinnanvaiheDTO();
         dto.setCreatedAt(valinnanvaihe.getCreatedAt());
         dto.setJarjestysnumero(valinnanvaihe.getJarjestysnumero());
         dto.setValinnanvaiheoid(valinnanvaihe.getValinnanvaiheoid());
         dto.setValintatapajono(convertValintatapajono(valinnanvaihe.getValintatapajono()));
-        return  dto;
+        return dto;
     }
+
     @Override
     public List<ValintatapajonoDTO> convertValintatapajono(List<Valintatapajono> valintapajonoList) {
         List<ValintatapajonoDTO> list = new ArrayList<ValintatapajonoDTO>();
@@ -76,8 +93,9 @@ public class ValintatulosConverterImpl implements ValintatulosConverter{
         }
         return list;
     }
+
     @Override
-    public List<JonosijaDTO> convertJonosija(List<Jonosija> jonosijat) {
+    public List<JonosijaDTO> convertJonosija(Collection<Jonosija> jonosijat) {
         List<JonosijaDTO> list = new ArrayList<JonosijaDTO>();
         if (jonosijat == null || jonosijat.isEmpty()) {
             return list;
@@ -89,7 +107,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter{
             dto.setHakijaOid(jonosija.getHakijaoid());
             dto.setPrioriteetti(jonosija.getPrioriteetti());
             dto.setSukunimi(jonosija.getSukunimi());
-            //dto.setHistoriat(jonosija.getHistoriat());
+            // dto.setHistoriat(jonosija.getHistoriat());
 
             for (Integer i : jonosija.getJarjestyskriteerit().keySet()) {
                 Jarjestyskriteeritulos jktulos = jonosija.getJarjestyskriteerit().get(i);
@@ -103,12 +121,11 @@ public class ValintatulosConverterImpl implements ValintatulosConverter{
             list.add(dto);
         }
 
-
         return list;
     }
-    @Override
-    public void sort( List<JonosijaDTO> list) {
 
+    @Override
+    public void sort(List<JonosijaDTO> list) {
 
         JonosijaDTOComparator comparator = new JonosijaDTOComparator();
         Collections.sort(list, comparator);
@@ -125,12 +142,14 @@ public class ValintatulosConverterImpl implements ValintatulosConverter{
             jonosija.setJonosija(i);
 
             if (jonosija.getJarjestyskriteerit().get(0) != null) {
-                //System.out.println("===JONOSIJA===")         ;
-                //     System.out.println("EKA: "+jonosija.getJarjestyskriteerit().get(0).getTila() )         ;
-                //   for(Integer b : jonosija.getJarjestyskriteerit().keySet()) {
-                //        System.out.println("[" + b +"]" + jonosija.getJarjestyskriteerit().get(b).getTila() );
-                //    }
-                //   System.out.println("==============")         ;
+                // System.out.println("===JONOSIJA===") ;
+                // System.out.println("EKA: "+jonosija.getJarjestyskriteerit().get(0).getTila()
+                // ) ;
+                // for(Integer b : jonosija.getJarjestyskriteerit().keySet()) {
+                // System.out.println("[" + b +"]" +
+                // jonosija.getJarjestyskriteerit().get(b).getTila() );
+                // }
+                // System.out.println("==============") ;
 
                 jonosija.setTuloksenTila(jonosija.getJarjestyskriteerit().get(0).getTila());
             }
