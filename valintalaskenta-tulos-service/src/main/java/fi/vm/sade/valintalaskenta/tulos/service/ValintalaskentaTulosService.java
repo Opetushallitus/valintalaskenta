@@ -17,7 +17,7 @@ public interface ValintalaskentaTulosService {
 
     List<ValinnanvaiheDTO> haeValinnanvaiheetHakukohteelle(String hakukohdeoid);
 
-    List<Valintatapajono> haeVirheetHakukohteelle(String hakukohdeoid);
+    List<HakukohdeDTO> haeVirheetHaulle(String hakuOid);
 
     List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid);
 
