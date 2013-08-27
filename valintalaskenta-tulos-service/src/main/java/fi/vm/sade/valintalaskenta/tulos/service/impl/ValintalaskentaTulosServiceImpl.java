@@ -231,8 +231,9 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         // FIXME: Suora mongo kysely tälle.
         List<Hakukohde> a = valinnanvaiheDAO.readByHakuOid(hakuOid);
         List<HakukohdeDTO> b = valintatulosConverter.convertHakukohde(a);
-
-        for (HakukohdeDTO hakukohdeDTO : b) {
+        Iterator<HakukohdeDTO> hakukohdeIter = b.iterator();
+        while (hakukohdeIter.hasNext()) {
+            HakukohdeDTO hakukohdeDTO = hakukohdeIter.next();
 
             Iterator<ValinnanvaiheDTO> vvIter = hakukohdeDTO.getValinnanvaihe().iterator();
 
@@ -272,6 +273,11 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                     vvIter.remove();
                 }
             }
+
+            if (hakukohdeDTO.getValinnanvaihe().size() == 0) {
+                hakukohdeIter.remove();
+            }
+
         }
         return b;
     }
