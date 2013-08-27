@@ -1,11 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.annotation.Nullable;
 
@@ -231,22 +226,54 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
-    public List<Valintatapajono> haeVirheetHakukohteelle(String hakukohdeoid) {
+    public List<HakukohdeDTO> haeVirheetHaulle(String hakuOid) {
 
-        List<Valinnanvaihe> a = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeoid);
-        for (Valinnanvaihe vv : a) {
-            for (Valintatapajono valintatapajono : vv.getValintatapajono()) {
-                for (Jonosija jonosija : valintatapajono.getJonosijat()) {
-                    for (Jarjestyskriteeritulos jarjestyskriteeritulos : jonosija.getJarjestyskriteerit().values()) {
-                        if (jarjestyskriteeritulos.getTila().equals(JarjestyskriteerituloksenTila.VIRHE)) {
+        // FIXME: Suora mongo kysely tälle.
+        List<Hakukohde> a = valinnanvaiheDAO.readByHakuOid(hakuOid);
+        List<HakukohdeDTO> b = valintatulosConverter.convertHakukohde(a);
 
+        for (HakukohdeDTO hakukohdeDTO : b) {
+
+            Iterator<ValinnanvaiheDTO> vvIter = hakukohdeDTO.getValinnanvaihe().iterator();
+
+            while (vvIter.hasNext()) {
+
+                ValinnanvaiheDTO vv = vvIter.next();
+
+                Iterator<ValintatapajonoDTO> vtjIter = vv.getValintatapajono().iterator();
+
+                while (vtjIter.hasNext()) {
+                    ValintatapajonoDTO valintatapajonoDTO = vtjIter.next();
+
+                    Iterator<JonosijaDTO> jonoIter = valintatapajonoDTO.getJonosijat().iterator();
+
+                    while (jonoIter.hasNext()) {
+                        JonosijaDTO jonosijaDTO = jonoIter.next();
+
+                        Iterator<Map.Entry<Integer, JarjestyskriteeritulosDTO>> iterator = jonosijaDTO.getJarjestyskriteerit().entrySet().iterator();
+                        while (iterator.hasNext()) {
+                            Map.Entry<Integer, JarjestyskriteeritulosDTO> next = iterator.next();
+                            if (!next.getValue().getTila().equals(JarjestyskriteerituloksenTila.VIRHE)) {
+                                iterator.remove();
+                            }
+                        }
+
+                        if (jonosijaDTO.getJarjestyskriteerit().size() == 0) {
+                            jonoIter.remove();
                         }
                     }
+
+                    if (valintatapajonoDTO.getJonosijat().size() == 0) {
+                        vtjIter.remove();
+                    }
+                }
+
+                if (vv.getValintatapajono().size() == 0) {
+                    vvIter.remove();
                 }
             }
         }
-
-        return null;
+        return b;
     }
 
     @Override

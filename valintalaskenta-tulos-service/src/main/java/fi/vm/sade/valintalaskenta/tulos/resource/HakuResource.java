@@ -25,21 +25,22 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
  * @author Jussi Jartamo
  */
 @Component
-@Path("hakukohde")
+@Path("haku")
 @PreAuthorize("isAuthenticated()")
-public class HakukohdeResource {
+public class HakuResource {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(HakukohdeResource.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(HakuResource.class);
 
     @Autowired
     private ValintalaskentaTulosService tulosService;
 
+
     @GET
-    @Path("{hakukohdeoid}/valinnanvaihe")
+    @Path("{hakuOid}/virheet")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
     @Secured({READ, UPDATE, CRUD})
-    public List<ValinnanvaiheDTO> hakukohde(@PathParam("hakukohdeoid") String hakukohdeoid) {
-        return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
+    public List<HakukohdeDTO> virheet(@PathParam("hakuOid") String hakuOid) {
+        return tulosService.haeVirheetHaulle(hakuOid);
     }
 }
