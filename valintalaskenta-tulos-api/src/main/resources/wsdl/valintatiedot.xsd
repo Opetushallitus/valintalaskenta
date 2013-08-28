@@ -83,6 +83,7 @@
             <xs:enumeration value="HYVAKSYTTAVISSA"/>
             <xs:enumeration value="MAARITTELEMATON"/>
             <xs:enumeration value="HYLATTY"/>
+            <xs:enumeration value="VIRHE"/>
         </xs:restriction>
     </xs:simpleType>
 
