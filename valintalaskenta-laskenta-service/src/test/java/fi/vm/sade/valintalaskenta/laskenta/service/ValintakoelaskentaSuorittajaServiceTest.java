@@ -71,11 +71,17 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         ValintaperusteetTyyppi valintaperusteet2 = luoValintaperusteet(hakuOid, hakukohdeOid2, valinnanVaiheOid2,
                 valinnanVaiheJarjestysluku2, valintakoetunniste);
 
+        final OsallistuminenTulos osallistuu1 = new OsallistuminenTulos();
+        osallistuu1.setOsallistuminen(Osallistuminen.OSALLISTUU);
+
+        final OsallistuminenTulos osallistuu2 = new OsallistuminenTulos();
+        osallistuu2.setOsallistuminen(Osallistuminen.OSALLISTUU);
+
         when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(eq(hakukohdeOid1),
-                Matchers.<HakemusTyyppi>any(), Matchers.<FunktiokutsuTyyppi>any())).thenReturn(Osallistuminen.OSALLISTUU);
+                Matchers.<HakemusTyyppi>any(), Matchers.<FunktiokutsuTyyppi>any())).thenReturn(osallistuu1);
 
         when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(eq(hakukohdeOid2),
-                Matchers.<HakemusTyyppi>any(), Matchers.<FunktiokutsuTyyppi>any())).thenReturn(Osallistuminen.OSALLISTUU);
+                Matchers.<HakemusTyyppi>any(), Matchers.<FunktiokutsuTyyppi>any())).thenReturn(osallistuu2);
 
         when(valintakoeOsallistuminenDAOMock.readByHakuOidAndHakemusOid(anyString(), anyString())).thenReturn(null);
 
@@ -114,7 +120,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
             Valintakoe vk1 = vaihe1.getValintakokeet().get(0);
             assertEquals(valintakoetunniste, vk1.getValintakoeOid());
             assertEquals(valintakoetunniste, vk1.getValintakoeTunniste());
-            assertEquals(Osallistuminen.OSALLISTUU, vk1.getOsallistuminen());
+            assertEquals(Osallistuminen.OSALLISTUU, vk1.getOsallistuminenTulos().getOsallistuminen());
         }
 
         {
@@ -130,7 +136,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
             Valintakoe vk2 = vaihe2.getValintakokeet().get(0);
             assertEquals(valintakoetunniste, vk2.getValintakoeOid());
             assertEquals(valintakoetunniste, vk2.getValintakoeTunniste());
-            assertEquals(Osallistuminen.EI_OSALLISTU, vk2.getOsallistuminen());
+            assertEquals(Osallistuminen.EI_OSALLISTU, vk2.getOsallistuminenTulos().getOsallistuminen());
         }
     }
 
@@ -161,13 +167,13 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
             assertEquals(3, kokeet.size());
             assertEquals(hakukohdeOid1, kokeet.get(0).getHakukohdeOid());
-            assertEquals(Osallistuminen.OSALLISTUU, kokeet.get(0).getOsallistuminen());
+            assertEquals(Osallistuminen.OSALLISTUU, kokeet.get(0).getOsallistuminenTulos().getOsallistuminen());
 
             assertEquals(hakukohdeOid2, kokeet.get(1).getHakukohdeOid());
-            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(1).getOsallistuminen());
+            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(1).getOsallistuminenTulos().getOsallistuminen());
 
             assertEquals(hakukohdeOid3, kokeet.get(2).getHakukohdeOid());
-            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(2).getOsallistuminen());
+            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(2).getOsallistuminenTulos().getOsallistuminen());
         }
 
         {
@@ -181,13 +187,13 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
             assertEquals(3, kokeet.size());
             assertEquals(hakukohdeOid1, kokeet.get(0).getHakukohdeOid());
-            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(0).getOsallistuminen());
+            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(0).getOsallistuminenTulos().getOsallistuminen());
 
             assertEquals(hakukohdeOid2, kokeet.get(1).getHakukohdeOid());
-            assertEquals(Osallistuminen.OSALLISTUU, kokeet.get(1).getOsallistuminen());
+            assertEquals(Osallistuminen.OSALLISTUU, kokeet.get(1).getOsallistuminenTulos().getOsallistuminen());
 
             assertEquals(hakukohdeOid3, kokeet.get(2).getHakukohdeOid());
-            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(2).getOsallistuminen());
+            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(2).getOsallistuminenTulos().getOsallistuminen());
         }
 
         {
@@ -201,13 +207,13 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
             assertEquals(3, kokeet.size());
             assertEquals(hakukohdeOid1, kokeet.get(0).getHakukohdeOid());
-            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(0).getOsallistuminen());
+            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(0).getOsallistuminenTulos().getOsallistuminen());
 
             assertEquals(hakukohdeOid2, kokeet.get(1).getHakukohdeOid());
-            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(1).getOsallistuminen());
+            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(1).getOsallistuminenTulos().getOsallistuminen());
 
             assertEquals(hakukohdeOid3, kokeet.get(2).getHakukohdeOid());
-            assertEquals(Osallistuminen.OSALLISTUU, kokeet.get(2).getOsallistuminen());
+            assertEquals(Osallistuminen.OSALLISTUU, kokeet.get(2).getOsallistuminenTulos().getOsallistuminen());
         }
 
         {
@@ -221,13 +227,13 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
             assertEquals(3, kokeet.size());
             assertEquals(hakukohdeOid1, kokeet.get(0).getHakukohdeOid());
-            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(0).getOsallistuminen());
+            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(0).getOsallistuminenTulos().getOsallistuminen());
 
             assertEquals(hakukohdeOid2, kokeet.get(1).getHakukohdeOid());
-            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(1).getOsallistuminen());
+            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(1).getOsallistuminenTulos().getOsallistuminen());
 
             assertEquals(hakukohdeOid3, kokeet.get(2).getHakukohdeOid());
-            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(2).getOsallistuminen());
+            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(2).getOsallistuminenTulos().getOsallistuminen());
         }
 
         {
@@ -241,13 +247,13 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
             assertEquals(3, kokeet.size());
             assertEquals(hakukohdeOid1, kokeet.get(0).getHakukohdeOid());
-            assertEquals(Osallistuminen.OSALLISTUU, kokeet.get(0).getOsallistuminen());
+            assertEquals(Osallistuminen.OSALLISTUU, kokeet.get(0).getOsallistuminenTulos().getOsallistuminen());
 
             assertEquals(hakukohdeOid2, kokeet.get(1).getHakukohdeOid());
-            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(1).getOsallistuminen());
+            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(1).getOsallistuminenTulos().getOsallistuminen());
 
             assertEquals(hakukohdeOid3, kokeet.get(2).getHakukohdeOid());
-            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(2).getOsallistuminen());
+            assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(2).getOsallistuminenTulos().getOsallistuminen());
         }
     }
 }

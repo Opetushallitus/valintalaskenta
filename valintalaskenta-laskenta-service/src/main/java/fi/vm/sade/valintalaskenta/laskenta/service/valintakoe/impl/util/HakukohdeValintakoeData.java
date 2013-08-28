@@ -1,6 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util;
 
-import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
 
 /**
  * User: wuoti
@@ -16,7 +16,7 @@ public class HakukohdeValintakoeData {
 
     private String valintakoeTunniste;
     private String valintakoeOid;
-    private Osallistuminen osallistuminen;
+    private OsallistuminenTulos osallistuminenTulos;
 
     public String getHakuOid() {
         return hakuOid;
@@ -58,13 +58,6 @@ public class HakukohdeValintakoeData {
         this.valinnanVaiheJarjestysNro = valinnanVaiheJarjestysNro;
     }
 
-    public Osallistuminen getOsallistuminen() {
-        return osallistuminen;
-    }
-
-    public void setOsallistuminen(Osallistuminen osallistuminen) {
-        this.osallistuminen = osallistuminen;
-    }
 
     public void setValintakoeOid(String valintakoeOid) {
         this.valintakoeOid = valintakoeOid;
@@ -72,5 +65,13 @@ public class HakukohdeValintakoeData {
 
     public String getValintakoeOid() {
         return valintakoeOid;
+    }
+
+    public OsallistuminenTulos getOsallistuminenTulos() {
+        return osallistuminenTulos;
+    }
+
+    public void setOsallistuminenTulos(OsallistuminenTulos osallistuminenTulos) {
+        this.osallistuminenTulos = osallistuminenTulos;
     }
 }

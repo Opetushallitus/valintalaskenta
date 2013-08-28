@@ -41,13 +41,13 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                 ValintakoeValinnanVaiheTyyppi vaihe = (ValintakoeValinnanVaiheTyyppi) vp.getValinnanVaihe();
 
                 for (ValintakoeTyyppi koe : vaihe.getValintakoe()) {
-                    Osallistuminen osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
+                    OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
                             vp.getHakukohdeOid(), hakemus, koe.getFunktiokutsu());
 
                     HakukohdeValintakoeData data = new HakukohdeValintakoeData();
                     data.setHakuOid(vp.getHakuOid());
                     data.setHakukohdeOid(vp.getHakukohdeOid());
-                    data.setOsallistuminen(osallistuminen);
+                    data.setOsallistuminenTulos(osallistuminen);
                     data.setValinnanVaiheJarjestysNro(vaihe.getValinnanVaiheJarjestysluku());
                     data.setValinnanVaiheOid(vaihe.getValinnanVaiheOid());
                     data.setValintakoeTunniste(koe.getTunniste());
@@ -101,12 +101,12 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         // pienemmällä prioriteetilla oleviin samoihin valintakokeisiin.
         boolean osallistuminenLoydetty = false;
         for (HakukohdeValintakoeData d : kokeet) {
-            if (!osallistuminenLoydetty && Osallistuminen.OSALLISTUU.equals(d.getOsallistuminen())) {
+            if (!osallistuminenLoydetty && Osallistuminen.OSALLISTUU.equals(d.getOsallistuminenTulos().getOsallistuminen())) {
                 osallistuminenLoydetty = true;
                 continue;
             }
 
-            d.setOsallistuminen(Osallistuminen.EI_OSALLISTU);
+            d.getOsallistuminenTulos().setOsallistuminen(Osallistuminen.EI_OSALLISTU);
         }
     }
 
@@ -184,7 +184,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
             valinnanVaihe.getValintakokeet().add(koe);
         }
 
-        koe.setOsallistuminen(data.getOsallistuminen());
+        koe.setOsallistuminenTulos(data.getOsallistuminenTulos());
         koe.setValintakoeOid(data.getValintakoeOid());
         koe.setValintakoeTunniste(data.getValintakoeTunniste());
     }

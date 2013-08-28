@@ -10,6 +10,7 @@ import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
 import fi.vm.sade.service.valintaperusteet.model.Funktionimi;
 import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
 import fi.vm.sade.valintalaskenta.laskenta.service.exception.LaskentaVaarantyyppisellaFunktiollaException;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.LaskentadomainkonvertteriWrapper;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.FunktioKutsuTyyppiToFunktioKutsuConverter;
@@ -73,9 +74,9 @@ public class ValintakoeosallistumislaskinTest {
         final String hakukohdeOid = "hakukohdeOid1";
         valmisteleStubit(hakukohdeOid, new Hyvaksyttavissatila(), true);
 
-        Osallistuminen osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
+        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
                 hakukohdeOid, new HakemusTyyppi(), new FunktiokutsuTyyppi());
-        assertEquals(Osallistuminen.OSALLISTUU, osallistuminen);
+        assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getOsallistuminen());
     }
 
     @Test
@@ -83,9 +84,9 @@ public class ValintakoeosallistumislaskinTest {
         final String hakukohdeOid = "hakukohdeOid1";
 
         valmisteleStubit(hakukohdeOid, new Hyvaksyttavissatila(), false);
-        Osallistuminen osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
+        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
                 hakukohdeOid, new HakemusTyyppi(), new FunktiokutsuTyyppi());
-        assertEquals(Osallistuminen.EI_OSALLISTU, osallistuminen);
+        assertEquals(Osallistuminen.EI_OSALLISTU, osallistuminen.getOsallistuminen());
     }
 
     @Test
@@ -93,9 +94,9 @@ public class ValintakoeosallistumislaskinTest {
         final String hakukohdeOid = "hakukohdeOid1";
 
         valmisteleStubit(hakukohdeOid, new Hylattytila("kuvaus", new PakollinenValintaperusteHylkays("")), false);
-        Osallistuminen osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
+        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
                 hakukohdeOid, new HakemusTyyppi(), new FunktiokutsuTyyppi());
-        assertEquals(Osallistuminen.OSALLISTUU, osallistuminen);
+        assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getOsallistuminen());
     }
 
     @Test
@@ -103,9 +104,9 @@ public class ValintakoeosallistumislaskinTest {
         final String hakukohdeOid = "hakukohdeOid1";
 
         valmisteleStubit(hakukohdeOid, new Hylattytila("kuvaus", new PakollinenValintaperusteHylkays("")), true);
-        Osallistuminen osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
+        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
                 hakukohdeOid, new HakemusTyyppi(), new FunktiokutsuTyyppi());
-        assertEquals(Osallistuminen.OSALLISTUU, osallistuminen);
+        assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getOsallistuminen());
     }
 
     @Test
@@ -113,9 +114,9 @@ public class ValintakoeosallistumislaskinTest {
         final String hakukohdeOid = "hakukohdeOid1";
 
         valmisteleStubit(hakukohdeOid, new Virhetila("kuvaus", new ArvokonvertointiVirhe("")), true);
-        Osallistuminen osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
+        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
                 hakukohdeOid, new HakemusTyyppi(), new FunktiokutsuTyyppi());
-        assertEquals(Osallistuminen.MAARITTELEMATON, osallistuminen);
+        assertEquals(Osallistuminen.VIRHE, osallistuminen.getOsallistuminen());
     }
 
     @Test
@@ -123,9 +124,9 @@ public class ValintakoeosallistumislaskinTest {
         final String hakukohdeOid = "hakukohdeOid1";
 
         valmisteleStubit(hakukohdeOid, new Virhetila("kuvaus", new ArvokonvertointiVirhe("")), false);
-        Osallistuminen osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
+        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
                 hakukohdeOid, new HakemusTyyppi(), new FunktiokutsuTyyppi());
-        assertEquals(Osallistuminen.MAARITTELEMATON, osallistuminen);
+        assertEquals(Osallistuminen.VIRHE, osallistuminen.getOsallistuminen());
     }
 
     @Test(expected = LaskentaVaarantyyppisellaFunktiollaException.class)

@@ -33,7 +33,10 @@ public class ValintakoeOsallistuminenDAOTest {
         Valintakoe valintakoe = new Valintakoe();
         valintakoe.setValintakoeOid(valintakoeOid);
         valintakoe.setValintakoeTunniste(valintakoetunniste);
-        valintakoe.setOsallistuminen(osallistuminen);
+
+        OsallistuminenTulos osallistuminenTulos = new OsallistuminenTulos();
+        osallistuminenTulos.setOsallistuminen(osallistuminen);
+        valintakoe.setOsallistuminenTulos(osallistuminenTulos);
 
         return valintakoe;
     }
