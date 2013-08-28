@@ -35,7 +35,7 @@
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="OSALLISTUU" />
 			<xs:enumeration value="EI_OSALLISTU" />
-			<xs:enumeration value="MAARITTELEMATON" />
+			<xs:enumeration value="VIRHE" />
 		</xs:restriction>
 	</xs:simpleType>
 	
