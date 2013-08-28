@@ -120,7 +120,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
             osallistuminen = new ValintakoeOsallistuminen();
         }
 
-        System.out.println("here we are: " + osallistuminen.getEtunimi() + " " + osallistuminen.getSukunimi());
+//        System.out.println("here we are: " + osallistuminen.getEtunimi() + " " + osallistuminen.getSukunimi());
 
         osallistuminen.setHakuOid(data.getHakuOid());
 
