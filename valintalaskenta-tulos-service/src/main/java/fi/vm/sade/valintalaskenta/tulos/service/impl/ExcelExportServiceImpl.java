@@ -16,9 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
- * 
  * @author Jussi Jartamo
- * 
  */
 @Service
 public class ExcelExportServiceImpl implements ExcelExportService {
@@ -80,7 +78,7 @@ public class ExcelExportServiceImpl implements ExcelExportService {
                             // String hakijaOid = koetulos.getHakijaOid();
                             String createdAt = formatter.format(koetulos.getCreatedAt());
                             String valintakoeTunniste = valintakoe.getValintakoeTunniste();
-                            String osallistuminen = valintakoe.getOsallistuminen().toString();
+                            String osallistuminen = valintakoe.getOsallistuminenTulos().getOsallistuminen().toString();
                             builder.append("<tr>");
                             builder.append("<td>").append(hakemusOid).append("</td>");
                             builder.append("<td>").append(valintakoeOid).append("</td>");

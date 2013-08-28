@@ -7,6 +7,7 @@ import fi.vm.sade.service.valintaperusteet.schema.ValintakoeTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintakoeValinnanVaiheTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.HakukohdeValintakoeData;
 import scala.actors.threadpool.Arrays;
 
@@ -91,7 +92,7 @@ public abstract class TestDataUtil {
                                                                   Map<String, FunktiokutsuTyyppi> valintakokeetJaKaavat) {
         ValintakoeValinnanVaiheTyyppi vaihe = luoValinnanVaihe(valinnanVaiheOid, valinnanVaiheJarjestysluku);
 
-        for(Map.Entry<String, FunktiokutsuTyyppi>e: valintakokeetJaKaavat.entrySet()) {
+        for (Map.Entry<String, FunktiokutsuTyyppi> e : valintakokeetJaKaavat.entrySet()) {
             ValintakoeTyyppi koe = luoValintakoe(e.getKey(), e.getKey());
             koe.setFunktiokutsu(e.getValue());
             vaihe.getValintakoe().add(koe);
@@ -133,7 +134,10 @@ public abstract class TestDataUtil {
 
         HakukohdeValintakoeData koe = new HakukohdeValintakoeData();
         koe.setHakukohdeOid(hakukohdeOid);
-        koe.setOsallistuminen(osallistuminen);
+
+        OsallistuminenTulos osallistuminenTulos = new OsallistuminenTulos();
+        osallistuminenTulos.setOsallistuminen(osallistuminen);
+        koe.setOsallistuminenTulos(osallistuminenTulos);
         koe.setValintakoeTunniste(valintakoeTunniste);
 
         return koe;

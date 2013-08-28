@@ -11,7 +11,7 @@ import com.google.code.morphia.annotations.Embedded;
 public class Valintakoe {
     private String valintakoeOid;
     private String valintakoeTunniste;
-    private Osallistuminen osallistuminen;
+    private OsallistuminenTulos osallistuminenTulos;
 
     public String getValintakoeOid() {
         return valintakoeOid;
@@ -29,11 +29,11 @@ public class Valintakoe {
         this.valintakoeTunniste = valintakoeTunniste;
     }
 
-    public Osallistuminen getOsallistuminen() {
-        return osallistuminen;
+    public OsallistuminenTulos getOsallistuminenTulos() {
+        return osallistuminenTulos;
     }
 
-    public void setOsallistuminen(Osallistuminen osallistuminen) {
-        this.osallistuminen = osallistuminen;
+    public void setOsallistuminenTulos(OsallistuminenTulos osallistuminenTulos) {
+        this.osallistuminenTulos = osallistuminenTulos;
     }
 }
