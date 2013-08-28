@@ -1,0 +1,74 @@
+{
+    "ValintakoeOsallistuminen":
+            [
+                {
+                     "hakuOid" : "hakuOid1",
+                     "hakemusOid" : "hakemusOid1",
+                     "hakutoiveet" : [
+                         {
+                             "hakukohdeOid" : "hakukohdeOid1",
+                             "valinnanVaiheet" : [
+                                 {
+                                     "valinnanVaiheOid" : "valinnanVaiheOid1",
+                                     "valintakokeet" : [
+                                         {
+                                             "valintakoeOid" : "valintakoeOid1",
+                                             "valintakoeTunniste" : "valintakoeTunniste1",
+                                             "osallistuminenTulos" : {
+                                                 "osallistuminen" : "VIRHE"
+                                             }
+                                         }
+                                     ]
+                                 }
+                             ]
+                         }
+                     ]
+                },
+                {
+                     "hakuOid" : "hakuOid1",
+                     "hakemusOid" : "hakemusOid2",
+                     "hakutoiveet" : [
+                         {
+                             "hakukohdeOid" : "hakukohdeOid1",
+                             "valinnanVaiheet" : [
+                                 {
+                                     "valinnanVaiheOid" : "valinnanVaiheOid1",
+                                     "valintakokeet" : [
+                                         {
+                                             "valintakoeOid" : "valintakoeOid1",
+                                             "valintakoeTunniste" : "valintakoeTunniste1",
+                                             "osallistuminenTulos" : {
+                                                 "osallistuminen" : "OSALLISTUU"
+                                             }
+                                         }
+                                     ]
+                                 }
+                             ]
+                         }
+                     ]
+                },
+                {
+                     "hakuOid" : "hakuOid2",
+                     "hakemusOid" : "hakemusOid1",
+                     "hakutoiveet" : [
+                         {
+                             "hakukohdeOid" : "hakukohdeOid1",
+                             "valinnanVaiheet" : [
+                                 {
+                                     "valinnanVaiheOid" : "valinnanVaiheOid1",
+                                     "valintakokeet" : [
+                                         {
+                                             "valintakoeOid" : "valintakoeOid1",
+                                             "valintakoeTunniste" : "valintakoeTunniste1",
+                                             "osallistuminenTulos" : {
+                                                 "osallistuminen" : "VIRHE"
+                                             }
+                                         }
+                                     ]
+                                 }
+                             ]
+                         }
+                     ]
+                }
+            ]
+}

@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
 import com.google.code.morphia.Datastore;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.tulos.dao.ValintakoeOsallistuminenDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,14 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
     @Override
     public List<ValintakoeOsallistuminen> findByHakutoive(String hakukohdeOid) {
         return datastore.find(ValintakoeOsallistuminen.class).field("hakutoiveet.hakukohdeOid").equal(hakukohdeOid)
+                .asList();
+    }
+
+    @Override
+    public List<ValintakoeOsallistuminen> findByHakuAndOsallistuminen(String hakuOid, Osallistuminen osallistuminen) {
+        return datastore.find(ValintakoeOsallistuminen.class)
+                .field("hakuOid").equal(hakuOid)
+                .field("hakutoiveet.valinnanVaiheet.valintakokeet.osallistuminenTulos.osallistuminen").equal(osallistuminen)
                 .asList();
     }
 }
