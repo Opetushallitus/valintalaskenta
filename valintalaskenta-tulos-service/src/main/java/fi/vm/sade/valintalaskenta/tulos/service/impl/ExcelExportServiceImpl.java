@@ -4,7 +4,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValinnanVaihe;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.tulos.service.ExcelExportService;
@@ -70,7 +70,7 @@ public class ExcelExportServiceImpl implements ExcelExportService {
 
         for (ValintakoeOsallistuminen koetulos : valinnanvaiheet) {
             for (Hakutoive hakutoive : koetulos.getHakutoiveet()) {
-                for (ValinnanVaihe vaihe : hakutoive.getValinnanVaiheet()) {
+                for (Valinnanvaihe vaihe : hakutoive.getValinnanVaiheet()) {
                     for (Valintakoe valintakoe : vaihe.getValintakokeet()) {
                         if (valintakoeOid.equals(valintakoe.getValintakoeOid())) {
                             // String hakuOid = koetulos.getHakuOid();

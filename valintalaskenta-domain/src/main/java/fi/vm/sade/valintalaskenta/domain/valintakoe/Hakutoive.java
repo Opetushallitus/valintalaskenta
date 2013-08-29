@@ -16,7 +16,7 @@ public class Hakutoive {
     private String hakukohdeOid;
 
     @Embedded
-    private List<ValinnanVaihe> valinnanVaiheet = new ArrayList<ValinnanVaihe>();
+    private List<Valinnanvaihe> valinnanVaiheet = new ArrayList<Valinnanvaihe>();
 
     public String getHakukohdeOid() {
         return hakukohdeOid;
@@ -26,11 +26,11 @@ public class Hakutoive {
         this.hakukohdeOid = hakukohdeOid;
     }
 
-    public List<ValinnanVaihe> getValinnanVaiheet() {
+    public List<Valinnanvaihe> getValinnanVaiheet() {
         return valinnanVaiheet;
     }
 
-    public void setValinnanVaiheet(List<ValinnanVaihe> valinnanVaiheet) {
+    public void setValinnanVaiheet(List<Valinnanvaihe> valinnanVaiheet) {
         this.valinnanVaiheet = valinnanVaiheet;
     }
 }

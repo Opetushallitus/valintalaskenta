@@ -2,7 +2,7 @@ package fi.vm.sade.valintalaskenta.tulos.resource;
 
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.slf4j.Logger;
@@ -42,5 +42,14 @@ public class HakuResource {
     @Secured({READ, UPDATE, CRUD})
     public List<HakukohdeDTO> virheet(@PathParam("hakuOid") String hakuOid) {
         return tulosService.haeVirheetHaulle(hakuOid);
+    }
+
+    @GET
+    @Path("{hakuOid}/valintakoevirheet")
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView(JsonViews.Basic.class)
+    @Secured({READ, UPDATE, CRUD})
+    public List<ValintakoeOsallistuminenDTO> valintakoevirheet(@PathParam("hakuOid") String hakuOid) {
+        return tulosService.haeValintakoevirheetHaulle(hakuOid);
     }
 }

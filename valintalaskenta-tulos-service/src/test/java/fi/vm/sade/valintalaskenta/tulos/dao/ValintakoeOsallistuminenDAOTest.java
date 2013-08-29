@@ -50,8 +50,8 @@ public class ValintakoeOsallistuminenDAOTest {
         assertEquals(vko.getHakemusOid(), hakemusOid);
         assertEquals(1, vko.getHakutoiveet().size());
         Hakutoive hakutoive = vko.getHakutoiveet().get(0);
-        assertEquals(1, hakutoive.getValinnanVaiheet().size());
-        ValinnanVaihe vaihe = hakutoive.getValinnanVaiheet().get(0);
+        assertEquals(2, hakutoive.getValinnanVaiheet().size());
+        Valinnanvaihe vaihe = hakutoive.getValinnanVaiheet().get(0);
         assertEquals(1, vaihe.getValintakokeet().size());
         Valintakoe koe = vaihe.getValintakokeet().get(0);
         assertEquals(koe.getOsallistuminenTulos().getOsallistuminen(), osallistuminen);

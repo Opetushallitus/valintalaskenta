@@ -1,47 +1,24 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl;
 
-import java.util.*;
-
-import javax.annotation.Nullable;
-
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import fi.vm.sade.security.service.authz.util.AuthorizationUtil;
+import fi.vm.sade.valintalaskenta.domain.*;
+import fi.vm.sade.valintalaskenta.domain.dto.*;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.tulos.dao.*;
+import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
+import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import scala.actors.threadpool.Arrays;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-
-import fi.vm.sade.security.service.authz.util.AuthorizationUtil;
-import fi.vm.sade.valintalaskenta.domain.Hakukohde;
-import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
-import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
-import fi.vm.sade.valintalaskenta.domain.Jonosija;
-import fi.vm.sade.valintalaskenta.domain.JonosijaHistoria;
-import fi.vm.sade.valintalaskenta.domain.LogEntry;
-import fi.vm.sade.valintalaskenta.domain.MuokattuJonosija;
-import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
-import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
-import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteeritulosDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
-import fi.vm.sade.valintalaskenta.tulos.dao.HakemusTulosDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.HakukohdeDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.JonosijaHistoriaTulosDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.ValintakoeOsallistuminenDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.ValintatapajonoDAO;
-import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
-import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverter;
+import javax.annotation.Nullable;
+import java.util.*;
 
 /**
  * @author Jussi Jartamo
@@ -81,23 +58,23 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     public HakemusDTO haeTuloksetHakemukselle(final String hakuOid, final String hakemusOid) {
         final Set<String> oidit = hakemusTulosDAO.findValintatapajonoOidsByHakemusOid(hakemusOid);
         if (oidit == null || oidit.isEmpty()) {
-            LOGGER.debug("Ei oideja! Haku {} ja hakemus {}", new Object[] { hakuOid, hakemusOid });
-            return new HakemusDTO(hakuOid, hakemusOid, Collections.<HakukohdeDTO> emptyList());
+            LOGGER.debug("Ei oideja! Haku {} ja hakemus {}", new Object[]{hakuOid, hakemusOid});
+            return new HakemusDTO(hakuOid, hakemusOid, Collections.<HakukohdeDTO>emptyList());
         } else {
             LOGGER.debug("Oideja loytyi {}", Arrays.toString(oidit.toArray()));
         }
         List<VersiohallintaHakukohde> hakukohteet = hakemusTulosDAO.findByValinnanvaiheOid(hakuOid);
         if (hakukohteet == null || hakukohteet.isEmpty()) {
-            LOGGER.debug("Ei hakukohteita! Haku {} ja hakemus {} ja oidit {}", new Object[] { hakuOid, hakemusOid,
-                    Arrays.toString(oidit.toArray()) });
-            return new HakemusDTO(hakuOid, hakemusOid, Collections.<HakukohdeDTO> emptyList());
+            LOGGER.debug("Ei hakukohteita! Haku {} ja hakemus {} ja oidit {}", new Object[]{hakuOid, hakemusOid,
+                    Arrays.toString(oidit.toArray())});
+            return new HakemusDTO(hakuOid, hakemusOid, Collections.<HakukohdeDTO>emptyList());
         }
 
         List<HakukohdeDTO> dtot = new ArrayList<HakukohdeDTO>();
         for (VersiohallintaHakukohde haku : hakukohteet) {
 
             Hakukohde hakukohde = haku.getHakukohteet().haeUusinVersio().getHakukohde();
-            Valinnanvaihe valinnanvaihe = hakukohde.getValinnanvaihe();
+            fi.vm.sade.valintalaskenta.domain.Valinnanvaihe valinnanvaihe = hakukohde.getValinnanvaihe();
 
             valinnanvaihe.getValintatapajono();
             Collection<Valintatapajono> valintatapajonot = Collections2.filter(valinnanvaihe.getValintatapajono(),
@@ -218,11 +195,53 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
     @Override
     public List<ValinnanvaiheDTO> haeValinnanvaiheetHakukohteelle(String hakukohdeoid) {
-        List<Valinnanvaihe> a = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeoid);
+        List<fi.vm.sade.valintalaskenta.domain.Valinnanvaihe> a = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeoid);
         List<ValinnanvaiheDTO> b = valintatulosConverter.convertValinnanvaiheList(a);
         applyMuokatutJonosijatToValinannvaihe(hakukohdeoid, b);
         return b;
 
+    }
+
+    @Override
+    public List<ValintakoeOsallistuminenDTO> haeValintakoevirheetHaulle(String hakuOid) {
+        final Osallistuminen virhe = Osallistuminen.VIRHE;
+        List<ValintakoeOsallistuminen> osallistumiset = valintakoeOsallistuminenDAO.findByHakuAndOsallistuminen(hakuOid, virhe);
+
+        Iterator<ValintakoeOsallistuminen> i = osallistumiset.iterator();
+        while (i.hasNext()) {
+            ValintakoeOsallistuminen vko = i.next();
+
+            Iterator<Hakutoive> j = vko.getHakutoiveet().iterator();
+            while (j.hasNext()) {
+                Hakutoive ht = j.next();
+                Iterator<Valinnanvaihe> k = ht.getValinnanVaiheet().iterator();
+                while (k.hasNext()) {
+                    Valinnanvaihe vv = k.next();
+                    Iterator<Valintakoe> l = vv.getValintakokeet().iterator();
+                    while (l.hasNext()) {
+                        Valintakoe vk = l.next();
+
+                        if (!Osallistuminen.VIRHE.equals(vk.getOsallistuminenTulos().getOsallistuminen())) {
+                            l.remove();
+                        }
+                    }
+
+                    if (vv.getValintakokeet().isEmpty()) {
+                        k.remove();
+                    }
+                }
+
+                if (ht.getValinnanVaiheet().isEmpty()) {
+                    j.remove();
+                }
+            }
+
+            if (vko.getHakutoiveet().isEmpty()) {
+                i.remove();
+            }
+        }
+
+        return valintatulosConverter.convertValintakoeOsallistuminen(osallistumiset);
     }
 
     @Override
@@ -307,7 +326,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
     @Override
     public MuokattuJonosija muutaJarjestyskriteeri(String valintatapajonoOid, String hakemusOid,
-            Integer jarjestyskriteeriPrioriteetti, MuokattuJonosijaDTO jonosija, String selite) {
+                                                   Integer jarjestyskriteeriPrioriteetti, MuokattuJonosijaDTO jonosija, String selite) {
 
         Valintatapajono valintatapajono = valintatapajonoDAO.findByOid(valintatapajonoOid);
         VersiohallintaHakukohde hakukohde = hakukohdeDAO.findByValintatapajono(valintatapajono);

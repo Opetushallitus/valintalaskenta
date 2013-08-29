@@ -151,9 +151,9 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
     }
 
     protected void haeTaiLuoValinnanVaihe(Hakutoive hakutoive, HakukohdeValintakoeData data) {
-        ValinnanVaihe vaihe = null;
+        Valinnanvaihe vaihe = null;
 
-        for (ValinnanVaihe v : hakutoive.getValinnanVaiheet()) {
+        for (Valinnanvaihe v : hakutoive.getValinnanVaiheet()) {
             if (data.getValinnanVaiheOid().equals(v.getValinnanVaiheOid())) {
                 vaihe = v;
                 break;
@@ -161,7 +161,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         }
 
         if (vaihe == null) {
-            vaihe = new ValinnanVaihe();
+            vaihe = new Valinnanvaihe();
             hakutoive.getValinnanVaiheet().add(vaihe);
         }
         vaihe.setValinnanVaiheOid(data.getValinnanVaiheOid());
@@ -170,7 +170,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         haeTaiLuoValintakoe(vaihe, data);
     }
 
-    protected void haeTaiLuoValintakoe(ValinnanVaihe valinnanVaihe, HakukohdeValintakoeData data) {
+    protected void haeTaiLuoValintakoe(Valinnanvaihe valinnanVaihe, HakukohdeValintakoeData data) {
         Valintakoe koe = null;
         for (Valintakoe k : valinnanVaihe.getValintakokeet()) {
             if (data.getValintakoeTunniste().equals(k.getValintakoeTunniste())) {
