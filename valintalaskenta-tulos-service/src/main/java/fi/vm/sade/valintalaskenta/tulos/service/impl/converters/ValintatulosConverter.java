@@ -8,14 +8,8 @@ import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.HakutoiveDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.OsallistuminenTulosDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.*;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -40,7 +34,7 @@ public interface ValintatulosConverter {
 
     List<HakutoiveDTO> convertHakutoive(List<Hakutoive> hakutoiveet);
 
-    List<fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValinnanvaiheDTO> convertValinnanVaihe(List<fi.vm.sade.valintalaskenta.domain.valintakoe.Valinnanvaihe> valinnanVaiheet);
+    List<ValintakoeValinnanvaiheDTO> convertValinnanVaihe(List<ValintakoeValinnanvaihe> valinnanVaiheet);
 
     List<ValintakoeDTO> convertValintakoe(List<Valintakoe> valintakokeet);
 

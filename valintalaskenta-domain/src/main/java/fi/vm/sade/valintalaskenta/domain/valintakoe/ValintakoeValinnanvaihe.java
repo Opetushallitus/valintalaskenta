@@ -1,17 +1,22 @@
-package fi.vm.sade.valintalaskenta.domain.dto.valintakoe;
+package fi.vm.sade.valintalaskenta.domain.valintakoe;
+
+import com.google.code.morphia.annotations.Embedded;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * User: wuoti
- * Date: 29.8.2013
- * Time: 8.31
+ * Date: 2.5.2013
+ * Time: 13.31
  */
-public class ValinnanvaiheDTO {
+@Embedded
+public class ValintakoeValinnanvaihe {
     private String valinnanVaiheOid;
     private Integer valinnanVaiheJarjestysluku;
-    private List<ValintakoeDTO> valintakokeet = new ArrayList<ValintakoeDTO>();
+
+    @Embedded
+    private List<Valintakoe> valintakokeet = new ArrayList<Valintakoe>();
 
     public String getValinnanVaiheOid() {
         return valinnanVaiheOid;
@@ -29,11 +34,11 @@ public class ValinnanvaiheDTO {
         this.valinnanVaiheJarjestysluku = valinnanVaiheJarjestysluku;
     }
 
-    public List<ValintakoeDTO> getValintakokeet() {
+    public List<Valintakoe> getValintakokeet() {
         return valintakokeet;
     }
 
-    public void setValintakokeet(List<ValintakoeDTO> valintakokeet) {
+    public void setValintakokeet(List<Valintakoe> valintakokeet) {
         this.valintakokeet = valintakokeet;
     }
 }

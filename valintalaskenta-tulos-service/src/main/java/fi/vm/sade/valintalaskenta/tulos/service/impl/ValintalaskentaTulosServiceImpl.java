@@ -7,7 +7,6 @@ import fi.vm.sade.valintalaskenta.domain.*;
 import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.tulos.dao.*;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverter;
@@ -214,9 +213,9 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             Iterator<Hakutoive> j = vko.getHakutoiveet().iterator();
             while (j.hasNext()) {
                 Hakutoive ht = j.next();
-                Iterator<Valinnanvaihe> k = ht.getValinnanVaiheet().iterator();
+                Iterator<ValintakoeValinnanvaihe> k = ht.getValinnanVaiheet().iterator();
                 while (k.hasNext()) {
-                    Valinnanvaihe vv = k.next();
+                    ValintakoeValinnanvaihe vv = k.next();
                     Iterator<Valintakoe> l = vv.getValintakokeet().iterator();
                     while (l.hasNext()) {
                         Valintakoe vk = l.next();

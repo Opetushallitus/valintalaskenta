@@ -1,14 +1,8 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl.converters;
 
-import fi.vm.sade.valintalaskenta.domain.Hakukohde;
-import fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos;
-import fi.vm.sade.valintalaskenta.domain.Jonosija;
-import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.*;
 import fi.vm.sade.valintalaskenta.domain.comparator.JonosijaDTOComparator;
-import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteeritulosDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import org.springframework.stereotype.Component;
@@ -46,12 +40,12 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
     }
 
     @Override
-    public List<fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO> convertValinnanvaiheList(List<fi.vm.sade.valintalaskenta.domain.Valinnanvaihe> valinnanVaiheList) {
-        List<fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO> list = new ArrayList<fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO>();
+    public List<ValinnanvaiheDTO> convertValinnanvaiheList(List<Valinnanvaihe> valinnanVaiheList) {
+        List<ValinnanvaiheDTO> list = new ArrayList<ValinnanvaiheDTO>();
         if (valinnanVaiheList == null || valinnanVaiheList.isEmpty()) {
             return list;
         }
-        for (fi.vm.sade.valintalaskenta.domain.Valinnanvaihe valinnanVaihe : valinnanVaiheList) {
+        for (Valinnanvaihe valinnanVaihe : valinnanVaiheList) {
             list.add(convertValinnanvaihe(valinnanVaihe));
         }
         return list;
@@ -93,11 +87,11 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
     }
 
     @Override
-    public List<ValinnanvaiheDTO> convertValinnanVaihe(List<Valinnanvaihe> valinnanVaiheet) {
-        List<ValinnanvaiheDTO> dtot = new ArrayList<ValinnanvaiheDTO>();
+    public List<ValintakoeValinnanvaiheDTO> convertValinnanVaihe(List<ValintakoeValinnanvaihe> valinnanVaiheet) {
+        List<ValintakoeValinnanvaiheDTO> dtot = new ArrayList<ValintakoeValinnanvaiheDTO>();
 
-        for (Valinnanvaihe vv : valinnanVaiheet) {
-            ValinnanvaiheDTO dto = new ValinnanvaiheDTO();
+        for (ValintakoeValinnanvaihe vv : valinnanVaiheet) {
+            ValintakoeValinnanvaiheDTO dto = new ValintakoeValinnanvaiheDTO();
             dto.setValinnanVaiheJarjestysluku(vv.getValinnanVaiheJarjestysluku());
             dto.setValinnanVaiheOid(vv.getValinnanVaiheOid());
             dto.setValintakokeet(convertValintakoe(vv.getValintakokeet()));
@@ -135,8 +129,8 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
         return dto;
     }
 
-    public fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO convertValinnanvaihe(fi.vm.sade.valintalaskenta.domain.Valinnanvaihe valinnanvaihe) {
-        fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO dto = new fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO();
+    public ValinnanvaiheDTO convertValinnanvaihe(Valinnanvaihe valinnanvaihe) {
+        ValinnanvaiheDTO dto = new ValinnanvaiheDTO();
         dto.setCreatedAt(valinnanvaihe.getCreatedAt());
         dto.setJarjestysnumero(valinnanvaihe.getJarjestysnumero());
         dto.setValinnanvaiheoid(valinnanvaihe.getValinnanvaiheoid());

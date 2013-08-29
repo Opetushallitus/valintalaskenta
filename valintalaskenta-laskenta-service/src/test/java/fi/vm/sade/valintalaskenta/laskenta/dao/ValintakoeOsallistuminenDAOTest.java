@@ -41,8 +41,8 @@ public class ValintakoeOsallistuminenDAOTest {
         return valintakoe;
     }
 
-    private static Valinnanvaihe luoValinnanVaihe(String valinnanVaiheOid, int valinnanVaiheJarjestysluku) {
-        Valinnanvaihe valinnanVaihe = new Valinnanvaihe();
+    private static ValintakoeValinnanvaihe luoValinnanVaihe(String valinnanVaiheOid, int valinnanVaiheJarjestysluku) {
+        ValintakoeValinnanvaihe valinnanVaihe = new ValintakoeValinnanvaihe();
         valinnanVaihe.setValinnanVaiheOid(valinnanVaiheOid);
         valinnanVaihe.setValinnanVaiheJarjestysluku(valinnanVaiheJarjestysluku);
         return valinnanVaihe;
@@ -71,7 +71,7 @@ public class ValintakoeOsallistuminenDAOTest {
         for (int i = 1; i <= 3; ++i) {
             Hakutoive hakutoive = luoHakutoive("hakutoive" + i);
             for (int j = 1; j <= 3; ++j) {
-                Valinnanvaihe vaihe = luoValinnanVaihe("valinnanVaihe" + j, j);
+                ValintakoeValinnanvaihe vaihe = luoValinnanVaihe("valinnanVaihe" + j, j);
                 for (int k = 1; k <= 3; ++k) {
                     Valintakoe koe = luoValintakoe("" + i + j + k, "" + i + j + k,
                             k % 2 == 0 ? Osallistuminen.EI_OSALLISTU : Osallistuminen.OSALLISTUU);

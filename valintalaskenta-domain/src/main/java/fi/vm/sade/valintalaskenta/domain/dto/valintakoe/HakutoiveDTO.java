@@ -11,7 +11,7 @@ import java.util.List;
 public class HakutoiveDTO {
     private String hakukohdeOid;
 
-    private List<ValinnanvaiheDTO> valinnanVaiheet = new ArrayList<ValinnanvaiheDTO>();
+    private List<ValintakoeValinnanvaiheDTO> valinnanVaiheet = new ArrayList<ValintakoeValinnanvaiheDTO>();
 
     public String getHakukohdeOid() {
         return hakukohdeOid;
@@ -21,11 +21,11 @@ public class HakutoiveDTO {
         this.hakukohdeOid = hakukohdeOid;
     }
 
-    public List<ValinnanvaiheDTO> getValinnanVaiheet() {
+    public List<ValintakoeValinnanvaiheDTO> getValinnanVaiheet() {
         return valinnanVaiheet;
     }
 
-    public void setValinnanVaiheet(List<ValinnanvaiheDTO> valinnanVaiheet) {
+    public void setValinnanVaiheet(List<ValintakoeValinnanvaiheDTO> valinnanVaiheet) {
         this.valinnanVaiheet = valinnanVaiheet;
     }
 }

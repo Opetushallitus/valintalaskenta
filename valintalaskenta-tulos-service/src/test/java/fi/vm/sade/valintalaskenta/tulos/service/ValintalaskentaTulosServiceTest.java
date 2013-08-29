@@ -4,9 +4,9 @@ import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.HakutoiveDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import org.junit.Rule;
@@ -76,7 +76,7 @@ public class ValintalaskentaTulosServiceTest {
         HakutoiveDTO ht = vko.getHakutoiveet().get(0);
         assertEquals(1, ht.getValinnanVaiheet().size());
 
-        ValinnanvaiheDTO vv = ht.getValinnanVaiheet().get(0);
+        ValintakoeValinnanvaiheDTO vv = ht.getValinnanVaiheet().get(0);
         assertEquals(1, vv.getValintakokeet().size());
 
         ValintakoeDTO vk = vv.getValintakokeet().get(0);
