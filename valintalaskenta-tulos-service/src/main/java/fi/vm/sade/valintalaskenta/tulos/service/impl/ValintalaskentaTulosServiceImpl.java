@@ -248,55 +248,47 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
         // FIXME: Suora mongo kysely tälle.
         List<Hakukohde> a = valinnanvaiheDAO.readByHakuOid(hakuOid);
-        List<HakukohdeDTO> b = valintatulosConverter.convertHakukohde(a);
-        Iterator<HakukohdeDTO> hakukohdeIter = b.iterator();
+
+        Iterator<Hakukohde> hakukohdeIter = a.iterator();
         while (hakukohdeIter.hasNext()) {
-            HakukohdeDTO hakukohdeDTO = hakukohdeIter.next();
+            Hakukohde hakukohde = hakukohdeIter.next();
 
-            Iterator<ValinnanvaiheDTO> vvIter = hakukohdeDTO.getValinnanvaihe().iterator();
+            Valinnanvaihe vv = hakukohde.getValinnanvaihe();
 
-            while (vvIter.hasNext()) {
+            Iterator<Valintatapajono> vtjIter = vv.getValintatapajono().iterator();
 
-                ValinnanvaiheDTO vv = vvIter.next();
+            while (vtjIter.hasNext()) {
+                Valintatapajono valintatapajonoDTO = vtjIter.next();
 
-                Iterator<ValintatapajonoDTO> vtjIter = vv.getValintatapajono().iterator();
+                Iterator<Jonosija> jonoIter = valintatapajonoDTO.getJonosijat().iterator();
 
-                while (vtjIter.hasNext()) {
-                    ValintatapajonoDTO valintatapajonoDTO = vtjIter.next();
+                while (jonoIter.hasNext()) {
+                    Jonosija jonosijaDTO = jonoIter.next();
 
-                    Iterator<JonosijaDTO> jonoIter = valintatapajonoDTO.getJonosijat().iterator();
-
-                    while (jonoIter.hasNext()) {
-                        JonosijaDTO jonosijaDTO = jonoIter.next();
-
-                        Iterator<Map.Entry<Integer, JarjestyskriteeritulosDTO>> iterator = jonosijaDTO.getJarjestyskriteerit().entrySet().iterator();
-                        while (iterator.hasNext()) {
-                            Map.Entry<Integer, JarjestyskriteeritulosDTO> next = iterator.next();
-                            if (!next.getValue().getTila().equals(JarjestyskriteerituloksenTila.VIRHE)) {
-                                iterator.remove();
-                            }
-                        }
-
-                        if (jonosijaDTO.getJarjestyskriteerit().size() == 0) {
-                            jonoIter.remove();
+                    Iterator<Map.Entry<Integer,Jarjestyskriteeritulos>> iterator = jonosijaDTO.getJarjestyskriteerit().entrySet().iterator();
+                    while (iterator.hasNext()) {
+                        Map.Entry<Integer, Jarjestyskriteeritulos> next = iterator.next();
+                        if (!next.getValue().getTila().equals(JarjestyskriteerituloksenTila.VIRHE)) {
+                            iterator.remove();
                         }
                     }
 
-                    if (valintatapajonoDTO.getJonosijat().size() == 0) {
-                        vtjIter.remove();
+                    if (jonosijaDTO.getJarjestyskriteerit().size() == 0) {
+                        jonoIter.remove();
                     }
                 }
 
-                if (vv.getValintatapajono().size() == 0) {
-                    vvIter.remove();
+                if (valintatapajonoDTO.getJonosijat().size() == 0) {
+                    vtjIter.remove();
                 }
             }
 
-            if (hakukohdeDTO.getValinnanvaihe().size() == 0) {
+            if (vv.getValintatapajono().size() == 0) {
                 hakukohdeIter.remove();
             }
-
         }
+
+        List<HakukohdeDTO> b = valintatulosConverter.convertHakukohde(a);
         return b;
     }
 
