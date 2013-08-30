@@ -106,7 +106,9 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                 continue;
             }
 
-            d.getOsallistuminenTulos().setOsallistuminen(Osallistuminen.EI_OSALLISTU);
+            if(!d.getOsallistuminenTulos().getOsallistuminen().equals(Osallistuminen.VIRHE)) {
+                d.getOsallistuminenTulos().setOsallistuminen(Osallistuminen.EI_OSALLISTU);
+            }
         }
     }
 

@@ -51,11 +51,11 @@ public class ValintakoeosallistumislaskinImpl implements Valintakoeosallistumisl
                 // tuloksen tila on hylätty, voidaan
                 // olettaa, että henkilön pitää osallistua valintakokeeseen
                 Osallistuminen osallistuminen = null;
-                if (tulos.getTulos() == null || Tila.Tilatyyppi.HYLATTY.equals(tulos.getTila().getTilatyyppi())) {
-                    osallistuminen = Osallistuminen.OSALLISTUU;
-                } else if (Tila.Tilatyyppi.VIRHE.equals(tulos.getTila().getTilatyyppi())) {
+                if (Tila.Tilatyyppi.VIRHE.equals(tulos.getTila().getTilatyyppi())) {
                     // Palautetaan virhe, jos laskenta palautti virheen
                     osallistuminen = Osallistuminen.VIRHE;
+                } else if (tulos.getTulos() == null || Tila.Tilatyyppi.HYLATTY.equals(tulos.getTila().getTilatyyppi())) {
+                    osallistuminen = Osallistuminen.OSALLISTUU;
                 } else {
                     osallistuminen = tulos.getTulos() ? Osallistuminen.OSALLISTUU : Osallistuminen.EI_OSALLISTU;
                 }
