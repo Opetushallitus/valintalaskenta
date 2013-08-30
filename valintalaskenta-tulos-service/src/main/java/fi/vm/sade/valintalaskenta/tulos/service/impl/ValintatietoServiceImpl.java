@@ -119,6 +119,8 @@ public class ValintatietoServiceImpl implements ValintatietoService {
                 ht.setTila(HakemusTilaTyyppi.valueOf(jonosija.getTuloksenTila().name()));
             }
             ht.setHakemusOid(jonosija.getHakemusOid());
+            ht.setEtunimi(jonosija.getEtunimi());
+            ht.setSukunimi(jonosija.getSukunimi());
             ht.setOid(jonosija.getHakijaOid());
             ht.setJonosija(jonosija.getJonosija());
             if (jonosija.isHarkinnanvarainen()) {
