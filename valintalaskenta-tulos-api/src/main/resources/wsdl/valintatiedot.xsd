@@ -70,6 +70,8 @@
     <xs:complexType name="HakijaTyyppi">
 	    <xs:attribute name="oid" type="xs:string" use="required" />
         <xs:attribute name="hakemusOid" type="xs:string" use="optional" />
+        <xs:attribute name="etunimi" type="xs:string" use="optional"/>
+        <xs:attribute name="sukunimi" type="xs:string" use="optional"/>
         <xs:attribute name="jonosija" type="xs:int" use="required" />
         <xs:attribute name="prioriteetti" type="xs:int" use="required" />
         <xs:attribute name="pisteet" type="xs:float" use="required" />
