@@ -194,6 +194,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
     @Override
     public List<ValinnanvaiheDTO> haeValinnanvaiheetHakukohteelle(String hakukohdeoid) {
+
         List<fi.vm.sade.valintalaskenta.domain.Valinnanvaihe> a = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeoid);
         List<ValinnanvaiheDTO> b = valintatulosConverter.convertValinnanvaiheList(a);
         applyMuokatutJonosijatToValinannvaihe(hakukohdeoid, b);
@@ -294,9 +295,17 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
     @Override
     public List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid) {
+        System.out.println("haeValinnanvaiheetHakukohteelle :: eka") ;
+
         List<Hakukohde> a = valinnanvaiheDAO.readByHakuOid(hakuOid);
+        System.out.println("haeValinnanvaiheetHakukohteelle :: toka") ;
+
         List<HakukohdeDTO> b = valintatulosConverter.convertHakukohde(a);
+        System.out.println("haeValinnanvaiheetHakukohteelle :: kllmas") ;
+
         applyMuokatutJonosijatToHakukohde(hakuOid, b);
+        System.out.println("haeValinnanvaiheetHakukohteelle :: neljas") ;
+
         return b;
     }
 
