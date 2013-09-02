@@ -1,8 +1,31 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl;
 
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.CRUD;
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ;
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.UPDATE;
+
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+import javax.jws.WebParam;
+import javax.xml.datatype.DatatypeFactory;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import fi.vm.sade.service.valintaperusteet.schema.TasasijasaantoTyyppi;
 import fi.vm.sade.service.valintatiedot.ValintatietoService;
-import fi.vm.sade.service.valintatiedot.schema.*;
+import fi.vm.sade.service.valintatiedot.schema.HakemusOsallistuminenTyyppi;
+import fi.vm.sade.service.valintatiedot.schema.HakemusTilaTyyppi;
+import fi.vm.sade.service.valintatiedot.schema.HakijaTyyppi;
+import fi.vm.sade.service.valintatiedot.schema.HakuTyyppi;
+import fi.vm.sade.service.valintatiedot.schema.HakukohdeTyyppi;
+import fi.vm.sade.service.valintatiedot.schema.Osallistuminen;
+import fi.vm.sade.service.valintatiedot.schema.ValinnanvaiheTyyppi;
+import fi.vm.sade.service.valintatiedot.schema.ValintatapajonoTyyppi;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
@@ -12,21 +35,9 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.ConversionService;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
-
-import javax.jws.WebParam;
-import java.util.ArrayList;
-import java.util.List;
-
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.*;
 
 /**
- * User: kkammone
- * Date: 29.4.2013
- * Time: 13:24
+ * User: kkammone Date: 29.4.2013 Time: 13:24
  */
 @PreAuthorize("isAuthenticated()")
 public class ValintatietoServiceImpl implements ValintatietoService {
@@ -38,13 +49,14 @@ public class ValintatietoServiceImpl implements ValintatietoService {
     private ConversionService conversionService;
 
     @Override
-    @Secured({READ, UPDATE, CRUD})
+    @Secured({ READ, UPDATE, CRUD })
     public List<HakemusOsallistuminenTyyppi> haeValintatiedotHakukohteelle(
             @WebParam(name = "hakukohdeOid", targetNamespace = "") String hakukohdeOid,
             @WebParam(name = "valintakoeOid", targetNamespace = "") String valintakoeOid) {
         List<HakemusOsallistuminenTyyppi> osallistumiset = new ArrayList<HakemusOsallistuminenTyyppi>();
         List<ValintakoeOsallistuminen> valinnanvaiheet = tulosService
                 .haeValintakoeOsallistumisetByHakutoive(hakukohdeOid);
+        GregorianCalendar c = new GregorianCalendar();
         for (ValintakoeOsallistuminen koetulos : valinnanvaiheet) {
             for (Hakutoive hakutoive : koetulos.getHakutoiveet()) {
                 for (ValintakoeValinnanvaihe vaihe : hakutoive.getValinnanVaiheet()) {
@@ -52,7 +64,14 @@ public class ValintatietoServiceImpl implements ValintatietoService {
                         if (valintakoeOid.equals(valintakoe.getValintakoeOid())) {
                             HakemusOsallistuminenTyyppi h = new HakemusOsallistuminenTyyppi();
                             h.setHakemusOid(koetulos.getHakemusOid());
-                            h.setOsallistuminen(Osallistuminen.valueOf(valintakoe.getOsallistuminenTulos().getOsallistuminen().name()));
+                            h.setOsallistuminen(Osallistuminen.valueOf(valintakoe.getOsallistuminenTulos()
+                                    .getOsallistuminen().name()));
+                            c.setTime(koetulos.getCreatedAt());
+                            try {
+                                h.setLuontiPvm(DatatypeFactory.newInstance().newXMLGregorianCalendar(c));
+                            } catch (Exception e) {
+                                e.printStackTrace(); // <- creating date failed!
+                            }
                             osallistumiset.add(h);
                         }
                     }
@@ -63,9 +82,8 @@ public class ValintatietoServiceImpl implements ValintatietoService {
         return osallistumiset;
     }
 
-
     @Override
-    @Secured({READ, UPDATE, CRUD})
+    @Secured({ READ, UPDATE, CRUD })
     public HakuTyyppi haeValintatiedot(@WebParam(name = "hakuOid", targetNamespace = "") String hakuOid) {
 
         List<HakukohdeDTO> a = tulosService.haeLasketutValinnanvaiheetHaulle(hakuOid);

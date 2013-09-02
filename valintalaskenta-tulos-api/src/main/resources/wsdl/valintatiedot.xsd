@@ -28,6 +28,7 @@
 
 	<xs:complexType name="HakemusOsallistuminenTyyppi">
 		<xs:attribute name="hakemusOid" type="xs:string" use="required" />
+		<xs:attribute name="luontiPvm" type="xs:dateTime" use="required" />
 		<xs:attribute name="osallistuminen" type="tns:Osallistuminen" use="required" />
 	</xs:complexType>
 
