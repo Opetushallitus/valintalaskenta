@@ -27,11 +27,17 @@
     </xs:complexType>
 
 	<xs:complexType name="HakemusOsallistuminenTyyppi">
+		<xs:sequence>
+            <xs:element name="osallistumiset" type="tns:ValintakoeOsallistuminenTyyppi" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
 		<xs:attribute name="hakemusOid" type="xs:string" use="required" />
 		<xs:attribute name="luontiPvm" type="xs:dateTime" use="required" />
+	</xs:complexType>
+	<xs:complexType name="ValintakoeOsallistuminenTyyppi">
+		<xs:attribute name="valintakoeOid" type="xs:string" use="required" />
+		<xs:attribute name="valintakoeTunniste" type="xs:string" use="required" />
 		<xs:attribute name="osallistuminen" type="tns:Osallistuminen" use="required" />
 	</xs:complexType>
-
 	<xs:simpleType name="Osallistuminen">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="OSALLISTUU" />

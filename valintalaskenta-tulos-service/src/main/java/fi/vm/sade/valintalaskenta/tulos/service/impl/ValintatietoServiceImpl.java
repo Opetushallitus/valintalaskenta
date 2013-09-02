@@ -6,7 +6,9 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.jws.WebParam;
 import javax.xml.datatype.DatatypeFactory;
@@ -25,6 +27,7 @@ import fi.vm.sade.service.valintatiedot.schema.HakuTyyppi;
 import fi.vm.sade.service.valintatiedot.schema.HakukohdeTyyppi;
 import fi.vm.sade.service.valintatiedot.schema.Osallistuminen;
 import fi.vm.sade.service.valintatiedot.schema.ValinnanvaiheTyyppi;
+import fi.vm.sade.service.valintatiedot.schema.ValintakoeOsallistuminenTyyppi;
 import fi.vm.sade.service.valintatiedot.schema.ValintatapajonoTyyppi;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
@@ -51,30 +54,35 @@ public class ValintatietoServiceImpl implements ValintatietoService {
     @Override
     @Secured({ READ, UPDATE, CRUD })
     public List<HakemusOsallistuminenTyyppi> haeValintatiedotHakukohteelle(
-            @WebParam(name = "hakukohdeOid", targetNamespace = "") String hakukohdeOid,
-            @WebParam(name = "valintakoeOid", targetNamespace = "") String valintakoeOid) {
+            @WebParam(name = "valintakoeOid", targetNamespace = "") List<String> valintakoeOid,
+            @WebParam(name = "hakukohdeOid", targetNamespace = "") String hakukohdeOid) {
         List<HakemusOsallistuminenTyyppi> osallistumiset = new ArrayList<HakemusOsallistuminenTyyppi>();
         List<ValintakoeOsallistuminen> valinnanvaiheet = tulosService
                 .haeValintakoeOsallistumisetByHakutoive(hakukohdeOid);
-        GregorianCalendar c = new GregorianCalendar();
+        Set<String> oidit = new HashSet<String>(valintakoeOid);
+        GregorianCalendar kalenteri = new GregorianCalendar();
         for (ValintakoeOsallistuminen koetulos : valinnanvaiheet) {
             for (Hakutoive hakutoive : koetulos.getHakutoiveet()) {
                 for (ValintakoeValinnanvaihe vaihe : hakutoive.getValinnanVaiheet()) {
+                    HakemusOsallistuminenTyyppi h = new HakemusOsallistuminenTyyppi();
+                    h.setHakemusOid(koetulos.getHakemusOid());
                     for (Valintakoe valintakoe : vaihe.getValintakokeet()) {
-                        if (valintakoeOid.equals(valintakoe.getValintakoeOid())) {
-                            HakemusOsallistuminenTyyppi h = new HakemusOsallistuminenTyyppi();
-                            h.setHakemusOid(koetulos.getHakemusOid());
-                            h.setOsallistuminen(Osallistuminen.valueOf(valintakoe.getOsallistuminenTulos()
+                        if (oidit.contains(valintakoe.getValintakoeOid())) {
+                            ValintakoeOsallistuminenTyyppi osallistuminen = new ValintakoeOsallistuminenTyyppi();
+                            osallistuminen.setOsallistuminen(Osallistuminen.valueOf(valintakoe.getOsallistuminenTulos()
                                     .getOsallistuminen().name()));
-                            c.setTime(koetulos.getCreatedAt());
-                            try {
-                                h.setLuontiPvm(DatatypeFactory.newInstance().newXMLGregorianCalendar(c));
-                            } catch (Exception e) {
-                                e.printStackTrace(); // <- creating date failed!
-                            }
-                            osallistumiset.add(h);
+                            osallistuminen.setValintakoeOid(valintakoe.getValintakoeOid());
+                            osallistuminen.setValintakoeTunniste(valintakoe.getValintakoeTunniste());
+                            h.getOsallistumiset().add(osallistuminen);
                         }
                     }
+                    kalenteri.setTime(koetulos.getCreatedAt());
+                    try {
+                        h.setLuontiPvm(DatatypeFactory.newInstance().newXMLGregorianCalendar(kalenteri));
+                    } catch (Exception e) {
+                        e.printStackTrace(); // <- creating date failed!
+                    }
+                    osallistumiset.add(h);
                 }
             }
         }
