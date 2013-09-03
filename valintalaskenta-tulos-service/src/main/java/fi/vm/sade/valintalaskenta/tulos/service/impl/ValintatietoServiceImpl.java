@@ -65,7 +65,6 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             for (Hakutoive hakutoive : koetulos.getHakutoiveet()) {
                 for (ValintakoeValinnanvaihe vaihe : hakutoive.getValinnanVaiheet()) {
                     HakemusOsallistuminenTyyppi h = new HakemusOsallistuminenTyyppi();
-                    h.setHakemusOid(koetulos.getHakemusOid());
                     for (Valintakoe valintakoe : vaihe.getValintakokeet()) {
                         if (oidit.contains(valintakoe.getValintakoeOid())) {
                             ValintakoeOsallistuminenTyyppi osallistuminen = new ValintakoeOsallistuminenTyyppi();
@@ -76,13 +75,18 @@ public class ValintatietoServiceImpl implements ValintatietoService {
                             h.getOsallistumiset().add(osallistuminen);
                         }
                     }
-                    kalenteri.setTime(koetulos.getCreatedAt());
-                    try {
-                        h.setLuontiPvm(DatatypeFactory.newInstance().newXMLGregorianCalendar(kalenteri));
-                    } catch (Exception e) {
-                        e.printStackTrace(); // <- creating date failed!
+                    // lisataan tulosjoukkoon vaan jos valinnanvaiheessa oli
+                    // valintakoe hakemukselle!
+                    if (!h.getOsallistumiset().isEmpty()) {
+                        kalenteri.setTime(koetulos.getCreatedAt());
+                        try {
+                            h.setLuontiPvm(DatatypeFactory.newInstance().newXMLGregorianCalendar(kalenteri));
+                        } catch (Exception e) {
+                            e.printStackTrace(); // <- creating date failed!
+                        }
+                        h.setHakemusOid(koetulos.getHakemusOid());
+                        osallistumiset.add(h);
                     }
-                    osallistumiset.add(h);
                 }
             }
         }
