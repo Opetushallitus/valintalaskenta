@@ -16,7 +16,7 @@
 
     <!-- TODO: tarkista tarvitaanko näitä, kun nämä tulevat jo servicen puolelta -->
     <context:property-placeholder
-            location="classpath:valintalaskenta-laskenta-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/valintalaskenta-laskenta-service.properties, file:///${user.home:''}/oph-configuration/override.properties"
+            location="classpath:valintalaskenta-laskenta-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/valinta.properties, file:///${user.home:''}/oph-configuration/valintalaskenta-laskenta-service.properties, file:///${user.home:''}/oph-configuration/override.properties"
             ignore-resource-not-found="true" properties-ref="defaultProps" />
 
     <!-- TODO: tarkista tarvitaanko näitä, kun nämä tulevat jo servicen puolelta -->

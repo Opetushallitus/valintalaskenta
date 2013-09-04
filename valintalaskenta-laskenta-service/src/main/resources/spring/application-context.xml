@@ -12,7 +12,7 @@
 	<context:annotation-config />
 
 	<context:property-placeholder
-		location="classpath:valintalaskenta-laskenta-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/valintalaskenta-laskenta-service.properties, file:///${user.home:''}/oph-configuration/override.properties"
+		location="classpath:valintalaskenta-laskenta-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/valinta.properties, file:///${user.home:''}/oph-configuration/valintalaskenta-laskenta-service.properties, file:///${user.home:''}/oph-configuration/override.properties"
 		ignore-resource-not-found="true" properties-ref="defaultProps" />
 
     <bean id="defaultProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
