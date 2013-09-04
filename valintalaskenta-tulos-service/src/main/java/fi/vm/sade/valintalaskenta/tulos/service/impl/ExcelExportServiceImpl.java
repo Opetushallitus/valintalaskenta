@@ -1,5 +1,11 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
@@ -9,15 +15,13 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
 import fi.vm.sade.valintalaskenta.tulos.service.ExcelExportService;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.text.SimpleDateFormat;
-import java.util.List;
 
 /**
  * @author Jussi Jartamo
+ * 
+ * @Deprecated Excel touhut koostepalveluun!
  */
+@Deprecated
 @Service
 public class ExcelExportServiceImpl implements ExcelExportService {
 
@@ -37,7 +41,6 @@ public class ExcelExportServiceImpl implements ExcelExportService {
                 builder.append("<tr></tr><tr><td>");
                 builder.append(jono.getNimi());
                 builder.append("</td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>\n");
-
 
                 for (JonosijaDTO jonosija : jono.getJonosijat()) {
 
