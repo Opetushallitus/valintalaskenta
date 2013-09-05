@@ -21,8 +21,7 @@
 	    </property>
 	</bean>
 	
-    <ctx:component-scan base-package="fi.vm.sade.valintalaskenta.dao.impl"/>
-    <ctx:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.context"/>
+    <ctx:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.dao.impl"/>
     <ctx:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.service.impl"/>
     <ctx:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl"/>
     <ctx:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl"/>

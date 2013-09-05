@@ -232,9 +232,16 @@
 		<dependency>
 			<groupId>de.flapdoodle.embed</groupId>
 			<artifactId>de.flapdoodle.embed.mongo</artifactId>
-			<version>1.28</version>
+			<version>1.35</version>
 			<scope>test</scope>
 		</dependency>
+
+        <dependency>
+            <artifactId>nosqlunit-mongodb</artifactId>
+            <groupId>com.lordofthejars</groupId>
+            <version>0.7.6</version>
+            <scope>test</scope>
+        </dependency>
 
 
         <!-- spring security -->

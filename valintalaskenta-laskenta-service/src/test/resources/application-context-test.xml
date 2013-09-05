@@ -7,20 +7,18 @@
             http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:annotation-config/>
-    <!--
-    	Sulautetun Mongo-kannan pystyyn virittäminen testejä varten 
-     -->
-    <bean id="mongodFactory" class="de.flapdoodle.embed.mongo.tests.MongodForTestsFactory" destroy-method="shutdown" />
+    <bean id="mongodFactory" class="de.flapdoodle.embed.mongo.tests.MongodForTestsFactory" destroy-method="shutdown"/>
+    <bean id="mongo" class="com.mongodb.Mongo" factory-bean="mongodFactory" factory-method="newMongo"/>
 
-    <bean id="mongo" class="com.mongodb.Mongo" factory-bean="mongodFactory" factory-method="newMongo" />
     <bean id="morphia" class="com.google.code.morphia.Morphia" />
     <bean id="datastore" factory-bean="morphia" factory-method="createDatastore">
         <constructor-arg type="com.mongodb.Mongo" ref="mongo" />
-        <constructor-arg type="java.lang.String" value="valintalaskenta" />
+        <constructor-arg type="java.lang.String" value="test" />
     </bean>
 
+
 	<!--
-		Tehdasluokat testidatan generointiin. Tehdasluokat toimii suoraan kontekstista nykimällä context.getBean('TestObjectNeededToBeCreated'.class) 
+		Tehdasluokat testidatan generointiin. Tehdasluokat toimii suoraan kontekstista nykimällä context.getBean('TestObjectNeededToBeCreated'.class)
 	 -->
 	<context:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.testdata"/>
 	
