@@ -4,11 +4,9 @@ import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
 
 /**
- * Created with IntelliJ IDEA.
  * User: kkammone
  * Date: 16.5.2013
  * Time: 12:03
- * To change this template use File | Settings | File Templates.
  */
 public class HakemusWrapper {
 
@@ -17,6 +15,8 @@ public class HakemusWrapper {
     private Hakemus laskentahakemus;
 
     private boolean harkinnanvaraisuus = false;
+
+    private int hakutoiveprioriteetti;
 
     public HakemusTyyppi getHakemusTyyppi() {
         return hakemusTyyppi;
@@ -41,4 +41,14 @@ public class HakemusWrapper {
     public void setHarkinnanvaraisuus(boolean harkinnanvaraisuus) {
         this.harkinnanvaraisuus = harkinnanvaraisuus;
     }
+
+    public int getHakutoiveprioriteetti() {
+        return hakutoiveprioriteetti;
+    }
+
+    public void setHakutoiveprioriteetti(int hakutoiveprioriteetti) {
+        this.hakutoiveprioriteetti = hakutoiveprioriteetti;
+    }
+
+
 }

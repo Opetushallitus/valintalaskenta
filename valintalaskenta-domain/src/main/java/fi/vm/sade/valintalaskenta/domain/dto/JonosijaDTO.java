@@ -1,12 +1,11 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
-import java.util.List;
-import java.util.TreeMap;
-
+import fi.vm.sade.valintalaskenta.domain.JsonViews;
+import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import org.codehaus.jackson.map.annotate.JsonView;
 
-import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
-import fi.vm.sade.valintalaskenta.domain.JsonViews;
+import java.util.List;
+import java.util.TreeMap;
 
 /**
  * Created with IntelliJ IDEA. User: kkammone Date: 13.5.2013 Time: 9:50 To

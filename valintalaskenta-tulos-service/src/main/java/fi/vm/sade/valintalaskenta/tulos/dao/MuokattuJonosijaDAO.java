@@ -1,6 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.dao;
 
-import fi.vm.sade.valintalaskenta.domain.MuokattuJonosija;
+import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,7 +20,6 @@ public interface MuokattuJonosijaDAO {
 
 
     /**
-     *
      * @param valintatapajonoOid
      * @param hakemusOid
      * @return
@@ -28,7 +27,6 @@ public interface MuokattuJonosijaDAO {
     MuokattuJonosija readByValintatapajonoOid(String valintatapajonoOid, String hakemusOid);
 
     /**
-     * 
      * @return Kaikki hakukohteet (uusimmalla versiolla) kaikissa hauissa
      */
     void saveOrUpdate(MuokattuJonosija muokattuJonosija);

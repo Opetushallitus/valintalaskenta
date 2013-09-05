@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.tulos.service;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
+import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +13,7 @@ import java.util.List;
 
 /**
  * Created with IntelliJ IDEA. User: kkammone
- * 
+ * <p/>
  * Date: 7.6.2013 Time: 9:18 To change this template use File | Settings | File
  * Templates.
  */
@@ -42,7 +43,6 @@ public class JonosijaComparatorTest {
         sija4.setHakemusoid("sija4");
 
 
-
         list.add(sija1);
         list.add(sija0);
         list.add(sija3);
@@ -57,7 +57,7 @@ public class JonosijaComparatorTest {
         sija1.getJarjestyskriteerit().put(1, s0t1);
         sija1.getJarjestyskriteerit().put(2, s0t2);
         sija0.setHarkinnanvarainen(true);
-        s0t1.setTila(fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI);
+        s0t1.setTila(JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI);
 
 
         fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos s1t1 = new fi.vm.sade.valintalaskenta.domain.Jarjestyskriteeritulos();

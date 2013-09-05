@@ -1,7 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.resource;
 
-import fi.vm.sade.valintalaskenta.domain.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;
+import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -36,13 +36,13 @@ public class ValintatapajonoResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/jonosija")
-    @Secured({ OPH_CRUD })
+    @Secured({OPH_CRUD})
     public MuokattuJonosija muutaJonosija(
-                                                        @PathParam("valintatapajonoOid") String valintatapajonoOid,
-                                                        @PathParam("hakemusOid") String hakemusOid,
-                                                        @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
-                                                        MuokattuJonosijaDTO arvo,
-                                                        @QueryParam("selite") String selite) {
+            @PathParam("valintatapajonoOid") String valintatapajonoOid,
+            @PathParam("hakemusOid") String hakemusOid,
+            @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
+            MuokattuJonosijaDTO arvo,
+            @QueryParam("selite") String selite) {
         return tulosService.muutaJarjestyskriteeri(valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, arvo, selite);
     }
 }

@@ -1,17 +1,21 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao;
 
-import fi.vm.sade.valintalaskenta.dao.ValintakoeOsallistuminenDAO;
+import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
+import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
-import fi.vm.sade.valintalaskenta.laskenta.util.DropMongoDbTestExecutionListener;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
+import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -22,8 +26,14 @@ import static org.junit.Assert.assertEquals;
 @ContextConfiguration(locations = "classpath:application-context-test.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners(listeners = {DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class, DropMongoDbTestExecutionListener.class})
+        DirtiesContextTestExecutionListener.class})
 public class ValintakoeOsallistuminenDAOTest {
+
+    @Rule
+    public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @Autowired
     private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
@@ -86,6 +96,7 @@ public class ValintakoeOsallistuminenDAOTest {
     }
 
     @Test
+    @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
     public void testCreateAndReadByHakuOidAndHakemusOid() {
         assertEquals(0, valintakoeOsallistuminenDAO.readAll().size());
 

@@ -1,17 +1,21 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.it;
 
+import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
+import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintaperusteet.model.Funktionimi;
 import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.SyoteparametriTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
-import fi.vm.sade.valintalaskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
+import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
-import fi.vm.sade.valintalaskenta.laskenta.util.DropMongoDbTestExecutionListener;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -23,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakemus;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteet;
 import static org.junit.Assert.assertNotNull;
@@ -36,8 +41,14 @@ import static org.junit.Assert.assertNull;
 @ContextConfiguration(locations = "classpath:application-context-test.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners(listeners = {DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class, DropMongoDbTestExecutionListener.class})
+        DirtiesContextTestExecutionListener.class})
 public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
+
+    @Rule
+    public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @Autowired
     private ValintakoelaskentaSuorittajaService valintakoelaskentaSuorittajaService;
@@ -71,6 +82,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     }
 
     @Test
+    @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
     public void test() {
         final String hakukohdeOid1 = "hakukohdeOid1";
         final String hakukohdeOid2 = "hakukohdeOid2";

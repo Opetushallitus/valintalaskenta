@@ -3,9 +3,11 @@ package fi.vm.sade.valintalaskenta.tulos.service.impl;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import fi.vm.sade.security.service.authz.util.AuthorizationUtil;
-import fi.vm.sade.valintalaskenta.domain.*;
 import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
+import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
+import fi.vm.sade.valintalaskenta.domain.valinta.LogEntry;
+import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import fi.vm.sade.valintalaskenta.tulos.dao.*;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
@@ -266,7 +268,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                 while (jonoIter.hasNext()) {
                     Jonosija jonosijaDTO = jonoIter.next();
 
-                    Iterator<Map.Entry<Integer,Jarjestyskriteeritulos>> iterator = jonosijaDTO.getJarjestyskriteerit().entrySet().iterator();
+                    Iterator<Map.Entry<Integer, Jarjestyskriteeritulos>> iterator = jonosijaDTO.getJarjestyskriteerit().entrySet().iterator();
                     while (iterator.hasNext()) {
                         Map.Entry<Integer, Jarjestyskriteeritulos> next = iterator.next();
                         if (!next.getValue().getTila().equals(JarjestyskriteerituloksenTila.VIRHE)) {

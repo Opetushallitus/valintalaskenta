@@ -1,0 +1,28 @@
+{
+  "Valinnanvaihe" : [
+    {
+      "hakuOid" : "hakuOid1",
+      "hakukohdeOid" : "hakukohdeOid1",
+      "valinnanvaiheOid" : "valinnanvaiheOid1",
+      "jarjestysnumero" : 1
+    },
+    {
+      "hakuOid" : "hakuOid1",
+      "hakukohdeOid" : "hakukohdeOid1",
+      "valinnanvaiheOid" : "valinnanvaiheOid2",
+      "jarjestysnumero" : 2
+    },
+    {
+      "hakuOid" : "hakuOid1",
+      "hakukohdeOid" : "hakukohdeOid1",
+      "valinnanvaiheOid" : "valinnanvaiheOid3",
+      "jarjestysnumero" : 3
+    },
+    {
+      "hakuOid" : "hakuOid1",
+      "hakukohdeOid" : "hakukohdeOid2",
+      "valinnanvaiheOid" : "valinnanvaiheOid5",
+      "jarjestysnumero" : 2
+    }
+  ]
+}

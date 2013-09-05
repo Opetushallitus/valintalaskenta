@@ -1,6 +1,6 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
-import fi.vm.sade.valintalaskenta.domain.JarjestyskriteerituloksenTila;
+import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 
 import java.math.BigDecimal;
 

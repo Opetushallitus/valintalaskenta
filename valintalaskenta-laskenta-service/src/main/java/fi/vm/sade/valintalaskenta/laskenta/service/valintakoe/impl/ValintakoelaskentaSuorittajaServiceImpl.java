@@ -5,8 +5,8 @@ import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintakoeTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintakoeValinnanVaiheTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
-import fi.vm.sade.valintalaskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
+import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoeosallistumislaskin;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.HakukohdeValintakoeData;
@@ -106,7 +106,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                 continue;
             }
 
-            if(!d.getOsallistuminenTulos().getOsallistuminen().equals(Osallistuminen.VIRHE)) {
+            if (!d.getOsallistuminenTulos().getOsallistuminen().equals(Osallistuminen.VIRHE)) {
                 d.getOsallistuminenTulos().setOsallistuminen(Osallistuminen.EI_OSALLISTU);
             }
         }

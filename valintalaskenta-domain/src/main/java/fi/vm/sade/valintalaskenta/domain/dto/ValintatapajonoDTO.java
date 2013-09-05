@@ -1,22 +1,14 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
-import com.google.code.morphia.annotations.Embedded;
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id;
-import com.google.code.morphia.annotations.Indexed;
-import fi.vm.sade.valintalaskenta.domain.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
-import fi.vm.sade.valintalaskenta.domain.Tasasijasaanto;
-import org.bson.types.ObjectId;
+import fi.vm.sade.valintalaskenta.domain.valinta.Tasasijasaanto;
 import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author Jussi Jartamo
- *
  */
 
 public class ValintatapajonoDTO implements Comparable<ValintatapajonoDTO> {
@@ -46,7 +38,7 @@ public class ValintatapajonoDTO implements Comparable<ValintatapajonoDTO> {
     private Boolean eiVarasijatayttoa;
 
     @JsonView(JsonViews.Basic.class)
-    private List <JonosijaDTO> jonosijat = new ArrayList<JonosijaDTO>();
+    private List<JonosijaDTO> jonosijat = new ArrayList<JonosijaDTO>();
 
     public String getNimi() {
         return nimi;

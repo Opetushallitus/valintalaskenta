@@ -1,7 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
 import com.google.code.morphia.Datastore;
-import fi.vm.sade.valintalaskenta.domain.MuokattuJonosija;
+import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
