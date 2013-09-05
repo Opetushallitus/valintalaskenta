@@ -1,12 +1,15 @@
 package fi.vm.sade.valintalaskenta.laskenta.service;
 
+import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.*;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinnanvaiheKasittelija;
-import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinnanvaiheTila;
+import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.TilaJaSelite;
+import org.junit.Before;
 import org.junit.Test;
 import scala.actors.threadpool.Arrays;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * User: wuoti
@@ -15,12 +18,19 @@ import static org.junit.Assert.assertEquals;
  */
 public class EdellinenValinnanvaiheKasittelijaTest {
 
+    private EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija;
+
+    @Before
+    public void setUp() {
+        edellinenValinnanvaiheKasittelija = new EdellinenValinnanvaiheKasittelija();
+    }
+
     @Test
     public void testEiValintatapajonoja() {
 
         Valinnanvaihe vaihe = new Valinnanvaihe();
 
-        EdellinenValinnanvaiheTila tila = EdellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissa("hakesmusOid", vaihe);
+        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan("hakesmusOid", vaihe);
         assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, tila.getTila());
     }
 
@@ -38,7 +48,7 @@ public class EdellinenValinnanvaiheKasittelijaTest {
         vaihe.getValintatapajonot().add(jono);
 
         final String hakemusOid = "hakemusOid1";
-        EdellinenValinnanvaiheTila tila = EdellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissa(hakemusOid, vaihe);
+        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, vaihe);
         assertEquals(JarjestyskriteerituloksenTila.VIRHE, tila.getTila());
     }
 
@@ -67,7 +77,7 @@ public class EdellinenValinnanvaiheKasittelijaTest {
         Valinnanvaihe vaihe = new Valinnanvaihe();
         vaihe.getValintatapajonot().addAll(Arrays.asList(new Valintatapajono[]{jono1, jono2, jono3}));
 
-        EdellinenValinnanvaiheTila tila = EdellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissa(hakemusOid, vaihe);
+        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, vaihe);
         assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, tila.getTila());
     }
 
@@ -87,13 +97,94 @@ public class EdellinenValinnanvaiheKasittelijaTest {
         Valinnanvaihe vaihe = new Valinnanvaihe();
         vaihe.getValintatapajonot().addAll(Arrays.asList(new Valintatapajono[]{jono1, jono2, jono3}));
 
-        EdellinenValinnanvaiheTila tila = EdellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissa(hakemusOid, vaihe);
+        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, vaihe);
         assertEquals(JarjestyskriteerituloksenTila.HYLATTY, tila.getTila());
     }
 
     @Test
     public void testEdellinenVaiheNull() {
-        EdellinenValinnanvaiheTila tila = EdellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissa("hakemusOid", null);
+        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan("hakemusOid", null);
         assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, tila.getTila());
+    }
+
+    @Test
+    public void testHylattyEdellisenVaiheenMukaan() {
+        final String selite = "selite";
+        final JarjestyskriteerituloksenTila tila = JarjestyskriteerituloksenTila.HYLATTY;
+
+        TilaJaSelite edellisenVaiheenTila = new TilaJaSelite(tila, selite);
+        Tila laskettuTila = new Hyvaksyttavissatila();
+
+        TilaJaSelite tilaJaSelite =
+                edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenTilanMukaan(laskettuTila, edellisenVaiheenTila);
+        assertEquals(tila, tilaJaSelite.getTila());
+        assertEquals(selite, tilaJaSelite.getSelite());
+    }
+
+    @Test
+    public void testVirheEdellisenVaiheenMukaan() {
+        final String selite = "selite";
+        final JarjestyskriteerituloksenTila tila = JarjestyskriteerituloksenTila.VIRHE;
+
+        TilaJaSelite edellisenVaiheenTila = new TilaJaSelite(tila, selite);
+        Tila laskettuTila = new Hyvaksyttavissatila();
+
+        TilaJaSelite tilaJaSelite =
+                edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenTilanMukaan(laskettuTila, edellisenVaiheenTila);
+        assertEquals(tila, tilaJaSelite.getTila());
+        assertEquals(selite, tilaJaSelite.getSelite());
+    }
+
+    @Test
+    public void testHyvaksyttavissaEdellisenVaiheenMukaanLaskettuTilaHyvaksyttavissa() {
+        final String selite = "selite";
+        final JarjestyskriteerituloksenTila tila = JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA;
+
+        TilaJaSelite edellisenVaiheenTila = new TilaJaSelite(tila, selite);
+        Tila laskettuTila = new Hyvaksyttavissatila();
+
+        TilaJaSelite tilaJaSelite =
+                edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenTilanMukaan(laskettuTila, edellisenVaiheenTila);
+        assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, tilaJaSelite.getTila());
+        assertNull(tilaJaSelite.getSelite());
+    }
+
+    @Test
+    public void testHyvaksyttavissaEdellisenVaiheenMukaanLaskettuTilaHylatty() {
+        final String selite = "selite";
+        final JarjestyskriteerituloksenTila tila = JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA;
+
+        TilaJaSelite edellisenVaiheenTila = new TilaJaSelite(tila, selite);
+        final String lasketuntilanSelite = "toinenSelite";
+        Tila laskettuTila = new Hylattytila(lasketuntilanSelite, new Arvokonvertterihylkays(""));
+
+        TilaJaSelite tilaJaSelite =
+                edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenTilanMukaan(laskettuTila, edellisenVaiheenTila);
+        assertEquals(JarjestyskriteerituloksenTila.HYLATTY, tilaJaSelite.getTila());
+        assertEquals(lasketuntilanSelite, tilaJaSelite.getSelite());
+    }
+
+    @Test
+    public void testHyvaksyttavissaEdellisenVaiheenMukaanLaskettuTilaVirhe() {
+        final String selite = "selite";
+        final JarjestyskriteerituloksenTila tila = JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA;
+
+        TilaJaSelite edellisenVaiheenTila = new TilaJaSelite(tila, selite);
+        final String lasketuntilanSelite = "toinenSelite";
+        Tila laskettuTila = new Virhetila(lasketuntilanSelite, new ArvokonvertointiVirhe(""));
+
+        TilaJaSelite tilaJaSelite =
+                edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenTilanMukaan(laskettuTila, edellisenVaiheenTila);
+        assertEquals(JarjestyskriteerituloksenTila.VIRHE, tilaJaSelite.getTila());
+        assertEquals(lasketuntilanSelite, tilaJaSelite.getSelite());
+    }
+
+    @Test
+    public void test() {
+        Valinnanvaihe edellinenVaihe = new Valinnanvaihe();
+        final String hakemusOid = "hakemusOid1";
+        TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemusOid, new Hyvaksyttavissatila(), edellinenVaihe);
+        assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, tilaJaSelite.getTila());
+        assertNull(tilaJaSelite.getSelite());
     }
 }

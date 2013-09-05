@@ -9,7 +9,7 @@ import org.bson.types.ObjectId;
  * Date: 8/7/13
  * Time: 1:08 PM
  */
-@Entity("JonosijaHistoria")
+@Entity("Jarjestyskriteerihistoria")
 public class Jarjestyskriteerihistoria {
 
     @Id

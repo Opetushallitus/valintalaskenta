@@ -27,4 +27,9 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
     public void delete(ObjectId id) {
         datastore.delete(Jarjestyskriteerihistoria.class, id);
     }
+
+    @Override
+    public Jarjestyskriteerihistoria hae(ObjectId id) {
+        return datastore.find(Jarjestyskriteerihistoria.class).field("_id").equal(id).get();
+    }
 }

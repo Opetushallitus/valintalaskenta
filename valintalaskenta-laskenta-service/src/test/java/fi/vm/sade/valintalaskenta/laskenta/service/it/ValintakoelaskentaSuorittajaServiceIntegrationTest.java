@@ -11,6 +11,7 @@ import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
+import fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +30,6 @@ import java.util.Map;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakemus;
-import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteet;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -71,9 +71,9 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
             totuusarvoTrue.getSyoteparametrit().add(param);
         }
 
+        totuusarvoFalse = new FunktiokutsuTyyppi();
+        totuusarvoFalse.setFunktionimi(Funktionimi.TOTUUSARVO.name());
         {
-            totuusarvoFalse = new FunktiokutsuTyyppi();
-            totuusarvoFalse.setFunktionimi(Funktionimi.TOTUUSARVO.name());
             SyoteparametriTyyppi param = new SyoteparametriTyyppi();
             param.setAvain("totuusarvo");
             param.setArvo(Boolean.FALSE.toString());
@@ -99,7 +99,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         Map<String, FunktiokutsuTyyppi> kokeet1 = new HashMap<String, FunktiokutsuTyyppi>();
         kokeet1.put(valintakoetunniste, totuusarvoTrue);
 
-        ValintaperusteetTyyppi valintaperusteet1 = luoValintaperusteet(hakuOid, hakukohdeOid1, valinnanVaiheOid1,
+        ValintaperusteetTyyppi valintaperusteet1 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1,
                 valinnanVaiheJarjestysluku1, kokeet1);
 
         final String valinnanVaiheOid2 = "valinnanVaiheOid2";
@@ -108,7 +108,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         Map<String, FunktiokutsuTyyppi> kokeet2 = new HashMap<String, FunktiokutsuTyyppi>();
         kokeet2.put(valintakoetunniste, totuusarvoFalse);
 
-        ValintaperusteetTyyppi valintaperusteet2 = luoValintaperusteet(hakuOid, hakukohdeOid2, valinnanVaiheOid2,
+        ValintaperusteetTyyppi valintaperusteet2 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid2, valinnanVaiheOid2,
                 valinnanVaiheJarjestysluku2, kokeet2);
 
         List<ValintaperusteetTyyppi> valintaperusteet = new ArrayList<ValintaperusteetTyyppi>();

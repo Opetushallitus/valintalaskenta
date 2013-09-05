@@ -61,14 +61,14 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         final String valinnanVaiheOid1 = "valinnanVaiheOid1";
         final int valinnanVaiheJarjestysluku1 = 1;
 
-        ValintaperusteetTyyppi valintaperusteet1 = luoValintaperusteet(hakuOid, hakukohdeOid1, valinnanVaiheOid1,
+        ValintaperusteetTyyppi valintaperusteet1 = luoValintaperusteetJaValintakoeValinnanvaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1,
                 valinnanVaiheJarjestysluku1, valintakoetunniste);
 
         final String valinnanVaiheOid2 = "valinnanVaiheOid2";
         final int valinnanVaiheJarjestysluku2 = 2;
 
 
-        ValintaperusteetTyyppi valintaperusteet2 = luoValintaperusteet(hakuOid, hakukohdeOid2, valinnanVaiheOid2,
+        ValintaperusteetTyyppi valintaperusteet2 = luoValintaperusteetJaValintakoeValinnanvaihe(hakuOid, hakukohdeOid2, valinnanVaiheOid2,
                 valinnanVaiheJarjestysluku2, valintakoetunniste);
 
         final OsallistuminenTulos osallistuu1 = new OsallistuminenTulos();

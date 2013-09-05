@@ -13,4 +13,6 @@ public interface JarjestyskriteerihistoriaDAO {
     void create(Jarjestyskriteerihistoria jarjestyskriteerihistoria);
 
     void delete(ObjectId id);
+
+    Jarjestyskriteerihistoria hae(ObjectId id);
 }

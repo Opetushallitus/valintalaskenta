@@ -2,10 +2,7 @@ package fi.vm.sade.valintalaskenta.laskenta.testdata;
 
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ValintakoeTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ValintakoeValinnanVaiheTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.HakukohdeValintakoeData;
@@ -57,29 +54,68 @@ public abstract class TestDataUtil {
         return perusteet;
     }
 
-    public static ValintaperusteetTyyppi luoValintaperusteet(String hakuOid, String hakukohdeOid,
-                                                             String valinnanVaiheOid,
-                                                             int valinnanVaiheJarjestysluku,
-                                                             String... valintakoeTunnisteet) {
+    public static ValintaperusteetTyyppi luoValintaperusteetJaValintakoeValinnanvaihe(String hakuOid, String hakukohdeOid,
+                                                                                      String valinnanVaiheOid,
+                                                                                      int valinnanVaiheJarjestysluku,
+                                                                                      String... valintakoeTunnisteet) {
         ValintaperusteetTyyppi perusteet = luoValintaperusteet(hakuOid, hakukohdeOid);
-        perusteet.setValinnanVaihe(luoValinnanVaihe(valinnanVaiheOid,
+        perusteet.setValinnanVaihe(luoValintakoeValinnanVaihe(valinnanVaiheOid,
                 valinnanVaiheJarjestysluku,
                 valintakoeTunnisteet));
 
         return perusteet;
     }
 
-    public static ValintaperusteetTyyppi luoValintaperusteet(String hakuOid, String hakukohdeOid,
-                                                             String valinnanVaiheOid,
-                                                             int valinnanVaiheJarjestysluku,
-                                                             Map<String, FunktiokutsuTyyppi> valintakokeetJaKaavat) {
+    public static ValintaperusteetTyyppi luoValintaperusteetJaTavallinenValinnanvaihe(String hakuOid, String hakukohdeOid,
+                                                                                      String valinnanVaiheOid,
+                                                                                      int valinnanVaiheJarjestysluku) {
+        ValintaperusteetTyyppi perusteet = luoValintaperusteet(hakuOid, hakukohdeOid);
+        perusteet.setValinnanVaihe(luoTavallinenValinnanvaihe(valinnanVaiheOid, valinnanVaiheJarjestysluku));
+
+        return perusteet;
+    }
+
+    public static TavallinenValinnanVaiheTyyppi luoTavallinenValinnanvaihe(String valinnanVaiheOid, int valinnanVaiheJarjestysluku) {
+        TavallinenValinnanVaiheTyyppi vaihe = new TavallinenValinnanVaiheTyyppi();
+        vaihe.setValinnanVaiheOid(valinnanVaiheOid);
+        vaihe.setValinnanVaiheJarjestysluku(valinnanVaiheJarjestysluku);
+        return vaihe;
+    }
+
+    public static ValintatapajonoJarjestyskriteereillaTyyppi luoValintatapajono(String valintatapajonoOid,
+                                                                                int prioriteetti,
+                                                                                int aloituspaikat,
+                                                                                JarjestyskriteeriTyyppi... jarjestyskriteerit) {
+        ValintatapajonoJarjestyskriteereillaTyyppi jono = new ValintatapajonoJarjestyskriteereillaTyyppi();
+        jono.setOid(valintatapajonoOid);
+        jono.setAloituspaikat(aloituspaikat);
+        jono.setNimi(valintatapajonoOid);
+        jono.setPrioriteetti(prioriteetti);
+        jono.setSiirretaanSijoitteluun(true);
+        jono.setTasasijasaanto(TasasijasaantoTyyppi.ARVONTA);
+        jono.getJarjestyskriteerit().addAll(Arrays.asList(jarjestyskriteerit));
+        return jono;
+    }
+
+    public static JarjestyskriteeriTyyppi luoJarjestyskriteeri(FunktiokutsuTyyppi funktiokutsu, int prioriteetti) {
+        JarjestyskriteeriTyyppi jk = new JarjestyskriteeriTyyppi();
+        jk.setFunktiokutsu(funktiokutsu);
+        jk.setPrioriteetti(prioriteetti);
+        return jk;
+    }
+
+
+    public static ValintaperusteetTyyppi luoValintaperusteetJaValintakoeValinnanVaihe(String hakuOid, String hakukohdeOid,
+                                                                                      String valinnanVaiheOid,
+                                                                                      int valinnanVaiheJarjestysluku,
+                                                                                      Map<String, FunktiokutsuTyyppi> valintakokeetJaKaavat) {
         ValintaperusteetTyyppi perusteet = luoValintaperusteet(hakuOid, hakukohdeOid);
         perusteet.setValinnanVaihe(luoValinnanVaihe(valinnanVaiheOid, valinnanVaiheJarjestysluku, valintakokeetJaKaavat));
 
         return perusteet;
     }
 
-    public static ValintakoeValinnanVaiheTyyppi luoValinnanVaihe(String valinnanVaiheOid, int jarjestysluku) {
+    public static ValintakoeValinnanVaiheTyyppi luoValintakoeValinnanVaihe(String valinnanVaiheOid, int jarjestysluku) {
         ValintakoeValinnanVaiheTyyppi vaihe = new ValintakoeValinnanVaiheTyyppi();
         vaihe.setValinnanVaiheOid(valinnanVaiheOid);
         vaihe.setValinnanVaiheJarjestysluku(jarjestysluku);
@@ -90,7 +126,7 @@ public abstract class TestDataUtil {
     private static ValintakoeValinnanVaiheTyyppi luoValinnanVaihe(String valinnanVaiheOid,
                                                                   int valinnanVaiheJarjestysluku,
                                                                   Map<String, FunktiokutsuTyyppi> valintakokeetJaKaavat) {
-        ValintakoeValinnanVaiheTyyppi vaihe = luoValinnanVaihe(valinnanVaiheOid, valinnanVaiheJarjestysluku);
+        ValintakoeValinnanVaiheTyyppi vaihe = luoValintakoeValinnanVaihe(valinnanVaiheOid, valinnanVaiheJarjestysluku);
 
         for (Map.Entry<String, FunktiokutsuTyyppi> e : valintakokeetJaKaavat.entrySet()) {
             ValintakoeTyyppi koe = luoValintakoe(e.getKey(), e.getKey());
@@ -101,9 +137,9 @@ public abstract class TestDataUtil {
         return vaihe;
     }
 
-    public static ValintakoeValinnanVaiheTyyppi luoValinnanVaihe(String valinnanVaiheOid, int jarjestysluku,
-                                                                 String... valintakoeTunnisteet) {
-        ValintakoeValinnanVaiheTyyppi vaihe = luoValinnanVaihe(valinnanVaiheOid, jarjestysluku);
+    public static ValintakoeValinnanVaiheTyyppi luoValintakoeValinnanVaihe(String valinnanVaiheOid, int jarjestysluku,
+                                                                           String... valintakoeTunnisteet) {
+        ValintakoeValinnanVaiheTyyppi vaihe = luoValintakoeValinnanVaihe(valinnanVaiheOid, jarjestysluku);
 
         for (String tunniste : valintakoeTunnisteet) {
             vaihe.getValintakoe().add(luoValintakoe(tunniste, tunniste));

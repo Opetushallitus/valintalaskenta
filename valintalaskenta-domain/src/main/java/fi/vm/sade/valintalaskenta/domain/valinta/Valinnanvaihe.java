@@ -5,9 +5,7 @@ import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import org.bson.types.ObjectId;
 import org.codehaus.jackson.map.annotate.JsonView;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * User: wuoti
@@ -49,6 +47,16 @@ public class Valinnanvaihe {
         if (createdAt == null) {
             createdAt = new Date();
         }
+    }
+
+    @PrePersist
+    private void jarjestaValintatapajonot() {
+        Collections.sort(valintatapajonot, new Comparator<Valintatapajono>() {
+            @Override
+            public int compare(Valintatapajono o1, Valintatapajono o2) {
+                return o1.getPrioriteetti() - o2.getPrioriteetti();
+            }
+        });
     }
 
     public int getJarjestysnumero() {

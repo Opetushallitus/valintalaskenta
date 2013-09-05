@@ -1,10 +1,13 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import com.google.code.morphia.annotations.Embedded;
+import com.google.code.morphia.annotations.PrePersist;
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -89,5 +92,15 @@ public class Jonosija {
 
     public void setJarjestyskriteeritulokset(List<Jarjestyskriteeritulos> jarjestyskriteeritulokset) {
         this.jarjestyskriteeritulokset = jarjestyskriteeritulokset;
+    }
+
+    @PrePersist
+    private void jarjestaJarjestyskriteeritulokset() {
+        Collections.sort(jarjestyskriteeritulokset, new Comparator<Jarjestyskriteeritulos>() {
+            @Override
+            public int compare(Jarjestyskriteeritulos o1, Jarjestyskriteeritulos o2) {
+                return o1.getPrioriteetti() - o2.getPrioriteetti();
+            }
+        });
     }
 }
