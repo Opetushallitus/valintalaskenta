@@ -15,7 +15,7 @@ import java.util.Map;
  * Date: 5.9.2013
  * Time: 9.44
  */
-public interface Hakemuslaskin {
+public interface HakemuslaskinService {
     public void suoritaLaskentaHakemukselle(String hakukohdeOid,
                                             HakemusWrapper laskettavaHakemus,
                                             List<Hakemus> kaikkiHakemukset,

@@ -10,7 +10,7 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
-import fi.vm.sade.valintalaskenta.laskenta.service.valinta.Hakemuslaskin;
+import fi.vm.sade.valintalaskenta.laskenta.service.valinta.HakemuslaskinService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,7 @@ import java.util.Map;
  * Time: 9.42
  */
 @Service
-public class HakemuslaskinImpl implements Hakemuslaskin {
+public class HakemuslaskinImpl implements HakemuslaskinService {
 
     @Autowired
     private LaskentaService laskentaService;

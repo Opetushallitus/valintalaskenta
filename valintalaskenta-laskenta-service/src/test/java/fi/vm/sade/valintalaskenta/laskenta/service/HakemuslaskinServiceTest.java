@@ -8,7 +8,7 @@ import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hyvaksyttavissatila
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
-import fi.vm.sade.valintalaskenta.laskenta.service.valinta.Hakemuslaskin;
+import fi.vm.sade.valintalaskenta.laskenta.service.valinta.HakemuslaskinService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinnanvaiheKasittelija;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.HakemusWrapper;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.HakemuslaskinImpl;
@@ -35,9 +35,9 @@ import static org.mockito.internal.verification.VerificationModeFactory.times;
  * Date: 5.9.2013
  * Time: 9.55
  */
-public class HakemuslaskinTest {
+public class HakemuslaskinServiceTest {
 
-    private Hakemuslaskin hakemuslaskin;
+    private HakemuslaskinService hakemuslaskinService;
 
     private LaskentaService laskentaServiceMock;
     private JarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAOMock;
@@ -45,14 +45,14 @@ public class HakemuslaskinTest {
 
     @Before
     public void setUp() {
-        hakemuslaskin = new HakemuslaskinImpl();
+        hakemuslaskinService = new HakemuslaskinImpl();
         laskentaServiceMock = mock(LaskentaService.class);
         jarjestyskriteerihistoriaDAOMock = mock(JarjestyskriteerihistoriaDAO.class);
         edellinenValinnanvaiheKasittelijaMock = mock(EdellinenValinnanvaiheKasittelija.class);
 
-        ReflectionTestUtils.setField(hakemuslaskin, "laskentaService", laskentaServiceMock);
-        ReflectionTestUtils.setField(hakemuslaskin, "jarjestyskriteerihistoriaDAO", jarjestyskriteerihistoriaDAOMock);
-        ReflectionTestUtils.setField(hakemuslaskin, "edellinenValinnanvaiheKasittelija", edellinenValinnanvaiheKasittelijaMock);
+        ReflectionTestUtils.setField(hakemuslaskinService, "laskentaService", laskentaServiceMock);
+        ReflectionTestUtils.setField(hakemuslaskinService, "jarjestyskriteerihistoriaDAO", jarjestyskriteerihistoriaDAOMock);
+        ReflectionTestUtils.setField(hakemuslaskinService, "edellinenValinnanvaiheKasittelija", edellinenValinnanvaiheKasittelijaMock);
     }
 
 
@@ -86,7 +86,7 @@ public class HakemuslaskinTest {
         when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(eq(hakemusOid),
                 eq(laskettuTila), any(Valinnanvaihe.class))).thenReturn(tilaEdellisenVaiheenMukaan);
 
-        hakemuslaskin.suoritaLaskentaHakemukselle(hakukohteet[0], hakemus, new ArrayList<Hakemus>(),
+        hakemuslaskinService.suoritaLaskentaHakemukselle(hakukohteet[0], hakemus, new ArrayList<Hakemus>(),
                 mock(Lukuarvofunktio.class), new Jarjestyskriteeritulos(), new Valinnanvaihe(), jonosijat);
 
         verify(jarjestyskriteerihistoriaDAOMock, times(1)).create(any(Jarjestyskriteerihistoria.class));

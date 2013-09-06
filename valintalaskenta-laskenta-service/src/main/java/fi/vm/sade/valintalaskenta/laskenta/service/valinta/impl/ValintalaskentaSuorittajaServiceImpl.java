@@ -17,7 +17,7 @@ import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.FunktioKutsuTyyppiToFunktioKutsuConverter;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.HakemusTyyppiToHakemusConverter;
-import fi.vm.sade.valintalaskenta.laskenta.service.valinta.Hakemuslaskin;
+import fi.vm.sade.valintalaskenta.laskenta.service.valinta.HakemuslaskinService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.ValintalaskentaSuorittajaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +47,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     private JarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAO;
 
     @Autowired
-    private Hakemuslaskin hakemuslaskin;
+    private HakemuslaskinService hakemuslaskinService;
 
     @Override
     public void suoritaLaskenta(List<HakemusTyyppi> kaikkiHakemukset, List<ValintaperusteetTyyppi> valintaperusteet) {
@@ -115,7 +115,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
                         Lukuarvofunktio lukuarvofunktio = Laskentadomainkonvertteri.muodostaLukuarvolasku(funktiokutsu);
                         for (HakemusWrapper hw : hakemukset) {
-                            hakemuslaskin.suoritaLaskentaHakemukselle(hakukohdeOid, hw, laskentahakemukset,
+                            hakemuslaskinService.suoritaLaskentaHakemukselle(hakukohdeOid, hw, laskentahakemukset,
                                     lukuarvofunktio, jktulos, edellinenVaihe, jonosijatHakemusOidinMukaan);
                         }
                     } catch (LaskentakaavaEiOleValidiException e) {
