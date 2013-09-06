@@ -78,6 +78,11 @@ public class ValintatapajonoDTO {
         this.valintatapajonooid = oid;
     }
 
+    @Override
+    public int hashCode() {
+        return valintatapajonooid.hashCode();
+    }
+
     public boolean equals(Object obj) {
         if (obj instanceof ValintatapajonoDTO) {
             ValintatapajonoDTO vtj = (ValintatapajonoDTO) obj;
