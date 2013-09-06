@@ -1,11 +1,5 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl;
 
-import java.text.SimpleDateFormat;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
@@ -15,10 +9,14 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
 import fi.vm.sade.valintalaskenta.tulos.service.ExcelExportService;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * @author Jussi Jartamo
- * 
  * @Deprecated Excel touhut koostepalveluun!
  */
 @Deprecated
@@ -50,7 +48,7 @@ public class ExcelExportServiceImpl implements ExcelExportService {
                     builder.append("<td>").append(jonosija.getSukunimi()).append("</td>");
                     builder.append("<td>").append(jonosija.getHakemusOid()).append("</td>");
                     builder.append("<td>").append(jonosija.getTuloksenTila()).append("</td>");
-                    builder.append("<td>").append(jonosija.getJarjestyskriteerit().firstEntry().getValue().getArvo())
+                    builder.append("<td>").append(!jonosija.getJarjestyskriteerit().isEmpty() ? jonosija.getJarjestyskriteerit().get(0).getArvo() : "")
                             .append("</td>");
                     builder.append("<td>").append(jonosija.isHarkinnanvarainen()).append("</td>");
 

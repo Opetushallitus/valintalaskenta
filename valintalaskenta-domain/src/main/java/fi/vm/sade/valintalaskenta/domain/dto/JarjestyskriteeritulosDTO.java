@@ -23,6 +23,9 @@ public class JarjestyskriteeritulosDTO {
     @JsonView(JsonViews.Basic.class)
     private String kuvaus;
 
+    @JsonView(JsonViews.Basic.class)
+    private int prioriteetti;
+
     public BigDecimal getArvo() {
         return arvo;
     }
@@ -45,5 +48,13 @@ public class JarjestyskriteeritulosDTO {
 
     public void setKuvaus(String kuvaus) {
         this.kuvaus = kuvaus;
+    }
+
+    public int getPrioriteetti() {
+        return prioriteetti;
+    }
+
+    public void setPrioriteetti(int prioriteetti) {
+        this.prioriteetti = prioriteetti;
     }
 }

@@ -11,13 +11,10 @@ import java.util.List;
  * @author Jussi Jartamo
  */
 
-public class ValintatapajonoDTO implements Comparable<ValintatapajonoDTO> {
+public class ValintatapajonoDTO {
 
     @JsonView(JsonViews.Basic.class)
     private String valintatapajonooid;
-
-    @JsonView(JsonViews.Basic.class)
-    private Long versio;
 
     @JsonView(JsonViews.Basic.class)
     private String nimi;
@@ -42,14 +39,6 @@ public class ValintatapajonoDTO implements Comparable<ValintatapajonoDTO> {
 
     public String getNimi() {
         return nimi;
-    }
-
-    public Long getVersio() {
-        return versio;
-    }
-
-    public void setVersio(Long versio) {
-        this.versio = versio;
     }
 
     public void setNimi(String nimi) {
@@ -89,23 +78,12 @@ public class ValintatapajonoDTO implements Comparable<ValintatapajonoDTO> {
         this.valintatapajonooid = oid;
     }
 
-    public int compareTo(ValintatapajonoDTO o) {
-        if (equals(o)) {
-            return 0;
-        }
-        return versio.compareTo(o.versio);
-    }
-
     public boolean equals(Object obj) {
         if (obj instanceof ValintatapajonoDTO) {
             ValintatapajonoDTO vtj = (ValintatapajonoDTO) obj;
             return this == vtj;
         }
         return false;
-    }
-
-    public int hashCode() {
-        return versio.intValue();
     }
 
     public Tasasijasaanto getTasasijasaanto() {

@@ -3,7 +3,7 @@ package fi.vm.sade.valintalaskenta.tulos.dao;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
-import fi.vm.sade.valintalaskenta.domain.JonosijaHistoria;
+import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +29,7 @@ import static org.junit.Assert.assertEquals;
 @UsingDataSet
 public class JonosijaHistoriaTulosDAOTest {
     @Autowired
-    private JonosijaHistoriaTulosDAO jonosijaHistoriaTulosDAO;
+    private JarjestyskriteerihistoriaDAO jonosijaHistoriaTulosDAO;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -40,20 +40,20 @@ public class JonosijaHistoriaTulosDAOTest {
     @Test
     @UsingDataSet(locations = "jonosijaHistoriaDAOInitialData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testFindByValintapajonoOidHakemusOidAndJarjestyskriteeriPrioriteetti() {
-        final String valintatapajonoOid = "valintatapajonooid1";
-        final String hakemusOid = "hakemusoid1";
-        List<JonosijaHistoria> jonosijaHistoriat =
+        final String valintatapajonoOid = "valintatapajonoOid1";
+        final String hakemusOid = "hakemusOid1";
+        List<Jarjestyskriteerihistoria> jonosijaHistoriat =
                 jonosijaHistoriaTulosDAO.findByValintatapajonoAndVersioAndHakemusOid(valintatapajonoOid, hakemusOid);
 
         assertEquals(2, jonosijaHistoriat.size());
-        Collections.sort(jonosijaHistoriat, new Comparator<JonosijaHistoria>() {
+        Collections.sort(jonosijaHistoriat, new Comparator<Jarjestyskriteerihistoria>() {
             @Override
-            public int compare(JonosijaHistoria o1, JonosijaHistoria o2) {
+            public int compare(Jarjestyskriteerihistoria o1, Jarjestyskriteerihistoria o2) {
                 return o1.getHistoria().compareTo(o2.getHistoria());
             }
         });
 
-        assertEquals("historia3", jonosijaHistoriat.get(0).getHistoria());
-        assertEquals("historia4", jonosijaHistoriat.get(1).getHistoria());
+        assertEquals("historia1", jonosijaHistoriat.get(0).getHistoria());
+        assertEquals("historia2", jonosijaHistoriat.get(1).getHistoria());
     }
 }

@@ -4,22 +4,32 @@ import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteeritulosDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 
-import java.util.Comparator;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA. User: kkammone Date: 13.5.2013 Time: 14:13 To
  * change this template use File | Settings | File Templates.
  */
 public class JonosijaDTOComparator implements Comparator<JonosijaDTO> {
+
+    private Map<Integer, JarjestyskriteeritulosDTO> jarjestyskriteeritPrioriteetinMukaan(Collection<JarjestyskriteeritulosDTO> jks) {
+        Map<Integer, JarjestyskriteeritulosDTO> map = new HashMap<Integer, JarjestyskriteeritulosDTO>();
+
+        for (JarjestyskriteeritulosDTO dto : jks) {
+            map.put(dto.getPrioriteetti(), dto);
+        }
+
+        return map;
+    }
+
     @Override
     public int compare(JonosijaDTO thiz, JonosijaDTO other) {
 
         boolean thizHarkinanvaraisestiHyvaksytty = (thiz.getTuloksenTila() != null && thiz.getTuloksenTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI) ||
-                thiz.getJarjestyskriteerit().get(0) != null && thiz.getJarjestyskriteerit().get(0).getTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI;
+                !thiz.getJarjestyskriteerit().isEmpty() && thiz.getJarjestyskriteerit().get(0).getTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI;
 
         boolean otherHarkinanvaraisestiHyvaksytty = other.getTuloksenTila() != null && other.getTuloksenTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI ||
-                other.getJarjestyskriteerit().get(0) != null && other.getJarjestyskriteerit().get(0).getTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI;
+                !other.getJarjestyskriteerit().isEmpty() && other.getJarjestyskriteerit().get(0).getTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI;
 
 
         //harkinanvaraisesti hyvaksytyt ovat aina listan karjessa.
@@ -30,18 +40,21 @@ public class JonosijaDTOComparator implements Comparator<JonosijaDTO> {
         } else if (otherHarkinanvaraisestiHyvaksytty) {
             return 1;
         }
+        Map<Integer, JarjestyskriteeritulosDTO> thizJarjestyskriteerit = jarjestyskriteeritPrioriteetinMukaan(thiz.getJarjestyskriteerit());
+        Map<Integer, JarjestyskriteeritulosDTO> otherJarjestyskriteerit = jarjestyskriteeritPrioriteetinMukaan(other.getJarjestyskriteerit());
 
         TreeSet<Integer> keys = new TreeSet<Integer>();
-        keys.addAll(thiz.getJarjestyskriteerit().keySet());
-        keys.addAll(other.getJarjestyskriteerit().keySet());
+        keys.addAll(thizJarjestyskriteerit.keySet());
+        keys.addAll(otherJarjestyskriteerit.keySet());
+
         for (Integer i : keys) {
             JarjestyskriteeritulosDTO thisValue = null;
-            if (thiz.getJarjestyskriteerit().containsKey(i)) {
-                thisValue = thiz.getJarjestyskriteerit().get(i);
+            if (thizJarjestyskriteerit.containsKey(i)) {
+                thisValue = thizJarjestyskriteerit.get(i);
             }
             JarjestyskriteeritulosDTO otherValue = null;
-            if (other.getJarjestyskriteerit().containsKey(i)) {
-                otherValue = other.getJarjestyskriteerit().get(i);
+            if (otherJarjestyskriteerit.containsKey(i)) {
+                otherValue = otherJarjestyskriteerit.get(i);
             }
             if ((thisValue == null || thisValue.getArvo() == null) && (otherValue == null || otherValue.getArvo() == null)) {
                 continue;

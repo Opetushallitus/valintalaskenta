@@ -1,14 +1,11 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl.converters;
 
-import fi.vm.sade.valintalaskenta.domain.Hakukohde;
-import fi.vm.sade.valintalaskenta.domain.Jonosija;
-import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.Valintatapajono;
-import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.*;
+import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 
 import java.util.Collection;
@@ -26,8 +23,6 @@ public interface ValintatulosConverter {
 
     List<ValintatapajonoDTO> convertValintatapajono(List<Valintatapajono> valintapajonoList);
 
-    List<HakukohdeDTO> convertHakukohde(List<Hakukohde> a);
-
     List<ValinnanvaiheDTO> convertValinnanvaiheList(List<Valinnanvaihe> valinnanVaiheList);
 
     List<ValintakoeOsallistuminenDTO> convertValintakoeOsallistuminen(List<ValintakoeOsallistuminen> osallistumiset);
@@ -39,4 +34,14 @@ public interface ValintatulosConverter {
     List<ValintakoeDTO> convertValintakoe(List<Valintakoe> valintakokeet);
 
     OsallistuminenTulosDTO convertOsallistuminenTulos(OsallistuminenTulos osallistuminenTulos);
+
+    List<JarjestyskriteeritulosDTO> convertJarjestyskriteeri(Collection<Jarjestyskriteeritulos> jktulos);
+
+    JarjestyskriteeritulosDTO convertJarjestyskriteeri(Jarjestyskriteeritulos jktulos);
+
+    ValintatapajonoDTO convertValintatapajono(Valintatapajono jono);
+
+    ValinnanvaiheDTO convertValinnanvaihe(Valinnanvaihe valinnanvaihe);
+
+    List<HakukohdeDTO> convertValinnanvaihe(Collection<Valinnanvaihe> valinnanvaiheet);
 }

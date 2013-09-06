@@ -1,18 +1,19 @@
 package fi.vm.sade.valintalaskenta.tulos.dao;
 
+import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
+
 import java.util.List;
 
-import fi.vm.sade.valintalaskenta.domain.Hakukohde;
-import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
-
 /**
- * 
  * @author Jussi Jartamo
- * 
  */
 public interface ValinnanvaiheDAO {
 
     List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid);
 
-    List<Hakukohde> readByHakuOid(String hakuoid);
+    List<Valinnanvaihe> readByHakuOid(String hakuoid);
+
+    List<Valinnanvaihe> readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid);
+
+    Valinnanvaihe findByValintatapajonoOid(String valintatapajonoOid);
 }

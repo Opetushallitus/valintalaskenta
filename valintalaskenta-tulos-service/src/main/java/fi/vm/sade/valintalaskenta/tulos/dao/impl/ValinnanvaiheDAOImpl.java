@@ -1,25 +1,17 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import fi.vm.sade.valintalaskenta.domain.Hakukohde;
+import com.google.code.morphia.Datastore;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.google.code.morphia.Datastore;
-
-import fi.vm.sade.valintalaskenta.domain.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.VersiohallintaHakukohde;
-import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
+import java.util.List;
 
 /**
- * 
  * @author Jussi Jartamo
- * 
  */
 @Repository
 public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
@@ -30,34 +22,44 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     private Datastore datastore;
 
     @Override
-    public List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid) {
-        List<VersiohallintaHakukohde> versiohallinnat = datastore.find(VersiohallintaHakukohde.class, "hakukohdeoid",
-                hakukohdeoid).asList();
-        if (versiohallinnat == null || versiohallinnat.isEmpty()) {
-            LOGGER.info("versionhallinat tyhja");
-            return Collections.emptyList();
-        }
-        LOGGER.info("versiohallinnat määrä on {}", versiohallinnat.size());
-        List<Valinnanvaihe> valinnanvaiheet = new ArrayList<Valinnanvaihe>();
-        for (VersiohallintaHakukohde versiohallinta : versiohallinnat) {
-            valinnanvaiheet.add(versiohallinta.getHakukohteet().haeUusinVersio().getHakukohde().getValinnanvaihe());
-        }
-        return valinnanvaiheet;
+    public List<Valinnanvaihe> readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid) {
+        // TODO: Tämän kyselyn voisi tehdä fiksummin alla olevalla aggregoinnilla. Muutetaan kun keritään.
+        // DBCollection collection = datastore.getCollection(Valinnanvaihe.class);
+        // collection.aggregate(
+        // new BasicDBObject("$match", new BasicDBObject("hakuOid", hakuOid).append("valintatapajonot.jonosijat.hakemusOid", hakemusOid)),
+        // new BasicDBObject("$unwind", "$valintatapajonot"),
+        // new BasicDBObject("$unwind", "$valintatapajonot.jonosijat"),
+        // new BasicDBObject("$match", new BasicDBObject("valintatapajonot.jonosijat.hakemusOid", hakemusOid)),
+        // new BasicDBObject("$group", new BasicDBObject("_id",
+        // new BasicDBObject("hakukohdeOid", "$hakukohdeOid").append("valinnanvaiheOid", "$valinnanvaiheOid"))
+        // .append("valintatapajonot", new BasicDBObject("$addToSet", "$valintatapajonot")))
+        //        );
+
+        return datastore.createQuery(Valinnanvaihe.class)
+                .field("hakuOid").equal(hakuOid)
+                .field("valintatapajonot.jonosijat.hakemusOid").equal(hakemusOid)
+                .asList();
+
+
     }
 
     @Override
-    public List<Hakukohde> readByHakuOid(String hakuoid) {
-        List<VersiohallintaHakukohde> versiohallinnat = datastore.find(VersiohallintaHakukohde.class, "hakuoid",
-                hakuoid).asList();
-        if (versiohallinnat == null || versiohallinnat.isEmpty()) {
-            LOGGER.info("versionhallinat tyhja");
-            return Collections.emptyList();
-        }
-        LOGGER.info("versiohallinnat määrä on {}", versiohallinnat.size());
-        List<Hakukohde> valinnanvaiheet = new ArrayList<Hakukohde>();
-        for (VersiohallintaHakukohde versiohallinta : versiohallinnat) {
-            valinnanvaiheet.add(versiohallinta.getHakukohteet().haeUusinVersio().getHakukohde());
-        }
-        return valinnanvaiheet;
+    public Valinnanvaihe findByValintatapajonoOid(String valintatapajonoOid) {
+        return datastore.createQuery(Valinnanvaihe.class)
+                .field("valintatapajonot.valintatapajonoOid").equal(valintatapajonoOid).get();
+    }
+
+    @Override
+    public List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid) {
+        return datastore.createQuery(Valinnanvaihe.class)
+                .field("hakukohdeOid").equal(hakukohdeoid)
+                .asList();
+    }
+
+    @Override
+    public List<Valinnanvaihe> readByHakuOid(String hakuoid) {
+        return datastore.createQuery(Valinnanvaihe.class)
+                .field("hakuOid").equal(hakuoid)
+                .asList();
     }
 }

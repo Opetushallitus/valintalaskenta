@@ -4,8 +4,10 @@ import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import org.codehaus.jackson.map.annotate.JsonView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.TreeMap;
 
 /**
  * Created with IntelliJ IDEA. User: kkammone Date: 13.5.2013 Time: 9:50 To
@@ -23,7 +25,7 @@ public class JonosijaDTO {
     private String hakijaOid;
 
     @JsonView(JsonViews.Basic.class)
-    private TreeMap<Integer, JarjestyskriteeritulosDTO> jarjestyskriteerit = new TreeMap<Integer, JarjestyskriteeritulosDTO>();
+    private List<JarjestyskriteeritulosDTO> jarjestyskriteerit = new ArrayList<JarjestyskriteeritulosDTO>();
 
     @JsonView(JsonViews.Basic.class)
     private int prioriteetti;
@@ -54,11 +56,17 @@ public class JonosijaDTO {
         this.historiat = historiat;
     }
 
-    public TreeMap<Integer, JarjestyskriteeritulosDTO> getJarjestyskriteerit() {
+    public List<JarjestyskriteeritulosDTO> getJarjestyskriteerit() {
+        Collections.sort(jarjestyskriteerit, new Comparator<JarjestyskriteeritulosDTO>() {
+            @Override
+            public int compare(JarjestyskriteeritulosDTO o1, JarjestyskriteeritulosDTO o2) {
+                return o1.getPrioriteetti() - o2.getPrioriteetti();
+            }
+        });
         return jarjestyskriteerit;
     }
 
-    public void setJarjestyskriteerit(TreeMap<Integer, JarjestyskriteeritulosDTO> jarjestyskriteerit) {
+    public void setJarjestyskriteerit(List<JarjestyskriteeritulosDTO> jarjestyskriteerit) {
         this.jarjestyskriteerit = jarjestyskriteerit;
     }
 

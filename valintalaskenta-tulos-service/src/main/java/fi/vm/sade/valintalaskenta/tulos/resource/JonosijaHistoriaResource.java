@@ -1,7 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.resource;
 
-import fi.vm.sade.valintalaskenta.domain.JonosijaHistoria;
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
+import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.slf4j.Logger;
@@ -18,9 +18,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.CRUD;
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ;
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.UPDATE;
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.*;
 
 /**
  * User: tommiha
@@ -42,7 +40,8 @@ public class JonosijaHistoriaResource {
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
     @Secured({READ, UPDATE, CRUD})
-    public List<JonosijaHistoria> listJonosijaHistoria(@PathParam("valintatapajonoOid") String valintatapajonoOid, @PathParam("hakemusOid") String hakemusOid) {
+    public List<Jarjestyskriteerihistoria> listJonosijaHistoria(@PathParam("valintatapajonoOid") String valintatapajonoOid,
+                                                                @PathParam("hakemusOid") String hakemusOid) {
         return tulosService.haeJonosijaHistoria(valintatapajonoOid, hakemusOid);
     }
 

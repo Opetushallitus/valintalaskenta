@@ -4,17 +4,12 @@ import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
  *
  */
 public class HakukohdeDTO {
-
-    @JsonView(JsonViews.Basic.class)
-    private Date createdAt;
-
     @JsonView(JsonViews.Basic.class)
     private String hakuoid;
 
@@ -42,15 +37,6 @@ public class HakukohdeDTO {
     public void setOid(String oid) {
         this.hakukohdeoid = oid;
     }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
 
     public List<ValinnanvaiheDTO> getValinnanvaihe() {
         return valinnanvaihe;
