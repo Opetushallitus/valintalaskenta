@@ -44,9 +44,7 @@ public class Valinnanvaihe {
 
     @PrePersist
     private void prePersist() {
-        if (createdAt == null) {
-            createdAt = new Date();
-        }
+        createdAt = new Date();
     }
 
     @PrePersist

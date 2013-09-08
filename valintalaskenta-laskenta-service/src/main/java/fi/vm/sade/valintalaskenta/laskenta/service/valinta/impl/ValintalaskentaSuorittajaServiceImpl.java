@@ -65,7 +65,6 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         for (ValintaperusteetTyyppi vp : valintaperusteet) {
             String hakuOid = vp.getHakuOid();
             String hakukohdeOid = vp.getHakukohdeOid();
-            String hakuoid = vp.getHakuOid();
             String tarjoajaOid = vp.getTarjoajaOid();
 
             List<HakemusWrapper> hakemukset = hakemuksetHakukohteittain.get(hakukohdeOid).getHakemukset();
@@ -76,15 +75,18 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                 continue;
             }
 
+
             TavallinenValinnanVaiheTyyppi vaihe = (TavallinenValinnanVaiheTyyppi) vp.getValinnanVaihe();
 
             final String valinnanvaiheOid = vaihe.getValinnanVaiheOid();
             final int jarjestysnumero = vaihe.getValinnanVaiheJarjestysluku();
 
+            LOG.info("Haku {}, hakukohde {}, valinnanvaihe {} - jarjestysnumero {}",
+                    new Object[]{hakuOid, hakukohdeOid, valinnanvaiheOid, jarjestysnumero});
             Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdellinenValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
             Valinnanvaihe valinnanvaihe = haeTaiLuoValinnanvaihe(valinnanvaiheOid);
             valinnanvaihe.setHakukohdeOid(hakukohdeOid);
-            valinnanvaihe.setHakuOid(hakuoid);
+            valinnanvaihe.setHakuOid(hakuOid);
             valinnanvaihe.setJarjestysnumero(jarjestysnumero);
             valinnanvaihe.setValinnanvaiheOid(valinnanvaiheOid);
             valinnanvaihe.setTarjoajaOid(tarjoajaOid);
@@ -112,6 +114,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
                         Lukuarvofunktio lukuarvofunktio = Laskentadomainkonvertteri.muodostaLukuarvolasku(funktiokutsu);
                         for (HakemusWrapper hw : hakemukset) {
+                            LOG.info("hakemus {}", new Object[]{hw.getHakemusTyyppi().getHakemusOid()});
                             hakemuslaskinService.suoritaLaskentaHakemukselle(hakukohdeOid, hw, laskentahakemukset,
                                     lukuarvofunktio, jk.getPrioriteetti(), edellinenVaihe, jonosijatHakemusOidinMukaan);
                         }
