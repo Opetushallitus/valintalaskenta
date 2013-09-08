@@ -102,9 +102,6 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                 Map<String, Jonosija> jonosijatHakemusOidinMukaan = new HashMap<String, Jonosija>();
                 for (JarjestyskriteeriTyyppi jk : j.getJarjestyskriteerit()) {
                     try {
-                        Jarjestyskriteeritulos jktulos = new Jarjestyskriteeritulos();
-                        jktulos.setPrioriteetti(jk.getPrioriteetti());
-
                         Funktiokutsu funktiokutsu = funktiokutsuConverter.convert(jk.getFunktiokutsu());
                         if (!Funktiotyyppi.LUKUARVOFUNKTIO.equals(funktiokutsu.getFunktionimi().getTyyppi())) {
                             LOG.error("Valintatapajonon {} prioriteetilla {} olevan järjestyskriteerin laskentakaava " +
@@ -116,7 +113,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                         Lukuarvofunktio lukuarvofunktio = Laskentadomainkonvertteri.muodostaLukuarvolasku(funktiokutsu);
                         for (HakemusWrapper hw : hakemukset) {
                             hakemuslaskinService.suoritaLaskentaHakemukselle(hakukohdeOid, hw, laskentahakemukset,
-                                    lukuarvofunktio, jktulos, edellinenVaihe, jonosijatHakemusOidinMukaan);
+                                    lukuarvofunktio, jk.getPrioriteetti(), edellinenVaihe, jonosijatHakemusOidinMukaan);
                         }
                     } catch (LaskentakaavaEiOleValidiException e) {
                         LOG.error("Valintatapajonon {} prioriteetilla {} olevan järjestyskriteerin " +

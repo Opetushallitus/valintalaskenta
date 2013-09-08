@@ -87,7 +87,7 @@ public class HakemuslaskinServiceTest {
                 eq(laskettuTila), any(Valinnanvaihe.class))).thenReturn(tilaEdellisenVaiheenMukaan);
 
         hakemuslaskinService.suoritaLaskentaHakemukselle(hakukohteet[0], hakemus, new ArrayList<Hakemus>(),
-                mock(Lukuarvofunktio.class), new Jarjestyskriteeritulos(), new Valinnanvaihe(), jonosijat);
+                mock(Lukuarvofunktio.class), 1, new Valinnanvaihe(), jonosijat);
 
         verify(jarjestyskriteerihistoriaDAOMock, times(1)).create(any(Jarjestyskriteerihistoria.class));
 

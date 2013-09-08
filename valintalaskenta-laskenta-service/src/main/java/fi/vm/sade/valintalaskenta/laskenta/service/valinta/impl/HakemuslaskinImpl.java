@@ -40,13 +40,15 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                                             HakemusWrapper laskettavaHakemus,
                                             List<Hakemus> kaikkiHakemukset,
                                             Lukuarvofunktio lukuarvofunktio,
-                                            Jarjestyskriteeritulos jktulos,
+                                            int jkPrioriteetti,
                                             Valinnanvaihe edellinenVaihe,
                                             Map<String, Jonosija> jonosijatHakemusOidinMukaan) {
         StringBuffer historia = new StringBuffer();
         Laskentatulos<BigDecimal> tulos = laskentaService.suoritaLasku(hakukohdeOid,
                 laskettavaHakemus.getLaskentahakemus(), kaikkiHakemukset, lukuarvofunktio, historia);
 
+        Jarjestyskriteeritulos jktulos = new Jarjestyskriteeritulos();
+        jktulos.setPrioriteetti(jkPrioriteetti);
         jktulos.setArvo(tulos.getTulos());
 
         HakemusTyyppi hakemus = laskettavaHakemus.getHakemusTyyppi();

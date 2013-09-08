@@ -2,7 +2,6 @@ package fi.vm.sade.valintalaskenta.laskenta.service.valinta;
 
 import fi.vm.sade.service.valintaperusteet.laskenta.Lukuarvofunktio;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
-import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.HakemusWrapper;
@@ -16,11 +15,11 @@ import java.util.Map;
  * Time: 9.44
  */
 public interface HakemuslaskinService {
-    public void suoritaLaskentaHakemukselle(String hakukohdeOid,
-                                            HakemusWrapper laskettavaHakemus,
-                                            List<Hakemus> kaikkiHakemukset,
-                                            Lukuarvofunktio lukuarvofunktio,
-                                            Jarjestyskriteeritulos jktulos,
-                                            Valinnanvaihe edellinenVaihe,
-                                            Map<String, Jonosija> jonosijatHakemusOidinMukaan);
+    void suoritaLaskentaHakemukselle(String hakukohdeOid,
+                                     HakemusWrapper laskettavaHakemus,
+                                     List<Hakemus> kaikkiHakemukset,
+                                     Lukuarvofunktio lukuarvofunktio,
+                                     int jkPrioriteetti,
+                                     Valinnanvaihe edellinenVaihe,
+                                     Map<String, Jonosija> jonosijatHakemusOidinMukaan);
 }
