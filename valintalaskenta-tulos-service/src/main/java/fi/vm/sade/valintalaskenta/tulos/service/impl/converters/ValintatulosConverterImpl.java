@@ -243,18 +243,8 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
             jonosija.setJonosija(i);
 
             if (!jonosija.getJarjestyskriteerit().isEmpty()) {
-                // System.out.println("===JONOSIJA===") ;
-                // System.out.println("EKA: "+jonosija.getJarjestyskriteerit().get(0).getTila()
-                // ) ;
-                // for(Integer b : jonosija.getJarjestyskriteerit().keySet()) {
-                // System.out.println("[" + b +"]" +
-                // jonosija.getJarjestyskriteerit().get(b).getTila() );
-                // }
-                // System.out.println("==============") ;
-
                 jonosija.setTuloksenTila(jonosija.getJarjestyskriteerit().get(0).getTila());
             }
-
             previous = jonosija;
         }
     }

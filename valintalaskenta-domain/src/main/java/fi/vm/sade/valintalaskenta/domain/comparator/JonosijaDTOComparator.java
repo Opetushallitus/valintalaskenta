@@ -25,14 +25,12 @@ public class JonosijaDTOComparator implements Comparator<JonosijaDTO> {
     @Override
     public int compare(JonosijaDTO thiz, JonosijaDTO other) {
 
-        boolean thizHarkinanvaraisestiHyvaksytty = (thiz.getTuloksenTila() != null && thiz.getTuloksenTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI) ||
-                !thiz.getJarjestyskriteerit().isEmpty() && thiz.getJarjestyskriteerit().get(0).getTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI;
-
-        boolean otherHarkinanvaraisestiHyvaksytty = other.getTuloksenTila() != null && other.getTuloksenTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI ||
-                !other.getJarjestyskriteerit().isEmpty() && other.getJarjestyskriteerit().get(0).getTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI;
-
 
         //harkinanvaraisesti hyvaksytyt ovat aina listan karjessa.
+        boolean thizHarkinanvaraisestiHyvaksytty = (thiz.getTuloksenTila() != null && thiz.getTuloksenTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI) ||
+                !thiz.getJarjestyskriteerit().isEmpty() && thiz.getJarjestyskriteerit().get(0).getTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI;
+        boolean otherHarkinanvaraisestiHyvaksytty = other.getTuloksenTila() != null && other.getTuloksenTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI ||
+                !other.getJarjestyskriteerit().isEmpty() && other.getJarjestyskriteerit().get(0).getTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI;
         if (thizHarkinanvaraisestiHyvaksytty && otherHarkinanvaraisestiHyvaksytty) {
             //do nothing;
         } else if (thizHarkinanvaraisestiHyvaksytty) {
@@ -40,6 +38,22 @@ public class JonosijaDTOComparator implements Comparator<JonosijaDTO> {
         } else if (otherHarkinanvaraisestiHyvaksytty) {
             return 1;
         }
+
+        //hylatyt ovat aina jonon pohjalla
+        boolean thizHylatty= (thiz.getTuloksenTila() != null && thiz.getTuloksenTila() == JarjestyskriteerituloksenTila.HYLATTY) ||
+                !thiz.getJarjestyskriteerit().isEmpty() && thiz.getJarjestyskriteerit().get(0).getTila() == JarjestyskriteerituloksenTila.HYLATTY;
+
+        boolean otherHylatty = other.getTuloksenTila() != null && other.getTuloksenTila() == JarjestyskriteerituloksenTila.HYLATTY ||
+                !other.getJarjestyskriteerit().isEmpty() && other.getJarjestyskriteerit().get(0).getTila() == JarjestyskriteerituloksenTila.HYLATTY;
+        if (thizHylatty && otherHylatty) {
+            //do nothing;
+        } else if (thizHylatty) {
+            return 1;
+        } else if (otherHylatty) {
+            return -1;
+        }
+
+
         Map<Integer, JarjestyskriteeritulosDTO> thizJarjestyskriteerit = jarjestyskriteeritPrioriteetinMukaan(thiz.getJarjestyskriteerit());
         Map<Integer, JarjestyskriteeritulosDTO> otherJarjestyskriteerit = jarjestyskriteeritPrioriteetinMukaan(other.getJarjestyskriteerit());
 

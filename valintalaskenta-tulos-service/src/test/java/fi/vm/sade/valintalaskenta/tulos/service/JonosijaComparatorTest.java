@@ -43,13 +43,17 @@ public class JonosijaComparatorTest {
         sija3.setHakemusOid("sija3");
         Jonosija sija4 = new Jonosija();
         sija4.setHakemusOid("sija4");
+        Jonosija sija5 = new Jonosija();
+        sija5.setHakemusOid("sija5");
 
 
         list.add(sija1);
         list.add(sija0);
         list.add(sija3);
+        list.add(sija5);
         list.add(sija2);
         list.add(sija4);
+
 
 
         Jarjestyskriteeritulos s0t1 = new Jarjestyskriteeritulos();
@@ -99,6 +103,16 @@ public class JonosijaComparatorTest {
         sija4.getJarjestyskriteeritulokset().add(s4t1);
         sija4.getJarjestyskriteeritulokset().add(s4t2);
 
+        Jarjestyskriteeritulos s5t1 = new Jarjestyskriteeritulos();
+        Jarjestyskriteeritulos s5t2 = new Jarjestyskriteeritulos();
+        s5t1.setArvo(new java.math.BigDecimal("3000"));
+        s5t1.setPrioriteetti(1);
+        s5t2.setArvo(new java.math.BigDecimal("1000"));
+        s5t2.setPrioriteetti(2);
+        s5t1.setTila(JarjestyskriteerituloksenTila.HYLATTY);
+        sija5.getJarjestyskriteeritulokset().add(s5t1);
+        sija5.getJarjestyskriteeritulokset().add(s5t2);
+
         for (Jonosija j : list) {
             System.out.println("Before sort: " + j.getHakemusOid());
         }
@@ -114,6 +128,7 @@ public class JonosijaComparatorTest {
         junit.framework.Assert.assertEquals(a.get(0).getHakemusOid(), sija0.getHakemusOid());
         junit.framework.Assert.assertEquals(a.get(1).getHakemusOid(), sija3.getHakemusOid());
         junit.framework.Assert.assertEquals(a.get(2).getHakemusOid(), sija4.getHakemusOid());
+        junit.framework.Assert.assertEquals(a.get(5).getHakemusOid(), sija5.getHakemusOid());
 
     }
 
