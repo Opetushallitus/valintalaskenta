@@ -1,13 +1,14 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
-import fi.vm.sade.valintalaskenta.domain.JsonViews;
-import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
-import org.codehaus.jackson.map.annotate.JsonView;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import org.codehaus.jackson.map.annotate.JsonView;
+
+import fi.vm.sade.valintalaskenta.domain.JsonViews;
+import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 
 /**
  * Created with IntelliJ IDEA. User: kkammone Date: 13.5.2013 Time: 9:50 To
