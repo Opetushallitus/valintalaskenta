@@ -1,21 +1,39 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl.converters;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
+
+import org.springframework.stereotype.Component;
+
 import fi.vm.sade.valintalaskenta.domain.comparator.JonosijaDTOComparator;
-import fi.vm.sade.valintalaskenta.domain.dto.*;
-import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.*;
+import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteeritulosDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.HakutoiveDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.OsallistuminenTulosDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
-import org.springframework.stereotype.Component;
-
-import java.util.*;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
 
 /**
- * User: kkammone
- * Date: 1.8.2013
- * Time: 12:48
+ * User: kkammone Date: 1.8.2013 Time: 12:48
  */
 
 @Component
@@ -56,9 +74,9 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
         return new ArrayList<HakukohdeDTO>(hakukohdeDTOtOidinMukaan.values());
     }
 
-
     @Override
-    public List<ValintakoeOsallistuminenDTO> convertValintakoeOsallistuminen(List<ValintakoeOsallistuminen> osallistumiset) {
+    public List<ValintakoeOsallistuminenDTO> convertValintakoeOsallistuminen(
+            List<ValintakoeOsallistuminen> osallistumiset) {
         List<ValintakoeOsallistuminenDTO> dtot = new ArrayList<ValintakoeOsallistuminenDTO>();
 
         for (ValintakoeOsallistuminen vko : osallistumiset) {
@@ -194,7 +212,8 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
             dto.setHakijaOid(jonosija.getHakijaOid());
             dto.setPrioriteetti(jonosija.getHakutoiveprioriteetti());
             dto.setSukunimi(jonosija.getSukunimi());
-            dto.setJarjestyskriteerit(convertJarjestyskriteeri(jonosija.getJarjestyskriteeritulokset()));
+            dto.setJarjestyskriteerit(new TreeSet<JarjestyskriteeritulosDTO>(convertJarjestyskriteeri(jonosija
+                    .getJarjestyskriteeritulokset())));
             list.add(dto);
         }
 
@@ -243,7 +262,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
             jonosija.setJonosija(i);
 
             if (!jonosija.getJarjestyskriteerit().isEmpty()) {
-                jonosija.setTuloksenTila(jonosija.getJarjestyskriteerit().get(0).getTila());
+                jonosija.setTuloksenTila(jonosija.getJarjestyskriteerit().first().getTila());
             }
             previous = jonosija;
         }

@@ -1,9 +1,8 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.codehaus.jackson.map.annotate.JsonView;
 
@@ -26,7 +25,7 @@ public class JonosijaDTO {
     private String hakijaOid;
 
     @JsonView(JsonViews.Basic.class)
-    private List<JarjestyskriteeritulosDTO> jarjestyskriteerit = new ArrayList<JarjestyskriteeritulosDTO>();
+    private SortedSet<JarjestyskriteeritulosDTO> jarjestyskriteerit = new TreeSet<JarjestyskriteeritulosDTO>();
 
     @JsonView(JsonViews.Basic.class)
     private int prioriteetti;
@@ -57,17 +56,11 @@ public class JonosijaDTO {
         this.historiat = historiat;
     }
 
-    public List<JarjestyskriteeritulosDTO> getJarjestyskriteerit() {
-        Collections.sort(jarjestyskriteerit, new Comparator<JarjestyskriteeritulosDTO>() {
-            @Override
-            public int compare(JarjestyskriteeritulosDTO o1, JarjestyskriteeritulosDTO o2) {
-                return o1.getPrioriteetti() - o2.getPrioriteetti();
-            }
-        });
+    public SortedSet<JarjestyskriteeritulosDTO> getJarjestyskriteerit() {
         return jarjestyskriteerit;
     }
 
-    public void setJarjestyskriteerit(List<JarjestyskriteeritulosDTO> jarjestyskriteerit) {
+    public void setJarjestyskriteerit(SortedSet<JarjestyskriteeritulosDTO> jarjestyskriteerit) {
         this.jarjestyskriteerit = jarjestyskriteerit;
     }
 
