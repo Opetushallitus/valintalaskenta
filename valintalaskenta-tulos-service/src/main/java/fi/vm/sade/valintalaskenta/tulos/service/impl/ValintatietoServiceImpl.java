@@ -142,8 +142,8 @@ public class ValintatietoServiceImpl implements ValintatietoService {
                 ht.setHarkinnanvarainen(Boolean.TRUE);
             }
 
-            if(jonosija.getJarjestyskriteerit().size() > 0 && jonosija.getJarjestyskriteerit().get(0).getArvo() != null) {
-                ht.setPisteet(jonosija.getJarjestyskriteerit().get(0).getArvo().toString());
+            if (jonosija.getJarjestyskriteerit().size() > 0) {
+                ht.setPisteet(jonosija.getJarjestyskriteerit().first().getArvo().toString());
             }
 
             valintatapajonoTyyppi.getHakija().add(ht);

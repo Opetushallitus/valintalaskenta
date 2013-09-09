@@ -1,14 +1,12 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
-import java.math.BigDecimal;
-
-import org.codehaus.jackson.map.annotate.JsonView;
-
 import com.google.code.morphia.annotations.Converters;
-
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.converter.BigDecimalConverter;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
+import org.codehaus.jackson.map.annotate.JsonView;
+
+import java.math.BigDecimal;
 
 /**
  * @author Jussi Jartamo
