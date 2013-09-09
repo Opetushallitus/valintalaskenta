@@ -1,18 +1,20 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
+import java.math.BigDecimal;
+
+import org.codehaus.jackson.map.annotate.JsonView;
+
 import com.google.code.morphia.annotations.Converters;
+
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.converter.BigDecimalConverter;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
-import org.codehaus.jackson.map.annotate.JsonView;
-
-import java.math.BigDecimal;
 
 /**
  * @author Jussi Jartamo
  */
 @Converters(BigDecimalConverter.class)
-public class JarjestyskriteeritulosDTO {
+public class JarjestyskriteeritulosDTO implements Comparable<JarjestyskriteeritulosDTO> {
 
     @JsonView(JsonViews.Basic.class)
     private BigDecimal arvo;
@@ -25,6 +27,11 @@ public class JarjestyskriteeritulosDTO {
 
     @JsonView(JsonViews.Basic.class)
     private int prioriteetti;
+
+    @Override
+    public int compareTo(JarjestyskriteeritulosDTO o) {
+        return new Integer(prioriteetti).compareTo(o.getPrioriteetti());
+    }
 
     public BigDecimal getArvo() {
         return arvo;

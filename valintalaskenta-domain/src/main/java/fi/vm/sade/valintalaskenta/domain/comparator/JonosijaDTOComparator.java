@@ -1,10 +1,14 @@
 package fi.vm.sade.valintalaskenta.domain.comparator;
 
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeSet;
+
 import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteeritulosDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
-
-import java.util.*;
 
 /**
  * Created with IntelliJ IDEA. User: kkammone Date: 13.5.2013 Time: 14:13 To
@@ -12,7 +16,8 @@ import java.util.*;
  */
 public class JonosijaDTOComparator implements Comparator<JonosijaDTO> {
 
-    private Map<Integer, JarjestyskriteeritulosDTO> jarjestyskriteeritPrioriteetinMukaan(Collection<JarjestyskriteeritulosDTO> jks) {
+    private Map<Integer, JarjestyskriteeritulosDTO> jarjestyskriteeritPrioriteetinMukaan(
+            Collection<JarjestyskriteeritulosDTO> jks) {
         Map<Integer, JarjestyskriteeritulosDTO> map = new HashMap<Integer, JarjestyskriteeritulosDTO>();
 
         for (JarjestyskriteeritulosDTO dto : jks) {
@@ -25,37 +30,43 @@ public class JonosijaDTOComparator implements Comparator<JonosijaDTO> {
     @Override
     public int compare(JonosijaDTO thiz, JonosijaDTO other) {
 
-
-        //harkinanvaraisesti hyvaksytyt ovat aina listan karjessa.
-        boolean thizHarkinanvaraisestiHyvaksytty = (thiz.getTuloksenTila() != null && thiz.getTuloksenTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI) ||
-                !thiz.getJarjestyskriteerit().isEmpty() && thiz.getJarjestyskriteerit().get(0).getTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI;
-        boolean otherHarkinanvaraisestiHyvaksytty = other.getTuloksenTila() != null && other.getTuloksenTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI ||
-                !other.getJarjestyskriteerit().isEmpty() && other.getJarjestyskriteerit().get(0).getTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI;
+        // harkinanvaraisesti hyvaksytyt ovat aina listan karjessa.
+        boolean thizHarkinanvaraisestiHyvaksytty = (thiz.getTuloksenTila() != null && thiz.getTuloksenTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI)
+                || !thiz.getJarjestyskriteerit().isEmpty()
+                && thiz.getJarjestyskriteerit().first().getTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI;
+        boolean otherHarkinanvaraisestiHyvaksytty = other.getTuloksenTila() != null
+                && other.getTuloksenTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI
+                || !other.getJarjestyskriteerit().isEmpty()
+                && other.getJarjestyskriteerit().first().getTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI;
         if (thizHarkinanvaraisestiHyvaksytty && otherHarkinanvaraisestiHyvaksytty) {
-            //do nothing;
+            // do nothing;
         } else if (thizHarkinanvaraisestiHyvaksytty) {
             return -1;
         } else if (otherHarkinanvaraisestiHyvaksytty) {
             return 1;
         }
 
-        //hylatyt ovat aina jonon pohjalla
-        boolean thizHylatty= (thiz.getTuloksenTila() != null && thiz.getTuloksenTila() == JarjestyskriteerituloksenTila.HYLATTY) ||
-                !thiz.getJarjestyskriteerit().isEmpty() && thiz.getJarjestyskriteerit().get(0).getTila() == JarjestyskriteerituloksenTila.HYLATTY;
+        // hylatyt ovat aina jonon pohjalla
+        boolean thizHylatty = (thiz.getTuloksenTila() != null && thiz.getTuloksenTila() == JarjestyskriteerituloksenTila.HYLATTY)
+                || !thiz.getJarjestyskriteerit().isEmpty()
+                && thiz.getJarjestyskriteerit().first().getTila() == JarjestyskriteerituloksenTila.HYLATTY;
 
-        boolean otherHylatty = other.getTuloksenTila() != null && other.getTuloksenTila() == JarjestyskriteerituloksenTila.HYLATTY ||
-                !other.getJarjestyskriteerit().isEmpty() && other.getJarjestyskriteerit().get(0).getTila() == JarjestyskriteerituloksenTila.HYLATTY;
+        boolean otherHylatty = other.getTuloksenTila() != null
+                && other.getTuloksenTila() == JarjestyskriteerituloksenTila.HYLATTY
+                || !other.getJarjestyskriteerit().isEmpty()
+                && other.getJarjestyskriteerit().first().getTila() == JarjestyskriteerituloksenTila.HYLATTY;
         if (thizHylatty && otherHylatty) {
-            //do nothing;
+            // do nothing;
         } else if (thizHylatty) {
             return 1;
         } else if (otherHylatty) {
             return -1;
         }
 
-
-        Map<Integer, JarjestyskriteeritulosDTO> thizJarjestyskriteerit = jarjestyskriteeritPrioriteetinMukaan(thiz.getJarjestyskriteerit());
-        Map<Integer, JarjestyskriteeritulosDTO> otherJarjestyskriteerit = jarjestyskriteeritPrioriteetinMukaan(other.getJarjestyskriteerit());
+        Map<Integer, JarjestyskriteeritulosDTO> thizJarjestyskriteerit = jarjestyskriteeritPrioriteetinMukaan(thiz
+                .getJarjestyskriteerit());
+        Map<Integer, JarjestyskriteeritulosDTO> otherJarjestyskriteerit = jarjestyskriteeritPrioriteetinMukaan(other
+                .getJarjestyskriteerit());
 
         TreeSet<Integer> keys = new TreeSet<Integer>();
         keys.addAll(thizJarjestyskriteerit.keySet());
@@ -70,7 +81,8 @@ public class JonosijaDTOComparator implements Comparator<JonosijaDTO> {
             if (otherJarjestyskriteerit.containsKey(i)) {
                 otherValue = otherJarjestyskriteerit.get(i);
             }
-            if ((thisValue == null || thisValue.getArvo() == null) && (otherValue == null || otherValue.getArvo() == null)) {
+            if ((thisValue == null || thisValue.getArvo() == null)
+                    && (otherValue == null || otherValue.getArvo() == null)) {
                 continue;
             } else if (thisValue == null || thisValue.getArvo() == null) {
                 return -1;
