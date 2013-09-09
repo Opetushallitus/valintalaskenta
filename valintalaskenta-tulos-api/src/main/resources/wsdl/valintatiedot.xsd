@@ -81,7 +81,7 @@
         <xs:attribute name="sukunimi" type="xs:string" use="optional"/>
         <xs:attribute name="jonosija" type="xs:int" use="required" />
         <xs:attribute name="prioriteetti" type="xs:int" use="required" />
-        <xs:attribute name="pisteet" type="xs:float" use="required" />
+        <xs:attribute name="pisteet" type="xs:string" use="required" />
         <xs:attribute name="tila" type="tns:HakemusTilaTyyppi"/>
         <xs:attribute name="harkinnanvarainen" type="xs:boolean" use="optional" />
 	</xs:complexType>
