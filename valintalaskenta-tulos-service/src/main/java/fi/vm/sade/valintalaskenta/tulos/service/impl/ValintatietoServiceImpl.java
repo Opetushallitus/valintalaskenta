@@ -159,7 +159,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             }
 
             if (jonosija.getJarjestyskriteerit().size() > 0) {
-                ht.setPisteet(jonosija.getJarjestyskriteerit().first().getArvo().floatValue());
+                ht.setPisteet(jonosija.getJarjestyskriteerit().first().getArvo().toString());
             }
 
             valintatapajonoTyyppi.getHakija().add(ht);
