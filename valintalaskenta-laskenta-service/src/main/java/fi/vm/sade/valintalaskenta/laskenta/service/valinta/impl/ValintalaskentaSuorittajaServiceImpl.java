@@ -118,6 +118,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
                         Lukuarvofunktio lukuarvofunktio = Laskentadomainkonvertteri.muodostaLukuarvolasku(funktiokutsu);
                         for (HakemusWrapper hw : hakemukset) {
+                            LOG.info("hakemus {}", new Object[]{hw.getHakemusTyyppi().getHakemusOid()});
                             hakemuslaskinService.suoritaLaskentaHakemukselle(hakukohdeOid, hw, laskentahakemukset,
                                     lukuarvofunktio, jk.getPrioriteetti(), edellinenVaihe, jonosijatHakemusOidinMukaan);
                         }
