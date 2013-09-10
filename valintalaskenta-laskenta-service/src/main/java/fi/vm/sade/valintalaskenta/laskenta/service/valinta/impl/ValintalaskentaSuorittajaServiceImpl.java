@@ -68,7 +68,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             String tarjoajaOid = vp.getTarjoajaOid();
 
             if (!hakemuksetHakukohteittain.containsKey(hakukohdeOid)) {
-                LOG.info("Hakukohteelle {} ei ole yhtään hakemusta. Hypätään yli.", hakukohdeOid);
+                LOG.info("Hakukohteelle {} ei ole yhtään hakemusta. Hypätään yli.");
                 continue;
             }
 
