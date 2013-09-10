@@ -67,8 +67,12 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             String hakukohdeOid = vp.getHakukohdeOid();
             String tarjoajaOid = vp.getTarjoajaOid();
 
-            List<HakemusWrapper> hakemukset = hakemuksetHakukohteittain.get(hakukohdeOid).getHakemukset();
+            if (!hakemuksetHakukohteittain.containsKey(hakukohdeOid)) {
+                LOG.info("Hakukohteelle {} ei ole yhtään hakemusta. Hypätään yli.");
+                continue;
+            }
 
+            List<HakemusWrapper> hakemukset = hakemuksetHakukohteittain.get(hakukohdeOid).getHakemukset();
             List<Hakemus> laskentahakemukset = hakemuksetHakukohteittain.get(hakukohdeOid).getLaskentahakemukset();
             if (hakemukset == null || hakemukset.isEmpty() ||
                     !(vp.getValinnanVaihe() instanceof TavallinenValinnanVaiheTyyppi)) {
@@ -114,7 +118,6 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
                         Lukuarvofunktio lukuarvofunktio = Laskentadomainkonvertteri.muodostaLukuarvolasku(funktiokutsu);
                         for (HakemusWrapper hw : hakemukset) {
-                            LOG.info("hakemus {}", new Object[]{hw.getHakemusTyyppi().getHakemusOid()});
                             hakemuslaskinService.suoritaLaskentaHakemukselle(hakukohdeOid, hw, laskentahakemukset,
                                     lukuarvofunktio, jk.getPrioriteetti(), edellinenVaihe, jonosijatHakemusOidinMukaan);
                         }
