@@ -9,7 +9,7 @@
         >
 
     <xs:import namespace="http://hakemus.service.sade.vm.fi/schema"
-               schemaLocation="http://pulpetti.hard.ware.fi/haku/wsdl/hakemus.xsd"/>
+               schemaLocation="hakemus.xsd"/>
     <xs:import namespace="http://valintaperusteet.service.sade.vm.fi/schema"
                schemaLocation="http://pulpetti.hard.ware.fi/valintaperusteet/wsdl/valintaperusteet.xsd"/>
 
