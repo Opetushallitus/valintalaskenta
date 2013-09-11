@@ -98,6 +98,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         Map<String, FunktiokutsuTyyppi> kokeet1 = new HashMap<String, FunktiokutsuTyyppi>();
         kokeet1.put(valintakoetunniste, totuusarvoTrue);
+        kokeet1.put("valintakoetunniste2", totuusarvoTrue);
 
         ValintaperusteetTyyppi valintaperusteet1 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1,
                 valinnanVaiheJarjestysluku1, kokeet1);
