@@ -337,8 +337,14 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         muokattuJonosija.setHakuOid(valinnanvaihe.getHakuOid());
         muokattuJonosija.setHakukohdeOid(valinnanvaihe.getHakukohdeOid());
 
-        Jarjestyskriteeritulos jarjestyskriteeritulos = muokattuJonosija.getJarjestyskriteerit().get(
-                jarjestyskriteeriPrioriteetti);
+        Jarjestyskriteeritulos jarjestyskriteeritulos = null;
+
+        for (Jarjestyskriteeritulos tulos : muokattuJonosija.getJarjestyskriteerit()) {
+            if(tulos.getPrioriteetti() == jarjestyskriteeriPrioriteetti) {
+                jarjestyskriteeritulos = tulos;
+            }
+        }
+
         if (jarjestyskriteeritulos == null) {
             jarjestyskriteeritulos = new Jarjestyskriteeritulos();
             jarjestyskriteeritulos.setPrioriteetti(jarjestyskriteeriPrioriteetti);
