@@ -10,6 +10,8 @@ import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoeosallistumislaskin;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.HakukohdeValintakoeData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,9 @@ import java.util.*;
 @Service
 public class ValintakoelaskentaSuorittajaServiceImpl implements ValintakoelaskentaSuorittajaService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ValintakoelaskentaSuorittajaServiceImpl.class);
+
+
     @Autowired
     private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
 
@@ -31,6 +36,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
 
     @Override
     public void laske(HakemusTyyppi hakemus, List<ValintaperusteetTyyppi> valintaperusteet) {
+
+        LOG.info("Laskentaan valintakoeosallistumiset hakemukselle {}", hakemus.getHakemusOid());
 
         final Map<String, HakukohdeTyyppi> hakutoiveetByOid = luoHakutoiveMap(hakemus.getHakutoive());
         Map<String, List<HakukohdeValintakoeData>> valintakoeData = new HashMap<String, List<HakukohdeValintakoeData>>();
@@ -69,6 +76,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
 
             asetaOsallistumisetKokeisiin(kokeet, hakutoiveetByOid);
             for (HakukohdeValintakoeData c : kokeet) {
+                LOG.info("Hakukohde: {}, valintakoe: {}", new Object[]{c.getHakukohdeOid(), c.getValintakoeTunniste()});
+
                 if (!osallistumisetByHaku.containsKey(c.getHakuOid())) {
                     osallistumisetByHaku.put(c.getHakuOid(), luoValintakoeOsallistuminen(c, hakemus));
                 }
