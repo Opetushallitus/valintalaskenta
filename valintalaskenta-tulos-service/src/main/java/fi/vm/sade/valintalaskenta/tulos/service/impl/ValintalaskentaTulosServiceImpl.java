@@ -7,10 +7,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
-import fi.vm.sade.valintalaskenta.tulos.dao.JarjestyskriteerihistoriaDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.ValintakoeOsallistuminenDAO;
+import fi.vm.sade.valintalaskenta.tulos.dao.*;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverter;
 import org.slf4j.Logger;
@@ -44,6 +41,10 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
     @Autowired
     private JarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAO;
+
+    @Autowired
+    private HarkinnanvarainenHyvaksyminenDAO harkinnanvarainenHyvaksyminenDAO;
+
 
 
     public HakemusDTO haeTuloksetHakemukselle(final String hakuOid, final String hakemusOid) {
@@ -315,27 +316,24 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
 
 
+
     @Override
-    public HakemusDTO asetaHarkinnanvaraisestiHyvaksymisenTila(String hakuoid, String hakukohdeoid, String hakemusoid, JarjestyskriteerituloksenTila tila) {
-
-         //try to locate previous jonosija that is bound to hakukohde
-        MuokattuJonosija muokattuJonosija;
-        muokattuJonosija = muokattuJonosijaDAO.readByHakuAndHakukohdeAndHakemus(hakuoid, hakukohdeoid. hakemusoid);
-
-
-        //try to locate on bound to hakukohde and
-        if (muokattuJonosija == null) {
-            muokattuJonosija = new MuokattuJonosija();
+    public void asetaHarkinnanvaraisestiHyvaksymisenTila(String hakuoid, String hakukohdeoid, String hakemusoid, boolean hyvaksyttyHarkinannvaraisesti) {
+        HarkinnanvarainenHyvaksyminen a = harkinnanvarainenHyvaksyminenDAO.haeHarkinnanvarainenHyvaksyminen(hakukohdeoid, hakemusoid);
+        if(a==null) {
+            a=new HarkinnanvarainenHyvaksyminen();
+            a.setHakemusOid(hakemusoid);
+            a.setHakukohdeOid(hakukohdeoid);
         }
-
-        //not found, lets create one
-        if (muokattuJonosija == null) {
-            muokattuJonosija = new MuokattuJonosija();
-        }
-
-
-        return null;
+        a.setHyvaksyttyHarkinnanvaraisesti(hyvaksyttyHarkinannvaraisesti);
+        harkinnanvarainenHyvaksyminenDAO.tallennaHarkinnanvarainenHyvaksyminen(a);
     }
+
+    @Override
+    public List<HarkinnanvarainenHyvaksyminen> haeHarkinnanvaraisestiHyvaksymisenTila(String hakukohdeoid) {
+        return harkinnanvarainenHyvaksyminenDAO.haeHarkinnanvarainenHyvaksyminen(hakukohdeoid);
+    }
+
 
     /**
      * Muokattu jonosija works in mysterious ways.

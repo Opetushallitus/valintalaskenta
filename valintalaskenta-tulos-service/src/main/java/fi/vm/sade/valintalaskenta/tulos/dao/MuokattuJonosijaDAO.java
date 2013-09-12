@@ -21,5 +21,4 @@ public interface MuokattuJonosijaDAO {
 
     List<MuokattuJonosija> readByhakukohdeOid(String hakukohdeOid);
 
-    List<MuokattuJonosija>  readByHakuAndHakukohdeAndHakemus(String hakuoid, String hakukohdeoid, String hakemusoid);
 }
