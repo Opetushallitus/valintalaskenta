@@ -41,8 +41,8 @@ public class ValintatapajonoResource {
             @PathParam("valintatapajonoOid") String valintatapajonoOid,
             @PathParam("hakemusOid") String hakemusOid,
             @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
-            MuokattuJonosijaDTO arvo,
-            @QueryParam("selite") String selite) {
+            @QueryParam("selite") String selite,
+            MuokattuJonosijaDTO arvo) {
         return tulosService.muutaJarjestyskriteeri(valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, arvo, selite);
     }
 }
