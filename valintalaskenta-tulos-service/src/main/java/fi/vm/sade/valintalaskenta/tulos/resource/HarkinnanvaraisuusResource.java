@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.resource;
 
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
+import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvarainenHyvaksyminen;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+
+import java.util.List;
 
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.*;
 
@@ -30,12 +33,12 @@ public class HarkinnanvaraisuusResource {
     @Path("/haku/{hakuOid}/hakukohde/{hakukohdeOid}/hakemus/{hakemusOid}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
-    @Secured({ READ, UPDATE, CRUD })
+    @Secured({ UPDATE, CRUD })
     public void hakemus(@PathParam("hakuOid") String hakuOid,
-                              @PathParam("hakukohdeOid") String hakukohdeOid,
-                              @PathParam("hakemusOid") String hakemusOid,
-                              boolean tila) {
-         tulosService.asetaHarkinnanvaraisestiHyvaksymisenTila(hakuOid,hakukohdeOid,hakemusOid,tila);
+                        @PathParam("hakukohdeOid") String hakukohdeOid,
+                        @PathParam("hakemusOid") String hakemusOid,
+                        HarkinnanvarainenHyvaksyminen harkinnanvarainenHyvaksyminen) {
+        tulosService.asetaHarkinnanvaraisestiHyvaksymisenTila(hakuOid,hakukohdeOid,hakemusOid,harkinnanvarainenHyvaksyminen.getHyvaksyttyHarkinnanvaraisesti());
     }
 
     @GET
@@ -43,8 +46,8 @@ public class HarkinnanvaraisuusResource {
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
     @Secured({ READ, UPDATE, CRUD })
-    public void hakemus(@PathParam("hakuOid") String hakuOid,
-                        @PathParam("hakukohdeOid") String hakukohdeOid) {
-        tulosService.haeHarkinnanvaraisestiHyvaksymisenTila(hakukohdeOid);
+    public List<HarkinnanvarainenHyvaksyminen> hakemus(@PathParam("hakuOid") String hakuOid,
+                                                       @PathParam("hakukohdeOid") String hakukohdeOid) {
+        return  tulosService.haeHarkinnanvaraisestiHyvaksymisenTila(hakukohdeOid);
     }
 }

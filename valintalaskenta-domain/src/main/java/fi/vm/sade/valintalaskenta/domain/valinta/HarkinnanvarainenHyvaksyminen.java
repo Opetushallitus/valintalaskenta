@@ -11,26 +11,17 @@ import org.bson.types.ObjectId;
  * Time: 14:23
  * To change this template use File | Settings | File Templates.
  */
-@Entity("MuokattuJonosija")
+@Entity("HarkinnanvarainenHyvaksyminen")
 public class HarkinnanvarainenHyvaksyminen {
 
     @Id
     private ObjectId id;
 
-    private boolean hyvaksyttyHarkinnanvaraisesti = false;
+    private Boolean hyvaksyttyHarkinnanvaraisesti = false;
 
     private String hakukohdeOid;
 
     private String hakemusOid;
-
-
-    public boolean isHyvaksyttyHarkinnanvaraisesti() {
-        return hyvaksyttyHarkinnanvaraisesti;
-    }
-
-    public void setHyvaksyttyHarkinnanvaraisesti(boolean hyvaksyttyHarkinnanvaraisesti) {
-        this.hyvaksyttyHarkinnanvaraisesti = hyvaksyttyHarkinnanvaraisesti;
-    }
 
     public String getHakemusOid() {
         return hakemusOid;
@@ -46,5 +37,13 @@ public class HarkinnanvarainenHyvaksyminen {
 
     public void setHakukohdeOid(String hakukohdeOid) {
         this.hakukohdeOid = hakukohdeOid;
+    }
+
+    public Boolean getHyvaksyttyHarkinnanvaraisesti() {
+        return hyvaksyttyHarkinnanvaraisesti;
+    }
+
+    public void setHyvaksyttyHarkinnanvaraisesti(Boolean hyvaksyttyHarkinnanvaraisesti) {
+        this.hyvaksyttyHarkinnanvaraisesti = hyvaksyttyHarkinnanvaraisesti;
     }
 }
