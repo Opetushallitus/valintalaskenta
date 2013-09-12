@@ -46,6 +46,11 @@ public class MuokattuJonosijaDAOImpl implements MuokattuJonosijaDAO {
                 .asList();
     }
 
+    @Override
+    public List<MuokattuJonosija> readByHakuAndHakukohdeAndHakemus(String hakuoid, String hakukohdeoid, String hakemusoid) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
 
     @Override
     public MuokattuJonosija readByValintatapajonoOid(String valintatapajonoOid, String hakemusOid) {

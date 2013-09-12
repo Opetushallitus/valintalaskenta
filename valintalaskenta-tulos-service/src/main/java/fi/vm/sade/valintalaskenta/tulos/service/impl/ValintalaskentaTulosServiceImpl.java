@@ -227,6 +227,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         return valintatulosConverter.convertValintakoeOsallistuminen(osallistumiset);
     }
 
+
+
     @Override
     public List<HakukohdeDTO> haeVirheetHaulle(String hakuOid) {
 
@@ -311,6 +313,39 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         return jarjestyskriteerihistoriaDAO.findByValintatapajonoAndVersioAndHakemusOid(valintatapajonoOid, hakemusOid);
     }
 
+
+
+    @Override
+    public HakemusDTO asetaHarkinnanvaraisestiHyvaksymisenTila(String hakuoid, String hakukohdeoid, String hakemusoid, JarjestyskriteerituloksenTila tila) {
+
+         //try to locate previous jonosija that is bound to hakukohde
+        MuokattuJonosija muokattuJonosija;
+        muokattuJonosija = muokattuJonosijaDAO.readByHakuAndHakukohdeAndHakemus(hakuoid, hakukohdeoid. hakemusoid);
+
+
+        //try to locate on bound to hakukohde and
+        if (muokattuJonosija == null) {
+            muokattuJonosija = new MuokattuJonosija();
+        }
+
+        //not found, lets create one
+        if (muokattuJonosija == null) {
+            muokattuJonosija = new MuokattuJonosija();
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Muokattu jonosija works in mysterious ways.
+     * @param valintatapajonoOid
+     * @param hakemusOid
+     * @param jarjestyskriteeriPrioriteetti
+     * @param jonosija
+     * @param selite
+     * @return
+     */
     @Override
     public MuokattuJonosija muutaJarjestyskriteeri(String valintatapajonoOid, String hakemusOid,
                                                    Integer jarjestyskriteeriPrioriteetti, MuokattuJonosijaDTO jonosija, String selite) {

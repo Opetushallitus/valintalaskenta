@@ -43,13 +43,12 @@ public class HakemusResource {
     @Path("{hakuoid}/{hakemusoid}/harkinnanvarainen/{hakukohdeoid}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
-    @Secured({ READ, UPDATE, CRUD })
+    @Secured({ UPDATE, CRUD })
     public HakemusDTO harkinnanvaraisuusPost(@PathParam("hakuoid") String hakuoid,
                                              @PathParam("hakemusoid") String hakemusoid,
                                              @PathParam("hakukohdeoid") String hakukohdeoid,
                                              JarjestyskriteerituloksenTila tila) {
-        // return tulosService.asetaHarkinnanvaraiseksi(hakuoid,hakukohdeoid, hakemusoid,tila);
-        return null;
+        return tulosService.asetaHarkinnanvaraisestiHyvaksymisenTila(hakuoid, hakukohdeoid, hakemusoid, tila);
     }
 
     /*
