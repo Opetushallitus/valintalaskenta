@@ -31,6 +31,8 @@
             <xs:element name="osallistumiset" type="tns:ValintakoeOsallistuminenTyyppi" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
 		<xs:attribute name="hakemusOid" type="xs:string" use="required" />
+		<xs:attribute name="etunimi" type="xs:string" use="required" />
+		<xs:attribute name="sukunimi" type="xs:string" use="required" />
 		<xs:attribute name="luontiPvm" type="xs:dateTime" use="required" />
 	</xs:complexType>
 	<xs:complexType name="ValintakoeOsallistuminenTyyppi">
