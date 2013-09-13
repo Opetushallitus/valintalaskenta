@@ -6,6 +6,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvarainenHyvaksyminen;
+import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvaraisuusTila;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
 import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
@@ -33,7 +34,7 @@ public interface ValintalaskentaTulosService {
 
     List<ValintakoeOsallistuminenDTO> haeValintakoevirheetHaulle(String hakuOid);
 
-    void asetaHarkinnanvaraisestiHyvaksymisenTila(String hakuoid, String hakukohdeoid, String hakemusoid, boolean hyvaksyttyHarkinannvaraisesti);
+    void asetaHarkinnanvaraisestiHyvaksymisenTila(String hakuoid, String hakukohdeoid, String hakemusoid, HarkinnanvaraisuusTila hyvaksyttyHarkinannvaraisesti);
 
     List<HarkinnanvarainenHyvaksyminen> haeHarkinnanvaraisestiHyvaksymisenTila(String hakukohdeoid);
 }

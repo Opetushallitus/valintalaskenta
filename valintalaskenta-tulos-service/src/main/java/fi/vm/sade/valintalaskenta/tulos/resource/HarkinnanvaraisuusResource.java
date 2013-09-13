@@ -38,7 +38,7 @@ public class HarkinnanvaraisuusResource {
                         @PathParam("hakukohdeOid") String hakukohdeOid,
                         @PathParam("hakemusOid") String hakemusOid,
                         HarkinnanvarainenHyvaksyminen harkinnanvarainenHyvaksyminen) {
-        tulosService.asetaHarkinnanvaraisestiHyvaksymisenTila(hakuOid,hakukohdeOid,hakemusOid,harkinnanvarainenHyvaksyminen.getHyvaksyttyHarkinnanvaraisesti());
+        tulosService.asetaHarkinnanvaraisestiHyvaksymisenTila(hakuOid,hakukohdeOid,hakemusOid,harkinnanvarainenHyvaksyminen.getHarkinnanvaraisuusTila());
     }
 
     @GET

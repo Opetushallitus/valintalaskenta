@@ -17,7 +17,7 @@ public class HarkinnanvarainenHyvaksyminen {
     @Id
     private ObjectId id;
 
-    private Boolean hyvaksyttyHarkinnanvaraisesti = false;
+    private HarkinnanvaraisuusTila harkinnanvaraisuusTila;
 
     private String hakukohdeOid;
 
@@ -39,11 +39,12 @@ public class HarkinnanvarainenHyvaksyminen {
         this.hakukohdeOid = hakukohdeOid;
     }
 
-    public Boolean getHyvaksyttyHarkinnanvaraisesti() {
-        return hyvaksyttyHarkinnanvaraisesti;
+
+    public HarkinnanvaraisuusTila getHarkinnanvaraisuusTila() {
+        return harkinnanvaraisuusTila;
     }
 
-    public void setHyvaksyttyHarkinnanvaraisesti(Boolean hyvaksyttyHarkinnanvaraisesti) {
-        this.hyvaksyttyHarkinnanvaraisesti = hyvaksyttyHarkinnanvaraisesti;
+    public void setHarkinnanvaraisuusTila(HarkinnanvaraisuusTila harkinnanvaraisuusTila) {
+        this.harkinnanvaraisuusTila = harkinnanvaraisuusTila;
     }
 }

@@ -318,14 +318,14 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
 
     @Override
-    public void asetaHarkinnanvaraisestiHyvaksymisenTila(String hakuoid, String hakukohdeoid, String hakemusoid, boolean hyvaksyttyHarkinannvaraisesti) {
+    public void asetaHarkinnanvaraisestiHyvaksymisenTila(String hakuoid, String hakukohdeoid, String hakemusoid, HarkinnanvaraisuusTila tila) {
         HarkinnanvarainenHyvaksyminen a = harkinnanvarainenHyvaksyminenDAO.haeHarkinnanvarainenHyvaksyminen(hakukohdeoid, hakemusoid);
         if(a==null) {
             a=new HarkinnanvarainenHyvaksyminen();
             a.setHakemusOid(hakemusoid);
             a.setHakukohdeOid(hakukohdeoid);
         }
-        a.setHyvaksyttyHarkinnanvaraisesti(hyvaksyttyHarkinannvaraisesti);
+        a.setHarkinnanvaraisuusTila(tila);
         harkinnanvarainenHyvaksyminenDAO.tallennaHarkinnanvarainenHyvaksyminen(a);
     }
 
