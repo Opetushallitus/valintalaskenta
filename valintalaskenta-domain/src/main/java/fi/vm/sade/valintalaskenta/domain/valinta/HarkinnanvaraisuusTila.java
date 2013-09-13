@@ -8,5 +8,5 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
  * To change this template use File | Settings | File Templates.
  */
 public enum HarkinnanvaraisuusTila {
-    HYVAKSYTTY, EI_HYVAKSTYTTY
+    HYVAKSYTTY, EI_HYVAKSYTTY
 }
