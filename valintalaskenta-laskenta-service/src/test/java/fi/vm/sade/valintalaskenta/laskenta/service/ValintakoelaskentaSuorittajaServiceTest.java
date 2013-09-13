@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.laskenta.service;
 
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
 import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
@@ -10,6 +11,8 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoelaskenta
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoeosallistumislaskin;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.ValintakoelaskentaSuorittajaServiceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.HakukohdeValintakoeData;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -51,7 +54,10 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     public void testBasic() {
 
         final String hakukohdeOid1 = "hakukohdeOid1";
+        final Hakukohde hakukohde1 = new Hakukohde(hakukohdeOid1, new HashMap<String, String>());
+
         final String hakukohdeOid2 = "hakukohdeOid2";
+        final Hakukohde hakukohde2 = new Hakukohde(hakukohdeOid2, new HashMap<String, String>());
 
         final HakemusTyyppi hakemus = luoHakemus("hakemusOid", "hakijaOid", hakukohdeOid1, hakukohdeOid2);
 
@@ -77,11 +83,28 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         final OsallistuminenTulos osallistuu2 = new OsallistuminenTulos();
         osallistuu2.setOsallistuminen(Osallistuminen.OSALLISTUU);
 
-        when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(eq(hakukohdeOid1),
-                Matchers.<HakemusTyyppi>any(), Matchers.<FunktiokutsuTyyppi>any())).thenReturn(osallistuu1);
+        when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(argThat(new BaseMatcher<Hakukohde>() {
+            @Override
+            public boolean matches(Object o) {
+                return o != null && ((Hakukohde) o).hakukohdeOid().equals(hakukohdeOid1);
+            }
 
-        when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(eq(hakukohdeOid2),
-                Matchers.<HakemusTyyppi>any(), Matchers.<FunktiokutsuTyyppi>any())).thenReturn(osallistuu2);
+            @Override
+            public void describeTo(Description description) {
+            }
+        }), Matchers.<HakemusTyyppi>any(), Matchers.<FunktiokutsuTyyppi>any())).thenReturn(osallistuu1);
+
+        when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(argThat(new BaseMatcher<Hakukohde>() {
+            @Override
+            public boolean matches(Object o) {
+                return o != null && ((Hakukohde) o).hakukohdeOid().equals(hakukohdeOid2);
+
+            }
+
+            @Override
+            public void describeTo(Description description) {
+            }
+        }), Matchers.<HakemusTyyppi>any(), Matchers.<FunktiokutsuTyyppi>any())).thenReturn(osallistuu2);
 
         when(valintakoeOsallistuminenDAOMock.readByHakuOidAndHakemusOid(anyString(), anyString())).thenReturn(null);
 

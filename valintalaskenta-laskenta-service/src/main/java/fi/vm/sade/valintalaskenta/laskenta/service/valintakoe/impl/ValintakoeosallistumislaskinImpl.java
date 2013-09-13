@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl;
 
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Laskentatulos;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hylattytila;
@@ -37,13 +38,13 @@ public class ValintakoeosallistumislaskinImpl implements Valintakoeosallistumisl
     private LaskentadomainkonvertteriWrapper laskentadomainkonvertteriWrapper;
 
     @Override
-    public OsallistuminenTulos laskeOsallistuminenYhdelleHakukohteelle(String hakukohdeOid, HakemusTyyppi hakemus,
+    public OsallistuminenTulos laskeOsallistuminenYhdelleHakukohteelle(Hakukohde hakukohde, HakemusTyyppi hakemus,
                                                                        FunktiokutsuTyyppi kaava) {
         Funktiokutsu funktiokutsu = funktiokutsuConverter.convert(kaava);
 
         switch (funktiokutsu.getFunktionimi().getTyyppi()) {
             case TOTUUSARVOFUNKTIO:
-                Laskentatulos<Boolean> tulos = laskentaService.suoritaLasku(hakukohdeOid,
+                Laskentatulos<Boolean> tulos = laskentaService.suoritaLasku(hakukohde,
                         hakemusConverter.convert(hakemus),
                         laskentadomainkonvertteriWrapper.muodostaTotuusarvolasku(funktiokutsu), new StringBuffer());
 

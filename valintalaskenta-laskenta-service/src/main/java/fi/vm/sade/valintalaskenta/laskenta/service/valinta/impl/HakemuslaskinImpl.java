@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl;
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintaperusteet.laskenta.Lukuarvofunktio;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Laskentatulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
@@ -36,7 +37,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
     private EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija;
 
     @Override
-    public void suoritaLaskentaHakemukselle(String hakukohdeOid,
+    public void suoritaLaskentaHakemukselle(Hakukohde hakukohde,
                                             HakemusWrapper laskettavaHakemus,
                                             List<Hakemus> kaikkiHakemukset,
                                             Lukuarvofunktio lukuarvofunktio,
@@ -44,7 +45,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                                             Valinnanvaihe edellinenVaihe,
                                             Map<String, Jonosija> jonosijatHakemusOidinMukaan) {
         StringBuffer historia = new StringBuffer();
-        Laskentatulos<BigDecimal> tulos = laskentaService.suoritaLasku(hakukohdeOid,
+        Laskentatulos<BigDecimal> tulos = laskentaService.suoritaLasku(hakukohde,
                 laskettavaHakemus.getLaskentahakemus(), kaikkiHakemukset, lukuarvofunktio, historia);
 
         Jarjestyskriteeritulos jktulos = new Jarjestyskriteeritulos();

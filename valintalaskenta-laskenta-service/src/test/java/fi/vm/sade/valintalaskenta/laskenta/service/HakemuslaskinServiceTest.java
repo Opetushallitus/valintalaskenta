@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.laskenta.service;
 
 import fi.vm.sade.service.valintaperusteet.laskenta.Lukuarvofunktio;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Laskentatulos;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hyvaksyttavissatila;
@@ -59,7 +60,7 @@ public class HakemuslaskinServiceTest {
     @Test
     public void test() {
         final String[] hakukohteet = {"hakukohdeOid1", "hakukohdeOid2", "hakukohdeOid3"};
-        final String laskettavaHakukohde = hakukohteet[0];
+        final Hakukohde laskettavaHakukohde = new Hakukohde(hakukohteet[0], new HashMap<String, String>());
         final String hakemusOid = "hakemusOid1";
         final String hakijaOid = "hakijaOid1";
         final boolean harkinnanvaraisuus = false;
@@ -86,7 +87,7 @@ public class HakemuslaskinServiceTest {
         when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(eq(hakemusOid),
                 eq(laskettuTila), any(Valinnanvaihe.class))).thenReturn(tilaEdellisenVaiheenMukaan);
 
-        hakemuslaskinService.suoritaLaskentaHakemukselle(hakukohteet[0], hakemus, new ArrayList<Hakemus>(),
+        hakemuslaskinService.suoritaLaskentaHakemukselle(laskettavaHakukohde, hakemus, new ArrayList<Hakemus>(),
                 mock(Lukuarvofunktio.class), 1, new Valinnanvaihe(), jonosijat);
 
         verify(jarjestyskriteerihistoriaDAOMock, times(1)).create(any(Jarjestyskriteerihistoria.class));

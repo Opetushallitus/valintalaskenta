@@ -5,12 +5,10 @@ import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
 import fi.vm.sade.service.valintaperusteet.laskenta.Lukuarvofunktio;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
 import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
 import fi.vm.sade.service.valintaperusteet.model.Funktiotyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.JarjestyskriteeriTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.TavallinenValinnanVaiheTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskriteereillaTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.*;
 import fi.vm.sade.service.valintaperusteet.service.validointi.virhe.LaskentakaavaEiOleValidiException;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
@@ -80,6 +78,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             }
 
 
+            Map<String, String> hakukohteenValintaperusteet = muodostaHakukohteenValintaperusteetMap(vp.getHakukohteenValintaperuste());
+
             TavallinenValinnanVaiheTyyppi vaihe = (TavallinenValinnanVaiheTyyppi) vp.getValinnanVaihe();
 
             final String valinnanvaiheOid = vaihe.getValinnanVaiheOid();
@@ -119,7 +119,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                         Lukuarvofunktio lukuarvofunktio = Laskentadomainkonvertteri.muodostaLukuarvolasku(funktiokutsu);
                         for (HakemusWrapper hw : hakemukset) {
                             LOG.info("hakemus {}", new Object[]{hw.getHakemusTyyppi().getHakemusOid()});
-                            hakemuslaskinService.suoritaLaskentaHakemukselle(hakukohdeOid, hw, laskentahakemukset,
+                            hakemuslaskinService.suoritaLaskentaHakemukselle(new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet), hw, laskentahakemukset,
                                     lukuarvofunktio, jk.getPrioriteetti(), edellinenVaihe, jonosijatHakemusOidinMukaan);
                         }
                     } catch (LaskentakaavaEiOleValidiException e) {
@@ -136,6 +136,16 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
             valinnanvaiheDAO.create(valinnanvaihe);
         }
+    }
+
+    private Map<String, String> muodostaHakukohteenValintaperusteetMap(List<HakukohteenValintaperusteTyyppi> hakukohteenValintaperuste) {
+        Map<String, String> map = new HashMap<String, String>();
+
+        for (HakukohteenValintaperusteTyyppi vp : hakukohteenValintaperuste) {
+            map.put(vp.getTunniste(), vp.getTunniste());
+        }
+
+        return map;
     }
 
     private Map<String, Hakemukset> jarjestaHakemuksetHakukohteittain(List<HakemusTyyppi> hakemukset) {

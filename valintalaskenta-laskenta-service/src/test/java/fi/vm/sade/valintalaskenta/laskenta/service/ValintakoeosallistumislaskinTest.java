@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.laskenta.service;
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintaperusteet.laskenta.Totuusarvofunktio;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Laskentatulos;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.*;
@@ -20,6 +21,8 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.Valintakoeosa
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -54,7 +57,7 @@ public class ValintakoeosallistumislaskinTest {
                 laskentadomainkonvertteriWrapperMock);
     }
 
-    private void valmisteleStubit(String hakukohdeOid, Tila tila, boolean tulos) {
+    private void valmisteleStubit(final Hakukohde hakukohde, Tila tila, boolean tulos) {
         Funktiokutsu funktiokutsu = new Funktiokutsu();
         funktiokutsu.setFunktionimi(Funktionimi.TOTUUSARVO);
 
@@ -65,67 +68,75 @@ public class ValintakoeosallistumislaskinTest {
 
         final Laskentatulos<Boolean> tulos1 = new Laskentatulos<Boolean>(tila, tulos);
         when(
-                laskentaServiceMock.suoritaLasku(hakukohdeOid, any(Hakemus.class), any(Totuusarvofunktio.class),
+                laskentaServiceMock.suoritaLasku(hakukohde,
+                        any(Hakemus.class), any(Totuusarvofunktio.class),
                         any(StringBuffer.class))).thenReturn(tulos1);
     }
 
     @Test
     public void testTilaHyvaksyttavissaTrue() {
         final String hakukohdeOid = "hakukohdeOid1";
-        valmisteleStubit(hakukohdeOid, new Hyvaksyttavissatila(), true);
+        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<String, String>());
+
+        valmisteleStubit(hakukohde, new Hyvaksyttavissatila(), true);
 
         OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
-                hakukohdeOid, new HakemusTyyppi(), new FunktiokutsuTyyppi());
+                hakukohde, new HakemusTyyppi(), new FunktiokutsuTyyppi());
         assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getOsallistuminen());
     }
 
     @Test
     public void testTilaHyvaksyttavissaFalse() {
         final String hakukohdeOid = "hakukohdeOid1";
+        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<String, String>());
 
-        valmisteleStubit(hakukohdeOid, new Hyvaksyttavissatila(), false);
+        valmisteleStubit(hakukohde, new Hyvaksyttavissatila(), false);
         OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
-                hakukohdeOid, new HakemusTyyppi(), new FunktiokutsuTyyppi());
+                hakukohde, new HakemusTyyppi(), new FunktiokutsuTyyppi());
         assertEquals(Osallistuminen.EI_OSALLISTU, osallistuminen.getOsallistuminen());
     }
 
     @Test
     public void testTilaHylattyFalse() {
         final String hakukohdeOid = "hakukohdeOid1";
+        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<String, String>());
 
-        valmisteleStubit(hakukohdeOid, new Hylattytila("kuvaus", new PakollinenValintaperusteHylkays("")), false);
+        valmisteleStubit(hakukohde, new Hylattytila("kuvaus", new PakollinenValintaperusteHylkays("")), false);
         OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
-                hakukohdeOid, new HakemusTyyppi(), new FunktiokutsuTyyppi());
+                hakukohde, new HakemusTyyppi(), new FunktiokutsuTyyppi());
         assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getOsallistuminen());
     }
 
     @Test
     public void testTilaHylattyTrue() {
         final String hakukohdeOid = "hakukohdeOid1";
+        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<String, String>());
 
-        valmisteleStubit(hakukohdeOid, new Hylattytila("kuvaus", new PakollinenValintaperusteHylkays("")), true);
+        valmisteleStubit(hakukohde, new Hylattytila("kuvaus", new PakollinenValintaperusteHylkays("")), true);
         OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
-                hakukohdeOid, new HakemusTyyppi(), new FunktiokutsuTyyppi());
+                hakukohde, new HakemusTyyppi(), new FunktiokutsuTyyppi());
         assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getOsallistuminen());
     }
 
     @Test
     public void testTilaVirheTrue() {
         final String hakukohdeOid = "hakukohdeOid1";
+        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<String, String>());
 
-        valmisteleStubit(hakukohdeOid, new Virhetila("kuvaus", new ArvokonvertointiVirhe("")), true);
+        valmisteleStubit(hakukohde, new Virhetila("kuvaus", new ArvokonvertointiVirhe("")), true);
         OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
-                hakukohdeOid, new HakemusTyyppi(), new FunktiokutsuTyyppi());
+                hakukohde, new HakemusTyyppi(), new FunktiokutsuTyyppi());
         assertEquals(Osallistuminen.VIRHE, osallistuminen.getOsallistuminen());
     }
 
     @Test
     public void testTilaVirheFalse() {
         final String hakukohdeOid = "hakukohdeOid1";
+        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<String, String>());
 
-        valmisteleStubit(hakukohdeOid, new Virhetila("kuvaus", new ArvokonvertointiVirhe("")), false);
+        valmisteleStubit(hakukohde, new Virhetila("kuvaus", new ArvokonvertointiVirhe("")), false);
         OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
-                hakukohdeOid, new HakemusTyyppi(), new FunktiokutsuTyyppi());
+                hakukohde, new HakemusTyyppi(), new FunktiokutsuTyyppi());
         assertEquals(Osallistuminen.VIRHE, osallistuminen.getOsallistuminen());
     }
 
@@ -135,7 +146,7 @@ public class ValintakoeosallistumislaskinTest {
         funktiokutsu.setFunktionimi(Funktionimi.LUKUARVO);
 
         when(funktiokutsuConverterMock.convert(any(FunktiokutsuTyyppi.class))).thenReturn(funktiokutsu);
-        valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle("hakukodeoid", new HakemusTyyppi(),
+        valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(new Hakukohde("hakukohdeOid", new HashMap<String, String>()), new HakemusTyyppi(),
                 new FunktiokutsuTyyppi());
     }
 }

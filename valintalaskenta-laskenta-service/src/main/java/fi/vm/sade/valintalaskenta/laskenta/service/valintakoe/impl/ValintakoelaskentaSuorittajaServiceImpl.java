@@ -2,6 +2,8 @@ package fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl;
 
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
+import fi.vm.sade.service.valintaperusteet.schema.HakukohteenValintaperusteTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintakoeTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintakoeValinnanVaiheTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
@@ -43,13 +45,15 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         Map<String, List<HakukohdeValintakoeData>> valintakoeData = new HashMap<String, List<HakukohdeValintakoeData>>();
 
         for (ValintaperusteetTyyppi vp : valintaperusteet) {
+            Map<String, String> hakukohteenValintaperusteet = muodostaHakukohteenValintaperusteetMap(vp.getHakukohteenValintaperuste());
+
             if (hakutoiveetByOid.containsKey(vp.getHakukohdeOid()) &&
                     vp.getValinnanVaihe() instanceof ValintakoeValinnanVaiheTyyppi) {
                 ValintakoeValinnanVaiheTyyppi vaihe = (ValintakoeValinnanVaiheTyyppi) vp.getValinnanVaihe();
 
                 for (ValintakoeTyyppi koe : vaihe.getValintakoe()) {
                     OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
-                            vp.getHakukohdeOid(), hakemus, koe.getFunktiokutsu());
+                            new Hakukohde(vp.getHakukohdeOid(), hakukohteenValintaperusteet), hakemus, koe.getFunktiokutsu());
 
                     HakukohdeValintakoeData data = new HakukohdeValintakoeData();
                     data.setHakuOid(vp.getHakuOid());
@@ -91,6 +95,17 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
             valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen);
         }
     }
+
+    private Map<String, String> muodostaHakukohteenValintaperusteetMap(List<HakukohteenValintaperusteTyyppi> hakukohteenValintaperuste) {
+        Map<String, String> map = new HashMap<String, String>();
+
+        for (HakukohteenValintaperusteTyyppi vp : hakukohteenValintaperuste) {
+            map.put(vp.getTunniste(), vp.getTunniste());
+        }
+
+        return map;
+    }
+
 
     protected void asetaOsallistumisetKokeisiin(List<HakukohdeValintakoeData> kokeet,
                                                 final Map<String, HakukohdeTyyppi> hakukohteetByOid) {
