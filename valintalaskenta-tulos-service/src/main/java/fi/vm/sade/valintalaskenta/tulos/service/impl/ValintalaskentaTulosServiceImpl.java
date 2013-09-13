@@ -122,10 +122,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     private void applyHarkinnanvarainenHyvaksynta(JonosijaDTO jonosija, HarkinnanvarainenHyvaksyminen hyvaksyminen) {
-
-        System.out.println("Heheyheyeeeee");
         if(hyvaksyminen.getHarkinnanvaraisuusTila() == HarkinnanvaraisuusTila.HYVAKSYTTY )  {
-            System.out.println("lisataan harkinnanvarainen juttu");
             if(jonosija.getJarjestyskriteerit().first() != null) {
                 jonosija.getJarjestyskriteerit().first().setTila(JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI);
             }
