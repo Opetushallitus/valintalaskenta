@@ -18,4 +18,6 @@ public interface HarkinnanvarainenHyvaksyminenDAO {
     void tallennaHarkinnanvarainenHyvaksyminen(HarkinnanvarainenHyvaksyminen harkinnanvarainenHyvaksyminen);
 
     List<HarkinnanvarainenHyvaksyminen> haeHarkinnanvarainenHyvaksyminen(String hakukohdeoid);
+
+    List<HarkinnanvarainenHyvaksyminen> haeHarkinnanvaraisetHyvaksymisetHaulle(String hakuOid);
 }

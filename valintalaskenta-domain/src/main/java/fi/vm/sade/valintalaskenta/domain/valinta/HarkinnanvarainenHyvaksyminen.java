@@ -23,6 +23,8 @@ public class HarkinnanvarainenHyvaksyminen {
 
     private String hakemusOid;
 
+    private String hakuOid;
+
     public String getHakemusOid() {
         return hakemusOid;
     }
@@ -46,5 +48,13 @@ public class HarkinnanvarainenHyvaksyminen {
 
     public void setHarkinnanvaraisuusTila(HarkinnanvaraisuusTila harkinnanvaraisuusTila) {
         this.harkinnanvaraisuusTila = harkinnanvaraisuusTila;
+    }
+
+    public String getHakuOid() {
+        return hakuOid;
+    }
+
+    public void setHakuOid(String hakuOid) {
+        this.hakuOid = hakuOid;
     }
 }

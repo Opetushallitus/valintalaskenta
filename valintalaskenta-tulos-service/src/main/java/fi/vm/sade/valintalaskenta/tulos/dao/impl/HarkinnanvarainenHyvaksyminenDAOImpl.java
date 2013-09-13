@@ -40,4 +40,11 @@ public class HarkinnanvarainenHyvaksyminenDAOImpl implements HarkinnanvarainenHy
                 .field("hakukohdeOid").equal(hakukohdeOid)
                 .asList();
     }
+    @Override
+    public List<HarkinnanvarainenHyvaksyminen> haeHarkinnanvaraisetHyvaksymisetHaulle( String hakuOid) {
+        return datastore.find(HarkinnanvarainenHyvaksyminen.class)
+                .field("hakuOid").equal(hakuOid)
+                .asList();
+    }
+
 }
