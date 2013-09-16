@@ -2,6 +2,8 @@ package fi.vm.sade.valintalaskenta.tulos.dao;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: kkammone
@@ -11,27 +13,12 @@ import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
  */
 public interface MuokattuJonosijaDAO {
 
-    /**
-     *
-     * @param valintatapajonoOid
-     * @return
-     */
-    //List<MuokattuJonosija> readByValintatapajonoOid(String valintatapajonoOid);
-
-
-    /**
-     * @param valintatapajonoOid
-     * @param hakemusOid
-     * @return
-     */
     MuokattuJonosija readByValintatapajonoOid(String valintatapajonoOid, String hakemusOid);
 
-    /**
-     * @return Kaikki hakukohteet (uusimmalla versiolla) kaikissa hauissa
-     */
     void saveOrUpdate(MuokattuJonosija muokattuJonosija);
 
-    java.util.List<MuokattuJonosija> readByHakuOid(String hakuOid);
+    List<MuokattuJonosija> readByHakuOid(String hakuOid);
 
-    java.util.List<MuokattuJonosija> readByhakukohdeOid(String hakukohdeOid);
+    List<MuokattuJonosija> readByhakukohdeOid(String hakukohdeOid);
+
 }

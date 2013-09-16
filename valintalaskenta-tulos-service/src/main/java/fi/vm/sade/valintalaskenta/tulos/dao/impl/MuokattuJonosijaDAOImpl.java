@@ -47,6 +47,7 @@ public class MuokattuJonosijaDAOImpl implements MuokattuJonosijaDAO {
     }
 
 
+
     @Override
     public MuokattuJonosija readByValintatapajonoOid(String valintatapajonoOid, String hakemusOid) {
         return datastore.find(MuokattuJonosija.class)
