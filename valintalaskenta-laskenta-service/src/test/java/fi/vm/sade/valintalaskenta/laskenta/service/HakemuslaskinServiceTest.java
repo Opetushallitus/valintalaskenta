@@ -2,15 +2,13 @@ package fi.vm.sade.valintalaskenta.laskenta.service;
 
 import fi.vm.sade.service.valintaperusteet.laskenta.Lukuarvofunktio;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.*;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.SyotettyArvo;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hyvaksyttavissatila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.HakemuslaskinService;
-import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinnanvaiheKasittelija;
-import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.HakemusWrapper;
-import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.HakemuslaskinImpl;
-import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.TilaJaSelite;
+import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.*;
 import fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +61,7 @@ public class HakemuslaskinServiceTest {
         final boolean harkinnanvaraisuus = false;
         final int hakutoiveprioriteetti = 1;
 
-        Map<String, Jonosija> jonosijat = new HashMap<String, Jonosija>();
+        Map<String, JonosijaJaSyotetytArvot> jonosijat = new HashMap<String, JonosijaJaSyotetytArvot>();
 
         HakemusWrapper hakemus = new HakemusWrapper();
         hakemus.setHakutoiveprioriteetti(hakutoiveprioriteetti);
@@ -90,7 +88,7 @@ public class HakemuslaskinServiceTest {
         verify(jarjestyskriteerihistoriaDAOMock, times(1)).create(any(Jarjestyskriteerihistoria.class));
 
         assertEquals(1, jonosijat.values().size());
-        Jonosija jonosija = jonosijat.values().iterator().next();
+        Jonosija jonosija = jonosijat.values().iterator().next().getJonosija();
 
         assertEquals(hakemusOid, jonosija.getHakemusOid());
         assertEquals(hakijaOid, jonosija.getHakijaOid());

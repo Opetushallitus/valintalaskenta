@@ -6,6 +6,7 @@ import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
 import fi.vm.sade.service.valintaperusteet.laskenta.Lukuarvofunktio;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.SyotettyArvo;
 import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
 import fi.vm.sade.service.valintaperusteet.model.Funktiotyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.*;
@@ -105,7 +106,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                 jono.setTasasijasaanto(Tasasijasaanto.valueOf(j.getTasasijasaanto().name()));
                 jono.setValintatapajonoOid(j.getOid());
 
-                Map<String, Jonosija> jonosijatHakemusOidinMukaan = new HashMap<String, Jonosija>();
+                Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan = new HashMap<String, JonosijaJaSyotetytArvot>();
                 for (JarjestyskriteeriTyyppi jk : j.getJarjestyskriteerit()) {
                     try {
                         Funktiokutsu funktiokutsu = funktiokutsuConverter.convert(jk.getFunktiokutsu());
@@ -130,7 +131,19 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                     }
                 }
 
-                jono.getJonosijat().addAll(jonosijatHakemusOidinMukaan.values());
+                for (JonosijaJaSyotetytArvot js : jonosijatHakemusOidinMukaan.values()) {
+                    Jonosija jonosija = js.getJonosija();
+                    for (SyotettyArvo a : js.getSyotetytArvot().values()) {
+                        fi.vm.sade.valintalaskenta.domain.valinta.SyotettyArvo syotettyArvo = new fi.vm.sade.valintalaskenta.domain.valinta.SyotettyArvo();
+                        syotettyArvo.setArvo(a.getArvo());
+                        syotettyArvo.setLaskennallinenArvo(a.getLaskennallinenArvo());
+                        syotettyArvo.setOsallistumien(a.getOsallistuminen().name());
+                        syotettyArvo.setTunniste(a.getTunniste());
+                        jonosija.getSyotetytArvot().add(syotettyArvo);
+                    }
+                    jono.getJonosijat().add(jonosija);
+                }
+
                 valinnanvaihe.getValintatapajonot().add(jono);
             }
 

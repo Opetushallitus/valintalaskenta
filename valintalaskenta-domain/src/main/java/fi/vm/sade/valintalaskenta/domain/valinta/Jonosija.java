@@ -38,6 +38,9 @@ public class Jonosija {
     @Embedded
     private List<Jarjestyskriteeritulos> jarjestyskriteeritulokset = new ArrayList<Jarjestyskriteeritulos>();
 
+    @Embedded
+    private List<SyotettyArvo> syotetytArvot = new ArrayList<SyotettyArvo>();
+
     public String getHakemusOid() {
         return hakemusOid;
     }
@@ -102,5 +105,13 @@ public class Jonosija {
                 return o1.getPrioriteetti() - o2.getPrioriteetti();
             }
         });
+    }
+
+    public List<SyotettyArvo> getSyotetytArvot() {
+        return syotetytArvot;
+    }
+
+    public void setSyotetytArvot(List<SyotettyArvo> syotetytArvot) {
+        this.syotetytArvot = syotetytArvot;
     }
 }

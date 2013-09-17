@@ -43,7 +43,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                                             Lukuarvofunktio lukuarvofunktio,
                                             int jkPrioriteetti,
                                             Valinnanvaihe edellinenVaihe,
-                                            Map<String, Jonosija> jonosijatHakemusOidinMukaan) {
+                                            Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan) {
         Laskentatulos<BigDecimal> tulos = laskentaService.suoritaLasku(hakukohde,
                 laskettavaHakemus.getLaskentahakemus(), kaikkiHakemukset, lukuarvofunktio);
 
@@ -67,11 +67,12 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
             jonosija.setHakutoiveprioriteetti(laskettavaHakemus.getHakutoiveprioriteetti());
             jonosija.setHarkinnanvarainen(laskettavaHakemus.isHarkinnanvaraisuus());
             jonosija.setSukunimi(hakemus.getHakijanSukunimi());
-            jonosijatHakemusOidinMukaan.put(hakemus.getHakemusOid(), jonosija);
+            jonosijatHakemusOidinMukaan.put(hakemus.getHakemusOid(), new JonosijaJaSyotetytArvot(jonosija));
         }
 
-        Jonosija jonosija = jonosijatHakemusOidinMukaan.get(hakemus.getHakemusOid());
-        jonosija.getJarjestyskriteeritulokset().add(jktulos);
+        JonosijaJaSyotetytArvot jonosija = jonosijatHakemusOidinMukaan.get(hakemus.getHakemusOid());
+        jonosija.getJonosija().getJarjestyskriteeritulokset().add(jktulos);
+        jonosija.lisaaSyotetytArvot(tulos.getSyotetytArvot());
 
         Jarjestyskriteerihistoria jkhistoria = new Jarjestyskriteerihistoria();
         jkhistoria.setHistoria(tulos.getHistoria().toString());
