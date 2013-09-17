@@ -1,10 +1,7 @@
 package fi.vm.sade.valintalaskenta.laskenta.service;
 
 import fi.vm.sade.service.valintaperusteet.laskenta.Lukuarvofunktio;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.Laskentatulos;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.*;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hyvaksyttavissatila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
@@ -81,9 +78,9 @@ public class HakemuslaskinServiceTest {
         final Tila laskettuTila = new Hyvaksyttavissatila();
         final BigDecimal jarjestyskriteeriarvo = new BigDecimal("100.0");
         Laskentatulos<BigDecimal> tulos = new Laskentatulos<BigDecimal>(laskettuTila,
-                jarjestyskriteeriarvo, new StringBuffer());
+                jarjestyskriteeriarvo, new StringBuffer(), new HashMap<String, SyotettyArvo>());
         when(laskentaServiceMock.suoritaLasku(eq(laskettavaHakukohde), any(Hakemus.class), anyCollection(),
-                any(Lukuarvofunktio.class), any(StringBuffer.class))).thenReturn(tulos);
+                any(Lukuarvofunktio.class))).thenReturn(tulos);
         when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(eq(hakemusOid),
                 eq(laskettuTila), any(Valinnanvaihe.class))).thenReturn(tilaEdellisenVaiheenMukaan);
 

@@ -46,7 +46,7 @@ public class ValintakoeosallistumislaskinImpl implements Valintakoeosallistumisl
             case TOTUUSARVOFUNKTIO:
                 Laskentatulos<Boolean> tulos = laskentaService.suoritaLasku(hakukohde,
                         hakemusConverter.convert(hakemus),
-                        laskentadomainkonvertteriWrapper.muodostaTotuusarvolasku(funktiokutsu), new StringBuffer());
+                        laskentadomainkonvertteriWrapper.muodostaTotuusarvolasku(funktiokutsu));
 
                 // Jos tulosta ei ole saatu laskettua (ts. sitä ei ole) tai jos
                 // tuloksen tila on hylätty, voidaan

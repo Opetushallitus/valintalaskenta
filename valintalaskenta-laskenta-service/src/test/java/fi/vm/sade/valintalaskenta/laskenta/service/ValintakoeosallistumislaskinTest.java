@@ -2,10 +2,7 @@ package fi.vm.sade.valintalaskenta.laskenta.service;
 
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintaperusteet.laskenta.Totuusarvofunktio;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.Laskentatulos;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.*;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.*;
 import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
 import fi.vm.sade.service.valintaperusteet.model.Funktionimi;
@@ -66,11 +63,10 @@ public class ValintakoeosallistumislaskinTest {
         when(laskentadomainkonvertteriWrapperMock.muodostaTotuusarvolasku(funktiokutsu)).thenReturn(
                 any(Totuusarvofunktio.class));
 
-        final Laskentatulos<Boolean> tulos1 = new Laskentatulos<Boolean>(tila, tulos, new StringBuffer());
+        final Laskentatulos<Boolean> tulos1 = new Laskentatulos<Boolean>(tila, tulos, new StringBuffer(), new HashMap<String, SyotettyArvo>());
         when(
                 laskentaServiceMock.suoritaLasku(hakukohde,
-                        any(Hakemus.class), any(Totuusarvofunktio.class),
-                        any(StringBuffer.class))).thenReturn(tulos1);
+                        any(Hakemus.class), any(Totuusarvofunktio.class))).thenReturn(tulos1);
     }
 
     @Test

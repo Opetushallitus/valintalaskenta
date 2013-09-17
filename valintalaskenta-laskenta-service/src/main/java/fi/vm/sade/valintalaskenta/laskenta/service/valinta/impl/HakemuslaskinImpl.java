@@ -44,9 +44,8 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                                             int jkPrioriteetti,
                                             Valinnanvaihe edellinenVaihe,
                                             Map<String, Jonosija> jonosijatHakemusOidinMukaan) {
-        StringBuffer historia = new StringBuffer();
         Laskentatulos<BigDecimal> tulos = laskentaService.suoritaLasku(hakukohde,
-                laskettavaHakemus.getLaskentahakemus(), kaikkiHakemukset, lukuarvofunktio, historia);
+                laskettavaHakemus.getLaskentahakemus(), kaikkiHakemukset, lukuarvofunktio);
 
         Jarjestyskriteeritulos jktulos = new Jarjestyskriteeritulos();
         jktulos.setPrioriteetti(jkPrioriteetti);
@@ -75,7 +74,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         jonosija.getJarjestyskriteeritulokset().add(jktulos);
 
         Jarjestyskriteerihistoria jkhistoria = new Jarjestyskriteerihistoria();
-        jkhistoria.setHistoria(historia.toString());
+        jkhistoria.setHistoria(tulos.getHistoria().toString());
         jarjestyskriteerihistoriaDAO.create(jkhistoria);
         jktulos.setHistoria(jkhistoria.getId());
     }
