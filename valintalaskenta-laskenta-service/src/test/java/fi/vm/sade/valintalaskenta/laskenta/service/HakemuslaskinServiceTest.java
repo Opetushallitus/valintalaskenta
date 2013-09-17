@@ -81,7 +81,7 @@ public class HakemuslaskinServiceTest {
         final Tila laskettuTila = new Hyvaksyttavissatila();
         final BigDecimal jarjestyskriteeriarvo = new BigDecimal("100.0");
         Laskentatulos<BigDecimal> tulos = new Laskentatulos<BigDecimal>(laskettuTila,
-                jarjestyskriteeriarvo);
+                jarjestyskriteeriarvo, new StringBuffer());
         when(laskentaServiceMock.suoritaLasku(eq(laskettavaHakukohde), any(Hakemus.class), anyCollection(),
                 any(Lukuarvofunktio.class), any(StringBuffer.class))).thenReturn(tulos);
         when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(eq(hakemusOid),
