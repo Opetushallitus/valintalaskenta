@@ -8,9 +8,13 @@
 
     <context:annotation-config/>
 	<context:property-placeholder/>
-    <bean id="mongo" class="com.mongodb.Mongo" scope="singleton">
-        <constructor-arg type="java.lang.String" value="${valintalaskenta-laskenta-service.mongodb.host}" />
-        <constructor-arg type="int" value="${valintalaskenta-laskenta-service.mongodb.port}" />
+
+    <bean id="mongoUri" class="com.mongodb.MongoClientURI">
+        <constructor-arg type="java.lang.String" value="${valintalaskenta-laskenta-service.mongodb.uri}" />
+    </bean>
+
+    <bean id="mongo" class="com.mongodb.MongoClient" scope="singleton">
+        <constructor-arg type="com.mongodb.MongoClientURI" ref="mongoUri"/>
     </bean>
     <bean id="morphia" class="com.google.code.morphia.Morphia" />
     <bean id="datastore" factory-bean="morphia" factory-method="createDatastore">

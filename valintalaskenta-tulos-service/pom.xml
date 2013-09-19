@@ -9,10 +9,6 @@
     <artifactId>valintalaskenta-tulos-service</artifactId>
     <packaging>jar</packaging>
     <name>Valintalaskenta :: Tulos Service</name>
-    <properties>
-        <mongodb.host>taulu.hard.ware.fi</mongodb.host>
-        <mongodb.port>27017</mongodb.port>
-    </properties>
     <repositories>
         <repository>
             <id>repo.codahale.com</id>
@@ -211,6 +207,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+        </dependency>
+
+        <dependency>
             <artifactId>nosqlunit-mongodb</artifactId>
             <groupId>com.lordofthejars</groupId>
             <version>0.7.6</version>
@@ -260,16 +261,6 @@
         </dependency>
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>embedded</id>
-            <properties>
-                <mongodb.host>localhost</mongodb.host>
-                <mongodb.port>37200</mongodb.port>
-            </properties>
-
-        </profile>
-    </profiles>
     <build>
         <finalName>${project.artifactId}</finalName>
 

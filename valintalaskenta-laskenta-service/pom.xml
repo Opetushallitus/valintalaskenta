@@ -9,10 +9,6 @@
 	<artifactId>valintalaskenta-laskenta-service</artifactId>
 	<name>Valintalaskenta :: Laskenta Service</name>
 	<packaging>war</packaging>
-	<properties>
-		<mongodb.host>taulu.hard.ware.fi</mongodb.host>
-		<mongodb.port>27017</mongodb.port>
-	</properties>
 	<repositories>
 		<repository>
 			<id>repo.codahale.com</id>
@@ -229,6 +225,11 @@
 			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
 
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+        </dependency>
+
 		<dependency>
 			<groupId>de.flapdoodle.embed</groupId>
 			<artifactId>de.flapdoodle.embed.mongo</artifactId>
@@ -280,17 +281,6 @@
 
 	</dependencies>
 
-	<profiles>
-		<profile>
-			<id>embedded</id>
-
-			<properties>
-				<mongodb.host>localhost</mongodb.host>
-				<mongodb.port>37200</mongodb.port>
-			</properties>
-
-		</profile>
-	</profiles>
 	<build>
 		<finalName>${project.artifactId}</finalName>
 
