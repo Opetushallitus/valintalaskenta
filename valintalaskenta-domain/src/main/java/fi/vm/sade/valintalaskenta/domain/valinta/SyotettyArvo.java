@@ -12,7 +12,7 @@ public class SyotettyArvo {
     private String tunniste;
     private String arvo;
     private String laskennallinenArvo;
-    private String osallistumien;
+    private String osallistuminen;
 
     public String getTunniste() {
         return tunniste;
@@ -38,11 +38,11 @@ public class SyotettyArvo {
         this.laskennallinenArvo = laskennallinenArvo;
     }
 
-    public String getOsallistumien() {
-        return osallistumien;
+    public String getOsallistuminen() {
+        return osallistuminen;
     }
 
-    public void setOsallistumien(String osallistumien) {
-        this.osallistumien = osallistumien;
+    public void setOsallistuminen(String osallistuminen) {
+        this.osallistuminen = osallistuminen;
     }
 }
