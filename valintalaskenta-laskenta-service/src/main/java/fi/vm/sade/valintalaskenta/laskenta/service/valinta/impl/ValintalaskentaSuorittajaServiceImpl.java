@@ -137,7 +137,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                         fi.vm.sade.valintalaskenta.domain.valinta.SyotettyArvo syotettyArvo = new fi.vm.sade.valintalaskenta.domain.valinta.SyotettyArvo();
                         syotettyArvo.setArvo(a.getArvo());
                         syotettyArvo.setLaskennallinenArvo(a.getLaskennallinenArvo());
-                        syotettyArvo.setOsallistumien(a.getOsallistuminen().name());
+                        syotettyArvo.setOsallistuminen(a.getOsallistuminen().name());
                         syotettyArvo.setTunniste(a.getTunniste());
                         jonosija.getSyotetytArvot().add(syotettyArvo);
                     }
