@@ -44,7 +44,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                                             int jkPrioriteetti,
                                             Valinnanvaihe edellinenVaihe,
                                             Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan) {
-        Laskentatulos<BigDecimal> tulos = laskentaService.suoritaLasku(hakukohde,
+        Laskentatulos<BigDecimal> tulos = laskentaService.suoritaValintalaskenta(hakukohde,
                 laskettavaHakemus.getLaskentahakemus(), kaikkiHakemukset, lukuarvofunktio);
 
         Jarjestyskriteeritulos jktulos = new Jarjestyskriteeritulos();

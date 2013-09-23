@@ -44,7 +44,7 @@ public class ValintakoeosallistumislaskinImpl implements Valintakoeosallistumisl
 
         switch (funktiokutsu.getFunktionimi().getTyyppi()) {
             case TOTUUSARVOFUNKTIO:
-                Laskentatulos<Boolean> tulos = laskentaService.suoritaLasku(hakukohde,
+                Laskentatulos<Boolean> tulos = laskentaService.suoritaValintakoelaskenta(hakukohde,
                         hakemusConverter.convert(hakemus),
                         laskentadomainkonvertteriWrapper.muodostaTotuusarvolasku(funktiokutsu));
 
