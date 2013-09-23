@@ -1,20 +1,20 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<xs:schema 
-	version="1.0" 
-	elementFormDefault="unqualified"
-	targetNamespace="http://valintatiedot.service.sade.vm.fi/schema"
-	xmlns:tns="http://valintatiedot.service.sade.vm.fi/schema"
-    xmlns:valintaperusteet="http://valintaperusteet.service.sade.vm.fi/schema"
-    xmlns:tarjonta="http://service.tarjonta.sade.vm.fi/types"
-	xmlns:xs="http://www.w3.org/2001/XMLSchema"
->
-    <xs:import namespace="http://valintaperusteet.service.sade.vm.fi/schema" schemaLocation="http://pulpetti.hard.ware.fi/valintaperusteet/wsdl/valintaperusteet.xsd" />
+<xs:schema
+        version="1.0"
+        elementFormDefault="unqualified"
+        targetNamespace="http://valintatiedot.service.sade.vm.fi/schema"
+        xmlns:tns="http://valintatiedot.service.sade.vm.fi/schema"
+        xmlns:valintaperusteet="http://valintaperusteet.service.sade.vm.fi/schema"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        >
+    <xs:import namespace="http://valintaperusteet.service.sade.vm.fi/schema"
+               schemaLocation="http://pulpetti.hard.ware.fi/valintaperusteet/wsdl/valintaperusteet.xsd"/>
 
     <xs:complexType name="HakuTyyppi">
         <xs:sequence>
-             <xs:element type="tns:HakukohdeTyyppi" name="hakukohteet" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element type="tns:HakukohdeTyyppi" name="hakukohteet" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="hakuOid" type="xs:string"  use="required"/>
+        <xs:attribute name="hakuOid" type="xs:string" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="HakukohdeTyyppi">
@@ -26,33 +26,34 @@
         <xs:attribute name="tarjoajaOid" type="xs:string"/>
     </xs:complexType>
 
-	<xs:complexType name="HakemusOsallistuminenTyyppi">
-		<xs:sequence>
-            <xs:element name="osallistumiset" type="tns:ValintakoeOsallistuminenTyyppi" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:complexType name="HakemusOsallistuminenTyyppi">
+        <xs:sequence>
+            <xs:element name="osallistumiset" type="tns:ValintakoeOsallistuminenTyyppi" minOccurs="0"
+                        maxOccurs="unbounded"/>
         </xs:sequence>
-		<xs:attribute name="hakemusOid" type="xs:string" use="required" />
-		<xs:attribute name="etunimi" type="xs:string" use="required" />
-		<xs:attribute name="sukunimi" type="xs:string" use="required" />
-		<xs:attribute name="luontiPvm" type="xs:dateTime" use="required" />
-	</xs:complexType>
-	<xs:complexType name="ValintakoeOsallistuminenTyyppi">
-		<xs:attribute name="valintakoeOid" type="xs:string" use="required" />
-		<xs:attribute name="valintakoeTunniste" type="xs:string" use="required" />
-		<xs:attribute name="osallistuminen" type="tns:Osallistuminen" use="required" />
-	</xs:complexType>
-	<xs:simpleType name="Osallistuminen">
-		<xs:restriction base="xs:string">
-			<xs:enumeration value="OSALLISTUU" />
-			<xs:enumeration value="EI_OSALLISTU" />
-			<xs:enumeration value="VIRHE" />
-		</xs:restriction>
-	</xs:simpleType>
-	
+        <xs:attribute name="hakemusOid" type="xs:string" use="required"/>
+        <xs:attribute name="etunimi" type="xs:string" use="required"/>
+        <xs:attribute name="sukunimi" type="xs:string" use="required"/>
+        <xs:attribute name="luontiPvm" type="xs:dateTime" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="ValintakoeOsallistuminenTyyppi">
+        <xs:attribute name="valintakoeOid" type="xs:string" use="required"/>
+        <xs:attribute name="valintakoeTunniste" type="xs:string" use="required"/>
+        <xs:attribute name="osallistuminen" type="tns:Osallistuminen" use="required"/>
+    </xs:complexType>
+    <xs:simpleType name="Osallistuminen">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="OSALLISTUU"/>
+            <xs:enumeration value="EI_OSALLISTU"/>
+            <xs:enumeration value="VIRHE"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:complexType name="ValinnanvaiheTyyppi">
         <xs:sequence>
             <xs:element name="valintatapajono" type="tns:ValintatapajonoTyyppi" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="valinnanvaiheOid" type="xs:string" use="optional" />
+        <xs:attribute name="valinnanvaiheOid" type="xs:string" use="optional"/>
         <xs:attribute name="valinnanvaihe" type="xs:int" use="required"/>
     </xs:complexType>
 
@@ -68,25 +69,35 @@
 
     <xs:complexType name="HakijaryhmaTyyppi">
         <xs:sequence>
-            <xs:element name="hakijaOid" type="xs:string"  minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="hakijaOid" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="oid" type="xs:string" use="required"/>
         <xs:attribute name="prioriteetti" type="xs:int" use="required"/>
-        <xs:attribute name="paikat" type="xs:int" use="required" />
+        <xs:attribute name="paikat" type="xs:int" use="required"/>
         <xs:attribute name="nimi" type="xs:string" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="HakijaTyyppi">
-	    <xs:attribute name="oid" type="xs:string" use="required" />
-        <xs:attribute name="hakemusOid" type="xs:string" use="optional" />
+        <xs:sequence>
+            <xs:element name="syotettyArvo" type="tns:SyotettyArvoTyyppi" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="oid" type="xs:string" use="required"/>
+        <xs:attribute name="hakemusOid" type="xs:string" use="optional"/>
         <xs:attribute name="etunimi" type="xs:string" use="optional"/>
         <xs:attribute name="sukunimi" type="xs:string" use="optional"/>
-        <xs:attribute name="jonosija" type="xs:int" use="required" />
-        <xs:attribute name="prioriteetti" type="xs:int" use="required" />
-        <xs:attribute name="pisteet" type="xs:string" use="required" />
+        <xs:attribute name="jonosija" type="xs:int" use="required"/>
+        <xs:attribute name="prioriteetti" type="xs:int" use="required"/>
+        <xs:attribute name="pisteet" type="xs:string" use="required"/>
         <xs:attribute name="tila" type="tns:HakemusTilaTyyppi"/>
-        <xs:attribute name="harkinnanvarainen" type="xs:boolean" use="optional" />
-	</xs:complexType>
+        <xs:attribute name="harkinnanvarainen" type="xs:boolean" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="SyotettyArvoTyyppi">
+        <xs:attribute name="tunniste" type="xs:string" use="required"/>
+        <xs:attribute name="arvo" type="xs:string" use="optional"/>
+        <xs:attribute name="laskennallinenArvo" type="xs:string" use="optional"/>
+        <xs:attribute name="osallistuminen" type="xs:string" use="optional"/>
+    </xs:complexType>
 
     <xs:simpleType name="HakemusTilaTyyppi">
         <xs:restriction base="xs:string">

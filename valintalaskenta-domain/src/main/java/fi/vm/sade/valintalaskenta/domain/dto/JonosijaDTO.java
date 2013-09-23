@@ -1,13 +1,13 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
+import fi.vm.sade.valintalaskenta.domain.JsonViews;
+import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
+import org.codehaus.jackson.map.annotate.JsonView;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import org.codehaus.jackson.map.annotate.JsonView;
-
-import fi.vm.sade.valintalaskenta.domain.JsonViews;
-import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 
 /**
  * Created with IntelliJ IDEA. User: kkammone Date: 13.5.2013 Time: 9:50 To
@@ -44,6 +44,9 @@ public class JonosijaDTO {
 
     @JsonView(JsonViews.Basic.class)
     private List<String> historiat;
+
+    @JsonView(JsonViews.Basic.class)
+    private List<SyotettyArvoDTO> syotetytArvot = new ArrayList<SyotettyArvoDTO>();
 
     @JsonView(JsonViews.Basic.class)
     private boolean muokattu = false;
@@ -134,5 +137,13 @@ public class JonosijaDTO {
 
     public void setMuokattu(boolean muokattu) {
         this.muokattu = muokattu;
+    }
+
+    public List<SyotettyArvoDTO> getSyotetytArvot() {
+        return syotetytArvot;
+    }
+
+    public void setSyotetytArvot(List<SyotettyArvoDTO> syotetytArvot) {
+        this.syotetytArvot = syotetytArvot;
     }
 }
