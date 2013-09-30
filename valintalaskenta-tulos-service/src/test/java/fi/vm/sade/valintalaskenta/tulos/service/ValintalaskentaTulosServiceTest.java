@@ -36,14 +36,6 @@ public class ValintalaskentaTulosServiceTest {
     @Rule
     public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
 
-     /*
-    @Test
-    @UsingDataSet(locations = "initialData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-    public void haeValintakoeOsallistumisetTest() {
-        List<ValintakoeOsallistuminen> kaikki = valintalaskentaTulosService.haeValintakoeOsallistumiset();
-        assertEquals(5, kaikki.size());
-    }
-       */
 
     @Test
     @UsingDataSet(locations = "initialData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
@@ -82,55 +74,4 @@ public class ValintalaskentaTulosServiceTest {
         ValintakoeDTO vk = vv.getValintakokeet().get(0);
         assertEquals(Osallistuminen.VIRHE, vk.getOsallistuminenTulos().getOsallistuminen());
     }
-
-    /*
-
-    @Test
-    @UsingDataSet(locations = "muutaJarjestyskriteerinArvoData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-    public void testMuutaJarjestyskriteerinArvo() {
-        final String valintatapajonoOid = "valintatapajonooid1";
-        final String hakemusOid = "hakemusoid1";
-        final Integer jarjestyskriteeriPrioriteetti = 0;
-        final BigDecimal uusiArvo = new BigDecimal("100.0");
-
-        Valintatapajono jono = valintatapajonoDAO.findByValintatapajonoOidHakemusOidAndJarjestyskriteeriPrioriteetti(
-                valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti);
-
-        boolean found = false;
-        for (Jonosija s : jono.getJonosijat()) {
-            if (hakemusOid.equals(s.getHakemusoid())) {
-                Jarjestyskriteeritulos tulos = s.getJarjestyskriteerit().get(jarjestyskriteeriPrioriteetti);
-                assertFalse(uusiArvo.equals(tulos.getArvo()));
-                found = true;
-            }
-        }
-
-        assertTrue(found);
-
-        jono = valintalaskentaTulosService.muutaJarjestyskriteeri(valintatapajonoOid, hakemusOid,
-                jarjestyskriteeriPrioriteetti, uusiArvo);
-
-        found = false;
-        for (Jonosija s : jono.getJonosijat()) {
-            if (hakemusOid.equals(s.getHakemusoid())) {
-                Jarjestyskriteeritulos tulos = s.getJarjestyskriteerit().get(jarjestyskriteeriPrioriteetti);
-                assertTrue(uusiArvo.equals(tulos.getArvo()));// , 0.1);
-                found = true;
-            }
-        }
-
-        assertTrue(found);
-    }
-
-    @Test(expected = ValintatapajonoEiOleOlemassaException.class)
-    @UsingDataSet(locations = "muutaJarjestyskriteerinArvoData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-    public void testMuutaJarjestyskriteerinArvoNotFound() {
-        final String valintatapajonoOid = "valintatapajonooid1";
-        final String hakemusOid = "hakemusoid1";
-        final Integer jarjestyskriteeriPrioriteetti = 1;
-        final BigDecimal uusiArvo = new BigDecimal("100.0");
-        valintalaskentaTulosService.muutaJarjestyskriteeri(valintatapajonoOid, hakemusOid,
-                jarjestyskriteeriPrioriteetti, uusiArvo);
-    }
-    */
 }
