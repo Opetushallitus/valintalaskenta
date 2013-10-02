@@ -15,15 +15,9 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
     @Autowired
     private Datastore datastore;
 
-    /*
     @Override
-    public List<ValintakoeOsallistuminen> findAll() {
-        return datastore.find(ValintakoeOsallistuminen.class).asList();
-    } */
-
-    @Override
-    public List<ValintakoeOsallistuminen> findByHakijaOid(String hakijaOid) {
-        return datastore.find(ValintakoeOsallistuminen.class, "hakijaOid", hakijaOid).asList();
+    public List<ValintakoeOsallistuminen> findByHakemusOid(String hakemusOid) {
+        return datastore.find(ValintakoeOsallistuminen.class, "hakemusOid", hakemusOid).asList();
     }
 
     @Override

@@ -319,8 +319,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
-    public List<ValintakoeOsallistuminen> haeValintakoeOsallistumiset(String hakijaoid) {
-        return valintakoeOsallistuminenDAO.findByHakijaOid(hakijaoid);
+    public List<ValintakoeOsallistuminen> haeValintakoeOsallistumiset(String hakemusOid) {
+        return valintakoeOsallistuminenDAO.findByHakemusOid(hakemusOid);
     }
 
     @Override

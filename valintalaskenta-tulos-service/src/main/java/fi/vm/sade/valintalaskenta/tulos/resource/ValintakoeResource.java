@@ -28,11 +28,11 @@ public class ValintakoeResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("hakija/{hakijaOid}")
+    @Path("hakemus/{hakijaOid}")
     @JsonView({JsonViews.Basic.class})
     @Secured({READ, UPDATE, CRUD})
-    public List<ValintakoeOsallistuminen> haku(@PathParam("hakijaOid") String hakijaOid) {
-        return tulosService.haeValintakoeOsallistumiset(hakijaOid);
+    public List<ValintakoeOsallistuminen> haku(@PathParam("hakemusOid") String hakemusOid) {
+        return tulosService.haeValintakoeOsallistumiset(hakemusOid);
     }
 
     @GET

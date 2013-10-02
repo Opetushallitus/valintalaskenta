@@ -26,7 +26,7 @@ public interface ValintalaskentaTulosService {
     MuokattuJonosija muutaJarjestyskriteeri(String valintatapajonoOid, String hakemusOid,
                                             Integer jarjestyskriteeriPrioriteetti, MuokattuJonosijaDTO arvo, String selite);
 
-    List<ValintakoeOsallistuminen> haeValintakoeOsallistumiset(String hakijaoid);
+    List<ValintakoeOsallistuminen> haeValintakoeOsallistumiset(String hakemusOid);
 
     List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakutoive(String hakukohdeOid);
 
