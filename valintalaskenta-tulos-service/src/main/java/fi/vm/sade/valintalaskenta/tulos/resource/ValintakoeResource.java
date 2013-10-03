@@ -28,7 +28,7 @@ public class ValintakoeResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("hakemus/{hakijaOid}")
+    @Path("hakemus/{hakemusOid}")
     @JsonView({JsonViews.Basic.class})
     @Secured({READ, UPDATE, CRUD})
     public List<ValintakoeOsallistuminen> haku(@PathParam("hakemusOid") String hakemusOid) {
