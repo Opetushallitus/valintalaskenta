@@ -142,13 +142,13 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                 valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(data.getHakuOid(),
                         hakemus.getHakemusOid());
 
-        if (osallistuminen != null) {
-            valintakoeOsallistuminenDAO.delete(osallistuminen);
+        if (osallistuminen == null) {
+            osallistuminen = new ValintakoeOsallistuminen();
+        } else {
+            osallistuminen.getHakutoiveet().clear();
         }
 
-        osallistuminen = new ValintakoeOsallistuminen();
         osallistuminen.setHakuOid(data.getHakuOid());
-
         osallistuminen.setHakemusOid(hakemus.getHakemusOid());
         osallistuminen.setHakijaOid(hakemus.getHakijaOid());
         osallistuminen.setSukunimi(hakemus.getHakijanSukunimi());
