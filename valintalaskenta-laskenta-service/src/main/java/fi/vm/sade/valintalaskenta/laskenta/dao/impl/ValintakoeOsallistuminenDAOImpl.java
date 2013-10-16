@@ -25,6 +25,11 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
     }
 
     @Override
+    public void delete(ValintakoeOsallistuminen osallistuminen) {
+        morphiaDS.delete(osallistuminen);
+    }
+
+    @Override
     public ValintakoeOsallistuminen readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid) {
         return morphiaDS.find(ValintakoeOsallistuminen.class, "hakuOid", hakuOid)
                 .filter("hakemusOid", hakemusOid).get();
