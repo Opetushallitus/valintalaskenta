@@ -15,4 +15,6 @@ public interface ValintakoeOsallistuminenDAO {
     void createOrUpdate(ValintakoeOsallistuminen v);
 
     List<ValintakoeOsallistuminen> readAll();
+
+    void delete(ValintakoeOsallistuminen osallistuminen);
 }
