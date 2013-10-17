@@ -1,15 +1,10 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion;
 
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
-
 import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
 import fi.vm.sade.service.valintaperusteet.model.Funktionimi;
-import fi.vm.sade.service.valintaperusteet.schema.ArvokonvertteriparametriTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ArvovalikonvertteriparametriTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.FunktioargumenttiTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.SyoteparametriTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.*;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Jussi Jartamo
@@ -40,15 +35,14 @@ public class FunktioKutsuTyyppiToFunktioKutsuConverter implements Converter<Funk
             target.getArvovalikonvertteriparametrit().add(arvovaliparamConverter.convert(k));
         }
 
-        SyoteparametriTyyppiToSyoteparametriConverter sparamConverter;
-        sparamConverter = new SyoteparametriTyyppiToSyoteparametriConverter();
+        SyoteparametriTyyppiToSyoteparametriConverter sparamConverter = new SyoteparametriTyyppiToSyoteparametriConverter();
         for (SyoteparametriTyyppi s : source.getSyoteparametrit()) {
             target.getSyoteparametrit().add(sparamConverter.convert(s));
         }
 
-        if (source.getValintaperusteviite() != null) {
-            ValintaperusteViiteTyyppiToValintaperusteViiteConverter vConverter = new ValintaperusteViiteTyyppiToValintaperusteViiteConverter();
-            target.setValintaperuste(vConverter.convert(source.getValintaperusteviite()));
+        ValintaperusteViiteTyyppiToValintaperusteViiteConverter vConverter = new ValintaperusteViiteTyyppiToValintaperusteViiteConverter();
+        for (ValintaperusteviiteTyyppi vp : source.getValintaperusteviite()) {
+            target.getValintaperusteviitteet().add(vConverter.convert(vp));
         }
 
         return target;

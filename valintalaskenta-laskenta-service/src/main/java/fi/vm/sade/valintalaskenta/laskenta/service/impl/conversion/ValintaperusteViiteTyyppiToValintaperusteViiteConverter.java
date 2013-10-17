@@ -18,6 +18,8 @@ public class ValintaperusteViiteTyyppiToValintaperusteViiteConverter implements
         target.setTunniste(source.getTunniste());
         target.setLahde(Valintaperustelahde.valueOf(source.getLahde().name()));
         target.setOnPakollinen(source.isOnPakollinen());
+        target.setIndeksi(source.getIndeksi());
+        target.setEpasuoraViittaus(source.isEpasuoraViittaus());
         return target;
     }
 
