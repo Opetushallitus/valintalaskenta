@@ -1,10 +1,11 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion;
 
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
+
 import fi.vm.sade.service.valintaperusteet.model.ValintaperusteViite;
 import fi.vm.sade.service.valintaperusteet.model.Valintaperustelahde;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteviiteTyyppi;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 
 /**
  * @author Jussi Jartamo
@@ -17,9 +18,9 @@ public class ValintaperusteViiteTyyppiToValintaperusteViiteConverter implements
         ValintaperusteViite target = new ValintaperusteViite();
         target.setTunniste(source.getTunniste());
         target.setLahde(Valintaperustelahde.valueOf(source.getLahde().name()));
-        target.setOnPakollinen(source.isOnPakollinen());
+        target.setOnPakollinen(Boolean.TRUE.equals(source.isOnPakollinen()));
         target.setIndeksi(source.getIndeksi());
-        target.setEpasuoraViittaus(source.isEpasuoraViittaus());
+        target.setEpasuoraViittaus(Boolean.TRUE.equals(source.isEpasuoraViittaus()));
         return target;
     }
 
