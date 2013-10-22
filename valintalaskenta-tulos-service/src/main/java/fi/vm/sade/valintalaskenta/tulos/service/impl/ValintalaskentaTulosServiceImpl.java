@@ -89,18 +89,18 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     private void applyMuokatutJonosijatToValinnanvaihe(String hakukohdeoid, List<ValinnanvaiheDTO> b) {
         List<MuokattuJonosija> a = muokattuJonosijaDAO.readByhakukohdeOid(hakukohdeoid);
         List<HarkinnanvarainenHyvaksyminen> c = harkinnanvarainenHyvaksyminenDAO.haeHarkinnanvarainenHyvaksyminen(hakukohdeoid);
-        applyMuokatutJonosijat(b, a, c);
+        applyMuokatutJonosijat(hakukohdeoid, b, a, c);
     }
 
     private void applyMuokatutJonosijatToHakukohde(String hakuOid, List<HakukohdeDTO> b) {
         List<MuokattuJonosija> a = muokattuJonosijaDAO.readByHakuOid(hakuOid);
         List<HarkinnanvarainenHyvaksyminen> c = harkinnanvarainenHyvaksyminenDAO.haeHarkinnanvaraisetHyvaksymisetHaulle(hakuOid);
         for (HakukohdeDTO hakukohde : b) {
-            applyMuokatutJonosijat(hakukohde.getValinnanvaihe(), a, c);
+            applyMuokatutJonosijat(hakukohde.getOid(), hakukohde.getValinnanvaihe(), a, c);
         }
     }
 
-    private void applyMuokatutJonosijat(List<ValinnanvaiheDTO> b, List<MuokattuJonosija> a, List<HarkinnanvarainenHyvaksyminen> c) {
+    private void applyMuokatutJonosijat(String hakukohdeoid, List<ValinnanvaiheDTO> b, List<MuokattuJonosija> a, List<HarkinnanvarainenHyvaksyminen> c) {
         for (ValinnanvaiheDTO dto : b) {
             for (ValintatapajonoDTO valintatapajonoDTO : dto.getValintatapajono()) {
                 for (JonosijaDTO jonosija : valintatapajonoDTO.getJonosijat()) {
@@ -111,7 +111,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                         }
                     }
                     for(HarkinnanvarainenHyvaksyminen harkinnanvarainenHyvaksyminen : c) {
-                        if (harkinnanvarainenHyvaksyminen.getHakemusOid().equals(jonosija.getHakemusOid())) {
+                        if (harkinnanvarainenHyvaksyminen.getHakemusOid().equals(jonosija.getHakemusOid()) &&
+                                harkinnanvarainenHyvaksyminen.getHakukohdeOid().equals(hakukohdeoid)) {
                             applyHarkinnanvarainenHyvaksynta(jonosija, harkinnanvarainenHyvaksyminen);
                         }
                     }
