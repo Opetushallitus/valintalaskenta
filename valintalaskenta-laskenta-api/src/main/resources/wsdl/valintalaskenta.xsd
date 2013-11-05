@@ -11,7 +11,8 @@
     <xs:import namespace="http://hakemus.service.sade.vm.fi/schema"
                schemaLocation="hakemus.xsd"/>
     <xs:import namespace="http://valintaperusteet.service.sade.vm.fi/schema"
-               schemaLocation="http://pulpetti.hard.ware.fi/valintaperusteet/wsdl/valintaperusteet.xsd"/>
+               schemaLocation="../../../../../../valintaperusteet/valintaperusteet-api/src/main/resources/wsdl/valintaperusteet.xsd"/>
+    <!-- FIXME: change the url to something smart once we have a branch specific store location for wsdl/schema files  -->
 
     <xs:element name="laske" type="tns:ValintalaskentaTyyppi"/>
     <xs:element name="laskeVastaus" type="tns:VastausTyyppi"/>
