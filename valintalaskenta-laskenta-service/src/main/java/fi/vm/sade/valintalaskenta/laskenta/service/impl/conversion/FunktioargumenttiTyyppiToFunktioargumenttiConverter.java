@@ -1,10 +1,9 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion;
 
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
-
 import fi.vm.sade.service.valintaperusteet.model.Funktioargumentti;
 import fi.vm.sade.service.valintaperusteet.schema.FunktioargumenttiTyyppi;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Jussi Jartamo

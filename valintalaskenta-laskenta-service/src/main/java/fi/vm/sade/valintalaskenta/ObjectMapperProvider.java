@@ -6,13 +6,13 @@ package fi.vm.sade.valintalaskenta;
  * Time: 14.09
  */
 
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.Provider;
-
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.springframework.stereotype.Component;
+
+import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.Provider;
 
 /**
  * 

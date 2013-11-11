@@ -1,47 +1,26 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl;
 
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.CRUD;
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ;
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.UPDATE;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.jws.WebParam;
-import javax.xml.datatype.DatatypeFactory;
-
+import fi.vm.sade.service.valintaperusteet.schema.TasasijasaantoTyyppi;
+import fi.vm.sade.service.valintatiedot.ValintatietoService;
+import fi.vm.sade.service.valintatiedot.schema.*;
+import fi.vm.sade.valintalaskenta.domain.dto.*;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
+import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import fi.vm.sade.service.valintaperusteet.schema.TasasijasaantoTyyppi;
-import fi.vm.sade.service.valintatiedot.ValintatietoService;
-import fi.vm.sade.service.valintatiedot.schema.HakemusOsallistuminenTyyppi;
-import fi.vm.sade.service.valintatiedot.schema.HakemusTilaTyyppi;
-import fi.vm.sade.service.valintatiedot.schema.HakijaTyyppi;
-import fi.vm.sade.service.valintatiedot.schema.HakuTyyppi;
-import fi.vm.sade.service.valintatiedot.schema.HakukohdeTyyppi;
-import fi.vm.sade.service.valintatiedot.schema.Osallistuminen;
-import fi.vm.sade.service.valintatiedot.schema.SyotettyArvoTyyppi;
-import fi.vm.sade.service.valintatiedot.schema.ValinnanvaiheTyyppi;
-import fi.vm.sade.service.valintatiedot.schema.ValintakoeOsallistuminenTyyppi;
-import fi.vm.sade.service.valintatiedot.schema.ValintatapajonoTyyppi;
-import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.SyotettyArvoDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
-import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
+import javax.jws.WebParam;
+import javax.xml.datatype.DatatypeFactory;
+import java.math.BigDecimal;
+import java.util.*;
+
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.*;
 
 /**
  * User: kkammone Date: 29.4.2013 Time: 13:24

@@ -1,11 +1,11 @@
 package fi.vm.sade.valintalaskenta.domain.converter;
 
-import java.math.BigDecimal;
-
 import com.google.code.morphia.converters.SimpleValueConverter;
 import com.google.code.morphia.converters.TypeConverter;
 import com.google.code.morphia.mapping.MappedField;
 import com.google.code.morphia.mapping.MappingException;
+
+import java.math.BigDecimal;
 
 /**
  * 

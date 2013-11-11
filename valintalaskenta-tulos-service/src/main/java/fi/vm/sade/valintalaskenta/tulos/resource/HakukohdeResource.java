@@ -1,7 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.resource;
 
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
-import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.codehaus.jackson.map.annotate.JsonView;

@@ -1,14 +1,10 @@
 package fi.vm.sade.valintalaskenta.domain.comparator;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeSet;
-
 import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteeritulosDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
+
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA. User: kkammone Date: 13.5.2013 Time: 14:13 To

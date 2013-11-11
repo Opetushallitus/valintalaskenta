@@ -6,7 +6,8 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinna
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.TilaJaSelite;
 import org.junit.Before;
 import org.junit.Test;
-import scala.actors.threadpool.Arrays;
+
+import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;

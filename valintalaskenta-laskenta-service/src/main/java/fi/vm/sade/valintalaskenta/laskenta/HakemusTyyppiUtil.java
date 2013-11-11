@@ -1,10 +1,10 @@
 package fi.vm.sade.valintalaskenta.laskenta;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import fi.vm.sade.service.hakemus.schema.AvainArvoTyyppi;
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-
 import java.util.List;
 
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.*;

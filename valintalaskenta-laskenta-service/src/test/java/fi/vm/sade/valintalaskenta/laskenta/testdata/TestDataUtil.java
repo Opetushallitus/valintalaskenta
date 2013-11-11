@@ -6,8 +6,8 @@ import fi.vm.sade.service.valintaperusteet.schema.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.HakukohdeValintakoeData;
-import scala.actors.threadpool.Arrays;
 
+import java.util.Arrays;
 import java.util.Map;
 
 /**
