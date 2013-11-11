@@ -46,6 +46,13 @@ public class MuokattuJonosijaDAOImpl implements MuokattuJonosijaDAO {
                 .asList();
     }
 
+    @Override
+    public List<MuokattuJonosija> readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid) {
+        return datastore.find(MuokattuJonosija.class)
+                .filter("hakuOid", hakuOid)
+                .filter("hakemusOid", hakemusOid)
+                .asList();
+    }
 
 
     @Override
