@@ -46,12 +46,20 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     private HarkinnanvarainenHyvaksyminenDAO harkinnanvarainenHyvaksyminenDAO;
 
 
+    private Map<String, MuokattuJonosija> muokatutJonosijatJonoOidinMukaan(List<MuokattuJonosija> muokatutJonosijat) {
+        Map<String, MuokattuJonosija> map = new HashMap<String, MuokattuJonosija>();
+        for (MuokattuJonosija jonosija : muokatutJonosijat) {
+            map.put(jonosija.getValintatapajonoOid(), jonosija);
+        }
+
+        return map;
+    }
 
     public HakemusDTO haeTuloksetHakemukselle(final String hakuOid, final String hakemusOid) {
-
-
         List<Valinnanvaihe> valinnanVaiheet = valinnanvaiheDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         Map<String, HakukohdeDTO> hakukohdeDTOtOidinMukaan = new HashMap<String, HakukohdeDTO>();
+        List<MuokattuJonosija> muokatutJonosijat = muokattuJonosijaDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
+        List<HarkinnanvarainenHyvaksyminen> harkinnanvaraiset = harkinnanvarainenHyvaksyminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
 
         for (Valinnanvaihe vv : valinnanVaiheet) {
             HakukohdeDTO hakukohdeDTO = null;
@@ -83,6 +91,10 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             hakukohdeDTO.getValinnanvaihe().add(vvdto);
         }
 
+        for (HakukohdeDTO hk : hakukohdeDTOtOidinMukaan.values()) {
+            applyMuokatutJonosijat(hk.getOid(), hk.getValinnanvaihe(), muokatutJonosijat, harkinnanvaraiset);
+        }
+
         return new HakemusDTO(hakuOid, hakemusOid, new ArrayList<HakukohdeDTO>(hakukohdeDTOtOidinMukaan.values()));
     }
 
@@ -110,7 +122,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                             applyJonosija(jonosija, muokattuJonosija);
                         }
                     }
-                    for(HarkinnanvarainenHyvaksyminen harkinnanvarainenHyvaksyminen : c) {
+                    for (HarkinnanvarainenHyvaksyminen harkinnanvarainenHyvaksyminen : c) {
                         if (harkinnanvarainenHyvaksyminen.getHakemusOid().equals(jonosija.getHakemusOid()) &&
                                 harkinnanvarainenHyvaksyminen.getHakukohdeOid().equals(hakukohdeoid)) {
                             applyHarkinnanvarainenHyvaksynta(jonosija, harkinnanvarainenHyvaksyminen);
@@ -123,8 +135,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     private void applyHarkinnanvarainenHyvaksynta(JonosijaDTO jonosija, HarkinnanvarainenHyvaksyminen hyvaksyminen) {
-        if(hyvaksyminen.getHarkinnanvaraisuusTila() == HarkinnanvaraisuusTila.HYVAKSYTTY )  {
-            if(jonosija.getJarjestyskriteerit().first() != null) {
+        if (hyvaksyminen.getHarkinnanvaraisuusTila() == HarkinnanvaraisuusTila.HYVAKSYTTY) {
+            if (jonosija.getJarjestyskriteerit().first() != null) {
                 jonosija.getJarjestyskriteerit().first().setTila(JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI);
             }
             jonosija.setTuloksenTila(JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI);
@@ -195,7 +207,6 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
 
-
     @Override
     public List<ValinnanvaiheDTO> haeValinnanvaiheetHakukohteelle(String hakukohdeoid) {
 
@@ -247,7 +258,6 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
         return valintatulosConverter.convertValintakoeOsallistuminen(osallistumiset);
     }
-
 
 
     @Override
@@ -335,13 +345,11 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
 
-
-
     @Override
     public void asetaHarkinnanvaraisestiHyvaksymisenTila(String hakuoid, String hakukohdeoid, String hakemusoid, HarkinnanvaraisuusTila tila) {
         HarkinnanvarainenHyvaksyminen a = harkinnanvarainenHyvaksyminenDAO.haeHarkinnanvarainenHyvaksyminen(hakukohdeoid, hakemusoid);
-        if(a==null) {
-            a=new HarkinnanvarainenHyvaksyminen();
+        if (a == null) {
+            a = new HarkinnanvarainenHyvaksyminen();
             a.setHakemusOid(hakemusoid);
             a.setHakukohdeOid(hakukohdeoid);
             a.setHakuOid(hakuoid);
@@ -358,6 +366,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
     /**
      * Muokattu jonosija works in mysterious ways.
+     *
      * @param valintatapajonoOid
      * @param hakemusOid
      * @param jarjestyskriteeriPrioriteetti
@@ -394,7 +403,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         Jarjestyskriteeritulos jarjestyskriteeritulos = null;
 
         for (Jarjestyskriteeritulos tulos : muokattuJonosija.getJarjestyskriteerit()) {
-            if(tulos.getPrioriteetti() == jarjestyskriteeriPrioriteetti) {
+            if (tulos.getPrioriteetti() == jarjestyskriteeriPrioriteetti) {
                 jarjestyskriteeritulos = tulos;
             }
         }
