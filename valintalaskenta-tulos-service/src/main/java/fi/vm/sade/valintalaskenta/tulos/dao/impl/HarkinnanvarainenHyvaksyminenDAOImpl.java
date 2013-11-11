@@ -22,7 +22,7 @@ public class HarkinnanvarainenHyvaksyminenDAOImpl implements HarkinnanvarainenHy
     private Datastore datastore;
 
     @Override
-    public HarkinnanvarainenHyvaksyminen haeHarkinnanvarainenHyvaksyminen( String hakukohdeOid, String hakemusOid) {
+    public HarkinnanvarainenHyvaksyminen haeHarkinnanvarainenHyvaksyminen(String hakukohdeOid, String hakemusOid) {
         return datastore.find(HarkinnanvarainenHyvaksyminen.class)
                 .field("hakukohdeOid").equal(hakukohdeOid)
                 .field("hakemusOid").equal(hakemusOid)
@@ -40,10 +40,19 @@ public class HarkinnanvarainenHyvaksyminenDAOImpl implements HarkinnanvarainenHy
                 .field("hakukohdeOid").equal(hakukohdeOid)
                 .asList();
     }
+
     @Override
-    public List<HarkinnanvarainenHyvaksyminen> haeHarkinnanvaraisetHyvaksymisetHaulle( String hakuOid) {
+    public List<HarkinnanvarainenHyvaksyminen> haeHarkinnanvaraisetHyvaksymisetHaulle(String hakuOid) {
         return datastore.find(HarkinnanvarainenHyvaksyminen.class)
                 .field("hakuOid").equal(hakuOid)
+                .asList();
+    }
+
+    @Override
+    public List<HarkinnanvarainenHyvaksyminen> readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid) {
+        return datastore.find(HarkinnanvarainenHyvaksyminen.class)
+                .field("hakuOid").equal(hakuOid)
+                .field("hakemusOid").equal(hakemusOid)
                 .asList();
     }
 

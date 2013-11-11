@@ -3,10 +3,12 @@ package fi.vm.sade.valintalaskenta.tulos.service;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.HakutoiveDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import org.junit.Rule;
@@ -17,6 +19,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.math.BigDecimal;
+import java.util.Iterator;
 import java.util.List;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
@@ -73,5 +77,59 @@ public class ValintalaskentaTulosServiceTest {
 
         ValintakoeDTO vk = vv.getValintakokeet().get(0);
         assertEquals(Osallistuminen.VIRHE, vk.getOsallistuminenTulos().getOsallistuminen());
+    }
+
+    @Test
+    @UsingDataSet(locations = "testHaeTuloksetHakemukselle.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void testHaeTuloksetHakemukselle() {
+        {
+            HakemusDTO hakemus = valintalaskentaTulosService.haeTuloksetHakemukselle("hakuOid1", "hakemusOid1");
+            assertEquals(1, hakemus.getHakukohteet().size());
+            HakukohdeDTO hakukohde = hakemus.getHakukohteet().get(0);
+            assertEquals(1, hakukohde.getValinnanvaihe().size());
+            ValinnanvaiheDTO vv = hakukohde.getValinnanvaihe().get(0);
+            assertEquals(1, vv.getValintatapajono().size());
+            ValintatapajonoDTO valintatapajono = vv.getValintatapajono().get(0);
+            assertEquals(1, valintatapajono.getJonosijat().size());
+            JonosijaDTO jonosija = valintatapajono.getJonosijat().get(0);
+            assertEquals(2, jonosija.getJarjestyskriteerit().size());
+            assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jonosija.getTuloksenTila());
+
+            Iterator<JarjestyskriteeritulosDTO> i = jonosija.getJarjestyskriteerit().iterator();
+            JarjestyskriteeritulosDTO kriteeri1 = i.next();
+            assertEquals(0, kriteeri1.getPrioriteetti());
+            assertEquals(new BigDecimal("100.0"), kriteeri1.getArvo());
+            assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, kriteeri1.getTila());
+
+            JarjestyskriteeritulosDTO kriteeri2 = i.next();
+            assertEquals(1, kriteeri2.getPrioriteetti());
+            assertEquals(new BigDecimal("5.0"), kriteeri2.getArvo());
+            assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, kriteeri2.getTila());
+        }
+
+        {
+            HakemusDTO hakemus = valintalaskentaTulosService.haeTuloksetHakemukselle("hakuOid1", "hakemusOid2");
+            assertEquals(1, hakemus.getHakukohteet().size());
+            HakukohdeDTO hakukohde = hakemus.getHakukohteet().get(0);
+            assertEquals(1, hakukohde.getValinnanvaihe().size());
+            ValinnanvaiheDTO vv = hakukohde.getValinnanvaihe().get(0);
+            assertEquals(1, vv.getValintatapajono().size());
+            ValintatapajonoDTO valintatapajono = vv.getValintatapajono().get(0);
+            assertEquals(1, valintatapajono.getJonosijat().size());
+            JonosijaDTO jonosija = valintatapajono.getJonosijat().get(0);
+            assertEquals(2, jonosija.getJarjestyskriteerit().size());
+            assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI, jonosija.getTuloksenTila());
+
+            Iterator<JarjestyskriteeritulosDTO> i = jonosija.getJarjestyskriteerit().iterator();
+            JarjestyskriteeritulosDTO kriteeri1 = i.next();
+            assertEquals(0, kriteeri1.getPrioriteetti());
+            assertEquals(new BigDecimal("20.0"), kriteeri1.getArvo());
+            assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI, kriteeri1.getTila());
+
+            JarjestyskriteeritulosDTO kriteeri2 = i.next();
+            assertEquals(1, kriteeri2.getPrioriteetti());
+            assertEquals(new BigDecimal("10.0"), kriteeri2.getArvo());
+            assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, kriteeri2.getTila());
+        }
     }
 }
