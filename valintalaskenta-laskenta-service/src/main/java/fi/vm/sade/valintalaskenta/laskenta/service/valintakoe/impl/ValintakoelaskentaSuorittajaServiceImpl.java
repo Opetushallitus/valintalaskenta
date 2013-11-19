@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * User: wuoti
@@ -36,6 +38,28 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
     @Autowired
     private Valintakoeosallistumislaskin valintakoeosallistumislaskin;
 
+    private String haeTunniste(String mustache, Map<String, String> hakukohteenValintaperusteet) {
+        String r = "\\{\\{([A-Za-z0–9\\-_]+)\\.([A-Za-z0–9\\-_]+)\\}\\}";
+        Pattern pattern = Pattern.compile(r);
+        final Matcher m = pattern.matcher(mustache);
+
+        String avain = null;
+        while (m.find()) {
+            if (!m.group(1).isEmpty()
+                    && m.group(1).contentEquals("hakukohde")
+                    && !m.group(2).isEmpty()) {
+                avain = m.group(2);
+            }
+        }
+        if (avain == null) {
+            return mustache;
+        } else {
+            String arvo = hakukohteenValintaperusteet.get(avain);
+            return arvo;
+        }
+
+    }
+
     @Override
     public void laske(HakemusTyyppi hakemus, List<ValintaperusteetTyyppi> valintaperusteet) {
 
@@ -52,6 +76,12 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                 ValintakoeValinnanVaiheTyyppi vaihe = (ValintakoeValinnanVaiheTyyppi) vp.getValinnanVaihe();
 
                 for (ValintakoeTyyppi koe : vaihe.getValintakoe()) {
+                    String tunniste = haeTunniste(koe.getTunniste(), hakukohteenValintaperusteet);
+                    if (tunniste == null) {
+                        LOG.error("Valintakokoeen tunnistetta ei pystytty määrittelemään. HakukohdeOid: {} - ValintakoeOid: {}", vp.getHakukohdeOid(), koe.getOid());
+                        continue;
+                    }
+
                     OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
                             new Hakukohde(vp.getHakukohdeOid(), hakukohteenValintaperusteet), hakemus, koe.getFunktiokutsu());
 
@@ -61,14 +91,14 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                     data.setOsallistuminenTulos(osallistuminen);
                     data.setValinnanVaiheJarjestysNro(vaihe.getValinnanVaiheJarjestysluku());
                     data.setValinnanVaiheOid(vaihe.getValinnanVaiheOid());
-                    data.setValintakoeTunniste(koe.getTunniste());
                     data.setValintakoeOid(koe.getOid());
+                    data.setValintakoeTunniste(tunniste);
 
-                    if (!valintakoeData.containsKey(koe.getTunniste())) {
-                        valintakoeData.put(koe.getTunniste(), new ArrayList<HakukohdeValintakoeData>());
+                    if (!valintakoeData.containsKey(tunniste)) {
+                        valintakoeData.put(tunniste, new ArrayList<HakukohdeValintakoeData>());
                     }
 
-                    valintakoeData.get(koe.getTunniste()).add(data);
+                    valintakoeData.get(tunniste).add(data);
                 }
             }
         }
@@ -80,7 +110,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
 
             asetaOsallistumisetKokeisiin(kokeet, hakutoiveetByOid);
             for (HakukohdeValintakoeData c : kokeet) {
-                LOG.info("Hakukohde: {}, valintakoe: {}", new Object[]{c.getHakukohdeOid(), c.getValintakoeTunniste()});
+                LOG.info("Hakukohde: {}, valintakoe: {}", new Object[]{c.getHakukohdeOid(), c.getValintakoeOid()});
 
                 if (!osallistumisetByHaku.containsKey(c.getHakuOid())) {
                     osallistumisetByHaku.put(c.getHakuOid(), luoValintakoeOsallistuminen(c, hakemus));

@@ -4,6 +4,7 @@ import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
 import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.HakukohteenValintaperusteTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
@@ -51,13 +52,83 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     }
 
     @Test
+    public void testMustache() {
+        final String hakukohdeOid1 = "hakukohdeOid1";
+
+        final String hakukohdeOid2 = "hakukohdeOid2";
+
+        final HakemusTyyppi hakemus = luoHakemus("hakemusOid", "hakijaOid", hakukohdeOid1, hakukohdeOid2);
+
+        final String hakuOid = "hakuOid";
+        final String valintakoetunniste = "{{hakukohde.movember}}";
+
+        final String valinnanVaiheOid1 = "valinnanVaiheOid1";
+        final int valinnanVaiheJarjestysluku1 = 1;
+
+        ValintaperusteetTyyppi valintaperusteet1 = luoValintaperusteetJaValintakoeValinnanvaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1,
+                valinnanVaiheJarjestysluku1, valintakoetunniste);
+        HakukohteenValintaperusteTyyppi hkvp = new HakukohteenValintaperusteTyyppi();
+        hkvp.setArvo("koetunniste");
+        hkvp.setTunniste("movember");
+
+        valintaperusteet1.getHakukohteenValintaperuste().add(hkvp);
+
+
+        final OsallistuminenTulos osallistuminenTulos = new OsallistuminenTulos();
+        osallistuminenTulos.setOsallistuminen(Osallistuminen.OSALLISTUU);
+        when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(any(Hakukohde.class), any(HakemusTyyppi.class), any(FunktiokutsuTyyppi.class))).thenReturn(osallistuminenTulos);
+
+        ArgumentCaptor<ValintakoeOsallistuminen> captor = ArgumentCaptor.forClass(ValintakoeOsallistuminen.class);
+        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(valintaperusteet1));
+        verify(valintakoeOsallistuminenDAOMock, times(1)).createOrUpdate(captor.capture());
+
+        ValintakoeOsallistuminen osallistuminen = captor.getValue();
+        assertEquals("movember", osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(0).getValintakoeTunniste());
+
+
+    }
+
+    @Test
+    public void testMustacheFail() {
+        final String hakukohdeOid1 = "hakukohdeOid1";
+
+        final String hakukohdeOid2 = "hakukohdeOid2";
+
+        final HakemusTyyppi hakemus = luoHakemus("hakemusOid", "hakijaOid", hakukohdeOid1, hakukohdeOid2);
+
+        final String hakuOid = "hakuOid";
+        final String valintakoetunniste = "{{hakukohde.november}}";
+
+        final String valinnanVaiheOid1 = "valinnanVaiheOid1";
+        final int valinnanVaiheJarjestysluku1 = 1;
+
+        ValintaperusteetTyyppi valintaperusteet1 = luoValintaperusteetJaValintakoeValinnanvaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1,
+                valinnanVaiheJarjestysluku1, valintakoetunniste);
+        HakukohteenValintaperusteTyyppi hkvp = new HakukohteenValintaperusteTyyppi();
+        hkvp.setArvo("koetunniste");
+        hkvp.setTunniste("movember");
+
+        valintaperusteet1.getHakukohteenValintaperuste().add(hkvp);
+
+
+        final OsallistuminenTulos osallistuminenTulos = new OsallistuminenTulos();
+        osallistuminenTulos.setOsallistuminen(Osallistuminen.OSALLISTUU);
+        when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(any(Hakukohde.class), any(HakemusTyyppi.class), any(FunktiokutsuTyyppi.class))).thenReturn(osallistuminenTulos);
+
+        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(valintaperusteet1));
+        verify(valintakoeOsallistuminenDAOMock, times(0)).createOrUpdate(any(ValintakoeOsallistuminen.class));
+
+        verify(valintakoeosallistumislaskinMock, times(0)).laskeOsallistuminenYhdelleHakukohteelle(any(Hakukohde.class), any(HakemusTyyppi.class), any(FunktiokutsuTyyppi.class));
+
+
+    }
+
+    @Test
     public void testBasic() {
 
         final String hakukohdeOid1 = "hakukohdeOid1";
-        final Hakukohde hakukohde1 = new Hakukohde(hakukohdeOid1, new HashMap<String, String>());
 
         final String hakukohdeOid2 = "hakukohdeOid2";
-        final Hakukohde hakukohde2 = new Hakukohde(hakukohdeOid2, new HashMap<String, String>());
 
         final HakemusTyyppi hakemus = luoHakemus("hakemusOid", "hakijaOid", hakukohdeOid1, hakukohdeOid2);
 
