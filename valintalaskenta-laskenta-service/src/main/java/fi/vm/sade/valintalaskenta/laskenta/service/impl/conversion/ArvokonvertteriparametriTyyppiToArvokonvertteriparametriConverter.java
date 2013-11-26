@@ -18,7 +18,7 @@ public class ArvokonvertteriparametriTyyppiToArvokonvertteriparametriConverter i
         Arvokonvertteriparametri target = new Arvokonvertteriparametri();
         target.setArvo(source.getArvo());
         target.setPaluuarvo(source.getPaluuarvo());
-        target.setHylkaysperuste(source.isHylkaysperuste());
+        target.setHylkaysperuste(source.getHylkaysperuste());
         return target;
     }
 }

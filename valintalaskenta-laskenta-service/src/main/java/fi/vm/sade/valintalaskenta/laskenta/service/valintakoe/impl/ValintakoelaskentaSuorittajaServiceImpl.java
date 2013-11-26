@@ -3,12 +3,20 @@ package fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl;
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hyvaksyttavissatila;
+import fi.vm.sade.service.valintaperusteet.model.ValinnanVaihe;
+import fi.vm.sade.service.valintaperusteet.model.ValinnanVaiheTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.HakukohteenValintaperusteTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintakoeTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintakoeValinnanVaiheTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
+import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
+import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
+import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinnanvaiheKasittelija;
+import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.TilaJaSelite;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoeosallistumislaskin;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.HakukohdeValintakoeData;
@@ -37,6 +45,12 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
 
     @Autowired
     private Valintakoeosallistumislaskin valintakoeosallistumislaskin;
+
+    @Autowired
+    private ValinnanvaiheDAO valinnanvaiheDAO;
+
+    @Autowired
+    private EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija;
 
     private String haeTunniste(String mustache, Map<String, String> hakukohteenValintaperusteet) {
         String r = "\\{\\{([A-Za-z0–9\\-_]+)\\.([A-Za-z0–9\\-_]+)\\}\\}";
@@ -82,8 +96,39 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                         continue;
                     }
 
-                    OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
-                            new Hakukohde(vp.getHakukohdeOid(), hakukohteenValintaperusteet), hakemus, koe.getFunktiokutsu());
+                    Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdellinenValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku());
+
+                    //jos edellinenVaihe == null ja järjestysluku > 0 tarkistetaaan löytyykö edellistä valintakoevaihetta vai heitetäänö virhe
+                    if(edellinenVaihe == null && vaihe.getValinnanVaiheJarjestysluku() > 0) {
+                        ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdellinenValinnanvaihe(
+                                vp.getHakuOid(),
+                                vp.getHakukohdeOid(),
+                                vaihe.getValinnanVaiheJarjestysluku());
+                        if(edellinenOsallistuminen == null) {
+                            LOG.error("Valinnanvaiheen järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt");
+                            continue;
+                        }
+                    }
+
+
+                    OsallistuminenTulos osallistuminen = null;
+                    if(edellinenVaihe != null) {
+                        TilaJaSelite tilaJaSelite =
+                                edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusOid(),
+                                        new Hyvaksyttavissatila(), edellinenVaihe);
+                        if(tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)) {
+                            osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
+                                    new Hakukohde(vp.getHakukohdeOid(), hakukohteenValintaperusteet), hakemus, koe.getFunktiokutsu());
+                        } else {
+                            osallistuminen = new OsallistuminenTulos();
+                            osallistuminen.setKuvaus(tilaJaSelite.getSelite());
+                            osallistuminen.setLaskentaTila(tilaJaSelite.getTila().toString());
+                            osallistuminen.setOsallistuminen(Osallistuminen.EI_OSALLISTU);
+                        }
+                    } else {
+                        osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
+                                new Hakukohde(vp.getHakukohdeOid(), hakukohteenValintaperusteet), hakemus, koe.getFunktiokutsu());
+                    }
 
                     HakukohdeValintakoeData data = new HakukohdeValintakoeData();
                     data.setHakuOid(vp.getHakuOid());

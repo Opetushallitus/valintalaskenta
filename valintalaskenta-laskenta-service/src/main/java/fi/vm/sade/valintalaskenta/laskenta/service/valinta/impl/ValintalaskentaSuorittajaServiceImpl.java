@@ -12,8 +12,10 @@ import fi.vm.sade.service.valintaperusteet.model.Funktiotyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.*;
 import fi.vm.sade.service.valintaperusteet.service.validointi.virhe.LaskentakaavaEiOleValidiException;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
+import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.FunktioKutsuTyyppiToFunktioKutsuConverter;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.HakemusTyyppiToHakemusConverter;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.HakemuslaskinService;
@@ -47,6 +49,9 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
     @Autowired
     private HakemuslaskinService hakemuslaskinService;
+
+    @Autowired
+    private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
 
     @Override
     public void suoritaLaskenta(List<HakemusTyyppi> kaikkiHakemukset, List<ValintaperusteetTyyppi> valintaperusteet) {
@@ -89,6 +94,19 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             LOG.info("Haku {}, hakukohde {}, valinnanvaihe {} - jarjestysnumero {}",
                     new Object[]{hakuOid, hakukohdeOid, valinnanvaiheOid, jarjestysnumero});
             Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdellinenValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
+
+            //jos edellinenVaihe == null ja järjestysluku > 0 tarkistetaaan löytyykö edellistä valintakoevaihetta vai heitetäänö virhe
+            if(edellinenVaihe == null && vaihe.getValinnanVaiheJarjestysluku() > 0) {
+                ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdellinenValinnanvaihe(
+                        hakuOid,
+                        hakukohdeOid,
+                        jarjestysnumero);
+                if(edellinenOsallistuminen == null) {
+                    LOG.error("Valinnanvaiheen järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt");
+                    continue;
+                }
+            }
+
             Valinnanvaihe valinnanvaihe = haeTaiLuoValinnanvaihe(valinnanvaiheOid);
             valinnanvaihe.setHakukohdeOid(hakukohdeOid);
             valinnanvaihe.setHakuOid(hakuOid);
@@ -120,6 +138,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                         Lukuarvofunktio lukuarvofunktio = Laskentadomainkonvertteri.muodostaLukuarvolasku(funktiokutsu);
                         for (HakemusWrapper hw : hakemukset) {
                             LOG.info("hakemus {}", new Object[]{hw.getHakemusTyyppi().getHakemusOid()});
+
                             hakemuslaskinService.suoritaLaskentaHakemukselle(new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet), hw, laskentahakemukset,
                                     lukuarvofunktio, jk.getPrioriteetti(), edellinenVaihe, jonosijatHakemusOidinMukaan);
                         }

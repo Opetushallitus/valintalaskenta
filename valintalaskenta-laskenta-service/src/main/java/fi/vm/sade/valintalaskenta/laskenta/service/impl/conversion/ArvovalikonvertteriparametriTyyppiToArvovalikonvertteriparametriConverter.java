@@ -18,11 +18,10 @@ public class ArvovalikonvertteriparametriTyyppiToArvovalikonvertteriparametriCon
 
     public Arvovalikonvertteriparametri convert(ArvovalikonvertteriparametriTyyppi source) {
         Arvovalikonvertteriparametri target = new Arvovalikonvertteriparametri();
-        target.setMaxValue(new BigDecimal(source.getMaksimiarvo()));
-        target.setMinValue(new BigDecimal(source.getMinimiarvo()));
-        target.setPalautaHaettuArvo(source.isPalautaHaettuArvo());
+        target.setMaxValue(source.getMaksimiarvo());
+        target.setMinValue(source.getMinimiarvo());
+        target.setPalautaHaettuArvo(source.getPalautaHaettuArvo());
         target.setPaluuarvo(source.getPaluuarvo());
-        target.setHylkaysperuste(source.isHylkaysperuste());
         return target;
     }
 }

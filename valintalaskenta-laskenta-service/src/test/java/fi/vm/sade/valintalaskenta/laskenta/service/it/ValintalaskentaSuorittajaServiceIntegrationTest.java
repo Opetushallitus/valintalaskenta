@@ -167,24 +167,24 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         final String hakijaOid2 = "hakijaOid2";
         {
             ValintaperusteetTyyppi valintaperusteet1 = luoValintaperusteet(hakuOid, hakukohdeOid1);
-            TavallinenValinnanVaiheTyyppi valinnanvaihe1 = luoTavallinenValinnanvaihe(valinnanvaiheOid1, 1);
+            TavallinenValinnanVaiheTyyppi valinnanvaihe1 = luoTavallinenValinnanvaihe(valinnanvaiheOid1, 0);
             valinnanvaihe1.getValintatapajono().add(luoValintatapajono(valintatapajonoOid1, 1, 10, luoJarjestyskriteeri(sata, 1), luoJarjestyskriteeri(kaksisataa, 2)));
             valinnanvaihe1.getValintatapajono().add(luoValintatapajono(valintatapajonoOid2, 2, 20, luoJarjestyskriteeri(kolmesataa, 1)));
             valintaperusteet1.setValinnanVaihe(valinnanvaihe1);
 
             ValintaperusteetTyyppi valintaperusteet2 = luoValintaperusteet(hakuOid, hakukohdeOid1);
-            TavallinenValinnanVaiheTyyppi valinnanvaihe2 = luoTavallinenValinnanvaihe(valinnanvaiheOid2, 2);
+            TavallinenValinnanVaiheTyyppi valinnanvaihe2 = luoTavallinenValinnanvaihe(valinnanvaiheOid2, 1);
             valinnanvaihe2.getValintatapajono().add(luoValintatapajono(valintatapajonoOid3, 1, 30, luoJarjestyskriteeri(neljasataa, 1)));
             valintaperusteet2.setValinnanVaihe(valinnanvaihe2);
 
             ValintaperusteetTyyppi valintaperusteet3 = luoValintaperusteet(hakuOid, hakukohdeOid2);
-            TavallinenValinnanVaiheTyyppi valinnanvaihe3 = luoTavallinenValinnanvaihe(valinnanvaiheOid3, 1);
+            TavallinenValinnanVaiheTyyppi valinnanvaihe3 = luoTavallinenValinnanvaihe(valinnanvaiheOid3, 0);
             valinnanvaihe3.getValintatapajono().add(luoValintatapajono(valintatapajonoOid4, 1, 40, luoJarjestyskriteeri(viisisataa, 1), luoJarjestyskriteeri(kuusisataa, 2)));
             valinnanvaihe3.getValintatapajono().add(luoValintatapajono(valintatapajonoOid5, 2, 50, luoJarjestyskriteeri(seitsemansataa, 1)));
             valintaperusteet3.setValinnanVaihe(valinnanvaihe3);
 
             ValintaperusteetTyyppi valintaperusteet4 = luoValintaperusteet(hakuOid, hakukohdeOid2);
-            TavallinenValinnanVaiheTyyppi valinnanvaihe4 = luoTavallinenValinnanvaihe(valinnanvaiheOid4, 2);
+            TavallinenValinnanVaiheTyyppi valinnanvaihe4 = luoTavallinenValinnanvaihe(valinnanvaiheOid4, 1);
             valinnanvaihe4.getValintatapajono().add(luoValintatapajono(valintatapajonoOid6, 1, 60, luoJarjestyskriteeri(kahdeksansataa, 1)));
             valintaperusteet4.setValinnanVaihe(valinnanvaihe4);
 
@@ -198,7 +198,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
             Valinnanvaihe valinnanvaihe1 = valinnanvaiheDAO.haeValinnanvaihe(valinnanvaiheOid1);
             assertEquals(hakuOid, valinnanvaihe1.getHakuOid());
             assertEquals(hakukohdeOid1, valinnanvaihe1.getHakukohdeOid());
-            assertEquals(1, valinnanvaihe1.getJarjestysnumero());
+            assertEquals(0, valinnanvaihe1.getJarjestysnumero());
             assertEquals(valinnanvaiheOid1, valinnanvaihe1.getValinnanvaiheOid());
             assertEquals(2, valinnanvaihe1.getValintatapajonot().size());
 
@@ -321,7 +321,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
             Valinnanvaihe valinnanvaihe2 = valinnanvaiheDAO.haeValinnanvaihe(valinnanvaiheOid2);
             assertEquals(hakuOid, valinnanvaihe2.getHakuOid());
             assertEquals(hakukohdeOid1, valinnanvaihe2.getHakukohdeOid());
-            assertEquals(2, valinnanvaihe2.getJarjestysnumero());
+            assertEquals(1, valinnanvaihe2.getJarjestysnumero());
             assertEquals(valinnanvaiheOid2, valinnanvaihe2.getValinnanvaiheOid());
             assertEquals(1, valinnanvaihe2.getValintatapajonot().size());
 
@@ -383,7 +383,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
             Valinnanvaihe valinnanvaihe3 = valinnanvaiheDAO.haeValinnanvaihe(valinnanvaiheOid3);
             assertEquals(hakuOid, valinnanvaihe3.getHakuOid());
             assertEquals(hakukohdeOid2, valinnanvaihe3.getHakukohdeOid());
-            assertEquals(1, valinnanvaihe3.getJarjestysnumero());
+            assertEquals(0, valinnanvaihe3.getJarjestysnumero());
             assertEquals(valinnanvaiheOid3, valinnanvaihe3.getValinnanvaiheOid());
             assertEquals(2, valinnanvaihe3.getValintatapajonot().size());
 
@@ -503,7 +503,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
             Valinnanvaihe valinnanvaihe4 = valinnanvaiheDAO.haeValinnanvaihe(valinnanvaiheOid4);
             assertEquals(hakuOid, valinnanvaihe4.getHakuOid());
             assertEquals(hakukohdeOid2, valinnanvaihe4.getHakukohdeOid());
-            assertEquals(2, valinnanvaihe4.getJarjestysnumero());
+            assertEquals(1, valinnanvaihe4.getJarjestysnumero());
             assertEquals(valinnanvaiheOid4, valinnanvaihe4.getValinnanvaiheOid());
             assertEquals(1, valinnanvaihe4.getValintatapajonot().size());
 

@@ -94,7 +94,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         final String valintakoetunniste = "valintakoetunniste";
 
         final String valinnanVaiheOid1 = "valinnanVaiheOid1";
-        final int valinnanVaiheJarjestysluku1 = 1;
+        final int valinnanVaiheJarjestysluku1 = 0;
 
         Map<String, FunktiokutsuTyyppi> kokeet1 = new HashMap<String, FunktiokutsuTyyppi>();
         kokeet1.put(valintakoetunniste, totuusarvoTrue);
@@ -104,7 +104,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
                 valinnanVaiheJarjestysluku1, kokeet1);
 
         final String valinnanVaiheOid2 = "valinnanVaiheOid2";
-        final int valinnanVaiheJarjestysluku2 = 2;
+        final int valinnanVaiheJarjestysluku2 = 1;
 
         Map<String, FunktiokutsuTyyppi> kokeet2 = new HashMap<String, FunktiokutsuTyyppi>();
         kokeet2.put(valintakoetunniste, totuusarvoFalse);

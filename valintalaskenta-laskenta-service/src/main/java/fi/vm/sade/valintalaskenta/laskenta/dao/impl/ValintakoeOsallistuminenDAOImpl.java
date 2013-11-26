@@ -34,4 +34,14 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
     public void createOrUpdate(ValintakoeOsallistuminen v) {
         morphiaDS.save(v);
     }
+
+    @Override
+    public ValintakoeOsallistuminen haeEdellinenValinnanvaihe(String hakuOid, String hakukohdeOid, int jarjestysnumero) {
+        return morphiaDS.find(ValintakoeOsallistuminen.class)
+                .field("hakuOid").equal(hakuOid)
+                .field("hakutoiveet.hakukohdeOid").equal(hakukohdeOid)
+                .field("hakutoiveet.valinnanVaiheet.valinnanVaiheJarjestysluku").equal(jarjestysnumero-1)
+                .limit(1)
+                .get();
+    }
 }
