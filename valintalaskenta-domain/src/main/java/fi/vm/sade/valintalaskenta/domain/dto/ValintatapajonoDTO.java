@@ -34,12 +34,15 @@ public class ValintatapajonoDTO {
     @JsonView(JsonViews.Basic.class)
     private boolean siirretaanSijoitteluun;
 
+    @ApiModelProperty(value = "Tasasijasääntö", required = true)
     @JsonView(JsonViews.Basic.class)
     private Tasasijasaanto tasasijasaanto;
 
+    @ApiModelProperty(value = "Onko varasijatäyttö käytössä", required = true)
     @JsonView(JsonViews.Basic.class)
     private Boolean eiVarasijatayttoa;
 
+    @ApiModelProperty(value = "Jonosijat", required = true)
     @JsonView(JsonViews.Basic.class)
     private List<JonosijaDTO> jonosijat = new ArrayList<JonosijaDTO>();
 

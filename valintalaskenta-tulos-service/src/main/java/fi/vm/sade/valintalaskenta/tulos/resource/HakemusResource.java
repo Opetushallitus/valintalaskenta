@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.tulos.resource;
 
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
@@ -37,8 +38,8 @@ public class HakemusResource {
     @JsonView({JsonViews.Basic.class})
     @Secured({READ, UPDATE, CRUD})
     @ApiOperation(value = "Hakee hakemuksen tulokset haku OID:n ja hakemuksen OID:n perustella", response = HakemusDTO.class)
-    public HakemusDTO hakemus(@PathParam("hakuoid") String hakuoid,
-                              @PathParam("hakemusoid") String hakemusoid) {
+    public HakemusDTO hakemus(@ApiParam(value = "Haku OID", required = true) @PathParam("hakuoid") String hakuoid,
+                              @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusoid") String hakemusoid) {
         return tulosService.haeTuloksetHakemukselle(hakuoid, hakemusoid);
     }
 }

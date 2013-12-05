@@ -1,5 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.resource;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
@@ -27,6 +29,7 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 @Component
 @Path("haku")
 @PreAuthorize("isAuthenticated()")
+@Api(value = "/haku", description = "Resurssi haun valintalaskennan virhetilanteiden hakemiseen")
 public class HakuResource {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(HakuResource.class);
@@ -40,6 +43,7 @@ public class HakuResource {
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
     @Secured({READ, UPDATE, CRUD})
+    @ApiOperation(value = "Hakee haun valintalaskennan virhetilanteet OID:n perusteella", response = HakukohdeDTO.class)
     public List<HakukohdeDTO> virheet(@PathParam("hakuOid") String hakuOid) {
         return tulosService.haeVirheetHaulle(hakuOid);
     }

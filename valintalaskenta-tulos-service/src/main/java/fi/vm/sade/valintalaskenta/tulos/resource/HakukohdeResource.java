@@ -1,5 +1,8 @@
 package fi.vm.sade.valintalaskenta.tulos.resource;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
@@ -26,6 +29,7 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 @Component
 @Path("hakukohde")
 @PreAuthorize("isAuthenticated()")
+@Api(value = "/hakukohde", description = "Resurssi tulosten hakemiseen hakukohteittain")
 public class HakukohdeResource {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(HakukohdeResource.class);
@@ -38,7 +42,8 @@ public class HakukohdeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
     @Secured({READ, UPDATE, CRUD})
-    public List<ValinnanvaiheDTO> hakukohde(@PathParam("hakukohdeoid") String hakukohdeoid) {
+    @ApiOperation(value = "Hakee hakukohteen valinnan vaiheiden tulokset", response = ValinnanvaiheDTO.class)
+    public List<ValinnanvaiheDTO> hakukohde(@ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid) {
         return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
     }
 }
