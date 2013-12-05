@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>fi.vm.sade.valintaperusteet</groupId>
@@ -11,11 +12,11 @@
 
 
     <dependencies>
-    	<dependency>
-    		<groupId>org.mongodb</groupId>
-    		<artifactId>mongo-java-driver</artifactId>
-    	</dependency>
-    	<!-- JSR 303 -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+        </dependency>
+        <!-- JSR 303 -->
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
@@ -31,10 +32,10 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
             <exclusions>
-            	<exclusion>
-            		<artifactId>commons-logging</artifactId>
-            		<groupId>commons-logging</groupId>
-            	</exclusion>
+                <exclusion>
+                    <artifactId>commons-logging</artifactId>
+                    <groupId>commons-logging</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -47,9 +48,9 @@
             <artifactId>morphia</artifactId>
         </dependency>
         <dependency>
-        	<groupId>com.thoughtworks.proxytoys</groupId>
-        	<artifactId>proxytoys</artifactId>
-        	<version>1.0</version>
+            <groupId>com.thoughtworks.proxytoys</groupId>
+            <artifactId>proxytoys</artifactId>
+            <version>1.0</version>
         </dependency>
 
         <dependency>
@@ -73,6 +74,12 @@
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.wordnik</groupId>
+            <artifactId>swagger-jersey-jaxrs_2.10</artifactId>
+            <version>1.3.0</version>
+        </dependency>
     </dependencies>
+
 
 </project>

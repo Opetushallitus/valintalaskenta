@@ -1,5 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import org.codehaus.jackson.map.annotate.JsonView;
 
@@ -10,17 +12,22 @@ import java.util.List;
 /**
  *
  */
+@ApiModel(value = "ValinnanvaiheDTO", description = "Valinnan vaihe")
 public class ValinnanvaiheDTO {
 
+    @ApiModelProperty(value = "Järjestysnumero", required = true)
     @JsonView(JsonViews.Basic.class)
     private int jarjestysnumero;
 
+    @ApiModelProperty(value = "Valinnan vaiheen OID", required = true)
     @JsonView(JsonViews.Basic.class)
     private String valinnanvaiheoid;
 
+    @ApiModelProperty(value = "Luomisajankohta", required = true)
     @JsonView(JsonViews.Basic.class)
     private Date createdAt;
 
+    @ApiModelProperty(value = "Valintatapajonot", required = true)
     @JsonView(JsonViews.Basic.class)
     private List<ValintatapajonoDTO> valintatapajono = new ArrayList<ValintatapajonoDTO>();
 

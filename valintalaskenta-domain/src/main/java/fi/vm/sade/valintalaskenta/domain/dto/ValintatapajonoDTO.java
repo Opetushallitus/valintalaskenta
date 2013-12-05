@@ -1,5 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.valinta.Tasasijasaanto;
 import org.codehaus.jackson.map.annotate.JsonView;
@@ -10,21 +12,25 @@ import java.util.List;
 /**
  * @author Jussi Jartamo
  */
-
+@ApiModel(value = "ValintatapajonoDTO", description = "Valintatapajono")
 public class ValintatapajonoDTO {
-
+    @ApiModelProperty(value = "OID", required = true)
     @JsonView(JsonViews.Basic.class)
     private String valintatapajonooid;
 
+    @ApiModelProperty(value = "Nimi", required = true)
     @JsonView(JsonViews.Basic.class)
     private String nimi;
 
+    @ApiModelProperty(value = "Prioriteetti", required = true)
     @JsonView(JsonViews.Basic.class)
     private int prioriteetti;
 
+    @ApiModelProperty(value = "Aloituspaikat", required = true)
     @JsonView(JsonViews.Basic.class)
     private int aloituspaikat;
 
+    @ApiModelProperty(value = "Siirretäänkö jono sijoitteluun", required = true)
     @JsonView(JsonViews.Basic.class)
     private boolean siirretaanSijoitteluun;
 
