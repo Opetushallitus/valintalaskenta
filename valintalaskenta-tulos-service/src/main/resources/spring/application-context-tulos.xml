@@ -39,6 +39,23 @@
     </bean>
     <bean id="modelMapper" class="fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper"/>
 
+    <!-- Swagger API listing resource -->
+    <bean id="swaggerResourceJSON" class="com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON"/>
+
+    <!-- Swagger writers -->
+    <bean id="resourceWriter" class="com.wordnik.swagger.jaxrs.listing.ResourceListingProvider" scope="singleton"/>
+    <bean id="apiWriter" class="com.wordnik.swagger.jaxrs.listing.ApiDeclarationProvider" scope="singleton"/>
+
+    <!-- Swagger configuration -->
+    <bean id="swaggerConfig" class="com.wordnik.swagger.jaxrs.config.BeanConfig">
+        <property name="resourcePackage" value="fi.vm.sade.valintalaskenta.tulos.resource"/>
+        <property name="version" value="1.0"/>
+        <property name="basePath" value="${valintalaskenta-tulos-service.swagger.basepath}"/>
+
+        <property name="title" value="Swagger API documentation"/>
+        <property name="scan" value="true"/>
+    </bean>
+
     <import resource="application-context-tulos-ws.xml"/>
 
 </beans>
