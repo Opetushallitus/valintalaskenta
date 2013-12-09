@@ -215,7 +215,7 @@
         <dependency>
             <groupId>de.flapdoodle.embed</groupId>
             <artifactId>de.flapdoodle.embed.mongo</artifactId>
-            <version>1.35</version>
+            <version>1.40</version>
             <scope>test</scope>
         </dependency>
 
