@@ -26,4 +26,6 @@
         </property>
     </bean>
 
+    <bean id="modelMapper" class="fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper"/>
+
 </beans>

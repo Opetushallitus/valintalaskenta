@@ -1,7 +1,11 @@
 package fi.vm.sade.valintalaskenta.tulos.resource;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
+import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,18 +25,23 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 @Component
 @Path("valintakoe")
 @PreAuthorize("isAuthenticated()")
+@Api(value = "/valintakoe", description = "Resurssi valintakoeosallistumistulosten hakemiseen")
 public class ValintakoeResource {
 
     @Autowired
     private ValintalaskentaTulosService tulosService;
+
+    @Autowired
+    private ValintalaskentaModelMapper modelMapper;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("hakemus/{hakemusOid}")
     @JsonView({JsonViews.Basic.class})
     @Secured({READ, UPDATE, CRUD})
-    public List<ValintakoeOsallistuminen> haku(@PathParam("hakemusOid") String hakemusOid) {
-        return tulosService.haeValintakoeOsallistumiset(hakemusOid);
+    @ApiOperation(value = "Hakee valintakoeosallistumiset hakemukselle OID:n perusteella", response = ValintakoeOsallistuminenDTO.class)
+    public List<ValintakoeOsallistuminenDTO> haku(@ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid) {
+        return modelMapper.mapList(tulosService.haeValintakoeOsallistumiset(hakemusOid), ValintakoeOsallistuminenDTO.class);
     }
 
     @GET
@@ -40,8 +49,9 @@ public class ValintakoeResource {
     @Path("hakutoive/{hakukohdeOid}")
     @JsonView({JsonViews.Basic.class})
     @Secured({READ, UPDATE, CRUD})
-    public List<ValintakoeOsallistuminen> hakuByHakutoive(@PathParam("hakukohdeOid") String hakukohdeOid) {
-        return tulosService.haeValintakoeOsallistumisetByHakutoive(hakukohdeOid);
+    @ApiOperation(value = "Hakee valintakoeosallistumiset hakukohteelle OID:n perusteella", response = ValintakoeOsallistuminenDTO.class)
+    public List<ValintakoeOsallistuminenDTO> hakuByHakutoive(@ApiParam(value = "Hakukohde OID", required = true) @PathParam("hakukohdeOid") String hakukohdeOid) {
+        return modelMapper.mapList(tulosService.haeValintakoeOsallistumisetByHakutoive(hakukohdeOid), ValintakoeOsallistuminenDTO.class);
     }
 
 }

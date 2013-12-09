@@ -376,7 +376,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
      */
     @Override
     public MuokattuJonosija muutaJarjestyskriteeri(String valintatapajonoOid, String hakemusOid,
-                                                   Integer jarjestyskriteeriPrioriteetti, MuokattuJonosijaDTO jonosija, String selite) {
+                                                   Integer jarjestyskriteeriPrioriteetti, MuokattuJonosijaArvoDTO jonosija, String selite) {
 
         Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.findByValintatapajonoOid(valintatapajonoOid);
         Valintatapajono valintatapajono = null;

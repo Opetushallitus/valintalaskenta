@@ -11,13 +11,13 @@
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.ctrl"/>
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.dao"/>
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.service.impl"/>
-	<context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.resource" />
+    <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.resource"/>
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.service.impl.converters"/>
 
     <!-- TODO: tarkista tarvitaanko näitä, kun nämä tulevat jo servicen puolelta -->
     <context:property-placeholder
             location="classpath:valintalaskenta-laskenta-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/valinta.properties, file:///${user.home:''}/oph-configuration/valintalaskenta-laskenta-service.properties, file:///${user.home:''}/oph-configuration/override.properties"
-            ignore-resource-not-found="true" properties-ref="defaultProps" />
+            ignore-resource-not-found="true" properties-ref="defaultProps"/>
 
     <!-- TODO: tarkista tarvitaanko näitä, kun nämä tulevat jo servicen puolelta -->
     <bean id="defaultProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
@@ -37,7 +37,8 @@
             </list>
         </property>
     </bean>
+    <bean id="modelMapper" class="fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper"/>
 
-    <import resource="application-context-tulos-ws.xml" />
+    <import resource="application-context-tulos-ws.xml"/>
 
 </beans>

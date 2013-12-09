@@ -1,5 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain.dto.valintakoe;
 
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 
 /**
@@ -7,10 +9,18 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
  * Date: 29.8.2013
  * Time: 8.32
  */
+@ApiModel(value = "OsallistuminenTulosDTO", description = "Osallitumistulos - kertoo, pitääkö hakijan osallistua valintakokeeseen")
 public class OsallistuminenTulosDTO {
+    @ApiModelProperty(value = "Varsinainen tulos", required = true)
     private Osallistuminen osallistuminen;
+
+    @ApiModelProperty(value = "Kuvaus, esim. virheviesti")
     private String kuvaus;
+
+    @ApiModelProperty(value = "Laskennan palauttama tila")
     private String laskentaTila;
+
+    @ApiModelProperty(value = "Laskennan palauttama tulos")
     private Boolean laskentaTulos;
 
     public Osallistuminen getOsallistuminen() {

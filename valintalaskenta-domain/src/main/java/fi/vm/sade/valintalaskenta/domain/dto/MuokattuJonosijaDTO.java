@@ -1,33 +1,112 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
-import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
+import fi.vm.sade.valintalaskenta.domain.JsonViews;
+import org.codehaus.jackson.map.annotate.JsonView;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: jukais
- * Date: 15.8.2013
- * Time: 7.33
- * To change this template use File | Settings | File Templates.
+ * User: wuoti
+ * Date: 9.12.2013
+ * Time: 9.54
  */
+@ApiModel(value = "MuokattuJonosijaDTO", description = "Muokattu jonosija")
 public class MuokattuJonosijaDTO {
-    private JarjestyskriteerituloksenTila tila;
-    private BigDecimal arvo;
 
-    public JarjestyskriteerituloksenTila getTila() {
-        return tila;
+    @ApiModelProperty(value = "Hakukohde OID", required = true)
+    @JsonView(JsonViews.Basic.class)
+    private String hakukohdeOid;
+
+    @ApiModelProperty(value = "Haku OID", required = true)
+    @JsonView(JsonViews.Basic.class)
+    private String hakuOid;
+
+    @ApiModelProperty(value = "Valintatapajono OID", required = true)
+    @JsonView(JsonViews.Basic.class)
+    private String valintatapajonoOid;
+
+    @ApiModelProperty(value = "Hakukohde OID", required = true)
+    @JsonView(JsonViews.Basic.class)
+    private String hakemusOid;
+
+    @ApiModelProperty(value = "Prioriteetti", required = true)
+    @JsonView(JsonViews.Basic.class)
+    private Integer prioriteetti; // hakutoive
+
+    @ApiModelProperty(value = "Harkinnanvaraisuus")
+    @JsonView(JsonViews.Basic.class)
+    private Boolean harkinnanvarainen;
+
+    @ApiModelProperty(value = "Järjestyskriteeritulokset", required = true)
+    private List<JarjestyskriteeritulosDTO> jarjestyskriteerit = new ArrayList<JarjestyskriteeritulosDTO>();
+
+    @ApiModelProperty(value = "Lokiviestit", required = true)
+    private List<LogEntryDTO> logEntries = new ArrayList<LogEntryDTO>();
+
+    public String getHakukohdeOid() {
+        return hakukohdeOid;
     }
 
-    public void setTila(JarjestyskriteerituloksenTila tila) {
-        this.tila = tila;
+    public void setHakukohdeOid(String hakukohdeOid) {
+        this.hakukohdeOid = hakukohdeOid;
     }
 
-    public BigDecimal getArvo() {
-        return arvo;
+    public String getHakuOid() {
+        return hakuOid;
     }
 
-    public void setArvo(BigDecimal arvo) {
-        this.arvo = arvo;
+    public void setHakuOid(String hakuOid) {
+        this.hakuOid = hakuOid;
+    }
+
+    public String getValintatapajonoOid() {
+        return valintatapajonoOid;
+    }
+
+    public void setValintatapajonoOid(String valintatapajonoOid) {
+        this.valintatapajonoOid = valintatapajonoOid;
+    }
+
+    public String getHakemusOid() {
+        return hakemusOid;
+    }
+
+    public void setHakemusOid(String hakemusOid) {
+        this.hakemusOid = hakemusOid;
+    }
+
+    public Integer getPrioriteetti() {
+        return prioriteetti;
+    }
+
+    public void setPrioriteetti(Integer prioriteetti) {
+        this.prioriteetti = prioriteetti;
+    }
+
+    public Boolean getHarkinnanvarainen() {
+        return harkinnanvarainen;
+    }
+
+    public void setHarkinnanvarainen(Boolean harkinnanvarainen) {
+        this.harkinnanvarainen = harkinnanvarainen;
+    }
+
+    public List<JarjestyskriteeritulosDTO> getJarjestyskriteerit() {
+        return jarjestyskriteerit;
+    }
+
+    public void setJarjestyskriteerit(List<JarjestyskriteeritulosDTO> jarjestyskriteerit) {
+        this.jarjestyskriteerit = jarjestyskriteerit;
+    }
+
+    public List<LogEntryDTO> getLogEntries() {
+        return logEntries;
+    }
+
+    public void setLogEntries(List<LogEntryDTO> logEntries) {
+        this.logEntries = logEntries;
     }
 }
