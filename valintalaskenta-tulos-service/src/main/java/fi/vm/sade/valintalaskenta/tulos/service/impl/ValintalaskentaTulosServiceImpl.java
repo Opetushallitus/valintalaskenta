@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -81,7 +80,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             for (Valintatapajono jono : vv.getValintatapajonot()) {
                 jono.setJonosijat(new ArrayList<Jonosija>(Collections2.filter(jono.getJonosijat(), new Predicate<Jonosija>() {
                     @Override
-                    public boolean apply(@Nullable Jonosija jonosija) {
+                    public boolean apply(Jonosija jonosija) {
                         return hakemusOid.equals(jonosija.getHakemusOid());
                     }
                 })));

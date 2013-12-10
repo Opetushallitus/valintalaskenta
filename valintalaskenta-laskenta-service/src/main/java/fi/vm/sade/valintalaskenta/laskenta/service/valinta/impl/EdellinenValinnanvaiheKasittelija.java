@@ -8,7 +8,6 @@ import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Virhetila;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -42,7 +41,7 @@ public class EdellinenValinnanvaiheKasittelija {
 
                 Collection<Jonosija> filtteroidutJonosijat = Collections2.filter(jonosijat, new Predicate<Jonosija>() {
                     @Override
-                    public boolean apply(@Nullable Jonosija jonosija) {
+                    public boolean apply(Jonosija jonosija) {
                         return jonosija.getHakemusOid().equals(hakemusOid);
                     }
                 });
@@ -75,7 +74,7 @@ public class EdellinenValinnanvaiheKasittelija {
                 // hyväksyttävissä myös tässä valinnan vaiheessa.
                 Collection<TilaJaSelite> filtteroidutTilat = Collections2.filter(tilat, new Predicate<TilaJaSelite>() {
                     @Override
-                    public boolean apply(@Nullable TilaJaSelite edellinenValinnanvaiheTila) {
+                    public boolean apply(TilaJaSelite edellinenValinnanvaiheTila) {
                         return JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA.equals(edellinenValinnanvaiheTila.getTila());
                     }
                 });
