@@ -96,12 +96,12 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdellinenValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
 
             //jos edellinenVaihe == null ja järjestysluku > 0 tarkistetaaan löytyykö edellistä valintakoevaihetta vai heitetäänö virhe
-            if(edellinenVaihe == null && vaihe.getValinnanVaiheJarjestysluku() > 0) {
+            if (edellinenVaihe == null && vaihe.getValinnanVaiheJarjestysluku() > 0) {
                 ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdellinenValinnanvaihe(
                         hakuOid,
                         hakukohdeOid,
                         jarjestysnumero);
-                if(edellinenOsallistuminen == null) {
+                if (edellinenOsallistuminen == null) {
                     LOG.error("Valinnanvaiheen järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt");
                     continue;
                 }
@@ -173,7 +173,9 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     private Map<String, String> muodostaHakukohteenValintaperusteetMap(List<HakukohteenValintaperusteTyyppi> hakukohteenValintaperuste) {
         Map<String, String> map = new HashMap<String, String>();
 
+        LOG.debug("Hakukohteen valintaperusteet:");
         for (HakukohteenValintaperusteTyyppi vp : hakukohteenValintaperuste) {
+            LOG.debug("{} - {}", new Object[]{vp.getTunniste(), vp.getArvo()});
             map.put(vp.getTunniste(), vp.getTunniste());
         }
 
