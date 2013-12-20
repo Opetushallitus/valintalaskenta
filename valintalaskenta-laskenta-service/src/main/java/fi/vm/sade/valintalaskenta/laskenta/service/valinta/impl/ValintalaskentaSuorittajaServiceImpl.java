@@ -175,8 +175,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
         LOG.debug("Hakukohteen valintaperusteet:");
         for (HakukohteenValintaperusteTyyppi vp : hakukohteenValintaperuste) {
-            LOG.debug("{} - {}", new Object[]{vp.getTunniste(), vp.getArvo()});
-            map.put(vp.getTunniste(), vp.getTunniste());
+            map.put(vp.getTunniste(), vp.getArvo());
         }
 
         return map;
