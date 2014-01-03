@@ -96,7 +96,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdellinenValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
 
             //jos edellinenVaihe == null ja järjestysluku > 0 tarkistetaaan löytyykö edellistä valintakoevaihetta vai heitetäänö virhe
-            if (edellinenVaihe == null && vaihe.getValinnanVaiheJarjestysluku() > 0) {
+            if (edellinenVaihe == null && jarjestysnumero > 0) {
                 ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdellinenValinnanvaihe(
                         hakuOid,
                         hakukohdeOid,

@@ -19,13 +19,18 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 
     @Override
     public Valinnanvaihe haeEdellinenValinnanvaihe(String hakuOid, String hakukohdeOid, int jarjestysnumero) {
-        return datastore.find(Valinnanvaihe.class)
-                .field("hakuOid").equal(hakuOid)
-                .field("hakukohdeOid").equal(hakukohdeOid)
-                .field("jarjestysnumero").lessThan(jarjestysnumero)
-                .order("-jarjestysnumero")
-                .limit(1)
-                .get();
+        Valinnanvaihe edellinen = null;
+
+        if (jarjestysnumero > 0) {
+            edellinen = datastore.find(Valinnanvaihe.class)
+                    .field("hakuOid").equal(hakuOid)
+                    .field("hakukohdeOid").equal(hakukohdeOid)
+                    .field("jarjestysnumero").equal(jarjestysnumero - 1)
+                    .limit(1)
+                    .get();
+        }
+
+        return edellinen;
     }
 
     @Override
