@@ -2,15 +2,12 @@ package fi.vm.sade.valintalaskenta.laskenta.service;
 
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hyvaksyttavissatila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
 import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.HakukohteenValintaperusteTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
-import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
@@ -208,8 +205,8 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         final TilaJaSelite ts0 = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, "Testi Selite Hyvaksyttavissa");
         final TilaJaSelite ts1 = new TilaJaSelite(JarjestyskriteerituloksenTila.VIRHE, "Testi Selite Virhe");
 
-        when(valinnanvaiheDAOMock.haeEdellinenValinnanvaihe(Matchers.<String>any(), Matchers.eq(hakukohdeOid1), Matchers.eq(valinnanVaiheJarjestysluku1))).thenReturn(v0);
-        when(valinnanvaiheDAOMock.haeEdellinenValinnanvaihe(Matchers.<String>any(), Matchers.eq(hakukohdeOid2), Matchers.eq(valinnanVaiheJarjestysluku2))).thenReturn(v1);
+        when(valinnanvaiheDAOMock.haeEdeltavaValinnanvaihe(Matchers.<String>any(), Matchers.eq(hakukohdeOid1), Matchers.eq(valinnanVaiheJarjestysluku1))).thenReturn(v0);
+        when(valinnanvaiheDAOMock.haeEdeltavaValinnanvaihe(Matchers.<String>any(), Matchers.eq(hakukohdeOid2), Matchers.eq(valinnanVaiheJarjestysluku2))).thenReturn(v1);
 
         when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(Matchers.<String>any(), Matchers.<Tila>any(), Matchers.eq(v0))).thenReturn(ts0);
         when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(Matchers.<String>any(), Matchers.<Tila>any(), Matchers.eq(v1))).thenReturn(ts1);
