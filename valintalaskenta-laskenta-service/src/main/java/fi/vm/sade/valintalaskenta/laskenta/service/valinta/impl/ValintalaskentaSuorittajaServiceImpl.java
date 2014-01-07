@@ -93,11 +93,11 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
             LOG.info("Haku {}, hakukohde {}, valinnanvaihe {} - jarjestysnumero {}",
                     new Object[]{hakuOid, hakukohdeOid, valinnanvaiheOid, jarjestysnumero});
-            Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdellinenValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
+            Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
 
             //jos edellinenVaihe == null ja järjestysluku > 0 tarkistetaaan löytyykö edellistä valintakoevaihetta vai heitetäänö virhe
             if (edellinenVaihe == null && jarjestysnumero > 0) {
-                ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdellinenValinnanvaihe(
+                ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(
                         hakuOid,
                         hakukohdeOid,
                         jarjestysnumero);
@@ -106,6 +106,16 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                     continue;
                 }
             }
+
+            Valinnanvaihe viimeisinVaihe = null;
+            if (jarjestysnumero > 0) {
+                if (edellinenVaihe.getJarjestysnumero() - 1 == jarjestysnumero) {
+                    viimeisinVaihe = edellinenVaihe;
+                } else {
+                    viimeisinVaihe = valinnanvaiheDAO.haeViimeisinValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
+                }
+            }
+
 
             Valinnanvaihe valinnanvaihe = haeTaiLuoValinnanvaihe(valinnanvaiheOid);
             valinnanvaihe.setHakukohdeOid(hakukohdeOid);
@@ -140,7 +150,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                             LOG.info("hakemus {}", new Object[]{hw.getHakemusTyyppi().getHakemusOid()});
 
                             hakemuslaskinService.suoritaLaskentaHakemukselle(new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet), hw, laskentahakemukset,
-                                    lukuarvofunktio, jk.getPrioriteetti(), edellinenVaihe, jonosijatHakemusOidinMukaan);
+                                    lukuarvofunktio, jk.getPrioriteetti(), viimeisinVaihe, jonosijatHakemusOidinMukaan);
                         }
                     } catch (LaskentakaavaEiOleValidiException e) {
                         LOG.error("Valintatapajonon {} prioriteetilla {} olevan järjestyskriteerin " +

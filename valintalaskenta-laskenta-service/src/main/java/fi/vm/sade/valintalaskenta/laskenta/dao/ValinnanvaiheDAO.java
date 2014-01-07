@@ -9,7 +9,9 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
  */
 public interface ValinnanvaiheDAO {
 
-    public Valinnanvaihe haeEdellinenValinnanvaihe(String hakuOid, String hakukohdeOid, int jarjestysnumero);
+    public Valinnanvaihe haeEdeltavaValinnanvaihe(String hakuOid, String hakukohdeOid, int jarjestysnumero);
+
+    Valinnanvaihe haeViimeisinValinnanvaihe(String hakuOid, String hakukohdeOid, int jarjestysnumero);
 
     Valinnanvaihe haeValinnanvaihe(String valinnanvaiheOid);
 

@@ -18,7 +18,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     private Datastore datastore;
 
     @Override
-    public Valinnanvaihe haeEdellinenValinnanvaihe(String hakuOid, String hakukohdeOid, int jarjestysnumero) {
+    public Valinnanvaihe haeEdeltavaValinnanvaihe(String hakuOid, String hakukohdeOid, int jarjestysnumero) {
         Valinnanvaihe edellinen = null;
 
         if (jarjestysnumero > 0) {
@@ -26,6 +26,23 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
                     .field("hakuOid").equal(hakuOid)
                     .field("hakukohdeOid").equal(hakukohdeOid)
                     .field("jarjestysnumero").equal(jarjestysnumero - 1)
+                    .limit(1)
+                    .get();
+        }
+
+        return edellinen;
+    }
+
+    @Override
+    public Valinnanvaihe haeViimeisinValinnanvaihe(String hakuOid, String hakukohdeOid, int jarjestysnumero) {
+        Valinnanvaihe edellinen = null;
+
+        if (jarjestysnumero > 0) {
+            edellinen = datastore.find(Valinnanvaihe.class)
+                    .field("hakuOid").equal(hakuOid)
+                    .field("hakukohdeOid").equal(hakukohdeOid)
+                    .field("jarjestysnumero").lessThan(jarjestysnumero)
+                    .order("-jarjestysnumero")
                     .limit(1)
                     .get();
         }

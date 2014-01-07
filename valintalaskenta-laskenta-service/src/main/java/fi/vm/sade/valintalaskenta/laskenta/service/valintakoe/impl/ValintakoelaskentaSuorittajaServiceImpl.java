@@ -4,8 +4,6 @@ import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hyvaksyttavissatila;
-import fi.vm.sade.service.valintaperusteet.model.ValinnanVaihe;
-import fi.vm.sade.service.valintaperusteet.model.ValinnanVaiheTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.HakukohteenValintaperusteTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintakoeTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintakoeValinnanVaiheTyyppi;
@@ -96,27 +94,38 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                         continue;
                     }
 
-                    Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdellinenValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku());
+                    // Haetaan tätä valinnan vaihetta edeltävä varsinainen valinnan vaihe, jos sellainen on olemassa
+                    Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdeltavaValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku());
 
-                    //jos edellinenVaihe == null ja järjestysluku > 0 tarkistetaaan löytyykö edellistä valintakoevaihetta vai heitetäänö virhe
-                    if(edellinenVaihe == null && vaihe.getValinnanVaiheJarjestysluku() > 0) {
-                        ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdellinenValinnanvaihe(
+                    //jos edellistä varsinaista valinnan vaihetta ei ole olemassa ja järjestysnumero > 0,
+                    // tarkistetaaan löytyykö edellistä valintakoevaihetta vai heitetäänö virhe
+                    if (edellinenVaihe == null && vaihe.getValinnanVaiheJarjestysluku() > 0) {
+                        ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(
                                 vp.getHakuOid(),
                                 vp.getHakukohdeOid(),
                                 vaihe.getValinnanVaiheJarjestysluku());
-                        if(edellinenOsallistuminen == null) {
+                        if (edellinenOsallistuminen == null) {
                             LOG.error("Valinnanvaiheen järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt");
                             continue;
                         }
                     }
 
+                    // Haetaan viimeisin varsinainen valinnan vaihe, jos sellainen on olemassa (tämä saattaa olla sama kuin edeltävä vaihe)
+                    Valinnanvaihe viimeisinValinnanVaihe = null;
+                    if (vaihe.getValinnanVaiheJarjestysluku() > 0) {
+                        if (edellinenVaihe != null && edellinenVaihe.getJarjestysnumero() == vaihe.getValinnanVaiheJarjestysluku() - 1) {
+                            viimeisinValinnanVaihe = edellinenVaihe;
+                        } else {
+                            viimeisinValinnanVaihe = valinnanvaiheDAO.haeViimeisinValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku());
+                        }
+                    }
 
                     OsallistuminenTulos osallistuminen = null;
-                    if(edellinenVaihe != null) {
+                    if (viimeisinValinnanVaihe != null) {
                         TilaJaSelite tilaJaSelite =
                                 edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusOid(),
-                                        new Hyvaksyttavissatila(), edellinenVaihe);
-                        if(tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)) {
+                                        new Hyvaksyttavissatila(), viimeisinValinnanVaihe);
+                        if (tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)) {
                             osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
                                     new Hakukohde(vp.getHakukohdeOid(), hakukohteenValintaperusteet), hakemus, koe.getFunktiokutsu());
                         } else {

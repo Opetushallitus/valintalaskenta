@@ -51,13 +51,13 @@ public class ValinnanvaiheDAOTest {
         final String edellinenValinnanvaiheOid = "valinnanvaiheOid2";
         final int edellinenValinnanvaiheJarjestysnumero = 2;
 
-        Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.haeEdellinenValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
+        Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
         assertEquals(hakuOid, valinnanvaihe.getHakuOid());
         assertEquals(hakukohdeOid, valinnanvaihe.getHakukohdeOid());
         assertEquals(edellinenValinnanvaiheOid, valinnanvaihe.getValinnanvaiheOid());
         assertEquals(edellinenValinnanvaiheJarjestysnumero, valinnanvaihe.getJarjestysnumero());
 
-        assertNull(valinnanvaiheDAO.haeEdellinenValinnanvaihe(hakuOid, hakukohdeOid, 1));
+        assertNull(valinnanvaiheDAO.haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid, 1));
     }
 
     @Test

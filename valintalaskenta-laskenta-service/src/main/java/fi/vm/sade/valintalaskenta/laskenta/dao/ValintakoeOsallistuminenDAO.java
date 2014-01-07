@@ -16,5 +16,5 @@ public interface ValintakoeOsallistuminenDAO {
 
     List<ValintakoeOsallistuminen> readAll();
 
-    public ValintakoeOsallistuminen haeEdellinenValinnanvaihe(String hakuOid, String hakukohdeOid, int jarjestysnumero);
+    public ValintakoeOsallistuminen haeEdeltavaValinnanvaihe(String hakuOid, String hakukohdeOid, int jarjestysnumero);
 }
