@@ -378,15 +378,6 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                                                    Integer jarjestyskriteeriPrioriteetti, MuokattuJonosijaArvoDTO jonosija, String selite) {
 
         Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.findByValintatapajonoOid(valintatapajonoOid);
-        Valintatapajono valintatapajono = null;
-
-        for (Valintatapajono jono : valinnanvaihe.getValintatapajonot()) {
-            if (valintatapajonoOid.equals(jono.getValintatapajonoOid())) {
-                valintatapajono = jono;
-                break;
-            }
-
-        }
 
         MuokattuJonosija muokattuJonosija;
         muokattuJonosija = muokattuJonosijaDAO.readByValintatapajonoOid(valintatapajonoOid, hakemusOid);
