@@ -37,30 +37,30 @@ public class EdellinenValinnanvaiheKasittelija {
             palautettavaTila = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, null);
         } else {
             for (final Valintatapajono jono : edellinenValinnanvaihe.getValintatapajonot()) {
-                List<Jonosija> jonosijat = jono.getJonosijat();
-
-                Collection<Jonosija> filtteroidutJonosijat = Collections2.filter(jonosijat, new Predicate<Jonosija>() {
+                Collection<Jonosija> filtteroidutJonosijat = Collections2.filter(jono.getJonosijat(), new Predicate<Jonosija>() {
                     @Override
                     public boolean apply(Jonosija jonosija) {
                         return jonosija.getHakemusOid().equals(hakemusOid);
                     }
                 });
 
+                Jonosija jonosija = filtteroidutJonosijat.isEmpty() ? null : filtteroidutJonosijat.iterator().next();
+
                 TilaJaSelite tilaJonossa = null;
-                if (filtteroidutJonosijat.isEmpty()) {
+                if (jonosija == null) {
                     // Jos hakemus ei ole ollut mukana edellisessä valinnan vaiheessa, hakemus ei voi tulla
                     // hyväksyttäväksi tässä valinnan vaiheessa. Breikataan pois.
                     palautettavaTila = new TilaJaSelite(
                             JarjestyskriteerituloksenTila.VIRHE,
                             "Hakemus ei ole ollut mukana laskennassa edellisessä valinnan vaiheessa");
                     break;
-                } else if (jonosijat.get(0).getJarjestyskriteeritulokset().isEmpty()) {
+                } else if (jonosija.getJarjestyskriteeritulokset().isEmpty()) {
                     // Mitä tehdään, jos hakemukselle ei ole laskentatulosta? Kai se on hyväksyttävissä
                     tilaJonossa = new TilaJaSelite(
                             JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA,
                             "Hakemukselle ei ole laskentatulosta jonossa");
                 } else {
-                    Jarjestyskriteeritulos tulos = jonosijat.get(0).getJarjestyskriteeritulokset().get(0);
+                    Jarjestyskriteeritulos tulos = jonosija.getJarjestyskriteeritulokset().get(0);
                     tilaJonossa = new TilaJaSelite(tulos.getTila(), tulos.getKuvaus());
                 }
 

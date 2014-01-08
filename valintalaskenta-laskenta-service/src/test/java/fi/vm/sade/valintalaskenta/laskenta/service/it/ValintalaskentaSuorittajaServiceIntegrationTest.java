@@ -1,5 +1,7 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.it;
 
+import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import fi.vm.sade.service.hakemus.schema.AvainArvoTyyppi;
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
@@ -25,12 +27,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.soap.MessageFactory;
 import javax.xml.soap.SOAPMessage;
 import java.io.*;
@@ -38,7 +35,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.*;
@@ -203,7 +199,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
             SOAPMessage message = MessageFactory.newInstance().createMessage(null,
                     new ByteArrayInputStream(xml.getBytes()));
             Unmarshaller unmarshaller = JAXBContext.newInstance(ValintaperusteetTyyppis.class).createUnmarshaller();
-            ValintaperusteetTyyppis tyypit = (ValintaperusteetTyyppis)unmarshaller.unmarshal(message.getSOAPBody().extractContentAsDocument());
+            ValintaperusteetTyyppis tyypit = (ValintaperusteetTyyppis) unmarshaller.unmarshal(message.getSOAPBody().extractContentAsDocument());
             //System.out.println(tyypit);
             {
                 ValintaperusteetTyyppi valintaperusteet1 = luoValintaperusteet(hakuOid, hakukohdeOid1);
@@ -664,5 +660,36 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
                 }
             }
         }
+    }
+
+    @Test
+    @UsingDataSet(locations = "testViimeisinValinnanVaihe.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void testViimeisinValinnanVaihe() {
+        final String hakemusOid = "1.2.246.562.11.00000072753";
+        final String hakukohdeOid = "1.2.246.562.5.91937845484";
+        final String hakuOid = "1.2.246.562.5.2013080813081926341927";
+        final String valinnanVaiheOid = "vv3";
+        final String valintatapajonoOid = "jono1";
+
+        ValintaperusteetTyyppi vv3 = luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 2);
+        ((TavallinenValinnanVaiheTyyppi) vv3.getValinnanVaihe()).getValintatapajono().add(luoValintatapajono(valintatapajonoOid, 0, 10, luoJarjestyskriteeri(sata, 1)));
+        valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(luoHakemus(hakemusOid, hakemusOid, hakukohdeOid)),
+                Arrays.asList(vv3));
+
+        Valinnanvaihe vaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanVaiheOid);
+        assertNotNull(vaihe);
+        assertEquals(valinnanVaiheOid, vaihe.getValinnanvaiheOid());
+        assertEquals(1, vaihe.getValintatapajonot().size());
+
+        Valintatapajono jono = vaihe.getValintatapajonot().get(0);
+        assertEquals(valintatapajonoOid, jono.getValintatapajonoOid());
+        assertEquals(1, jono.getJonosijat().size());
+
+        Jonosija jonosija = jono.getJonosijat().get(0);
+        assertEquals(hakemusOid, jonosija.getHakemusOid());
+        assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+
+        Jarjestyskriteeritulos tulos = jonosija.getJarjestyskriteeritulokset().get(0);
+        assertEquals(JarjestyskriteerituloksenTila.HYLATTY, tulos.getTila());
     }
 }

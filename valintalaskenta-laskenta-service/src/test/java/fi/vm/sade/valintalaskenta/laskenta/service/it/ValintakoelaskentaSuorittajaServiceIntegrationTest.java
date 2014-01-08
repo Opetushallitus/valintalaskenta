@@ -8,7 +8,7 @@ import fi.vm.sade.service.valintaperusteet.model.Funktionimi;
 import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.SyoteparametriTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
 import fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil;
@@ -23,15 +23,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakemus;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteetJaValintakoeValinnanvaihe;
+import static org.junit.Assert.*;
 
 /**
  * User: wuoti
@@ -120,6 +117,36 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet);
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         assertNotNull(osallistuminen);
+    }
+
+    @Test
+    @UsingDataSet(locations = "testViimeisinValinnanVaihe.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void testViimeisinValinnanVaihe() {
+        final String hakemusOid = "1.2.246.562.11.00000072753";
+        final String hakukohdeOid = "1.2.246.562.5.91937845484";
+        final String hakuOid = "1.2.246.562.5.2013080813081926341927";
+        final String valinnanVaiheOid = "vv2";
+        final String valintakoetunniste = "koe1";
+
+        ValintaperusteetTyyppi vv2 = luoValintaperusteetJaValintakoeValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 1, valintakoetunniste);
+        valintakoelaskentaSuorittajaService.laske(luoHakemus(hakemusOid, hakemusOid, hakukohdeOid), Arrays.asList(vv2));
+
+        ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
+        assertNotNull(osallistuminen);
+        assertEquals(hakemusOid, osallistuminen.getHakemusOid());
+        assertEquals(1, osallistuminen.getHakutoiveet().size());
+
+        Hakutoive hakutoive = osallistuminen.getHakutoiveet().get(0);
+        assertEquals(hakukohdeOid, hakutoive.getHakukohdeOid());
+
+        assertEquals(1, hakutoive.getValinnanVaiheet().size());
+        ValintakoeValinnanvaihe vv = hakutoive.getValinnanVaiheet().get(0);
+        assertEquals(valinnanVaiheOid, vv.getValinnanVaiheOid());
+        assertEquals(1, vv.getValintakokeet().size());
+
+        Valintakoe koe = vv.getValintakokeet().get(0);
+        assertEquals(valintakoetunniste, koe.getValintakoeTunniste());
+        assertEquals(Osallistuminen.EI_OSALLISTU, koe.getOsallistuminenTulos().getOsallistuminen());
     }
 
 }
