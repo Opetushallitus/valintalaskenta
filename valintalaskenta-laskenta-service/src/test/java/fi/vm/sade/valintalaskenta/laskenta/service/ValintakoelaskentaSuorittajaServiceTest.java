@@ -77,7 +77,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         final HakemusTyyppi hakemus = luoHakemus("hakemusOid", "hakijaOid", hakukohdeOid1, hakukohdeOid2);
 
         final String hakuOid = "hakuOid";
-        final String valintakoetunniste = "{{hakukohde.movember}}";
+        final String valintakoetunniste = "{{hakukohde.koetunniste}}";
 
         final String valinnanVaiheOid1 = "valinnanVaiheOid1";
         final int valinnanVaiheJarjestysluku1 = 0;
@@ -85,8 +85,8 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         ValintaperusteetTyyppi valintaperusteet1 = luoValintaperusteetJaValintakoeValinnanvaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1,
                 valinnanVaiheJarjestysluku1, valintakoetunniste);
         HakukohteenValintaperusteTyyppi hkvp = new HakukohteenValintaperusteTyyppi();
-        hkvp.setArvo("koetunniste");
-        hkvp.setTunniste("movember");
+        hkvp.setArvo("movember");
+        hkvp.setTunniste("koetunniste");
 
         valintaperusteet1.getHakukohteenValintaperuste().add(hkvp);
 
@@ -114,7 +114,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         final HakemusTyyppi hakemus = luoHakemus("hakemusOid", "hakijaOid", hakukohdeOid1, hakukohdeOid2);
 
         final String hakuOid = "hakuOid";
-        final String valintakoetunniste = "{{hakukohde.november}}";
+        final String valintakoetunniste = "{{hakukohde.koetunnistea}}";
 
         final String valinnanVaiheOid1 = "valinnanVaiheOid1";
         final int valinnanVaiheJarjestysluku1 = 1;
@@ -122,8 +122,8 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         ValintaperusteetTyyppi valintaperusteet1 = luoValintaperusteetJaValintakoeValinnanvaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1,
                 valinnanVaiheJarjestysluku1, valintakoetunniste);
         HakukohteenValintaperusteTyyppi hkvp = new HakukohteenValintaperusteTyyppi();
-        hkvp.setArvo("koetunniste");
-        hkvp.setTunniste("movember");
+        hkvp.setArvo("movember");
+        hkvp.setTunniste("koetunniste");
 
         valintaperusteet1.getHakukohteenValintaperuste().add(hkvp);
 
