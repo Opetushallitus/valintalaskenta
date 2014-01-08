@@ -184,7 +184,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         Map<String, String> map = new HashMap<String, String>();
 
         for (HakukohteenValintaperusteTyyppi vp : hakukohteenValintaperuste) {
-            map.put(vp.getTunniste(), vp.getTunniste());
+            map.put(vp.getTunniste(), vp.getArvo());
         }
 
         return map;
