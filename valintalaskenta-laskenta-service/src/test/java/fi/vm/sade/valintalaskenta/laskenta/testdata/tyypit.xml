@@ -9,6 +9,13 @@
                             <funktiokutsu>
                                 <oid xsi:type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema">20919</oid>
                                 <funktionimi>NIMETTYLUKUARVO</funktionimi>
+
+                                <tallennaTulos>true</tallennaTulos>
+                                <tulosTunniste>tunniste1</tulosTunniste>
+                                <tulosTekstiFi>fi</tulosTekstiFi>
+                                <tulosTekstiSv>sb</tulosTekstiSv>
+                                <tulosTekstiEn>en</tulosTekstiEn>
+
                                 <syoteparametrit>
                                     <avain>nimi</avain>
                                     <arvo>Ulkomailla suoritettu koulutus tai oppivelvollisuuden suorittaminen keskeytynyt</arvo>

@@ -41,6 +41,9 @@ public class Jonosija {
     @Embedded
     private List<SyotettyArvo> syotetytArvot = new ArrayList<SyotettyArvo>();
 
+    @Embedded
+    private List<Tulos> tulokset = new ArrayList<Tulos>();
+
     public String getHakemusOid() {
         return hakemusOid;
     }
@@ -113,5 +116,13 @@ public class Jonosija {
 
     public void setSyotetytArvot(List<SyotettyArvo> syotetytArvot) {
         this.syotetytArvot = syotetytArvot;
+    }
+
+    public List<Tulos> getTulokset() {
+        return tulokset;
+    }
+
+    public void setTulokset(List<Tulos> tulokset) {
+        this.tulokset = tulokset;
     }
 }

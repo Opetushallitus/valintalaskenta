@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.laskenta.service;
 import fi.vm.sade.service.valintaperusteet.laskenta.Lukuarvofunktio;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.*;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.SyotettyArvo;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.FunktioTulos;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hyvaksyttavissatila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
@@ -76,7 +77,7 @@ public class HakemuslaskinServiceTest {
         final Tila laskettuTila = new Hyvaksyttavissatila();
         final BigDecimal jarjestyskriteeriarvo = new BigDecimal("100.0");
         Laskentatulos<BigDecimal> tulos = new Laskentatulos<BigDecimal>(laskettuTila,
-                jarjestyskriteeriarvo, new StringBuffer(), new HashMap<String, SyotettyArvo>());
+                jarjestyskriteeriarvo, new StringBuffer(), new HashMap<String, SyotettyArvo>(), new HashMap<String, FunktioTulos>());
         when(laskentaServiceMock.suoritaValintalaskenta(eq(laskettavaHakukohde), any(Hakemus.class), anyCollection(),
                 any(Lukuarvofunktio.class))).thenReturn(tulos);
         when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(eq(hakemusOid),

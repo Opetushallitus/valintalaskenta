@@ -79,6 +79,8 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
     static {
         sata = new FunktiokutsuTyyppi();
         sata.setFunktionimi(Funktionimi.LUKUARVO.name());
+        sata.setTallennaTulos(true);
+        sata.setTulosTunniste("sata");
         {
             SyoteparametriTyyppi param = new SyoteparametriTyyppi();
             param.setAvain("luku");
@@ -88,6 +90,8 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
 
         kaksisataa = new FunktiokutsuTyyppi();
         kaksisataa.setFunktionimi(Funktionimi.LUKUARVO.name());
+        kaksisataa.setTallennaTulos(true);
+        kaksisataa.setTulosTunniste("kaksisataa");
         {
             SyoteparametriTyyppi param = new SyoteparametriTyyppi();
             param.setAvain("luku");
@@ -124,6 +128,8 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
 
         kuusisataa = new FunktiokutsuTyyppi();
         kuusisataa.setFunktionimi(Funktionimi.LUKUARVO.name());
+        kuusisataa.setTallennaTulos(true);
+        kuusisataa.setTulosTunniste("kuusisataa");
         {
             SyoteparametriTyyppi param = new SyoteparametriTyyppi();
             param.setAvain("luku");
