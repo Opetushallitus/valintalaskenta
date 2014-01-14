@@ -4,6 +4,7 @@ import fi.vm.sade.kaava.Laskentadomainkonvertteri;
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
 import fi.vm.sade.service.valintaperusteet.laskenta.Lukuarvofunktio;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.FunktioTulos;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.SyotettyArvo;
@@ -169,6 +170,12 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                         syotettyArvo.setOsallistuminen(a.getOsallistuminen().name());
                         syotettyArvo.setTunniste(a.getTunniste());
                         jonosija.getSyotetytArvot().add(syotettyArvo);
+                    }
+                    for (FunktioTulos a : js.getFunktioTulokset().values()) {
+                        fi.vm.sade.valintalaskenta.domain.valinta.FunktioTulos funktioTulos = new fi.vm.sade.valintalaskenta.domain.valinta.FunktioTulos();
+                        funktioTulos.setArvo(a.getArvo());
+                        funktioTulos.setTunniste(a.getTunniste());
+                        jonosija.getFunktioTulokset().add(funktioTulos);
                     }
                     jono.getJonosijat().add(jonosija);
                 }

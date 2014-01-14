@@ -73,6 +73,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         JonosijaJaSyotetytArvot jonosija = jonosijatHakemusOidinMukaan.get(hakemus.getHakemusOid());
         jonosija.getJonosija().getJarjestyskriteeritulokset().add(jktulos);
         jonosija.lisaaSyotetytArvot(tulos.getSyotetytArvot());
+        jonosija.lisaaFunktioTulokset(tulos.getFunktioTulokset());
 
         Jarjestyskriteerihistoria jkhistoria = new Jarjestyskriteerihistoria();
         jkhistoria.setHistoria(tulos.getHistoria().toString());

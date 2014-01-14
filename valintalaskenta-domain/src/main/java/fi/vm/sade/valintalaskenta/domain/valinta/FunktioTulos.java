@@ -8,7 +8,7 @@ import com.google.code.morphia.annotations.Embedded;
  * Time: 14.33
  */
 @Embedded
-public class Tulos {
+public class FunktioTulos {
     private String tunniste;
     private String arvo;
 

@@ -42,7 +42,7 @@ public class Jonosija {
     private List<SyotettyArvo> syotetytArvot = new ArrayList<SyotettyArvo>();
 
     @Embedded
-    private List<Tulos> tulokset = new ArrayList<Tulos>();
+    private List<FunktioTulos> funktioTulokset = new ArrayList<FunktioTulos>();
 
     public String getHakemusOid() {
         return hakemusOid;
@@ -118,11 +118,11 @@ public class Jonosija {
         this.syotetytArvot = syotetytArvot;
     }
 
-    public List<Tulos> getTulokset() {
-        return tulokset;
+    public List<FunktioTulos> getFunktioTulokset() {
+        return funktioTulokset;
     }
 
-    public void setTulokset(List<Tulos> tulokset) {
-        this.tulokset = tulokset;
+    public void setFunktioTulokset(List<FunktioTulos> funktioTulokset) {
+        this.funktioTulokset = funktioTulokset;
     }
 }
