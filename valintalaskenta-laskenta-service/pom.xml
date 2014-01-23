@@ -11,8 +11,16 @@
 	<packaging>war</packaging>
 
 	<dependencies>
-
-        <!-- Internal -->
+		<dependency>
+            <groupId>fi.vm.sade.valintaperusteet</groupId>
+            <artifactId>valintaperusteet-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+		<dependency>
+			<groupId>com.google.code.morphia</groupId>
+			<artifactId>morphia</artifactId>
+		</dependency>
+		<!-- Internal -->
 		<dependency>
 			<groupId>fi.vm.sade.valintaperusteet</groupId>
 			<artifactId>valintalaskenta-domain</artifactId>
