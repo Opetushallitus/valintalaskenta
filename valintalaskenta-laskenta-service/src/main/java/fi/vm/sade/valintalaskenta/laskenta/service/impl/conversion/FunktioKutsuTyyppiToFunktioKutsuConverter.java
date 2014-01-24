@@ -1,7 +1,7 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion;
 
 import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
-import fi.vm.sade.service.valintaperusteet.model.Funktionimi;
+import fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi;
 import fi.vm.sade.service.valintaperusteet.schema.*;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
