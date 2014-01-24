@@ -40,7 +40,7 @@ public class HarkinnanvaraisuusResource {
     @JsonView({JsonViews.Basic.class})
     @Secured({UPDATE, CRUD})
     @ApiOperation(value = "Asettaa tilan harkinnanvaraisesti hakeneelle hakijalle")
-    public void hakemus(@ApiParam(value = "Haun OID", required = true) @PathParam("hakuOid") String hakuOid,
+    public void asetaTila(@ApiParam(value = "Haun OID", required = true) @PathParam("hakuOid") String hakuOid,
                         @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeOid") String hakukohdeOid,
                         @ApiParam(value = "Hakemuksen OID", required = true) @PathParam("hakemusOid") String hakemusOid,
                         @ApiParam(value = "Asetettava tila", required = true) HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen) {
@@ -53,8 +53,19 @@ public class HarkinnanvaraisuusResource {
     @JsonView({JsonViews.Basic.class})
     @Secured({READ, UPDATE, CRUD})
     @ApiOperation(value = "Hakee hakukohteen harkinnanvaraisesti hakeneiden hakijoiden tilat", response = HarkinnanvarainenHyvaksyminenDTO.class)
-    public List<HarkinnanvarainenHyvaksyminenDTO> hakemus(@ApiParam(value = "Haku OID", required = true) @PathParam("hakuOid") String hakuOid,
-                                                          @ApiParam(value = "Hakukohde OID", required = true) @PathParam("hakukohdeOid") String hakukohdeOid) {
+    public List<HarkinnanvarainenHyvaksyminenDTO> hakukohde(@ApiParam(value = "Haku OID", required = true) @PathParam("hakuOid") String hakuOid,
+                                                            @ApiParam(value = "Hakukohde OID", required = true) @PathParam("hakukohdeOid") String hakukohdeOid) {
         return modelMapper.mapList(tulosService.haeHarkinnanvaraisestiHyvaksymisenTila(hakukohdeOid), HarkinnanvarainenHyvaksyminenDTO.class);
+    }
+
+    @GET
+    @Path("/haku/{hakuOid}/hakemus/{hakemusOid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView({JsonViews.Basic.class})
+    @Secured({READ, UPDATE, CRUD})
+    @ApiOperation(value = "Hakee hakemuksen harkinnanvaraisesti tilat", response = HarkinnanvarainenHyvaksyminenDTO.class)
+    public List<HarkinnanvarainenHyvaksyminenDTO> hakemus(@ApiParam(value = "Haku OID", required = true) @PathParam("hakuOid") String hakuOid,
+                                                            @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid) {
+        return modelMapper.mapList(tulosService.haeHakemuksenHarkinnanvaraisestiHyvaksymisenTilat(hakuOid, hakemusOid), HarkinnanvarainenHyvaksyminenDTO.class);
     }
 }

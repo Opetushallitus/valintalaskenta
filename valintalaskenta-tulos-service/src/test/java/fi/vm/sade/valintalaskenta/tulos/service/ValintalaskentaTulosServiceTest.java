@@ -44,9 +44,9 @@ public class ValintalaskentaTulosServiceTest {
     @Test
     @UsingDataSet(locations = "initialData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void haeValintakoeOsallistumisetByOidTest() {
-        List<ValintakoeOsallistuminen> kaikki = valintalaskentaTulosService.haeValintakoeOsallistumiset("oid1");
-        assertEquals(1, kaikki.size());
-        assertEquals("oid1", kaikki.get(0).getHakijaOid());
+        ValintakoeOsallistuminen kaikki = valintalaskentaTulosService.haeValintakoeOsallistumiset("oid1");
+
+        assertEquals("oid1", kaikki.getHakijaOid());
     }
 
     @Test

@@ -20,6 +20,9 @@ public class MuokattuJonosijaArvoDTO {
     @ApiModelProperty(value="Arvo", required = true)
     private BigDecimal arvo;
 
+    @ApiModelProperty(value="Selite", required = true)
+    private String selite;
+
     public JarjestyskriteerituloksenTila getTila() {
         return tila;
     }
@@ -34,5 +37,13 @@ public class MuokattuJonosijaArvoDTO {
 
     public void setArvo(BigDecimal arvo) {
         this.arvo = arvo;
+    }
+
+    public String getSelite() {
+        return selite;
+    }
+
+    public void setSelite(String selite) {
+        this.selite = selite;
     }
 }

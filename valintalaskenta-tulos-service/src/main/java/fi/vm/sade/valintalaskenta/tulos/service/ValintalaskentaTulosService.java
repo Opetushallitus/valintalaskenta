@@ -21,9 +21,9 @@ public interface ValintalaskentaTulosService {
     List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid);
 
     MuokattuJonosija muutaJarjestyskriteeri(String valintatapajonoOid, String hakemusOid,
-                                            Integer jarjestyskriteeriPrioriteetti, MuokattuJonosijaArvoDTO arvo, String selite);
+                                            Integer jarjestyskriteeriPrioriteetti, MuokattuJonosijaArvoDTO arvo);
 
-    List<ValintakoeOsallistuminen> haeValintakoeOsallistumiset(String hakemusOid);
+    ValintakoeOsallistuminen haeValintakoeOsallistumiset(String hakemusOid);
 
     List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakutoive(String hakukohdeOid);
 
@@ -34,4 +34,6 @@ public interface ValintalaskentaTulosService {
     void asetaHarkinnanvaraisestiHyvaksymisenTila(String hakuoid, String hakukohdeoid, String hakemusoid, HarkinnanvaraisuusTila hyvaksyttyHarkinannvaraisesti);
 
     List<HarkinnanvarainenHyvaksyminen> haeHarkinnanvaraisestiHyvaksymisenTila(String hakukohdeoid);
+
+    List<HarkinnanvarainenHyvaksyminen> haeHakemuksenHarkinnanvaraisestiHyvaksymisenTilat(String hakuOid, String hakemusOid);
 }

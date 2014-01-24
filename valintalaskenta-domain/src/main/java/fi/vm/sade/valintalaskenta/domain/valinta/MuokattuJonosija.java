@@ -38,9 +38,6 @@ public class MuokattuJonosija {
     @JsonView(JsonViews.Basic.class)
     private Integer prioriteetti; // hakutoive
 
-    @JsonView(JsonViews.Basic.class)
-    private Boolean harkinnanvarainen;
-
     @Embedded
     private List<Jarjestyskriteeritulos> jarjestyskriteerit = new ArrayList<Jarjestyskriteeritulos>();
 
@@ -85,14 +82,6 @@ public class MuokattuJonosija {
 
     public void setHakukohdeOid(String hakukohdeOid) {
         this.hakukohdeOid = hakukohdeOid;
-    }
-
-    public Boolean getHarkinnanvarainen() {
-        return harkinnanvarainen;
-    }
-
-    public void setHarkinnanvarainen(Boolean harkinnanvarainen) {
-        this.harkinnanvarainen = harkinnanvarainen;
     }
 
     public Integer getPrioriteetti() {

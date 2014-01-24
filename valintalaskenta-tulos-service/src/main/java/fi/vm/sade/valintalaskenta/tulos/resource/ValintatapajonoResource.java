@@ -49,11 +49,10 @@ public class ValintatapajonoResource {
             @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
             @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid,
             @ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true) @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
-            @ApiParam(value = "Seliteteksti", required = true) @QueryParam("selite") String selite,
             @ApiParam(value = "Järjestyskriteerin uusi arvo", required = true) MuokattuJonosijaArvoDTO arvo) {
         return modelMapper.map(tulosService.muutaJarjestyskriteeri(valintatapajonoOid,
                 hakemusOid,
                 jarjestyskriteeriPrioriteetti,
-                arvo, selite), MuokattuJonosijaDTO.class);
+                arvo), MuokattuJonosijaDTO.class);
     }
 }

@@ -9,7 +9,7 @@ public interface ValintakoeOsallistuminenDAO {
 
     //  List<ValintakoeOsallistuminen> findAll();
 
-    List<ValintakoeOsallistuminen> findByHakemusOid(String hakijaoid);
+    ValintakoeOsallistuminen findByHakemusOid(String hakemusOid);
 
     List<ValintakoeOsallistuminen> findByHakutoive(String hakukohdeOid);
 
