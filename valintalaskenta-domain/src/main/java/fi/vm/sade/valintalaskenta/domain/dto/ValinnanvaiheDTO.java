@@ -23,6 +23,10 @@ public class ValinnanvaiheDTO {
     @JsonView(JsonViews.Basic.class)
     private String valinnanvaiheoid;
 
+    @ApiModelProperty(value = "Valinnan vaiheen nimi")
+    @JsonView(JsonViews.Basic.class)
+    private String nimi;
+
     @ApiModelProperty(value = "Luomisajankohta", required = true)
     @JsonView(JsonViews.Basic.class)
     private Date createdAt;
@@ -63,5 +67,11 @@ public class ValinnanvaiheDTO {
         this.createdAt = createdAt;
     }
 
+    public String getNimi() {
+        return nimi;
+    }
 
+    public void setNimi(String nimi) {
+        this.nimi = nimi;
+    }
 }

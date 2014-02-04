@@ -39,6 +39,9 @@ public class Valinnanvaihe {
     private String tarjoajaOid;
 
     @JsonView(JsonViews.Basic.class)
+    private String nimi;
+
+    @JsonView(JsonViews.Basic.class)
     @Embedded
     private List<Valintatapajono> valintatapajonot = new ArrayList<Valintatapajono>();
 
@@ -111,5 +114,13 @@ public class Valinnanvaihe {
 
     public void setValintatapajonot(List<Valintatapajono> valintatapajonot) {
         this.valintatapajonot = valintatapajonot;
+    }
+
+    public String getNimi() {
+        return nimi;
+    }
+
+    public void setNimi(String nimi) {
+        this.nimi = nimi;
     }
 }

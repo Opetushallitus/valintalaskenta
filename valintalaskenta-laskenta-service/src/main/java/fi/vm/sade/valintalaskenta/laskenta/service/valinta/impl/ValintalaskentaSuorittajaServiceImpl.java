@@ -124,6 +124,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             valinnanvaihe.setJarjestysnumero(jarjestysnumero);
             valinnanvaihe.setValinnanvaiheOid(valinnanvaiheOid);
             valinnanvaihe.setTarjoajaOid(tarjoajaOid);
+            valinnanvaihe.setNimi(vp.getValinnanVaihe().getNimi());
 
             for (ValintatapajonoJarjestyskriteereillaTyyppi j : vaihe.getValintatapajono()) {
                 Valintatapajono jono = new Valintatapajono();
