@@ -110,7 +110,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
             Valinnanvaihe viimeisinVaihe = null;
             if (jarjestysnumero > 0) {
-                if (edellinenVaihe != null && edellinenVaihe.getJarjestysnumero() - 1 == jarjestysnumero) {
+                if (edellinenVaihe != null && edellinenVaihe.getJarjestysnumero() + 1 == jarjestysnumero) {
                     viimeisinVaihe = edellinenVaihe;
                 } else {
                     viimeisinVaihe = valinnanvaiheDAO.haeViimeisinValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);

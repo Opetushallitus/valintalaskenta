@@ -77,22 +77,22 @@
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-core-asl</artifactId>
-            <version>1.9.11</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-jaxrs</artifactId>
-            <version>1.9.11</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.9.11</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-xc</artifactId>
-            <version>1.9.11</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey.contribs</groupId>
@@ -218,6 +218,7 @@
         <dependency>
             <groupId>de.flapdoodle.embed</groupId>
             <artifactId>de.flapdoodle.embed.mongo</artifactId>
+            <version>${flapdoodle.embed.mongo.version}</version>
             <scope>test</scope>
         </dependency>
 
