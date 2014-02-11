@@ -223,6 +223,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
         jdto.setArvo(jktulos.getArvo());
         jdto.setKuvaus(jktulos.getKuvaus());
         jdto.setTila(jktulos.getTila());
+        jdto.setNimi(jktulos.getNimi());
         return jdto;
     }
 
