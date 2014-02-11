@@ -152,7 +152,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                             LOG.info("hakemus {}", new Object[]{hw.getHakemusTyyppi().getHakemusOid()});
 
                             hakemuslaskinService.suoritaLaskentaHakemukselle(new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet), hw, laskentahakemukset,
-                                    lukuarvofunktio, jk.getPrioriteetti(), viimeisinVaihe, jonosijatHakemusOidinMukaan);
+                                    lukuarvofunktio, jk.getPrioriteetti(), viimeisinVaihe, jonosijatHakemusOidinMukaan, jk.getNimi());
                         }
                     } catch (LaskentakaavaEiOleValidiException e) {
                         LOG.error("Valintatapajonon {} prioriteetilla {} olevan järjestyskriteerin " +

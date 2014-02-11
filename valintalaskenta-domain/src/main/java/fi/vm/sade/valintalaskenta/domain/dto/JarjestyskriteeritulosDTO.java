@@ -33,6 +33,10 @@ public class JarjestyskriteeritulosDTO implements Comparable<Jarjestyskriteeritu
     @JsonView(JsonViews.Basic.class)
     private int prioriteetti;
 
+    @ApiModelProperty(value = "Järjestyskriteerin nimi")
+    @JsonView(JsonViews.Basic.class)
+    private String nimi;
+
     @Override
     public int compareTo(JarjestyskriteeritulosDTO o) {
         return Integer.valueOf(prioriteetti).compareTo(o.getPrioriteetti());
@@ -68,5 +72,13 @@ public class JarjestyskriteeritulosDTO implements Comparable<Jarjestyskriteeritu
 
     public void setPrioriteetti(int prioriteetti) {
         this.prioriteetti = prioriteetti;
+    }
+
+    public String getNimi() {
+        return nimi;
+    }
+
+    public void setNimi(String nimi) {
+        this.nimi = nimi;
     }
 }

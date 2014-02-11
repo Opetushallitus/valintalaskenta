@@ -21,5 +21,6 @@ public interface HakemuslaskinService {
                                      Lukuarvofunktio lukuarvofunktio,
                                      int jkPrioriteetti,
                                      Valinnanvaihe edellinenVaihe,
-                                     Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan);
+                                     Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan,
+                                     String jkNimi);
 }

@@ -43,7 +43,8 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                                             Lukuarvofunktio lukuarvofunktio,
                                             int jkPrioriteetti,
                                             Valinnanvaihe edellinenVaihe,
-                                            Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan) {
+                                            Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan,
+                                            String jkNimi) {
         Laskentatulos<BigDecimal> tulos = laskentaService.suoritaValintalaskenta(hakukohde,
                 laskettavaHakemus.getLaskentahakemus(), kaikkiHakemukset, lukuarvofunktio);
 
@@ -58,6 +59,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
 
         jktulos.setTila(tilaJaSelite.getTila());
         jktulos.setKuvaus(tilaJaSelite.getSelite());
+        jktulos.setNimi(jkNimi);
 
         if (!jonosijatHakemusOidinMukaan.containsKey(hakemus.getHakemusOid())) {
             Jonosija jonosija = new Jonosija();

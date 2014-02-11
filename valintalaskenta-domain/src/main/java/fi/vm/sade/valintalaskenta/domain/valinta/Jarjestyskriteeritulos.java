@@ -29,6 +29,9 @@ public class Jarjestyskriteeritulos {
     @JsonView(JsonViews.Basic.class)
     private String kuvaus;
 
+    @JsonView(JsonViews.Basic.class)
+    private String nimi;
+
     private ObjectId historia;
 
     public int getPrioriteetti() {
@@ -69,5 +72,13 @@ public class Jarjestyskriteeritulos {
 
     public void setHistoria(ObjectId historia) {
         this.historia = historia;
+    }
+
+    public String getNimi() {
+        return nimi;
+    }
+
+    public void setNimi(String nimi) {
+        this.nimi = nimi;
     }
 }
