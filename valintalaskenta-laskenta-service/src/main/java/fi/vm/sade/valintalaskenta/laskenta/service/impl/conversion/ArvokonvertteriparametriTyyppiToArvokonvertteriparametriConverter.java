@@ -24,8 +24,10 @@ public class ArvokonvertteriparametriTyyppiToArvokonvertteriparametriConverter i
 
         LokalisoituTekstiTyyppiToLokalisoituTekstiConverter converter = new LokalisoituTekstiTyyppiToLokalisoituTekstiConverter();
         TekstiRyhma ryhma = new TekstiRyhma();
-        for (LokalisoituTekstiTyyppi k : source.getKuvaukset().getTekstit()) {
-            ryhma.getTekstit().add(converter.convert(k));
+        if(source.getKuvaukset() != null && source.getKuvaukset().getTekstit() != null) {
+            for (LokalisoituTekstiTyyppi k : source.getKuvaukset().getTekstit()) {
+                ryhma.getTekstit().add(converter.convert(k));
+            }
         }
         target.setKuvaukset(ryhma);
         return target;
