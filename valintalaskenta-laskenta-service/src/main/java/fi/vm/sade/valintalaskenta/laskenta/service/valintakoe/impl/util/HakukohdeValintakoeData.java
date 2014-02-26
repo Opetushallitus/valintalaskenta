@@ -3,75 +3,81 @@ package fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
 
 /**
- * User: wuoti
- * Date: 3.5.2013
- * Time: 9.35
+ * User: wuoti Date: 3.5.2013 Time: 9.35
  */
 public class HakukohdeValintakoeData {
 
-    private String hakuOid;
-    private String hakukohdeOid;
-    private String valinnanVaiheOid;
-    private int valinnanVaiheJarjestysNro;
+	private String hakuOid;
+	private String hakukohdeOid;
+	private String valinnanVaiheOid;
+	private int valinnanVaiheJarjestysNro;
 
-    private String valintakoeTunniste;
-    private String valintakoeOid;
-    private OsallistuminenTulos osallistuminenTulos;
+	private String valintakoeTunniste;
+	private String valintakoeOid;
+	private String nimi;
+	private OsallistuminenTulos osallistuminenTulos;
 
-    public String getHakuOid() {
-        return hakuOid;
-    }
+	public String getNimi() {
+		return nimi;
+	}
 
-    public void setHakuOid(String hakuOid) {
-        this.hakuOid = hakuOid;
-    }
+	public void setNimi(String nimi) {
+		this.nimi = nimi;
+	}
 
-    public String getValintakoeTunniste() {
-        return valintakoeTunniste;
-    }
+	public String getHakuOid() {
+		return hakuOid;
+	}
 
-    public void setValintakoeTunniste(String valintakoeTunniste) {
-        this.valintakoeTunniste = valintakoeTunniste;
-    }
+	public void setHakuOid(String hakuOid) {
+		this.hakuOid = hakuOid;
+	}
 
-    public String getHakukohdeOid() {
-        return hakukohdeOid;
-    }
+	public String getValintakoeTunniste() {
+		return valintakoeTunniste;
+	}
 
-    public void setHakukohdeOid(String hakukohdeOid) {
-        this.hakukohdeOid = hakukohdeOid;
-    }
+	public void setValintakoeTunniste(String valintakoeTunniste) {
+		this.valintakoeTunniste = valintakoeTunniste;
+	}
 
-    public String getValinnanVaiheOid() {
-        return valinnanVaiheOid;
-    }
+	public String getHakukohdeOid() {
+		return hakukohdeOid;
+	}
 
-    public void setValinnanVaiheOid(String valinnanVaiheOid) {
-        this.valinnanVaiheOid = valinnanVaiheOid;
-    }
+	public void setHakukohdeOid(String hakukohdeOid) {
+		this.hakukohdeOid = hakukohdeOid;
+	}
 
-    public int getValinnanVaiheJarjestysNro() {
-        return valinnanVaiheJarjestysNro;
-    }
+	public String getValinnanVaiheOid() {
+		return valinnanVaiheOid;
+	}
 
-    public void setValinnanVaiheJarjestysNro(int valinnanVaiheJarjestysNro) {
-        this.valinnanVaiheJarjestysNro = valinnanVaiheJarjestysNro;
-    }
+	public void setValinnanVaiheOid(String valinnanVaiheOid) {
+		this.valinnanVaiheOid = valinnanVaiheOid;
+	}
 
+	public int getValinnanVaiheJarjestysNro() {
+		return valinnanVaiheJarjestysNro;
+	}
 
-    public void setValintakoeOid(String valintakoeOid) {
-        this.valintakoeOid = valintakoeOid;
-    }
+	public void setValinnanVaiheJarjestysNro(int valinnanVaiheJarjestysNro) {
+		this.valinnanVaiheJarjestysNro = valinnanVaiheJarjestysNro;
+	}
 
-    public String getValintakoeOid() {
-        return valintakoeOid;
-    }
+	public void setValintakoeOid(String valintakoeOid) {
+		this.valintakoeOid = valintakoeOid;
+	}
 
-    public OsallistuminenTulos getOsallistuminenTulos() {
-        return osallistuminenTulos;
-    }
+	public String getValintakoeOid() {
+		return valintakoeOid;
+	}
 
-    public void setOsallistuminenTulos(OsallistuminenTulos osallistuminenTulos) {
-        this.osallistuminenTulos = osallistuminenTulos;
-    }
+	public OsallistuminenTulos getOsallistuminenTulos() {
+		return osallistuminenTulos;
+	}
+
+	public void setOsallistuminenTulos(OsallistuminenTulos osallistuminenTulos) {
+		this.osallistuminenTulos = osallistuminenTulos;
+	}
 }
