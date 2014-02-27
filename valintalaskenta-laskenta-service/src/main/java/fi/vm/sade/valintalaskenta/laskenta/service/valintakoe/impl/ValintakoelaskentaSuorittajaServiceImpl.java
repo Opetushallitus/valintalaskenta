@@ -45,6 +45,9 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.Hakukohd
 public class ValintakoelaskentaSuorittajaServiceImpl implements
 		ValintakoelaskentaSuorittajaService {
 
+    private final String r = "\\{\\{([A-Za-z0–9\\-_]+)\\.([A-Za-z0–9\\-_]+)\\}\\}";
+    private final Pattern pattern = Pattern.compile(r);
+
 	private static final Logger LOG = LoggerFactory
 			.getLogger(ValintakoelaskentaSuorittajaServiceImpl.class);
 
@@ -62,8 +65,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 
 	private String haeTunniste(String mustache,
 			Map<String, String> hakukohteenValintaperusteet) {
-		String r = "\\{\\{([A-Za-z0–9\\-_]+)\\.([A-Za-z0–9\\-_]+)\\}\\}";
-		Pattern pattern = Pattern.compile(r);
+
 		final Matcher m = pattern.matcher(mustache);
 
 		String avain = null;
