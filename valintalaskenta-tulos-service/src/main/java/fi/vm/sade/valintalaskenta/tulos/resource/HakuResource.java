@@ -10,7 +10,6 @@ import org.codehaus.jackson.map.annotate.JsonView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
@@ -42,7 +41,7 @@ public class HakuResource {
     @Path("{hakuOid}/virheet")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
-    @Secured({READ, UPDATE, CRUD})
+    @PreAuthorize(READ_UPDATE_CRUD)
     @ApiOperation(value = "Hakee haun valintalaskennan virhetilanteet OID:n perusteella", response = HakukohdeDTO.class)
     public List<HakukohdeDTO> virheet(@PathParam("hakuOid") String hakuOid) {
         return tulosService.haeVirheetHaulle(hakuOid);
@@ -52,7 +51,7 @@ public class HakuResource {
     @Path("{hakuOid}/valintakoevirheet")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView(JsonViews.Basic.class)
-    @Secured({READ, UPDATE, CRUD})
+    @PreAuthorize(READ_UPDATE_CRUD)
     public List<ValintakoeOsallistuminenDTO> valintakoevirheet(@PathParam("hakuOid") String hakuOid) {
         return tulosService.haeValintakoevirheetHaulle(hakuOid);
     }

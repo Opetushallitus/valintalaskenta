@@ -9,7 +9,6 @@ import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
@@ -38,7 +37,7 @@ public class HarkinnanvaraisuusResource {
     @Path("/haku/{hakuOid}/hakukohde/{hakukohdeOid}/hakemus/{hakemusOid}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
-    @Secured({UPDATE, CRUD})
+    @PreAuthorize(UPDATE_CRUD)
     @ApiOperation(value = "Asettaa tilan harkinnanvaraisesti hakeneelle hakijalle")
     public void asetaTila(@ApiParam(value = "Haun OID", required = true) @PathParam("hakuOid") String hakuOid,
                         @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeOid") String hakukohdeOid,
@@ -51,7 +50,7 @@ public class HarkinnanvaraisuusResource {
     @Path("/haku/{hakuOid}/hakukohde/{hakukohdeOid}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
-    @Secured({READ, UPDATE, CRUD})
+    @PreAuthorize(READ_UPDATE_CRUD)
     @ApiOperation(value = "Hakee hakukohteen harkinnanvaraisesti hakeneiden hakijoiden tilat", response = HarkinnanvarainenHyvaksyminenDTO.class)
     public List<HarkinnanvarainenHyvaksyminenDTO> hakukohde(@ApiParam(value = "Haku OID", required = true) @PathParam("hakuOid") String hakuOid,
                                                             @ApiParam(value = "Hakukohde OID", required = true) @PathParam("hakukohdeOid") String hakukohdeOid) {
@@ -62,7 +61,7 @@ public class HarkinnanvaraisuusResource {
     @Path("/haku/{hakuOid}/hakemus/{hakemusOid}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
-    @Secured({READ, UPDATE, CRUD})
+    @PreAuthorize(READ_UPDATE_CRUD)
     @ApiOperation(value = "Hakee hakemuksen harkinnanvaraisesti tilat", response = HarkinnanvarainenHyvaksyminenDTO.class)
     public List<HarkinnanvarainenHyvaksyminenDTO> hakemus(@ApiParam(value = "Haku OID", required = true) @PathParam("hakuOid") String hakuOid,
                                                             @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid) {

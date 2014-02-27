@@ -8,7 +8,6 @@ import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +35,7 @@ public class HakemusResource {
     @Path("{hakuoid}/{hakemusoid}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
-    @Secured({READ, UPDATE, CRUD})
+    @PreAuthorize(READ_UPDATE_CRUD)
     @ApiOperation(value = "Hakee hakemuksen tulokset haku OID:n ja hakemuksen OID:n perustella", response = HakemusDTO.class)
     public HakemusDTO hakemus(@ApiParam(value = "Haku OID", required = true) @PathParam("hakuoid") String hakuoid,
                               @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusoid") String hakemusoid) {

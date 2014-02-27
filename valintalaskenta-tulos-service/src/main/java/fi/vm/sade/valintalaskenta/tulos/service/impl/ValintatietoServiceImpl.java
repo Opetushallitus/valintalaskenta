@@ -12,7 +12,6 @@ import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.jws.WebParam;
@@ -35,7 +34,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
     private ConversionService conversionService;
 
     @Override
-    @Secured({ READ, UPDATE, CRUD })
+    @PreAuthorize(READ_UPDATE_CRUD)
     public List<HakemusOsallistuminenTyyppi> haeValintatiedotHakukohteelle(
             @WebParam(name = "valintakoeOid", targetNamespace = "") List<String> valintakoeOid,
             @WebParam(name = "hakukohdeOid", targetNamespace = "") String hakukohdeOid) {
@@ -80,7 +79,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
     }
 
     @Override
-    @Secured({ READ, UPDATE, CRUD })
+    @PreAuthorize(READ_UPDATE_CRUD)
     public HakuTyyppi haeValintatiedot(@WebParam(name = "hakuOid", targetNamespace = "") String hakuOid) {
 
         List<HakukohdeDTO> a = tulosService.haeLasketutValinnanvaiheetHaulle(hakuOid);

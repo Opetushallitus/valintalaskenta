@@ -9,7 +9,6 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoelaskenta
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.jws.WebParam;
@@ -34,7 +33,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     private ValintakoelaskentaSuorittajaService valintakoelaskentaSuorittajaService;
 
     @Override
-    @Secured({CRUD})
+    @PreAuthorize(CRUD)
     public String laske(@WebParam(name = "hakemus", targetNamespace = "") List<HakemusTyyppi> hakemus,
                         @WebParam(name = "valintaperuste", targetNamespace = "") List<ValintaperusteetTyyppi> valintaperuste)
             throws LaskeFault_Exception {
@@ -58,7 +57,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
      * @return
      */
     @Override
-    @Secured({CRUD})
+    @PreAuthorize(CRUD)
     public String valintakokeet(@WebParam(name = "hakemus", targetNamespace = "") HakemusTyyppi hakemus,
                                 @WebParam(name = "valintaperuste", targetNamespace = "") List<ValintaperusteetTyyppi> valintaperuste)
             throws LaskeFault_Exception {
