@@ -4,6 +4,8 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 
+import java.util.Map;
+
 /**
  * User: wuoti
  * Date: 29.8.2013
@@ -14,8 +16,8 @@ public class OsallistuminenTulosDTO {
     @ApiModelProperty(value = "Varsinainen tulos", required = true)
     private Osallistuminen osallistuminen;
 
-    @ApiModelProperty(value = "Kuvaus, esim. virheviesti")
-    private String kuvaus;
+    @ApiModelProperty(value = "Monikielinen kuvaus, esim. virheviesti")
+    private Map<String,String> kuvaus;
 
     @ApiModelProperty(value = "Laskennan palauttama tila")
     private String laskentaTila;
@@ -29,14 +31,6 @@ public class OsallistuminenTulosDTO {
 
     public void setOsallistuminen(Osallistuminen osallistuminen) {
         this.osallistuminen = osallistuminen;
-    }
-
-    public String getKuvaus() {
-        return kuvaus;
-    }
-
-    public void setKuvaus(String kuvaus) {
-        this.kuvaus = kuvaus;
     }
 
     public String getLaskentaTila() {
@@ -53,5 +47,13 @@ public class OsallistuminenTulosDTO {
 
     public void setLaskentaTulos(Boolean laskentaTulos) {
         this.laskentaTulos = laskentaTulos;
+    }
+
+    public Map<String, String> getKuvaus() {
+        return kuvaus;
+    }
+
+    public void setKuvaus(Map<String, String> kuvaus) {
+        this.kuvaus = kuvaus;
     }
 }

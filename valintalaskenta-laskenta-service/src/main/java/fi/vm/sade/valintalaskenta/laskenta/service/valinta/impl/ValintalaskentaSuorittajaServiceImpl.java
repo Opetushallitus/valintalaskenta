@@ -55,7 +55,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
 
     @Override
-    public void suoritaLaskenta(List<HakemusTyyppi> kaikkiHakemukset, List<ValintaperusteetTyyppi> valintaperusteet) {
+    public void  suoritaLaskenta(List<HakemusTyyppi> kaikkiHakemukset, List<ValintaperusteetTyyppi> valintaperusteet) {
 
         Map<String, Hakemukset> hakemuksetHakukohteittain = jarjestaHakemuksetHakukohteittain(kaikkiHakemukset);
 

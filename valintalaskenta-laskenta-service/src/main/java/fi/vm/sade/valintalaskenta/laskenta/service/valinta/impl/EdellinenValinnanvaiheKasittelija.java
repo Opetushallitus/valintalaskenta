@@ -8,9 +8,7 @@ import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Virhetila;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * User: wuoti
@@ -52,13 +50,13 @@ public class EdellinenValinnanvaiheKasittelija {
                     // hyväksyttäväksi tässä valinnan vaiheessa. Breikataan pois.
                     palautettavaTila = new TilaJaSelite(
                             JarjestyskriteerituloksenTila.VIRHE,
-                            "Hakemus ei ole ollut mukana laskennassa edellisessä valinnan vaiheessa");
+                            suomenkielinenMap("Hakemus ei ole ollut mukana laskennassa edellisessä valinnan vaiheessa"));
                     break;
                 } else if (jonosija.getJarjestyskriteeritulokset().isEmpty()) {
                     // Mitä tehdään, jos hakemukselle ei ole laskentatulosta? Kai se on hyväksyttävissä
                     tilaJonossa = new TilaJaSelite(
                             JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA,
-                            "Hakemukselle ei ole laskentatulosta jonossa");
+                            suomenkielinenMap("Hakemukselle ei ole laskentatulosta jonossa"));
                 } else {
                     Jarjestyskriteeritulos tulos = jonosija.getJarjestyskriteeritulokset().get(0);
                     tilaJonossa = new TilaJaSelite(tulos.getTila(), tulos.getKuvaus());
@@ -81,14 +79,20 @@ public class EdellinenValinnanvaiheKasittelija {
 
                 if (filtteroidutTilat.isEmpty()) {
                     palautettavaTila = new TilaJaSelite(JarjestyskriteerituloksenTila.HYLATTY,
-                            "Hakemus ei ole hyväksyttävissä yhdessäkään edellisen valinnan vaiheen valintatapajonossa");
+                            suomenkielinenMap("Hakemus ei ole hyväksyttävissä yhdessäkään edellisen valinnan vaiheen valintatapajonossa"));
                 } else {
-                    palautettavaTila = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, "");
+                    palautettavaTila = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, new HashMap<String, String>());
                 }
             }
         }
 
         return palautettavaTila;
+    }
+
+    private Map<String, String> suomenkielinenMap(String teksti) {
+        Map<String, String> vastaus = new HashMap<String, String>();
+        vastaus.put("FI", teksti);
+        return vastaus;
     }
 
     /**

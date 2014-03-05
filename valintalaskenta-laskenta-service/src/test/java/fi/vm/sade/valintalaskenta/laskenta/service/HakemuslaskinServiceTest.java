@@ -71,7 +71,8 @@ public class HakemuslaskinServiceTest {
         hakemus.setHarkinnanvaraisuus(harkinnanvaraisuus);
         hakemus.setLaskentahakemus(new Hakemus(hakemusOid, new HashMap<Integer, String>(), new HashMap<String, String>()));
 
-        final String edellinenValinnanvaiheTilaSelite = "selite";
+        final Map<String,String> edellinenValinnanvaiheTilaSelite = new HashMap<String, String>();
+        edellinenValinnanvaiheTilaSelite.put("FI","selite");
         TilaJaSelite tilaEdellisenVaiheenMukaan = new TilaJaSelite(JarjestyskriteerituloksenTila.HYLATTY, edellinenValinnanvaiheTilaSelite);
 
         final Tila laskettuTila = new Hyvaksyttavissatila();

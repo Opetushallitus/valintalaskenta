@@ -206,8 +206,14 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         when(valinnanvaiheDAOMock.haeViimeisinValinnanvaihe(Matchers.<String>any(), Matchers.eq(hakukohdeOid1), Matchers.eq(valinnanVaiheJarjestysluku1))).thenReturn(viimeisin1);
         when(valinnanvaiheDAOMock.haeViimeisinValinnanvaihe(Matchers.<String>any(), Matchers.eq(hakukohdeOid2), Matchers.eq(valinnanVaiheJarjestysluku2))).thenReturn(viimeisin2);
 
-        final TilaJaSelite ts0 = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, "Testi Selite Hyvaksyttavissa");
-        final TilaJaSelite ts1 = new TilaJaSelite(JarjestyskriteerituloksenTila.VIRHE, "Testi Selite Virhe");
+        final Map<String,String> hyvaksyttavissaSelite = new HashMap<String, String>();
+        hyvaksyttavissaSelite.put("FI","Testi Selite Hyvaksyttavissa");
+
+        final Map<String,String> virheSelite = new HashMap<String, String>();
+        virheSelite.put("FI","Testi Selite Virhe");
+
+        final TilaJaSelite ts0 = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, hyvaksyttavissaSelite);
+        final TilaJaSelite ts1 = new TilaJaSelite(JarjestyskriteerituloksenTila.VIRHE, virheSelite);
 
         when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(Matchers.<String>any(), Matchers.<Tila>any(), Matchers.eq(viimeisin1))).thenReturn(ts0);
         when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(Matchers.<String>any(), Matchers.<Tila>any(), Matchers.eq(viimeisin2))).thenReturn(ts1);
@@ -308,8 +314,14 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
         Valinnanvaihe v1 = new Valinnanvaihe();
 
-        final TilaJaSelite ts0 = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, "Testi Selite Hyvaksyttavissa");
-        final TilaJaSelite ts1 = new TilaJaSelite(JarjestyskriteerituloksenTila.VIRHE, "Testi Selite Virhe");
+        final Map<String,String> hyvaksyttavissaSelite = new HashMap<String, String>();
+        hyvaksyttavissaSelite.put("FI","Testi Selite Hyvaksyttavissa");
+
+        final Map<String,String> virheSelite = new HashMap<String, String>();
+        virheSelite.put("FI","Testi Selite Virhe");
+
+        final TilaJaSelite ts0 = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, hyvaksyttavissaSelite);
+        final TilaJaSelite ts1 = new TilaJaSelite(JarjestyskriteerituloksenTila.VIRHE, virheSelite);
 
         when(valinnanvaiheDAOMock.haeEdeltavaValinnanvaihe(Matchers.<String>any(), Matchers.eq(hakukohdeOid1), Matchers.eq(valinnanVaiheJarjestysluku1))).thenReturn(v0);
         when(valinnanvaiheDAOMock.haeEdeltavaValinnanvaihe(Matchers.<String>any(), Matchers.eq(hakukohdeOid2), Matchers.eq(valinnanVaiheJarjestysluku2))).thenReturn(v1);

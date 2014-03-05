@@ -2,6 +2,8 @@ package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
 import com.google.code.morphia.annotations.Embedded;
 
+import java.util.Map;
+
 /**
  * User: wuoti
  * Date: 28.8.2013
@@ -11,7 +13,7 @@ import com.google.code.morphia.annotations.Embedded;
 public class OsallistuminenTulos {
 
     private Osallistuminen osallistuminen;
-    private String kuvaus;
+    private Map<String,String> kuvaus;
     private String laskentaTila;
     private Boolean laskentaTulos;
 
@@ -21,14 +23,6 @@ public class OsallistuminenTulos {
 
     public void setOsallistuminen(Osallistuminen osallistuminen) {
         this.osallistuminen = osallistuminen;
-    }
-
-    public String getKuvaus() {
-        return kuvaus;
-    }
-
-    public void setKuvaus(String kuvaus) {
-        this.kuvaus = kuvaus;
     }
 
     public String getLaskentaTila() {
@@ -45,5 +39,13 @@ public class OsallistuminenTulos {
 
     public void setLaskentaTulos(Boolean laskentaTulos) {
         this.laskentaTulos = laskentaTulos;
+    }
+
+    public Map<String, String> getKuvaus() {
+        return kuvaus;
+    }
+
+    public void setKuvaus(Map<String, String> kuvaus) {
+        this.kuvaus = kuvaus;
     }
 }

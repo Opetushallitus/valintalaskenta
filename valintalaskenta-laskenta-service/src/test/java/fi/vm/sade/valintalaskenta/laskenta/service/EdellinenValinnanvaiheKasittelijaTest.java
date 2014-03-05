@@ -8,6 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -20,6 +22,12 @@ import static org.junit.Assert.assertNull;
 public class EdellinenValinnanvaiheKasittelijaTest {
 
     private EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija;
+
+    private Map<String, String> suomenkielinenMap(String teksti) {
+        Map<String, String> vastaus = new HashMap<String, String>();
+        vastaus.put("FI", teksti);
+        return vastaus;
+    }
 
     @Before
     public void setUp() {
@@ -113,13 +121,13 @@ public class EdellinenValinnanvaiheKasittelijaTest {
         final String selite = "selite";
         final JarjestyskriteerituloksenTila tila = JarjestyskriteerituloksenTila.HYLATTY;
 
-        TilaJaSelite edellisenVaiheenTila = new TilaJaSelite(tila, selite);
+        TilaJaSelite edellisenVaiheenTila = new TilaJaSelite(tila, suomenkielinenMap(selite));
         Tila laskettuTila = new Hyvaksyttavissatila();
 
         TilaJaSelite tilaJaSelite =
                 edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenTilanMukaan(laskettuTila, edellisenVaiheenTila);
         assertEquals(tila, tilaJaSelite.getTila());
-        assertEquals(selite, tilaJaSelite.getSelite());
+        assertEquals(selite, tilaJaSelite.getSelite().get("FI"));
     }
 
     @Test
@@ -127,13 +135,13 @@ public class EdellinenValinnanvaiheKasittelijaTest {
         final String selite = "selite";
         final JarjestyskriteerituloksenTila tila = JarjestyskriteerituloksenTila.VIRHE;
 
-        TilaJaSelite edellisenVaiheenTila = new TilaJaSelite(tila, selite);
+        TilaJaSelite edellisenVaiheenTila = new TilaJaSelite(tila, suomenkielinenMap(selite));
         Tila laskettuTila = new Hyvaksyttavissatila();
 
         TilaJaSelite tilaJaSelite =
                 edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenTilanMukaan(laskettuTila, edellisenVaiheenTila);
         assertEquals(tila, tilaJaSelite.getTila());
-        assertEquals(selite, tilaJaSelite.getSelite());
+        assertEquals(selite, tilaJaSelite.getSelite().get("FI"));
     }
 
     @Test
@@ -141,7 +149,7 @@ public class EdellinenValinnanvaiheKasittelijaTest {
         final String selite = "selite";
         final JarjestyskriteerituloksenTila tila = JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA;
 
-        TilaJaSelite edellisenVaiheenTila = new TilaJaSelite(tila, selite);
+        TilaJaSelite edellisenVaiheenTila = new TilaJaSelite(tila, suomenkielinenMap(selite));
         Tila laskettuTila = new Hyvaksyttavissatila();
 
         TilaJaSelite tilaJaSelite =
@@ -155,14 +163,14 @@ public class EdellinenValinnanvaiheKasittelijaTest {
         final String selite = "selite";
         final JarjestyskriteerituloksenTila tila = JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA;
 
-        TilaJaSelite edellisenVaiheenTila = new TilaJaSelite(tila, selite);
+        TilaJaSelite edellisenVaiheenTila = new TilaJaSelite(tila, suomenkielinenMap(selite));
         final String lasketuntilanSelite = "toinenSelite";
-        Tila laskettuTila = new Hylattytila(lasketuntilanSelite, new Arvokonvertterihylkays(""));
+        Tila laskettuTila = new Hylattytila(suomenkielinenMap(lasketuntilanSelite), new Arvokonvertterihylkays(""));
 
         TilaJaSelite tilaJaSelite =
                 edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenTilanMukaan(laskettuTila, edellisenVaiheenTila);
         assertEquals(JarjestyskriteerituloksenTila.HYLATTY, tilaJaSelite.getTila());
-        assertEquals(lasketuntilanSelite, tilaJaSelite.getSelite());
+        assertEquals(lasketuntilanSelite, tilaJaSelite.getSelite().get("FI"));
     }
 
     @Test
@@ -170,14 +178,14 @@ public class EdellinenValinnanvaiheKasittelijaTest {
         final String selite = "selite";
         final JarjestyskriteerituloksenTila tila = JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA;
 
-        TilaJaSelite edellisenVaiheenTila = new TilaJaSelite(tila, selite);
+        TilaJaSelite edellisenVaiheenTila = new TilaJaSelite(tila, suomenkielinenMap(selite));
         final String lasketuntilanSelite = "toinenSelite";
-        Tila laskettuTila = new Virhetila(lasketuntilanSelite, new ArvokonvertointiVirhe(""));
+        Tila laskettuTila = new Virhetila(suomenkielinenMap(lasketuntilanSelite), new ArvokonvertointiVirhe(""));
 
         TilaJaSelite tilaJaSelite =
                 edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenTilanMukaan(laskettuTila, edellisenVaiheenTila);
         assertEquals(JarjestyskriteerituloksenTila.VIRHE, tilaJaSelite.getTila());
-        assertEquals(lasketuntilanSelite, tilaJaSelite.getSelite());
+        assertEquals(lasketuntilanSelite, tilaJaSelite.getSelite().get("FI"));
     }
 
     @Test

@@ -8,6 +8,7 @@ import org.bson.types.ObjectId;
 import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 /**
  * User: wuoti
@@ -27,7 +28,7 @@ public class Jarjestyskriteeritulos {
     private JarjestyskriteerituloksenTila tila;
 
     @JsonView(JsonViews.Basic.class)
-    private String kuvaus;
+    private Map<String, String> kuvaus;
 
     @JsonView(JsonViews.Basic.class)
     private String nimi;
@@ -58,14 +59,6 @@ public class Jarjestyskriteeritulos {
         this.tila = tila;
     }
 
-    public String getKuvaus() {
-        return kuvaus;
-    }
-
-    public void setKuvaus(String kuvaus) {
-        this.kuvaus = kuvaus;
-    }
-
     public ObjectId getHistoria() {
         return historia;
     }
@@ -80,5 +73,13 @@ public class Jarjestyskriteeritulos {
 
     public void setNimi(String nimi) {
         this.nimi = nimi;
+    }
+
+    public Map<String, String> getKuvaus() {
+        return kuvaus;
+    }
+
+    public void setKuvaus(Map<String, String> kuvaus) {
+        this.kuvaus = kuvaus;
     }
 }

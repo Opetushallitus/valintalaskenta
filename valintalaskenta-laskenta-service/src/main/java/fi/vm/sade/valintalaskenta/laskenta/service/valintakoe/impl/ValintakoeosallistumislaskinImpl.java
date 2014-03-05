@@ -19,6 +19,8 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoeosallist
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 /**
  * User: wuoti Date: 6.5.2013 Time: 9.02
  */
@@ -66,7 +68,7 @@ public class ValintakoeosallistumislaskinImpl implements Valintakoeosallistumisl
                 osallistuminenTulos.setLaskentaTila(tulos.getTila().getTilatyyppi().name());
                 osallistuminenTulos.setLaskentaTulos(tulos.getTulos());
 
-                String kuvaus = null;
+                Map<String,String> kuvaus = null;
                 if (tulos.getTila() instanceof Hylattytila) {
                     kuvaus = ((Hylattytila) tulos.getTila()).getKuvaus();
                 } else if (tulos.getTila() instanceof Virhetila) {

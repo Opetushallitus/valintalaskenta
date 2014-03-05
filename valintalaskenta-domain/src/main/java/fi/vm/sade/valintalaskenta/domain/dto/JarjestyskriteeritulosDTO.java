@@ -9,6 +9,7 @@ import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 /**
  * @author Jussi Jartamo
@@ -25,9 +26,9 @@ public class JarjestyskriteeritulosDTO implements Comparable<Jarjestyskriteeritu
     @JsonView(JsonViews.Basic.class)
     private JarjestyskriteerituloksenTila tila;
 
-    @ApiModelProperty(value = "Kuvaus (esim. hylkäyksen syy)")
+    @ApiModelProperty(value = "Monikielinen kuvaus (esim. hylkäyksen syy)")
     @JsonView(JsonViews.Basic.class)
-    private String kuvaus;
+    private Map<String,String> kuvaus;
 
     @ApiModelProperty(value = "Järjestyskriteerin prioriteetti", required = true)
     @JsonView(JsonViews.Basic.class)
@@ -58,14 +59,6 @@ public class JarjestyskriteeritulosDTO implements Comparable<Jarjestyskriteeritu
         this.tila = tila;
     }
 
-    public String getKuvaus() {
-        return kuvaus;
-    }
-
-    public void setKuvaus(String kuvaus) {
-        this.kuvaus = kuvaus;
-    }
-
     public int getPrioriteetti() {
         return prioriteetti;
     }
@@ -80,5 +73,13 @@ public class JarjestyskriteeritulosDTO implements Comparable<Jarjestyskriteeritu
 
     public void setNimi(String nimi) {
         this.nimi = nimi;
+    }
+
+    public Map<String, String> getKuvaus() {
+        return kuvaus;
+    }
+
+    public void setKuvaus(Map<String, String> kuvaus) {
+        this.kuvaus = kuvaus;
     }
 }

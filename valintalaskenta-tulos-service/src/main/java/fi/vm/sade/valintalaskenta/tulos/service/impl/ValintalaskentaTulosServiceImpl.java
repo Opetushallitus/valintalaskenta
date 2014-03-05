@@ -408,7 +408,11 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             jarjestyskriteeritulos.setPrioriteetti(jarjestyskriteeriPrioriteetti);
             muokattuJonosija.getJarjestyskriteerit().add(jarjestyskriteeritulos);
         }
-        jarjestyskriteeritulos.setKuvaus("Muokattu käsin");
+
+        Map<String,String> muokattuKasin = new HashMap<String,String>();
+        muokattuKasin.put("FI", "Muokattu käsin");
+
+        jarjestyskriteeritulos.setKuvaus(muokattuKasin);
         jarjestyskriteeritulos.setArvo(jonosija.getArvo());
         jarjestyskriteeritulos.setTila(jonosija.getTila());
 
