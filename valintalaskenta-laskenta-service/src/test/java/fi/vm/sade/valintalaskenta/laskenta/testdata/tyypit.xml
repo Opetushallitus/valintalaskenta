@@ -26,7 +26,7 @@
                                         <oid xsi:type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema">20916</oid>
                                         <funktionimi>HYLKAA</funktionimi>
                                         <syoteparametrit>
-                                            <avain>hylkaysperustekuvaus</avain>
+                                            <avain>hylkaysperustekuvaus_FI</avain>
                                             <arvo>Ulkomailla suoritettu koulutus tai oppivelvollisuuden keskeytyminen</arvo>
                                         </syoteparametrit>
                                         <funktioargumentit>
@@ -652,7 +652,7 @@
                                                         <oid xsi:type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema">20860</oid>
                                                         <funktionimi>HYLKAAARVOVALILLA</funktionimi>
                                                         <syoteparametrit>
-                                                            <avain>hylkaysperustekuvaus</avain>
+                                                            <avain>hylkaysperustekuvaus_FI</avain>
                                                             <arvo>Painotettu keskiarvo hylätty</arvo>
                                                         </syoteparametrit>
                                                         <syoteparametrit>
@@ -5907,7 +5907,7 @@
                                                             <arvo>{{hakukohde.paasykoe_hylkays_min}}</arvo>
                                                         </syoteparametrit>
                                                         <syoteparametrit>
-                                                            <avain>hylkaysperustekuvaus</avain>
+                                                            <avain>hylkaysperustekuvaus_FI</avain>
                                                             <arvo>Pääsykoetulos hylätty</arvo>
                                                         </syoteparametrit>
                                                         <syoteparametrit>
