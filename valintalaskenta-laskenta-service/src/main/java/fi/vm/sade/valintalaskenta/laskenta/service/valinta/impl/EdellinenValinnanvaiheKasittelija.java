@@ -78,8 +78,12 @@ public class EdellinenValinnanvaiheKasittelija {
                 });
 
                 if (filtteroidutTilat.isEmpty()) {
+
+                    Map<String,String> hylkaysSelitteet = tilat.get(tilat.size()-1).getSelite();
+                    String tekninenSelite = "Hakemus ei ole hyväksyttävissä yhdessäkään edellisen valinnan vaiheen valintatapajonossa";
+
                     palautettavaTila = new TilaJaSelite(JarjestyskriteerituloksenTila.HYLATTY,
-                            suomenkielinenMap("Hakemus ei ole hyväksyttävissä yhdessäkään edellisen valinnan vaiheen valintatapajonossa"));
+                            hylkaysSelitteet, tekninenSelite);
                 } else {
                     palautettavaTila = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, new HashMap<String, String>());
                 }
@@ -109,7 +113,7 @@ public class EdellinenValinnanvaiheKasittelija {
         } else if (Tila.Tilatyyppi.HYLATTY.equals(laskettuTila.getTilatyyppi())) {
             JarjestyskriteerituloksenTila tila = JarjestyskriteerituloksenTila.HYLATTY;
             if (laskettuTila instanceof Hylattytila) {
-                palautettavaTila = new TilaJaSelite(tila, ((Hylattytila) laskettuTila).getKuvaus());
+                palautettavaTila = new TilaJaSelite(tila, ((Hylattytila) laskettuTila).getKuvaus(), ((Hylattytila) laskettuTila).getTekninenKuvaus());
             }
         } else if (Tila.Tilatyyppi.VIRHE.equals(laskettuTila.getTilatyyppi())) {
             JarjestyskriteerituloksenTila tila = JarjestyskriteerituloksenTila.VIRHE;

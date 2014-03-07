@@ -33,6 +33,9 @@ public class Jarjestyskriteeritulos {
     @JsonView(JsonViews.Basic.class)
     private String nimi;
 
+    @JsonView(JsonViews.Basic.class)
+    private String tekninenKuvaus;
+
     private ObjectId historia;
 
     public int getPrioriteetti() {
@@ -81,5 +84,13 @@ public class Jarjestyskriteeritulos {
 
     public void setKuvaus(Map<String, String> kuvaus) {
         this.kuvaus = kuvaus;
+    }
+
+    public String getTekninenKuvaus() {
+        return tekninenKuvaus;
+    }
+
+    public void setTekninenKuvaus(String tekninenKuvaus) {
+        this.tekninenKuvaus = tekninenKuvaus;
     }
 }

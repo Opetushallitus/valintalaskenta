@@ -59,6 +59,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
 
         jktulos.setTila(tilaJaSelite.getTila());
         jktulos.setKuvaus(tilaJaSelite.getSelite());
+        jktulos.setTekninenKuvaus(tilaJaSelite.getTekninenSelite());
         jktulos.setNimi(jkNimi);
 
         if (!jonosijatHakemusOidinMukaan.containsKey(hakemus.getHakemusOid())) {

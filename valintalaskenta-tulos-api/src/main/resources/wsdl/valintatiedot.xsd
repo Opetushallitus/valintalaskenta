@@ -81,6 +81,7 @@
     <xs:complexType name="HakijaTyyppi">
         <xs:sequence>
             <xs:element name="syotettyArvo" type="tns:SyotettyArvoTyyppi" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="tilanKuvaus" type="tns:AvainArvoTyyppi" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="oid" type="xs:string" use="required"/>
         <xs:attribute name="hakemusOid" type="xs:string" use="optional"/>
@@ -111,4 +112,8 @@
         </xs:restriction>
     </xs:simpleType>
 
-</xs:schema> 
+    <xs:complexType name="AvainArvoTyyppi">
+        <xs:attribute name="avain" type="xs:string" use="required"/>
+        <xs:attribute name="arvo" type="xs:string" use="required"/>
+    </xs:complexType>
+</xs:schema>

@@ -172,6 +172,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 						} else {
 							osallistuminen = new OsallistuminenTulos();
 							osallistuminen.setKuvaus(tilaJaSelite.getSelite());
+                            osallistuminen.setTekninenKuvaus(tilaJaSelite.getTekninenSelite());
 							osallistuminen.setLaskentaTila(tilaJaSelite
 									.getTila().toString());
 							osallistuminen

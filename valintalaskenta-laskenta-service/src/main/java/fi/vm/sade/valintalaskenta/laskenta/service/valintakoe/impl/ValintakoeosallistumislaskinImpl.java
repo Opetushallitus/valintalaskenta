@@ -69,12 +69,15 @@ public class ValintakoeosallistumislaskinImpl implements Valintakoeosallistumisl
                 osallistuminenTulos.setLaskentaTulos(tulos.getTulos());
 
                 Map<String,String> kuvaus = null;
+                String tekninen = null;
                 if (tulos.getTila() instanceof Hylattytila) {
                     kuvaus = ((Hylattytila) tulos.getTila()).getKuvaus();
+                    tekninen = ((Hylattytila) tulos.getTila()).getTekninenKuvaus();
                 } else if (tulos.getTila() instanceof Virhetila) {
                     kuvaus = ((Virhetila) tulos.getTila()).getKuvaus();
                 }
                 osallistuminenTulos.setKuvaus(kuvaus);
+                osallistuminenTulos.setTekninenKuvaus(tekninen);
                 return osallistuminenTulos;
 
             default:

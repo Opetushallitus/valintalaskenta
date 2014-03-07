@@ -16,8 +16,16 @@ public class TilaJaSelite {
         this.selite = selite;
     }
 
+    public TilaJaSelite(JarjestyskriteerituloksenTila tila,
+                        Map<String, String> selite, String teknineSelite) {
+        this.tila = tila;
+        this.selite = selite;
+        this.tekninenSelite = teknineSelite;
+    }
+
     private JarjestyskriteerituloksenTila tila;
     private Map<String, String> selite;
+    private String tekninenSelite;
 
     public JarjestyskriteerituloksenTila getTila() {
         return tila;
@@ -25,5 +33,13 @@ public class TilaJaSelite {
 
     public Map<String, String> getSelite() {
         return selite;
+    }
+
+    public String getTekninenSelite() {
+        return tekninenSelite;
+    }
+
+    public void setTekninenSelite(String tekninenSelite) {
+        this.tekninenSelite = tekninenSelite;
     }
 }

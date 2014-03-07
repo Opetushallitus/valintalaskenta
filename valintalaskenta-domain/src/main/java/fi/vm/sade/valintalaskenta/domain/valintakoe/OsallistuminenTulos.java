@@ -1,6 +1,8 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
 import com.google.code.morphia.annotations.Embedded;
+import fi.vm.sade.valintalaskenta.domain.JsonViews;
+import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.Map;
 
@@ -16,6 +18,7 @@ public class OsallistuminenTulos {
     private Map<String,String> kuvaus;
     private String laskentaTila;
     private Boolean laskentaTulos;
+    private String tekninenKuvaus;
 
     public Osallistuminen getOsallistuminen() {
         return osallistuminen;
@@ -47,5 +50,13 @@ public class OsallistuminenTulos {
 
     public void setKuvaus(Map<String, String> kuvaus) {
         this.kuvaus = kuvaus;
+    }
+
+    public String getTekninenKuvaus() {
+        return tekninenKuvaus;
+    }
+
+    public void setTekninenKuvaus(String tekninenKuvaus) {
+        this.tekninenKuvaus = tekninenKuvaus;
     }
 }
