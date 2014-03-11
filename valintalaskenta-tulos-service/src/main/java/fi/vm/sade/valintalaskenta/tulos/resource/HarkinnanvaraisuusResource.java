@@ -58,18 +58,15 @@ public class HarkinnanvaraisuusResource {
 	}
 
 	@POST
-	@Path("/haku/{hakuOid}/hakukohde/{hakukohdeOid}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView({ JsonViews.Basic.class })
 	@PreAuthorize(UPDATE_CRUD)
 	@ApiOperation(value = "Asettaa tilan harkinnanvaraisesti hakeneelle hakijalle")
 	public void asetaTilat(
-			@ApiParam(value = "Haun OID", required = true) @PathParam("hakuOid") String hakuOid,
-			@ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeOid") String hakukohdeOid,
 			@ApiParam(value = "Asetettava tila", required = true) List<HarkinnanvarainenHyvaksyminenDTO> harkinnanvaraisetHyvaksymiset) {
 		for (HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen : harkinnanvaraisetHyvaksymiset) {
-			tulosService.asetaHarkinnanvaraisestiHyvaksymisenTila(hakuOid,
-					hakukohdeOid,
+			tulosService.asetaHarkinnanvaraisestiHyvaksymisenTila(harkinnanvarainenHyvaksyminen.getHakuOid(),
+					harkinnanvarainenHyvaksyminen.getHakukohdeOid(),
 					harkinnanvarainenHyvaksyminen.getHakemusOid(),
 					harkinnanvarainenHyvaksyminen.getHarkinnanvaraisuusTila());
 		}
