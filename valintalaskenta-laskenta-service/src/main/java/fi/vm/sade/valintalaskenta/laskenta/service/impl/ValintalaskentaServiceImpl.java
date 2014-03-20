@@ -24,7 +24,7 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoelaskenta
  * @author Jussi Jartamo
  */
 @WebService(endpointInterface = "fi.vm.sade.service.valintalaskenta.ValintalaskentaService")
-@PreAuthorize("isAuthenticated()")
+//@PreAuthorize("isAuthenticated()")
 public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 
 	private static final Logger LOG = LoggerFactory
@@ -37,7 +37,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 	private ValintakoelaskentaSuorittajaService valintakoelaskentaSuorittajaService;
 
 	@Override
-	@PreAuthorize(CRUD)
+//	@PreAuthorize(CRUD)
 	public String laske(
 			@WebParam(name = "hakemus", targetNamespace = "") List<HakemusTyyppi> hakemus,
 			@WebParam(name = "valintaperuste", targetNamespace = "") List<ValintaperusteetTyyppi> valintaperuste)
@@ -66,7 +66,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 	 * @return
 	 */
 	@Override
-	@PreAuthorize(CRUD)
+//	@PreAuthorize(CRUD)
 	public String valintakokeet(
 			@WebParam(name = "hakemus", targetNamespace = "") HakemusTyyppi hakemus,
 			@WebParam(name = "valintaperuste", targetNamespace = "") List<ValintaperusteetTyyppi> valintaperuste)
