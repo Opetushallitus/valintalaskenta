@@ -132,7 +132,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 										vp.getHakukohdeOid(),
 										vaihe.getValinnanVaiheJarjestysluku());
 						if (edellinenOsallistuminen == null) {
-							LOG.error("Valinnanvaiheen järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt");
+							LOG.warn("Valinnanvaiheen järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt");
 							continue;
 						}
 					}
