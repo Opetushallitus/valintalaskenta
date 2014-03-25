@@ -12,6 +12,7 @@ public class Valintakoe {
 	private String nimi;
 	private boolean aktiivinen;
 	private OsallistuminenTulos osallistuminenTulos;
+    private boolean lahetaankoKoekutsut;
 
 	public boolean isAktiivinen() {
 		return aktiivinen;
@@ -52,4 +53,12 @@ public class Valintakoe {
 	public void setOsallistuminenTulos(OsallistuminenTulos osallistuminenTulos) {
 		this.osallistuminenTulos = osallistuminenTulos;
 	}
+
+    public boolean isLahetaankoKoekutsut() {
+        return lahetaankoKoekutsut;
+    }
+
+    public void setLahetaankoKoekutsut(boolean lahetaankoKoekutsut) {
+        this.lahetaankoKoekutsut = lahetaankoKoekutsut;
+    }
 }

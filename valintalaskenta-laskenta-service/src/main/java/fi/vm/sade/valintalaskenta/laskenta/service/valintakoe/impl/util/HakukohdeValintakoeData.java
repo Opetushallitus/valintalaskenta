@@ -16,6 +16,7 @@ public class HakukohdeValintakoeData {
 	private String valintakoeOid;
 	private String nimi;
 	private OsallistuminenTulos osallistuminenTulos;
+    private boolean lahetetaankoKoekutsut;
 
 	public String getNimi() {
 		return nimi;
@@ -80,4 +81,12 @@ public class HakukohdeValintakoeData {
 	public void setOsallistuminenTulos(OsallistuminenTulos osallistuminenTulos) {
 		this.osallistuminenTulos = osallistuminenTulos;
 	}
+
+    public boolean isLahetetaankoKoekutsut() {
+        return lahetetaankoKoekutsut;
+    }
+
+    public void setLahetetaankoKoekutsut(boolean lahetetaankoKoekutsut) {
+        this.lahetetaankoKoekutsut = lahetetaankoKoekutsut;
+    }
 }

@@ -196,6 +196,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 					data.setValintakoeOid(koe.getOid());
 					data.setValintakoeTunniste(tunniste);
 					data.setNimi(koe.getNimi());
+                    data.setLahetetaankoKoekutsut(koe.isLahetetaankoKoekutsut());
 
 					if (!valintakoeData.containsKey(tunniste)) {
 						valintakoeData.put(tunniste,
@@ -366,6 +367,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 		koe.setValintakoeOid(data.getValintakoeOid());
 		koe.setNimi(data.getNimi());
 		koe.setValintakoeTunniste(data.getValintakoeTunniste());
+        koe.setLahetaankoKoekutsut(data.isLahetetaankoKoekutsut());
 	}
 
 	protected Map<String, HakukohdeTyyppi> luoHakutoiveMap(
