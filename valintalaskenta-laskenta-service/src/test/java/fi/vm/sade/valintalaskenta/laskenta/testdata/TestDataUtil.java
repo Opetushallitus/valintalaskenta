@@ -154,6 +154,7 @@ public abstract class TestDataUtil {
         koe.setTunniste(tunniste);
         koe.setOid(valintakoeOid);
         koe.setLahetetaankoKoekutsut(true);
+        koe.setAktiivinen(true);
         return koe;
     }
 

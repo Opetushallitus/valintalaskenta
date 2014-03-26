@@ -17,6 +17,7 @@ public class HakukohdeValintakoeData {
 	private String nimi;
 	private OsallistuminenTulos osallistuminenTulos;
     private boolean lahetetaankoKoekutsut;
+    private boolean aktiivinen;
 
 	public String getNimi() {
 		return nimi;
@@ -88,5 +89,13 @@ public class HakukohdeValintakoeData {
 
     public void setLahetetaankoKoekutsut(boolean lahetetaankoKoekutsut) {
         this.lahetetaankoKoekutsut = lahetetaankoKoekutsut;
+    }
+
+    public boolean isAktiivinen() {
+        return aktiivinen;
+    }
+
+    public void setAktiivinen(boolean aktiivinen) {
+        this.aktiivinen = aktiivinen;
     }
 }

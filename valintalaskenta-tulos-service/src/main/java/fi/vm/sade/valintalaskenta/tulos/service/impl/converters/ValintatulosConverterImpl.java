@@ -113,6 +113,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
             dto.setValintakoeTunniste(koe.getValintakoeTunniste());
             dto.setOsallistuminenTulos(convertOsallistuminenTulos(koe.getOsallistuminenTulos()));
             dto.setLahetetaankoKoekutsut(koe.isLahetetaankoKoekutsut());
+            dto.setAktiivinen(koe.isAktiivinen());
 
             dtot.add(dto);
         }
