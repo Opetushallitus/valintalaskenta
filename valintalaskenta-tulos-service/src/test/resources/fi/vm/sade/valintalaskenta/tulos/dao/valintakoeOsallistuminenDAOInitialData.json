@@ -16,7 +16,9 @@
                                              "valintakoeTunniste" : "valintakoeTunniste1",
                                              "osallistuminenTulos" : {
                                                  "osallistuminen" : "VIRHE"
-                                             }
+                                             },
+                                             "lahetetaankoKoekutsut": true,
+                                             "aktiivinen": true
                                          }
                                      ]
                                  },
@@ -28,7 +30,9 @@
                                              "valintakoeTunniste" : "valintakoeTunniste2",
                                              "osallistuminenTulos" : {
                                                  "osallistuminen" : "OSALLISTUU"
-                                             }
+                                             },
+                                             "lahetetaankoKoekutsut": true,
+                                             "aktiivinen": true
                                          }
                                      ]
                                  }
@@ -51,7 +55,9 @@
                                              "valintakoeTunniste" : "valintakoeTunniste1",
                                              "osallistuminenTulos" : {
                                                  "osallistuminen" : "OSALLISTUU"
-                                             }
+                                             },
+                                             "lahetetaankoKoekutsut": true,
+                                             "aktiivinen": true
                                          }
                                      ]
                                  }
@@ -74,7 +80,9 @@
                                              "valintakoeTunniste" : "valintakoeTunniste1",
                                              "osallistuminenTulos" : {
                                                  "osallistuminen" : "VIRHE"
-                                             }
+                                             },
+                                             "lahetetaankoKoekutsut": true,
+                                             "aktiivinen": true
                                          }
                                      ]
                                  }

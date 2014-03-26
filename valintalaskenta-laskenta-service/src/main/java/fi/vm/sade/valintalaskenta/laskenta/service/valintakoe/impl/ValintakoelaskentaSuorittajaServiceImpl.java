@@ -367,7 +367,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 		koe.setValintakoeOid(data.getValintakoeOid());
 		koe.setNimi(data.getNimi());
 		koe.setValintakoeTunniste(data.getValintakoeTunniste());
-        koe.setLahetaankoKoekutsut(data.isLahetetaankoKoekutsut());
+        koe.setLahetetaankoKoekutsut(data.isLahetetaankoKoekutsut());
 	}
 
 	protected Map<String, HakukohdeTyyppi> luoHakutoiveMap(

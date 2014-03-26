@@ -153,6 +153,7 @@ public abstract class TestDataUtil {
         koe.setFunktiokutsu(new FunktiokutsuTyyppi());
         koe.setTunniste(tunniste);
         koe.setOid(valintakoeOid);
+        koe.setLahetetaankoKoekutsut(true);
         return koe;
     }
 

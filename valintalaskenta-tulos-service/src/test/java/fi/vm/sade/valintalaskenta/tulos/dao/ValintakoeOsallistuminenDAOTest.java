@@ -3,7 +3,9 @@ package fi.vm.sade.valintalaskenta.tulos.dao;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
+import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +38,9 @@ public class ValintakoeOsallistuminenDAOTest {
     @Rule
     public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
 
+    @Autowired
+    private ValintalaskentaModelMapper modelMapper;
+
     @Test
     @UsingDataSet(locations = "valintakoeOsallistuminenDAOInitialData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testFindByHakuAndOsallistuminen() {
@@ -47,6 +52,9 @@ public class ValintakoeOsallistuminenDAOTest {
                 valintakoeOsallistuminenDAO.findByHakuAndOsallistuminen(hakuOid, osallistuminen);
         assertEquals(1, osallistumiset.size());
         ValintakoeOsallistuminen vko = osallistumiset.get(0);
+
+        ValintakoeOsallistuminenDTO dto = modelMapper.map(vko, ValintakoeOsallistuminenDTO.class);
+
         assertEquals(vko.getHakemusOid(), hakemusOid);
         assertEquals(1, vko.getHakutoiveet().size());
         Hakutoive hakutoive = vko.getHakutoiveet().get(0);
