@@ -1,9 +1,8 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl;
 
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ_UPDATE_CRUD;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
@@ -13,9 +12,10 @@ import javax.jws.WebParam;
 import javax.xml.datatype.DatatypeFactory;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import fi.vm.sade.service.valintaperusteet.schema.TasasijasaantoTyyppi;
 import fi.vm.sade.service.valintatiedot.ValintatietoService;
@@ -43,9 +43,11 @@ import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 /**
  * User: kkammone Date: 29.4.2013 Time: 13:24
  */
-@PreAuthorize("isAuthenticated()")
+// @PreAuthorize("isAuthenticated()")
 public class ValintatietoServiceImpl implements ValintatietoService {
 
+	private static final Logger LOG = LoggerFactory
+			.getLogger(ValintatietoServiceImpl.class);
 	@Autowired
 	private ValintalaskentaTulosService tulosService;
 
@@ -53,81 +55,97 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 	private ConversionService conversionService;
 
 	@Override
-	@PreAuthorize(READ_UPDATE_CRUD)
+	// @PreAuthorize(READ_UPDATE_CRUD)
 	public List<HakemusOsallistuminenTyyppi> haeValintatiedotHakukohteelle(
 			@WebParam(name = "valintakoeOid", targetNamespace = "") List<String> valintakoeOid,
 			@WebParam(name = "hakukohdeOid", targetNamespace = "") String hakukohdeOid) {
 		List<HakemusOsallistuminenTyyppi> osallistumiset = new ArrayList<HakemusOsallistuminenTyyppi>();
-		List<ValintakoeOsallistuminen> valinnanvaiheet = tulosService
-				.haeValintakoeOsallistumisetByHakutoive(hakukohdeOid);
-		Set<String> oidit = new HashSet<String>(valintakoeOid);
-		GregorianCalendar kalenteri = new GregorianCalendar();
-		for (ValintakoeOsallistuminen koetulos : valinnanvaiheet) {
-			for (Hakutoive hakutoive : koetulos.getHakutoiveet()) {
-				for (ValintakoeValinnanvaihe vaihe : hakutoive
-						.getValinnanVaiheet()) {
-					HakemusOsallistuminenTyyppi h = new HakemusOsallistuminenTyyppi();
-					for (Valintakoe valintakoe : vaihe.getValintakokeet()) {
-						if (oidit.contains(valintakoe.getValintakoeOid())) {
-							ValintakoeOsallistuminenTyyppi osallistuminen = new ValintakoeOsallistuminenTyyppi();
-							osallistuminen.setOsallistuminen(Osallistuminen
-									.valueOf(valintakoe
-											.getOsallistuminenTulos()
-											.getOsallistuminen().name()));
-							osallistuminen.setValintakoeOid(valintakoe
-									.getValintakoeOid());
-							osallistuminen.setValintakoeTunniste(valintakoe
-									.getValintakoeTunniste());
-							osallistuminen.setNimi(valintakoe.getNimi());
-							h.getOsallistumiset().add(osallistuminen);
+		try {
+			List<ValintakoeOsallistuminen> valinnanvaiheet = tulosService
+					.haeValintakoeOsallistumisetByHakutoive(hakukohdeOid);
+			Set<String> oidit = new HashSet<String>(valintakoeOid);
+			GregorianCalendar kalenteri = new GregorianCalendar();
+			for (ValintakoeOsallistuminen koetulos : valinnanvaiheet) {
+				for (Hakutoive hakutoive : koetulos.getHakutoiveet()) {
+					for (ValintakoeValinnanvaihe vaihe : hakutoive
+							.getValinnanVaiheet()) {
+						HakemusOsallistuminenTyyppi h = new HakemusOsallistuminenTyyppi();
+						for (Valintakoe valintakoe : vaihe.getValintakokeet()) {
+							if (oidit.contains(valintakoe.getValintakoeOid())) {
+								ValintakoeOsallistuminenTyyppi osallistuminen = new ValintakoeOsallistuminenTyyppi();
+								osallistuminen.setOsallistuminen(Osallistuminen
+										.valueOf(valintakoe
+												.getOsallistuminenTulos()
+												.getOsallistuminen().name()));
+								osallistuminen.setValintakoeOid(valintakoe
+										.getValintakoeOid());
+								osallistuminen.setValintakoeTunniste(valintakoe
+										.getValintakoeTunniste());
+								osallistuminen.setNimi(valintakoe.getNimi());
+								h.getOsallistumiset().add(osallistuminen);
+							}
 						}
-					}
-					// lisataan tulosjoukkoon vaan jos valinnanvaiheessa oli
-					// valintakoe hakemukselle!
-					if (!h.getOsallistumiset().isEmpty()) {
-						kalenteri.setTime(koetulos.getCreatedAt());
-						try {
-							h.setLuontiPvm(DatatypeFactory.newInstance()
-									.newXMLGregorianCalendar(kalenteri));
-						} catch (Exception e) {
-							e.printStackTrace(); // <- creating date failed!
+						// lisataan tulosjoukkoon vaan jos valinnanvaiheessa oli
+						// valintakoe hakemukselle!
+						if (!h.getOsallistumiset().isEmpty()) {
+							kalenteri.setTime(koetulos.getCreatedAt());
+							try {
+								h.setLuontiPvm(DatatypeFactory.newInstance()
+										.newXMLGregorianCalendar(kalenteri));
+							} catch (Exception e) {
+								e.printStackTrace(); // <- creating date failed!
+							}
+							h.setEtunimi(koetulos.getEtunimi());
+							h.setSukunimi(koetulos.getSukunimi());
+							h.setHakemusOid(koetulos.getHakemusOid());
+							osallistumiset.add(h);
 						}
-						h.setEtunimi(koetulos.getEtunimi());
-						h.setSukunimi(koetulos.getSukunimi());
-						h.setHakemusOid(koetulos.getHakemusOid());
-						osallistumiset.add(h);
 					}
 				}
 			}
+		} catch (Exception e) {
+			LOG.error("Valintakoelaskennan osallitujia ei saatu haettua!");
+			LOG.error("Virhe osallistujien hakemisessa: {} {} {}",
+					e.getMessage(), e.getCause(),
+					Arrays.toString(e.getStackTrace()));
+			throw new RuntimeException(
+					"Valintatieto osallistujille pyyntö epäonnistui!", e);
 		}
-
 		return osallistumiset;
 	}
 
 	@Override
-	@PreAuthorize(READ_UPDATE_CRUD)
+	// @PreAuthorize(READ_UPDATE_CRUD)
 	public HakuTyyppi haeValintatiedot(
 			@WebParam(name = "hakuOid", targetNamespace = "") String hakuOid) {
+		try {
+			List<HakukohdeDTO> a = tulosService
+					.haeLasketutValinnanvaiheetHaulle(hakuOid);
 
-		List<HakukohdeDTO> a = tulosService
-				.haeLasketutValinnanvaiheetHaulle(hakuOid);
+			HakuTyyppi hakuTyyppi = new HakuTyyppi();
+			hakuTyyppi.setHakuOid(hakuOid);
 
-		HakuTyyppi hakuTyyppi = new HakuTyyppi();
-		hakuTyyppi.setHakuOid(hakuOid);
+			for (HakukohdeDTO v : a) {
+				HakukohdeTyyppi ht = new HakukohdeTyyppi();
+				ht.setOid(v.getOid());
+				ht.setTarjoajaOid(v.getTarjoajaoid());
+				hakuTyyppi.getHakukohteet().add(ht);
 
-		for (HakukohdeDTO v : a) {
-			HakukohdeTyyppi ht = new HakukohdeTyyppi();
-			ht.setOid(v.getOid());
-			ht.setTarjoajaOid(v.getTarjoajaoid());
-			hakuTyyppi.getHakukohteet().add(ht);
+				for (ValinnanvaiheDTO valinnanvaiheDTO : v.getValinnanvaihe()) {
+					ht.getValinnanvaihe().add(
+							createValinnanvaiheTyyppi(valinnanvaiheDTO));
 
-			for (ValinnanvaiheDTO valinnanvaiheDTO : v.getValinnanvaihe()) {
-				ht.getValinnanvaihe().add(
-						createValinnanvaiheTyyppi(valinnanvaiheDTO));
-
+				}
 			}
+			return hakuTyyppi;
+		} catch (Exception e) {
+			LOG.error("Valintatietoja ei saatu haettua!");
+			LOG.error("Virhe valintatietojen hakemisessa: {} {} {}",
+					e.getMessage(), e.getCause(),
+					Arrays.toString(e.getStackTrace()));
+			throw new RuntimeException("Valintatietojen haku epäonnistui!", e);
 		}
-		return hakuTyyppi;
+
 	}
 
 	private ValinnanvaiheTyyppi createValinnanvaiheTyyppi(
