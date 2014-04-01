@@ -6,10 +6,7 @@ import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Laskentatulos;
-import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
-import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
-import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.HakemuslaskinService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,12 +47,19 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
 
         Jarjestyskriteeritulos jktulos = new Jarjestyskriteeritulos();
         jktulos.setPrioriteetti(jkPrioriteetti);
-        jktulos.setArvo(tulos.getTulos());
+
 
         HakemusTyyppi hakemus = laskettavaHakemus.getHakemusTyyppi();
         TilaJaSelite tilaJaSelite =
                 edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusOid(),
                         tulos.getTila(), edellinenVaihe);
+
+        // Jos hakija ei ole hyväksyttävissä edellisen valinnanvaiheen jäljiltä, niin tulosta ei aseteta
+        if(tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY)) {
+            jktulos.setArvo(null);
+        } else {
+            jktulos.setArvo(tulos.getTulos());
+        }
 
         jktulos.setTila(tilaJaSelite.getTila());
         jktulos.setKuvaus(tilaJaSelite.getSelite());

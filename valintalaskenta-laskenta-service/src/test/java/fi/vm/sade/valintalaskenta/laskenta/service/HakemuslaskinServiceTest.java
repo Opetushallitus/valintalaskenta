@@ -98,7 +98,9 @@ public class HakemuslaskinServiceTest {
         assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
         Jarjestyskriteeritulos jktulos = jonosija.getJarjestyskriteeritulokset().get(0);
 
-        assertEquals(jarjestyskriteeriarvo, jktulos.getArvo());
+        //Laskennan arvoa ei enää tallenneta järjestyskriteeritulokseen jos hakemus on hylätty edellisessä valinnanvaiheessa
+        //assertEquals(jarjestyskriteeriarvo, jktulos.getArvo());
+        assertEquals(null, jktulos.getArvo());
         assertEquals(tilaEdellisenVaiheenMukaan.getTila(), jktulos.getTila());
         assertEquals(tilaEdellisenVaiheenMukaan.getSelite(), jktulos.getKuvaus());
     }
