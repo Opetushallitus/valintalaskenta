@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.domain.dto;
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
+import fi.vm.sade.valintalaskenta.domain.valinta.FunktioTulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import org.codehaus.jackson.map.annotate.JsonView;
 
@@ -61,6 +62,10 @@ public class JonosijaDTO {
     @ApiModelProperty(value = "Jonosijan syötetyt arvot")
     @JsonView(JsonViews.Basic.class)
     private List<SyotettyArvoDTO> syotetytArvot = new ArrayList<SyotettyArvoDTO>();
+
+    @ApiModelProperty(value = "Jonosijan tallennetut funktiotulokset")
+    @JsonView(JsonViews.Basic.class)
+    private List<FunktioTulosDTO> funktioTulokset = new ArrayList<FunktioTulosDTO>();
 
     @ApiModelProperty(value = "Onko jonosijaa muokattu manuaalisesti")
     @JsonView(JsonViews.Basic.class)
@@ -160,5 +165,13 @@ public class JonosijaDTO {
 
     public void setSyotetytArvot(List<SyotettyArvoDTO> syotetytArvot) {
         this.syotetytArvot = syotetytArvot;
+    }
+
+    public List<FunktioTulosDTO> getFunktioTulokset() {
+        return funktioTulokset;
+    }
+
+    public void setFunktioTulokset(List<FunktioTulosDTO> funktioTulokset) {
+        this.funktioTulokset = funktioTulokset;
     }
 }

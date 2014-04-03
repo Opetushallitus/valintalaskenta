@@ -4,10 +4,13 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import fi.vm.sade.security.service.authz.util.AuthorizationUtil;
 import fi.vm.sade.valintalaskenta.domain.dto.*;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.HakutoiveDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import fi.vm.sade.valintalaskenta.tulos.dao.*;
+import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverter;
 import org.slf4j.Logger;
@@ -44,6 +47,9 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     @Autowired
     private HarkinnanvarainenHyvaksyminenDAO harkinnanvarainenHyvaksyminenDAO;
 
+    @Autowired
+    private ValintalaskentaModelMapper modelMapper;
+
 
     private Map<String, MuokattuJonosija> muokatutJonosijatJonoOidinMukaan(List<MuokattuJonosija> muokatutJonosijat) {
         Map<String, MuokattuJonosija> map = new HashMap<String, MuokattuJonosija>();
@@ -59,6 +65,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         Map<String, HakukohdeDTO> hakukohdeDTOtOidinMukaan = new HashMap<String, HakukohdeDTO>();
         List<MuokattuJonosija> muokatutJonosijat = muokattuJonosijaDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         List<HarkinnanvarainenHyvaksyminen> harkinnanvaraiset = harkinnanvarainenHyvaksyminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
+        ValintakoeOsallistuminenDTO kokeet = modelMapper.map(haeValintakoeOsallistumiset(hakemusOid), ValintakoeOsallistuminenDTO.class);
 
         for (Valinnanvaihe vv : valinnanVaiheet) {
             HakukohdeDTO hakukohdeDTO = null;
@@ -88,6 +95,29 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                 vvdto.getValintatapajono().add(valintatulosConverter.convertValintatapajono(jono));
             }
             hakukohdeDTO.getValinnanvaihe().add(vvdto);
+        }
+
+        // Valintakokeet
+        for(HakutoiveDTO toive : kokeet.getHakutoiveet()) {
+            HakukohdeDTO hakukohdeDTO = null;
+            if (hakukohdeDTOtOidinMukaan.containsKey(toive.getHakukohdeOid())) {
+                hakukohdeDTO = hakukohdeDTOtOidinMukaan.get(toive.getHakukohdeOid());
+            } else {
+                hakukohdeDTO = new HakukohdeDTO();
+                hakukohdeDTO.setHakuoid(kokeet.getHakuOid());
+                hakukohdeDTO.setOid(toive.getHakukohdeOid());
+                hakukohdeDTOtOidinMukaan.put(toive.getHakukohdeOid(), hakukohdeDTO);
+            }
+
+            for (ValintakoeValinnanvaiheDTO vv : toive.getValinnanVaiheet()) {
+                ValinnanvaiheDTO vvdto = new ValinnanvaiheDTO();
+                vvdto.setCreatedAt(kokeet.getCreatedAt());
+                vvdto.setJarjestysnumero(vv.getValinnanVaiheJarjestysluku());
+                vvdto.setValinnanvaiheoid(vv.getValinnanVaiheOid());
+                vvdto.getValintakokeet().addAll(vv.getValintakokeet());
+                hakukohdeDTO.getValinnanvaihe().add(vvdto);
+            }
+
         }
 
         for (HakukohdeDTO hk : hakukohdeDTOtOidinMukaan.values()) {

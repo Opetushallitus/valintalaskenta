@@ -195,6 +195,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
             dto.setJarjestyskriteerit(new TreeSet<JarjestyskriteeritulosDTO>(convertJarjestyskriteeri(jonosija
                     .getJarjestyskriteeritulokset())));
             dto.setSyotetytArvot(convertSyotettyArvo(jonosija.getSyotetytArvot()));
+            dto.setFunktioTulokset(convertFunktioTulos(jonosija.getFunktioTulokset()));
             list.add(dto);
         }
 
@@ -215,6 +216,21 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
         dto.setLaskennallinenArvo(sa.getLaskennallinenArvo());
         dto.setOsallistuminen(sa.getOsallistuminen());
         dto.setTunniste(sa.getTunniste());
+        return dto;
+    }
+
+    private List<FunktioTulosDTO> convertFunktioTulos(List<FunktioTulos> funktioTulokset) {
+        List<FunktioTulosDTO> dtos = new ArrayList<FunktioTulosDTO>();
+        for (FunktioTulos ft : funktioTulokset) {
+            dtos.add(convertFunktioTulos(ft));
+        }
+        return dtos;
+    }
+
+    private FunktioTulosDTO convertFunktioTulos(FunktioTulos ft) {
+        FunktioTulosDTO dto = new FunktioTulosDTO();
+        dto.setArvo(ft.getArvo());
+        dto.setTunniste(ft.getTunniste());
         return dto;
     }
 

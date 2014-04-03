@@ -21,6 +21,7 @@ public class ValintaperusteViiteTyyppiToValintaperusteViiteConverter implements
         target.setOnPakollinen(Boolean.TRUE.equals(source.isOnPakollinen()));
         target.setIndeksi(source.getIndeksi());
         target.setEpasuoraViittaus(Boolean.TRUE.equals(source.isEpasuoraViittaus()));
+        target.setKuvaus(source.getKuvaus());
         return target;
     }
 

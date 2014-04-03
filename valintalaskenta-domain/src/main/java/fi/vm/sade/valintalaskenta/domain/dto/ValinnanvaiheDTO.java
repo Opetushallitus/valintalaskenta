@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.domain.dto;
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeDTO;
 import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.ArrayList;
@@ -34,6 +35,9 @@ public class ValinnanvaiheDTO {
     @ApiModelProperty(value = "Valintatapajonot", required = true)
     @JsonView(JsonViews.Basic.class)
     private List<ValintatapajonoDTO> valintatapajono = new ArrayList<ValintatapajonoDTO>();
+
+    @ApiModelProperty(value = "Valintakokeet")
+    private List<ValintakoeDTO> valintakokeet = new ArrayList<ValintakoeDTO>();
 
     public List<ValintatapajonoDTO> getValintatapajono() {
         return valintatapajono;
@@ -73,5 +77,13 @@ public class ValinnanvaiheDTO {
 
     public void setNimi(String nimi) {
         this.nimi = nimi;
+    }
+
+    public List<ValintakoeDTO> getValintakokeet() {
+        return valintakokeet;
+    }
+
+    public void setValintakokeet(List<ValintakoeDTO> valintakokeet) {
+        this.valintakokeet = valintakokeet;
     }
 }
