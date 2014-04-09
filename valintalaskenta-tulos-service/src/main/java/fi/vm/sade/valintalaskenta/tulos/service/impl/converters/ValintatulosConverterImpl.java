@@ -231,6 +231,9 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
         FunktioTulosDTO dto = new FunktioTulosDTO();
         dto.setArvo(ft.getArvo());
         dto.setTunniste(ft.getTunniste());
+        dto.setNimiFi(ft.getNimiFi());
+        dto.setNimiSv(ft.getNimiSv());
+        dto.setNimiEn(ft.getNimiEn());
         return dto;
     }
 

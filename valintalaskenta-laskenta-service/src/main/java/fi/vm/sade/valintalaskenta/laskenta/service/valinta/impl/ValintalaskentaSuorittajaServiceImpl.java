@@ -229,6 +229,9 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 						fi.vm.sade.valintalaskenta.domain.valinta.FunktioTulos funktioTulos = new fi.vm.sade.valintalaskenta.domain.valinta.FunktioTulos();
 						funktioTulos.setArvo(a.getArvo());
 						funktioTulos.setTunniste(a.getTunniste());
+                        funktioTulos.setNimiFi(a.getNimiFi());
+                        funktioTulos.setNimiSv(a.getNimiSv());
+                        funktioTulos.setNimiEn(a.getNimiEn());
 						jonosija.getFunktioTulokset().add(funktioTulos);
 					}
 					jono.getJonosijat().add(jonosija);

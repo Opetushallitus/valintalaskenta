@@ -20,6 +20,18 @@ public class FunktioTulosDTO {
     @JsonView(JsonViews.Basic.class)
     private String arvo;
 
+    @ApiModelProperty(value = "Suomenkielinen nimi", required = false)
+    @JsonView(JsonViews.Basic.class)
+    private String nimiFi;
+
+    @ApiModelProperty(value = "Ruotsinkielinen nimi", required = false)
+    @JsonView(JsonViews.Basic.class)
+    private String nimiSv;
+
+    @ApiModelProperty(value = "Englanninkielinen nimi", required = false)
+    @JsonView(JsonViews.Basic.class)
+    private String nimiEn;
+
     public String getTunniste() {
         return tunniste;
     }
@@ -36,4 +48,27 @@ public class FunktioTulosDTO {
         this.arvo = arvo;
     }
 
+    public String getNimiFi() {
+        return nimiFi;
+    }
+
+    public void setNimiFi(String nimiFi) {
+        this.nimiFi = nimiFi;
+    }
+
+    public String getNimiSv() {
+        return nimiSv;
+    }
+
+    public void setNimiSv(String nimiSv) {
+        this.nimiSv = nimiSv;
+    }
+
+    public String getNimiEn() {
+        return nimiEn;
+    }
+
+    public void setNimiEn(String nimiEn) {
+        this.nimiEn = nimiEn;
+    }
 }
