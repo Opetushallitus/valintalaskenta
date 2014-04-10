@@ -3,9 +3,12 @@ package fi.vm.sade.valintalaskenta.tulos.service.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.jws.WebParam;
@@ -17,8 +20,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 
+import com.google.common.collect.Lists;
+
 import fi.vm.sade.service.valintaperusteet.schema.TasasijasaantoTyyppi;
 import fi.vm.sade.service.valintatiedot.ValintatietoService;
+import fi.vm.sade.service.valintatiedot.schema.AvainArvoTyyppi;
 import fi.vm.sade.service.valintatiedot.schema.HakemusOsallistuminenTyyppi;
 import fi.vm.sade.service.valintatiedot.schema.HakemusTilaTyyppi;
 import fi.vm.sade.service.valintatiedot.schema.HakijaTyyppi;
@@ -30,6 +36,7 @@ import fi.vm.sade.service.valintatiedot.schema.ValinnanvaiheTyyppi;
 import fi.vm.sade.service.valintatiedot.schema.ValintakoeOsallistuminenTyyppi;
 import fi.vm.sade.service.valintatiedot.schema.ValintatapajonoTyyppi;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteeritulosDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.SyotettyArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
@@ -184,6 +191,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 				ht.setTila(HakemusTilaTyyppi.valueOf(jonosija.getTuloksenTila()
 						.name()));
 			}
+
 			ht.setHakemusOid(jonosija.getHakemusOid());
 			ht.setEtunimi(jonosija.getEtunimi());
 			ht.setSukunimi(jonosija.getSukunimi());
@@ -198,9 +206,14 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 				ht.setHarkinnanvarainen(Boolean.TRUE);
 			}
 
-			if (jonosija.getJarjestyskriteerit().size() > 0) {
-				BigDecimal arvo = jonosija.getJarjestyskriteerit().first()
-						.getArvo();
+			if (!jonosija.getJarjestyskriteerit().isEmpty()) {
+				JarjestyskriteeritulosDTO merkityksellisinKriteeri = jonosija
+						.getJarjestyskriteerit().first();
+
+				ht.getTilanKuvaus().addAll(
+						convertKuvaus(merkityksellisinKriteeri.getKuvaus()));
+
+				BigDecimal arvo = merkityksellisinKriteeri.getArvo();
 				if (arvo == null) {
 					ht.setPisteet(StringUtils.EMPTY);
 				} else {
@@ -211,6 +224,17 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 			valintatapajonoTyyppi.getHakija().add(ht);
 		}
 		return valintatapajonoTyyppi;
+	}
+
+	private Collection<AvainArvoTyyppi> convertKuvaus(Map<String, String> kuvaus) {
+		Collection<AvainArvoTyyppi> a = Lists.newArrayList();
+		for (Entry<String, String> keyValuePair : kuvaus.entrySet()) {
+			AvainArvoTyyppi a0 = new AvainArvoTyyppi();
+			a0.setAvain(keyValuePair.getKey());
+			a0.setArvo(keyValuePair.getValue());
+			a.add(a0);
+		}
+		return a;
 	}
 
 	private SyotettyArvoTyyppi createSyotettyArvoTyyppi(SyotettyArvoDTO sa) {
