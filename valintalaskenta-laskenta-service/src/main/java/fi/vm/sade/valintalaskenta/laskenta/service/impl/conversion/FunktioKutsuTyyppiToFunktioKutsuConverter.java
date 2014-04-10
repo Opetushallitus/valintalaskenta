@@ -25,6 +25,9 @@ public class FunktioKutsuTyyppiToFunktioKutsuConverter implements Converter<Funk
         target.setId(source.getOid());
         target.setTallennaTulos(source.isTallennaTulos());
         target.setTulosTunniste(source.getTulosTunniste());
+        target.setTulosTekstiFi(source.getTulosTekstiFi());
+        target.setTulosTekstiSv(source.getTulosTekstiSv());
+        target.setTulosTekstiEn(source.getTulosTekstiEn());
 
         ArvokonvertteriparametriTyyppiToArvokonvertteriparametriConverter arvoparamConverter = new ArvokonvertteriparametriTyyppiToArvokonvertteriparametriConverter();
 
