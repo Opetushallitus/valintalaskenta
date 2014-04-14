@@ -77,7 +77,8 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 					if (!hakukohdeOid.equals(hakutoive.getHakukohdeOid())) {
 						// vain hakukohteeseen liittyvat valintakokeet mukaan
 						// tulokseen
-						// samoja valintakoeoideja kaytetaan myos muissa hakukohteissa
+						// samoja valintakoeoideja kaytetaan myos muissa
+						// hakukohteissa
 						continue;
 					}
 					for (ValintakoeValinnanvaihe vaihe : hakutoive
@@ -215,10 +216,20 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 			if (!jonosija.getJarjestyskriteerit().isEmpty()) {
 				JarjestyskriteeritulosDTO merkityksellisinKriteeri = jonosija
 						.getJarjestyskriteerit().first();
+				try {
 
-                if (merkityksellisinKriteeri.getKuvaus() != null) {
-                    ht.getTilanKuvaus().addAll(convertKuvaus(merkityksellisinKriteeri.getKuvaus()));
-                }
+					if (merkityksellisinKriteeri.getKuvaus() != null
+							|| !merkityksellisinKriteeri.getKuvaus().isEmpty()) {
+						ht.getTilanKuvaus().addAll(
+								convertKuvaus(merkityksellisinKriteeri
+										.getKuvaus()));
+					}
+				} catch (Exception e) {
+					LOG.error(
+							"Järjestyskriteerille ei voitu luoda kuvausta: {}",
+							e.getMessage());
+					throw new RuntimeException(e);
+				}
 
 				BigDecimal arvo = merkityksellisinKriteeri.getArvo();
 				if (arvo == null) {
@@ -226,6 +237,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 				} else {
 					ht.setPisteet(arvo.toString());
 				}
+
 			}
 
 			valintatapajonoTyyppi.getHakija().add(ht);
