@@ -210,8 +210,9 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 				JarjestyskriteeritulosDTO merkityksellisinKriteeri = jonosija
 						.getJarjestyskriteerit().first();
 
-				ht.getTilanKuvaus().addAll(
-						convertKuvaus(merkityksellisinKriteeri.getKuvaus()));
+                if (merkityksellisinKriteeri.getKuvaus() != null) {
+                    ht.getTilanKuvaus().addAll(convertKuvaus(merkityksellisinKriteeri.getKuvaus()));
+                }
 
 				BigDecimal arvo = merkityksellisinKriteeri.getArvo();
 				if (arvo == null) {
