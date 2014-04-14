@@ -1,4 +1,4 @@
-package fi.vm.sade.valintalaskenta.tulos.resource;
+package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ_UPDATE_CRUD;
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.UPDATE_CRUD;
@@ -24,6 +24,7 @@ import com.wordnik.swagger.annotations.ApiParam;
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.dto.HarkinnanvarainenHyvaksyminenDTO;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
+import fi.vm.sade.valintalaskenta.tulos.resource.HarkinnanvaraisuusResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 
 /**
@@ -33,7 +34,8 @@ import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 @Path("harkinnanvarainenhyvaksynta")
 @PreAuthorize("isAuthenticated()")
 @Api(value = "/harkinnanvarainenhyvaksynta", description = "Resurssi harkinnanvaraisesti hakeneiden hakijoiden käsittelyyn")
-public class HarkinnanvaraisuusResource {
+public class HarkinnanvaraisuusResourceImpl implements
+		HarkinnanvaraisuusResource {
 
 	@Autowired
 	private ValintalaskentaTulosService tulosService;
@@ -65,7 +67,8 @@ public class HarkinnanvaraisuusResource {
 	public void asetaTilat(
 			@ApiParam(value = "Asetettava tila", required = true) List<HarkinnanvarainenHyvaksyminenDTO> harkinnanvaraisetHyvaksymiset) {
 		for (HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen : harkinnanvaraisetHyvaksymiset) {
-			tulosService.asetaHarkinnanvaraisestiHyvaksymisenTila(harkinnanvarainenHyvaksyminen.getHakuOid(),
+			tulosService.asetaHarkinnanvaraisestiHyvaksymisenTila(
+					harkinnanvarainenHyvaksyminen.getHakuOid(),
 					harkinnanvarainenHyvaksyminen.getHakukohdeOid(),
 					harkinnanvarainenHyvaksyminen.getHakemusOid(),
 					harkinnanvarainenHyvaksyminen.getHarkinnanvaraisuusTila());
