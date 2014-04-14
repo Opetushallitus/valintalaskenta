@@ -77,8 +77,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 					if (!hakukohdeOid.equals(hakutoive.getHakukohdeOid())) {
 						// vain hakukohteeseen liittyvat valintakokeet mukaan
 						// tulokseen
-						// samoja valintakoeoideja kaytetaan myos muissa
-						// hakukohteissa
+						// samoja valintakoeoideja kaytetaan myos muissa hakukohteissa
 						continue;
 					}
 					for (ValintakoeValinnanvaihe vaihe : hakutoive

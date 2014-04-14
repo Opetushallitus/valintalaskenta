@@ -27,9 +27,9 @@ import fi.vm.sade.service.valintaperusteet.schema.TavallinenValinnanVaiheTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
 import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskriteereillaTyyppi;
 import fi.vm.sade.service.valintaperusteet.service.validointi.virhe.LaskentakaavaEiOleValidiException;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
-import fi.vm.sade.valintalaskenta.domain.valinta.Tasasijasaanto;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
@@ -229,9 +229,9 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 						fi.vm.sade.valintalaskenta.domain.valinta.FunktioTulos funktioTulos = new fi.vm.sade.valintalaskenta.domain.valinta.FunktioTulos();
 						funktioTulos.setArvo(a.getArvo());
 						funktioTulos.setTunniste(a.getTunniste());
-                        funktioTulos.setNimiFi(a.getNimiFi());
-                        funktioTulos.setNimiSv(a.getNimiSv());
-                        funktioTulos.setNimiEn(a.getNimiEn());
+						funktioTulos.setNimiFi(a.getNimiFi());
+						funktioTulos.setNimiSv(a.getNimiSv());
+						funktioTulos.setNimiEn(a.getNimiEn());
 						jonosija.getFunktioTulokset().add(funktioTulos);
 					}
 					jono.getJonosijat().add(jonosija);

@@ -1,55 +1,66 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion;
 
-import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
-import fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi;
-import fi.vm.sade.service.valintaperusteet.schema.*;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
+
+import fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi;
+import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
+import fi.vm.sade.service.valintaperusteet.schema.ArvokonvertteriparametriTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.ArvovalikonvertteriparametriTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.FunktioargumenttiTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.SyoteparametriTyyppi;
+import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteviiteTyyppi;
 
 /**
  * @author Jussi Jartamo
  */
 @Component("FunktioKutsuKonvertteri")
-public class FunktioKutsuTyyppiToFunktioKutsuConverter implements Converter<FunktiokutsuTyyppi, Funktiokutsu> {
+public class FunktioKutsuTyyppiToFunktioKutsuConverter implements
+		Converter<FunktiokutsuTyyppi, Funktiokutsu> {
 
-    public Funktiokutsu convert(FunktiokutsuTyyppi source) {
-        Funktiokutsu target = new Funktiokutsu();
+	public Funktiokutsu convert(FunktiokutsuTyyppi source) {
+		Funktiokutsu target = new Funktiokutsu();
 
-        FunktioargumenttiTyyppiToFunktioargumenttiConverter fargConverter;
-        fargConverter = new FunktioargumenttiTyyppiToFunktioargumenttiConverter();
-        for (FunktioargumenttiTyyppi f : source.getFunktioargumentit()) {
-            target.getFunktioargumentit().add(fargConverter.convert(f));
-        }
+		FunktioargumenttiTyyppiToFunktioargumenttiConverter fargConverter;
+		fargConverter = new FunktioargumenttiTyyppiToFunktioargumenttiConverter();
+		for (FunktioargumenttiTyyppi f : source.getFunktioargumentit()) {
+			target.getFunktioargumentit().add(fargConverter.convert(f));
+		}
 
-        target.setFunktionimi(Funktionimi.valueOf(source.getFunktionimi()));
-        target.setId(source.getOid());
-        target.setTallennaTulos(source.isTallennaTulos());
-        target.setTulosTunniste(source.getTulosTunniste());
-        target.setTulosTekstiFi(source.getTulosTekstiFi());
-        target.setTulosTekstiSv(source.getTulosTekstiSv());
-        target.setTulosTekstiEn(source.getTulosTekstiEn());
+		target.setFunktionimi(Funktionimi.valueOf(source.getFunktionimi()));
+		target.setId(source.getOid());
+		target.setTallennaTulos(source.isTallennaTulos());
+		target.setTulosTunniste(source.getTulosTunniste());
+		target.setTulosTekstiFi(source.getTulosTekstiFi());
+		target.setTulosTekstiSv(source.getTulosTekstiSv());
+		target.setTulosTekstiEn(source.getTulosTekstiEn());
 
-        ArvokonvertteriparametriTyyppiToArvokonvertteriparametriConverter arvoparamConverter = new ArvokonvertteriparametriTyyppiToArvokonvertteriparametriConverter();
+		ArvokonvertteriparametriTyyppiToArvokonvertteriparametriConverter arvoparamConverter = new ArvokonvertteriparametriTyyppiToArvokonvertteriparametriConverter();
 
-        for (ArvokonvertteriparametriTyyppi k : source.getArvokonvertteriparametrit()) {
-            target.getArvokonvertteriparametrit().add(arvoparamConverter.convert(k));
-        }
+		for (ArvokonvertteriparametriTyyppi k : source
+				.getArvokonvertteriparametrit()) {
+			target.getArvokonvertteriparametrit().add(
+					arvoparamConverter.convert(k));
+		}
 
-        ArvovalikonvertteriparametriTyyppiToArvovalikonvertteriparametriConverter arvovaliparamConverter = new ArvovalikonvertteriparametriTyyppiToArvovalikonvertteriparametriConverter();
-        for (ArvovalikonvertteriparametriTyyppi k : source.getArvovalikonvertteriparametrit()) {
-            target.getArvovalikonvertteriparametrit().add(arvovaliparamConverter.convert(k));
-        }
+		ArvovalikonvertteriparametriTyyppiToArvovalikonvertteriparametriConverter arvovaliparamConverter = new ArvovalikonvertteriparametriTyyppiToArvovalikonvertteriparametriConverter();
+		for (ArvovalikonvertteriparametriTyyppi k : source
+				.getArvovalikonvertteriparametrit()) {
+			target.getArvovalikonvertteriparametrit().add(
+					arvovaliparamConverter.convert(k));
+		}
 
-        SyoteparametriTyyppiToSyoteparametriConverter sparamConverter = new SyoteparametriTyyppiToSyoteparametriConverter();
-        for (SyoteparametriTyyppi s : source.getSyoteparametrit()) {
-            target.getSyoteparametrit().add(sparamConverter.convert(s));
-        }
+		SyoteparametriTyyppiToSyoteparametriConverter sparamConverter = new SyoteparametriTyyppiToSyoteparametriConverter();
+		for (SyoteparametriTyyppi s : source.getSyoteparametrit()) {
+			target.getSyoteparametrit().add(sparamConverter.convert(s));
+		}
 
-        ValintaperusteViiteTyyppiToValintaperusteViiteConverter vConverter = new ValintaperusteViiteTyyppiToValintaperusteViiteConverter();
-        for (ValintaperusteviiteTyyppi vp : source.getValintaperusteviite()) {
-            target.getValintaperusteviitteet().add(vConverter.convert(vp));
-        }
+		ValintaperusteViiteTyyppiToValintaperusteViiteConverter vConverter = new ValintaperusteViiteTyyppiToValintaperusteViiteConverter();
+		for (ValintaperusteviiteTyyppi vp : source.getValintaperusteviite()) {
+			target.getValintaperusteviitteet().add(vConverter.convert(vp));
+		}
 
-        return target;
-    }
+		return target;
+	}
 }
