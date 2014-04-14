@@ -45,8 +45,8 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.Hakukohd
 public class ValintakoelaskentaSuorittajaServiceImpl implements
 		ValintakoelaskentaSuorittajaService {
 
-    private final String r = "\\{\\{([A-Za-z0–9\\-_]+)\\.([A-Za-z0–9\\-_]+)\\}\\}";
-    private final Pattern pattern = Pattern.compile(r);
+	private final String r = "\\{\\{([A-Za-z0–9\\-_]+)\\.([A-Za-z0–9\\-_]+)\\}\\}";
+	private final Pattern pattern = Pattern.compile(r);
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(ValintakoelaskentaSuorittajaServiceImpl.class);
@@ -172,7 +172,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 						} else {
 							osallistuminen = new OsallistuminenTulos();
 							osallistuminen.setKuvaus(tilaJaSelite.getSelite());
-                            osallistuminen.setTekninenKuvaus(tilaJaSelite.getTekninenSelite());
+							osallistuminen.setTekninenKuvaus(tilaJaSelite
+									.getTekninenSelite());
 							osallistuminen.setLaskentaTila(tilaJaSelite
 									.getTila().toString());
 							osallistuminen
@@ -196,8 +197,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 					data.setValintakoeOid(koe.getOid());
 					data.setValintakoeTunniste(tunniste);
 					data.setNimi(koe.getNimi());
-                    data.setLahetetaankoKoekutsut(koe.isLahetetaankoKoekutsut());
-                    data.setAktiivinen(koe.isAktiivinen());
+					data.setLahetetaankoKoekutsut(koe.isLahetetaankoKoekutsut());
+					data.setAktiivinen(koe.isAktiivinen());
 
 					if (!valintakoeData.containsKey(tunniste)) {
 						valintakoeData.put(tunniste,
@@ -368,8 +369,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 		koe.setValintakoeOid(data.getValintakoeOid());
 		koe.setNimi(data.getNimi());
 		koe.setValintakoeTunniste(data.getValintakoeTunniste());
-        koe.setLahetetaankoKoekutsut(data.isLahetetaankoKoekutsut());
-        koe.setAktiivinen(data.isAktiivinen());
+		koe.setLahetetaankoKoekutsut(data.isLahetetaankoKoekutsut());
+		koe.setAktiivinen(data.isAktiivinen());
 	}
 
 	protected Map<String, HakukohdeTyyppi> luoHakutoiveMap(

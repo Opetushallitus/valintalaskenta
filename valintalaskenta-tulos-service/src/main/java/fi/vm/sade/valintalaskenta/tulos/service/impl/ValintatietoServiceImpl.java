@@ -74,6 +74,12 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 			GregorianCalendar kalenteri = new GregorianCalendar();
 			for (ValintakoeOsallistuminen koetulos : valinnanvaiheet) {
 				for (Hakutoive hakutoive : koetulos.getHakutoiveet()) {
+					if (!hakukohdeOid.equals(hakutoive.getHakukohdeOid())) {
+						// vain hakukohteeseen liittyvat valintakokeet mukaan
+						// tulokseen
+						// samoja valintakoeoideja kaytetaan myos muissa hakukohteissa
+						continue;
+					}
 					for (ValintakoeValinnanvaihe vaihe : hakutoive
 							.getValinnanVaiheet()) {
 						HakemusOsallistuminenTyyppi h = new HakemusOsallistuminenTyyppi();

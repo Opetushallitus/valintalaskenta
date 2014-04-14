@@ -1,4 +1,4 @@
-package fi.vm.sade.valintalaskenta.domain.valinta;
+package fi.vm.sade.valintalaskenta.domain.dto.valintakoe;
 
 
 /**

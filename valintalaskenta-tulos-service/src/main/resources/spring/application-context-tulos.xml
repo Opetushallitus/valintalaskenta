@@ -11,7 +11,7 @@
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.ctrl"/>
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.dao"/>
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.service.impl"/>
-    <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.resource"/>
+    <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.resource.impl"/>
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.service.impl.converters"/>
 
     <!-- TODO: tarkista tarvitaanko näitä, kun nämä tulevat jo servicen puolelta -->
@@ -49,7 +49,7 @@
 
     <!-- Swagger configuration -->
     <bean id="swaggerConfig" class="com.wordnik.swagger.jaxrs.config.BeanConfig">
-        <property name="resourcePackage" value="fi.vm.sade.valintalaskenta.tulos.resource"/>
+        <property name="resourcePackage" value="fi.vm.sade.valintalaskenta.tulos.resource.impl"/>
         <property name="version" value="1.0"/>
         <property name="basePath" value="${valintalaskenta-laskenta-service.swagger.basepath}"/>
 
