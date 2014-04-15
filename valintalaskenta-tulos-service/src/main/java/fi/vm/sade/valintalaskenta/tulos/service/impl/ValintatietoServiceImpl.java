@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 
+import com.google.common.base.Predicates;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 
 import fi.vm.sade.service.valintaperusteet.schema.TasasijasaantoTyyppi;
@@ -213,11 +215,14 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 				ht.setHarkinnanvarainen(Boolean.TRUE);
 			}
 
-			if (!jonosija.getJarjestyskriteerit().isEmpty()) {
-				JarjestyskriteeritulosDTO merkityksellisinKriteeri = jonosija
-						.getJarjestyskriteerit().first();
-				try {
+			List<JarjestyskriteeritulosDTO> kriteerit = FluentIterable
+					.from(jonosija.getJarjestyskriteerit())
+					.filter(Predicates.notNull()).toList();
 
+			if (!kriteerit.isEmpty()) {
+				JarjestyskriteeritulosDTO merkityksellisinKriteeri = kriteerit
+						.get(0);
+				try {
 					if (merkityksellisinKriteeri.getKuvaus() != null
 							|| !merkityksellisinKriteeri.getKuvaus().isEmpty()) {
 						ht.getTilanKuvaus().addAll(
@@ -226,16 +231,22 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 					}
 				} catch (Exception e) {
 					LOG.error(
-							"Järjestyskriteerille ei voitu luoda kuvausta: {}",
-							e.getMessage());
-					throw new RuntimeException(e);
-				}
+							"ValintatapajonoOid({}) Järjestyskriteerille ei voitu luoda kuvausta: {}",
+							vt.getOid(), e.getMessage());
 
-				BigDecimal arvo = merkityksellisinKriteeri.getArvo();
-				if (arvo == null) {
+				}
+				try {
+					BigDecimal arvo = merkityksellisinKriteeri.getArvo();
+					if (arvo == null) {
+						ht.setPisteet(StringUtils.EMPTY);
+					} else {
+						ht.setPisteet(arvo.toString());
+					}
+				} catch (Exception e) {
+					LOG.error(
+							"ValintatapajonoOid({}) Järjestyskriteerille ei voitu luoda pisteitä: {}",
+							vt.getOid(), e.getMessage());
 					ht.setPisteet(StringUtils.EMPTY);
-				} else {
-					ht.setPisteet(arvo.toString());
 				}
 
 			}
@@ -247,12 +258,14 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 
 	private Collection<AvainArvoTyyppi> convertKuvaus(Map<String, String> kuvaus) {
 		Collection<AvainArvoTyyppi> a = Lists.newArrayList();
+
 		for (Entry<String, String> keyValuePair : kuvaus.entrySet()) {
 			AvainArvoTyyppi a0 = new AvainArvoTyyppi();
 			a0.setAvain(keyValuePair.getKey());
 			a0.setArvo(keyValuePair.getValue());
 			a.add(a0);
 		}
+
 		return a;
 	}
 
