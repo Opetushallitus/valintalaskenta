@@ -44,6 +44,9 @@ public class ValintatapajonoDTO {
 	@JsonView(JsonViews.Basic.class)
 	private Boolean eiVarasijatayttoa;
 
+    @ApiModelProperty(value = "Hyväksytäänkö kaikki hyväksyttävissä olevat aloituspaikoista riippumatta", required = true)
+    private Boolean kaikkiEhdonTayttavatHyvaksytaan = false;
+
 	@ApiModelProperty(value = "Jonosijat", required = true)
 	@JsonView(JsonViews.Basic.class)
 	private List<JonosijaDTO> jonosijat = new ArrayList<JonosijaDTO>();
@@ -124,4 +127,12 @@ public class ValintatapajonoDTO {
 	public void setEiVarasijatayttoa(Boolean eiVarasijatayttoa) {
 		this.eiVarasijatayttoa = eiVarasijatayttoa;
 	}
+
+    public Boolean getKaikkiEhdonTayttavatHyvaksytaan() {
+        return kaikkiEhdonTayttavatHyvaksytaan;
+    }
+
+    public void setKaikkiEhdonTayttavatHyvaksytaan(Boolean kaikkiEhdonTayttavatHyvaksytaan) {
+        this.kaikkiEhdonTayttavatHyvaksytaan = kaikkiEhdonTayttavatHyvaksytaan;
+    }
 }

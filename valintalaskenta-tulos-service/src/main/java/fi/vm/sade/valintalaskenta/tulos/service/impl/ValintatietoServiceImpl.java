@@ -185,6 +185,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 		valintatapajonoTyyppi.setSiirretaanSijoitteluun(vt
 				.isSiirretaanSijoitteluun());
 		valintatapajonoTyyppi.setEiVarasijatayttoa(vt.getEiVarasijatayttoa());
+        valintatapajonoTyyppi.setKaikkiEhdonTayttavatHyvaksytaan(vt.getKaikkiEhdonTayttavatHyvaksytaan());
 		if (vt.getTasasijasaanto() != null) {
 			valintatapajonoTyyppi.setTasasijasaanto(TasasijasaantoTyyppi
 					.valueOf(vt.getTasasijasaanto().name()));

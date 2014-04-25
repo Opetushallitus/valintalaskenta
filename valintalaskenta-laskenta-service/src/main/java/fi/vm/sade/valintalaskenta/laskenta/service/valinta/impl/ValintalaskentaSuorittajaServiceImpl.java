@@ -165,6 +165,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 				Valintatapajono jono = new Valintatapajono();
 				jono.setAloituspaikat(j.getAloituspaikat());
 				jono.setEiVarasijatayttoa(j.isEiVarasijatayttoa());
+                jono.setKaikkiEhdonTayttavatHyvaksytaan(j.isKaikkiEhdonTayttavatHyvaksytaan());
 				jono.setNimi(j.getNimi());
 				jono.setPrioriteetti(j.getPrioriteetti());
 				jono.setSiirretaanSijoitteluun(j.isSiirretaanSijoitteluun());
