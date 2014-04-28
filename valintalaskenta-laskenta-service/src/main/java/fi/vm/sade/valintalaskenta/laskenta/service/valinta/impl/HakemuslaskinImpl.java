@@ -55,8 +55,12 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                 edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusOid(),
                         tulos.getTila(), edellinenVaihe);
 
+        TilaJaSelite edellinenTila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusOid(), edellinenVaihe);
         // Jos hakija ei ole hyväksyttävissä edellisen valinnanvaiheen jäljiltä, niin tulosta ei aseteta
-        if(tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY) && !tulos.getTila().getTilatyyppi().equals(Tila.Tilatyyppi.HYLATTY)) {
+        //if(tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY) && !tulos.getTila().getTilatyyppi().equals(Tila.Tilatyyppi.HYLATTY)) {
+        if(tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY) &&
+                (!tulos.getTila().getTilatyyppi().equals(Tila.Tilatyyppi.HYLATTY) ||
+                (tulos.getTila().getTilatyyppi().equals(Tila.Tilatyyppi.HYLATTY) && tilaJaSelite.getSelite().equals(edellinenTila.getSelite())))) {
             jktulos.setArvo(null);
         } else {
             jktulos.setArvo(tulos.getTulos());
