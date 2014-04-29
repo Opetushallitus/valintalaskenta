@@ -198,6 +198,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
 			dto.setAloituspaikat(valintatapajono.getAloituspaikat());
 			dto.setEiVarasijatayttoa(valintatapajono.getEiVarasijatayttoa());
             dto.setKaikkiEhdonTayttavatHyvaksytaan(valintatapajono.getKaikkiEhdonTayttavatHyvaksytaan());
+            dto.setPoissaOlevaTaytto(valintatapajono.getPoissaOlevaTaytto());
 			dto.setJonosijat(convertJonosija(valintatapajono.getJonosijat()));
 			dto.setNimi(valintatapajono.getNimi());
 			dto.setOid(valintatapajono.getValintatapajonoOid());
@@ -205,7 +206,6 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
 			dto.setTasasijasaanto(valintatapajono.getTasasijasaanto());
 			dto.setSiirretaanSijoitteluun(valintatapajono
 					.isSiirretaanSijoitteluun());
-            dto.setEiVarasijatayttoa(valintatapajono.getEiVarasijatayttoa());
 			list.add(dto);
 		}
 		return list;
@@ -217,11 +217,11 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
 		jonodto.setAloituspaikat(jono.getAloituspaikat());
 		jonodto.setEiVarasijatayttoa(jono.getEiVarasijatayttoa());
         jonodto.setKaikkiEhdonTayttavatHyvaksytaan(jono.getKaikkiEhdonTayttavatHyvaksytaan());
+        jonodto.setPoissaOlevaTaytto(jono.getPoissaOlevaTaytto());
 		jonodto.setNimi(jono.getNimi());
 		jonodto.setOid(jono.getValintatapajonoOid());
 		jonodto.setPrioriteetti(jono.getPrioriteetti());
 		jonodto.setSiirretaanSijoitteluun(jono.isSiirretaanSijoitteluun());
-        jonodto.setEiVarasijatayttoa(jono.getEiVarasijatayttoa());
 		jonodto.setTasasijasaanto(jono.getTasasijasaanto());
 		jonodto.setJonosijat(convertJonosija(jono.getJonosijat()));
 

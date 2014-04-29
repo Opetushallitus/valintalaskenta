@@ -40,6 +40,9 @@ public class Valintatapajono {
     @JsonView(JsonViews.Basic.class)
     private Boolean kaikkiEhdonTayttavatHyvaksytaan;
 
+    @JsonView(JsonViews.Basic.class)
+    private Boolean poissaOlevaTaytto;
+
 	@JsonView(JsonViews.Basic.class)
 	@Embedded
 	private List<Jonosija> jonosijat = new ArrayList<Jonosija>();
@@ -114,5 +117,13 @@ public class Valintatapajono {
 
     public void setKaikkiEhdonTayttavatHyvaksytaan(Boolean kaikkiEhdonTayttavatHyvaksytaan) {
         this.kaikkiEhdonTayttavatHyvaksytaan = kaikkiEhdonTayttavatHyvaksytaan;
+    }
+
+    public Boolean getPoissaOlevaTaytto() {
+        return poissaOlevaTaytto;
+    }
+
+    public void setPoissaOlevaTaytto(Boolean poissaOlevaTaytto) {
+        this.poissaOlevaTaytto = poissaOlevaTaytto;
     }
 }

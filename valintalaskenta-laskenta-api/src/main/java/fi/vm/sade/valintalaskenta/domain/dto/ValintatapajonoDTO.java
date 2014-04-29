@@ -45,7 +45,12 @@ public class ValintatapajonoDTO {
 	private Boolean eiVarasijatayttoa;
 
     @ApiModelProperty(value = "Hyväksytäänkö kaikki hyväksyttävissä olevat aloituspaikoista riippumatta", required = true)
+    @JsonView(JsonViews.Basic.class)
     private Boolean kaikkiEhdonTayttavatHyvaksytaan = false;
+
+    @ApiModelProperty(value = "Täytetäänkö poissaolevaksi ilmottautuneiden tilalle", required = true)
+    @JsonView(JsonViews.Basic.class)
+    private Boolean poissaOlevaTaytto = false;
 
 	@ApiModelProperty(value = "Jonosijat", required = true)
 	@JsonView(JsonViews.Basic.class)
@@ -134,5 +139,13 @@ public class ValintatapajonoDTO {
 
     public void setKaikkiEhdonTayttavatHyvaksytaan(Boolean kaikkiEhdonTayttavatHyvaksytaan) {
         this.kaikkiEhdonTayttavatHyvaksytaan = kaikkiEhdonTayttavatHyvaksytaan;
+    }
+
+    public Boolean getPoissaOlevaTaytto() {
+        return poissaOlevaTaytto;
+    }
+
+    public void setPoissaOlevaTaytto(Boolean poissaOlevaTaytto) {
+        this.poissaOlevaTaytto = poissaOlevaTaytto;
     }
 }

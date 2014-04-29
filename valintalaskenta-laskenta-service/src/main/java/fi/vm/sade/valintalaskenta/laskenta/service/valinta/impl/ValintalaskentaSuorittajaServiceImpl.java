@@ -166,6 +166,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 				jono.setAloituspaikat(j.getAloituspaikat());
 				jono.setEiVarasijatayttoa(j.isEiVarasijatayttoa());
                 jono.setKaikkiEhdonTayttavatHyvaksytaan(j.isKaikkiEhdonTayttavatHyvaksytaan());
+                jono.setPoissaOlevaTaytto(j.isPoissaOlevaTaytto());
 				jono.setNimi(j.getNimi());
 				jono.setPrioriteetti(j.getPrioriteetti());
 				jono.setSiirretaanSijoitteluun(j.isSiirretaanSijoitteluun());
