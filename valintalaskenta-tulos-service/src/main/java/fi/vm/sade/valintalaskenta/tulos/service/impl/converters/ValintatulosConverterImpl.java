@@ -197,6 +197,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
 			ValintatapajonoDTO dto = new ValintatapajonoDTO();
 			dto.setAloituspaikat(valintatapajono.getAloituspaikat());
 			dto.setEiVarasijatayttoa(valintatapajono.getEiVarasijatayttoa());
+            dto.setKaytetaanValintalaskentaa(valintatapajono.getKaytetaanValintalaskentaa());
             dto.setKaikkiEhdonTayttavatHyvaksytaan(valintatapajono.getKaikkiEhdonTayttavatHyvaksytaan());
             dto.setPoissaOlevaTaytto(valintatapajono.getPoissaOlevaTaytto());
 			dto.setJonosijat(convertJonosija(valintatapajono.getJonosijat()));
@@ -216,6 +217,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
 		ValintatapajonoDTO jonodto = new ValintatapajonoDTO();
 		jonodto.setAloituspaikat(jono.getAloituspaikat());
 		jonodto.setEiVarasijatayttoa(jono.getEiVarasijatayttoa());
+        jonodto.setKaytetaanValintalaskentaa(jono.getKaytetaanValintalaskentaa());
         jonodto.setKaikkiEhdonTayttavatHyvaksytaan(jono.getKaikkiEhdonTayttavatHyvaksytaan());
         jonodto.setPoissaOlevaTaytto(jono.getPoissaOlevaTaytto());
 		jonodto.setNimi(jono.getNimi());

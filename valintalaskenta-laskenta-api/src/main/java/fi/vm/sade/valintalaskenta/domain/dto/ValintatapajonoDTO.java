@@ -52,6 +52,10 @@ public class ValintatapajonoDTO {
     @JsonView(JsonViews.Basic.class)
     private Boolean poissaOlevaTaytto = false;
 
+    @ApiModelProperty(value = "Käytetäänkö valintalaskentaa", required = true)
+    @JsonView(JsonViews.Basic.class)
+    private Boolean kaytetaanValintalaskentaa = true;
+
 	@ApiModelProperty(value = "Jonosijat", required = true)
 	@JsonView(JsonViews.Basic.class)
 	private List<JonosijaDTO> jonosijat = new ArrayList<JonosijaDTO>();
@@ -147,5 +151,13 @@ public class ValintatapajonoDTO {
 
     public void setPoissaOlevaTaytto(Boolean poissaOlevaTaytto) {
         this.poissaOlevaTaytto = poissaOlevaTaytto;
+    }
+
+    public Boolean getKaytetaanValintalaskentaa() {
+        return kaytetaanValintalaskentaa;
+    }
+
+    public void setKaytetaanValintalaskentaa(Boolean kaytetaanValintalaskentaa) {
+        this.kaytetaanValintalaskentaa = kaytetaanValintalaskentaa;
     }
 }

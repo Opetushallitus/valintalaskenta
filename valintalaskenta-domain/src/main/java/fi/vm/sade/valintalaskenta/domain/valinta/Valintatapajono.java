@@ -41,6 +41,9 @@ public class Valintatapajono {
     private Boolean kaikkiEhdonTayttavatHyvaksytaan;
 
     @JsonView(JsonViews.Basic.class)
+    private Boolean kaytetaanValintalaskentaa;
+
+    @JsonView(JsonViews.Basic.class)
     private Boolean poissaOlevaTaytto;
 
 	@JsonView(JsonViews.Basic.class)
@@ -125,5 +128,13 @@ public class Valintatapajono {
 
     public void setPoissaOlevaTaytto(Boolean poissaOlevaTaytto) {
         this.poissaOlevaTaytto = poissaOlevaTaytto;
+    }
+
+    public Boolean getKaytetaanValintalaskentaa() {
+        return kaytetaanValintalaskentaa;
+    }
+
+    public void setKaytetaanValintalaskentaa(Boolean kaytetaanValintalaskentaa) {
+        this.kaytetaanValintalaskentaa = kaytetaanValintalaskentaa;
     }
 }

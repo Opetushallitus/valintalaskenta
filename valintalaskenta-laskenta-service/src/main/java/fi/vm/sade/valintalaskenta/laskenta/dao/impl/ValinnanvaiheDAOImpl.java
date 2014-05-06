@@ -6,6 +6,9 @@ import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * User: wuoti
  * Date: 4.9.2013
@@ -58,8 +61,24 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     }
 
     @Override
+    public List<Valinnanvaihe> haeValinnanvaiheetJarjestysnumerolla(String hakuOid, String hakukohdeOid, int jarjestysnumero) {
+
+        return datastore.find(Valinnanvaihe.class)
+                .field("hakuOid").equal(hakuOid)
+                .field("hakukohdeOid").equal(hakukohdeOid)
+                .field("jarjestysnumero").equal(jarjestysnumero)
+                .asList();
+
+    }
+
+    @Override
     public void create(Valinnanvaihe valinnanvaihe) {
         datastore.save(valinnanvaihe);
+    }
+
+    @Override
+    public void poistaValinnanvaihe(Valinnanvaihe valinnanvaihe) {
+        datastore.delete(valinnanvaihe);
     }
 
 

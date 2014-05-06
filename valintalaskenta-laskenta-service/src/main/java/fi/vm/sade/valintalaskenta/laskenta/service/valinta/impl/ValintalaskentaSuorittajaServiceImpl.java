@@ -152,7 +152,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 				}
 			}
 
-			Valinnanvaihe valinnanvaihe = haeTaiLuoValinnanvaihe(valinnanvaiheOid);
+			Valinnanvaihe valinnanvaihe = haeTaiLuoValinnanvaihe(valinnanvaiheOid, hakuOid, hakukohdeOid, jarjestysnumero);
 			valinnanvaihe.setHakukohdeOid(hakukohdeOid);
 			valinnanvaihe.setHakuOid(hakuOid);
 			valinnanvaihe.setJarjestysnumero(jarjestysnumero);
@@ -167,6 +167,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 				jono.setEiVarasijatayttoa(j.isEiVarasijatayttoa());
                 jono.setKaikkiEhdonTayttavatHyvaksytaan(j.isKaikkiEhdonTayttavatHyvaksytaan());
                 jono.setPoissaOlevaTaytto(j.isPoissaOlevaTaytto());
+                jono.setKaytetaanValintalaskentaa(j.isKaytetaanValintalaskentaa());
 				jono.setNimi(j.getNimi());
 				jono.setPrioriteetti(j.getPrioriteetti());
 				jono.setSiirretaanSijoitteluun(j.isSiirretaanSijoitteluun());
@@ -286,9 +287,17 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 		return hakukohdeHakemukset;
 	}
 
-	private Valinnanvaihe haeTaiLuoValinnanvaihe(String valinnanvaiheOid) {
+	private Valinnanvaihe haeTaiLuoValinnanvaihe(String valinnanvaiheOid, String hakuOid, String hakukohdeOid, int jarjestysnumero) {
 		Valinnanvaihe valinnanvaihe = valinnanvaiheDAO
 				.haeValinnanvaihe(valinnanvaiheOid);
+
+        // Tarkistetaan ettei jää haamuvaiheita OVT-7668
+        List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.haeValinnanvaiheetJarjestysnumerolla(hakuOid, hakukohdeOid, jarjestysnumero);
+        for (Valinnanvaihe vaihe : vaiheet) {
+            if(!vaihe.getValinnanvaiheOid().equals(valinnanvaiheOid)) {
+                valinnanvaiheDAO.poistaValinnanvaihe(vaihe);
+            }
+        }
 
 		// Poistetaan vanhat historiat
 		if (valinnanvaihe != null) {
