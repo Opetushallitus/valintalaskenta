@@ -24,8 +24,19 @@ public class ValintakoeDTO {
 	@ApiModelProperty(value = "Osallistumistulos (pitääkö hakija osallistua ko. kokeeseen)", required = true)
 	private OsallistuminenTulosDTO osallistuminenTulos;
 
-    @ApiModelProperty(value = "Lähetetäänkö kokeesta kutsuja", required = true)
-    private boolean lahetetaankoKoekutsut;
+	@ApiModelProperty(value = "Lähetetäänkö kokeesta kutsuja", required = true)
+	private boolean lahetetaankoKoekutsut;
+
+	@ApiModelProperty(value = "Kutsutaanko kaikki kokeeseen", required = true)
+	private Boolean kutsutaankoKaikki;
+
+	public Boolean getKutsutaankoKaikki() {
+		return kutsutaankoKaikki;
+	}
+
+	public void setKutsutaankoKaikki(Boolean kutsutaankoKaikki) {
+		this.kutsutaankoKaikki = kutsutaankoKaikki;
+	}
 
 	public String getValintakoeOid() {
 		return valintakoeOid;
@@ -68,11 +79,11 @@ public class ValintakoeDTO {
 		this.nimi = nimi;
 	}
 
-    public boolean isLahetetaankoKoekutsut() {
-        return lahetetaankoKoekutsut;
-    }
+	public boolean isLahetetaankoKoekutsut() {
+		return lahetetaankoKoekutsut;
+	}
 
-    public void setLahetetaankoKoekutsut(boolean lahetetaankoKoekutsut) {
-        this.lahetetaankoKoekutsut = lahetetaankoKoekutsut;
-    }
+	public void setLahetetaankoKoekutsut(boolean lahetetaankoKoekutsut) {
+		this.lahetetaankoKoekutsut = lahetetaankoKoekutsut;
+	}
 }
