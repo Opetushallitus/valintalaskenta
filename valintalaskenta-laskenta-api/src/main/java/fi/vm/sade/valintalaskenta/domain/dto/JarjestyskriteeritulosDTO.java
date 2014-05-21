@@ -3,12 +3,9 @@ package fi.vm.sade.valintalaskenta.domain.dto;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import org.codehaus.jackson.map.annotate.JsonView;
-
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 
 /**
@@ -19,23 +16,18 @@ public class JarjestyskriteeritulosDTO implements
 		Comparable<JarjestyskriteeritulosDTO> {
 
 	@ApiModelProperty(value = "Järjestyskriteerin lukuarvo", required = true)
-	@JsonView(JsonViews.Basic.class)
 	private BigDecimal arvo;
 
 	@ApiModelProperty(value = "Järjestyskriteerin tila", required = true)
-	@JsonView(JsonViews.Basic.class)
 	private JarjestyskriteerituloksenTila tila;
 
 	@ApiModelProperty(value = "Monikielinen kuvaus (esim. hylkäyksen syy)")
-	@JsonView(JsonViews.Basic.class)
 	private Map<String, String> kuvaus;
 
 	@ApiModelProperty(value = "Järjestyskriteerin prioriteetti", required = true)
-	@JsonView(JsonViews.Basic.class)
 	private int prioriteetti;
 
 	@ApiModelProperty(value = "Järjestyskriteerin nimi")
-	@JsonView(JsonViews.Basic.class)
 	private String nimi;
 
 	@Override

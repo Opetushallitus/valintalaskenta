@@ -180,7 +180,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
 		dto.setCreatedAt(valinnanvaihe.getCreatedAt());
 		dto.setJarjestysnumero(valinnanvaihe.getJarjestysnumero());
 		dto.setValinnanvaiheoid(valinnanvaihe.getValinnanvaiheOid());
-		dto.setValintatapajono(convertValintatapajono(valinnanvaihe
+		dto.setValintatapajonot(convertValintatapajono(valinnanvaihe
 				.getValintatapajonot()));
 		dto.setNimi(valinnanvaihe.getNimi());
 		return dto;

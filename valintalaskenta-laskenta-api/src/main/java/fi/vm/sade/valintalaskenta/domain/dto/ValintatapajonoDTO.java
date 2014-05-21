@@ -3,12 +3,10 @@ package fi.vm.sade.valintalaskenta.domain.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jackson.map.annotate.JsonView;
 
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 
 /**
@@ -17,47 +15,36 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 @ApiModel(value = "ValintatapajonoDTO", description = "Valintatapajono")
 public class ValintatapajonoDTO {
 	@ApiModelProperty(value = "OID", required = true)
-	@JsonView(JsonViews.Basic.class)
 	private String valintatapajonooid;
 
 	@ApiModelProperty(value = "Nimi", required = true)
-	@JsonView(JsonViews.Basic.class)
 	private String nimi;
 
 	@ApiModelProperty(value = "Prioriteetti", required = true)
-	@JsonView(JsonViews.Basic.class)
 	private int prioriteetti;
 
 	@ApiModelProperty(value = "Aloituspaikat", required = true)
-	@JsonView(JsonViews.Basic.class)
 	private int aloituspaikat;
 
 	@ApiModelProperty(value = "Siirretäänkö jono sijoitteluun", required = true)
-	@JsonView(JsonViews.Basic.class)
 	private boolean siirretaanSijoitteluun;
 
 	@ApiModelProperty(value = "Tasasijasääntö", required = true)
-	@JsonView(JsonViews.Basic.class)
 	private Tasasijasaanto tasasijasaanto;
 
 	@ApiModelProperty(value = "Onko varasijatäyttö käytössä", required = true)
-	@JsonView(JsonViews.Basic.class)
 	private Boolean eiVarasijatayttoa;
 
     @ApiModelProperty(value = "Hyväksytäänkö kaikki hyväksyttävissä olevat aloituspaikoista riippumatta", required = true)
-    @JsonView(JsonViews.Basic.class)
     private Boolean kaikkiEhdonTayttavatHyvaksytaan = false;
 
     @ApiModelProperty(value = "Täytetäänkö poissaolevaksi ilmottautuneiden tilalle", required = true)
-    @JsonView(JsonViews.Basic.class)
     private Boolean poissaOlevaTaytto = false;
 
     @ApiModelProperty(value = "Käytetäänkö valintalaskentaa", required = true)
-    @JsonView(JsonViews.Basic.class)
     private Boolean kaytetaanValintalaskentaa = true;
 
 	@ApiModelProperty(value = "Jonosijat", required = true)
-	@JsonView(JsonViews.Basic.class)
 	private List<JonosijaDTO> jonosijat = new ArrayList<JonosijaDTO>();
 
 	public String getNimi() {

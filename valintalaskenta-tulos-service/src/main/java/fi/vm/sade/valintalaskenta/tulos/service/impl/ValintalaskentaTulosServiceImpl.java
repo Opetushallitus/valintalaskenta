@@ -92,7 +92,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                     }
                 })));
 
-                vvdto.getValintatapajono().add(valintatulosConverter.convertValintatapajono(jono));
+                vvdto.getValintatapajonot().add(valintatulosConverter.convertValintatapajono(jono));
             }
             hakukohdeDTO.getValinnanvaihe().add(vvdto);
         }
@@ -143,7 +143,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
     private void applyMuokatutJonosijat(String hakukohdeoid, List<ValinnanvaiheDTO> b, List<MuokattuJonosija> a, List<HarkinnanvarainenHyvaksyminen> c) {
         for (ValinnanvaiheDTO dto : b) {
-            for (ValintatapajonoDTO valintatapajonoDTO : dto.getValintatapajono()) {
+            for (ValintatapajonoDTO valintatapajonoDTO : dto.getValintatapajonot()) {
                 for (JonosijaDTO jonosija : valintatapajonoDTO.getJonosijat()) {
                     for (MuokattuJonosija muokattuJonosija : a) {
                         if (muokattuJonosija.getHakemusOid().equals(jonosija.getHakemusOid())
@@ -395,6 +395,18 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     @Override
     public List<HarkinnanvarainenHyvaksyminen> haeHakemuksenHarkinnanvaraisestiHyvaksymisenTilat(String hakuOid, String hakukohdeoid) {
         return harkinnanvarainenHyvaksyminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakukohdeoid);
+    }
+
+    @Override
+    public ValinnanvaiheDTO lisaaTuloksia(ValinnanvaiheDTO vaihe) {
+        Valinnanvaihe haettu = valinnanvaiheDAO.haeValinnanvaihe(vaihe.getValinnanvaiheoid());
+        Valinnanvaihe annettu = modelMapper.map(vaihe, Valinnanvaihe.class);
+        if(haettu == null) {
+            valinnanvaiheDAO.create(annettu);
+        } else {
+            valinnanvaiheDAO.update(haettu, annettu.getValintatapajonot());
+        }
+        return vaihe;
     }
 
 

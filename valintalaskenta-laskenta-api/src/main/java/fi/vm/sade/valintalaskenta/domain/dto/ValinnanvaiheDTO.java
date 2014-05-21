@@ -2,9 +2,7 @@ package fi.vm.sade.valintalaskenta.domain.dto;
 
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
-import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeDTO;
-import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,30 +15,25 @@ import java.util.List;
 public class ValinnanvaiheDTO {
 
     @ApiModelProperty(value = "Järjestysnumero", required = true)
-    @JsonView(JsonViews.Basic.class)
     private int jarjestysnumero;
 
     @ApiModelProperty(value = "Valinnan vaiheen OID", required = true)
-    @JsonView(JsonViews.Basic.class)
     private String valinnanvaiheoid;
 
     @ApiModelProperty(value = "Valinnan vaiheen nimi")
-    @JsonView(JsonViews.Basic.class)
     private String nimi;
 
     @ApiModelProperty(value = "Luomisajankohta", required = true)
-    @JsonView(JsonViews.Basic.class)
     private Date createdAt;
 
     @ApiModelProperty(value = "Valintatapajonot", required = true)
-    @JsonView(JsonViews.Basic.class)
-    private List<ValintatapajonoDTO> valintatapajono = new ArrayList<ValintatapajonoDTO>();
+    private List<ValintatapajonoDTO> valintatapajonot = new ArrayList<ValintatapajonoDTO>();
 
     @ApiModelProperty(value = "Valintakokeet")
     private List<ValintakoeDTO> valintakokeet = new ArrayList<ValintakoeDTO>();
 
-    public List<ValintatapajonoDTO> getValintatapajono() {
-        return valintatapajono;
+    public List<ValintatapajonoDTO> getValintatapajonot() {
+        return valintatapajonot;
     }
 
     public String getValinnanvaiheoid() {
@@ -51,8 +44,8 @@ public class ValinnanvaiheDTO {
         this.valinnanvaiheoid = valinnanvaiheoid;
     }
 
-    public void setValintatapajono(List<ValintatapajonoDTO> valintatapajono) {
-        this.valintatapajono = valintatapajono;
+    public void setValintatapajonot(List<ValintatapajonoDTO> valintatapajonot) {
+        this.valintatapajonot = valintatapajonot;
     }
 
     public int getJarjestysnumero() {

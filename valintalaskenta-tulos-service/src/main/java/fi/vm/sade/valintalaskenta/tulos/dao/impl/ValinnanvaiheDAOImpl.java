@@ -1,7 +1,9 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
 import com.google.code.morphia.Datastore;
+import com.google.code.morphia.query.UpdateOperations;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,5 +63,23 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         return datastore.createQuery(Valinnanvaihe.class)
                 .field("hakuOid").equal(hakuoid)
                 .asList();
+    }
+
+    @Override
+    public void create(Valinnanvaihe valinnanvaihe) {
+        datastore.save(valinnanvaihe);
+    }
+
+    @Override
+    public void update(Valinnanvaihe valinnanvaihe, List<Valintatapajono> jonot) {
+        UpdateOperations ops = datastore.createUpdateOperations(Valinnanvaihe.class).set("valintatapajonot", jonot);
+        datastore.update(valinnanvaihe, ops);
+    }
+
+    @Override
+    public Valinnanvaihe haeValinnanvaihe(String valinnanvaiheOid) {
+        return datastore.find(Valinnanvaihe.class)
+                .field("valinnanvaiheOid").equal(valinnanvaiheOid)
+                .get();
     }
 }

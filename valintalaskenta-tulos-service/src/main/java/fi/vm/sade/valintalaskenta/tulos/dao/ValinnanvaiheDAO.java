@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.dao;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 
 import java.util.List;
 
@@ -16,4 +17,10 @@ public interface ValinnanvaiheDAO {
     List<Valinnanvaihe> readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid);
 
     Valinnanvaihe findByValintatapajonoOid(String valintatapajonoOid);
+
+    void create(Valinnanvaihe valinnanvaihe);
+
+    void update(Valinnanvaihe valinnanvaihe, List<Valintatapajono> jonot);
+
+    Valinnanvaihe haeValinnanvaihe(String valinnanvaiheOid);
 }

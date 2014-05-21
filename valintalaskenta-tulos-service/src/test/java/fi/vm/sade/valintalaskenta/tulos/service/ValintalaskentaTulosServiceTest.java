@@ -88,8 +88,8 @@ public class ValintalaskentaTulosServiceTest {
             HakukohdeDTO hakukohde = hakemus.getHakukohteet().get(0);
             assertEquals(1, hakukohde.getValinnanvaihe().size());
             ValinnanvaiheDTO vv = hakukohde.getValinnanvaihe().get(0);
-            assertEquals(1, vv.getValintatapajono().size());
-            ValintatapajonoDTO valintatapajono = vv.getValintatapajono().get(0);
+            assertEquals(1, vv.getValintatapajonot().size());
+            ValintatapajonoDTO valintatapajono = vv.getValintatapajonot().get(0);
             assertEquals(1, valintatapajono.getJonosijat().size());
             JonosijaDTO jonosija = valintatapajono.getJonosijat().get(0);
             assertEquals(2, jonosija.getJarjestyskriteerit().size());
@@ -113,8 +113,8 @@ public class ValintalaskentaTulosServiceTest {
             HakukohdeDTO hakukohde = hakemus.getHakukohteet().get(0);
             assertEquals(1, hakukohde.getValinnanvaihe().size());
             ValinnanvaiheDTO vv = hakukohde.getValinnanvaihe().get(0);
-            assertEquals(1, vv.getValintatapajono().size());
-            ValintatapajonoDTO valintatapajono = vv.getValintatapajono().get(0);
+            assertEquals(1, vv.getValintatapajonot().size());
+            ValintatapajonoDTO valintatapajono = vv.getValintatapajonot().get(0);
             assertEquals(1, valintatapajono.getJonosijat().size());
             JonosijaDTO jonosija = valintatapajono.getJonosijat().get(0);
             assertEquals(2, jonosija.getJarjestyskriteerit().size());

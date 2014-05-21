@@ -9,6 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.slf4j.Logger;
@@ -51,4 +52,15 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
 			@ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid) {
 		return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
 	}
+
+    @Override
+    public Response lisaaTuloksia(@ApiParam(value = "Hakukohteen OID", required = true) String hakukohdeoid, @ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe) {
+        try {
+            ValinnanvaiheDTO vastaus = tulosService.lisaaTuloksia(vaihe);
+            return Response.status(Response.Status.ACCEPTED).entity(vastaus).build();
+        } catch (Exception e) {
+            LOGGER.warn("Valintatapajonon pisteitä ei saatu päivitettyä. ", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

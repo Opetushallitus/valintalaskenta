@@ -169,7 +169,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 		ValinnanvaiheTyyppi v = new ValinnanvaiheTyyppi();
 		v.setValinnanvaihe(valinnanvaihe.getJarjestysnumero());
 		v.setValinnanvaiheOid(valinnanvaihe.getValinnanvaiheoid());
-		for (ValintatapajonoDTO vt : valinnanvaihe.getValintatapajono()) {
+		for (ValintatapajonoDTO vt : valinnanvaihe.getValintatapajonot()) {
 			v.getValintatapajono().add(createValintatapajonoTyyppi(vt));
 		}
 		return v;
