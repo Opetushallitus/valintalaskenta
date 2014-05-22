@@ -1,10 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -301,6 +297,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 
 		// Poistetaan vanhat historiat
 		if (valinnanvaihe != null) {
+            List<Valintatapajono> saastettavat = new ArrayList<Valintatapajono>();
 			for (Valintatapajono jono : valinnanvaihe.getValintatapajonot()) {
                 if(jono.getKaytetaanValintalaskentaa() || jono.getKaytetaanValintalaskentaa() == null) {
                     for (Jonosija jonosija : jono.getJonosijat()) {
@@ -310,12 +307,13 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                                     .delete(tulos.getHistoria());
                         }
                     }
-                    valinnanvaihe.getValintatapajonot().remove(jono);
+                } else {
+                    saastettavat.add(jono);
                 }
 			}
 
-            // Ei saa poistaa jonoja, joissa ei käytetä laskentaa (VT-566)
-			//valinnanvaihe.getValintatapajonot().clear();
+			valinnanvaihe.getValintatapajonot().clear();
+            valinnanvaihe.getValintatapajonot().addAll(saastettavat);
 		} else {
 			valinnanvaihe = new Valinnanvaihe();
 		}

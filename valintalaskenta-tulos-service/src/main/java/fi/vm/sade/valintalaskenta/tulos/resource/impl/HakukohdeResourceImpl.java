@@ -4,10 +4,7 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 
 import java.util.List;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -53,7 +50,12 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
 		return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
 	}
 
-    @Override
+    @POST
+    @Path("{hakukohdeoid}/valinnanvaihe")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @JsonView({ JsonViews.Basic.class })
+    @ApiOperation(value = "Lisää tuloksia valinnanvaiheelle", response = ValinnanvaiheDTO.class)
     public Response lisaaTuloksia(@ApiParam(value = "Hakukohteen OID", required = true) String hakukohdeoid, @ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe) {
         try {
             ValinnanvaiheDTO vastaus = tulosService.lisaaTuloksia(vaihe);

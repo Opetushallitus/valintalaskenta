@@ -404,6 +404,19 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         if(haettu == null) {
             valinnanvaiheDAO.create(annettu);
         } else {
+            List<Valintatapajono> vanhat = new ArrayList<Valintatapajono>();
+            for (Valintatapajono jono : haettu.getValintatapajonot()) {
+                boolean mukana = false;
+                for (Valintatapajono uusi : annettu.getValintatapajonot()) {
+                    if(uusi.getValintatapajonoOid().equals(jono.getValintatapajonoOid())) {
+                        mukana = true;
+                    }
+                }
+                if(!mukana) {
+                    vanhat.add(jono);
+                }
+            }
+            annettu.getValintatapajonot().addAll(vanhat);
             valinnanvaiheDAO.update(haettu, annettu.getValintatapajonot());
         }
         return vaihe;
