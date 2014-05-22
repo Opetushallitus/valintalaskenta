@@ -302,16 +302,20 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 		// Poistetaan vanhat historiat
 		if (valinnanvaihe != null) {
 			for (Valintatapajono jono : valinnanvaihe.getValintatapajonot()) {
-				for (Jonosija jonosija : jono.getJonosijat()) {
-					for (Jarjestyskriteeritulos tulos : jonosija
-							.getJarjestyskriteeritulokset()) {
-						jarjestyskriteerihistoriaDAO
-								.delete(tulos.getHistoria());
-					}
-				}
+                if(jono.getKaytetaanValintalaskentaa() || jono.getKaytetaanValintalaskentaa() == null) {
+                    for (Jonosija jonosija : jono.getJonosijat()) {
+                        for (Jarjestyskriteeritulos tulos : jonosija
+                                .getJarjestyskriteeritulokset()) {
+                            jarjestyskriteerihistoriaDAO
+                                    .delete(tulos.getHistoria());
+                        }
+                    }
+                    valinnanvaihe.getValintatapajonot().remove(jono);
+                }
 			}
 
-			valinnanvaihe.getValintatapajonot().clear();
+            // Ei saa poistaa jonoja, joissa ei käytetä laskentaa (VT-566)
+			//valinnanvaihe.getValintatapajonot().clear();
 		} else {
 			valinnanvaihe = new Valinnanvaihe();
 		}
