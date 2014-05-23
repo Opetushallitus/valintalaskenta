@@ -14,7 +14,8 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
  */
 @ApiModel(value = "ValintatapajonoDTO", description = "Valintatapajono")
 public class ValintatapajonoDTO {
-	@ApiModelProperty(value = "OID", required = true)
+
+    @ApiModelProperty(value = "OID", required = true)
 	private String valintatapajonooid;
 
 	@ApiModelProperty(value = "Nimi", required = true)
@@ -146,5 +147,13 @@ public class ValintatapajonoDTO {
 
     public void setKaytetaanValintalaskentaa(Boolean kaytetaanValintalaskentaa) {
         this.kaytetaanValintalaskentaa = kaytetaanValintalaskentaa;
+    }
+
+    public String getValintatapajonooid() {
+        return valintatapajonooid;
+    }
+
+    public void setValintatapajonooid(String valintatapajonooid) {
+        this.valintatapajonooid = valintatapajonooid;
     }
 }
