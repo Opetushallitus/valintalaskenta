@@ -299,7 +299,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 		if (valinnanvaihe != null) {
             List<Valintatapajono> saastettavat = new ArrayList<Valintatapajono>();
 			for (Valintatapajono jono : valinnanvaihe.getValintatapajonot()) {
-                if(jono.getKaytetaanValintalaskentaa() || jono.getKaytetaanValintalaskentaa() == null) {
+                if(jono.getKaytetaanValintalaskentaa() == null || jono.getKaytetaanValintalaskentaa()) {
                     for (Jonosija jonosija : jono.getJonosijat()) {
                         for (Jarjestyskriteeritulos tulos : jonosija
                                 .getJarjestyskriteeritulokset()) {
