@@ -37,5 +37,5 @@ public interface ValintalaskentaTulosService {
 
     List<HarkinnanvarainenHyvaksyminen> haeHakemuksenHarkinnanvaraisestiHyvaksymisenTilat(String hakuOid, String hakemusOid);
 
-    ValinnanvaiheDTO lisaaTuloksia(ValinnanvaiheDTO vaihe);
+    ValinnanvaiheDTO lisaaTuloksia(ValinnanvaiheDTO vaihe, String hakukohdeoid);
 }

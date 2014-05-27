@@ -72,7 +72,9 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 
     @Override
     public void update(Valinnanvaihe valinnanvaihe, List<Valintatapajono> jonot) {
-        UpdateOperations ops = datastore.createUpdateOperations(Valinnanvaihe.class).set("valintatapajonot", jonot);
+        UpdateOperations ops = datastore.createUpdateOperations(Valinnanvaihe.class)
+                .set("valintatapajonot", jonot)
+                .set("hakukohdeOid", valinnanvaihe.getHakukohdeOid());
         datastore.update(valinnanvaihe, ops);
     }
 

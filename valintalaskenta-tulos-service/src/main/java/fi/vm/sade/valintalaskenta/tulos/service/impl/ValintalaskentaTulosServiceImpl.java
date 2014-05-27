@@ -398,9 +398,10 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
-    public ValinnanvaiheDTO lisaaTuloksia(ValinnanvaiheDTO vaihe) {
+    public ValinnanvaiheDTO lisaaTuloksia(ValinnanvaiheDTO vaihe, String hakukohdeoid) {
         Valinnanvaihe haettu = valinnanvaiheDAO.haeValinnanvaihe(vaihe.getValinnanvaiheoid());
         Valinnanvaihe annettu = modelMapper.map(vaihe, Valinnanvaihe.class);
+        annettu.setHakukohdeOid(hakukohdeoid);
         if(haettu == null) {
             valinnanvaiheDAO.create(annettu);
         } else {
@@ -417,6 +418,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                 }
             }
             annettu.getValintatapajonot().addAll(vanhat);
+            haettu.setHakukohdeOid(hakukohdeoid);
             valinnanvaiheDAO.update(haettu, annettu.getValintatapajonot());
         }
         return vaihe;
