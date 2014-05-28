@@ -26,6 +26,23 @@ public class JonosijaDTOComparator implements Comparator<JonosijaDTO> {
     @Override
     public int compare(JonosijaDTO thiz, JonosijaDTO other) {
 
+        // Virheelliset parhaille jonosijoille, jotta niihin voidaan ottaa kantaa
+        boolean thizVirhe = (thiz.getTuloksenTila() != null && thiz.getTuloksenTila() == JarjestyskriteerituloksenTila.VIRHE)
+                || !thiz.getJarjestyskriteerit().isEmpty()
+                && thiz.getJarjestyskriteerit().first().getTila() == JarjestyskriteerituloksenTila.VIRHE;
+
+        boolean otherVirhe = other.getTuloksenTila() != null
+                && other.getTuloksenTila() == JarjestyskriteerituloksenTila.VIRHE
+                || !other.getJarjestyskriteerit().isEmpty()
+                && other.getJarjestyskriteerit().first().getTila() == JarjestyskriteerituloksenTila.VIRHE;
+        if (thizVirhe && otherVirhe) {
+            // do nothing;
+        } else if (thizVirhe) {
+            return -1;
+        } else if (otherVirhe) {
+            return 1;
+        }
+
         // harkinanvaraisesti hyvaksytyt ovat aina listan karjessa.
         boolean thizHarkinanvaraisestiHyvaksytty = (thiz.getTuloksenTila() != null && thiz.getTuloksenTila() == JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI)
                 || !thiz.getJarjestyskriteerit().isEmpty()
@@ -81,9 +98,9 @@ public class JonosijaDTOComparator implements Comparator<JonosijaDTO> {
                     && (otherValue == null || otherValue.getArvo() == null)) {
                 continue;
             } else if (thisValue == null || thisValue.getArvo() == null) {
-                return -1;
-            } else if (otherValue == null || otherValue.getArvo() == null) {
                 return 1;
+            } else if (otherValue == null || otherValue.getArvo() == null) {
+                return -1;
             } else if (otherValue.getArvo().equals(thisValue.getArvo())) {
                 continue;
             } else if (otherValue.getArvo().compareTo(thisValue.getArvo()) == 1) {
