@@ -49,6 +49,8 @@ public class ValintalaskentaModelMapper extends ModelMapper {
                 };
 
                 using(dtoToJarjestyskriteeritulosConverter).map(source.getJarjestyskriteerit()).setJarjestyskriteeritulokset(null);
+
+                map().setHakutoiveprioriteetti(source.getPrioriteetti());
             }
         });
 
@@ -73,6 +75,8 @@ public class ValintalaskentaModelMapper extends ModelMapper {
                 };
 
                 using(JarjestyskriteeritulosToDtoConverter).map(source.getJarjestyskriteeritulokset()).setJarjestyskriteerit(null);
+
+                map().setPrioriteetti(source.getHakutoiveprioriteetti());
             }
         });
 

@@ -58,7 +58,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
     @ApiOperation(value = "Lisää tuloksia valinnanvaiheelle", response = ValinnanvaiheDTO.class)
     public Response lisaaTuloksia(@ApiParam(value = "Hakukohteen OID", required = true) String hakukohdeoid, @ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe) {
         try {
-            ValinnanvaiheDTO vastaus = tulosService.lisaaTuloksia(vaihe);
+            ValinnanvaiheDTO vastaus = tulosService.lisaaTuloksia(vaihe, hakukohdeoid);
             return Response.status(Response.Status.ACCEPTED).entity(vastaus).build();
         } catch (Exception e) {
             LOGGER.warn("Valintatapajonon pisteitä ei saatu päivitettyä. ", e);
