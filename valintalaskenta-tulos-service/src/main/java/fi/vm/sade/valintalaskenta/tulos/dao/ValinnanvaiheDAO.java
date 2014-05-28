@@ -20,7 +20,7 @@ public interface ValinnanvaiheDAO {
 
     void create(Valinnanvaihe valinnanvaihe);
 
-    void update(Valinnanvaihe valinnanvaihe, List<Valintatapajono> jonot);
+    void update(Valinnanvaihe valinnanvaihe, List<Valintatapajono> jonot, String hakukohdeoid);
 
     Valinnanvaihe haeValinnanvaihe(String valinnanvaiheOid);
 }

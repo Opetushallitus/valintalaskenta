@@ -418,8 +418,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                 }
             }
             annettu.getValintatapajonot().addAll(vanhat);
-            haettu.setHakukohdeOid(hakukohdeoid);
-            valinnanvaiheDAO.update(haettu, annettu.getValintatapajonot());
+            valinnanvaiheDAO.update(haettu, annettu.getValintatapajonot(), hakukohdeoid);
         }
         return vaihe;
     }
