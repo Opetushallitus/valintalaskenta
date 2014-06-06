@@ -20,6 +20,9 @@ public class ValinnanvaiheDTO {
     @ApiModelProperty(value = "Valinnan vaiheen OID", required = true)
     private String valinnanvaiheoid;
 
+    @ApiModelProperty(value = "Haun OID", required = true)
+    private String hakuOid;
+
     @ApiModelProperty(value = "Valinnan vaiheen nimi")
     private String nimi;
 
@@ -78,5 +81,13 @@ public class ValinnanvaiheDTO {
 
     public void setValintakokeet(List<ValintakoeDTO> valintakokeet) {
         this.valintakokeet = valintakokeet;
+    }
+
+    public String getHakuOid() {
+        return hakuOid;
+    }
+
+    public void setHakuOid(String hakuOid) {
+        this.hakuOid = hakuOid;
     }
 }
