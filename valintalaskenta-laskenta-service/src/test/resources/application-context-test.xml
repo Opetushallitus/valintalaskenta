@@ -11,7 +11,7 @@
     <bean id="mongo" class="com.mongodb.MongoClient" factory-bean="mongodFactory" factory-method="newMongo"/>
 
     <bean id="morphia" class="com.google.code.morphia.Morphia" />
-    <bean id="datastore" factory-bean="morphia" factory-method="createDatastore">
+    <bean id="datastore2" factory-bean="morphia" factory-method="createDatastore">
         <constructor-arg type="com.mongodb.Mongo" ref="mongo" />
         <constructor-arg type="java.lang.String" value="test" />
     </bean>

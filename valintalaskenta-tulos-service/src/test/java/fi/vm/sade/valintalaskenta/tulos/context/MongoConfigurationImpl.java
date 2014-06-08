@@ -78,7 +78,7 @@ public class MongoConfigurationImpl {
         return new Morphia();
     }
 
-    @Bean
+    @Bean(name = "datastore2")
     public Datastore getDatastore(Morphia morphia, Mongo mongo) {
         return morphia.createDatastore(mongo, DATABASE_NAME);
     }
