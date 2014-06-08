@@ -135,6 +135,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 	public HakuTyyppi haeValintatiedot(
 			@WebParam(name = "hakuOid", targetNamespace = "") String hakuOid) {
 		try {
+			LOG.error("Valintatietoja valmistetaan haulle {}!", hakuOid);
 			List<HakukohdeDTO> a = tulosService
 					.haeLasketutValinnanvaiheetHaulle(hakuOid);
 
@@ -153,6 +154,8 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 
 				}
 			}
+			LOG.error("Palautetaan valintatiedot {} hakukohteella!", hakuTyyppi
+					.getHakukohteet().size());
 			return hakuTyyppi;
 		} catch (Exception e) {
 			LOG.error("Valintatietoja ei saatu haettua!");
@@ -185,8 +188,9 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 		valintatapajonoTyyppi.setSiirretaanSijoitteluun(vt
 				.isSiirretaanSijoitteluun());
 		valintatapajonoTyyppi.setEiVarasijatayttoa(vt.getEiVarasijatayttoa());
-        valintatapajonoTyyppi.setKaikkiEhdonTayttavatHyvaksytaan(vt.getKaikkiEhdonTayttavatHyvaksytaan());
-        valintatapajonoTyyppi.setPoissaOlevaTaytto(vt.getPoissaOlevaTaytto());
+		valintatapajonoTyyppi.setKaikkiEhdonTayttavatHyvaksytaan(vt
+				.getKaikkiEhdonTayttavatHyvaksytaan());
+		valintatapajonoTyyppi.setPoissaOlevaTaytto(vt.getPoissaOlevaTaytto());
 		if (vt.getTasasijasaanto() != null) {
 			valintatapajonoTyyppi.setTasasijasaanto(TasasijasaantoTyyppi
 					.valueOf(vt.getTasasijasaanto().name()));
