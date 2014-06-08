@@ -29,57 +29,60 @@ import de.flapdoodle.embed.process.runtime.Network;
 @Configuration
 public class MongoConfigurationImpl {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MongoConfigurationImpl.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(MongoConfigurationImpl.class);
 
-    public static final String DATABASE_NAME = "test";
+	public static final String DATABASE_NAME = "test";
 
-    static final int PORT = freePort();
+	static final int PORT = freePort();
 
-    private static int freePort() {
-        for (int i = 0; i < 10; ++i) {
-            try {
-                return Network.getFreeServerPort();
-            } catch (IOException e) {
-            }
-        }
-        return 32452 - new Random().nextInt(20000);
-    }
+	private static int freePort() {
+		for (int i = 0; i < 10; ++i) {
+			try {
+				return Network.getFreeServerPort();
+			} catch (IOException e) {
+			}
+		}
+		return 32452 - new Random().nextInt(20000);
+	}
 
-    // fake mongo db
-    @Bean(destroyMethod = "stop")
-    public MongodExecutable getMongodExecutable() throws IOException {
-        IMongodConfig mongodConfig = new MongodConfigBuilder().version(Version.Main.PRODUCTION)
-                .net(new Net(PORT, Network.localhostIsIPv6())).build();
+	// fake mongo db
+	@Bean(destroyMethod = "stop")
+	public MongodExecutable getMongodExecutable() throws IOException {
+		IMongodConfig mongodConfig = new MongodConfigBuilder()
+				.version(Version.Main.PRODUCTION)
+				.net(new Net(PORT, Network.localhostIsIPv6())).build();
 
-        MongodStarter runtime = MongodStarter.getDefaultInstance();
+		MongodStarter runtime = MongodStarter.getDefaultInstance();
 
-        MongodExecutable mongodExecutable = null;
-        mongodExecutable = runtime.prepare(mongodConfig);
+		MongodExecutable mongodExecutable = null;
+		mongodExecutable = runtime.prepare(mongodConfig);
 
-        return mongodExecutable;// .newMongo();
-    }
+		return mongodExecutable;// .newMongo();
+	}
 
-    @Bean(destroyMethod = "stop")
-    public MongodProcess getMongoProcess(MongodExecutable mongodExecutable) throws IOException {
-        return mongodExecutable.start();
-    }
+	@Bean(destroyMethod = "stop")
+	public MongodProcess getMongoProcess(MongodExecutable mongodExecutable)
+			throws IOException {
+		return mongodExecutable.start();
+	}
 
-    @Bean
-    public Mongo getMongo(MongodProcess process) throws IOException {
+	@Bean
+	public Mongo getMongo(MongodProcess process) throws IOException {
 
-        // MongoClient mongo =
-        // return new MongoClient(new ServerAddress(Network.getLocalHost(),
-        // Network.getFreeServerPort()));
-        return new MongoClient(new ServerAddress(Network.getLocalHost(), PORT)); // factory.newMongo();
-    }
+		// MongoClient mongo =
+		// return new MongoClient(new ServerAddress(Network.getLocalHost(),
+		// Network.getFreeServerPort()));
+		return new MongoClient(new ServerAddress(Network.getLocalHost(), PORT)); // factory.newMongo();
+	}
 
-    @Bean
-    public Morphia getMorphia() {
-        return new Morphia();
-    }
+	@Bean
+	public Morphia getMorphia() {
+		return new Morphia();
+	}
 
-    @Bean(name = "datastore2")
-    public Datastore getDatastore(Morphia morphia, Mongo mongo) {
-        return morphia.createDatastore(mongo, DATABASE_NAME);
-    }
+	@Bean(name = "datastore2")
+	public Datastore getDatastore(Morphia morphia, Mongo mongo) {
+		return morphia.createDatastore(mongo, DATABASE_NAME);
+	}
 }
