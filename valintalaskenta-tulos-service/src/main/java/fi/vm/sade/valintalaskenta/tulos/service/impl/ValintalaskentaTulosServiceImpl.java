@@ -348,9 +348,13 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
     @Override
     public List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid) {
+        LOGGER.error("Valintatietoja haetaan mongosta {}!", hakuOid);
         List<Valinnanvaihe> a = valinnanvaiheDAO.readByHakuOid(hakuOid);
+        LOGGER.error("Valintatietoja haettu mongosta {}!", hakuOid);
         List<HakukohdeDTO> b = valintatulosConverter.convertValinnanvaihe(a);
+        LOGGER.error("Valintatiedot kovertoitu DTO:iksi {}!", hakuOid);
         applyMuokatutJonosijatToHakukohde(hakuOid, b);
+        LOGGER.error("Muokatut jonosijat liitetty {}!", hakuOid);
         return b;
     }
 
