@@ -135,24 +135,30 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 	public HakuTyyppi haeValintatiedot(
 			@WebParam(name = "hakuOid", targetNamespace = "") String hakuOid) {
 		try {
+			LOG.error("Valintatietoja valmistetaan haulle {}!", hakuOid);
 			List<HakukohdeDTO> a = tulosService
 					.haeLasketutValinnanvaiheetHaulle(hakuOid);
+            LOG.error("Valintatiedot haettu serviceltä {}!", hakuOid);
 
 			HakuTyyppi hakuTyyppi = new HakuTyyppi();
 			hakuTyyppi.setHakuOid(hakuOid);
 
+            LOG.error("Konvertoidaan hakutyypeiksi {}!", hakuOid);
 			for (HakukohdeDTO v : a) {
 				HakukohdeTyyppi ht = new HakukohdeTyyppi();
 				ht.setOid(v.getOid());
 				ht.setTarjoajaOid(v.getTarjoajaoid());
 				hakuTyyppi.getHakukohteet().add(ht);
 
+                LOG.error("Konvertoidaan Valinnanvaiheet {}!", hakuOid);
 				for (ValinnanvaiheDTO valinnanvaiheDTO : v.getValinnanvaihe()) {
 					ht.getValinnanvaihe().add(
 							createValinnanvaiheTyyppi(valinnanvaiheDTO));
 
 				}
 			}
+			LOG.error("Palautetaan valintatiedot {} hakukohteella!", hakuTyyppi
+					.getHakukohteet().size());
 			return hakuTyyppi;
 		} catch (Exception e) {
 			LOG.error("Valintatietoja ei saatu haettua!");
@@ -185,8 +191,9 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 		valintatapajonoTyyppi.setSiirretaanSijoitteluun(vt
 				.isSiirretaanSijoitteluun());
 		valintatapajonoTyyppi.setEiVarasijatayttoa(vt.getEiVarasijatayttoa());
-        valintatapajonoTyyppi.setKaikkiEhdonTayttavatHyvaksytaan(vt.getKaikkiEhdonTayttavatHyvaksytaan());
-        valintatapajonoTyyppi.setPoissaOlevaTaytto(vt.getPoissaOlevaTaytto());
+		valintatapajonoTyyppi.setKaikkiEhdonTayttavatHyvaksytaan(vt
+				.getKaikkiEhdonTayttavatHyvaksytaan());
+		valintatapajonoTyyppi.setPoissaOlevaTaytto(vt.getPoissaOlevaTaytto());
 		if (vt.getTasasijasaanto() != null) {
 			valintatapajonoTyyppi.setTasasijasaanto(TasasijasaantoTyyppi
 					.valueOf(vt.getTasasijasaanto().name()));

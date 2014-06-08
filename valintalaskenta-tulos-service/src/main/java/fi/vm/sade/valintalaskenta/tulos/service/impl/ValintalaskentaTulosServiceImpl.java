@@ -134,11 +134,18 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     private void applyMuokatutJonosijatToHakukohde(String hakuOid, List<HakukohdeDTO> b) {
+        LOGGER.error("Haetaan muokatut jonosijat {}!", hakuOid);
         List<MuokattuJonosija> a = muokattuJonosijaDAO.readByHakuOid(hakuOid);
+        LOGGER.error("Muokatut jonosijat haettu, haetaan harkinnanvaraiset {}!", hakuOid);
         List<HarkinnanvarainenHyvaksyminen> c = harkinnanvarainenHyvaksyminenDAO.haeHarkinnanvaraisetHyvaksymisetHaulle(hakuOid);
-        for (HakukohdeDTO hakukohde : b) {
+        LOGGER.error("Harkinnavaraiset haettu, loopataan hakukohteet {} - yhteensä {}", hakuOid, b.size());
+        for (int i = 0; i < b.size(); i++) {
+            HakukohdeDTO hakukohde = b.get(i);
+            LOGGER.error("Laitetaan jonosijat hakukohteelle {} - indeksi {}", hakukohde.getOid(), i);
             applyMuokatutJonosijat(hakukohde.getOid(), hakukohde.getValinnanvaihe(), a, c);
+            LOGGER.error("Laitettu jonosijat hakukohteelle {}!", hakukohde.getOid());
         }
+        LOGGER.error("Muokatut jonosijat laitettu kaikille hakukohteille {}!", hakuOid);
     }
 
     private void applyMuokatutJonosijat(String hakukohdeoid, List<ValinnanvaiheDTO> b, List<MuokattuJonosija> a, List<HarkinnanvarainenHyvaksyminen> c) {
@@ -348,9 +355,13 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
     @Override
     public List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid) {
+        LOGGER.error("Valintatietoja haetaan mongosta {}!", hakuOid);
         List<Valinnanvaihe> a = valinnanvaiheDAO.readByHakuOid(hakuOid);
+        LOGGER.error("Valintatietoja haettu mongosta {}!", hakuOid);
         List<HakukohdeDTO> b = valintatulosConverter.convertValinnanvaihe(a);
+        LOGGER.error("Valintatiedot kovertoitu DTO:iksi {}!", hakuOid);
         applyMuokatutJonosijatToHakukohde(hakuOid, b);
+        LOGGER.error("Muokatut jonosijat liitetty {}!", hakuOid);
         return b;
     }
 
