@@ -138,12 +138,14 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         List<MuokattuJonosija> a = muokattuJonosijaDAO.readByHakuOid(hakuOid);
         LOGGER.error("Muokatut jonosijat haettu, haetaan harkinnanvaraiset {}!", hakuOid);
         List<HarkinnanvarainenHyvaksyminen> c = harkinnanvarainenHyvaksyminenDAO.haeHarkinnanvaraisetHyvaksymisetHaulle(hakuOid);
-        LOGGER.error("Harkinnavaraiset haettu, loopataan hakukohteet {}!", hakuOid);
-        for (HakukohdeDTO hakukohde : b) {
-            LOGGER.error("Laitetaan jonosijat hakukohteelle {}!", hakukohde.getOid());
+        LOGGER.error("Harkinnavaraiset haettu, loopataan hakukohteet {} - yhteensä {}", hakuOid, b.size());
+        for (int i = 0; i < b.size(); i++) {
+            HakukohdeDTO hakukohde = b.get(i);
+            LOGGER.error("Laitetaan jonosijat hakukohteelle {} - indeksi {}", hakukohde.getOid(), i);
             applyMuokatutJonosijat(hakukohde.getOid(), hakukohde.getValinnanvaihe(), a, c);
             LOGGER.error("Laitettu jonosijat hakukohteelle {}!", hakukohde.getOid());
         }
+        LOGGER.error("Muokatut jonosijat laitettu kaikille hakukohteille {}!", hakuOid);
     }
 
     private void applyMuokatutJonosijat(String hakukohdeoid, List<ValinnanvaiheDTO> b, List<MuokattuJonosija> a, List<HarkinnanvarainenHyvaksyminen> c) {
