@@ -46,6 +46,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 			valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste);
 			return "Onnistui!";
 		} catch (Exception e) {
+            e.printStackTrace();
 			LOG.error("Valintalaskennassa tapahtui virhe {} {} {}",
 					e.getMessage(), e.getCause(),
 					Arrays.toString(e.getStackTrace()));

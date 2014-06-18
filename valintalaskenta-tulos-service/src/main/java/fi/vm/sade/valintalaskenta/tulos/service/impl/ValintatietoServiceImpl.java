@@ -150,7 +150,6 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 				ht.setTarjoajaOid(v.getTarjoajaoid());
 				hakuTyyppi.getHakukohteet().add(ht);
 
-                LOG.error("Konvertoidaan Valinnanvaiheet {}!", hakuOid);
 				for (ValinnanvaiheDTO valinnanvaiheDTO : v.getValinnanvaihe()) {
 					ht.getValinnanvaihe().add(
 							createValinnanvaiheTyyppi(valinnanvaiheDTO));

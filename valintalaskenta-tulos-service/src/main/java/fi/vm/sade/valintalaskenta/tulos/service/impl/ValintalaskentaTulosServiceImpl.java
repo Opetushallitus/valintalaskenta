@@ -143,7 +143,6 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             HakukohdeDTO hakukohde = b.get(i);
             LOGGER.error("Laitetaan jonosijat hakukohteelle {} - indeksi {}", hakukohde.getOid(), i);
             applyMuokatutJonosijat(hakukohde.getOid(), hakukohde.getValinnanvaihe(), a, c);
-            LOGGER.error("Laitettu jonosijat hakukohteelle {}!", hakukohde.getOid());
         }
         LOGGER.error("Muokatut jonosijat laitettu kaikille hakukohteille {}!", hakuOid);
     }
