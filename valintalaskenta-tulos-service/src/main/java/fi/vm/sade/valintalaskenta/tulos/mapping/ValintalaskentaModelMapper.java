@@ -26,6 +26,7 @@ public class ValintalaskentaModelMapper extends ModelMapper {
 		super();
 		this.addMappings(new PropertyMap<ValinnanvaiheDTO, Valinnanvaihe>() {
 			protected void configure() {
+				map().setHakuOid(source.getHakuOid());
 				map().setValinnanvaiheOid(source.getValinnanvaiheoid());
 			}
 		});

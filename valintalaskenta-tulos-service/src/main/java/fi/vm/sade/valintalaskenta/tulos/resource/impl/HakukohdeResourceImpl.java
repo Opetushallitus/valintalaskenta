@@ -72,8 +72,11 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
 					.build();
 		} catch (Exception e) {
 			LOGGER.error(
-					"Valintatapajonon pisteitä ei saatu päivitettyä {}\r\n",
-					e.getMessage(), Arrays.toString(e.getStackTrace()));
+					"Valintatapajonon pisteitä ei saatu päivitettyä hakukohteelle {}, {}\r\n{}\r\n{}",
+					hakukohdeoid, e.getMessage(),
+					Arrays.toString(e.getStackTrace()));
+			// , new GsonBuilder()
+			// .setPrettyPrinting().create().toJson(vaihe)
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.build();
 		}
