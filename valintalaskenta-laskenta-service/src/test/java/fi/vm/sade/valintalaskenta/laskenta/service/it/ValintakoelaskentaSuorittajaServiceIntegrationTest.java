@@ -3,11 +3,11 @@ package fi.vm.sade.valintalaskenta.laskenta.service.it;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
-import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
+import fi.vm.sade.service.valintaperusteet.dto.FunktiokutsuDTO;
+import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
+import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi;
-import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.SyoteparametriTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
+import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
@@ -53,25 +53,25 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     @Autowired
     private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
 
-    private static final FunktiokutsuTyyppi totuusarvoTrue;
-    private static final FunktiokutsuTyyppi totuusarvoFalse;
+    private static final FunktiokutsuDTO totuusarvoTrue;
+    private static final FunktiokutsuDTO totuusarvoFalse;
 
 
     static {
-        totuusarvoTrue = new FunktiokutsuTyyppi();
-        totuusarvoTrue.setFunktionimi(Funktionimi.TOTUUSARVO.name());
+        totuusarvoTrue = new FunktiokutsuDTO();
+        totuusarvoTrue.setFunktionimi(Funktionimi.TOTUUSARVO);
 
         {
-            SyoteparametriTyyppi param = new SyoteparametriTyyppi();
+            SyoteparametriDTO param = new SyoteparametriDTO();
             param.setAvain("totuusarvo");
             param.setArvo(Boolean.TRUE.toString());
             totuusarvoTrue.getSyoteparametrit().add(param);
         }
 
-        totuusarvoFalse = new FunktiokutsuTyyppi();
-        totuusarvoFalse.setFunktionimi(Funktionimi.TOTUUSARVO.name());
+        totuusarvoFalse = new FunktiokutsuDTO();
+        totuusarvoFalse.setFunktionimi(Funktionimi.TOTUUSARVO);
         {
-            SyoteparametriTyyppi param = new SyoteparametriTyyppi();
+            SyoteparametriDTO param = new SyoteparametriDTO();
             param.setAvain("totuusarvo");
             param.setArvo(Boolean.FALSE.toString());
             totuusarvoFalse.getSyoteparametrit().add(param);
@@ -85,7 +85,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         final String hakukohdeOid2 = "hakukohdeOid2";
         final String hakemusOid = "hakemusOid";
 
-        final HakemusTyyppi hakemus = luoHakemus(hakemusOid, "hakijaOid", hakukohdeOid1, hakukohdeOid2);
+        final HakemusDTO hakemus = luoHakemus(hakemusOid, "hakijaOid", hakukohdeOid1, hakukohdeOid2);
 
         final String hakuOid = "hakuOid";
         final String valintakoetunniste = "valintakoetunniste";
@@ -93,28 +93,28 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         final String valinnanVaiheOid1 = "valinnanVaiheOid1";
         final int valinnanVaiheJarjestysluku1 = 0;
 
-        Map<String, FunktiokutsuTyyppi> kokeet1 = new HashMap<String, FunktiokutsuTyyppi>();
+        Map<String, FunktiokutsuDTO> kokeet1 = new HashMap<String, FunktiokutsuDTO>();
         kokeet1.put(valintakoetunniste, totuusarvoTrue);
         kokeet1.put("valintakoetunniste2", totuusarvoTrue);
 
-        ValintaperusteetTyyppi valintaperusteet1 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1,
+        ValintaperusteetDTO valintaperusteet1 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1,
                 valinnanVaiheJarjestysluku1, kokeet1);
 
         final String valinnanVaiheOid2 = "valinnanVaiheOid2";
         final int valinnanVaiheJarjestysluku2 = 1;
 
-        Map<String, FunktiokutsuTyyppi> kokeet2 = new HashMap<String, FunktiokutsuTyyppi>();
+        Map<String, FunktiokutsuDTO> kokeet2 = new HashMap<String, FunktiokutsuDTO>();
         kokeet2.put(valintakoetunniste, totuusarvoFalse);
 
-        ValintaperusteetTyyppi valintaperusteet2 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid2, valinnanVaiheOid2,
+        ValintaperusteetDTO valintaperusteet2 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid2, valinnanVaiheOid2,
                 valinnanVaiheJarjestysluku2, kokeet2);
 
-        List<ValintaperusteetTyyppi> valintaperusteet = new ArrayList<ValintaperusteetTyyppi>();
+        List<ValintaperusteetDTO> valintaperusteet = new ArrayList<ValintaperusteetDTO>();
         valintaperusteet.add(valintaperusteet1);
         valintaperusteet.add(valintaperusteet2);
 
         assertNull(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid));
-        valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet);
+        valintakoelaskentaSuorittajaService.laskeRest(hakemus, valintaperusteet);
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         assertNotNull(osallistuminen);
     }
@@ -128,8 +128,8 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         final String valinnanVaiheOid = "vv2";
         final String valintakoetunniste = "koe1";
 
-        ValintaperusteetTyyppi vv2 = luoValintaperusteetJaValintakoeValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 1, valintakoetunniste);
-        valintakoelaskentaSuorittajaService.laske(luoHakemus(hakemusOid, hakemusOid, hakukohdeOid), Arrays.asList(vv2));
+        ValintaperusteetDTO vv2 = luoValintaperusteetJaValintakoeValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 1, valintakoetunniste);
+        valintakoelaskentaSuorittajaService.laskeRest(luoHakemus(hakemusOid, hakemusOid, hakukohdeOid), Arrays.asList(vv2));
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         assertNotNull(osallistuminen);

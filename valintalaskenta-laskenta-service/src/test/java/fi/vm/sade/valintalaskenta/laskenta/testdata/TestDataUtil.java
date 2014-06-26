@@ -3,16 +3,11 @@ package fi.vm.sade.valintalaskenta.laskenta.testdata;
 import java.util.Arrays;
 import java.util.Map;
 
-import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
-import fi.vm.sade.service.hakemus.schema.HakukohdeTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.JarjestyskriteeriTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.TasasijasaantoTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.TavallinenValinnanVaiheTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ValintakoeTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ValintakoeValinnanVaiheTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ValintatapajonoJarjestyskriteereillaTyyppi;
+import fi.vm.sade.service.valintaperusteet.dto.*;
+import fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi;
+import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.HakukohdeValintakoeData;
@@ -22,50 +17,50 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.Hakukohd
  */
 public abstract class TestDataUtil {
 
-	public static HakemusTyyppi luoHakemus(String hakemusOid, String hakijaOid) {
-		HakemusTyyppi hakemus = new HakemusTyyppi();
-		hakemus.setHakemusOid(hakemusOid);
+	public static HakemusDTO luoHakemus(String hakemusOid, String hakijaOid) {
+		HakemusDTO hakemus = new HakemusDTO();
+		hakemus.setHakemusoid(hakemusOid);
 		hakemus.setHakijaOid(hakijaOid);
 
 		return hakemus;
 	}
 
-	public static HakemusTyyppi luoHakemus(String hakemusOid, String hakijaOid,
+	public static HakemusDTO luoHakemus(String hakemusOid, String hakijaOid,
 			String... hakutoiveet) {
-		HakemusTyyppi hakemus = luoHakemus(hakemusOid, hakijaOid);
+		HakemusDTO hakemus = luoHakemus(hakemusOid, hakijaOid);
 
 		int i = 1;
 		for (String hakutoive : hakutoiveet) {
-			HakukohdeTyyppi toive = new HakukohdeTyyppi();
-			toive.setHakukohdeOid(hakutoive);
+			HakukohdeDTO toive = new HakukohdeDTO();
+			toive.setOid(hakutoive);
 			toive.setPrioriteetti(i);
-			hakemus.getHakutoive().add(toive);
+			hakemus.getHakukohteet().add(toive);
 			++i;
 		}
 
 		return hakemus;
 	}
 
-	public static HakemusTyyppi luoHakemus(String hakemusOid, String hakijaOid,
-			HakukohdeTyyppi... hakutoiveet) {
-		HakemusTyyppi hakemus = luoHakemus(hakemusOid, hakijaOid);
-		hakemus.getHakutoive().addAll(Arrays.asList(hakutoiveet));
+	public static HakemusDTO luoHakemus(String hakemusOid, String hakijaOid,
+			HakukohdeDTO... hakutoiveet) {
+		HakemusDTO hakemus = luoHakemus(hakemusOid, hakijaOid);
+		hakemus.getHakukohteet().addAll(Arrays.asList(hakutoiveet));
 
 		return hakemus;
 	}
 
-	public static ValintaperusteetTyyppi luoValintaperusteet(String hakuOid,
+	public static ValintaperusteetDTO luoValintaperusteet(String hakuOid,
 			String hakukohdeOid) {
-		ValintaperusteetTyyppi perusteet = new ValintaperusteetTyyppi();
+		ValintaperusteetDTO perusteet = new ValintaperusteetDTO();
 		perusteet.setHakukohdeOid(hakukohdeOid);
 		perusteet.setHakuOid(hakuOid);
 		return perusteet;
 	}
 
-	public static ValintaperusteetTyyppi luoValintaperusteetJaValintakoeValinnanvaihe(
+	public static ValintaperusteetDTO luoValintaperusteetJaValintakoeValinnanvaihe(
 			String hakuOid, String hakukohdeOid, String valinnanVaiheOid,
 			int valinnanVaiheJarjestysluku, String... valintakoeTunnisteet) {
-		ValintaperusteetTyyppi perusteet = luoValintaperusteet(hakuOid,
+		ValintaperusteetDTO perusteet = luoValintaperusteet(hakuOid,
 				hakukohdeOid);
 		perusteet.setValinnanVaihe(luoValintakoeValinnanVaihe(valinnanVaiheOid,
 				valinnanVaiheJarjestysluku, valintakoeTunnisteet));
@@ -73,10 +68,10 @@ public abstract class TestDataUtil {
 		return perusteet;
 	}
 
-	public static ValintaperusteetTyyppi luoValintaperusteetJaTavallinenValinnanvaihe(
+	public static ValintaperusteetDTO luoValintaperusteetJaTavallinenValinnanvaihe(
 			String hakuOid, String hakukohdeOid, String valinnanVaiheOid,
 			int valinnanVaiheJarjestysluku) {
-		ValintaperusteetTyyppi perusteet = luoValintaperusteet(hakuOid,
+		ValintaperusteetDTO perusteet = luoValintaperusteet(hakuOid,
 				hakukohdeOid);
 		perusteet.setValinnanVaihe(luoTavallinenValinnanvaihe(valinnanVaiheOid,
 				valinnanVaiheJarjestysluku));
@@ -84,41 +79,42 @@ public abstract class TestDataUtil {
 		return perusteet;
 	}
 
-	public static TavallinenValinnanVaiheTyyppi luoTavallinenValinnanvaihe(
+	public static ValintaperusteetValinnanVaiheDTO luoTavallinenValinnanvaihe(
 			String valinnanVaiheOid, int valinnanVaiheJarjestysluku) {
-		TavallinenValinnanVaiheTyyppi vaihe = new TavallinenValinnanVaiheTyyppi();
+		ValintaperusteetValinnanVaiheDTO vaihe = new ValintaperusteetValinnanVaiheDTO();
 		vaihe.setValinnanVaiheOid(valinnanVaiheOid);
 		vaihe.setValinnanVaiheJarjestysluku(valinnanVaiheJarjestysluku);
+        vaihe.setValinnanVaiheTyyppi(ValinnanVaiheTyyppi.TAVALLINEN);
 		return vaihe;
 	}
 
-	public static ValintatapajonoJarjestyskriteereillaTyyppi luoValintatapajono(
+	public static ValintatapajonoJarjestyskriteereillaDTO luoValintatapajono(
 			String valintatapajonoOid, int prioriteetti, int aloituspaikat,
-			JarjestyskriteeriTyyppi... jarjestyskriteerit) {
-		ValintatapajonoJarjestyskriteereillaTyyppi jono = new ValintatapajonoJarjestyskriteereillaTyyppi();
+			ValintaperusteetJarjestyskriteeriDTO... jarjestyskriteerit) {
+		ValintatapajonoJarjestyskriteereillaDTO jono = new ValintatapajonoJarjestyskriteereillaDTO();
 		jono.setOid(valintatapajonoOid);
 		jono.setAloituspaikat(aloituspaikat);
 		jono.setNimi(valintatapajonoOid);
 		jono.setPrioriteetti(prioriteetti);
 		jono.setSiirretaanSijoitteluun(true);
-		jono.setTasasijasaanto(TasasijasaantoTyyppi.ARVONTA);
+		jono.setTasasijasaanto(Tasasijasaanto.ARVONTA.name());
 		jono.getJarjestyskriteerit().addAll(Arrays.asList(jarjestyskriteerit));
 		return jono;
 	}
 
-	public static JarjestyskriteeriTyyppi luoJarjestyskriteeri(
-			FunktiokutsuTyyppi funktiokutsu, int prioriteetti) {
-		JarjestyskriteeriTyyppi jk = new JarjestyskriteeriTyyppi();
+	public static ValintaperusteetJarjestyskriteeriDTO luoJarjestyskriteeri(
+			ValintaperusteetFunktiokutsuDTO funktiokutsu, int prioriteetti) {
+		ValintaperusteetJarjestyskriteeriDTO jk = new ValintaperusteetJarjestyskriteeriDTO();
 		jk.setFunktiokutsu(funktiokutsu);
 		jk.setPrioriteetti(prioriteetti);
 		return jk;
 	}
 
-	public static ValintaperusteetTyyppi luoValintaperusteetJaValintakoeValinnanVaihe(
+	public static ValintaperusteetDTO luoValintaperusteetJaValintakoeValinnanVaihe(
 			String hakuOid, String hakukohdeOid, String valinnanVaiheOid,
 			int valinnanVaiheJarjestysluku,
-			Map<String, FunktiokutsuTyyppi> valintakokeetJaKaavat) {
-		ValintaperusteetTyyppi perusteet = luoValintaperusteet(hakuOid,
+			Map<String, FunktiokutsuDTO> valintakokeetJaKaavat) {
+		ValintaperusteetDTO perusteet = luoValintaperusteet(hakuOid,
 				hakukohdeOid);
 		perusteet.setValinnanVaihe(luoValinnanVaihe(valinnanVaiheOid,
 				valinnanVaiheJarjestysluku, valintakokeetJaKaavat));
@@ -126,24 +122,25 @@ public abstract class TestDataUtil {
 		return perusteet;
 	}
 
-	public static ValintakoeValinnanVaiheTyyppi luoValintakoeValinnanVaihe(
+	public static ValintaperusteetValinnanVaiheDTO luoValintakoeValinnanVaihe(
 			String valinnanVaiheOid, int jarjestysluku) {
-		ValintakoeValinnanVaiheTyyppi vaihe = new ValintakoeValinnanVaiheTyyppi();
+		ValintaperusteetValinnanVaiheDTO vaihe = new ValintaperusteetValinnanVaiheDTO();
 		vaihe.setValinnanVaiheOid(valinnanVaiheOid);
 		vaihe.setValinnanVaiheJarjestysluku(jarjestysluku);
+        vaihe.setValinnanVaiheTyyppi(ValinnanVaiheTyyppi.VALINTAKOE);
 
 		return vaihe;
 	}
 
-	private static ValintakoeValinnanVaiheTyyppi luoValinnanVaihe(
+	private static ValintaperusteetValinnanVaiheDTO luoValinnanVaihe(
 			String valinnanVaiheOid, int valinnanVaiheJarjestysluku,
-			Map<String, FunktiokutsuTyyppi> valintakokeetJaKaavat) {
-		ValintakoeValinnanVaiheTyyppi vaihe = luoValintakoeValinnanVaihe(
+			Map<String, FunktiokutsuDTO> valintakokeetJaKaavat) {
+		ValintaperusteetValinnanVaiheDTO vaihe = luoValintakoeValinnanVaihe(
 				valinnanVaiheOid, valinnanVaiheJarjestysluku);
 
-		for (Map.Entry<String, FunktiokutsuTyyppi> e : valintakokeetJaKaavat
+		for (Map.Entry<String, FunktiokutsuDTO> e : valintakokeetJaKaavat
 				.entrySet()) {
-			ValintakoeTyyppi koe = luoValintakoe(e.getKey(), e.getKey());
+			ValintakoeDTO koe = luoValintakoe(e.getKey(), e.getKey());
 			koe.setFunktiokutsu(e.getValue());
 			vaihe.getValintakoe().add(koe);
 		}
@@ -151,10 +148,10 @@ public abstract class TestDataUtil {
 		return vaihe;
 	}
 
-	public static ValintakoeValinnanVaiheTyyppi luoValintakoeValinnanVaihe(
+	public static ValintaperusteetValinnanVaiheDTO luoValintakoeValinnanVaihe(
 			String valinnanVaiheOid, int jarjestysluku,
 			String... valintakoeTunnisteet) {
-		ValintakoeValinnanVaiheTyyppi vaihe = luoValintakoeValinnanVaihe(
+		ValintaperusteetValinnanVaiheDTO vaihe = luoValintakoeValinnanVaihe(
 				valinnanVaiheOid, jarjestysluku);
 
 		for (String tunniste : valintakoeTunnisteet) {
@@ -164,21 +161,22 @@ public abstract class TestDataUtil {
 		return vaihe;
 	}
 
-	public static ValintakoeTyyppi luoValintakoe(String valintakoeOid,
+	public static ValintakoeDTO luoValintakoe(String valintakoeOid,
 			String tunniste) {
-		ValintakoeTyyppi koe = new ValintakoeTyyppi();
-		koe.setFunktiokutsu(new FunktiokutsuTyyppi());
+		ValintakoeDTO koe = new ValintakoeDTO();
+		koe.setFunktiokutsu(new FunktiokutsuDTO());
 		koe.setTunniste(tunniste);
 		koe.setOid(valintakoeOid);
 		koe.setLahetetaankoKoekutsut(true);
 		koe.setAktiivinen(true);
+        koe.setKutsutaankoKaikki(false);
 		return koe;
 	}
 
-	public static HakukohdeTyyppi luoHakukohdeTyyppi(String hakukohdeOid,
+	public static HakukohdeDTO luoHakukohdeDTO(String hakukohdeOid,
 			int prioriteetti) {
-		HakukohdeTyyppi hakukohde = new HakukohdeTyyppi();
-		hakukohde.setHakukohdeOid(hakukohdeOid);
+		HakukohdeDTO hakukohde = new HakukohdeDTO();
+		hakukohde.setOid(hakukohdeOid);
 		hakukohde.setPrioriteetti(prioriteetti);
 
 		return hakukohde;

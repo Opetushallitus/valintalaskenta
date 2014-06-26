@@ -21,6 +21,8 @@
 		Tehdasluokat testidatan generointiin. Tehdasluokat toimii suoraan kontekstista nykimällä context.getBean('TestObjectNeededToBeCreated'.class)
 	 -->
 	<context:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.testdata"/>
+
+    <bean id="modelMapper" class="fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper"/>
 	
     <import resource="spring/application-context-service.xml" />
     

@@ -14,6 +14,7 @@ import java.util.Set;
 import javax.jws.WebParam;
 import javax.xml.datatype.DatatypeFactory;
 
+import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.HakemusOsallistuminenDTO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,8 +67,8 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 	@Override
 	// @PreAuthorize(READ_UPDATE_CRUD)
 	public List<HakemusOsallistuminenTyyppi> haeValintatiedotHakukohteelle(
-			@WebParam(name = "valintakoeOid", targetNamespace = "") List<String> valintakoeOid,
-			@WebParam(name = "hakukohdeOid", targetNamespace = "") String hakukohdeOid) {
+            @WebParam(name = "valintakoeOid", targetNamespace = "") List<String> valintakoeOid,
+            @WebParam(name = "hakukohdeOid", targetNamespace = "") String hakukohdeOid) {
 		List<HakemusOsallistuminenTyyppi> osallistumiset = new ArrayList<HakemusOsallistuminenTyyppi>();
 		try {
 			List<ValintakoeOsallistuminen> valinnanvaiheet = tulosService

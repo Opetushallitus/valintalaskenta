@@ -2,6 +2,9 @@ package fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl;
 
 import java.util.Map;
 
+import fi.vm.sade.service.valintaperusteet.dto.FunktiokutsuDTO;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
+import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -92,4 +95,52 @@ public class ValintakoeosallistumislaskinImpl implements
 					"Palvelu hyväksyy vain totuusarvofunktioita!");
 		}
 	}
+
+    @Override
+    public OsallistuminenTulos laskeOsallistuminenYhdelleHakukohteelleRest(Hakukohde hakukohde, Hakemus hakemus, Funktiokutsu kaava) {
+        switch (kaava.getFunktionimi().getTyyppi()) {
+            case TOTUUSARVOFUNKTIO:
+                Laskentatulos<Boolean> tulos = laskentaService
+                        .suoritaValintakoelaskenta(hakukohde, hakemus, laskentadomainkonvertteriWrapper
+                                .muodostaTotuusarvolasku(kaava));
+
+                // Jos tulosta ei ole saatu laskettua (ts. sitä ei ole) tai jos
+                // tuloksen tila on hylätty, voidaan
+                // olettaa, että henkilön pitää osallistua valintakokeeseen
+                Osallistuminen osallistuminen = null;
+                if (Tila.Tilatyyppi.VIRHE.equals(tulos.getTila().getTilatyyppi())) {
+                    // Palautetaan virhe, jos laskenta palautti virheen
+                    osallistuminen = Osallistuminen.VIRHE;
+                } else if (tulos.getTulos() == null
+                        || Tila.Tilatyyppi.HYLATTY.equals(tulos.getTila()
+                        .getTilatyyppi())) {
+                    osallistuminen = Osallistuminen.OSALLISTUU;
+                } else {
+                    osallistuminen = tulos.getTulos() ? Osallistuminen.OSALLISTUU
+                            : Osallistuminen.EI_OSALLISTU;
+                }
+
+                OsallistuminenTulos osallistuminenTulos = new OsallistuminenTulos();
+                osallistuminenTulos.setOsallistuminen(osallistuminen);
+                osallistuminenTulos.setLaskentaTila(tulos.getTila().getTilatyyppi()
+                        .name());
+                osallistuminenTulos.setLaskentaTulos(tulos.getTulos());
+
+                Map<String, String> kuvaus = null;
+                String tekninen = null;
+                if (tulos.getTila() instanceof Hylattytila) {
+                    kuvaus = ((Hylattytila) tulos.getTila()).getKuvaus();
+                    tekninen = ((Hylattytila) tulos.getTila()).getTekninenKuvaus();
+                } else if (tulos.getTila() instanceof Virhetila) {
+                    kuvaus = ((Virhetila) tulos.getTila()).getKuvaus();
+                }
+                osallistuminenTulos.setKuvaus(kuvaus);
+                osallistuminenTulos.setTekninenKuvaus(tekninen);
+                return osallistuminenTulos;
+
+            default:
+                throw new LaskentaVaarantyyppisellaFunktiollaException(
+                        "Palvelu hyväksyy vain totuusarvofunktioita!");
+        }
+    }
 }

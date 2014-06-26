@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl;
 
 import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
+import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 
 /**
  * User: kkammone
@@ -17,6 +18,16 @@ public class HakemusWrapper {
     private boolean harkinnanvaraisuus = false;
 
     private int hakutoiveprioriteetti;
+
+    public HakemusDTO getHakemusDTO() {
+        return hakemusDTO;
+    }
+
+    public void setHakemusDTO(HakemusDTO hakemusDTO) {
+        this.hakemusDTO = hakemusDTO;
+    }
+
+    public HakemusDTO hakemusDTO;
 
     public HakemusTyyppi getHakemusTyyppi() {
         return hakemusTyyppi;

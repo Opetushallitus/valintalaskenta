@@ -29,6 +29,14 @@ public class HakukohdeDTO {
     @JsonView(JsonViews.Basic.class)
     private List<ValinnanvaiheDTO> valinnanvaihe = new ArrayList<ValinnanvaiheDTO>();
 
+    @ApiModelProperty(value = "Prioriteetti", required = true)
+    @JsonView(JsonViews.Basic.class)
+    private int prioriteetti;
+
+    private boolean harkinnanvaraisuus = false;
+
+    private List<HakijaryhmaDTO> hakijaryhma;
+
     public String getHakuoid() {
         return hakuoid;
     }
@@ -59,5 +67,29 @@ public class HakukohdeDTO {
 
     public void setTarjoajaoid(String tarjoajaoid) {
         this.tarjoajaoid = tarjoajaoid;
+    }
+
+    public int getPrioriteetti() {
+        return prioriteetti;
+    }
+
+    public void setPrioriteetti(int prioriteetti) {
+        this.prioriteetti = prioriteetti;
+    }
+
+    public boolean isHarkinnanvaraisuus() {
+        return harkinnanvaraisuus;
+    }
+
+    public void setHarkinnanvaraisuus(boolean harkinnanvaraisuus) {
+        this.harkinnanvaraisuus = harkinnanvaraisuus;
+    }
+
+    public List<HakijaryhmaDTO> getHakijaryhma() {
+        return hakijaryhma;
+    }
+
+    public void setHakijaryhma(List<HakijaryhmaDTO> hakijaryhma) {
+        this.hakijaryhma = hakijaryhma;
     }
 }

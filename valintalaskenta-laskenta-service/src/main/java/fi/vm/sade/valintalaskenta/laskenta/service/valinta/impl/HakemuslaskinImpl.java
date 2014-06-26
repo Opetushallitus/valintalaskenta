@@ -7,6 +7,7 @@ import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Laskentatulos;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
+import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.HakemuslaskinService;
@@ -50,12 +51,13 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         jktulos.setPrioriteetti(jkPrioriteetti);
 
 
-        HakemusTyyppi hakemus = laskettavaHakemus.getHakemusTyyppi();
+        HakemusDTO hakemus = laskettavaHakemus.getHakemusDTO();
+
         TilaJaSelite tilaJaSelite =
-                edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusOid(),
+                edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(),
                         tulos.getTila(), edellinenVaihe);
 
-        TilaJaSelite edellinenTila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusOid(), edellinenVaihe);
+        TilaJaSelite edellinenTila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(), edellinenVaihe);
         // Jos hakija ei ole hyväksyttävissä edellisen valinnanvaiheen jäljiltä, niin tulosta ei aseteta
         //if(tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY) && !tulos.getTila().getTilatyyppi().equals(Tila.Tilatyyppi.HYLATTY)) {
         if(tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY) &&
@@ -71,18 +73,18 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         jktulos.setTekninenKuvaus(tilaJaSelite.getTekninenSelite());
         jktulos.setNimi(jkNimi);
 
-        if (!jonosijatHakemusOidinMukaan.containsKey(hakemus.getHakemusOid())) {
+        if (!jonosijatHakemusOidinMukaan.containsKey(hakemus.getHakemusoid())) {
             Jonosija jonosija = new Jonosija();
-            jonosija.setEtunimi(hakemus.getHakijanEtunimi());
-            jonosija.setHakemusOid(hakemus.getHakemusOid());
+            jonosija.setEtunimi(hakemus.getEtunimi());
+            jonosija.setHakemusOid(hakemus.getHakemusoid());
             jonosija.setHakijaOid(hakemus.getHakijaOid());
             jonosija.setHakutoiveprioriteetti(laskettavaHakemus.getHakutoiveprioriteetti());
             jonosija.setHarkinnanvarainen(laskettavaHakemus.isHarkinnanvaraisuus());
-            jonosija.setSukunimi(hakemus.getHakijanSukunimi());
-            jonosijatHakemusOidinMukaan.put(hakemus.getHakemusOid(), new JonosijaJaSyotetytArvot(jonosija));
+            jonosija.setSukunimi(hakemus.getSukunimi());
+            jonosijatHakemusOidinMukaan.put(hakemus.getHakemusoid(), new JonosijaJaSyotetytArvot(jonosija));
         }
 
-        JonosijaJaSyotetytArvot jonosija = jonosijatHakemusOidinMukaan.get(hakemus.getHakemusOid());
+        JonosijaJaSyotetytArvot jonosija = jonosijatHakemusOidinMukaan.get(hakemus.getHakemusoid());
         jonosija.getJonosija().getJarjestyskriteeritulokset().add(jktulos);
         jonosija.lisaaSyotetytArvot(tulos.getSyotetytArvot());
         jonosija.lisaaFunktioTulokset(tulos.getFunktioTulokset());

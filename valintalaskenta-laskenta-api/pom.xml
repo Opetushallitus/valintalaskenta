@@ -27,6 +27,11 @@
             <artifactId>swagger-jersey-jaxrs_2.10</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>fi.vm.sade.valintaperusteet</groupId>
+            <artifactId>valintaperusteet-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 	</dependencies>
     <build>
         <plugins>

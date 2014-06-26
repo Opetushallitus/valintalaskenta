@@ -3,18 +3,16 @@ package fi.vm.sade.valintalaskenta.laskenta.service.it;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
-import fi.vm.sade.service.hakemus.schema.AvainArvoTyyppi;
-import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
+import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
+import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
+import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetFunktiokutsuDTO;
+import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetValinnanVaiheDTO;
 import fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi;
-import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.SyoteparametriTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.TavallinenValinnanVaiheTyyppi;
-import fi.vm.sade.service.valintaperusteet.schema.ValintaperusteetTyyppi;
+import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.ValintalaskentaSuorittajaService;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,11 +24,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.soap.MessageFactory;
-import javax.xml.soap.SOAPMessage;
-import java.io.*;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
@@ -66,190 +59,97 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
     @Autowired
     private JarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAO;
 
-    private static FunktiokutsuTyyppi sata;
-    private static FunktiokutsuTyyppi kaksisataa;
-    private static FunktiokutsuTyyppi kolmesataa;
-    private static FunktiokutsuTyyppi neljasataa;
-    private static FunktiokutsuTyyppi viisisataa;
-    private static FunktiokutsuTyyppi kuusisataa;
-    private static FunktiokutsuTyyppi seitsemansataa;
-    private static FunktiokutsuTyyppi kahdeksansataa;
+    private static ValintaperusteetFunktiokutsuDTO sata;
+    private static ValintaperusteetFunktiokutsuDTO kaksisataa;
+    private static ValintaperusteetFunktiokutsuDTO kolmesataa;
+    private static ValintaperusteetFunktiokutsuDTO neljasataa;
+    private static ValintaperusteetFunktiokutsuDTO viisisataa;
+    private static ValintaperusteetFunktiokutsuDTO kuusisataa;
+    private static ValintaperusteetFunktiokutsuDTO seitsemansataa;
+    private static ValintaperusteetFunktiokutsuDTO kahdeksansataa;
 
 
     static {
-        sata = new FunktiokutsuTyyppi();
-        sata.setFunktionimi(Funktionimi.LUKUARVO.name());
+        sata = new ValintaperusteetFunktiokutsuDTO();
+        sata.setFunktionimi(Funktionimi.LUKUARVO);
         sata.setTallennaTulos(true);
         sata.setTulosTunniste("sata");
         {
-            SyoteparametriTyyppi param = new SyoteparametriTyyppi();
+            SyoteparametriDTO param = new SyoteparametriDTO();
             param.setAvain("luku");
             param.setArvo("100.0");
             sata.getSyoteparametrit().add(param);
         }
 
-        kaksisataa = new FunktiokutsuTyyppi();
-        kaksisataa.setFunktionimi(Funktionimi.LUKUARVO.name());
+        kaksisataa = new ValintaperusteetFunktiokutsuDTO();
+        kaksisataa.setFunktionimi(Funktionimi.LUKUARVO);
         kaksisataa.setTallennaTulos(true);
         kaksisataa.setTulosTunniste("kaksisataa");
         {
-            SyoteparametriTyyppi param = new SyoteparametriTyyppi();
+            SyoteparametriDTO param = new SyoteparametriDTO();
             param.setAvain("luku");
             param.setArvo("200.0");
             kaksisataa.getSyoteparametrit().add(param);
         }
 
-        kolmesataa = new FunktiokutsuTyyppi();
-        kolmesataa.setFunktionimi(Funktionimi.LUKUARVO.name());
+        kolmesataa = new ValintaperusteetFunktiokutsuDTO();
+        kolmesataa.setFunktionimi(Funktionimi.LUKUARVO);
         {
-            SyoteparametriTyyppi param = new SyoteparametriTyyppi();
+            SyoteparametriDTO param = new SyoteparametriDTO();
             param.setAvain("luku");
             param.setArvo("300.0");
             kolmesataa.getSyoteparametrit().add(param);
         }
 
-        neljasataa = new FunktiokutsuTyyppi();
-        neljasataa.setFunktionimi(Funktionimi.LUKUARVO.name());
+        neljasataa = new ValintaperusteetFunktiokutsuDTO();
+        neljasataa.setFunktionimi(Funktionimi.LUKUARVO);
         {
-            SyoteparametriTyyppi param = new SyoteparametriTyyppi();
+            SyoteparametriDTO param = new SyoteparametriDTO();
             param.setAvain("luku");
             param.setArvo("400.0");
             neljasataa.getSyoteparametrit().add(param);
         }
 
-        viisisataa = new FunktiokutsuTyyppi();
-        viisisataa.setFunktionimi(Funktionimi.LUKUARVO.name());
+        viisisataa = new ValintaperusteetFunktiokutsuDTO();
+        viisisataa.setFunktionimi(Funktionimi.LUKUARVO);
         {
-            SyoteparametriTyyppi param = new SyoteparametriTyyppi();
+            SyoteparametriDTO param = new SyoteparametriDTO();
             param.setAvain("luku");
             param.setArvo("500.0");
             viisisataa.getSyoteparametrit().add(param);
         }
 
-        kuusisataa = new FunktiokutsuTyyppi();
-        kuusisataa.setFunktionimi(Funktionimi.LUKUARVO.name());
+        kuusisataa = new ValintaperusteetFunktiokutsuDTO();
+        kuusisataa.setFunktionimi(Funktionimi.LUKUARVO);
         kuusisataa.setTallennaTulos(true);
         kuusisataa.setTulosTunniste("kuusisataa");
         {
-            SyoteparametriTyyppi param = new SyoteparametriTyyppi();
+            SyoteparametriDTO param = new SyoteparametriDTO();
             param.setAvain("luku");
             param.setArvo("600.0");
             kuusisataa.getSyoteparametrit().add(param);
         }
 
-        seitsemansataa = new FunktiokutsuTyyppi();
-        seitsemansataa.setFunktionimi(Funktionimi.LUKUARVO.name());
+        seitsemansataa = new ValintaperusteetFunktiokutsuDTO();
+        seitsemansataa.setFunktionimi(Funktionimi.LUKUARVO);
         {
-            SyoteparametriTyyppi param = new SyoteparametriTyyppi();
+            SyoteparametriDTO param = new SyoteparametriDTO();
             param.setAvain("luku");
             param.setArvo("700.0");
             seitsemansataa.getSyoteparametrit().add(param);
         }
 
-        kahdeksansataa = new FunktiokutsuTyyppi();
-        kahdeksansataa.setFunktionimi(Funktionimi.LUKUARVO.name());
+        kahdeksansataa = new ValintaperusteetFunktiokutsuDTO();
+        kahdeksansataa.setFunktionimi(Funktionimi.LUKUARVO);
         {
-            SyoteparametriTyyppi param = new SyoteparametriTyyppi();
+            SyoteparametriDTO param = new SyoteparametriDTO();
             param.setAvain("luku");
             param.setArvo("800.0");
             kahdeksansataa.getSyoteparametrit().add(param);
         }
     }
 
-    @Test
-    @Ignore
-    public void unmarshal() {
-
-        final String hakuOid = "hakuOid1";
-        final String hakukohdeOid1 = "1.2.246.562.5.76611616293";
-        final String hakukohdeOid2 = "hakukohdeOid2";
-        final String valinnanvaiheOid1 = "valinnanvaiheOid1";
-        final String valinnanvaiheOid2 = "valinnanvaiheOid2";
-
-        final String valinnanvaiheOid3 = "valinnanvaiheOid3";
-        final String valinnanvaiheOid4 = "valinnanvaiheOid4";
-
-        final String valintatapajonoOid1 = "valintatapajonoOid1";
-        final String valintatapajonoOid2 = "valintatapajonoOid2";
-        final String valintatapajonoOid3 = "valintatapajonoOid3";
-        final String valintatapajonoOid4 = "valintatapajonoOid4";
-        final String valintatapajonoOid5 = "valintatapajonoOid5";
-        final String valintatapajonoOid6 = "valintatapajonoOid6";
-
-        final String hakemusOid1 = "hakemusOid1";
-        final String hakemusOid2 = "hakemusOid2";
-
-        final String hakijaOid1 = "hakijaOid1";
-        final String hakijaOid2 = "hakijaOid2";
-
-
-        JAXBContext jc = null;
-        String xml = "";
-        StringBuilder sb = new StringBuilder();
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("valintalaskenta/valintalaskenta-laskenta-service/src/test/java/fi/vm/sade/valintalaskenta/laskenta/testdata/tyypit.xml"));
-            String current = null;
-            while ((current = br.readLine()) != null) {
-                sb.append(current);
-            }
-
-        } catch (FileNotFoundException e1) {
-            e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (IOException e1) {
-            e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-        xml = sb.toString();
-        try {
-
-            SOAPMessage message = MessageFactory.newInstance().createMessage(null,
-                    new ByteArrayInputStream(xml.getBytes()));
-            Unmarshaller unmarshaller = JAXBContext.newInstance(ValintaperusteetTyyppis.class).createUnmarshaller();
-            ValintaperusteetTyyppis tyypit = (ValintaperusteetTyyppis) unmarshaller.unmarshal(message.getSOAPBody().extractContentAsDocument());
-            //System.out.println(tyypit);
-            {
-                ValintaperusteetTyyppi valintaperusteet1 = luoValintaperusteet(hakuOid, hakukohdeOid1);
-                TavallinenValinnanVaiheTyyppi valinnanvaihe1 = luoTavallinenValinnanvaihe(valinnanvaiheOid1, 0);
-                valinnanvaihe1.getValintatapajono().add(luoValintatapajono(valintatapajonoOid1, 1, 10, luoJarjestyskriteeri(sata, 1), luoJarjestyskriteeri(kaksisataa, 2)));
-                valinnanvaihe1.getValintatapajono().add(luoValintatapajono(valintatapajonoOid2, 2, 20, luoJarjestyskriteeri(kolmesataa, 1)));
-                valintaperusteet1.setValinnanVaihe(valinnanvaihe1);
-
-                ValintaperusteetTyyppi valintaperusteet2 = luoValintaperusteet(hakuOid, hakukohdeOid1);
-                TavallinenValinnanVaiheTyyppi valinnanvaihe2 = luoTavallinenValinnanvaihe(valinnanvaiheOid2, 1);
-                valinnanvaihe2.getValintatapajono().add(luoValintatapajono(valintatapajonoOid3, 1, 30, luoJarjestyskriteeri(neljasataa, 1)));
-                valintaperusteet2.setValinnanVaihe(valinnanvaihe2);
-
-                ValintaperusteetTyyppi valintaperusteet3 = luoValintaperusteet(hakuOid, hakukohdeOid2);
-                TavallinenValinnanVaiheTyyppi valinnanvaihe3 = luoTavallinenValinnanvaihe(valinnanvaiheOid3, 0);
-                valinnanvaihe3.getValintatapajono().add(luoValintatapajono(valintatapajonoOid4, 1, 40, luoJarjestyskriteeri(viisisataa, 1), luoJarjestyskriteeri(kuusisataa, 2)));
-                valinnanvaihe3.getValintatapajono().add(luoValintatapajono(valintatapajonoOid5, 2, 50, luoJarjestyskriteeri(seitsemansataa, 1)));
-                valintaperusteet3.setValinnanVaihe(valinnanvaihe3);
-
-                ValintaperusteetTyyppi valintaperusteet4 = luoValintaperusteet(hakuOid, hakukohdeOid2);
-                TavallinenValinnanVaiheTyyppi valinnanvaihe4 = luoTavallinenValinnanvaihe(valinnanvaiheOid4, 1);
-                valinnanvaihe4.getValintatapajono().add(luoValintatapajono(valintatapajonoOid6, 1, 60, luoJarjestyskriteeri(kahdeksansataa, 1)));
-                valintaperusteet4.setValinnanVaihe(valinnanvaihe4);
-
-                AvainArvoTyyppi arvo = new AvainArvoTyyppi();
-                arvo.setAvain("Gymnasiets bildkonstlinje_paasykoe");
-                arvo.setArvo("8.0");
-                AvainArvoTyyppi osallistuminen = new AvainArvoTyyppi();
-                osallistuminen.setAvain("Gymnasiets bildkonstlinje_paasykoe-OSALLISTUMINEN");
-                osallistuminen.setArvo("OSALLISTUI");
-                HakemusTyyppi hakemus1 = luoHakemus(hakemusOid1, hakijaOid1, hakukohdeOid1, hakukohdeOid2);
-                hakemus1.getAvainArvo().add(arvo);
-                hakemus1.getAvainArvo().add(osallistuminen);
-                HakemusTyyppi hakemus2 = luoHakemus(hakemusOid2, hakijaOid2, hakukohdeOid2, hakukohdeOid1);
-                hakemus2.getAvainArvo().add(arvo);
-                hakemus2.getAvainArvo().add(osallistuminen);
-
-                valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(hakemus1, hakemus2), tyypit.getTyypit());
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-    }
+    
 
     @Test
     public void test() {
@@ -275,32 +175,32 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         final String hakijaOid1 = "hakijaOid1";
         final String hakijaOid2 = "hakijaOid2";
         {
-            ValintaperusteetTyyppi valintaperusteet1 = luoValintaperusteet(hakuOid, hakukohdeOid1);
-            TavallinenValinnanVaiheTyyppi valinnanvaihe1 = luoTavallinenValinnanvaihe(valinnanvaiheOid1, 0);
+            ValintaperusteetDTO valintaperusteet1 = luoValintaperusteet(hakuOid, hakukohdeOid1);
+            ValintaperusteetValinnanVaiheDTO valinnanvaihe1 = luoTavallinenValinnanvaihe(valinnanvaiheOid1, 0);
             valinnanvaihe1.getValintatapajono().add(luoValintatapajono(valintatapajonoOid1, 1, 10, luoJarjestyskriteeri(sata, 1), luoJarjestyskriteeri(kaksisataa, 2)));
             valinnanvaihe1.getValintatapajono().add(luoValintatapajono(valintatapajonoOid2, 2, 20, luoJarjestyskriteeri(kolmesataa, 1)));
             valintaperusteet1.setValinnanVaihe(valinnanvaihe1);
 
-            ValintaperusteetTyyppi valintaperusteet2 = luoValintaperusteet(hakuOid, hakukohdeOid1);
-            TavallinenValinnanVaiheTyyppi valinnanvaihe2 = luoTavallinenValinnanvaihe(valinnanvaiheOid2, 1);
+            ValintaperusteetDTO valintaperusteet2 = luoValintaperusteet(hakuOid, hakukohdeOid1);
+            ValintaperusteetValinnanVaiheDTO valinnanvaihe2 = luoTavallinenValinnanvaihe(valinnanvaiheOid2, 1);
             valinnanvaihe2.getValintatapajono().add(luoValintatapajono(valintatapajonoOid3, 1, 30, luoJarjestyskriteeri(neljasataa, 1)));
             valintaperusteet2.setValinnanVaihe(valinnanvaihe2);
 
-            ValintaperusteetTyyppi valintaperusteet3 = luoValintaperusteet(hakuOid, hakukohdeOid2);
-            TavallinenValinnanVaiheTyyppi valinnanvaihe3 = luoTavallinenValinnanvaihe(valinnanvaiheOid3, 0);
+            ValintaperusteetDTO valintaperusteet3 = luoValintaperusteet(hakuOid, hakukohdeOid2);
+            ValintaperusteetValinnanVaiheDTO valinnanvaihe3 = luoTavallinenValinnanvaihe(valinnanvaiheOid3, 0);
             valinnanvaihe3.getValintatapajono().add(luoValintatapajono(valintatapajonoOid4, 1, 40, luoJarjestyskriteeri(viisisataa, 1), luoJarjestyskriteeri(kuusisataa, 2)));
             valinnanvaihe3.getValintatapajono().add(luoValintatapajono(valintatapajonoOid5, 2, 50, luoJarjestyskriteeri(seitsemansataa, 1)));
             valintaperusteet3.setValinnanVaihe(valinnanvaihe3);
 
-            ValintaperusteetTyyppi valintaperusteet4 = luoValintaperusteet(hakuOid, hakukohdeOid2);
-            TavallinenValinnanVaiheTyyppi valinnanvaihe4 = luoTavallinenValinnanvaihe(valinnanvaiheOid4, 1);
+            ValintaperusteetDTO valintaperusteet4 = luoValintaperusteet(hakuOid, hakukohdeOid2);
+            ValintaperusteetValinnanVaiheDTO valinnanvaihe4 = luoTavallinenValinnanvaihe(valinnanvaiheOid4, 1);
             valinnanvaihe4.getValintatapajono().add(luoValintatapajono(valintatapajonoOid6, 1, 60, luoJarjestyskriteeri(kahdeksansataa, 1)));
             valintaperusteet4.setValinnanVaihe(valinnanvaihe4);
 
-            HakemusTyyppi hakemus1 = luoHakemus(hakemusOid1, hakijaOid1, hakukohdeOid1, hakukohdeOid2);
-            HakemusTyyppi hakemus2 = luoHakemus(hakemusOid2, hakijaOid2, hakukohdeOid2, hakukohdeOid1);
+            HakemusDTO hakemus1 = luoHakemus(hakemusOid1, hakijaOid1, hakukohdeOid1, hakukohdeOid2);
+            HakemusDTO hakemus2 = luoHakemus(hakemusOid2, hakijaOid2, hakukohdeOid2, hakukohdeOid1);
 
-            valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(hakemus1, hakemus2), Arrays.asList(valintaperusteet2, valintaperusteet1, valintaperusteet4, valintaperusteet3));
+            valintalaskentaSuorittajaService.suoritaLaskentaRest(Arrays.asList(hakemus1, hakemus2), Arrays.asList(valintaperusteet2, valintaperusteet1, valintaperusteet4, valintaperusteet3));
         }
 
         {
@@ -685,9 +585,9 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         final String valinnanVaiheOid = "vv3";
         final String valintatapajonoOid = "jono1";
 
-        ValintaperusteetTyyppi vv3 = luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 2);
-        ((TavallinenValinnanVaiheTyyppi) vv3.getValinnanVaihe()).getValintatapajono().add(luoValintatapajono(valintatapajonoOid, 0, 10, luoJarjestyskriteeri(sata, 1)));
-        valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(luoHakemus(hakemusOid, hakemusOid, hakukohdeOid)),
+        ValintaperusteetDTO vv3 = luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 2);
+        (vv3.getValinnanVaihe()).getValintatapajono().add(luoValintatapajono(valintatapajonoOid, 0, 10, luoJarjestyskriteeri(sata, 1)));
+        valintalaskentaSuorittajaService.suoritaLaskentaRest(Arrays.asList(luoHakemus(hakemusOid, hakemusOid, hakukohdeOid)),
                 Arrays.asList(vv3));
 
         Valinnanvaihe vaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanVaiheOid);
