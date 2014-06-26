@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -19,18 +20,9 @@ import java.util.Map;
 public class HakemusDTOToHakemusConverter implements Converter<HakemusDTO, Hakemus> {
 
     public Hakemus convert(HakemusDTO dto) {
-        Map<Integer, String> prioriteettiHakukohde = new HashMap<Integer, String>();
-        if(dto.getHakukohteet() != null) {
-            for (HakukohdeDTO hakukohde : dto.getHakukohteet()) {
-                prioriteettiHakukohde.put(hakukohde.getPrioriteetti(), hakukohde.getOid());
-            }
-        }
-        Map<String, String> target = new HashMap<String, String>();
-        if(dto.getAvaimet() != null) {
-            for (AvainArvoDTO a : dto.getAvaimet()) {
-                target.put(a.getAvain(), a.getArvo());
-            }
-        }
+
+        Map<Integer, String> prioriteettiHakukohde = dto.getHakukohteet().stream().collect(Collectors.toMap(HakukohdeDTO::getPrioriteetti, HakukohdeDTO::getOid));
+        Map<String, String> target = dto.getAvaimet().stream().collect(Collectors.toMap(AvainArvoDTO::getAvain, AvainArvoDTO::getArvo));
 
         return new Hakemus(dto.getHakemusoid(), prioriteettiHakukohde, target);
     }

@@ -254,8 +254,8 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
                     assertNotNull(historia2.getHistoria());
 
                     assertEquals(2, jonosija1.getFunktioTulokset().size());
-                    assertEquals("200.0", jonosija1.getFunktioTulokset().get(0).getArvo());
-                    assertEquals("100.0", jonosija1.getFunktioTulokset().get(1).getArvo());
+                    assertEquals("100.0", jonosija1.getFunktioTulokset().get(0).getArvo());
+                    assertEquals("200.0", jonosija1.getFunktioTulokset().get(1).getArvo());
                 }
 
                 {

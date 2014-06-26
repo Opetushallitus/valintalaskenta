@@ -17,6 +17,7 @@
 	            <ref bean="HakemusKonvertteri"/>
 	            <ref bean="SyoteparametriKonvertteri"/>
 	            <ref bean="ValintaperusteViiteKonvertteri"/>
+                <ref bean="HakemusDTOKonvertteri"/>
 	        </list>
 	    </property>
 	</bean>
