@@ -61,9 +61,6 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 	@Autowired
 	private ValintalaskentaTulosService tulosService;
 
-	@Autowired
-	private ConversionService conversionService;
-
 	@Override
 	// @PreAuthorize(READ_UPDATE_CRUD)
 	public List<HakemusOsallistuminenTyyppi> haeValintatiedotHakukohteelle(

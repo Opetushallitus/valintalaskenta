@@ -17,14 +17,6 @@
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.resource"/>
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.service.impl.converters"/>
 
-    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
-        <property name="converters">
-            <list>
-
-            </list>
-        </property>
-    </bean>
-
     <bean id="modelMapper" class="fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper"/>
 
 </beans>
