@@ -339,7 +339,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
                                     .laskeOsallistuminenYhdelleHakukohteelleRest(
                                             new Hakukohde(vp.getHakukohdeOid(),
                                                     hakukohteenValintaperusteet),
-                                            modelMapper.map(hakemus, Hakemus.class), modelMapper.map(koe.getFunktiokutsu(), Funktiokutsu.class));
+                                            hakemusConverter.convert(hakemus), modelMapper.map(koe.getFunktiokutsu(), Funktiokutsu.class));
                         } else {
                             osallistuminen = new OsallistuminenTulos();
                             osallistuminen.setKuvaus(tilaJaSelite.getSelite());

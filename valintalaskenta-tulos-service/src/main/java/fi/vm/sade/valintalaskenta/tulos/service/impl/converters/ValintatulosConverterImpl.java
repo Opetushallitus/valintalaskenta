@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValintatapajonoDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -51,9 +53,9 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
 			.getLogger(ValintatulosConverterImpl.class);
 
 	@Override
-	public List<ValinnanvaiheDTO> convertValinnanvaiheList(
+	public List<ValintatietoValinnanvaiheDTO> convertValinnanvaiheList(
 			List<Valinnanvaihe> valinnanVaiheList) {
-		List<ValinnanvaiheDTO> list = new ArrayList<ValinnanvaiheDTO>();
+		List<ValintatietoValinnanvaiheDTO> list = new ArrayList<>();
 		if (valinnanVaiheList == null || valinnanVaiheList.isEmpty()) {
 			return list;
 		}
@@ -175,8 +177,8 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
 	}
 
 	@Override
-	public ValinnanvaiheDTO convertValinnanvaihe(Valinnanvaihe valinnanvaihe) {
-		ValinnanvaiheDTO dto = new ValinnanvaiheDTO();
+	public ValintatietoValinnanvaiheDTO convertValinnanvaihe(Valinnanvaihe valinnanvaihe) {
+        ValintatietoValinnanvaiheDTO dto = new ValintatietoValinnanvaiheDTO();
 		dto.setCreatedAt(valinnanvaihe.getCreatedAt());
 		dto.setJarjestysnumero(valinnanvaihe.getJarjestysnumero());
 		dto.setValinnanvaiheoid(valinnanvaihe.getValinnanvaiheOid());
@@ -187,14 +189,14 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
 	}
 
 	@Override
-	public List<ValintatapajonoDTO> convertValintatapajono(
+	public List<ValintatietoValintatapajonoDTO> convertValintatapajono(
 			List<Valintatapajono> valintapajonoList) {
-		List<ValintatapajonoDTO> list = new ArrayList<ValintatapajonoDTO>();
+		List<ValintatietoValintatapajonoDTO> list = new ArrayList<ValintatietoValintatapajonoDTO>();
 		if (valintapajonoList == null || valintapajonoList.isEmpty()) {
 			return list;
 		}
 		for (Valintatapajono valintatapajono : valintapajonoList) {
-			ValintatapajonoDTO dto = new ValintatapajonoDTO();
+            ValintatietoValintatapajonoDTO dto = new ValintatietoValintatapajonoDTO();
 			dto.setAloituspaikat(valintatapajono.getAloituspaikat());
 			dto.setEiVarasijatayttoa(valintatapajono.getEiVarasijatayttoa());
             dto.setKaytetaanValintalaskentaa(valintatapajono.getKaytetaanValintalaskentaa());
@@ -213,8 +215,8 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
 	}
 
 	@Override
-	public ValintatapajonoDTO convertValintatapajono(Valintatapajono jono) {
-		ValintatapajonoDTO jonodto = new ValintatapajonoDTO();
+	public ValintatietoValintatapajonoDTO convertValintatapajono(Valintatapajono jono) {
+        ValintatietoValintatapajonoDTO jonodto = new ValintatietoValintatapajonoDTO();
 		jonodto.setAloituspaikat(jono.getAloituspaikat());
 		jonodto.setEiVarasijatayttoa(jono.getEiVarasijatayttoa());
         jonodto.setKaytetaanValintalaskentaa(jono.getKaytetaanValintalaskentaa());

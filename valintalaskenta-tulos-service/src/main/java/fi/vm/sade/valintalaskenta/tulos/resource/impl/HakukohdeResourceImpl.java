@@ -8,6 +8,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +46,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
 	@JsonView({ JsonViews.Basic.class })
 	@PreAuthorize(READ_UPDATE_CRUD)
 	@ApiOperation(value = "Hakee hakukohteen valinnan vaiheiden tulokset", response = ValinnanvaiheDTO.class)
-	public List<ValinnanvaiheDTO> hakukohde(
+	public List<ValintatietoValinnanvaiheDTO> hakukohde(
 			@ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid) {
 		return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
 	}

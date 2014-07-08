@@ -7,6 +7,8 @@ import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.HakutoiveDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValintatapajonoDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import fi.vm.sade.valintalaskenta.tulos.dao.*;
@@ -80,7 +82,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                 hakukohdeDTOtOidinMukaan.put(vv.getHakukohdeOid(), hakukohdeDTO);
             }
 
-            ValinnanvaiheDTO vvdto = new ValinnanvaiheDTO();
+            ValintatietoValinnanvaiheDTO vvdto = new ValintatietoValinnanvaiheDTO();
             vvdto.setCreatedAt(vv.getCreatedAt());
             vvdto.setJarjestysnumero(vv.getJarjestysnumero());
             vvdto.setValinnanvaiheoid(vv.getValinnanvaiheOid());
@@ -110,7 +112,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             }
 
             for (ValintakoeValinnanvaiheDTO vv : toive.getValinnanVaiheet()) {
-                ValinnanvaiheDTO vvdto = new ValinnanvaiheDTO();
+                ValintatietoValinnanvaiheDTO vvdto = new ValintatietoValinnanvaiheDTO();
                 vvdto.setCreatedAt(kokeet.getCreatedAt());
                 vvdto.setJarjestysnumero(vv.getValinnanVaiheJarjestysluku());
                 vvdto.setValinnanvaiheoid(vv.getValinnanVaiheOid());
@@ -127,7 +129,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         return new HakemusDTO(hakuOid, hakemusOid, new ArrayList<HakukohdeDTO>(hakukohdeDTOtOidinMukaan.values()));
     }
 
-    private void applyMuokatutJonosijatToValinnanvaihe(String hakukohdeoid, List<ValinnanvaiheDTO> b) {
+    private void applyMuokatutJonosijatToValinnanvaihe(String hakukohdeoid, List<ValintatietoValinnanvaiheDTO> b) {
         List<MuokattuJonosija> a = muokattuJonosijaDAO.readByhakukohdeOid(hakukohdeoid);
         List<HarkinnanvarainenHyvaksyminen> c = harkinnanvarainenHyvaksyminenDAO.haeHarkinnanvarainenHyvaksyminen(hakukohdeoid);
         applyMuokatutJonosijat(hakukohdeoid, b, a, c);
@@ -147,9 +149,9 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         LOGGER.error("Muokatut jonosijat laitettu kaikille hakukohteille {}!", hakuOid);
     }
 
-    private void applyMuokatutJonosijat(String hakukohdeoid, List<ValinnanvaiheDTO> b, List<MuokattuJonosija> a, List<HarkinnanvarainenHyvaksyminen> c) {
-        for (ValinnanvaiheDTO dto : b) {
-            for (ValintatapajonoDTO valintatapajonoDTO : dto.getValintatapajonot()) {
+    private void applyMuokatutJonosijat(String hakukohdeoid, List<ValintatietoValinnanvaiheDTO> b, List<MuokattuJonosija> a, List<HarkinnanvarainenHyvaksyminen> c) {
+        for (ValintatietoValinnanvaiheDTO dto : b) {
+            for (ValintatietoValintatapajonoDTO valintatapajonoDTO : dto.getValintatapajonot()) {
                 for (JonosijaDTO jonosija : valintatapajonoDTO.getJonosijat()) {
                     for (MuokattuJonosija muokattuJonosija : a) {
                         if (muokattuJonosija.getHakemusOid().equals(jonosija.getHakemusOid())
@@ -239,10 +241,10 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
 
     @Override
-    public List<ValinnanvaiheDTO> haeValinnanvaiheetHakukohteelle(String hakukohdeoid) {
+    public List<ValintatietoValinnanvaiheDTO> haeValinnanvaiheetHakukohteelle(String hakukohdeoid) {
 
         List<Valinnanvaihe> a = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeoid);
-        List<ValinnanvaiheDTO> b = valintatulosConverter.convertValinnanvaiheList(a);
+        List<ValintatietoValinnanvaiheDTO> b = valintatulosConverter.convertValinnanvaiheList(a);
         applyMuokatutJonosijatToValinnanvaihe(hakukohdeoid, b);
         return b;
 
@@ -349,7 +351,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
         }
 
-        return new ArrayList<HakukohdeDTO>(hakukohdeDTOtOidinMukaan.values());
+        return new ArrayList<>(hakukohdeDTOtOidinMukaan.values());
     }
 
     @Override

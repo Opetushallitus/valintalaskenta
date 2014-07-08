@@ -2,6 +2,8 @@ package fi.vm.sade.valintalaskenta.tulos.service.impl.converters;
 
 import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.*;
+import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValintatapajonoDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
@@ -21,9 +23,9 @@ public interface ValintatulosConverter {
 
     List<JonosijaDTO> convertJonosija(Collection<Jonosija> jonosijat);
 
-    List<ValintatapajonoDTO> convertValintatapajono(List<Valintatapajono> valintapajonoList);
+    List<ValintatietoValintatapajonoDTO> convertValintatapajono(List<Valintatapajono> valintapajonoList);
 
-    List<ValinnanvaiheDTO> convertValinnanvaiheList(List<Valinnanvaihe> valinnanVaiheList);
+    List<ValintatietoValinnanvaiheDTO> convertValinnanvaiheList(List<Valinnanvaihe> valinnanVaiheList);
 
     List<ValintakoeOsallistuminenDTO> convertValintakoeOsallistuminen(List<ValintakoeOsallistuminen> osallistumiset);
 
@@ -39,9 +41,9 @@ public interface ValintatulosConverter {
 
     JarjestyskriteeritulosDTO convertJarjestyskriteeri(Jarjestyskriteeritulos jktulos);
 
-    ValintatapajonoDTO convertValintatapajono(Valintatapajono jono);
+    ValintatietoValintatapajonoDTO convertValintatapajono(Valintatapajono jono);
 
-    ValinnanvaiheDTO convertValinnanvaihe(Valinnanvaihe valinnanvaihe);
+    ValintatietoValinnanvaiheDTO convertValinnanvaihe(Valinnanvaihe valinnanvaihe);
 
     List<HakukohdeDTO> convertValinnanvaihe(Collection<Valinnanvaihe> valinnanvaiheet);
 }

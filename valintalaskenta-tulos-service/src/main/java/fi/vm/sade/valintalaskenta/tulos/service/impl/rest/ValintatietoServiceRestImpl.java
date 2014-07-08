@@ -87,7 +87,7 @@ public class ValintatietoServiceRestImpl implements ValintatietoServiceRest {
     }
 
     // @PreAuthorize(READ_UPDATE_CRUD)
-    public HakuDTO haeValintatiedot(String hakuOid) {
+        public HakuDTO haeValintatiedot(String hakuOid) {
         try {
             List<HakukohdeDTO> a = tulosService
                     .haeLasketutValinnanvaiheetHaulle(hakuOid);

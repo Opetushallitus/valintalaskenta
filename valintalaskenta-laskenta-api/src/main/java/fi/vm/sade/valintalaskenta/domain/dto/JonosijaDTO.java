@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;

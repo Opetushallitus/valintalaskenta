@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.domain.dto;
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValintatapajonoDTO;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,12 +31,12 @@ public class ValinnanvaiheDTO {
     private Date createdAt;
 
     @ApiModelProperty(value = "Valintatapajonot", required = true)
-    private List<ValintatapajonoDTO> valintatapajonot = new ArrayList<ValintatapajonoDTO>();
+    private List<ValintatietoValintatapajonoDTO> valintatapajonot = new ArrayList<ValintatietoValintatapajonoDTO>();
 
     @ApiModelProperty(value = "Valintakokeet")
     private List<ValintakoeDTO> valintakokeet = new ArrayList<ValintakoeDTO>();
 
-    public List<ValintatapajonoDTO> getValintatapajonot() {
+    public List<ValintatietoValintatapajonoDTO> getValintatapajonot() {
         return valintatapajonot;
     }
 
@@ -47,7 +48,7 @@ public class ValinnanvaiheDTO {
         this.valinnanvaiheoid = valinnanvaiheoid;
     }
 
-    public void setValintatapajonot(List<ValintatapajonoDTO> valintatapajonot) {
+    public void setValintatapajonot(List<ValintatietoValintatapajonoDTO> valintatapajonot) {
         this.valintatapajonot = valintatapajonot;
     }
 

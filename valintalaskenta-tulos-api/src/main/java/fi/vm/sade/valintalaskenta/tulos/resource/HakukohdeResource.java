@@ -6,6 +6,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import org.codehaus.jackson.map.annotate.JsonView;
 
 import com.wordnik.swagger.annotations.Api;
@@ -27,7 +28,7 @@ public interface HakukohdeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView({ JsonViews.Basic.class })
 	@ApiOperation(value = "Hakee hakukohteen valinnan vaiheiden tulokset", response = ValinnanvaiheDTO.class)
-	public List<ValinnanvaiheDTO> hakukohde(
+	public List<ValintatietoValinnanvaiheDTO> hakukohde(
 			@ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid);
 
     @POST

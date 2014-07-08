@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.tulos.service;
 
 import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvarainenHyvaksyminen;
 import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvaraisuusTila;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
@@ -14,7 +15,7 @@ public interface ValintalaskentaTulosService {
 
     HakemusDTO haeTuloksetHakemukselle(String hakuoid, String hakemusoid);
 
-    List<ValinnanvaiheDTO> haeValinnanvaiheetHakukohteelle(String hakukohdeoid);
+    List<ValintatietoValinnanvaiheDTO> haeValinnanvaiheetHakukohteelle(String hakukohdeoid);
 
     List<HakukohdeDTO> haeVirheetHaulle(String hakuOid);
 

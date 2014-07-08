@@ -20,9 +20,10 @@ import java.util.stream.Collectors;
 public class HakemusDTOToHakemusConverter implements Converter<HakemusDTO, Hakemus> {
 
     public Hakemus convert(HakemusDTO dto) {
-
         Map<Integer, String> prioriteettiHakukohde = dto.getHakukohteet().stream().collect(Collectors.toMap(HakukohdeDTO::getPrioriteetti, HakukohdeDTO::getOid));
-        Map<String, String> target = dto.getAvaimet().stream().collect(Collectors.toMap(AvainArvoDTO::getAvain, AvainArvoDTO::getArvo));
+        Map<String, String> target = dto.getAvaimet().stream().collect(Collectors.toMap(
+                AvainArvoDTO::getAvain, AvainArvoDTO::getArvo,
+                (s,a) -> s + ", " + a));
 
         return new Hakemus(dto.getHakemusoid(), prioriteettiHakukohde, target);
     }

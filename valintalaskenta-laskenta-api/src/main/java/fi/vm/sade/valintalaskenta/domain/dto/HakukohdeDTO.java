@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.domain.dto;
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
+import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class HakukohdeDTO {
 
     @ApiModelProperty(value = "Valinnan vaiheet", required = true)
     @JsonView(JsonViews.Basic.class)
-    private List<ValinnanvaiheDTO> valinnanvaihe = new ArrayList<ValinnanvaiheDTO>();
+    private List<ValintatietoValinnanvaiheDTO> valinnanvaihe = new ArrayList<ValintatietoValinnanvaiheDTO>();
 
     @ApiModelProperty(value = "Prioriteetti", required = true)
     @JsonView(JsonViews.Basic.class)
@@ -35,7 +36,7 @@ public class HakukohdeDTO {
 
     private boolean harkinnanvaraisuus = false;
 
-    private List<HakijaryhmaDTO> hakijaryhma;
+    private List<HakijaryhmaDTO> hakijaryhma = new ArrayList<>();
 
     public String getHakuoid() {
         return hakuoid;
@@ -53,11 +54,11 @@ public class HakukohdeDTO {
         this.hakukohdeoid = oid;
     }
 
-    public List<ValinnanvaiheDTO> getValinnanvaihe() {
+    public List<ValintatietoValinnanvaiheDTO> getValinnanvaihe() {
         return valinnanvaihe;
     }
 
-    public void setValinnanvaihe(List<ValinnanvaiheDTO> valinnanvaihe) {
+    public void setValinnanvaihe(List<ValintatietoValinnanvaiheDTO> valinnanvaihe) {
         this.valinnanvaihe = valinnanvaihe;
     }
 
