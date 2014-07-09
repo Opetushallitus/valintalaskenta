@@ -7,8 +7,10 @@ import fi.vm.sade.service.valintaperusteet.service.validointi.virhe.Validointivi
 import fi.vm.sade.service.valintaperusteet.service.validointi.virhe.Virhetyyppi;
 import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteeritulosDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -25,6 +27,13 @@ public class ValintalaskentaModelMapper extends ModelMapper {
 
     public ValintalaskentaModelMapper() {
         super();
+
+        this.addMappings(new PropertyMap<ValinnanvaiheDTO, Valinnanvaihe>() {
+            protected void configure() {
+                map().setHakuOid(source.getHakuOid());
+                map().setValinnanvaiheOid(source.getValinnanvaiheoid());
+            }
+        });
 
         // Validointivirheet
         final Converter<List<ValidointivirheDTO>, List<Abstraktivalidointivirhe>> virheListConverter = new Converter<List<ValidointivirheDTO>, List<Abstraktivalidointivirhe>>() {

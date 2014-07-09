@@ -1,0 +1,39 @@
+{
+  "jarjestysnumero": 0,
+  "hakuOid": "1.2.246.562.5.2013080813081926341927",
+  "valinnanvaiheOid": "14030865849628197565037583464134",
+  "nimi": "Varsinainen valinnanvaihe",
+  "valintatapajonot": [
+    {
+      "valintatapajonoOid": "14030865852355885535451416065193",
+      "nimi": "Varsinaisen valinnanvaiheen valintatapajono",
+      "prioriteetti": 0,
+      "aloituspaikat": 144,
+      "siirretaanSijoitteluun": true,
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": false,
+      "poissaOlevaTaytto": true,
+      "jonosijat": [
+        {
+          "hakemusOid": "1.2.246.562.11.00000866600",
+          "etunimi": "Olivia XX",
+          "sukunimi": "Alajoki",
+          "hakutoiveprioriteetti": 5,
+          "harkinnanvarainen": false,
+          "jarjestyskriteeritulokset": [
+            {
+              "prioriteetti": 0,
+              "arvo": -1,
+              "tila": "HYVAKSYTTAVISSA",
+              "kuvaus": {},
+              "nimi": ""
+            }
+          ],
+          "syotetytArvot": [],
+          "funktioTulokset": []
+        }
+      ]
+    }
+  ]
+}
