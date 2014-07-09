@@ -1,18 +1,14 @@
 package fi.vm.sade.valintalaskenta.laskenta.service;
 
-import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintaperusteet.laskenta.Totuusarvofunktio;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.*;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.*;
 import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
 import fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi;
-import fi.vm.sade.service.valintaperusteet.schema.FunktiokutsuTyyppi;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
 import fi.vm.sade.valintalaskenta.laskenta.service.exception.LaskentaVaarantyyppisellaFunktiollaException;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.LaskentadomainkonvertteriWrapper;
-import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.FunktioKutsuTyyppiToFunktioKutsuConverter;
-import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.HakemusTyyppiToHakemusConverter;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoeosallistumislaskin;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.ValintakoeosallistumislaskinImpl;
 import org.junit.Before;
@@ -34,9 +30,7 @@ public class ValintakoeosallistumislaskinTest {
 
     private Valintakoeosallistumislaskin valintakoeosallistumislaskin;
 
-    private FunktioKutsuTyyppiToFunktioKutsuConverter funktiokutsuConverterMock;
     private LaskentaService laskentaServiceMock;
-    private HakemusTyyppiToHakemusConverter hakemusConverterMock;
     private LaskentadomainkonvertteriWrapper laskentadomainkonvertteriWrapperMock;
 
     private Map<String, String> suomenkielinenMap(String teksti) {
@@ -49,13 +43,9 @@ public class ValintakoeosallistumislaskinTest {
     public void setUpt() {
         valintakoeosallistumislaskin = new ValintakoeosallistumislaskinImpl();
 
-        funktiokutsuConverterMock = mock(FunktioKutsuTyyppiToFunktioKutsuConverter.class);
-        hakemusConverterMock = mock(HakemusTyyppiToHakemusConverter.class);
         laskentaServiceMock = mock(LaskentaService.class);
         laskentadomainkonvertteriWrapperMock = mock(LaskentadomainkonvertteriWrapper.class);
 
-        ReflectionTestUtils.setField(valintakoeosallistumislaskin, "funktiokutsuConverter", funktiokutsuConverterMock);
-        ReflectionTestUtils.setField(valintakoeosallistumislaskin, "hakemusConverter", hakemusConverterMock);
         ReflectionTestUtils.setField(valintakoeosallistumislaskin, "laskentaService", laskentaServiceMock);
         ReflectionTestUtils.setField(valintakoeosallistumislaskin, "laskentadomainkonvertteriWrapper",
                 laskentadomainkonvertteriWrapperMock);
@@ -65,8 +55,6 @@ public class ValintakoeosallistumislaskinTest {
         Funktiokutsu funktiokutsu = new Funktiokutsu();
         funktiokutsu.setFunktionimi(Funktionimi.TOTUUSARVO);
 
-        when(funktiokutsuConverterMock.convert(any(FunktiokutsuTyyppi.class))).thenReturn(funktiokutsu);
-        when(hakemusConverterMock.convert(any(HakemusTyyppi.class))).thenReturn(any(Hakemus.class));
         when(laskentadomainkonvertteriWrapperMock.muodostaTotuusarvolasku(funktiokutsu)).thenReturn(
                 any(Totuusarvofunktio.class));
 
@@ -76,6 +64,17 @@ public class ValintakoeosallistumislaskinTest {
                         any(Hakemus.class), any(Totuusarvofunktio.class))).thenReturn(tulos1);
     }
 
+    private Hakemus emptyHakemus() {
+        return new Hakemus("hakemusOid",
+                new HashMap<>(), new HashMap<>());
+    }
+
+    private Funktiokutsu getKutsu() {
+        Funktiokutsu funktiokutsu = new Funktiokutsu();
+        funktiokutsu.setFunktionimi(Funktionimi.TOTUUSARVO);
+        return funktiokutsu;
+    }
+
     @Test
     public void testTilaHyvaksyttavissaTrue() {
         final String hakukohdeOid = "hakukohdeOid1";
@@ -83,8 +82,8 @@ public class ValintakoeosallistumislaskinTest {
 
         valmisteleStubit(hakukohde, new Hyvaksyttavissatila(), true);
 
-        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
-                hakukohde, new HakemusTyyppi(), new FunktiokutsuTyyppi());
+        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelleRest(
+                hakukohde, emptyHakemus(), getKutsu());
         assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getOsallistuminen());
     }
 
@@ -94,8 +93,8 @@ public class ValintakoeosallistumislaskinTest {
         final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<String, String>());
 
         valmisteleStubit(hakukohde, new Hyvaksyttavissatila(), false);
-        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
-                hakukohde, new HakemusTyyppi(), new FunktiokutsuTyyppi());
+        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelleRest(
+                hakukohde, emptyHakemus(), getKutsu());
         assertEquals(Osallistuminen.EI_OSALLISTU, osallistuminen.getOsallistuminen());
     }
 
@@ -105,8 +104,8 @@ public class ValintakoeosallistumislaskinTest {
         final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<String, String>());
 
         valmisteleStubit(hakukohde, new Hylattytila(suomenkielinenMap("kuvaus"), new PakollinenValintaperusteHylkays("")), false);
-        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
-                hakukohde, new HakemusTyyppi(), new FunktiokutsuTyyppi());
+        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelleRest(
+                hakukohde, emptyHakemus(), getKutsu());
         assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getOsallistuminen());
     }
 
@@ -116,8 +115,8 @@ public class ValintakoeosallistumislaskinTest {
         final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<String, String>());
 
         valmisteleStubit(hakukohde, new Hylattytila(suomenkielinenMap("kuvaus"), new PakollinenValintaperusteHylkays("")), true);
-        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
-                hakukohde, new HakemusTyyppi(), new FunktiokutsuTyyppi());
+        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelleRest(
+                hakukohde, emptyHakemus(), getKutsu());
         assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getOsallistuminen());
     }
 
@@ -127,8 +126,8 @@ public class ValintakoeosallistumislaskinTest {
         final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<String, String>());
 
         valmisteleStubit(hakukohde, new Virhetila(suomenkielinenMap("kuvaus"), new ArvokonvertointiVirhe("")), true);
-        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
-                hakukohde, new HakemusTyyppi(), new FunktiokutsuTyyppi());
+        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelleRest(
+                hakukohde, emptyHakemus(), getKutsu());
         assertEquals(Osallistuminen.VIRHE, osallistuminen.getOsallistuminen());
     }
 
@@ -138,8 +137,8 @@ public class ValintakoeosallistumislaskinTest {
         final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<String, String>());
 
         valmisteleStubit(hakukohde, new Virhetila(suomenkielinenMap("kuvaus"), new ArvokonvertointiVirhe("")), false);
-        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
-                hakukohde, new HakemusTyyppi(), new FunktiokutsuTyyppi());
+        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelleRest(
+                hakukohde, emptyHakemus(), getKutsu());
         assertEquals(Osallistuminen.VIRHE, osallistuminen.getOsallistuminen());
     }
 
@@ -148,8 +147,7 @@ public class ValintakoeosallistumislaskinTest {
         Funktiokutsu funktiokutsu = new Funktiokutsu();
         funktiokutsu.setFunktionimi(Funktionimi.LUKUARVO);
 
-        when(funktiokutsuConverterMock.convert(any(FunktiokutsuTyyppi.class))).thenReturn(funktiokutsu);
-        valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(new Hakukohde("hakukohdeOid", new HashMap<String, String>()), new HakemusTyyppi(),
-                new FunktiokutsuTyyppi());
+        valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelleRest(new Hakukohde("hakukohdeOid", new HashMap<String, String>()), emptyHakemus(),
+                funktiokutsu);
     }
 }

@@ -8,6 +8,8 @@ import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 public class ValintatietoValinnanvaiheDTO extends ValinnanvaiheDTO {
     private int valinnanvaihe;
 
+
+
     public void setValinnanvaihe(int valinnanvaihe) {
         this.valinnanvaihe = valinnanvaihe;
     }

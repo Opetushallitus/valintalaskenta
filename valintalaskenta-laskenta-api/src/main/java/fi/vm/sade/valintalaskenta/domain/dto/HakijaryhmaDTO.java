@@ -10,7 +10,6 @@ public class HakijaryhmaDTO {
     private String nimi;
     private String oid;
     private Integer prioriteetti;
-    private String hakijaOid;
     private List<String> hakijaOids;
 
     public int getPaikat() {

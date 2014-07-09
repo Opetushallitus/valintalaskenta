@@ -1,6 +1,5 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl;
 
-import fi.vm.sade.service.hakemus.schema.HakemusTyyppi;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 
@@ -10,8 +9,6 @@ import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
  * Time: 12:03
  */
 public class HakemusWrapper {
-
-    private HakemusTyyppi hakemusTyyppi;
 
     private Hakemus laskentahakemus;
 
@@ -28,14 +25,6 @@ public class HakemusWrapper {
     }
 
     public HakemusDTO hakemusDTO;
-
-    public HakemusTyyppi getHakemusTyyppi() {
-        return hakemusTyyppi;
-    }
-
-    public void setHakemusTyyppi(HakemusTyyppi hakemusTyyppi) {
-        this.hakemusTyyppi = hakemusTyyppi;
-    }
 
     public Hakemus getLaskentahakemus() {
         return laskentahakemus;
