@@ -155,6 +155,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
 					.getOsallistuminenTulos()));
 			dto.setLahetetaankoKoekutsut(koe.isLahetetaankoKoekutsut());
 			dto.setAktiivinen(koe.isAktiivinen());
+            dto.setKutsuttavienMaara(koe.getKutsuttavienMaara());
 
 			dtot.add(dto);
 		}
