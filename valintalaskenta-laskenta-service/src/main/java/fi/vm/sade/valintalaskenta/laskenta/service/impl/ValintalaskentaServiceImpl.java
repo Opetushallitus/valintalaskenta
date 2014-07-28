@@ -2,7 +2,7 @@ package fi.vm.sade.valintalaskenta.laskenta.service.impl;
 
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
-import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaServiceRest;
+import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.ValintalaskentaSuorittajaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
 import org.slf4j.Logger;
@@ -18,10 +18,10 @@ import java.util.List;
  */
 //@PreAuthorize("isAuthenticated()")
 @Service
-public class ValintalaskentaServiceRestImpl implements ValintalaskentaServiceRest {
+public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 
 	private static final Logger LOG = LoggerFactory
-			.getLogger(ValintalaskentaServiceRestImpl.class);
+			.getLogger(ValintalaskentaServiceImpl.class);
 
 	@Autowired
 	private ValintalaskentaSuorittajaService valintalaskentaSuorittaja;
@@ -38,7 +38,7 @@ public class ValintalaskentaServiceRestImpl implements ValintalaskentaServiceRes
 			LOG.info(
 					"Suoritetaan laskenta. Hakemuksia {} kpl ja valintaperusteita {} kpl",
 					new Object[] { hakemus.size(), valintaperuste.size() });
-			valintalaskentaSuorittaja.suoritaLaskentaRest(hakemus, valintaperuste);
+			valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste);
 			return "Onnistui!";
 		} catch (Exception e) {
             e.printStackTrace();
@@ -64,7 +64,7 @@ public class ValintalaskentaServiceRestImpl implements ValintalaskentaServiceRes
                                 List<ValintaperusteetDTO> valintaperuste)
 			throws RuntimeException {
 		try {
-			valintakoelaskentaSuorittajaService.laskeRest(hakemus, valintaperuste);
+			valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste);
 			return "Onnistui!";
 		} catch (Exception e) {
 			LOG.error("Valintakoevaihe epäonnistui", e);

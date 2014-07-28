@@ -82,7 +82,7 @@ public class ValintakoeosallistumislaskinTest {
 
         valmisteleStubit(hakukohde, new Hyvaksyttavissatila(), true);
 
-        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelleRest(
+        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
                 hakukohde, emptyHakemus(), getKutsu());
         assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getOsallistuminen());
     }
@@ -93,7 +93,7 @@ public class ValintakoeosallistumislaskinTest {
         final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<String, String>());
 
         valmisteleStubit(hakukohde, new Hyvaksyttavissatila(), false);
-        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelleRest(
+        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
                 hakukohde, emptyHakemus(), getKutsu());
         assertEquals(Osallistuminen.EI_OSALLISTU, osallistuminen.getOsallistuminen());
     }
@@ -104,7 +104,7 @@ public class ValintakoeosallistumislaskinTest {
         final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<String, String>());
 
         valmisteleStubit(hakukohde, new Hylattytila(suomenkielinenMap("kuvaus"), new PakollinenValintaperusteHylkays("")), false);
-        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelleRest(
+        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
                 hakukohde, emptyHakemus(), getKutsu());
         assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getOsallistuminen());
     }
@@ -115,7 +115,7 @@ public class ValintakoeosallistumislaskinTest {
         final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<String, String>());
 
         valmisteleStubit(hakukohde, new Hylattytila(suomenkielinenMap("kuvaus"), new PakollinenValintaperusteHylkays("")), true);
-        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelleRest(
+        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
                 hakukohde, emptyHakemus(), getKutsu());
         assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getOsallistuminen());
     }
@@ -126,7 +126,7 @@ public class ValintakoeosallistumislaskinTest {
         final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<String, String>());
 
         valmisteleStubit(hakukohde, new Virhetila(suomenkielinenMap("kuvaus"), new ArvokonvertointiVirhe("")), true);
-        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelleRest(
+        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
                 hakukohde, emptyHakemus(), getKutsu());
         assertEquals(Osallistuminen.VIRHE, osallistuminen.getOsallistuminen());
     }
@@ -137,7 +137,7 @@ public class ValintakoeosallistumislaskinTest {
         final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<String, String>());
 
         valmisteleStubit(hakukohde, new Virhetila(suomenkielinenMap("kuvaus"), new ArvokonvertointiVirhe("")), false);
-        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelleRest(
+        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
                 hakukohde, emptyHakemus(), getKutsu());
         assertEquals(Osallistuminen.VIRHE, osallistuminen.getOsallistuminen());
     }
@@ -147,7 +147,7 @@ public class ValintakoeosallistumislaskinTest {
         Funktiokutsu funktiokutsu = new Funktiokutsu();
         funktiokutsu.setFunktionimi(Funktionimi.LUKUARVO);
 
-        valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelleRest(new Hakukohde("hakukohdeOid", new HashMap<String, String>()), emptyHakemus(),
+        valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(new Hakukohde("hakukohdeOid", new HashMap<String, String>()), emptyHakemus(),
                 funktiokutsu);
     }
 }

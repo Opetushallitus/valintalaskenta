@@ -12,5 +12,5 @@ import java.util.List;
  */
 public interface ValintakoelaskentaSuorittajaService {
 
-    void laskeRest(HakemusDTO hakemus,  List<ValintaperusteetDTO> valintaperusteet);
+    void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet);
 }

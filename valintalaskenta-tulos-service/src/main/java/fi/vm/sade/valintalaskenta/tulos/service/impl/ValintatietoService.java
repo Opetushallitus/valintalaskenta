@@ -11,7 +11,7 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 /**
  * Created by jukais on 24.3.2014.
  */
-public interface ValintatietoServiceRest {
+public interface ValintatietoService {
 
     //@PreAuthorize(READ_UPDATE_CRUD)
     List<HakemusOsallistuminenDTO> haeValintatiedotHakukohteelle(List<String> valintakoeOid,

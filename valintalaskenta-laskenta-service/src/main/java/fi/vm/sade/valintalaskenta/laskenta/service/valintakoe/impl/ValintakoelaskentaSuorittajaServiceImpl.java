@@ -95,16 +95,16 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 	}
 
     @Override
-    public void laskeRest(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet) {
+    public void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet) {
         LOG.info("Laskentaan valintakoeosallistumiset hakemukselle {}",
                 hakemus.getHakemusoid());
 
-        final Map<String, HakukohdeDTO> hakutoiveetByOid = luoHakutoiveMapRest(hakemus
+        final Map<String, HakukohdeDTO> hakutoiveetByOid = luoHakutoiveMap(hakemus
                 .getHakukohteet());
         Map<String, List<HakukohdeValintakoeData>> valintakoeData = new HashMap<String, List<HakukohdeValintakoeData>>();
 
         for (ValintaperusteetDTO vp : valintaperusteet) {
-            Map<String, String> hakukohteenValintaperusteet = muodostaHakukohteenValintaperusteetMapRest(vp
+            Map<String, String> hakukohteenValintaperusteet = muodostaHakukohteenValintaperusteetMap(vp
                     .getHakukohteenValintaperuste());
 
             if (hakutoiveetByOid.containsKey(vp.getHakukohdeOid())
@@ -173,7 +173,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
                         if (tilaJaSelite.getTila().equals(
                                 JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)) {
                             osallistuminen = valintakoeosallistumislaskin
-                                    .laskeOsallistuminenYhdelleHakukohteelleRest(
+                                    .laskeOsallistuminenYhdelleHakukohteelle(
                                             new Hakukohde(vp.getHakukohdeOid(),
                                                     hakukohteenValintaperusteet),
                                             hakemusConverter.convert(hakemus), modelMapper.map(koe.getFunktiokutsu(), Funktiokutsu.class));
@@ -193,7 +193,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
                         Funktiokutsu fuk = modelMapper.map(koe.getFunktiokutsu(), Funktiokutsu.class);
 
                         osallistuminen = valintakoeosallistumislaskin
-                                .laskeOsallistuminenYhdelleHakukohteelleRest(
+                                .laskeOsallistuminenYhdelleHakukohteelle(
                                         new Hakukohde(vp.getHakukohdeOid(),
                                                 hakukohteenValintaperusteet),
                                         hak, fuk);
@@ -228,7 +228,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
                 .entrySet()) {
             List<HakukohdeValintakoeData> kokeet = entry.getValue();
 
-            asetaOsallistumisetKokeisiinRest(kokeet, hakutoiveetByOid);
+            asetaOsallistumisetKokeisiin(kokeet, hakutoiveetByOid);
             for (HakukohdeValintakoeData c : kokeet) {
                 LOG.info(
                         "Hakukohde: {}, valintakoe: {}",
@@ -237,7 +237,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 
                 if (!osallistumisetByHaku.containsKey(c.getHakuOid())) {
                     osallistumisetByHaku.put(c.getHakuOid(),
-                            luoValintakoeOsallistuminenRest(c, hakemus));
+                            luoValintakoeOsallistuminen(c, hakemus));
                 }
 
                 ValintakoeOsallistuminen osallistuminen = osallistumisetByHaku
@@ -253,7 +253,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 
     }
 
-    private Map<String, String> muodostaHakukohteenValintaperusteetMapRest(
+    private Map<String, String> muodostaHakukohteenValintaperusteetMap(
             List<HakukohteenValintaperusteDTO> hakukohteenValintaperuste) {
         Map<String, String> map = new HashMap<String, String>();
 
@@ -264,7 +264,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
         return map;
     }
 
-    protected void asetaOsallistumisetKokeisiinRest(
+    protected void asetaOsallistumisetKokeisiin(
             List<HakukohdeValintakoeData> kokeet,
             final Map<String, HakukohdeDTO> hakukohteetByOid) {
 
@@ -305,7 +305,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
     }
 
 
-    protected ValintakoeOsallistuminen luoValintakoeOsallistuminenRest(
+    protected ValintakoeOsallistuminen luoValintakoeOsallistuminen(
             HakukohdeValintakoeData data, HakemusDTO hakemus) {
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO
                 .readByHakuOidAndHakemusOid(data.getHakuOid(),
@@ -389,7 +389,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 		koe.setAktiivinen(data.isAktiivinen());
 	}
 
-    protected Map<String, HakukohdeDTO> luoHakutoiveMapRest(
+    protected Map<String, HakukohdeDTO> luoHakutoiveMap(
             List<HakukohdeDTO> hakutoiveet) {
         Map<String, HakukohdeDTO> toiveetMap = new HashMap<String, HakukohdeDTO>();
         for (HakukohdeDTO hk : hakutoiveet) {

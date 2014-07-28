@@ -12,6 +12,6 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
  */
 public interface Valintakoeosallistumislaskin {
 
-    OsallistuminenTulos laskeOsallistuminenYhdelleHakukohteelleRest(Hakukohde hakukohde, Hakemus hakemus,
+    OsallistuminenTulos laskeOsallistuminenYhdelleHakukohteelle(Hakukohde hakukohde, Hakemus hakemus,
                                                                 Funktiokutsu kaava);
 }

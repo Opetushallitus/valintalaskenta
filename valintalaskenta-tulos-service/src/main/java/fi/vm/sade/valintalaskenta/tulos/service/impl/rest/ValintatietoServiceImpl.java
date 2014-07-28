@@ -11,7 +11,7 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 
-import fi.vm.sade.valintalaskenta.tulos.service.impl.ValintatietoServiceRest;
+import fi.vm.sade.valintalaskenta.tulos.service.impl.ValintatietoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +24,10 @@ import java.util.*;
  */
 // @PreAuthorize("isAuthenticated()")
 @Service
-public class ValintatietoServiceRestImpl implements ValintatietoServiceRest {
+public class ValintatietoServiceImpl implements ValintatietoService {
 
     private static final Logger LOG = LoggerFactory
-            .getLogger(ValintatietoServiceRestImpl.class);
+            .getLogger(ValintatietoServiceImpl.class);
     @Autowired
     private ValintalaskentaTulosService tulosService;
 

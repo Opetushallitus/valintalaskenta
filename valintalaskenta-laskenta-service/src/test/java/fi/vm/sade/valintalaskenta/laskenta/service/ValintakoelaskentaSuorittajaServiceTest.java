@@ -132,14 +132,14 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		osallistuminenTulos.setOsallistuminen(Osallistuminen.OSALLISTUU);
 		when(
 				valintakoeosallistumislaskinMock
-						.laskeOsallistuminenYhdelleHakukohteelleRest(
+						.laskeOsallistuminenYhdelleHakukohteelle(
                                 any(Hakukohde.class), any(Hakemus.class),
                                 any(Funktiokutsu.class))).thenReturn(
 				osallistuminenTulos);
 
 		ArgumentCaptor<ValintakoeOsallistuminen> captor = ArgumentCaptor
 				.forClass(ValintakoeOsallistuminen.class);
- 		valintakoelaskentaSuorittajaService.laskeRest(hakemus,
+ 		valintakoelaskentaSuorittajaService.laske(hakemus,
                 Arrays.asList(valintaperusteet1));
 		verify(valintakoeOsallistuminenDAOMock, times(1)).createOrUpdate(
 				captor.capture());
@@ -179,19 +179,19 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		osallistuminenTulos.setOsallistuminen(Osallistuminen.OSALLISTUU);
 		when(
 				valintakoeosallistumislaskinMock
-						.laskeOsallistuminenYhdelleHakukohteelleRest(
+						.laskeOsallistuminenYhdelleHakukohteelle(
                                 any(Hakukohde.class), any(Hakemus.class),
                                 any(Funktiokutsu.class))).thenReturn(
 				osallistuminenTulos);
 
-		valintakoelaskentaSuorittajaService.laskeRest(hakemus,
+		valintakoelaskentaSuorittajaService.laske(hakemus,
                 Arrays.asList(valintaperusteet1));
 		verify(valintakoeOsallistuminenDAOMock, times(0)).createOrUpdate(
 				any(ValintakoeOsallistuminen.class));
 
 		verify(valintakoeosallistumislaskinMock, times(0))
-				.laskeOsallistuminenYhdelleHakukohteelleRest(any(Hakukohde.class),
-						any(Hakemus.class), any(Funktiokutsu.class));
+				.laskeOsallistuminenYhdelleHakukohteelle(any(Hakukohde.class),
+                        any(Hakemus.class), any(Funktiokutsu.class));
 
 	}
 
@@ -223,12 +223,12 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		osallistuminenTulos.setOsallistuminen(Osallistuminen.OSALLISTUU);
 		when(
 				valintakoeosallistumislaskinMock
-						.laskeOsallistuminenYhdelleHakukohteelleRest(
+						.laskeOsallistuminenYhdelleHakukohteelle(
                                 any(Hakukohde.class), any(Hakemus.class),
                                 any(Funktiokutsu.class))).thenReturn(
 				osallistuminenTulos);
 
-		valintakoelaskentaSuorittajaService.laskeRest(hakemus,
+		valintakoelaskentaSuorittajaService.laske(hakemus,
                 Arrays.asList(valintaperusteet1));
 		verify(valintakoeOsallistuminenDAOMock, times(0)).createOrUpdate(
 				any(ValintakoeOsallistuminen.class));
@@ -325,7 +325,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 		when(
 				valintakoeosallistumislaskinMock
-						.laskeOsallistuminenYhdelleHakukohteelleRest(
+						.laskeOsallistuminenYhdelleHakukohteelle(
                                 argThat(new BaseMatcher<Hakukohde>() {
                                     @Override
                                     public boolean matches(Object o) {
@@ -345,7 +345,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 		when(
 				valintakoeosallistumislaskinMock
-						.laskeOsallistuminenYhdelleHakukohteelleRest(
+						.laskeOsallistuminenYhdelleHakukohteelle(
                                 argThat(new BaseMatcher<Hakukohde>() {
                                     @Override
                                     public boolean matches(Object o) {
@@ -374,7 +374,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		valintaperusteet.add(valintaperusteet1);
 		valintaperusteet.add(valintaperusteet2);
 
-		valintakoelaskentaSuorittajaService.laskeRest(hakemus, valintaperusteet);
+		valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet);
 		verify(valintakoeOsallistuminenDAOMock, times(1)).createOrUpdate(
 				captor.capture());
 
@@ -483,7 +483,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 		when(
 				valintakoeosallistumislaskinMock
-						.laskeOsallistuminenYhdelleHakukohteelleRest(
+						.laskeOsallistuminenYhdelleHakukohteelle(
                                 argThat(new BaseMatcher<Hakukohde>() {
                                     @Override
                                     public boolean matches(Object o) {
@@ -503,7 +503,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 		when(
 				valintakoeosallistumislaskinMock
-						.laskeOsallistuminenYhdelleHakukohteelleRest(
+						.laskeOsallistuminenYhdelleHakukohteelle(
                                 argThat(new BaseMatcher<Hakukohde>() {
                                     @Override
                                     public boolean matches(Object o) {
@@ -532,7 +532,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		valintaperusteet.add(valintaperusteet1);
 		valintaperusteet.add(valintaperusteet2);
 
-		valintakoelaskentaSuorittajaService.laskeRest(hakemus, valintaperusteet);
+		valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet);
 		verify(valintakoeOsallistuminenDAOMock, times(1)).createOrUpdate(
 				captor.capture());
 
@@ -604,7 +604,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 		when(
 				valintakoeosallistumislaskinMock
-						.laskeOsallistuminenYhdelleHakukohteelleRest(
+						.laskeOsallistuminenYhdelleHakukohteelle(
                                 argThat(new BaseMatcher<Hakukohde>() {
                                     @Override
                                     public boolean matches(Object o) {
@@ -624,7 +624,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 		when(
 				valintakoeosallistumislaskinMock
-						.laskeOsallistuminenYhdelleHakukohteelleRest(
+						.laskeOsallistuminenYhdelleHakukohteelle(
                                 argThat(new BaseMatcher<Hakukohde>() {
                                     @Override
                                     public boolean matches(Object o) {
@@ -653,7 +653,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		valintaperusteet.add(valintaperusteet1);
 		valintaperusteet.add(valintaperusteet2);
 
-		valintakoelaskentaSuorittajaService.laskeRest(hakemus, valintaperusteet);
+		valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet);
 		verify(valintakoeOsallistuminenDAOMock, times(1)).createOrUpdate(
 				captor.capture());
 
@@ -739,7 +739,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 			// Testataan protected-metodia. Tää on vähän kyseenalaista.
 			ReflectionTestUtils.invokeMethod(
 					valintakoelaskentaSuorittajaService,
-					"asetaOsallistumisetKokeisiinRest", kokeet, hakuToiveetByOid);
+					"asetaOsallistumisetKokeisiin", kokeet, hakuToiveetByOid);
 
 			assertEquals(3, kokeet.size());
 			assertEquals(hakukohdeOid1, kokeet.get(0).getHakukohdeOid());
@@ -766,7 +766,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 			ReflectionTestUtils.invokeMethod(
 					valintakoelaskentaSuorittajaService,
-					"asetaOsallistumisetKokeisiinRest", kokeet, hakuToiveetByOid);
+					"asetaOsallistumisetKokeisiin", kokeet, hakuToiveetByOid);
 
 			assertEquals(3, kokeet.size());
 			assertEquals(hakukohdeOid1, kokeet.get(0).getHakukohdeOid());
@@ -793,7 +793,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 			ReflectionTestUtils.invokeMethod(
 					valintakoelaskentaSuorittajaService,
-					"asetaOsallistumisetKokeisiinRest", kokeet, hakuToiveetByOid);
+					"asetaOsallistumisetKokeisiin", kokeet, hakuToiveetByOid);
 
 			assertEquals(3, kokeet.size());
 			assertEquals(hakukohdeOid1, kokeet.get(0).getHakukohdeOid());
@@ -820,7 +820,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 			ReflectionTestUtils.invokeMethod(
 					valintakoelaskentaSuorittajaService,
-					"asetaOsallistumisetKokeisiinRest", kokeet, hakuToiveetByOid);
+					"asetaOsallistumisetKokeisiin", kokeet, hakuToiveetByOid);
 
 			assertEquals(3, kokeet.size());
 			assertEquals(hakukohdeOid1, kokeet.get(0).getHakukohdeOid());
@@ -847,7 +847,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 			ReflectionTestUtils.invokeMethod(
 					valintakoelaskentaSuorittajaService,
-					"asetaOsallistumisetKokeisiinRest", kokeet, hakuToiveetByOid);
+					"asetaOsallistumisetKokeisiin", kokeet, hakuToiveetByOid);
 
 			assertEquals(3, kokeet.size());
 			assertEquals(hakukohdeOid1, kokeet.get(0).getHakukohdeOid());

@@ -2,9 +2,8 @@ package fi.vm.sade.valintalaskenta.laskenta.resource;
 
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.resource.ValintalaskentaResource;
-import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaServiceRest;
+import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.Consumes;
@@ -21,7 +20,7 @@ import javax.ws.rs.Produces;
 public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
 
     @Autowired
-    private ValintalaskentaServiceRest valintalaskentaService;
+    private ValintalaskentaService valintalaskentaService;
 
     @Override
     @Path("laske")

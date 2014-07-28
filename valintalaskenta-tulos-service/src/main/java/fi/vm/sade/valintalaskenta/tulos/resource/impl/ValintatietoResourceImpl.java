@@ -4,7 +4,7 @@ package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.HakemusOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.HakuDTO;
 import fi.vm.sade.valintalaskenta.tulos.resource.ValintatietoResource;
-import fi.vm.sade.valintalaskenta.tulos.service.impl.ValintatietoServiceRest;
+import fi.vm.sade.valintalaskenta.tulos.service.impl.ValintatietoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +19,7 @@ import java.util.List;
 public class ValintatietoResourceImpl implements ValintatietoResource {
 
     @Autowired
-    private ValintatietoServiceRest valintatietoService;
+    private ValintatietoService valintatietoService;
 
     @Override
     @POST

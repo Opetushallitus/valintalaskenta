@@ -62,10 +62,10 @@ public class ValintalaskentaSuorittajaServiceImpl implements
     private ValintalaskentaModelMapper modelMapper;
 
     @Override
-    public void suoritaLaskentaRest(List<HakemusDTO> kaikkiHakemukset,
+    public void suoritaLaskenta(List<HakemusDTO> kaikkiHakemukset,
                                 List<ValintaperusteetDTO> valintaperusteet) {
 
-        Map<String, Hakemukset> hakemuksetHakukohteittain = jarjestaHakemuksetHakukohteittainRest(kaikkiHakemukset);
+        Map<String, Hakemukset> hakemuksetHakukohteittain = jarjestaHakemuksetHakukohteittain(kaikkiHakemukset);
 
         // Järjestetään valintaperusteet valinnan vaiheiden järjestysnumeron
         // mukaan
@@ -103,7 +103,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                 continue;
             }
 
-            Map<String, String> hakukohteenValintaperusteet = muodostaHakukohteenValintaperusteetMapRest(vp
+            Map<String, String> hakukohteenValintaperusteet = muodostaHakukohteenValintaperusteetMap(vp
                     .getHakukohteenValintaperuste());
 
             ValintaperusteetValinnanVaiheDTO vaihe = vp
@@ -236,7 +236,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements
         }
     }
 
-    private Map<String, String> muodostaHakukohteenValintaperusteetMapRest(
+    private Map<String, String> muodostaHakukohteenValintaperusteetMap(
             List<HakukohteenValintaperusteDTO> hakukohteenValintaperuste) {
         Map<String, String> map = new HashMap<String, String>();
 
@@ -248,7 +248,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements
         return map;
     }
 
-    private Map<String, Hakemukset> jarjestaHakemuksetHakukohteittainRest(
+    private Map<String, Hakemukset> jarjestaHakemuksetHakukohteittain(
             List<HakemusDTO> hakemukset) {
         Map<String, Hakemukset> hakukohdeHakemukset = new HashMap<String, Hakemukset>();
         for (HakemusDTO hakemus : hakemukset) {

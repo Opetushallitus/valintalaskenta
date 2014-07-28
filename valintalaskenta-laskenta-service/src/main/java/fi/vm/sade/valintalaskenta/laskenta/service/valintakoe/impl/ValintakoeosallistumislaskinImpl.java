@@ -33,7 +33,7 @@ public class ValintakoeosallistumislaskinImpl implements
 	private LaskentadomainkonvertteriWrapper laskentadomainkonvertteriWrapper;
 
     @Override
-    public OsallistuminenTulos laskeOsallistuminenYhdelleHakukohteelleRest(Hakukohde hakukohde, Hakemus hakemus, Funktiokutsu kaava) {
+    public OsallistuminenTulos laskeOsallistuminenYhdelleHakukohteelle(Hakukohde hakukohde, Hakemus hakemus, Funktiokutsu kaava) {
         switch (kaava.getFunktionimi().getTyyppi()) {
             case TOTUUSARVOFUNKTIO:
                 Laskentatulos<Boolean> tulos = laskentaService
