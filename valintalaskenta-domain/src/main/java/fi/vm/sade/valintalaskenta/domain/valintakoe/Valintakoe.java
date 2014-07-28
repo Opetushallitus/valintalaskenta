@@ -13,6 +13,7 @@ public class Valintakoe {
 	private boolean aktiivinen;
 	private OsallistuminenTulos osallistuminenTulos;
     private boolean lahetetaankoKoekutsut;
+    private Integer kutsuttavienMaara;
 
 	public boolean isAktiivinen() {
 		return aktiivinen;
@@ -60,5 +61,13 @@ public class Valintakoe {
 
     public void setLahetetaankoKoekutsut(boolean lahetetaankoKoekutsut) {
         this.lahetetaankoKoekutsut = lahetetaankoKoekutsut;
+    }
+
+    public Integer getKutsuttavienMaara() {
+        return kutsuttavienMaara;
+    }
+
+    public void setKutsuttavienMaara(final Integer kutsuttavienMaara) {
+        this.kutsuttavienMaara = kutsuttavienMaara;
     }
 }

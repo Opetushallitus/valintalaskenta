@@ -18,6 +18,7 @@ public class HakukohdeValintakoeData {
 	private OsallistuminenTulos osallistuminenTulos;
     private boolean lahetetaankoKoekutsut;
     private boolean aktiivinen;
+    private Integer kutsuttavienMaara;
 
 	public String getNimi() {
 		return nimi;
@@ -97,5 +98,13 @@ public class HakukohdeValintakoeData {
 
     public void setAktiivinen(boolean aktiivinen) {
         this.aktiivinen = aktiivinen;
+    }
+
+    public Integer getKutsuttavienMaara() {
+        return kutsuttavienMaara;
+    }
+
+    public void setKutsuttavienMaara(final Integer kutsuttavienMaara) {
+        this.kutsuttavienMaara = kutsuttavienMaara;
     }
 }
