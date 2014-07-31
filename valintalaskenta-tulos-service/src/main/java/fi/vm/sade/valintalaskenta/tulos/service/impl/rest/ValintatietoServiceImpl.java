@@ -121,6 +121,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
         ValintatietoValinnanvaiheDTO v = new ValintatietoValinnanvaiheDTO();
         v.setValinnanvaihe(valinnanvaihe.getJarjestysnumero());
         v.setValinnanvaiheoid(valinnanvaihe.getValinnanvaiheoid());
+        v.setHakuOid(valinnanvaihe.getHakuOid());
         for (ValintatapajonoDTO vt : valinnanvaihe.getValintatapajonot()) {
             v.getValintatapajonot().add(createValintatapajonoTyyppi(vt));
         }
@@ -135,6 +136,9 @@ public class ValintatietoServiceImpl implements ValintatietoService {
         dto.setPrioriteetti(vt.getPrioriteetti());
         dto.setSiirretaanSijoitteluun(vt.isSiirretaanSijoitteluun());
         dto.setEiVarasijatayttoa(vt.getEiVarasijatayttoa());
+        dto.setKaikkiEhdonTayttavatHyvaksytaan(vt.getKaikkiEhdonTayttavatHyvaksytaan());
+        dto.setKaytetaanValintalaskentaa(vt.getKaytetaanValintalaskentaa());
+        dto.setPoissaOlevaTaytto(vt.getPoissaOlevaTaytto());
         if (vt.getTasasijasaanto() != null) {
             dto.setTasasijasaanto(vt.getTasasijasaanto());
         }

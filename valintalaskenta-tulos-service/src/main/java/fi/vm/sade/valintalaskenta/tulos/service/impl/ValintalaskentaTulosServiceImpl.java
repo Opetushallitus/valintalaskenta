@@ -86,6 +86,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             vvdto.setCreatedAt(vv.getCreatedAt());
             vvdto.setJarjestysnumero(vv.getJarjestysnumero());
             vvdto.setValinnanvaiheoid(vv.getValinnanvaiheOid());
+            vvdto.setHakuOid(hakuOid);
             for (Valintatapajono jono : vv.getValintatapajonot()) {
                 jono.setJonosijat(new ArrayList<Jonosija>(Collections2.filter(jono.getJonosijat(), new Predicate<Jonosija>() {
                     @Override
@@ -116,6 +117,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                 vvdto.setCreatedAt(kokeet.getCreatedAt());
                 vvdto.setJarjestysnumero(vv.getValinnanVaiheJarjestysluku());
                 vvdto.setValinnanvaiheoid(vv.getValinnanVaiheOid());
+                vvdto.setHakuOid(hakuOid);
                 vvdto.getValintakokeet().addAll(vv.getValintakokeet());
                 hakukohdeDTO.getValinnanvaihe().add(vvdto);
             }
