@@ -36,7 +36,7 @@ public class HakukohdeDTO {
 
     private boolean harkinnanvaraisuus = false;
 
-    private List<HakijaryhmaDTO> hakijaryhma = new ArrayList<>();
+    private List<HakijaryhmaDTO> hakijaryhma = new ArrayList<HakijaryhmaDTO>();
 
     public String getHakuoid() {
         return hakuoid;
