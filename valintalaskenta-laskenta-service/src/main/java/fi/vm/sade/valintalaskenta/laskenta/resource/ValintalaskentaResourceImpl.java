@@ -39,4 +39,13 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
     public String valintakokeet(LaskeDTO laskeDTO) {
         return valintalaskentaService.valintakokeet(laskeDTO.getHakemus().get(0),laskeDTO.getValintaperuste());
     }
+
+    @Override
+    @Path("laskekaikki")
+    @Consumes("application/json")
+    @Produces("text/plain")
+    @POST
+    public String laskeKaikki(LaskeDTO laskeDTO) {
+        return valintalaskentaService.laskeKaikki(laskeDTO.getHakemus(), laskeDTO.getValintaperuste());
+    }
 }
