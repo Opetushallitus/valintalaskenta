@@ -161,12 +161,9 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                             applyJonosija(jonosija, muokattuJonosija);
                         }
                     }
-                    for (HarkinnanvarainenHyvaksyminen harkinnanvarainenHyvaksyminen : c) {
-                        if (harkinnanvarainenHyvaksyminen.getHakemusOid().equals(jonosija.getHakemusOid()) &&
-                                harkinnanvarainenHyvaksyminen.getHakukohdeOid().equals(hakukohdeoid)) {
-                            applyHarkinnanvarainenHyvaksynta(jonosija, harkinnanvarainenHyvaksyminen);
-                        }
-                    }
+                    c.parallelStream().filter(h -> h.getHakemusOid().equals(jonosija.getHakemusOid())
+                            && h.getHakukohdeOid().equals(hakukohdeoid)).forEach(h -> applyHarkinnanvarainenHyvaksynta(jonosija, h));
+
                 }
                 valintatulosConverter.sort(valintatapajonoDTO.getJonosijat());
             }
