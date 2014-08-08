@@ -18,4 +18,8 @@ public interface ValintalaskentaService {
     String valintakokeet(HakemusDTO hakemus,
                          List<ValintaperusteetDTO> valintaperuste)
                         throws RuntimeException;
+
+    String laskeKaikki(List<HakemusDTO> hakemus,
+                 List<ValintaperusteetDTO> valintaperuste)
+            throws RuntimeException;
 }

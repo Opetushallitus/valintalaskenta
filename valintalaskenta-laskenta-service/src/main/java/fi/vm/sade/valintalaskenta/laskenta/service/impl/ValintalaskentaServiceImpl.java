@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.impl;
 
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
+import fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.ValintalaskentaSuorittajaService;
@@ -71,5 +72,21 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 			throw new RuntimeException(e.getMessage(), e.getCause());
 		}
 	}
+
+    @Override
+    public String laskeKaikki(List<HakemusDTO> hakemus, List<ValintaperusteetDTO> valintaperuste) throws RuntimeException {
+        valintaperuste.sort((o1,o2) ->
+                o1.getValinnanVaihe().getValinnanVaiheJarjestysluku() - o2.getValinnanVaihe().getValinnanVaiheJarjestysluku());
+
+        valintaperuste.stream().forEachOrdered(peruste -> {
+            if(peruste.getValinnanVaihe().getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
+                hakemus.parallelStream().forEach(h -> valintakokeet(h, Arrays.asList(peruste)));
+            } else {
+                laske(hakemus, Arrays.asList(peruste));
+            }
+        });
+
+        return "Onnistui!";
+    }
 
 }

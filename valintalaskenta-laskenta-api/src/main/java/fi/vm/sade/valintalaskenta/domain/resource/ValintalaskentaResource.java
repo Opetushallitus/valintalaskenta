@@ -25,4 +25,10 @@ public interface ValintalaskentaResource {
     @Consumes("application/json")
     @Produces("text/plain")
     String valintakokeet(LaskeDTO laskeDTO);
+
+    @Path("laskekaikki")
+    @Consumes("application/json")
+    @Produces("text/plain")
+    @POST
+    public String laskeKaikki(LaskeDTO laskeDTO);
 }
