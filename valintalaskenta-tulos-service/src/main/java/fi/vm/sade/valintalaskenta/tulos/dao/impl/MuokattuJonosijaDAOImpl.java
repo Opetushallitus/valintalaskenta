@@ -13,6 +13,8 @@ import com.google.code.morphia.Datastore;
 import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
 
+import javax.annotation.PostConstruct;
+
 /**
  * Created with IntelliJ IDEA. User: kkammone Date: 5.8.2013 Time: 15:04 To
  * change this template use File | Settings | File Templates.
@@ -26,6 +28,11 @@ public class MuokattuJonosijaDAOImpl implements MuokattuJonosijaDAO {
 	@Qualifier("datastore2")
 	@Autowired
 	private Datastore datastore;
+
+    @PostConstruct
+    public void ensureIndexes() {
+        datastore.ensureIndexes(MuokattuJonosija.class);
+    }
 
 	/*
 	 * @Override public List<MuokattuJonosija> readByValintatapajonoOid(String

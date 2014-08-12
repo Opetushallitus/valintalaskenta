@@ -6,6 +6,7 @@ import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,11 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 
     @Autowired
     private Datastore datastore;
+
+    @PostConstruct
+    public void ensureIndexes() {
+        datastore.ensureIndexes(Valinnanvaihe.class);
+    }
 
     @Override
     public Valinnanvaihe haeEdeltavaValinnanvaihe(String hakuOid, String hakukohdeOid, int jarjestysnumero) {
