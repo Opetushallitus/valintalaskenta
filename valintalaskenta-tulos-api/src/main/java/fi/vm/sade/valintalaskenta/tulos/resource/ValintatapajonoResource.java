@@ -1,10 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.resource;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -14,6 +10,7 @@ import com.wordnik.swagger.annotations.ApiParam;
 
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
 
 /**
  * @author Jussi Jartamo
@@ -40,4 +37,13 @@ public interface ValintatapajonoResource {
 			@ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid,
 			@ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true) @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
 			@ApiParam(value = "Järjestyskriteerin uusi arvo", required = true) MuokattuJonosijaArvoDTO arvo);
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{valintatapajonoOid}/valmissijoiteltavaksi")
+    @ApiOperation(value = "Lisää/Poistaa valintatapajonon sijoittelusta", response = ValintatapajonoDTO.class)
+    public Response muokkaaSijotteluStatusta(
+            @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
+            @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status);
 }

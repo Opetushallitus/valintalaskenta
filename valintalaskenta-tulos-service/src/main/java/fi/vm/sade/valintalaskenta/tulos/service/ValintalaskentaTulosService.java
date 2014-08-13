@@ -3,13 +3,11 @@ package fi.vm.sade.valintalaskenta.tulos.service;
 import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
-import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvarainenHyvaksyminen;
-import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvaraisuusTila;
-import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
-import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
+import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ValintalaskentaTulosService {
 
@@ -39,4 +37,6 @@ public interface ValintalaskentaTulosService {
     List<HarkinnanvarainenHyvaksyminen> haeHakemuksenHarkinnanvaraisestiHyvaksymisenTilat(String hakuOid, String hakemusOid);
 
     ValinnanvaiheDTO lisaaTuloksia(ValinnanvaiheDTO vaihe, String hakukohdeoid, String tarjoajaOid);
+
+    Optional<Valintatapajono> muokkaaSijotteluStatusta(String valintatapajonoOid, boolean status);
 }

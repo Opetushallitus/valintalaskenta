@@ -95,4 +95,9 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 		return datastore.find(Valinnanvaihe.class).field("valinnanvaiheOid")
 				.equal(valinnanvaiheOid).get();
 	}
+
+    @Override
+    public void saveOrUpdate(Valinnanvaihe vaihe) {
+        datastore.save(vaihe);
+    }
 }

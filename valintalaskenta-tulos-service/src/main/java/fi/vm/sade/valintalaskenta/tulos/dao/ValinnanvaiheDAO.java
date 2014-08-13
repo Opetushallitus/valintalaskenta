@@ -23,4 +23,6 @@ public interface ValinnanvaiheDAO {
     void update(Valinnanvaihe valinnanvaihe, List<Valintatapajono> jonot, String hakukohdeoid, String hakuoid, String tarjoajaOid);
 
     Valinnanvaihe haeValinnanvaihe(String valinnanvaiheOid);
+
+    void saveOrUpdate(Valinnanvaihe vaihe);
 }

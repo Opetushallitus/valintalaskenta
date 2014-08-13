@@ -46,6 +46,9 @@ public class Valintatapajono {
     @JsonView(JsonViews.Basic.class)
     private Boolean poissaOlevaTaytto;
 
+    @JsonView(JsonViews.Basic.class)
+    private Boolean valmisSijoiteltavaksi = true;
+
 	@JsonView(JsonViews.Basic.class)
 	@Embedded
 	private List<Jonosija> jonosijat = new ArrayList<Jonosija>();
@@ -136,5 +139,13 @@ public class Valintatapajono {
 
     public void setKaytetaanValintalaskentaa(Boolean kaytetaanValintalaskentaa) {
         this.kaytetaanValintalaskentaa = kaytetaanValintalaskentaa;
+    }
+
+    public Boolean getValmisSijoiteltavaksi() {
+        return valmisSijoiteltavaksi;
+    }
+
+    public void setValmisSijoiteltavaksi(Boolean valmisSijoiteltavaksi) {
+        this.valmisSijoiteltavaksi = valmisSijoiteltavaksi;
     }
 }
