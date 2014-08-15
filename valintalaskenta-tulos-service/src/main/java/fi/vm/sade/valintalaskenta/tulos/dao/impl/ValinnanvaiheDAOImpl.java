@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import com.google.code.morphia.Datastore;
-import com.google.code.morphia.query.UpdateOperations;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.query.UpdateOperations;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;

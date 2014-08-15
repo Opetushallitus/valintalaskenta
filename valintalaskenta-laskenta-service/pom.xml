@@ -32,9 +32,21 @@
             <version>${project.version}</version>
         </dependency>
 		<dependency>
-			<groupId>com.google.code.morphia</groupId>
+			<groupId>org.mongodb.morphia</groupId>
 			<artifactId>morphia</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <type>jar</type>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.thoughtworks.proxytoys</groupId>
+            <artifactId>proxytoys</artifactId>
+            <type>jar</type>
+            <optional>true</optional>
+        </dependency>
 		<!-- Internal -->
 		<dependency>
 			<groupId>fi.vm.sade.valintaperusteet</groupId>

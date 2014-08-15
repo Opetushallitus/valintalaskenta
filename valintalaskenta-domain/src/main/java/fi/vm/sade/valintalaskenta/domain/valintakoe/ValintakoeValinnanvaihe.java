@@ -1,6 +1,6 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
-import com.google.code.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Embedded;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.codehaus.jackson.map.annotate.JsonView;
 
-import com.google.code.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Embedded;
 
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;

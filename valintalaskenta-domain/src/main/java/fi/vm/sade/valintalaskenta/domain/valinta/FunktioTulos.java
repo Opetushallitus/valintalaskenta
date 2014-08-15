@@ -1,6 +1,6 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import com.google.code.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Embedded;
 
 /**
  * User: wuoti

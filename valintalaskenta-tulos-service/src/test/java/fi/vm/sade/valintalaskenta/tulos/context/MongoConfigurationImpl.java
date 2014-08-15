@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.google.code.morphia.Datastore;
-import com.google.code.morphia.Morphia;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
@@ -68,7 +68,7 @@ public class MongoConfigurationImpl {
 	}
 
 	@Bean
-	public Mongo getMongo(MongodProcess process) throws IOException {
+	public MongoClient getMongo(MongodProcess process) throws IOException {
 
 		// MongoClient mongo =
 		// return new MongoClient(new ServerAddress(Network.getLocalHost(),
@@ -82,7 +82,7 @@ public class MongoConfigurationImpl {
 	}
 
 	@Bean(name = "datastore2")
-	public Datastore getDatastore(Morphia morphia, Mongo mongo) {
+	public Datastore getDatastore(Morphia morphia, MongoClient mongo) {
 		return morphia.createDatastore(mongo, DATABASE_NAME);
 	}
 }

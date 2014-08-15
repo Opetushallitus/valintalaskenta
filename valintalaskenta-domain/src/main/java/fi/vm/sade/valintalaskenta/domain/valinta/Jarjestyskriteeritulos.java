@@ -1,7 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import com.google.code.morphia.annotations.Converters;
-import com.google.code.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Converters;
+import org.mongodb.morphia.annotations.Embedded;
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.converter.BigDecimalConverter;
 import org.bson.types.ObjectId;

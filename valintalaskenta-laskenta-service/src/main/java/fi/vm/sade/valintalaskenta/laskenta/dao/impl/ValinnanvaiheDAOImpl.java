@@ -1,6 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 
-import com.google.code.morphia.Datastore;
+import org.mongodb.morphia.Datastore;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import org.springframework.beans.factory.annotation.Autowired;

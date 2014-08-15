@@ -10,9 +10,9 @@
     <bean id="mongodFactory" class="de.flapdoodle.embed.mongo.tests.MongodForTestsFactory" destroy-method="shutdown"/>
     <bean id="mongo" class="com.mongodb.MongoClient" factory-bean="mongodFactory" factory-method="newMongo"/>
 
-    <bean id="morphia" class="com.google.code.morphia.Morphia" />
+    <bean id="morphia" class="org.mongodb.morphia.Morphia" />
     <bean id="datastore2" factory-bean="morphia" factory-method="createDatastore">
-        <constructor-arg type="com.mongodb.Mongo" ref="mongo" />
+        <constructor-arg type="com.mongodb.MongoClient" ref="mongo" />
         <constructor-arg type="java.lang.String" value="test" />
     </bean>
 

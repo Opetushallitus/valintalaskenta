@@ -1,9 +1,9 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
-import com.google.code.morphia.annotations.Embedded;
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id;
-import com.google.code.morphia.annotations.PrePersist;
+import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.PrePersist;
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import org.bson.types.ObjectId;
 import org.codehaus.jackson.map.annotate.JsonView;

@@ -1,6 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 
-import com.google.code.morphia.Datastore;
+import org.mongodb.morphia.Datastore;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import org.springframework.beans.factory.annotation.Autowired;
