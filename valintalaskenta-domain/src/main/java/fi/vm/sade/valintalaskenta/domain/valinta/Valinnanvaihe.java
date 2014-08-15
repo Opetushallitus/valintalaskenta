@@ -1,6 +1,6 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import com.google.code.morphia.annotations.*;
+import org.mongodb.morphia.annotations.*;
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import org.bson.types.ObjectId;
 import org.codehaus.jackson.map.annotate.JsonView;

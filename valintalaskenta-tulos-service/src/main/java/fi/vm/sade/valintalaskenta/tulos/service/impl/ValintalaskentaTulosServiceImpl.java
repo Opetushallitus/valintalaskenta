@@ -435,6 +435,17 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         return vaihe;
     }
 
+    @Override
+    public Optional<Valintatapajono> muokkaaSijotteluStatusta(String valintatapajonoOid, boolean status) {
+        Valinnanvaihe vaihe = valinnanvaiheDAO.findByValintatapajonoOid(valintatapajonoOid);
+
+        vaihe.getValintatapajonot().stream().filter(j -> j.getValintatapajonoOid().equals(valintatapajonoOid)).forEach(j -> j.setValmisSijoiteltavaksi(status));
+        valinnanvaiheDAO.saveOrUpdate(vaihe);
+
+        return vaihe.getValintatapajonot().stream().filter(j -> j.getValintatapajonoOid().equals(valintatapajonoOid)).findFirst();
+
+    }
+
 
     /**
      * Muokattu jonosija works in mysterious ways.

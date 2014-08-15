@@ -1,6 +1,6 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
-import com.google.code.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Embedded;
 
 /**
  * User: wuoti Date: 2.5.2013 Time: 13.32

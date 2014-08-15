@@ -211,6 +211,9 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
 			dto.setTasasijasaanto(valintatapajono.getTasasijasaanto());
 			dto.setSiirretaanSijoitteluun(valintatapajono
 					.isSiirretaanSijoitteluun());
+            if(valintatapajono.getValmisSijoiteltavaksi() != null) {
+                dto.setValmisSijoiteltavaksi(valintatapajono.getValmisSijoiteltavaksi());
+            }
 			list.add(dto);
 		}
 		return list;
@@ -230,6 +233,9 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
 		jonodto.setSiirretaanSijoitteluun(jono.isSiirretaanSijoitteluun());
 		jonodto.setTasasijasaanto(jono.getTasasijasaanto());
 		jonodto.setJonosijat(convertJonosija(jono.getJonosijat()));
+        if(jono.getValmisSijoiteltavaksi() != null) {
+            jonodto.setValmisSijoiteltavaksi(jono.getValmisSijoiteltavaksi());
+        }
 
 		return jonodto;
 	}

@@ -1,6 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 
-import com.google.code.morphia.Datastore;
+import org.mongodb.morphia.Datastore;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import org.bson.types.ObjectId;

@@ -1,9 +1,9 @@
 package fi.vm.sade.valintalaskenta.domain.converter;
 
-import com.google.code.morphia.converters.SimpleValueConverter;
-import com.google.code.morphia.converters.TypeConverter;
-import com.google.code.morphia.mapping.MappedField;
-import com.google.code.morphia.mapping.MappingException;
+import org.mongodb.morphia.converters.SimpleValueConverter;
+import org.mongodb.morphia.converters.TypeConverter;
+import org.mongodb.morphia.mapping.MappedField;
+import org.mongodb.morphia.mapping.MappingException;
 
 import java.math.BigDecimal;
 
