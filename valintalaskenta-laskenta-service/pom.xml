@@ -39,13 +39,11 @@
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
             <type>jar</type>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.thoughtworks.proxytoys</groupId>
             <artifactId>proxytoys</artifactId>
             <type>jar</type>
-            <optional>true</optional>
         </dependency>
 		<!-- Internal -->
 		<dependency>
