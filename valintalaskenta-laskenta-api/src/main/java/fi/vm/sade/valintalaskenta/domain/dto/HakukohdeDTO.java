@@ -34,6 +34,8 @@ public class HakukohdeDTO {
     @JsonView(JsonViews.Basic.class)
     private int prioriteetti;
 
+    private boolean kaikkiJonotSijoiteltu = true;
+
     private boolean harkinnanvaraisuus = false;
 
     private List<HakijaryhmaDTO> hakijaryhma = new ArrayList<HakijaryhmaDTO>();
@@ -92,5 +94,13 @@ public class HakukohdeDTO {
 
     public void setHakijaryhma(List<HakijaryhmaDTO> hakijaryhma) {
         this.hakijaryhma = hakijaryhma;
+    }
+
+    public boolean isKaikkiJonotSijoiteltu() {
+        return kaikkiJonotSijoiteltu;
+    }
+
+    public void setKaikkiJonotSijoiteltu(boolean kaikkiJonotSijoiteltu) {
+        this.kaikkiJonotSijoiteltu = kaikkiJonotSijoiteltu;
     }
 }
