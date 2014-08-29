@@ -13,10 +13,10 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
  */
 public interface ValintatietoService {
 
-    //@PreAuthorize(READ_UPDATE_CRUD)
+    @PreAuthorize(READ_UPDATE_CRUD)
     List<HakemusOsallistuminenDTO> haeValintatiedotHakukohteelle(List<String> valintakoeOid,
                                                                  String hakukohdeOid);
 
-    //@PreAuthorize(READ_UPDATE_CRUD)
+    @PreAuthorize(READ_UPDATE_CRUD)
     HakuDTO haeValintatiedot(String hakuOid);
 }
