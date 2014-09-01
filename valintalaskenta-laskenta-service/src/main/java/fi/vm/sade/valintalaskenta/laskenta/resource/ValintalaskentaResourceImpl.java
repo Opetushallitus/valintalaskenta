@@ -4,6 +4,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.resource.ValintalaskentaResource;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.Consumes;
@@ -16,7 +17,7 @@ import javax.ws.rs.Produces;
  */
 @Component
 @Path("valintalaskenta")
-//@PreAuthorize("isAuthenticated()")
+@PreAuthorize("isAuthenticated()")
 public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
 
     @Autowired

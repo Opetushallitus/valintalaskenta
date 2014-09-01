@@ -1,9 +1,12 @@
 package fi.vm.sade.valintalaskenta.domain.dto.valintatieto;
 
+import com.wordnik.swagger.annotations.ApiModelProperty;
 import fi.vm.sade.valintalaskenta.domain.dto.HakijaDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -11,6 +14,21 @@ import java.util.List;
  */
 public class ValintatietoValintatapajonoDTO extends ValintatapajonoDTO {
     private List<HakijaDTO> hakija;
+
+    @ApiModelProperty(value = "Varasijojen lkm. 0 == pois päältä", required = true)
+    private Integer varasijat = 0;
+
+    @ApiModelProperty(value = "Kuinka monta päivää varasijoja täytetään", required = true)
+    private Integer varasijaTayttoPaivat = 0;
+
+    @ApiModelProperty(value = "Varasijasääntöjä käytetään alkaen")
+    private Date varasijojaKaytetaanAlkaen;
+
+    @ApiModelProperty(value = "Varasijoja täytetään asti")
+    private Date varasijojaTaytetaanAsti;
+
+    @ApiModelProperty(value = "Valintatapajono, josta vapaaksi jääneet paikat täytetään", required = false)
+    private String tayttojono;
 
     public List<HakijaDTO> getHakija() {
         if(hakija == null) {
@@ -21,5 +39,45 @@ public class ValintatietoValintatapajonoDTO extends ValintatapajonoDTO {
 
     public void setHakija(List<HakijaDTO> hakija) {
         this.hakija = hakija;
+    }
+
+    public Integer getVarasijat() {
+        return varasijat;
+    }
+
+    public void setVarasijat(Integer varasijat) {
+        this.varasijat = varasijat;
+    }
+
+    public Integer getVarasijaTayttoPaivat() {
+        return varasijaTayttoPaivat;
+    }
+
+    public void setVarasijaTayttoPaivat(Integer varasijaTayttoPaivat) {
+        this.varasijaTayttoPaivat = varasijaTayttoPaivat;
+    }
+
+    public Date getVarasijojaKaytetaanAlkaen() {
+        return varasijojaKaytetaanAlkaen;
+    }
+
+    public void setVarasijojaKaytetaanAlkaen(Date varasijojaKaytetaanAlkaen) {
+        this.varasijojaKaytetaanAlkaen = varasijojaKaytetaanAlkaen;
+    }
+
+    public Date getVarasijojaTaytetaanAsti() {
+        return varasijojaTaytetaanAsti;
+    }
+
+    public void setVarasijojaTaytetaanAsti(Date varasijojaTaytetaanAsti) {
+        this.varasijojaTaytetaanAsti = varasijojaTaytetaanAsti;
+    }
+
+    public String getTayttojono() {
+        return tayttojono;
+    }
+
+    public void setTayttojono(String tayttojono) {
+        this.tayttojono = tayttojono;
     }
 }

@@ -9,15 +9,18 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoelaskenta
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.CRUD;
+
 /**
  * @author Jussi Jartamo
  */
-//@PreAuthorize("isAuthenticated()")
+@PreAuthorize("isAuthenticated()")
 @Service
 public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 
@@ -30,7 +33,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 	@Autowired
 	private ValintakoelaskentaSuorittajaService valintakoelaskentaSuorittajaService;
 
-//	@PreAuthorize(CRUD)
+	@PreAuthorize(CRUD)
 	@Override
     public String laske(List<HakemusDTO> hakemus,
                         List<ValintaperusteetDTO> valintaperuste)
@@ -59,7 +62,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 	 * @param valintaperuste
 	 * @return
 	 */
-//	@PreAuthorize(CRUD)
+	@PreAuthorize(CRUD)
 	@Override
     public String valintakokeet(HakemusDTO hakemus,
                                 List<ValintaperusteetDTO> valintaperuste)
