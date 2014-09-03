@@ -6,6 +6,14 @@
             http://www.springframework.org/schema/context
             http://www.springframework.org/schema/context/spring-context.xsd">
 
+	<context:annotation-config/>
+	<context:property-placeholder/>
+	<context:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.config"/>
+
+<!--
+
+ 
+
     <context:annotation-config/>
 	<context:property-placeholder/>
 
@@ -21,4 +29,5 @@
         <constructor-arg type="com.mongodb.MongoClient" ref="mongo" />
         <constructor-arg type="java.lang.String" value="${valintalaskenta-laskenta-service.mongodb.dbname}" />
     </bean>
+    -->
 </beans>
