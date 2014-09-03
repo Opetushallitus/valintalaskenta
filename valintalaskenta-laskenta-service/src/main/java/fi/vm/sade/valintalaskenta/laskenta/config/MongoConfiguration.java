@@ -41,13 +41,13 @@ public class MongoConfiguration {
 		return new MongoClientURI(uri);
 	}
 
-	@Bean(name = "")
+	@Bean(name = "mongo")
 	public MongoClient getMongoClient(MongoClientURI clientUri)
 			throws UnknownHostException {
 		return new MongoClient(clientUri);
 	}
 
-	@Bean
+	@Bean(name = "morphia")
 	public Morphia getMorphia() {
 		Morphia morphia = new Morphia();
 		morphia.getMapper().getOptions().objectFactory = new DefaultCreator() {
@@ -60,7 +60,7 @@ public class MongoConfiguration {
 		return morphia;
 	}
 
-	@Bean
+	@Bean(name = "datastore2")
 	public Datastore getDatastore(
 			Morphia morphia,
 			MongoClient mongo,
