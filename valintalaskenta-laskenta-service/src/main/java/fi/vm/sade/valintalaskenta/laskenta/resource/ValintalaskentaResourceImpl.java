@@ -12,6 +12,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.CRUD;
+
 /**
  * Created by jukais on 21.3.2014.
  */
@@ -28,6 +30,7 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
     @Consumes("application/json")
     @Produces("text/plain")
     @POST
+    @PreAuthorize(CRUD)
     public String laske(LaskeDTO laskeDTO) {
         return valintalaskentaService.laske(laskeDTO.getHakemus(), laskeDTO.getValintaperuste());
     }
@@ -37,6 +40,7 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
     @Consumes("application/json")
     @Produces("text/plain")
     @POST
+    @PreAuthorize(CRUD)
     public String valintakokeet(LaskeDTO laskeDTO) {
         return valintalaskentaService.valintakokeet(laskeDTO.getHakemus().get(0),laskeDTO.getValintaperuste());
     }
@@ -46,6 +50,7 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
     @Consumes("application/json")
     @Produces("text/plain")
     @POST
+    @PreAuthorize(CRUD)
     public String laskeKaikki(LaskeDTO laskeDTO) {
         return valintalaskentaService.laskeKaikki(laskeDTO.getHakemus(), laskeDTO.getValintaperuste());
     }

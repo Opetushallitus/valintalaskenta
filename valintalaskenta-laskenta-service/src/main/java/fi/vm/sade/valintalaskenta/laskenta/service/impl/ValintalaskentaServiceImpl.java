@@ -20,7 +20,6 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 /**
  * @author Jussi Jartamo
  */
-@PreAuthorize("isAuthenticated()")
 @Service
 public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 
@@ -33,7 +32,6 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 	@Autowired
 	private ValintakoelaskentaSuorittajaService valintakoelaskentaSuorittajaService;
 
-	@PreAuthorize(CRUD)
 	@Override
     public String laske(List<HakemusDTO> hakemus,
                         List<ValintaperusteetDTO> valintaperuste)
@@ -62,7 +60,6 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 	 * @param valintaperuste
 	 * @return
 	 */
-	@PreAuthorize(CRUD)
 	@Override
     public String valintakokeet(HakemusDTO hakemus,
                                 List<ValintaperusteetDTO> valintaperuste)

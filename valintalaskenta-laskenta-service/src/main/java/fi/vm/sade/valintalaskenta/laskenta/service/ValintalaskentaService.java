@@ -9,12 +9,12 @@ import java.util.List;
  * Created by jukais on 24.3.2014.
  */
 public interface ValintalaskentaService {
-    //	@PreAuthorize(CRUD)
+
     String laske(List<HakemusDTO> hakemus,
                  List<ValintaperusteetDTO> valintaperuste)
                 throws RuntimeException;
 
-    //	@PreAuthorize(CRUD)
+
     String valintakokeet(HakemusDTO hakemus,
                          List<ValintaperusteetDTO> valintaperuste)
                         throws RuntimeException;

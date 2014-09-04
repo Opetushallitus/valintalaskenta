@@ -22,7 +22,7 @@ import java.util.*;
 /**
  * User: kkammone Date: 29.4.2013 Time: 13:24
  */
-// @PreAuthorize("isAuthenticated()")
+
 @Service
 public class ValintatietoServiceImpl implements ValintatietoService {
 
@@ -34,7 +34,6 @@ public class ValintatietoServiceImpl implements ValintatietoService {
     @Autowired
     private ValintalaskentaModelMapper modelMapper;
 
-    // @PreAuthorize(READ_UPDATE_CRUD)
     public List<HakemusOsallistuminenDTO> haeValintatiedotHakukohteelle(
             List<String> valintakoeOid,
             String hakukohdeOid) {
@@ -86,8 +85,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
         return osallistumiset;
     }
 
-    // @PreAuthorize(READ_UPDATE_CRUD)
-        public HakuDTO haeValintatiedot(String hakuOid) {
+    public HakuDTO haeValintatiedot(String hakuOid) {
         try {
             List<HakukohdeDTO> a = tulosService
                     .haeLasketutValinnanvaiheetHaulle(hakuOid);
