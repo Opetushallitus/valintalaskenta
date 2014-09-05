@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.PrePersist;
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import org.codehaus.jackson.map.annotate.JsonView;
@@ -18,6 +19,7 @@ import java.util.List;
 @Embedded
 public class Jonosija {
     @JsonView(JsonViews.Basic.class)
+    @Indexed
     private String hakemusOid;
 
     @JsonView(JsonViews.Basic.class)
