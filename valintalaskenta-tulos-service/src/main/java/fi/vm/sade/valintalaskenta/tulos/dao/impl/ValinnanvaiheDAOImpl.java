@@ -1,7 +1,13 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
+import com.mongodb.*;
+import fi.vm.sade.valintalaskenta.tulos.dao.util.MongoMapReduceUtil;
+import org.mongodb.morphia.mapping.Mapper;
+import org.mongodb.morphia.mapping.cache.DefaultEntityCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,28 +37,26 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 	@Override
 	public List<Valinnanvaihe> readByHakuOidAndHakemusOid(String hakuOid,
 			String hakemusOid) {
-		// TODO: Tämän kyselyn voisi tehdä fiksummin alla olevalla
-		// aggregoinnilla. Muutetaan kun keritään.
-		// DBCollection collection =
-		// datastore.getCollection(Valinnanvaihe.class);
-		// collection.aggregate(
-		// new BasicDBObject("$match", new BasicDBObject("hakuOid",
-		// hakuOid).append("valintatapajonot.jonosijat.hakemusOid",
-		// hakemusOid)),
-		// new BasicDBObject("$unwind", "$valintatapajonot"),
-		// new BasicDBObject("$unwind", "$valintatapajonot.jonosijat"),
-		// new BasicDBObject("$match", new
-		// BasicDBObject("valintatapajonot.jonosijat.hakemusOid", hakemusOid)),
-		// new BasicDBObject("$group", new BasicDBObject("_id",
-		// new BasicDBObject("hakukohdeOid",
-		// "$hakukohdeOid").append("valinnanvaiheOid", "$valinnanvaiheOid"))
-		// .append("valintatapajonot", new BasicDBObject("$addToSet",
-		// "$valintatapajonot")))
-		// );
 
-		return datastore.createQuery(Valinnanvaihe.class).field("hakuOid")
-				.equal(hakuOid).field("valintatapajonot.jonosijat.hakemusOid")
-				.equal(hakemusOid).asList();
+        final BasicDBObject query = new BasicDBObject("hakuOid", hakuOid).append("valintatapajonot.jonosijat.hakemusOid", hakemusOid);
+
+        String map = MongoMapReduceUtil.shallowCloneJs + " copy.valintatapajonot = copy.valintatapajonot.map(function(jono) { jono = shallowClone(jono); jono.jonosijat = jono.jonosijat.filter(function (hakemus) { return hakemus.hakemusOid == '"+hakemusOid+"' }); return jono }); emit(this.oid, copy) }\n";
+
+        String reduce = "function(key, values) { return values[0] }";
+
+        DBCollection collection = datastore.getCollection(Valinnanvaihe.class);
+        MapReduceCommand cmd = new MapReduceCommand(
+                collection,
+                map,
+                reduce,
+                null,
+                MapReduceCommand.OutputType.INLINE,
+                query);
+        MapReduceOutput out = collection.mapReduce(cmd);
+
+        return StreamSupport.stream(out.results().spliterator(), false)
+                .map(dbObject -> new Mapper().fromDBObject(Valinnanvaihe.class, (DBObject) dbObject.get("value"), new DefaultEntityCache()))
+                .collect(Collectors.toList());
 
 	}
 

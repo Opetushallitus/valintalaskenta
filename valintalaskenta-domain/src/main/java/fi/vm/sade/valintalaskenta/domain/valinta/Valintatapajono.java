@@ -9,6 +9,7 @@ import org.mongodb.morphia.annotations.Embedded;
 
 import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
+import org.mongodb.morphia.annotations.Indexed;
 
 /**
  * User: wuoti Date: 4.9.2013 Time: 10.25
@@ -17,6 +18,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 public class Valintatapajono {
 
 	@JsonView(JsonViews.Basic.class)
+    @Indexed
 	private String valintatapajonoOid;
 
 	@JsonView(JsonViews.Basic.class)

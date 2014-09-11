@@ -1,8 +1,13 @@
 package fi.vm.sade.valintalaskenta.laskenta.resource;
 
+import java.util.Arrays;
+
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.resource.ValintalaskentaResource;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
@@ -21,37 +26,60 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 @Path("valintalaskenta")
 @PreAuthorize("isAuthenticated()")
 public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
+	private static final Logger LOG = LoggerFactory
+			.getLogger(ValintalaskentaResourceImpl.class);
+	@Autowired
+	private ValintalaskentaService valintalaskentaService;
 
-    @Autowired
-    private ValintalaskentaService valintalaskentaService;
+	@Override
+	@Path("laske")
+	@Consumes("application/json")
+	@Produces("text/plain")
+	@POST
+	@PreAuthorize(CRUD)
+	public String laske(LaskeDTO laskeDTO) {
+		try {
+			return valintalaskentaService.laske(laskeDTO.getHakemus(),
+					laskeDTO.getValintaperuste());
+		} catch (Exception e) {
+			LOG.error("Valintalaskenta epaonnistui: {}\r\n{}", e.getMessage(),
+					Arrays.toString(e.getStackTrace()));
+			throw e;
+		}
+	}
 
-    @Override
-    @Path("laske")
-    @Consumes("application/json")
-    @Produces("text/plain")
-    @POST
-    @PreAuthorize(CRUD)
-    public String laske(LaskeDTO laskeDTO) {
-        return valintalaskentaService.laske(laskeDTO.getHakemus(), laskeDTO.getValintaperuste());
-    }
+	@Override
+	@Path("valintakokeet")
+	@Consumes("application/json")
+	@Produces("text/plain")
+	@POST
+	@PreAuthorize(CRUD)
+	public String valintakokeet(LaskeDTO laskeDTO) {
+		try {
+			return valintalaskentaService.valintakokeet(laskeDTO.getHakemus()
+					.get(0), laskeDTO.getValintaperuste());
+		} catch (Exception e) {
+			LOG.error("Valintakoelaskenta epaonnistui: {}\r\n{}",
+					e.getMessage(), Arrays.toString(e.getStackTrace()));
+			throw e;
+		}
+	}
 
-    @Override
-    @Path("valintakokeet")
-    @Consumes("application/json")
-    @Produces("text/plain")
-    @POST
-    @PreAuthorize(CRUD)
-    public String valintakokeet(LaskeDTO laskeDTO) {
-        return valintalaskentaService.valintakokeet(laskeDTO.getHakemus().get(0),laskeDTO.getValintaperuste());
-    }
-
-    @Override
-    @Path("laskekaikki")
-    @Consumes("application/json")
-    @Produces("text/plain")
-    @POST
-    @PreAuthorize(CRUD)
-    public String laskeKaikki(LaskeDTO laskeDTO) {
-        return valintalaskentaService.laskeKaikki(laskeDTO.getHakemus(), laskeDTO.getValintaperuste());
-    }
+	@Override
+	@Path("laskekaikki")
+	@Consumes("application/json")
+	@Produces("text/plain")
+	@POST
+	@PreAuthorize(CRUD)
+	public String laskeKaikki(LaskeDTO laskeDTO) {
+		try {
+			return valintalaskentaService.laskeKaikki(laskeDTO.getHakemus(),
+					laskeDTO.getValintaperuste());
+		} catch (Exception e) {
+			LOG.error(
+					"Valintalaskenta ja valintakoelaskenta epaonnistui: {}\r\n{}",
+					e.getMessage(), Arrays.toString(e.getStackTrace()));
+			throw e;
+		}
+	}
 }
