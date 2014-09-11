@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl;
 
 import fi.vm.sade.service.valintaperusteet.laskenta.Lukuarvofunktio;
+import fi.vm.sade.service.valintaperusteet.laskenta.Totuusarvofunktio;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
@@ -46,6 +47,33 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         Laskentatulos<BigDecimal> tulos = laskentaService.suoritaValintalaskenta(hakukohde,
                 laskettavaHakemus.getLaskentahakemus(), kaikkiHakemukset, lukuarvofunktio);
 
+        muodostaTulos(laskettavaHakemus, jkPrioriteetti, tulos, edellinenVaihe, jonosijatHakemusOidinMukaan, jkNimi);
+
+    }
+
+    @Override
+    public void suoritaLaskentaHakemukselle(Hakukohde hakukohde,
+                                            HakemusWrapper laskettavaHakemus,
+                                            List<Hakemus> kaikkiHakemukset,
+                                            Totuusarvofunktio lukuarvofunktio,
+                                            int jkPrioriteetti,
+                                            Valinnanvaihe edellinenVaihe,
+                                            Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan,
+                                            String jkNimi) {
+        Laskentatulos<Boolean> tulos = laskentaService.suoritaValintalaskenta(hakukohde,
+                laskettavaHakemus.getLaskentahakemus(), kaikkiHakemukset, lukuarvofunktio);
+
+        muodostaTulos(laskettavaHakemus, jkPrioriteetti, tulos, edellinenVaihe, jonosijatHakemusOidinMukaan, jkNimi);
+
+    }
+
+    private void muodostaTulos(HakemusWrapper laskettavaHakemus,
+                                            int jkPrioriteetti,
+                                            Laskentatulos tulos,
+                                            Valinnanvaihe edellinenVaihe,
+                                            Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan,
+                                            String jkNimi) {
+
         Jarjestyskriteeritulos jktulos = new Jarjestyskriteeritulos();
         jktulos.setPrioriteetti(jkPrioriteetti);
 
@@ -61,10 +89,14 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         //if(tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY) && !tulos.getTila().getTilatyyppi().equals(Tila.Tilatyyppi.HYLATTY)) {
         if(tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY) &&
                 (!tulos.getTila().getTilatyyppi().equals(Tila.Tilatyyppi.HYLATTY) ||
-                (tulos.getTila().getTilatyyppi().equals(Tila.Tilatyyppi.HYLATTY) && tilaJaSelite.getSelite().equals(edellinenTila.getSelite())))) {
+                        (tulos.getTila().getTilatyyppi().equals(Tila.Tilatyyppi.HYLATTY) && tilaJaSelite.getSelite().equals(edellinenTila.getSelite())))) {
             jktulos.setArvo(null);
         } else {
-            jktulos.setArvo(tulos.getTulos());
+            if(tulos.getTulos() != null && tulos.getTulos() instanceof BigDecimal) {
+                jktulos.setArvo((BigDecimal)tulos.getTulos());
+            } else {
+                jktulos.setArvo(null);
+            }
         }
 
         jktulos.setTila(tilaJaSelite.getTila());
@@ -92,5 +124,6 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         jkhistoria.setHistoria(tulos.getHistoria().toString());
         jarjestyskriteerihistoriaDAO.create(jkhistoria);
         jktulos.setHistoria(jkhistoria.getId());
+
     }
 }
