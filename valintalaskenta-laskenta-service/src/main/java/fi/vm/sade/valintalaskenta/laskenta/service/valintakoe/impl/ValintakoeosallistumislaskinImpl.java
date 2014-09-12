@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
@@ -32,6 +33,57 @@ public class ValintakoeosallistumislaskinImpl implements
 	@Autowired
 	private LaskentadomainkonvertteriWrapper laskentadomainkonvertteriWrapper;
 
+
+    private OsallistuminenTulos muodostaTulos(Laskentatulos tulos) {
+        // Jos tulosta ei ole saatu laskettua (ts. sitä ei ole) tai jos
+        // tuloksen tila on hylätty, voidaan
+        // olettaa, että henkilön pitää osallistua valintakokeeseen
+        Osallistuminen osallistuminen = null;
+        if (Tila.Tilatyyppi.VIRHE.equals(tulos.getTila().getTilatyyppi())) {
+            // Palautetaan virhe, jos laskenta palautti virheen
+            osallistuminen = Osallistuminen.VIRHE;
+        } else if (tulos.getTulos() == null
+                || Tila.Tilatyyppi.HYLATTY.equals(tulos.getTila()
+                .getTilatyyppi())) {
+            osallistuminen = Osallistuminen.OSALLISTUU;
+        } else {
+            if(tulos.getTulos() instanceof Boolean) {
+                osallistuminen = (Boolean)tulos.getTulos() ? Osallistuminen.OSALLISTUU
+                        : Osallistuminen.EI_OSALLISTU;
+            } else {
+                osallistuminen = tulos.getTulos() == null ? Osallistuminen.OSALLISTUU
+                        : Osallistuminen.EI_OSALLISTU;
+            }
+
+        }
+
+        OsallistuminenTulos osallistuminenTulos = new OsallistuminenTulos();
+        osallistuminenTulos.setOsallistuminen(osallistuminen);
+        osallistuminenTulos.setLaskentaTila(tulos.getTila().getTilatyyppi()
+                .name());
+        if(tulos.getTulos() instanceof Boolean) {
+            osallistuminenTulos.setLaskentaTulos((Boolean)tulos.getTulos());
+        } else {
+            if(tulos.getTulos() == null) {
+                osallistuminenTulos.setLaskentaTulos(false);
+            } else {
+                osallistuminenTulos.setLaskentaTulos(true);
+            }
+        }
+
+
+        Map<String, String> kuvaus = null;
+        String tekninen = null;
+        if (tulos.getTila() instanceof Hylattytila) {
+            kuvaus = ((Hylattytila) tulos.getTila()).getKuvaus();
+            tekninen = ((Hylattytila) tulos.getTila()).getTekninenKuvaus();
+        } else if (tulos.getTila() instanceof Virhetila) {
+            kuvaus = ((Virhetila) tulos.getTila()).getKuvaus();
+        }
+        osallistuminenTulos.setKuvaus(kuvaus);
+        osallistuminenTulos.setTekninenKuvaus(tekninen);
+        return osallistuminenTulos;
+    }
     @Override
     public OsallistuminenTulos laskeOsallistuminenYhdelleHakukohteelle(Hakukohde hakukohde, Hakemus hakemus, Funktiokutsu kaava) {
         switch (kaava.getFunktionimi().getTyyppi()) {
@@ -39,44 +91,17 @@ public class ValintakoeosallistumislaskinImpl implements
                 Laskentatulos<Boolean> tulos = laskentaService
                         .suoritaValintakoelaskenta(hakukohde, hakemus, laskentadomainkonvertteriWrapper
                                 .muodostaTotuusarvolasku(kaava));
+                return muodostaTulos(tulos);
 
-                // Jos tulosta ei ole saatu laskettua (ts. sitä ei ole) tai jos
-                // tuloksen tila on hylätty, voidaan
-                // olettaa, että henkilön pitää osallistua valintakokeeseen
-                Osallistuminen osallistuminen = null;
-                if (Tila.Tilatyyppi.VIRHE.equals(tulos.getTila().getTilatyyppi())) {
-                    // Palautetaan virhe, jos laskenta palautti virheen
-                    osallistuminen = Osallistuminen.VIRHE;
-                } else if (tulos.getTulos() == null
-                        || Tila.Tilatyyppi.HYLATTY.equals(tulos.getTila()
-                        .getTilatyyppi())) {
-                    osallistuminen = Osallistuminen.OSALLISTUU;
-                } else {
-                    osallistuminen = tulos.getTulos() ? Osallistuminen.OSALLISTUU
-                            : Osallistuminen.EI_OSALLISTU;
-                }
-
-                OsallistuminenTulos osallistuminenTulos = new OsallistuminenTulos();
-                osallistuminenTulos.setOsallistuminen(osallistuminen);
-                osallistuminenTulos.setLaskentaTila(tulos.getTila().getTilatyyppi()
-                        .name());
-                osallistuminenTulos.setLaskentaTulos(tulos.getTulos());
-
-                Map<String, String> kuvaus = null;
-                String tekninen = null;
-                if (tulos.getTila() instanceof Hylattytila) {
-                    kuvaus = ((Hylattytila) tulos.getTila()).getKuvaus();
-                    tekninen = ((Hylattytila) tulos.getTila()).getTekninenKuvaus();
-                } else if (tulos.getTila() instanceof Virhetila) {
-                    kuvaus = ((Virhetila) tulos.getTila()).getKuvaus();
-                }
-                osallistuminenTulos.setKuvaus(kuvaus);
-                osallistuminenTulos.setTekninenKuvaus(tekninen);
-                return osallistuminenTulos;
+            case LUKUARVOFUNKTIO:
+                Laskentatulos<BigDecimal> lukuarvotulos = laskentaService
+                        .suoritaValintakoelaskenta(hakukohde, hakemus, laskentadomainkonvertteriWrapper
+                                .muodostaLukuarvolasku(kaava));
+                return muodostaTulos(lukuarvotulos);
 
             default:
                 throw new LaskentaVaarantyyppisellaFunktiollaException(
-                        "Palvelu hyväksyy vain totuusarvofunktioita!");
+                        "Palvelu hyväksyy vain totuusarvo- ja lukuarvofunktioita!");
         }
     }
 }

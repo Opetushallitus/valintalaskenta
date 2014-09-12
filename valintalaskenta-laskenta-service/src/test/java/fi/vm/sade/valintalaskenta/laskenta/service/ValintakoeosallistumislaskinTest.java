@@ -142,12 +142,4 @@ public class ValintakoeosallistumislaskinTest {
         assertEquals(Osallistuminen.VIRHE, osallistuminen.getOsallistuminen());
     }
 
-    @Test(expected = LaskentaVaarantyyppisellaFunktiollaException.class)
-    public void testVaaranTyyppinenFunktio() {
-        Funktiokutsu funktiokutsu = new Funktiokutsu();
-        funktiokutsu.setFunktionimi(Funktionimi.LUKUARVO);
-
-        valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(new Hakukohde("hakukohdeOid", new HashMap<String, String>()), emptyHakemus(),
-                funktiokutsu);
-    }
 }
