@@ -59,7 +59,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
 	@JsonView({ JsonViews.Basic.class })
 	@ApiOperation(value = "Lisää tuloksia valinnanvaiheelle", response = ValinnanvaiheDTO.class)
 	public Response lisaaTuloksia(
-			@ApiParam(value = "Hakukohteen OID", required = true) String hakukohdeoid,
+			@ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid,
             @ApiParam(value = "Tarjoaja OID", required = true) @QueryParam("tarjoajaOid") String tarjoajaOid,
 			@ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe) {
 		try {

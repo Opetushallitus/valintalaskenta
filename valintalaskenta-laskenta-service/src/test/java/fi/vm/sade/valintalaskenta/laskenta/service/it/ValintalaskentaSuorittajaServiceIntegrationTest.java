@@ -200,7 +200,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
             HakemusDTO hakemus1 = luoHakemus(hakemusOid1, hakijaOid1, hakukohdeOid1, hakukohdeOid2);
             HakemusDTO hakemus2 = luoHakemus(hakemusOid2, hakijaOid2, hakukohdeOid2, hakukohdeOid1);
 
-            valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(hakemus1, hakemus2), Arrays.asList(valintaperusteet2, valintaperusteet1, valintaperusteet4, valintaperusteet3));
+            valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(hakemus1, hakemus2), Arrays.asList(valintaperusteet2, valintaperusteet1, valintaperusteet4, valintaperusteet3), null);
         }
 
         {
@@ -588,7 +588,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         ValintaperusteetDTO vv3 = luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 2);
         (vv3.getValinnanVaihe()).getValintatapajono().add(luoValintatapajono(valintatapajonoOid, 0, 10, luoJarjestyskriteeri(sata, 1)));
         valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(luoHakemus(hakemusOid, hakemusOid, hakukohdeOid)),
-                Arrays.asList(vv3));
+                Arrays.asList(vv3), null);
 
         Valinnanvaihe vaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanVaiheOid);
         assertNotNull(vaihe);

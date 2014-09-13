@@ -64,7 +64,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 
     @Override
     public void suoritaLaskenta(List<HakemusDTO> kaikkiHakemukset,
-                                List<ValintaperusteetDTO> valintaperusteet) {
+                                List<ValintaperusteetDTO> valintaperusteet,
+                                List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat) {
 
         Map<String, Hakemukset> hakemuksetHakukohteittain = jarjestaHakemuksetHakukohteittain(kaikkiHakemukset);
 
@@ -174,18 +175,6 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 
                         Optional<Lukuarvofunktio> lukuarvofunktio = Optional.empty();
                         Optional<Totuusarvofunktio> totuusarvofunktio = Optional.empty();
-//                        if (!Funktiotyyppi.LUKUARVOFUNKTIO.equals(funktiokutsu
-//                                .getFunktionimi().getTyyppi())) {
-//                            LOG.error(
-//                                    "Valintatapajonon {} prioriteetilla {} olevan järjestyskriteerin laskentakaava "
-//                                            + "ei ole tyypiltään "
-//                                            + Funktiotyyppi.LUKUARVOFUNKTIO
-//                                            .name()
-//                                            + ". Laskentaa ei "
-//                                            + "voida suorittaa.", new Object[] {
-//                                    j.getOid(), jk.getPrioriteetti() });
-//                            continue;
-//                        }
 
                         if(Funktiotyyppi.LUKUARVOFUNKTIO.equals(funktiokutsu
                                 .getFunktionimi().getTyyppi())) {
@@ -222,7 +211,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                         LOG.error(
                                 "Hakukohteen {} Valintatapajonon {} prioriteetilla {} olevan järjestyskriteerin "
                                         + "funktiokutsu ei ole validi. Laskentaa ei voida suorittaa.",
-                                new Object[] {hakukohdeOid, j.getOid(), jk.getPrioriteetti()});
+                                hakukohdeOid, j.getOid(), jk.getPrioriteetti());
                         continue;
                     }
                 }
@@ -256,6 +245,11 @@ public class ValintalaskentaSuorittajaServiceImpl implements
             }
 
             valinnanvaiheDAO.create(valinnanvaihe);
+        }
+
+        // Hakijaryhmät
+        if(hakijaryhmat != null && !hakijaryhmat.isEmpty()) {
+
         }
     }
 

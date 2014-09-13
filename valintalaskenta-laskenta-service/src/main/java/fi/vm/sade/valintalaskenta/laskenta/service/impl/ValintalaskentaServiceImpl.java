@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.impl;
 
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
+import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetHakijaryhmaDTO;
 import fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
@@ -34,13 +35,14 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 
 	@Override
     public String laske(List<HakemusDTO> hakemus,
-                        List<ValintaperusteetDTO> valintaperuste)
+                        List<ValintaperusteetDTO> valintaperuste,
+                        List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat)
 			throws RuntimeException {
 		try {
 			LOG.info(
 					"Suoritetaan laskenta. Hakemuksia {} kpl ja valintaperusteita {} kpl",
 					new Object[] { hakemus.size(), valintaperuste.size() });
-			valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste);
+			valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste, hakijaryhmat);
 			return "Onnistui!";
 		} catch (Exception e) {
             e.printStackTrace();
@@ -74,7 +76,9 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 	}
 
     @Override
-    public String laskeKaikki(List<HakemusDTO> hakemus, List<ValintaperusteetDTO> valintaperuste) throws RuntimeException {
+    public String laskeKaikki(List<HakemusDTO> hakemus,
+                              List<ValintaperusteetDTO> valintaperuste,
+                              List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat) throws RuntimeException {
         valintaperuste.sort((o1,o2) ->
                 o1.getValinnanVaihe().getValinnanVaiheJarjestysluku() - o2.getValinnanVaihe().getValinnanVaiheJarjestysluku());
 
@@ -82,7 +86,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
             if(peruste.getValinnanVaihe().getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
                 hakemus.parallelStream().forEach(h -> valintakokeet(h, Arrays.asList(peruste)));
             } else {
-                laske(hakemus, Arrays.asList(peruste));
+                laske(hakemus, Arrays.asList(peruste), null);
             }
         });
 
