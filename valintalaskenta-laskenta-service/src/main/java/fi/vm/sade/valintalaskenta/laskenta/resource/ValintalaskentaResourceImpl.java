@@ -56,8 +56,8 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
 	@PreAuthorize(CRUD)
 	public String valintakokeet(LaskeDTO laskeDTO) {
 		try {
-			return valintalaskentaService.valintakokeet(laskeDTO.getHakemus()
-					.get(0), laskeDTO.getValintaperuste());
+            laskeDTO.getHakemus().parallelStream().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste()));
+			return "Onnistui";
 		} catch (Exception e) {
 			LOG.error("Valintakoelaskenta epaonnistui: {}\r\n{}",
 					e.getMessage(), Arrays.toString(e.getStackTrace()));
