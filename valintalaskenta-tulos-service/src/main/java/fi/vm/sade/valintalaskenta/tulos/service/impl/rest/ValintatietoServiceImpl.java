@@ -134,6 +134,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
         dto.setPrioriteetti(vt.getPrioriteetti());
         dto.setSiirretaanSijoitteluun(vt.isSiirretaanSijoitteluun());
         dto.setValmisSijoiteltavaksi(vt.getValmisSijoiteltavaksi());
+        dto.setAktiivinen(vt.getAktiivinen());
         dto.setEiVarasijatayttoa(vt.getEiVarasijatayttoa());
         dto.setKaikkiEhdonTayttavatHyvaksytaan(vt.getKaikkiEhdonTayttavatHyvaksytaan());
         dto.setKaytetaanValintalaskentaa(vt.getKaytetaanValintalaskentaa());

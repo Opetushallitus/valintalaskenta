@@ -51,6 +51,9 @@ public class ValintatapajonoDTO {
 	@ApiModelProperty(value = "Jonosijat", required = true)
 	private List<JonosijaDTO> jonosijat = new ArrayList<JonosijaDTO>();
 
+    @ApiModelProperty(value = "Onko valintatapajono aktiivinen", required = false)
+    private Boolean aktiivinen = true;
+
 	public String getNimi() {
 		return nimi;
 	}
@@ -166,5 +169,13 @@ public class ValintatapajonoDTO {
 
     public void setValmisSijoiteltavaksi(Boolean valmisSijoiteltavaksi) {
         this.valmisSijoiteltavaksi = valmisSijoiteltavaksi;
+    }
+
+    public Boolean getAktiivinen() {
+        return aktiivinen;
+    }
+
+    public void setAktiivinen(Boolean aktiivinen) {
+        this.aktiivinen = aktiivinen;
     }
 }

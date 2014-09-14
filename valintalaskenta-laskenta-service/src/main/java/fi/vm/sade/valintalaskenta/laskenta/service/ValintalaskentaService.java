@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.laskenta.service;
 
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
+import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetHakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 
 import java.util.List;
@@ -11,7 +12,8 @@ import java.util.List;
 public interface ValintalaskentaService {
 
     String laske(List<HakemusDTO> hakemus,
-                 List<ValintaperusteetDTO> valintaperuste)
+                 List<ValintaperusteetDTO> valintaperuste,
+                 List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat)
                 throws RuntimeException;
 
 
@@ -20,6 +22,7 @@ public interface ValintalaskentaService {
                         throws RuntimeException;
 
     String laskeKaikki(List<HakemusDTO> hakemus,
-                 List<ValintaperusteetDTO> valintaperuste)
+                 List<ValintaperusteetDTO> valintaperuste,
+                 List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat)
             throws RuntimeException;
 }
