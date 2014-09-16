@@ -9,6 +9,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.slf4j.Logger;
@@ -78,4 +79,12 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
 					.build();
 		}
 	}
+
+    @GET
+    @Path("{hakukohdeoid}/hakijaryhma")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Hakee hakukohteen hakijaryhmien tulokset", response = HakijaryhmaDTO.class)
+    public List<HakijaryhmaDTO> hakijaryhmat(@ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid) {
+        return tulosService.haeHakijaryhmatHakukohteelle(hakukohdeoid);
+    }
 }

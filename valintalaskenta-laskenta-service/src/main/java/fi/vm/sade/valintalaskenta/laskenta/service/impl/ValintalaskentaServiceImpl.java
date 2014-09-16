@@ -36,13 +36,14 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 	@Override
     public String laske(List<HakemusDTO> hakemus,
                         List<ValintaperusteetDTO> valintaperuste,
-                        List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat)
+                        List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
+                        String hakukohdeOid)
 			throws RuntimeException {
 		try {
-			LOG.info(
+			LOG.error(
 					"Suoritetaan laskenta. Hakemuksia {} kpl ja valintaperusteita {} kpl",
 					new Object[] { hakemus.size(), valintaperuste.size() });
-			valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste, hakijaryhmat);
+			valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste, hakijaryhmat, hakukohdeOid);
 			return "Onnistui!";
 		} catch (Exception e) {
             e.printStackTrace();
@@ -78,7 +79,8 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     @Override
     public String laskeKaikki(List<HakemusDTO> hakemus,
                               List<ValintaperusteetDTO> valintaperuste,
-                              List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat) throws RuntimeException {
+                              List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
+                              String hakukohdeOid) throws RuntimeException {
         valintaperuste.sort((o1,o2) ->
                 o1.getValinnanVaihe().getValinnanVaiheJarjestysluku() - o2.getValinnanVaihe().getValinnanVaiheJarjestysluku());
 
@@ -86,7 +88,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
             if(peruste.getValinnanVaihe().getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
                 hakemus.parallelStream().forEach(h -> valintakokeet(h, Arrays.asList(peruste)));
             } else {
-                laske(hakemus, Arrays.asList(peruste), null);
+                laske(hakemus, Arrays.asList(peruste), hakijaryhmat, hakukohdeOid);
             }
         });
 

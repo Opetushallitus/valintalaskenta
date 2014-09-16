@@ -52,12 +52,7 @@ public class Valinnanvaihe {
 
     @PrePersist
     private void jarjestaValintatapajonot() {
-        Collections.sort(valintatapajonot, new Comparator<Valintatapajono>() {
-            @Override
-            public int compare(Valintatapajono o1, Valintatapajono o2) {
-                return o1.getPrioriteetti() - o2.getPrioriteetti();
-            }
-        });
+        Collections.sort(valintatapajonot, (o1, o2) -> o1.getPrioriteetti() - o2.getPrioriteetti());
     }
 
     public int getJarjestysnumero() {

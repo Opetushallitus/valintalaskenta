@@ -13,7 +13,8 @@ public interface ValintalaskentaService {
 
     String laske(List<HakemusDTO> hakemus,
                  List<ValintaperusteetDTO> valintaperuste,
-                 List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat)
+                 List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
+                 String hakukohdeOid)
                 throws RuntimeException;
 
 
@@ -23,6 +24,7 @@ public interface ValintalaskentaService {
 
     String laskeKaikki(List<HakemusDTO> hakemus,
                  List<ValintaperusteetDTO> valintaperuste,
-                 List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat)
+                 List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
+                 String hakukohdeOid)
             throws RuntimeException;
 }

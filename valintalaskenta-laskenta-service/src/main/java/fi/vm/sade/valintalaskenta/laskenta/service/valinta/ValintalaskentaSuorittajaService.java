@@ -21,6 +21,9 @@ public interface ValintalaskentaSuorittajaService {
      * @param valintaperusteet
      */
 
-    void suoritaLaskenta(List<HakemusDTO> hakemukset, List<ValintaperusteetDTO> valintaperusteet, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat);
+    void suoritaLaskenta(List<HakemusDTO> hakemukset,
+                         List<ValintaperusteetDTO> valintaperusteet,
+                         List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
+                         String hakukohdeOid);
 
 }
