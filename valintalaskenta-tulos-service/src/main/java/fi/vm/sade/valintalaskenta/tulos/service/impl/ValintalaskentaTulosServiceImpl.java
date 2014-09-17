@@ -35,6 +35,9 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     private ValinnanvaiheDAO valinnanvaiheDAO;
 
     @Autowired
+    private HakijaryhmaDAO hakijaryhmaDAO;
+
+    @Autowired
     private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
 
     @Autowired
@@ -247,6 +250,13 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         applyMuokatutJonosijatToValinnanvaihe(hakukohdeoid, b);
         return b;
 
+    }
+
+    @Override
+    public List<HakijaryhmaDTO> haeHakijaryhmatHakukohteelle(String hakukohdeoid) {
+        List<Hakijaryhma> hakijaryhmat = hakijaryhmaDAO.readByHakukohdeOid(hakukohdeoid);
+
+        return modelMapper.mapList(hakijaryhmat, HakijaryhmaDTO.class);
     }
 
     @Override

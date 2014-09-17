@@ -6,7 +6,9 @@ import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Laskentatulos;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hylattytila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Virhetila;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
@@ -34,6 +36,88 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
 
     @Autowired
     private EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija;
+
+    private TilaJaSelite hakijaryhmanTilaJaSelite(Laskentatulos tulos) {
+        JarjestyskriteerituloksenTila tila = JarjestyskriteerituloksenTila.MAARITTELEMATON;
+        Map<String,String> kuvaus = null;
+        String tekninenKuvaus = null;
+        Tila laskettuTila = tulos.getTila();
+
+        if (Tila.Tilatyyppi.HYLATTY.equals(laskettuTila.getTilatyyppi())) {
+            tila = JarjestyskriteerituloksenTila.HYLATTY;
+            if (laskettuTila instanceof Hylattytila) {
+                kuvaus = ((Hylattytila) laskettuTila).getKuvaus();
+                tekninenKuvaus = ((Hylattytila) laskettuTila).getTekninenKuvaus();
+            }
+        } else if (Tila.Tilatyyppi.VIRHE.equals(laskettuTila.getTilatyyppi())) {
+            tila = JarjestyskriteerituloksenTila.VIRHE;
+            if (laskettuTila instanceof Virhetila) {
+                kuvaus = ((Virhetila) laskettuTila).getKuvaus();
+            }
+        } else if (Tila.Tilatyyppi.HYVAKSYTTAVISSA.equals(laskettuTila.getTilatyyppi())) {
+            tila = JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA;
+        }
+
+        return new TilaJaSelite(tila,kuvaus,tekninenKuvaus);
+    }
+
+    @Override
+    public void suoritaHakijaryhmaLaskentaHakemukselle(Hakukohde hakukohde, HakemusWrapper laskettavaHakemus, List<Hakemus> kaikkiHakemukset, Lukuarvofunktio lukuarvofunktio, Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan) {
+        Laskentatulos<BigDecimal> tulos = laskentaService.suoritaValintalaskenta(hakukohde,
+                laskettavaHakemus.getLaskentahakemus(), kaikkiHakemukset, lukuarvofunktio);
+
+        HakemusDTO hakemus = laskettavaHakemus.getHakemusDTO();
+
+        TilaJaSelite tilaJaSelite = hakijaryhmanTilaJaSelite(tulos);
+
+        Jarjestyskriteeritulos jktulos = muodostaJarjestysKriteeritulos(tilaJaSelite, 0, "Hakijaryhmän tulokset", tulos.getTulos());
+
+        if (!jonosijatHakemusOidinMukaan.containsKey(hakemus.getHakemusoid())) {
+            Jonosija jonosija = muodostaJonosija(hakemus,
+                    laskettavaHakemus.getHakutoiveprioriteetti(),
+                    laskettavaHakemus.isHarkinnanvaraisuus());
+            jonosijatHakemusOidinMukaan.put(hakemus.getHakemusoid(), new JonosijaJaSyotetytArvot(jonosija));
+        }
+
+        JonosijaJaSyotetytArvot jonosija = jonosijatHakemusOidinMukaan.get(hakemus.getHakemusoid());
+        jonosija.getJonosija().getJarjestyskriteeritulokset().add(jktulos);
+        jonosija.lisaaSyotetytArvot(tulos.getSyotetytArvot());
+        jonosija.lisaaFunktioTulokset(tulos.getFunktioTulokset());
+
+        Jarjestyskriteerihistoria jkhistoria = new Jarjestyskriteerihistoria();
+        jkhistoria.setHistoria(tulos.getHistoria().toString());
+        jarjestyskriteerihistoriaDAO.create(jkhistoria);
+        jktulos.setHistoria(jkhistoria.getId());
+    }
+
+    @Override
+    public void suoritaHakijaryhmaLaskentaHakemukselle(Hakukohde hakukohde, HakemusWrapper laskettavaHakemus, List<Hakemus> kaikkiHakemukset, Totuusarvofunktio totuusarvofunktio, Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan) {
+        Laskentatulos<Boolean> tulos = laskentaService.suoritaValintalaskenta(hakukohde,
+                laskettavaHakemus.getLaskentahakemus(), kaikkiHakemukset, totuusarvofunktio);
+
+        HakemusDTO hakemus = laskettavaHakemus.getHakemusDTO();
+
+        TilaJaSelite tilaJaSelite = hakijaryhmanTilaJaSelite(tulos);
+
+        Jarjestyskriteeritulos jktulos = muodostaJarjestysKriteeritulos(tilaJaSelite, 0, "Hakijaryhmän tulokset", null);
+
+        if (!jonosijatHakemusOidinMukaan.containsKey(hakemus.getHakemusoid())) {
+            Jonosija jonosija = muodostaJonosija(hakemus,
+                    laskettavaHakemus.getHakutoiveprioriteetti(),
+                    laskettavaHakemus.isHarkinnanvaraisuus());
+            jonosijatHakemusOidinMukaan.put(hakemus.getHakemusoid(), new JonosijaJaSyotetytArvot(jonosija));
+        }
+
+        JonosijaJaSyotetytArvot jonosija = jonosijatHakemusOidinMukaan.get(hakemus.getHakemusoid());
+        jonosija.getJonosija().getJarjestyskriteeritulokset().add(jktulos);
+        jonosija.lisaaSyotetytArvot(tulos.getSyotetytArvot());
+        jonosija.lisaaFunktioTulokset(tulos.getFunktioTulokset());
+
+        Jarjestyskriteerihistoria jkhistoria = new Jarjestyskriteerihistoria();
+        jkhistoria.setHistoria(tulos.getHistoria().toString());
+        jarjestyskriteerihistoriaDAO.create(jkhistoria);
+        jktulos.setHistoria(jkhistoria.getId());
+    }
 
     @Override
     public void suoritaLaskentaHakemukselle(Hakukohde hakukohde,
@@ -74,8 +158,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                                             Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan,
                                             String jkNimi) {
 
-        Jarjestyskriteeritulos jktulos = new Jarjestyskriteeritulos();
-        jktulos.setPrioriteetti(jkPrioriteetti);
+
 
 
         HakemusDTO hakemus = laskettavaHakemus.getHakemusDTO();
@@ -84,34 +167,27 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                 edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(),
                         tulos.getTila(), edellinenVaihe);
 
+
         TilaJaSelite edellinenTila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(), edellinenVaihe);
-        // Jos hakija ei ole hyväksyttävissä edellisen valinnanvaiheen jäljiltä, niin tulosta ei aseteta
-        //if(tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY) && !tulos.getTila().getTilatyyppi().equals(Tila.Tilatyyppi.HYLATTY)) {
+
+        BigDecimal arvo;
         if(tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY) &&
                 (!tulos.getTila().getTilatyyppi().equals(Tila.Tilatyyppi.HYLATTY) ||
                         (tulos.getTila().getTilatyyppi().equals(Tila.Tilatyyppi.HYLATTY) && tilaJaSelite.getSelite().equals(edellinenTila.getSelite())))) {
-            jktulos.setArvo(null);
+            arvo = null;
         } else {
             if(tulos.getTulos() != null && tulos.getTulos() instanceof BigDecimal) {
-                jktulos.setArvo((BigDecimal)tulos.getTulos());
+                arvo = (BigDecimal)tulos.getTulos();
             } else {
-                jktulos.setArvo(null);
+                arvo = null;
             }
         }
-
-        jktulos.setTila(tilaJaSelite.getTila());
-        jktulos.setKuvaus(tilaJaSelite.getSelite());
-        jktulos.setTekninenKuvaus(tilaJaSelite.getTekninenSelite());
-        jktulos.setNimi(jkNimi);
+        Jarjestyskriteeritulos jktulos = muodostaJarjestysKriteeritulos(tilaJaSelite, jkPrioriteetti, jkNimi, arvo);
 
         if (!jonosijatHakemusOidinMukaan.containsKey(hakemus.getHakemusoid())) {
-            Jonosija jonosija = new Jonosija();
-            jonosija.setEtunimi(hakemus.getEtunimi());
-            jonosija.setHakemusOid(hakemus.getHakemusoid());
-            jonosija.setHakijaOid(hakemus.getHakijaOid());
-            jonosija.setHakutoiveprioriteetti(laskettavaHakemus.getHakutoiveprioriteetti());
-            jonosija.setHarkinnanvarainen(laskettavaHakemus.isHarkinnanvaraisuus());
-            jonosija.setSukunimi(hakemus.getSukunimi());
+            Jonosija jonosija = muodostaJonosija(hakemus,
+                    laskettavaHakemus.getHakutoiveprioriteetti(),
+                    laskettavaHakemus.isHarkinnanvaraisuus());
             jonosijatHakemusOidinMukaan.put(hakemus.getHakemusoid(), new JonosijaJaSyotetytArvot(jonosija));
         }
 
@@ -125,5 +201,29 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         jarjestyskriteerihistoriaDAO.create(jkhistoria);
         jktulos.setHistoria(jkhistoria.getId());
 
+    }
+
+    private Jarjestyskriteeritulos muodostaJarjestysKriteeritulos(TilaJaSelite tilaJaSelite, int prioriteetti, String nimi, BigDecimal tulos) {
+        Jarjestyskriteeritulos jktulos = new Jarjestyskriteeritulos();
+        jktulos.setPrioriteetti(prioriteetti);
+        jktulos.setTila(tilaJaSelite.getTila());
+        jktulos.setKuvaus(tilaJaSelite.getSelite());
+        jktulos.setTekninenKuvaus(tilaJaSelite.getTekninenSelite());
+        jktulos.setNimi(nimi);
+        jktulos.setArvo(tulos);
+
+        return jktulos;
+    }
+
+    private Jonosija muodostaJonosija(HakemusDTO hakemus, int prioriteetti, boolean harkinnanvaraisuus) {
+        Jonosija jonosija = new Jonosija();
+        jonosija.setEtunimi(hakemus.getEtunimi());
+        jonosija.setHakemusOid(hakemus.getHakemusoid());
+        jonosija.setHakijaOid(hakemus.getHakijaOid());
+        jonosija.setHakutoiveprioriteetti(prioriteetti);
+        jonosija.setHarkinnanvarainen(harkinnanvaraisuus);
+        jonosija.setSukunimi(hakemus.getSukunimi());
+
+        return jonosija;
     }
 }

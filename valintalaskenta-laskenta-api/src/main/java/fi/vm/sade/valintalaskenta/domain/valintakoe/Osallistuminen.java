@@ -6,5 +6,5 @@ package fi.vm.sade.valintalaskenta.domain.valintakoe;
  * Time: 13.32
  */
 public enum Osallistuminen {
-    OSALLISTUU, EI_OSALLISTU, VIRHE
+    OSALLISTUU, EI_OSALLISTU, VIRHE, EI_VAADITA
 }

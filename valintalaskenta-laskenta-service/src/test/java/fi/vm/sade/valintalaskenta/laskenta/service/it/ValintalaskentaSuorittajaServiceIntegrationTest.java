@@ -3,10 +3,7 @@ package fi.vm.sade.valintalaskenta.laskenta.service.it;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
-import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
-import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
-import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetFunktiokutsuDTO;
-import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetValinnanVaiheDTO;
+import fi.vm.sade.service.valintaperusteet.dto.*;
 import fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
@@ -25,6 +22,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -200,7 +198,8 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
             HakemusDTO hakemus1 = luoHakemus(hakemusOid1, hakijaOid1, hakukohdeOid1, hakukohdeOid2);
             HakemusDTO hakemus2 = luoHakemus(hakemusOid2, hakijaOid2, hakukohdeOid2, hakukohdeOid1);
 
-            valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(hakemus1, hakemus2), Arrays.asList(valintaperusteet2, valintaperusteet1, valintaperusteet4, valintaperusteet3), null);
+            valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(hakemus1, hakemus2), Arrays.asList(valintaperusteet2, valintaperusteet1), new ArrayList<>(), hakukohdeOid1);
+            valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(hakemus1, hakemus2), Arrays.asList(valintaperusteet4, valintaperusteet3), new ArrayList<>(), hakukohdeOid2);
         }
 
         {
@@ -588,7 +587,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         ValintaperusteetDTO vv3 = luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 2);
         (vv3.getValinnanVaihe()).getValintatapajono().add(luoValintatapajono(valintatapajonoOid, 0, 10, luoJarjestyskriteeri(sata, 1)));
         valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(luoHakemus(hakemusOid, hakemusOid, hakukohdeOid)),
-                Arrays.asList(vv3), null);
+                Arrays.asList(vv3), new ArrayList<>(), hakukohdeOid);
 
         Valinnanvaihe vaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanVaiheOid);
         assertNotNull(vaihe);

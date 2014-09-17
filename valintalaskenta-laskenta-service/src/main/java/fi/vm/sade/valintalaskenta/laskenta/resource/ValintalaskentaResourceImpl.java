@@ -40,7 +40,7 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
 	public String laske(LaskeDTO laskeDTO) {
 		try {
 			return valintalaskentaService.laske(laskeDTO.getHakemus(),
-					laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat());
+					laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid());
 		} catch (Exception e) {
 			LOG.error("Valintalaskenta epaonnistui: {}\r\n{}", e.getMessage(),
 					Arrays.toString(e.getStackTrace()));
@@ -74,7 +74,7 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
 	public String laskeKaikki(LaskeDTO laskeDTO) {
 		try {
 			return valintalaskentaService.laskeKaikki(laskeDTO.getHakemus(),
-					laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat());
+					laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid());
 		} catch (Exception e) {
 			LOG.error(
 					"Valintalaskenta ja valintakoelaskenta epaonnistui: {}\r\n{}",
