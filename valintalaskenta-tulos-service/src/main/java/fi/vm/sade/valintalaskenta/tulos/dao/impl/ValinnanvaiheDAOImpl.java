@@ -40,7 +40,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 
         final BasicDBObject query = new BasicDBObject("hakuOid", hakuOid).append("valintatapajonot.jonosijat.hakemusOid", hakemusOid);
 
-        String map = MongoMapReduceUtil.shallowCloneJs + " copy.valintatapajonot = copy.valintatapajonot.map(function(jono) { jono = shallowClone(jono); jono.jonosijat = jono.jonosijat.filter(function (hakemus) { return hakemus.hakemusOid == '"+hakemusOid+"' }); return jono }); emit(this.oid, copy) }\n";
+        String map = MongoMapReduceUtil.shallowCloneJs + " copy.valintatapajonot = copy.valintatapajonot.map(function(jono) { jono = shallowClone(jono); if(jono.jonosijat) {jono.jonosijat = jono.jonosijat.filter(function (hakemus) { return hakemus.hakemusOid == '"+hakemusOid+"' });} return jono }); emit(this.oid, copy) }\n";
 
         String reduce = "function(key, values) { return values[0] }";
 
