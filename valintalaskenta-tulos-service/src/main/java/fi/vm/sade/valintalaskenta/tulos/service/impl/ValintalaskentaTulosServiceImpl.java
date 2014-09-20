@@ -91,12 +91,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             vvdto.setValinnanvaiheoid(vv.getValinnanvaiheOid());
             vvdto.setHakuOid(hakuOid);
             for (Valintatapajono jono : vv.getValintatapajonot()) {
-                jono.setJonosijat(new ArrayList<Jonosija>(Collections2.filter(jono.getJonosijat(), new Predicate<Jonosija>() {
-                    @Override
-                    public boolean apply(Jonosija jonosija) {
-                        return hakemusOid.equals(jonosija.getHakemusOid());
-                    }
-                })));
+                jono.setJonosijat(new ArrayList<>(Collections2.filter(jono.getJonosijat(), jonosija -> hakemusOid.equals(jonosija.getHakemusOid()))));
 
                 vvdto.getValintatapajonot().add(valintatulosConverter.convertValintatapajono(jono));
             }
@@ -131,7 +126,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             applyMuokatutJonosijat(hk.getOid(), hk.getValinnanvaihe(), muokatutJonosijat, harkinnanvaraiset);
         }
 
-        return new HakemusDTO(hakuOid, hakemusOid, new ArrayList<HakukohdeDTO>(hakukohdeDTOtOidinMukaan.values()));
+        return new HakemusDTO(hakuOid, hakemusOid, new ArrayList<>(hakukohdeDTOtOidinMukaan.values()));
     }
 
     private void applyMuokatutJonosijatToValinnanvaihe(String hakukohdeoid, List<ValintatietoValinnanvaiheDTO> b) {
@@ -148,7 +143,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         LOGGER.error("Harkinnavaraiset haettu, loopataan hakukohteet {} - yhteensä {}", hakuOid, b.size());
         for (int i = 0; i < b.size(); i++) {
             HakukohdeDTO hakukohde = b.get(i);
-            LOGGER.error("Laitetaan jonosijat hakukohteelle {} - indeksi {}", hakukohde.getOid(), i);
+            LOGGER.info("Laitetaan jonosijat hakukohteelle {} - indeksi {}", hakukohde.getOid(), i);
             applyMuokatutJonosijat(hakukohde.getOid(), hakukohde.getValinnanvaihe(), a, c);
         }
         LOGGER.error("Muokatut jonosijat laitettu kaikille hakukohteille {}!", hakuOid);
@@ -164,8 +159,12 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                             applyJonosija(jonosija, muokattuJonosija);
                         }
                     }
-                    c.parallelStream().filter(h -> h.getHakemusOid().equals(jonosija.getHakemusOid())
-                            && h.getHakukohdeOid().equals(hakukohdeoid)).forEach(h -> applyHarkinnanvarainenHyvaksynta(jonosija, h));
+                    c.forEach(h -> {
+                        if (h.getHakemusOid().equals(jonosija.getHakemusOid())
+                                && h.getHakukohdeOid().equals(hakukohdeoid)) {
+                            applyHarkinnanvarainenHyvaksynta(jonosija, h);
+                        }
+                    });
 
                 }
                 valintatulosConverter.sort(valintatapajonoDTO.getJonosijat());
