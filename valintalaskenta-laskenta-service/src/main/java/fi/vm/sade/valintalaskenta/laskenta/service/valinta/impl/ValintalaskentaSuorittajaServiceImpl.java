@@ -339,7 +339,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                     }
                     hakijaryhma.getJonosijat().add(jonosija);
                 }
-                LOG.error("persitoidaan hakijaryhmä {}", hakijaryhma.getHakijaryhmaOid());
+                LOG.info("persistoidaan hakijaryhmä {}", hakijaryhma.getHakijaryhmaOid());
                 hakijaryhmaDAO.create(hakijaryhma);
 
             });

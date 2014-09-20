@@ -4,6 +4,7 @@ import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
+import org.bson.types.ObjectId;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,14 +47,25 @@ public class JonosijaHistoriaTulosDAOTest {
                 jonosijaHistoriaTulosDAO.findByValintatapajonoAndVersioAndHakemusOid(valintatapajonoOid, hakemusOid);
 
         assertEquals(2, jonosijaHistoriat.size());
-        Collections.sort(jonosijaHistoriat, new Comparator<Jarjestyskriteerihistoria>() {
-            @Override
-            public int compare(Jarjestyskriteerihistoria o1, Jarjestyskriteerihistoria o2) {
-                return o1.getHistoria().compareTo(o2.getHistoria());
-            }
-        });
+        Collections.sort(jonosijaHistoriat, (o1, o2) -> o1.getHistoria().compareTo(o2.getHistoria()));
 
         assertEquals("historia1", jonosijaHistoriat.get(0).getHistoria());
         assertEquals("historia2", jonosijaHistoriat.get(1).getHistoria());
+    }
+
+    @Test
+    @UsingDataSet(locations = "jonosijaHistoria.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void testJonosijaHistoriat() {
+        final String valintatapajonoOid = "1410335755064-1436990924193196531";
+        final String hakemusOid = "1.2.246.562.11.00000876962";
+        List<Jarjestyskriteerihistoria> jonosijaHistoriat =
+                jonosijaHistoriaTulosDAO.findByValintatapajonoAndVersioAndHakemusOid(valintatapajonoOid, hakemusOid);
+
+        assertEquals(3, jonosijaHistoriat.size());
+        Collections.sort(jonosijaHistoriat, (o1, o2) -> o1.getHistoria().compareTo(o2.getHistoria()));
+
+        assertEquals(new ObjectId("541bef0ae4b0e1d22689e606"), jonosijaHistoriat.get(0).getId());
+        assertEquals(new ObjectId("541bef0ae4b0e1d22689e60a"), jonosijaHistoriat.get(1).getId());
+        assertEquals(new ObjectId("541bef0ae4b0e1d22689e60e"), jonosijaHistoriat.get(2).getId());
     }
 }
