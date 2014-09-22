@@ -24,7 +24,7 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
  */
 @Component
 @Path("valintalaskenta")
-@PreAuthorize("isAuthenticated()")
+// @PreAuthorize("isAuthenticated()")
 public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(ValintalaskentaResourceImpl.class);
@@ -36,11 +36,12 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
 	@Consumes("application/json")
 	@Produces("text/plain")
 	@POST
-	@PreAuthorize(CRUD)
+	// @PreAuthorize(CRUD)
 	public String laske(LaskeDTO laskeDTO) {
 		try {
 			return valintalaskentaService.laske(laskeDTO.getHakemus(),
-					laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid());
+					laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(),
+					laskeDTO.getHakukohdeOid());
 		} catch (Exception e) {
 			LOG.error("Valintalaskenta epaonnistui: {}\r\n{}", e.getMessage(),
 					Arrays.toString(e.getStackTrace()));
@@ -53,10 +54,14 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
 	@Consumes("application/json")
 	@Produces("text/plain")
 	@POST
-	@PreAuthorize(CRUD)
+	// @PreAuthorize(CRUD)
 	public String valintakokeet(LaskeDTO laskeDTO) {
 		try {
-            laskeDTO.getHakemus().parallelStream().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste()));
+			laskeDTO.getHakemus()
+					.parallelStream()
+					.forEach(
+							h -> valintalaskentaService.valintakokeet(h,
+									laskeDTO.getValintaperuste()));
 			return "Onnistui";
 		} catch (Exception e) {
 			LOG.error("Valintakoelaskenta epaonnistui: {}\r\n{}",
@@ -70,11 +75,12 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
 	@Consumes("application/json")
 	@Produces("text/plain")
 	@POST
-	@PreAuthorize(CRUD)
+	// @PreAuthorize(CRUD)
 	public String laskeKaikki(LaskeDTO laskeDTO) {
 		try {
 			return valintalaskentaService.laskeKaikki(laskeDTO.getHakemus(),
-					laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid());
+					laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(),
+					laskeDTO.getHakukohdeOid());
 		} catch (Exception e) {
 			LOG.error(
 					"Valintalaskenta ja valintakoelaskenta epaonnistui: {}\r\n{}",
