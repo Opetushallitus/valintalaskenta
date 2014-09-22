@@ -22,6 +22,8 @@
 	 -->
 	<context:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.testdata"/>
 
+    <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.dao.impl"/>
+
     <bean id="modelMapper" class="fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper"/>
 	
     <import resource="spring/application-context-service.xml" />

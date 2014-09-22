@@ -4,6 +4,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.HakemusOsallistuminenD
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.HakuDTO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jukais on 24.3.2014.
@@ -14,4 +15,6 @@ public interface ValintatietoService {
                                                                  String hakukohdeOid);
 
     HakuDTO haeValintatiedot(String hakuOid);
+
+    HakuDTO haeValintatiedotJonoille(String hakuoid, Map<String, List<String>> jonot);
 }
