@@ -15,6 +15,8 @@ public interface ValintalaskentaTulosService {
 
     List<ValintatietoValinnanvaiheDTO> haeValinnanvaiheetHakukohteelle(String hakukohdeoid);
 
+    Optional<HakukohdeDTO> haeValinnanvaiheetHakukohteelleJaJonolle(String hakukohdeoid, List<String> valintatapajonot);
+
     List<HakijaryhmaDTO> haeHakijaryhmatHakukohteelle(String hakukohdeoid);
 
     List<HakukohdeDTO> haeVirheetHaulle(String hakuOid);

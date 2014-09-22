@@ -76,7 +76,7 @@ public class MongoConfigurationImpl {
 		return new MongoClient(new ServerAddress(Network.getLocalHost(), PORT)); // factory.newMongo();
 	}
 
-	@Bean
+    @Bean(name = "morphia2")
 	public Morphia getMorphia() {
 		return new Morphia();
 	}

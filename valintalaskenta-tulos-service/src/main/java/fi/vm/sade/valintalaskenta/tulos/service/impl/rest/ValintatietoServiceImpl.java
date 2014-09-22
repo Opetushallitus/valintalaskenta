@@ -115,6 +115,40 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 
     }
 
+    @Override
+    public HakuDTO haeValintatiedotJonoille(String hakuoid, Map<String, List<String>> jonot) {
+        try {
+            List<HakukohdeDTO> kohteet = new ArrayList<>();
+            jonot.keySet().parallelStream().forEach(oid -> {
+                Optional<HakukohdeDTO> kohde = tulosService.haeValinnanvaiheetHakukohteelleJaJonolle(oid, jonot.get(oid));
+
+                kohde.ifPresent(kohteet::add);
+
+            });
+            HakuDTO hakuDTO = new HakuDTO();
+            hakuDTO.setHakuOid(hakuoid);
+
+            for (HakukohdeDTO v : kohteet) {
+                HakukohdeDTO ht = new HakukohdeDTO();
+                ht.setOid(v.getOid());
+                ht.setTarjoajaoid(v.getTarjoajaoid());
+                hakuDTO.getHakukohteet().add(ht);
+
+                for (ValinnanvaiheDTO valinnanvaiheDTO : v.getValinnanvaihe()) {
+                    ht.getValinnanvaihe().add(
+                            createValinnanvaiheTyyppi(valinnanvaiheDTO));
+                }
+            }
+            return hakuDTO;
+        } catch (Exception e) {
+            LOG.error("Valintatietoja ei saatu haettua!");
+            LOG.error("Virhe valintatietojen hakemisessa: {} {} {}",
+                    e.getMessage(), e.getCause(),
+                    Arrays.toString(e.getStackTrace()));
+            throw new RuntimeException("Valintatietojen haku epäonnistui!", e);
+        }
+    }
+
     private ValintatietoValinnanvaiheDTO createValinnanvaiheTyyppi(ValinnanvaiheDTO valinnanvaihe) {
         ValintatietoValinnanvaiheDTO v = new ValintatietoValinnanvaiheDTO();
         v.setValinnanvaihe(valinnanvaihe.getJarjestysnumero());

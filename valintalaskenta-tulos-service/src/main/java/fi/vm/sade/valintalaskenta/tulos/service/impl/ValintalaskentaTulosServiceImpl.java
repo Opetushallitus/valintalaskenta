@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Jussi Jartamo
@@ -249,6 +250,34 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         applyMuokatutJonosijatToValinnanvaihe(hakukohdeoid, b);
         return b;
 
+    }
+
+    @Override
+    public Optional<HakukohdeDTO> haeValinnanvaiheetHakukohteelleJaJonolle(String hakukohdeoid, List<String> valintatapajonot) {
+
+        List<Valinnanvaihe> a = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeoid);
+        List<Valinnanvaihe> result = new ArrayList<>();
+        a.forEach(vaihe -> {
+            List<Valintatapajono> jonot = vaihe.getValintatapajonot().stream().filter(j -> valintatapajonot.indexOf(j.getValintatapajonoOid()) != -1).collect(Collectors.toList());
+            if(!jonot.isEmpty()) {
+
+                vaihe.setValintatapajonot(jonot);
+                result.add(vaihe);
+            } else {
+                LOGGER.error("Yhtään jonoa ei löytynyt!");
+            }
+        });
+
+        if(result.isEmpty()) {
+            LOGGER.error("Yhtään valinnanvaihetta ei löytynyt!");
+            return Optional.empty();
+        }
+        List<HakukohdeDTO> b = valintatulosConverter.convertValinnanvaihe(result);
+        applyMuokatutJonosijatToHakukohde(b.get(0).getHakuoid(), b);
+        if(b.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(b.get(0));
     }
 
     @Override
