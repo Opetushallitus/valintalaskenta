@@ -272,16 +272,10 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
         // kullekin hakukohteelle
         // valintakoekohtainen osallistumistieto
 
-        Collections.sort(kokeet, new Comparator<HakukohdeValintakoeData>() {
-            @Override
-            public int compare(HakukohdeValintakoeData o1,
-                               HakukohdeValintakoeData o2) {
-                return hakukohteetByOid.get(o1.getHakukohdeOid())
-                        .getPrioriteetti()
-                        - hakukohteetByOid.get(o2.getHakukohdeOid())
-                        .getPrioriteetti();
-            }
-        });
+        Collections.sort(kokeet, (o1, o2) -> hakukohteetByOid.get(o1.getHakukohdeOid())
+                .getPrioriteetti()
+                - hakukohteetByOid.get(o2.getHakukohdeOid())
+                .getPrioriteetti());
 
         // Jos hakija osallistuu korkeamman prioriteetin hakuktoiveen
         // valintakokeeseen, hakija ei osallistu
