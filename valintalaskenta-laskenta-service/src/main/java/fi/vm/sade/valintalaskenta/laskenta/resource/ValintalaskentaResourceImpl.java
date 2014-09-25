@@ -62,8 +62,7 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
         //System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(laskeDTO));
         Map<String, List<String>> valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Arrays.asList(laskeDTO));
         if(!valisijoiteltavatJonot.isEmpty()) {
-            List<String> jonot = valisijoiteltavatJonot.get(laskeDTO.getHakukohdeOid());
-            valisijoiteltavatJonot = valintatapajonoResource.findKopiot(jonot);
+            valisijoiteltavatJonot = haeKopiotValintaperusteista(valisijoiteltavatJonot.get(laskeDTO.getHakukohdeOid()));
         }
 		try {
 			valintalaskentaService.laske(laskeDTO.getHakemus(),
@@ -75,34 +74,7 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
 			throw e;
 		}
         if(!valisijoiteltavatJonot.isEmpty()) {
-            String hakuoid;
-            try {
-                hakuoid = laskeDTO.getValintaperuste().get(0).getHakuOid();
-            } catch (Exception e) {
-                LOG.error(
-                        "Välisijoittelulle ei löytynyt hakuoidia!",
-                        e.getMessage(), Arrays.toString(e.getStackTrace()));
-                throw e;
-            }
-            ValisijoitteluDTO dto = new ValisijoitteluDTO();
-            dto.setHakukohteet(valisijoiteltavatJonot);
-            List<HakukohdeDTO> sijoitellut = sijoitteluResource.sijoittele(hakuoid, dto);
-
-            Map<String, HakemusDTO> hakemusHashMap = new ConcurrentHashMap<>();
-
-            // Muodostetaan Map hakemuksittain sijoittelun tuloksista
-            sijoitellut.parallelStream().forEach(hakukohde ->
-                    hakukohde.getValintatapajonot().parallelStream().forEach(valintatapajono ->
-                            valintatapajono.getHakemukset().parallelStream().forEach(hakemus ->
-                                    hakemusHashMap.put(
-                                            hakukohde.getOid() + valintatapajono.getOid()
-                                                    + hakemus.getHakemusOid(), hakemus)
-                            )
-                    )
-            );
-
-            valintalaskentaService.applyValisijoittelu(valisijoiteltavatJonot, hakemusHashMap);
-
+            valisijoitteleKopiot(laskeDTO, valisijoiteltavatJonot);
         }
         return "Onnistui!";
 	}
@@ -134,8 +106,12 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
 	@POST
 	public String laskeKaikki(LaskeDTO laskeDTO) {
         //System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(laskeDTO));
+        Map<String, List<String>> valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Arrays.asList(laskeDTO));
+        if(!valisijoiteltavatJonot.isEmpty()) {
+            valisijoiteltavatJonot = haeKopiotValintaperusteista(valisijoiteltavatJonot.get(laskeDTO.getHakukohdeOid()));
+        }
 		try {
-			return valintalaskentaService.laskeKaikki(laskeDTO.getHakemus(),
+			valintalaskentaService.laskeKaikki(laskeDTO.getHakemus(),
 					laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(),
 					laskeDTO.getHakukohdeOid());
 		} catch (Exception e) {
@@ -144,6 +120,12 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
 					e.getMessage(), Arrays.toString(e.getStackTrace()));
 			throw e;
 		}
+
+        if(!valisijoiteltavatJonot.isEmpty()) {
+            valisijoitteleKopiot(laskeDTO, valisijoiteltavatJonot);
+        }
+
+        return "Onnistui!";
 	}
 
     @Override
@@ -154,43 +136,48 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
     public String laskeJaSijoittele(List<LaskeDTO> lista) {
         Map<String, List<String>> valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(lista);
 
-        ValisijoitteluDTO dto = new ValisijoitteluDTO();
-        dto.setHakukohteet(valisijoiteltavatJonot);
-
         lista.parallelStream().forEach(laskeDTO -> valintalaskentaService.laskeKaikki(laskeDTO.getHakemus(),
                 laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid()));
 
         if(!valisijoiteltavatJonot.isEmpty()) {
-            String hakuoid;
-            try {
-                hakuoid = lista.get(0).getValintaperuste().get(0).getHakuOid();
-            } catch (Exception e) {
-                LOG.error(
-                        "Välisijoittelulle ei löytynyt hakuoidia!",
-                        e.getMessage(), Arrays.toString(e.getStackTrace()));
-                throw e;
-            }
-            List<HakukohdeDTO> sijoitellut = sijoitteluResource.sijoittele(hakuoid, dto);
-
-            Map<String, HakemusDTO> hakemusHashMap = new ConcurrentHashMap<>();
-
-            // Muodostetaan Map hakemuksittain sijoittelun tuloksista
-            sijoitellut.parallelStream().forEach(hakukohde ->
-                    hakukohde.getValintatapajonot().parallelStream().forEach(valintatapajono ->
-                            valintatapajono.getHakemukset().parallelStream().forEach(hakemus ->
-                                    hakemusHashMap.put(
-                                            hakukohde.getOid() + valintatapajono.getOid()
-                                                    + hakemus.getHakemusOid(), hakemus)
-                            )
-                    )
-            );
-
-            valintalaskentaService.applyValisijoittelu(valisijoiteltavatJonot, hakemusHashMap);
-
+            valisijoitteleKopiot(lista.get(0), valisijoiteltavatJonot);
         }
 
-
         return "Onnistui";
+    }
+
+    private Map<String, List<String>> haeKopiotValintaperusteista(List<String> jonot) {
+        return valintatapajonoResource.findKopiot(jonot);
+    }
+
+    private void valisijoitteleKopiot(LaskeDTO laskeDTO, Map<String, List<String>> valisijoiteltavatJonot) {
+        String hakuoid;
+        try {
+            hakuoid = laskeDTO.getValintaperuste().get(0).getHakuOid();
+        } catch (Exception e) {
+            LOG.error(
+                    "Välisijoittelulle ei löytynyt hakuoidia!",
+                    e.getMessage(), Arrays.toString(e.getStackTrace()));
+            throw e;
+        }
+        ValisijoitteluDTO dto = new ValisijoitteluDTO();
+        dto.setHakukohteet(valisijoiteltavatJonot);
+        List<HakukohdeDTO> sijoitellut = sijoitteluResource.sijoittele(hakuoid, dto);
+
+        Map<String, HakemusDTO> hakemusHashMap = new ConcurrentHashMap<>();
+
+        // Muodostetaan Map hakemuksittain sijoittelun tuloksista
+        sijoitellut.parallelStream().forEach(hakukohde ->
+                hakukohde.getValintatapajonot().parallelStream().forEach(valintatapajono ->
+                        valintatapajono.getHakemukset().parallelStream().forEach(hakemus ->
+                                hakemusHashMap.put(
+                                        hakukohde.getOid() + valintatapajono.getOid()
+                                                + hakemus.getHakemusOid(), hakemus)
+                        )
+                )
+        );
+
+        valintalaskentaService.applyValisijoittelu(valisijoiteltavatJonot, hakemusHashMap);
     }
 
 }
