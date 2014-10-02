@@ -38,25 +38,29 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 	public List<Valinnanvaihe> readByHakuOidAndHakemusOid(String hakuOid,
 			String hakemusOid) {
 
-        final BasicDBObject query = new BasicDBObject("hakuOid", hakuOid).append("valintatapajonot.jonosijat.hakemusOid", hakemusOid);
+//        final BasicDBObject query = new BasicDBObject("hakuOid", hakuOid).append("valintatapajonot.jonosijat.hakemusOid", hakemusOid);
+//
+//        String map = MongoMapReduceUtil.shallowCloneJs + " copy.valintatapajonot = copy.valintatapajonot.map(function(jono) { jono = shallowClone(jono); jono.jonosijat = jono.jonosijat.filter(function (hakemus) { return hakemus.hakemusOid == '"+hakemusOid+"' }); return jono }); emit(this.oid, copy) }\n";
+//
+//        String reduce = "function(key, values) { return values[0] }";
+//
+//        DBCollection collection = datastore.getCollection(Valinnanvaihe.class);
+//        MapReduceCommand cmd = new MapReduceCommand(
+//                collection,
+//                map,
+//                reduce,
+//                null,
+//                MapReduceCommand.OutputType.INLINE,
+//                query);
+//        MapReduceOutput out = collection.mapReduce(cmd);
+//
+//        return StreamSupport.stream(out.results().spliterator(), false)
+//                .map(dbObject -> new Mapper().fromDBObject(Valinnanvaihe.class, (DBObject) dbObject.get("value"), new DefaultEntityCache()))
+//                .collect(Collectors.toList());
 
-        String map = MongoMapReduceUtil.shallowCloneJs + " copy.valintatapajonot = copy.valintatapajonot.map(function(jono) { jono = shallowClone(jono); if(jono.jonosijat) {jono.jonosijat = jono.jonosijat.filter(function (hakemus) { return hakemus.hakemusOid == '"+hakemusOid+"' });} return jono }); emit(this.oid, copy) }\n";
-
-        String reduce = "function(key, values) { return values[0] }";
-
-        DBCollection collection = datastore.getCollection(Valinnanvaihe.class);
-        MapReduceCommand cmd = new MapReduceCommand(
-                collection,
-                map,
-                reduce,
-                null,
-                MapReduceCommand.OutputType.INLINE,
-                query);
-        MapReduceOutput out = collection.mapReduce(cmd);
-
-        return StreamSupport.stream(out.results().spliterator(), false)
-                .map(dbObject -> new Mapper().fromDBObject(Valinnanvaihe.class, (DBObject) dbObject.get("value"), new DefaultEntityCache()))
-                .collect(Collectors.toList());
+        return datastore.createQuery(Valinnanvaihe.class).field("hakuOid")
+                .equal(hakuOid).field("valintatapajonot.jonosijat.hakemusOid")
+                .equal(hakemusOid).asList();
 
 	}
 
