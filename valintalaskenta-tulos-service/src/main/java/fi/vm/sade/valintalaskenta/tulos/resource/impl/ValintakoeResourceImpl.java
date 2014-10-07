@@ -70,6 +70,7 @@ public class ValintakoeResourceImpl implements ValintakoeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("hakutoive/")
 	@JsonView({ JsonViews.Basic.class })
+	@PreAuthorize(READ_UPDATE_CRUD)
 	@ApiOperation(value = "Hakee valintakoeosallistumiset hakukohteelle OID:n perusteella", response = ValintakoeOsallistuminenDTO.class)
 	public List<ValintakoeOsallistuminenDTO> hakuByOids(
 			List<String> hakukohdeOids) {
