@@ -42,7 +42,7 @@ public interface ValintakoeResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("hakutoive/")
+	@Path("hakemus/")
 	@JsonView({ JsonViews.Basic.class })
 	@ApiOperation(value = "Hakee valintakoeosallistumiset hakukohteelle OID:n perusteella", response = ValintakoeOsallistuminenDTO.class)
 	public List<ValintakoeOsallistuminenDTO> hakuByOids(
