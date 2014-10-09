@@ -59,7 +59,7 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
 	@Produces("text/plain")
 	@POST
 	public String laske(LaskeDTO laskeDTO) {
-        //System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(laskeDTO));
+        //System.out.println(new GsonBuilder().create().toJson(laskeDTO));
         Map<String, List<String>> valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Arrays.asList(laskeDTO));
         if(!valisijoiteltavatJonot.isEmpty()) {
             valisijoiteltavatJonot = haeKopiotValintaperusteista(valisijoiteltavatJonot.get(laskeDTO.getHakukohdeOid()));
@@ -105,7 +105,7 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
 	@Produces("text/plain")
 	@POST
 	public String laskeKaikki(LaskeDTO laskeDTO) {
-        //System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(laskeDTO));
+        //System.out.println(new GsonBuilder().create().toJson(laskeDTO));
         Map<String, List<String>> valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Arrays.asList(laskeDTO));
         if(!valisijoiteltavatJonot.isEmpty()) {
             valisijoiteltavatJonot = haeKopiotValintaperusteista(valisijoiteltavatJonot.get(laskeDTO.getHakukohdeOid()));
@@ -136,7 +136,7 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
     public String laskeJaSijoittele(List<LaskeDTO> lista) {
         Map<String, List<String>> valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(lista);
 
-        lista.parallelStream().forEach(laskeDTO -> valintalaskentaService.laskeKaikki(laskeDTO.getHakemus(),
+        lista.stream().forEach(laskeDTO -> valintalaskentaService.laskeKaikki(laskeDTO.getHakemus(),
                 laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid()));
 
         if(!valisijoiteltavatJonot.isEmpty()) {
