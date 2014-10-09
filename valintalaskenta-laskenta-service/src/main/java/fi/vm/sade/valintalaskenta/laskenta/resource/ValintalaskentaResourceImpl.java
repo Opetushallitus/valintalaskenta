@@ -5,7 +5,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import com.google.gson.GsonBuilder;
+import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetValinnanVaiheDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoJarjestyskriteereillaDTO;
+import fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi;
 import fi.vm.sade.service.valintaperusteet.resource.ValintatapajonoResource;
 import fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO;
 import fi.vm.sade.sijoittelu.tulos.dto.HakukohdeDTO;
@@ -19,6 +21,8 @@ import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.ValintatietoService;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,9 +64,9 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
 	@POST
 	public String laske(LaskeDTO laskeDTO) {
         //System.out.println(new GsonBuilder().create().toJson(laskeDTO));
-        Map<String, List<String>> valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Arrays.asList(laskeDTO));
-        if(!valisijoiteltavatJonot.isEmpty()) {
-            valisijoiteltavatJonot = haeKopiotValintaperusteista(valisijoiteltavatJonot.get(laskeDTO.getHakukohdeOid()));
+        Pair<Set<Integer>, Map<String, List<String>>> valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Arrays.asList(laskeDTO));
+        if(!valisijoiteltavatJonot.getLeft().isEmpty()) {
+            valisijoiteltavatJonot = new ImmutablePair<>(valisijoiteltavatJonot.getLeft(), haeKopiotValintaperusteista(valisijoiteltavatJonot.getRight().get(laskeDTO.getHakukohdeOid())));
         }
 		try {
 			valintalaskentaService.laske(laskeDTO.getHakemus(),
@@ -73,8 +77,8 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
 					Arrays.toString(e.getStackTrace()));
 			throw e;
 		}
-        if(!valisijoiteltavatJonot.isEmpty()) {
-            valisijoitteleKopiot(laskeDTO, valisijoiteltavatJonot);
+        if(!valisijoiteltavatJonot.getLeft().isEmpty()) {
+            valisijoitteleKopiot(laskeDTO, valisijoiteltavatJonot.getRight());
         }
         return "Onnistui!";
 	}
@@ -106,24 +110,41 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
 	@POST
 	public String laskeKaikki(LaskeDTO laskeDTO) {
         //System.out.println(new GsonBuilder().create().toJson(laskeDTO));
-        Map<String, List<String>> valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Arrays.asList(laskeDTO));
-        if(!valisijoiteltavatJonot.isEmpty()) {
-            valisijoiteltavatJonot = haeKopiotValintaperusteista(valisijoiteltavatJonot.get(laskeDTO.getHakukohdeOid()));
-        }
+        Pair<Set<Integer>, Map<String, List<String>>> valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Arrays.asList(laskeDTO));
+
 		try {
-			valintalaskentaService.laskeKaikki(laskeDTO.getHakemus(),
-					laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(),
-					laskeDTO.getHakukohdeOid());
+            if(valisijoiteltavatJonot.getLeft().isEmpty()) {
+                valintalaskentaService.laskeKaikki(laskeDTO.getHakemus(),
+                        laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(),
+                        laskeDTO.getHakukohdeOid());
+            } else {
+                Map<Integer, List<LaskeDTO>> map = new TreeMap<>();
+                laskeDTO.getValintaperuste().forEach(v -> {
+                    List<LaskeDTO> dtos = map.getOrDefault(v.getValinnanVaihe().getValinnanVaiheJarjestysluku(), new ArrayList<>());
+                    dtos.add(new LaskeDTO(laskeDTO.getHakukohdeOid(), laskeDTO.getHakemus(), Arrays.asList(v), laskeDTO.getHakijaryhmat()));
+                    map.put(v.getValinnanVaihe().getValinnanVaiheJarjestysluku(), dtos);
+                });
+
+                map.keySet().stream().forEachOrdered(key -> {
+                    map.get(key).stream().forEach(dto -> {
+                        ValintaperusteetValinnanVaiheDTO valinnanVaihe = dto.getValintaperuste().get(0).getValinnanVaihe();
+                        if(valinnanVaihe.getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
+                            valintakokeet(dto);
+                        } else {
+                            laske(dto);
+                            if(valisijoiteltavatJonot.getLeft().contains(valinnanVaihe.getValinnanVaiheJarjestysluku())) {
+                                valisijoitteleKopiot(laskeDTO, new ImmutablePair<>(valisijoiteltavatJonot.getLeft(), haeKopiotValintaperusteista(valisijoiteltavatJonot.getRight().get(laskeDTO.getHakukohdeOid()))).getRight());
+                            }
+                        }
+                    });
+                });
+            }
 		} catch (Exception e) {
 			LOG.error(
 					"Valintalaskenta ja valintakoelaskenta epaonnistui: {}\r\n{}",
 					e.getMessage(), Arrays.toString(e.getStackTrace()));
 			throw e;
 		}
-
-        if(!valisijoiteltavatJonot.isEmpty()) {
-            valisijoitteleKopiot(laskeDTO, valisijoiteltavatJonot);
-        }
 
         return "Onnistui!";
 	}
@@ -134,14 +155,39 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
     @Produces("text/plain")
     @POST
     public String laskeJaSijoittele(List<LaskeDTO> lista) {
-        Map<String, List<String>> valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(lista);
+        Pair<Set<Integer>, Map<String, List<String>>> valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(lista);
 
-        lista.stream().forEach(laskeDTO -> valintalaskentaService.laskeKaikki(laskeDTO.getHakemus(),
-                laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid()));
+        if(valisijoiteltavatJonot.getLeft().isEmpty()) {
+            lista.stream().forEach(laskeDTO -> valintalaskentaService.laskeKaikki(laskeDTO.getHakemus(),
+                    laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid()));
+        } else {
+            Map<Integer, List<LaskeDTO>> map = new TreeMap<>();
+            lista.stream().forEach(laskeDTO -> {
+                laskeDTO.getValintaperuste().forEach(v -> {
+                    List<LaskeDTO> dtos = map.getOrDefault(v.getValinnanVaihe().getValinnanVaiheJarjestysluku(), new ArrayList<>());
+                    dtos.add(new LaskeDTO(laskeDTO.getHakukohdeOid(), laskeDTO.getHakemus(), Arrays.asList(v), laskeDTO.getHakijaryhmat()));
+                    map.put(v.getValinnanVaihe().getValinnanVaiheJarjestysluku(), dtos);
+                });
+            });
 
-        if(!valisijoiteltavatJonot.isEmpty()) {
-            valisijoitteleKopiot(lista.get(0), valisijoiteltavatJonot);
+            map.keySet().stream().forEachOrdered(key -> {
+                map.get(key).stream().forEach(laskeDTO -> {
+                    ValintaperusteetValinnanVaiheDTO valinnanVaihe = laskeDTO.getValintaperuste().get(0).getValinnanVaihe();
+                    if(valinnanVaihe.getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
+                        valintakokeet(laskeDTO);
+                    } else {
+                       laske(laskeDTO);
+                       if(valisijoiteltavatJonot.getLeft().contains(valinnanVaihe.getValinnanVaiheJarjestysluku())) {
+                           valisijoitteleKopiot(laskeDTO, valisijoiteltavatJonot.getRight());
+                       }
+                    }
+                });
+            });
         }
+
+//        if(!valisijoiteltavatJonot.isEmpty()) {
+//            valisijoitteleKopiot(lista.get(0), valisijoiteltavatJonot);
+//        }
 
         return "Onnistui";
     }
