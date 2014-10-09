@@ -1,11 +1,11 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl;
 
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -15,15 +15,24 @@ import java.util.stream.Collectors;
 @Component
 public class ValisijoitteluKasittelija {
 
-    public Map<String, List<String>> valisijoiteltavatJonot(List<LaskeDTO> lista) {
+    public Pair<Set<Integer>, Map<String, List<String>>> valisijoiteltavatJonot(List<LaskeDTO> lista) {
         Map<String, List<String>> hakukohteet = new ConcurrentHashMap<>();
+        Set<Integer> valinnanvaiheet = new TreeSet<>();
         lista.parallelStream().forEach(dto -> {
             List<String> jonot = new ArrayList<>();
+            Set<Integer> vaiheet = new TreeSet<>();
             dto.getValintaperuste().stream()
                     .filter(p -> !p.getValinnanVaihe().getValintatapajono().isEmpty() && p.getValinnanVaihe().getAktiivinen())
                     .forEach(peruste -> {
-                        jonot.addAll(peruste.getValinnanVaihe().getValintatapajono().stream()
-                                .filter(j -> j.getValisijoittelu()).map(j -> j.getOid()).collect(Collectors.toList()));
+                        List<String> collect = peruste.getValinnanVaihe().getValintatapajono().stream()
+                                .filter(j -> j.getValisijoittelu()).map(j -> j.getOid()).collect(Collectors.toList());
+
+                        if(!collect.isEmpty()) {
+                            peruste.getValinnanVaihe().getValintatapajono().stream()
+                                    .filter(j -> j.getValisijoittelu()).forEach(j -> valinnanvaiheet.add(peruste.getValinnanVaihe().getValinnanVaiheJarjestysluku()));
+                            jonot.addAll(collect);
+                        }
+
                     }
                     );
 
@@ -32,7 +41,8 @@ public class ValisijoitteluKasittelija {
             }
         });
 
-        return hakukohteet;
+        return new ImmutablePair<>(valinnanvaiheet, hakukohteet);
+
     }
 
 }
