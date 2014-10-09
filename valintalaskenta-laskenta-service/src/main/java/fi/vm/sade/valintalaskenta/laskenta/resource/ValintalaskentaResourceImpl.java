@@ -129,9 +129,9 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
                     map.get(key).stream().forEach(dto -> {
                         ValintaperusteetValinnanVaiheDTO valinnanVaihe = dto.getValintaperuste().get(0).getValinnanVaihe();
                         if(valinnanVaihe.getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
-                            valintakokeet(dto);
+                            laskeDTO.getHakemus().stream().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste()));
                         } else {
-                            laske(dto);
+                            valintalaskentaService.laske(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid());
                             if(valisijoiteltavatJonot.getLeft().contains(valinnanVaihe.getValinnanVaiheJarjestysluku())) {
                                 valisijoitteleKopiot(laskeDTO, new ImmutablePair<>(valisijoiteltavatJonot.getLeft(), haeKopiotValintaperusteista(valisijoiteltavatJonot.getRight().get(laskeDTO.getHakukohdeOid()))).getRight());
                             }
@@ -174,9 +174,9 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
                 map.get(key).stream().forEach(laskeDTO -> {
                     ValintaperusteetValinnanVaiheDTO valinnanVaihe = laskeDTO.getValintaperuste().get(0).getValinnanVaihe();
                     if(valinnanVaihe.getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
-                        valintakokeet(laskeDTO);
+                        laskeDTO.getHakemus().stream().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste()));
                     } else {
-                       laske(laskeDTO);
+                       valintalaskentaService.laske(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid());
                        if(valisijoiteltavatJonot.getLeft().contains(valinnanVaihe.getValinnanVaiheJarjestysluku())) {
                            valisijoitteleKopiot(laskeDTO, valisijoiteltavatJonot.getRight());
                        }
