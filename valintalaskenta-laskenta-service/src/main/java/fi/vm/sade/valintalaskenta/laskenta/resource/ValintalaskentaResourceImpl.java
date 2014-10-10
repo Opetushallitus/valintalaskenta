@@ -129,14 +129,15 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
                     map.get(key).stream().forEach(dto -> {
                         ValintaperusteetValinnanVaiheDTO valinnanVaihe = dto.getValintaperuste().get(0).getValinnanVaihe();
                         if(valinnanVaihe.getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
-                            laskeDTO.getHakemus().stream().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste()));
+                            dto.getHakemus().stream().forEach(h -> valintalaskentaService.valintakokeet(h, dto.getValintaperuste()));
                         } else {
-                            valintalaskentaService.laske(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid());
-                            if(valisijoiteltavatJonot.getLeft().contains(valinnanVaihe.getValinnanVaiheJarjestysluku())) {
-                                valisijoitteleKopiot(laskeDTO, new ImmutablePair<>(valisijoiteltavatJonot.getLeft(), haeKopiotValintaperusteista(valisijoiteltavatJonot.getRight().get(laskeDTO.getHakukohdeOid()))).getRight());
-                            }
+                            valintalaskentaService.laske(dto.getHakemus(), dto.getValintaperuste(), dto.getHakijaryhmat(), dto.getHakukohdeOid());
+
                         }
                     });
+                    if(valisijoiteltavatJonot.getLeft().contains(key)) {
+                        valisijoitteleKopiot(laskeDTO, new ImmutablePair<>(valisijoiteltavatJonot.getLeft(), haeKopiotValintaperusteista(valisijoiteltavatJonot.getRight().get(laskeDTO.getHakukohdeOid()))).getRight());
+                    }
                 });
             }
 		} catch (Exception e) {
@@ -177,11 +178,11 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
                         laskeDTO.getHakemus().stream().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste()));
                     } else {
                        valintalaskentaService.laske(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid());
-                       if(valisijoiteltavatJonot.getLeft().contains(valinnanVaihe.getValinnanVaiheJarjestysluku())) {
-                           valisijoitteleKopiot(laskeDTO, valisijoiteltavatJonot.getRight());
-                       }
                     }
                 });
+                if(valisijoiteltavatJonot.getLeft().contains(key)) {
+                    valisijoitteleKopiot(map.get(key).get(0), valisijoiteltavatJonot.getRight());
+                }
             });
         }
 
