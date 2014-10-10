@@ -99,6 +99,9 @@ public class ValisijoitteluKasittelijaTest {
         assertEquals(2, jonot.getRight().size());
         assertEquals(2, jonot.getRight().get("hakukohde1").size());
         assertEquals(1, jonot.getRight().get("hakukohde2").size());
+        assertTrue(jonot.getLeft().contains(1));
+        assertTrue(!jonot.getLeft().contains(2));
+        assertTrue(jonot.getLeft().contains(3));
 
         assertTrue(jonot.getRight().get("hakukohde1").indexOf("jono1") != -1);
         assertTrue(jonot.getRight().get("hakukohde1").indexOf("jono3") != -1);
