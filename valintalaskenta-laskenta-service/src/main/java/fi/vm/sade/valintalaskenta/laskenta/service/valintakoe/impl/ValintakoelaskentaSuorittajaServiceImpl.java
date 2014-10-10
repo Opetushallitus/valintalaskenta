@@ -215,7 +215,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 
                     if (!valintakoeData.containsKey(tunniste)) {
                         valintakoeData.put(tunniste,
-                                new ArrayList<HakukohdeValintakoeData>());
+                                new ArrayList<>());
                     }
 
                     valintakoeData.get(tunniste).add(data);
