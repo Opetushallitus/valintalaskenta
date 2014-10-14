@@ -81,6 +81,7 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
 	@Produces("text/plain")
 	@POST
 	public String valintakokeet(LaskeDTO laskeDTO) {
+        //System.out.println(new GsonBuilder().create().toJson(laskeDTO));
 		try {
             LOG.error("Suoritetaan valintakoelaskenta {} hakemukselle", laskeDTO.getHakemus().size());
 			laskeDTO.getHakemus()

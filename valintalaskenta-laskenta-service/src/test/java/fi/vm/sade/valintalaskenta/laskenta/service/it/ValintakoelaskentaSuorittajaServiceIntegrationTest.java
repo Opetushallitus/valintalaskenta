@@ -1,5 +1,8 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.it;
 
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
@@ -8,21 +11,25 @@ import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
 import fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil;
+import org.apache.commons.io.IOUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
+import java.io.IOException;
 import java.util.*;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
@@ -147,6 +154,31 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         Valintakoe koe = vv.getValintakokeet().get(0);
         assertEquals(valintakoetunniste, koe.getValintakoeTunniste());
         assertEquals(Osallistuminen.EI_OSALLISTU, koe.getOsallistuminenTulos().getOsallistuminen());
+    }
+
+
+    @Test
+    @UsingDataSet(locations = "osallistuminen.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void testOlemassaolevatKokoeet() throws JsonSyntaxException,
+            IOException {
+
+
+        LaskeDTO dto = new Gson().fromJson(IOUtils
+                .toString(new ClassPathResource("laskeDTO.json")
+                        .getInputStream()), new TypeToken<LaskeDTO>() {
+        }.getType());
+
+        valintakoelaskentaSuorittajaService.laske(dto.getHakemus().get(0), dto.getValintaperuste());
+
+        ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid("1.2.246.562.5.2013080813081926341927", "1.2.246.562.11.00000304421");
+
+        assertTrue(osallistuminen.getHakutoiveet().size() == 2);
+
+        osallistuminen.getHakutoiveet().sort((h1, h2) -> h1.getHakukohdeOid().compareTo(h2.getHakukohdeOid()));
+
+        assertTrue(osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().size() == 2);
+        assertTrue(osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().size() == 3);
+
     }
 
 }
