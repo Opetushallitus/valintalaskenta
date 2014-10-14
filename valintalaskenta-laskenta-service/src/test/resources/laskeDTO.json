@@ -6663,6 +6663,38 @@
                     "nimi": "Urheilijalis\u00e4piste",
                     "oid": "13951278245412063416598882132909",
                     "tunniste": "{{hakukohde.urheilija_lisapiste_tunniste}}"
+                },
+                {
+                    "tunniste": "Eläintenhoidon koulutusohjelma, pk (Maatalousalan perustutkinto), pääsy- ja soveltuvuuskoe",
+                    "laskentakaavaId": null,
+                    "nimi": "ElÃ¤intenhoidon koulutusohjelma, pk (Maatalousalan perustutkinto), pÃ¤Ã¤sy- ja soveltuvuuskoe",
+                    "kuvaus": "ElÃ¤intenhoidon koulutusohjelma, pk (Maatalousalan perustutkinto), pÃ¤Ã¤sy- ja soveltuvuuskoe",
+                    "aktiivinen": true,
+                    "lahetetaankoKoekutsut": true,
+                    "kutsutaankoKaikki": false,
+                    "kutsuttavienMaara": null,
+                    "kutsunKohde": "YLIN_TOIVE",
+                    "kutsunKohdeAvain": null,
+                    "oid": "1401778607536-1848915787886635271",
+                    "funktiokutsu": {
+                        "funktionimi": "TOTUUSARVO",
+                        "tulosTunniste": null,
+                        "tulosTekstiFi": null,
+                        "tulosTekstiSv": null,
+                        "tulosTekstiEn": null,
+                        "tallennaTulos": false,
+                        "arvokonvertteriparametrit": [],
+                        "arvovalikonvertteriparametrit": [],
+                        "syoteparametrit": [
+                            {
+                                "avain": "totuusarvo",
+                                "arvo": "true"
+                            }
+                        ],
+                        "funktioargumentit": [],
+                        "valintaperusteviitteet": [],
+                        "validointivirheet": []
+                    }
                 }
             ],
             "valintatapajono": []
