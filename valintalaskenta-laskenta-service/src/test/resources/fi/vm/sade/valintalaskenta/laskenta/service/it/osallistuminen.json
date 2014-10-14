@@ -53,6 +53,29 @@
                             ]
                         }
                     ]
+                },
+                {
+                    "hakukohdeOid": "1.2.246.562.5.37009438716",
+                    "valinnanVaiheet": [
+                        {
+                            "valinnanVaiheOid": "1395127824348-1049605647060825146",
+                            "valinnanVaiheJarjestysluku": 1,
+                            "valintakokeet": [
+                                {
+                                    "valintakoeOid": "1401778607536-1848915787886635271",
+                                    "valintakoeTunniste": "Eläintenhoidon koulutusohjelma, pk (Maatalousalan perustutkinto), pääsy- ja soveltuvuuskoe",
+                                    "nimi": "Eläintenhoidon koulutusohjelma, pk (Maatalousalan perustutkinto), pääsy- ja soveltuvuuskoe",
+                                    "aktiivinen": true,
+                                    "osallistuminenTulos": {
+                                        "osallistuminen": "OSALLISTUU",
+                                        "laskentaTila": "HYVAKSYTTAVISSA",
+                                        "laskentaTulos": true
+                                    },
+                                    "lahetetaankoKoekutsut": true
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         }
