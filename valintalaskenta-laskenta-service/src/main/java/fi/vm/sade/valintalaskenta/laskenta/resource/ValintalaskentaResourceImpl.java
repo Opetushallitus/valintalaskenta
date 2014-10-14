@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.gson.GsonBuilder;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetValinnanVaiheDTO;
-import fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi;import fi.vm.sade.service.valintaperusteet.resource.ValintatapajonoResource;
+import fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi;
 import fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO;
 import fi.vm.sade.sijoittelu.tulos.dto.HakukohdeDTO;
 import fi.vm.sade.sijoittelu.tulos.dto.ValisijoitteluDTO;
@@ -82,6 +82,7 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
 	@POST
 	public String valintakokeet(LaskeDTO laskeDTO) {
 		try {
+            LOG.error("Suoritetaan valintakoelaskenta {} hakemukselle", laskeDTO.getHakemus().size());
 			laskeDTO.getHakemus()
 					.forEach(
 							h -> valintalaskentaService.valintakokeet(h,
@@ -120,6 +121,7 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
                     map.get(key).forEach(dto -> {
                         ValintaperusteetValinnanVaiheDTO valinnanVaihe = dto.getValintaperuste().get(0).getValinnanVaihe();
                         if(valinnanVaihe.getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
+                            LOG.error("Suoritetaan valintakoelaskenta {} hakemukselle", laskeDTO.getHakemus().size());
                             laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, dto.getValintaperuste()));
                         } else {
                             valintalaskentaService.laske(dto.getHakemus(), dto.getValintaperuste(), dto.getHakijaryhmat(), dto.getHakukohdeOid());
@@ -166,6 +168,7 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
                 map.get(key).forEach(laskeDTO -> {
                     ValintaperusteetValinnanVaiheDTO valinnanVaihe = laskeDTO.getValintaperuste().get(0).getValinnanVaihe();
                     if(valinnanVaihe.getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
+                        LOG.error("Suoritetaan valintakoelaskenta {} hakemukselle", laskeDTO.getHakemus().size());
                         laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste()));
                     } else {
                        valintalaskentaService.laske(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid());
