@@ -230,8 +230,9 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
         for (Map.Entry<String, List<HakukohdeValintakoeData>> entry : valintakoeData
                 .entrySet()) {
             List<HakukohdeValintakoeData> kokeet = entry.getValue();
+            List<HakukohdeValintakoeData> olemassaOlevat = new ArrayList<>();
 
-            asetaOsallistumisetKokeisiin(kokeet, hakutoiveetByOid);
+//            asetaOsallistumisetKokeisiin(kokeet, hakutoiveetByOid);
             for (HakukohdeValintakoeData c : kokeet) {
                 LOG.info(
                         "Hakukohde: {}, valintakoe: {}",
@@ -243,11 +244,49 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
                             luoValintakoeOsallistuminen(c, hakemus, hakutoiveetByOid));
                 }
 
+//                ValintakoeOsallistuminen osallistuminen = osallistumisetByHaku
+//                        .get(c.getHakuOid());
+//
+//                haeTaiLuoHakutoive(osallistuminen, c);
+            }
+
+            for(HakukohdeValintakoeData c : kokeet) {
                 ValintakoeOsallistuminen osallistuminen = osallistumisetByHaku
                         .get(c.getHakuOid());
+
+                osallistuminen.getHakutoiveet().forEach(h -> h.getValinnanVaiheet().forEach(v -> v.getValintakokeet().forEach(koe -> {
+                    if(koe.getValintakoeTunniste().equals(c.getValintakoeTunniste()) && !koe.getValintakoeOid().equals(c.getValintakoeOid())) {
+                        HakukohdeValintakoeData data = new HakukohdeValintakoeData();
+                        data.setHakuOid(c.getHakuOid());
+                        data.setHakukohdeOid(h.getHakukohdeOid());
+                        data.setOsallistuminenTulos(koe.getOsallistuminenTulos());
+                        data.setValinnanVaiheJarjestysNro(v
+                                .getValinnanVaiheJarjestysluku());
+                        data.setValinnanVaiheOid(v.getValinnanVaiheOid());
+                        data.setValintakoeOid(koe.getValintakoeOid());
+                        data.setValintakoeTunniste(koe.getValintakoeTunniste());
+                        data.setNimi(koe.getNimi());
+                        data.setLahetetaankoKoekutsut(koe.isLahetetaankoKoekutsut());
+                        data.setAktiivinen(koe.isAktiivinen());
+
+                        olemassaOlevat.add(data);
+                    }
+                })));
+                olemassaOlevat.add(c);
+            }
+
+            asetaOsallistumisetKokeisiin(olemassaOlevat, hakutoiveetByOid);
+
+            for (HakukohdeValintakoeData c : olemassaOlevat) {
+
+                ValintakoeOsallistuminen osallistuminen = osallistumisetByHaku
+                        .get(c.getHakuOid());
+
                 haeTaiLuoHakutoive(osallistuminen, c);
             }
         }
+
+
 
         for (ValintakoeOsallistuminen osallistuminen : osallistumisetByHaku
                 .values()) {

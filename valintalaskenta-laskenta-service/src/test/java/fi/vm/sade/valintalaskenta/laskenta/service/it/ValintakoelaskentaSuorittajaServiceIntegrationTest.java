@@ -176,8 +176,14 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         osallistuminen.getHakutoiveet().sort((h1, h2) -> h1.getHakukohdeOid().compareTo(h2.getHakukohdeOid()));
 
-        assertTrue(osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().size() == 2);
+        assertTrue(osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().size() == 3);
         assertTrue(osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().size() == 3);
+
+        osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().sort((k1, k2) -> k1.getValintakoeTunniste().compareTo(k2.getValintakoeTunniste()));
+        osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().sort((k1, k2) -> k1.getValintakoeTunniste().compareTo(k2.getValintakoeTunniste()));
+
+        assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().get(1).getOsallistuminenTulos().getOsallistuminen());
+        assertEquals(Osallistuminen.EI_OSALLISTU, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(1).getOsallistuminenTulos().getOsallistuminen());
 
     }
 
