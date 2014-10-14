@@ -96,7 +96,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 
     @Override
     public void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet) {
-        LOG.info("Laskentaan valintakoeosallistumiset hakemukselle {}",
+        LOG.error("Laskentaan valintakoeosallistumiset hakemukselle {}",
                 hakemus.getHakemusoid());
 
         final Map<String, HakukohdeDTO> hakutoiveetByOid = luoHakutoiveMap(hakemus
