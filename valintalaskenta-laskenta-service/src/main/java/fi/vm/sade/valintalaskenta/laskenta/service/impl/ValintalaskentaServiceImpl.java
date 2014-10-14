@@ -95,7 +95,8 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 
         valintaperuste.stream().forEachOrdered(peruste -> {
             if(peruste.getValinnanVaihe().getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
-                hakemus.stream().forEach(h -> valintakokeet(h, Arrays.asList(peruste)));
+                LOG.error("Suoritetaan valintakoelaskenta {} hakemukselle", hakemus.size());
+                hakemus.forEach(h -> valintakokeet(h, Arrays.asList(peruste)));
             } else {
                 laske(hakemus, Arrays.asList(peruste), hakijaryhmat, hakukohdeOid);
             }
