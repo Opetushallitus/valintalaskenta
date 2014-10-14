@@ -2,13 +2,10 @@ package fi.vm.sade.valintalaskenta.laskenta.resource;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import com.google.gson.GsonBuilder;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetValinnanVaiheDTO;
-import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoJarjestyskriteereillaDTO;
-import fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi;
-import fi.vm.sade.service.valintaperusteet.resource.ValintatapajonoResource;
+import fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi;import fi.vm.sade.service.valintaperusteet.resource.ValintatapajonoResource;
 import fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO;
 import fi.vm.sade.sijoittelu.tulos.dto.HakukohdeDTO;
 import fi.vm.sade.sijoittelu.tulos.dto.ValisijoitteluDTO;
@@ -19,22 +16,17 @@ import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetVal
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
-import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
-import fi.vm.sade.valintalaskenta.tulos.service.impl.ValintatietoService;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.CRUD;
 
 /**
  * Created by jukais on 21.3.2014.
@@ -91,7 +83,6 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
 	public String valintakokeet(LaskeDTO laskeDTO) {
 		try {
 			laskeDTO.getHakemus()
-					.parallelStream()
 					.forEach(
 							h -> valintalaskentaService.valintakokeet(h,
 									laskeDTO.getValintaperuste()));
@@ -126,10 +117,10 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
                 });
 
                 map.keySet().stream().forEachOrdered(key -> {
-                    map.get(key).stream().forEach(dto -> {
+                    map.get(key).forEach(dto -> {
                         ValintaperusteetValinnanVaiheDTO valinnanVaihe = dto.getValintaperuste().get(0).getValinnanVaihe();
                         if(valinnanVaihe.getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
-                            dto.getHakemus().stream().forEach(h -> valintalaskentaService.valintakokeet(h, dto.getValintaperuste()));
+                            laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, dto.getValintaperuste()));
                         } else {
                             valintalaskentaService.laske(dto.getHakemus(), dto.getValintaperuste(), dto.getHakijaryhmat(), dto.getHakukohdeOid());
 
@@ -159,11 +150,11 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
         Pair<Set<Integer>, Map<String, List<String>>> valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(lista);
 
         if(valisijoiteltavatJonot.getLeft().isEmpty()) {
-            lista.stream().forEach(laskeDTO -> valintalaskentaService.laskeKaikki(laskeDTO.getHakemus(),
+            lista.forEach(laskeDTO -> valintalaskentaService.laskeKaikki(laskeDTO.getHakemus(),
                     laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid()));
         } else {
             Map<Integer, List<LaskeDTO>> map = new TreeMap<>();
-            lista.stream().forEach(laskeDTO -> {
+            lista.forEach(laskeDTO -> {
                 laskeDTO.getValintaperuste().forEach(v -> {
                     List<LaskeDTO> dtos = map.getOrDefault(v.getValinnanVaihe().getValinnanVaiheJarjestysluku(), new ArrayList<>());
                     dtos.add(new LaskeDTO(laskeDTO.getHakukohdeOid(), laskeDTO.getHakemus(), Arrays.asList(v), laskeDTO.getHakijaryhmat()));
@@ -172,10 +163,10 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
             });
 
             map.keySet().stream().forEachOrdered(key -> {
-                map.get(key).stream().forEach(laskeDTO -> {
+                map.get(key).forEach(laskeDTO -> {
                     ValintaperusteetValinnanVaiheDTO valinnanVaihe = laskeDTO.getValintaperuste().get(0).getValinnanVaihe();
                     if(valinnanVaihe.getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
-                        laskeDTO.getHakemus().stream().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste()));
+                        laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste()));
                     } else {
                        valintalaskentaService.laske(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid());
                     }
@@ -185,10 +176,6 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
                 }
             });
         }
-
-//        if(!valisijoiteltavatJonot.isEmpty()) {
-//            valisijoitteleKopiot(lista.get(0), valisijoiteltavatJonot);
-//        }
 
         return "Onnistui";
     }

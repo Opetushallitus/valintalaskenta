@@ -18,9 +18,8 @@ public class ValisijoitteluKasittelija {
     public Pair<Set<Integer>, Map<String, List<String>>> valisijoiteltavatJonot(List<LaskeDTO> lista) {
         Map<String, List<String>> hakukohteet = new ConcurrentHashMap<>();
         Set<Integer> valinnanvaiheet = new TreeSet<>();
-        lista.parallelStream().forEach(dto -> {
+        lista.forEach(dto -> {
             List<String> jonot = new ArrayList<>();
-            Set<Integer> vaiheet = new TreeSet<>();
             dto.getValintaperuste().stream()
                     .filter(p -> !p.getValinnanVaihe().getValintatapajono().isEmpty() && p.getValinnanVaihe().getAktiivinen())
                     .forEach(peruste -> {
