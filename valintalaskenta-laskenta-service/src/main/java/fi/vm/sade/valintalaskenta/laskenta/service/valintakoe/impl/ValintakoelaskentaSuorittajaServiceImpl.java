@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import fi.vm.sade.service.valintaperusteet.dto.HakukohteenValintaperusteDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintakoeDTO;
@@ -113,112 +114,114 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
                         .getValinnanVaihe();
 
                 for (ValintakoeDTO koe : vaihe.getValintakoe()) {
-                    String tunniste = haeTunniste(koe.getTunniste(),
-                            hakukohteenValintaperusteet);
-                    if (tunniste == null) {
-                        LOG.error(
-                                "Valintakokoeen tunnistetta ei pystytty määrittelemään. HakukohdeOid: {} - ValintakoeOid: {}",
-                                vp.getHakukohdeOid(), koe.getOid());
-                        continue;
-                    }
+                    if(koe.getAktiivinen()) {
+                        String tunniste = haeTunniste(koe.getTunniste(),
+                                hakukohteenValintaperusteet);
+                        if (tunniste == null) {
+                            LOG.error(
+                                    "Valintakokoeen tunnistetta ei pystytty määrittelemään. HakukohdeOid: {} - ValintakoeOid: {}",
+                                    vp.getHakukohdeOid(), koe.getOid());
+                            continue;
+                        }
 
-                    // Haetaan tätä valinnan vaihetta edeltävä varsinainen
-                    // valinnan vaihe, jos sellainen on olemassa
-                    Valinnanvaihe edellinenVaihe = valinnanvaiheDAO
-                            .haeEdeltavaValinnanvaihe(vp.getHakuOid(),
-                                    vp.getHakukohdeOid(),
-                                    vaihe.getValinnanVaiheJarjestysluku());
-
-                    // jos edellistä varsinaista valinnan vaihetta ei ole
-                    // olemassa ja järjestysnumero > 0,
-                    // tarkistetaaan löytyykö edellistä valintakoevaihetta vai
-                    // heitetäänö virhe
-                    if (edellinenVaihe == null
-                            && vaihe.getValinnanVaiheJarjestysluku() > 0) {
-                        ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO
+                        // Haetaan tätä valinnan vaihetta edeltävä varsinainen
+                        // valinnan vaihe, jos sellainen on olemassa
+                        Valinnanvaihe edellinenVaihe = valinnanvaiheDAO
                                 .haeEdeltavaValinnanvaihe(vp.getHakuOid(),
                                         vp.getHakukohdeOid(),
                                         vaihe.getValinnanVaiheJarjestysluku());
-                        if (edellinenOsallistuminen == null) {
-                            LOG.warn("Valinnanvaiheen järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt");
-                            continue;
-                        }
-                    }
 
-                    // Haetaan viimeisin varsinainen valinnan vaihe, jos
-                    // sellainen on olemassa (tämä saattaa olla sama kuin
-                    // edeltävä vaihe)
-                    Valinnanvaihe viimeisinValinnanVaihe = null;
-                    if (vaihe.getValinnanVaiheJarjestysluku() > 0) {
-                        if (edellinenVaihe != null
-                                && edellinenVaihe.getJarjestysnumero() == vaihe
-                                .getValinnanVaiheJarjestysluku() - 1) {
-                            viimeisinValinnanVaihe = edellinenVaihe;
-                        } else {
-                            viimeisinValinnanVaihe = valinnanvaiheDAO
-                                    .haeViimeisinValinnanvaihe(
-                                            vp.getHakuOid(),
+                        // jos edellistä varsinaista valinnan vaihetta ei ole
+                        // olemassa ja järjestysnumero > 0,
+                        // tarkistetaaan löytyykö edellistä valintakoevaihetta vai
+                        // heitetäänö virhe
+                        if (edellinenVaihe == null
+                                && vaihe.getValinnanVaiheJarjestysluku() > 0) {
+                            ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO
+                                    .haeEdeltavaValinnanvaihe(vp.getHakuOid(),
                                             vp.getHakukohdeOid(),
                                             vaihe.getValinnanVaiheJarjestysluku());
+                            if (edellinenOsallistuminen == null) {
+                                LOG.warn("Valinnanvaiheen järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt");
+                                continue;
+                            }
                         }
-                    }
 
-                    OsallistuminenTulos osallistuminen = null;
-                    if (viimeisinValinnanVaihe != null) {
-                        TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija
-                                .tilaEdellisenValinnanvaiheenMukaan(
-                                        hakemus.getHakemusoid(),
-                                        new Hyvaksyttavissatila(),
-                                        viimeisinValinnanVaihe);
-                        if (tilaJaSelite.getTila().equals(
-                                JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)) {
+                        // Haetaan viimeisin varsinainen valinnan vaihe, jos
+                        // sellainen on olemassa (tämä saattaa olla sama kuin
+                        // edeltävä vaihe)
+                        Valinnanvaihe viimeisinValinnanVaihe = null;
+                        if (vaihe.getValinnanVaiheJarjestysluku() > 0) {
+                            if (edellinenVaihe != null
+                                    && edellinenVaihe.getJarjestysnumero() == vaihe
+                                    .getValinnanVaiheJarjestysluku() - 1) {
+                                viimeisinValinnanVaihe = edellinenVaihe;
+                            } else {
+                                viimeisinValinnanVaihe = valinnanvaiheDAO
+                                        .haeViimeisinValinnanvaihe(
+                                                vp.getHakuOid(),
+                                                vp.getHakukohdeOid(),
+                                                vaihe.getValinnanVaiheJarjestysluku());
+                            }
+                        }
+
+                        OsallistuminenTulos osallistuminen = null;
+                        if (viimeisinValinnanVaihe != null) {
+                            TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija
+                                    .tilaEdellisenValinnanvaiheenMukaan(
+                                            hakemus.getHakemusoid(),
+                                            new Hyvaksyttavissatila(),
+                                            viimeisinValinnanVaihe);
+                            if (tilaJaSelite.getTila().equals(
+                                    JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)) {
+                                osallistuminen = valintakoeosallistumislaskin
+                                        .laskeOsallistuminenYhdelleHakukohteelle(
+                                                new Hakukohde(vp.getHakukohdeOid(),
+                                                        hakukohteenValintaperusteet),
+                                                hakemusConverter.convert(hakemus), modelMapper.map(koe.getFunktiokutsu(), Funktiokutsu.class));
+                            } else {
+                                osallistuminen = new OsallistuminenTulos();
+                                osallistuminen.setKuvaus(tilaJaSelite.getSelite());
+                                osallistuminen.setTekninenKuvaus(tilaJaSelite
+                                        .getTekninenSelite());
+                                osallistuminen.setLaskentaTila(tilaJaSelite
+                                        .getTila().toString());
+                                osallistuminen
+                                        .setOsallistuminen(Osallistuminen.EI_OSALLISTU);
+                            }
+                        } else {
+
+                            Hakemus hak = hakemusConverter.convert(hakemus);
+                            Funktiokutsu fuk = modelMapper.map(koe.getFunktiokutsu(), Funktiokutsu.class);
+
                             osallistuminen = valintakoeosallistumislaskin
                                     .laskeOsallistuminenYhdelleHakukohteelle(
                                             new Hakukohde(vp.getHakukohdeOid(),
                                                     hakukohteenValintaperusteet),
-                                            hakemusConverter.convert(hakemus), modelMapper.map(koe.getFunktiokutsu(), Funktiokutsu.class));
-                        } else {
-                            osallistuminen = new OsallistuminenTulos();
-                            osallistuminen.setKuvaus(tilaJaSelite.getSelite());
-                            osallistuminen.setTekninenKuvaus(tilaJaSelite
-                                    .getTekninenSelite());
-                            osallistuminen.setLaskentaTila(tilaJaSelite
-                                    .getTila().toString());
-                            osallistuminen
-                                    .setOsallistuminen(Osallistuminen.EI_OSALLISTU);
+                                            hak, fuk);
+
                         }
-                    } else {
 
-                        Hakemus hak = hakemusConverter.convert(hakemus);
-                        Funktiokutsu fuk = modelMapper.map(koe.getFunktiokutsu(), Funktiokutsu.class);
+                        HakukohdeValintakoeData data = new HakukohdeValintakoeData();
+                        data.setHakuOid(vp.getHakuOid());
+                        data.setHakukohdeOid(vp.getHakukohdeOid());
+                        data.setOsallistuminenTulos(osallistuminen);
+                        data.setValinnanVaiheJarjestysNro(vaihe
+                                .getValinnanVaiheJarjestysluku());
+                        data.setValinnanVaiheOid(vaihe.getValinnanVaiheOid());
+                        data.setValintakoeOid(koe.getOid());
+                        data.setValintakoeTunniste(tunniste);
+                        data.setNimi(koe.getNimi());
+                        data.setLahetetaankoKoekutsut(koe.getLahetetaankoKoekutsut());
+                        data.setAktiivinen(koe.getAktiivinen());
 
-                        osallistuminen = valintakoeosallistumislaskin
-                                .laskeOsallistuminenYhdelleHakukohteelle(
-                                        new Hakukohde(vp.getHakukohdeOid(),
-                                                hakukohteenValintaperusteet),
-                                        hak, fuk);
+                        if (!valintakoeData.containsKey(tunniste)) {
+                            valintakoeData.put(tunniste,
+                                    new ArrayList<>());
+                        }
 
+                        valintakoeData.get(tunniste).add(data);
                     }
-
-                    HakukohdeValintakoeData data = new HakukohdeValintakoeData();
-                    data.setHakuOid(vp.getHakuOid());
-                    data.setHakukohdeOid(vp.getHakukohdeOid());
-                    data.setOsallistuminenTulos(osallistuminen);
-                    data.setValinnanVaiheJarjestysNro(vaihe
-                            .getValinnanVaiheJarjestysluku());
-                    data.setValinnanVaiheOid(vaihe.getValinnanVaiheOid());
-                    data.setValintakoeOid(koe.getOid());
-                    data.setValintakoeTunniste(tunniste);
-                    data.setNimi(koe.getNimi());
-                    data.setLahetetaankoKoekutsut(koe.getLahetetaankoKoekutsut());
-                    data.setAktiivinen(koe.getAktiivinen());
-
-                    if (!valintakoeData.containsKey(tunniste)) {
-                        valintakoeData.put(tunniste,
-                                new ArrayList<>());
-                    }
-
-                    valintakoeData.get(tunniste).add(data);
                 }
             }
         }
@@ -237,7 +240,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 
                 if (!osallistumisetByHaku.containsKey(c.getHakuOid())) {
                     osallistumisetByHaku.put(c.getHakuOid(),
-                            luoValintakoeOsallistuminen(c, hakemus));
+                            luoValintakoeOsallistuminen(c, hakemus, hakutoiveetByOid));
                 }
 
                 ValintakoeOsallistuminen osallistuminen = osallistumisetByHaku
@@ -300,7 +303,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 
 
     protected ValintakoeOsallistuminen luoValintakoeOsallistuminen(
-            HakukohdeValintakoeData data, HakemusDTO hakemus) {
+            HakukohdeValintakoeData data, HakemusDTO hakemus,
+            Map<String, HakukohdeDTO> hakutoiveetByOid) {
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO
                 .readByHakuOidAndHakemusOid(data.getHakuOid(),
                         hakemus.getHakemusoid());
@@ -308,7 +312,14 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
         if (osallistuminen == null) {
             osallistuminen = new ValintakoeOsallistuminen();
         } else {
+
+            List<Hakutoive> toiveet = osallistuminen.getHakutoiveet()
+                    .stream()
+                    .filter(t -> hakutoiveetByOid.containsKey(t.getHakukohdeOid()))
+                    .filter(t -> !t.getHakukohdeOid().equals(data.getHakukohdeOid()))
+                    .collect(Collectors.toList());
             osallistuminen.getHakutoiveet().clear();
+            osallistuminen.setHakutoiveet(toiveet);
         }
 
         osallistuminen.setHakuOid(data.getHakuOid());
