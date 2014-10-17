@@ -4,8 +4,18 @@ import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.*;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinnanvaiheKasittelija;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.TilaJaSelite;
+import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,6 +33,8 @@ public class EdellinenValinnanvaiheKasittelijaTest {
 
     private EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija;
 
+    MuokattuJonosijaDAO muokattuJonosijaDAOMock;
+
     private Map<String, String> suomenkielinenMap(String teksti) {
         Map<String, String> vastaus = new HashMap<String, String>();
         vastaus.put("FI", teksti);
@@ -32,6 +44,12 @@ public class EdellinenValinnanvaiheKasittelijaTest {
     @Before
     public void setUp() {
         edellinenValinnanvaiheKasittelija = new EdellinenValinnanvaiheKasittelija();
+
+        muokattuJonosijaDAOMock = mock(MuokattuJonosijaDAO.class);
+
+        ReflectionTestUtils.setField(edellinenValinnanvaiheKasittelija,
+                "muokattuJonosijaDAO",
+                muokattuJonosijaDAOMock);
     }
 
     @Test

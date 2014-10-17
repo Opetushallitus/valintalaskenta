@@ -6,6 +6,8 @@ import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hylattytila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Virhetila;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
+import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -23,6 +25,10 @@ public class EdellinenValinnanvaiheKasittelija {
      * Hakemus on hyväksyttävissä, jos se on ollut hyväksyttävissä ainakin yhdessä edellisen valinnan vaiheen
      * valintatapajonossa.
      */
+
+    @Autowired
+    MuokattuJonosijaDAO muokattuJonosijaDAO;
+
     public TilaJaSelite hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(final String hakemusOid,
                                                                              Valinnanvaihe edellinenValinnanvaihe) {
         TilaJaSelite palautettavaTila = null;
@@ -59,6 +65,16 @@ public class EdellinenValinnanvaiheKasittelija {
                             suomenkielinenMap("Hakemukselle ei ole laskentatulosta jonossa"));
                 } else {
                     Jarjestyskriteeritulos tulos = jonosija.getJarjestyskriteeritulokset().get(0);
+
+                    Optional<MuokattuJonosija> muokattuJonosija = Optional.ofNullable(muokattuJonosijaDAO.readByValintatapajonoOid(jono.getValintatapajonoOid(), hakemusOid));
+                    muokattuJonosija.ifPresent(mj -> {
+                        Optional<Jarjestyskriteeritulos> muokattuTulos = mj.getJarjestyskriteerit().stream().filter(j -> j.getPrioriteetti() == tulos.getPrioriteetti()).findFirst();
+                        muokattuTulos.ifPresent(m -> {
+                            tulos.setTila(m.getTila());
+                            tulos.setArvo(m.getArvo());
+                        });
+                    });
+
                     tilaJonossa = new TilaJaSelite(tulos.getTila(), tulos.getKuvaus());
                 }
 

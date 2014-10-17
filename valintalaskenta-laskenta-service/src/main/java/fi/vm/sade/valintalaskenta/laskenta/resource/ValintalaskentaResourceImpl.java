@@ -173,11 +173,17 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
                         laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste()));
                     } else {
                        valintalaskentaService.laske(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid());
+                        if(valisijoiteltavatJonot.getLeft().contains(key)) {
+                            Map<String, List<String>> kohteet = valisijoiteltavatJonot.getRight();
+                            if(kohteet.containsKey(laskeDTO.getHakukohdeOid())) {
+                                List<String> jonot = kohteet.get(laskeDTO.getHakukohdeOid());
+                                valisijoitteleKopiot(laskeDTO, haeKopiotValintaperusteista(jonot));
+                            }
+
+                        }
                     }
                 });
-                if(valisijoiteltavatJonot.getLeft().contains(key)) {
-                    valisijoitteleKopiot(map.get(key).get(0), valisijoiteltavatJonot.getRight());
-                }
+
             });
         }
 
