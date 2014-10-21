@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.OPH_CRUD;
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.UPDATE_CRUD;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -52,7 +53,7 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/jonosija")
-	@PreAuthorize(OPH_CRUD)
+	@PreAuthorize(UPDATE_CRUD)
 	@ApiOperation(value = "Muokkaa jonosijaa", response = MuokattuJonosijaDTO.class)
 	public Response muutaJonosija(
 			@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
