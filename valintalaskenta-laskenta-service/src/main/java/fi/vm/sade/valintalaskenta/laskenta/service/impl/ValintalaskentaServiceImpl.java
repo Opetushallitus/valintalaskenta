@@ -122,6 +122,8 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                                         Collections.sort(jonosija.getJarjestyskriteeritulokset(), (jk1, jk2) -> jk1.getPrioriteetti() - jk2.getPrioriteetti());
                                         Jarjestyskriteeritulos jarjestyskriteeritulos = jonosija.getJarjestyskriteeritulokset().get(0);
                                         jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.HYLATTY);
+                                        // Tuotantoon kun sotesoppa on selvinny
+                                        //jonosija.setHylattyValisijoittelussa(true);
                                         Map<String, String> kuvaukset = new HashMap<>();
                                         if(hakemusDTO.getTila() == HakemuksenTila.VARALLA) {
                                             kuvaukset.put("FI", "Hakemus ei mahtunut aloituspaikkojen sisään välisijoittelussa");
@@ -137,6 +139,22 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
             });
         });
 
+    }
+
+    @Override
+    public void applyErillissijoittelu(Map<String, List<String>> jonot, Long ajo) {
+        jonot.keySet().parallelStream().forEach(hakukohdeOid -> {
+            List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid);
+            vaiheet.forEach(vaihe -> {
+                vaihe.getValintatapajonot()
+                        .forEach(jono -> {
+                            if (jonot.getOrDefault(hakukohdeOid, new ArrayList<>()).indexOf(jono.getValintatapajonoOid()) != -1) {
+                                jono.setSijoitteluajoId(ajo);
+                            }
+                        });
+                valinnanvaiheDAO.saveOrUpdate(vaihe);
+            });
+        });
     }
 
 }
