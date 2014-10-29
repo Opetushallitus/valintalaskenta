@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class LaskeDTO {
 	private final String hakukohdeOid;
+	private final boolean erillishaku;
 	private final List<HakemusDTO> hakemus;
 	private final List<ValintaperusteetDTO> valintaperuste;
 	private final List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat;
@@ -24,20 +25,22 @@ public class LaskeDTO {
 		this.valintaperuste = Collections.emptyList();
 		this.hakukohdeOid = StringUtils.EMPTY;
 		this.hakijaryhmat = Collections.emptyList();
+		this.erillishaku = false;
 	}
 
-	public LaskeDTO(String hakukohdeOid, List<HakemusDTO> hakemus,
-			List<ValintaperusteetDTO> valintaperuste) {
+	public LaskeDTO(boolean erillishaku, String hakukohdeOid,
+			List<HakemusDTO> hakemus, List<ValintaperusteetDTO> valintaperuste) {
 		this.hakukohdeOid = hakukohdeOid;
 		this.hakemus = hakemus != null ? hakemus : Collections
 				.<HakemusDTO> emptyList();
 		this.valintaperuste = valintaperuste != null ? valintaperuste
 				: Collections.<ValintaperusteetDTO> emptyList();
 		this.hakijaryhmat = Collections.emptyList();
+		this.erillishaku = erillishaku;
 	}
 
-	public LaskeDTO(String hakukohdeOid, List<HakemusDTO> hakemus,
-			List<ValintaperusteetDTO> valintaperuste,
+	public LaskeDTO(boolean erillishaku, String hakukohdeOid,
+			List<HakemusDTO> hakemus, List<ValintaperusteetDTO> valintaperuste,
 			List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat) {
 		this.hakukohdeOid = hakukohdeOid;
 		this.hakemus = hakemus != null ? hakemus : Collections
@@ -46,6 +49,7 @@ public class LaskeDTO {
 				: Collections.<ValintaperusteetDTO> emptyList();
 		this.hakijaryhmat = hakijaryhmat != null ? hakijaryhmat : Collections
 				.<ValintaperusteetHakijaryhmaDTO> emptyList();
+		this.erillishaku = erillishaku;
 	}
 
 	public String getHakukohdeOid() {
@@ -62,6 +66,10 @@ public class LaskeDTO {
 
 	public List<ValintaperusteetHakijaryhmaDTO> getHakijaryhmat() {
 		return hakijaryhmat;
+	}
+
+	public boolean isErillishaku() {
+		return erillishaku;
 	}
 
 }
