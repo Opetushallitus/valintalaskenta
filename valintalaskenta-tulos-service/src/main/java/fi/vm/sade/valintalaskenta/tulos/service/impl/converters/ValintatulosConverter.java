@@ -46,4 +46,5 @@ public interface ValintatulosConverter {
     ValintatietoValinnanvaiheDTO convertValinnanvaihe(Valinnanvaihe valinnanvaihe);
 
     List<HakukohdeDTO> convertValinnanvaihe(Collection<Valinnanvaihe> valinnanvaiheet);
+
 }

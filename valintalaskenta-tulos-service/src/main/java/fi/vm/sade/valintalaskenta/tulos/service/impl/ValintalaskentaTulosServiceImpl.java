@@ -470,6 +470,11 @@ public class ValintalaskentaTulosServiceImpl implements
 		LOGGER.error("Valintatiedot kovertoitu DTO:iksi {}!", hakuOid);
 		applyMuokatutJonosijatToHakukohde(hakuOid, b);
 		LOGGER.error("Muokatut jonosijat liitetty {}!", hakuOid);
+
+        b.forEach(hakukohde -> {
+            hakukohde.getHakijaryhma().addAll(haeHakijaryhmatHakukohteelle(hakukohde.getOid()));
+        });
+
 		return b;
 	}
 
