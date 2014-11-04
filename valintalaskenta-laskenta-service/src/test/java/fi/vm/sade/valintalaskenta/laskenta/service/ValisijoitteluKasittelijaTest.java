@@ -91,8 +91,8 @@ public class ValisijoitteluKasittelijaTest {
         perusteet5.setValinnanVaihe(vaihe2);
 
 
-        LaskeDTO hakukohde1 = new LaskeDTO("hakukohde1", new ArrayList<>(), Arrays.asList(perusteet1, perusteet2, perusteet3));
-        LaskeDTO hakukohde2 = new LaskeDTO("hakukohde2", new ArrayList<>(), Arrays.asList(perusteet4, perusteet5));
+        LaskeDTO hakukohde1 = new LaskeDTO(false,"hakukohde1", new ArrayList<>(), Arrays.asList(perusteet1, perusteet2, perusteet3));
+        LaskeDTO hakukohde2 = new LaskeDTO(false,"hakukohde2", new ArrayList<>(), Arrays.asList(perusteet4, perusteet5));
 
         Pair<Set<Integer>,Map<String,List<String>>> jonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Arrays.asList(hakukohde1, hakukohde2));
 

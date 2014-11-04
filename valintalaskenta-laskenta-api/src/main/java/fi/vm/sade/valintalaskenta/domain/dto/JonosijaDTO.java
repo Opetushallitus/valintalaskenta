@@ -58,6 +58,9 @@ public class JonosijaDTO {
 	@ApiModelProperty(value = "Onko jonosijaa muokattu manuaalisesti")
 	private boolean muokattu = false;
 
+    @ApiModelProperty(value = "Onko hakemus hylätty välisijoittelussa")
+    private boolean hylattyValisijoittelussa = false;
+
 	public List<String> getHistoriat() {
 		return historiat;
 	}
@@ -162,4 +165,12 @@ public class JonosijaDTO {
 	public void setFunktioTulokset(List<FunktioTulosDTO> funktioTulokset) {
 		this.funktioTulokset = funktioTulokset;
 	}
+
+    public boolean isHylattyValisijoittelussa() {
+        return hylattyValisijoittelussa;
+    }
+
+    public void setHylattyValisijoittelussa(boolean hylattyValisijoittelussa) {
+        this.hylattyValisijoittelussa = hylattyValisijoittelussa;
+    }
 }

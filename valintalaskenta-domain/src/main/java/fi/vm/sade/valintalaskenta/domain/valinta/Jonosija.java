@@ -37,6 +37,8 @@ public class Jonosija {
     @JsonView(JsonViews.Basic.class)
     private boolean harkinnanvarainen = false;
 
+    private boolean hylattyValisijoittelussa = false;
+
     @Embedded
     private List<Jarjestyskriteeritulos> jarjestyskriteeritulokset = new ArrayList<Jarjestyskriteeritulos>();
 
@@ -126,5 +128,13 @@ public class Jonosija {
 
     public void setFunktioTulokset(List<FunktioTulos> funktioTulokset) {
         this.funktioTulokset = funktioTulokset;
+    }
+
+    public boolean isHylattyValisijoittelussa() {
+        return hylattyValisijoittelussa;
+    }
+
+    public void setHylattyValisijoittelussa(boolean hylattyValisijoittelussa) {
+        this.hylattyValisijoittelussa = hylattyValisijoittelussa;
     }
 }

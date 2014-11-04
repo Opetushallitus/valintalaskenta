@@ -97,6 +97,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
                 HakukohdeDTO ht = new HakukohdeDTO();
                 ht.setOid(v.getOid());
                 ht.setTarjoajaoid(v.getTarjoajaoid());
+                ht.getHakijaryhma().addAll(v.getHakijaryhma());
                 hakuDTO.getHakukohteet().add(ht);
 
                 for (ValinnanvaiheDTO valinnanvaiheDTO : v.getValinnanvaihe()) {

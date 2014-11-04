@@ -55,6 +55,8 @@ public class Valintatapajono {
 	@Embedded
 	private List<Jonosija> jonosijat = new ArrayList<Jonosija>();
 
+    private Long sijoitteluajoId;
+
 	public String getValintatapajonoOid() {
 		return valintatapajonoOid;
 	}
@@ -149,5 +151,13 @@ public class Valintatapajono {
 
     public void setValmisSijoiteltavaksi(Boolean valmisSijoiteltavaksi) {
         this.valmisSijoiteltavaksi = valmisSijoiteltavaksi;
+    }
+
+    public Long getSijoitteluajoId() {
+        return sijoitteluajoId;
+    }
+
+    public void setSijoitteluajoId(Long sijoitteluajoId) {
+        this.sijoitteluajoId = sijoitteluajoId;
     }
 }

@@ -20,6 +20,7 @@ public class HakijaDTO {
     private List<SyotettyArvoDTO> syotettyArvo;
     private List<AvainArvoDTO> tilanKuvaus;
     private Boolean harkinnanvarainen = false;
+    private boolean hylattyValisijoittelussa = false;
 
     public int getJonosija() {
         return jonosija;
@@ -121,5 +122,13 @@ public class HakijaDTO {
 
     public Boolean getHarkinnanvarainen() {
         return harkinnanvarainen;
+    }
+
+    public boolean isHylattyValisijoittelussa() {
+        return hylattyValisijoittelussa;
+    }
+
+    public void setHylattyValisijoittelussa(boolean hylattyValisijoittelussa) {
+        this.hylattyValisijoittelussa = hylattyValisijoittelussa;
     }
 }

@@ -30,6 +30,9 @@ public class ValintatietoValintatapajonoDTO extends ValintatapajonoDTO {
     @ApiModelProperty(value = "Valintatapajono, josta vapaaksi jääneet paikat täytetään", required = false)
     private String tayttojono;
 
+    @ApiModelProperty(value = "Erillishaussa käytetty sijoitteluajo", required = false)
+    private Long sijoitteluajoId;
+
     public List<HakijaDTO> getHakija() {
         if(hakija == null) {
             hakija = new ArrayList<HakijaDTO>();
@@ -79,5 +82,13 @@ public class ValintatietoValintatapajonoDTO extends ValintatapajonoDTO {
 
     public void setTayttojono(String tayttojono) {
         this.tayttojono = tayttojono;
+    }
+
+    public Long getSijoitteluajoId() {
+        return sijoitteluajoId;
+    }
+
+    public void setSijoitteluajoId(Long sijoitteluajoId) {
+        this.sijoitteluajoId = sijoitteluajoId;
     }
 }
