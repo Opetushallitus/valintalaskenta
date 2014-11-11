@@ -165,7 +165,8 @@
         </dependency>
         <dependency>
             <groupId>com.wordnik</groupId>
-            <artifactId>swagger-jersey-jaxrs_2.10</artifactId>
+            <artifactId>swagger-jersey-jaxrs_2.11</artifactId>
+            <version>${swagger.version}</version>
         </dependency>
         <dependency>
             <groupId>org.modelmapper</groupId>
