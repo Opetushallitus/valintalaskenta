@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * User: kkammone Date: 29.4.2013 Time: 13:24
@@ -203,6 +204,16 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 
             if (jonosija.getJarjestyskriteerit().size() > 0) {
                 ht.setPisteet(jonosija.getJarjestyskriteerit().first().getArvo());
+            }
+
+            if(jonosija.getJarjestyskriteerit().size() > 0 && !jonosija.getJarjestyskriteerit().first().getKuvaus().isEmpty()) {
+                Map<String, String> kuvaus = jonosija.getJarjestyskriteerit().first().getKuvaus();
+                ht.setTilanKuvaus(kuvaus.keySet().stream().map(k -> {
+                    AvainArvoDTO a = new AvainArvoDTO();
+                    a.setAvain(k);
+                    a.setArvo(kuvaus.getOrDefault(k, ""));
+                    return a;
+                }).collect(Collectors.toList()));
             }
 
             dto.getHakija().add(ht);
