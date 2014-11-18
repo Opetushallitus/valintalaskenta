@@ -128,7 +128,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                                         if(hakemusDTO.getTila() == HakemuksenTila.VARALLA) {
                                             kuvaukset.put("FI", "Hakemus ei mahtunut aloituspaikkojen sisään välisijoittelussa");
                                         } else if(hakemusDTO.getTila() == HakemuksenTila.PERUUNTUNUT) {
-                                            kuvaukset.put("FI", "Hakemus hyväksyttiin korkeammalle hakutoiveelle");
+                                            kuvaukset.put("FI", "Hyväksyttiin korkeammalle hakutoiveelle");
                                         }
                                         jarjestyskriteeritulos.setKuvaus(kuvaukset);
                                     }
