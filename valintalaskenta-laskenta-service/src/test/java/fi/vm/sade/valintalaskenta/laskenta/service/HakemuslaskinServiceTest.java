@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -51,6 +52,7 @@ public class HakemuslaskinServiceTest {
 	private LaskentaService laskentaServiceMock;
 	private JarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAOMock;
 	private EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelijaMock;
+    private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAOMock;
 
 	@Before
 	public void setUp() {
@@ -58,6 +60,7 @@ public class HakemuslaskinServiceTest {
 		laskentaServiceMock = mock(LaskentaService.class);
 		jarjestyskriteerihistoriaDAOMock = mock(JarjestyskriteerihistoriaDAO.class);
 		edellinenValinnanvaiheKasittelijaMock = mock(EdellinenValinnanvaiheKasittelija.class);
+        valintakoeOsallistuminenDAOMock = mock(ValintakoeOsallistuminenDAO.class);
 
 		ReflectionTestUtils.setField(hakemuslaskinService, "laskentaService",
 				laskentaServiceMock);
@@ -67,6 +70,9 @@ public class HakemuslaskinServiceTest {
 		ReflectionTestUtils.setField(hakemuslaskinService,
 				"edellinenValinnanvaiheKasittelija",
 				edellinenValinnanvaiheKasittelijaMock);
+        ReflectionTestUtils.setField(hakemuslaskinService,
+                "valintakoeOsallistuminenDAO",
+                valintakoeOsallistuminenDAOMock);
 	}
 
 	@Test

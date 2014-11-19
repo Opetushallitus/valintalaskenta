@@ -11,14 +11,19 @@ import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Virhetila;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
+import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.HakemuslaskinService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * User: wuoti
@@ -33,6 +38,9 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
 
     @Autowired
     private JarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAO;
+
+    @Autowired
+    private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
 
     @Autowired
     private EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija;
@@ -166,6 +174,24 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         TilaJaSelite tilaJaSelite =
                 edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(),
                         tulos.getTila(), edellinenVaihe);
+
+        if(tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY) && tulos.getTila().getTilatyyppi().equals(Tila.Tilatyyppi.HYVAKSYTTAVISSA)) {
+            ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO
+                    .haeEdeltavaValinnanvaihe(hakemus.getHakuoid(), edellinenVaihe.getHakukohdeOid(),
+                            edellinenVaihe.getJarjestysnumero());
+            if (edellinenOsallistuminen != null) {
+                ValintakoeOsallistuminen hakijanOsallistumiset = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakemus.getHakuoid(), hakemus.getHakemusoid());
+                if(hakijanOsallistumiset != null) {
+
+                    boolean voidaanHyvaksya = edellinenValinnanvaiheKasittelija
+                            .koeOsallistuminenToisessaKohteessa(edellinenVaihe.getHakukohdeOid(), hakijanOsallistumiset);
+
+                    if(voidaanHyvaksya) {
+                        tilaJaSelite = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, new HashMap<>());
+                    }
+                }
+            }
+        }
 
 
         TilaJaSelite edellinenTila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(), edellinenVaihe);
