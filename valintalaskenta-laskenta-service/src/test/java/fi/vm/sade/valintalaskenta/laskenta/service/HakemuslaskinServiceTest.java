@@ -122,7 +122,7 @@ public class HakemuslaskinServiceTest {
 
 		hakemuslaskinService.suoritaLaskentaHakemukselle(laskettavaHakukohde,
 				hakemus, new ArrayList<Hakemus>(), mock(Lukuarvofunktio.class),
-				1, new Valinnanvaihe(), jonosijat, "jkNimi");
+				1, new Valinnanvaihe(), jonosijat, "jkNimi", 1);
 
 		verify(jarjestyskriteerihistoriaDAOMock, times(1)).create(
 				any(Jarjestyskriteerihistoria.class));

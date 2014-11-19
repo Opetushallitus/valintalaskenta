@@ -35,7 +35,7 @@ public interface HakemuslaskinService {
                                      int jkPrioriteetti,
                                      Valinnanvaihe edellinenVaihe,
                                      Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan,
-                                     String jkNimi);
+                                     String jkNimi, int jarjestysnumero);
 
     void suoritaLaskentaHakemukselle(Hakukohde hakukohde, HakemusWrapper laskettavaHakemus,
                                      List<Hakemus> kaikkiHakemukset,
@@ -43,5 +43,5 @@ public interface HakemuslaskinService {
                                      int jkPrioriteetti,
                                      Valinnanvaihe edellinenVaihe,
                                      Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan,
-                                     String jkNimi);
+                                     String jkNimi, int jarjestysnumero);
 }

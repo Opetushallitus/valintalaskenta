@@ -584,5 +584,146 @@
             ],
             "sukunimi": "Vetel\u00e4inen"
         }
+    ],
+    "Valinnanvaihe": [
+        {
+            "hakuOid": "1.2.246.562.29.173465377510",
+            "hakukohdeOid": "1.2.246.562.20.66128426039",
+            "jarjestysnumero": 1,
+            "nimi": "Esivalintavaihe",
+            "tarjoajaOid": "1.2.246.562.10.37502049564",
+            "valinnanvaiheOid": "1413286578386-3753220547145552004",
+            "valintatapajonot": [
+                {
+                    "aloituspaikat": 0,
+                    "eiVarasijatayttoa": false,
+                    "jonosijat": [
+                        {
+                            "etunimi": "Jaakko Matias",
+                            "hakemusOid": "1.2.246.562.11.00001212279",
+                            "hakijaOid": "1.2.246.562.24.43656814814",
+                            "hakutoiveprioriteetti": 5,
+                            "harkinnanvarainen": false,
+                            "jarjestyskriteeritulokset": [
+                                {
+                                    "arvo": "",
+                                    "kuvaus": {
+                                        "EN": "",
+                                        "FI": "Hakijalla ei ole ulkomaista tutkintoa tai ammatti- tai erikoisammattitutkintoa",
+                                        "SV": ""
+                                    },
+                                    "nimi": "Ammattitutkinnolla ja ulkomaisella tutkinnolla hakevat",
+                                    "prioriteetti": 0,
+                                    "tila": "HYLATTY"
+                                }
+                            ],
+                            "sukunimi": "Rantam\u00e4ki"
+                        },
+                        {
+                            "etunimi": "Saara Sofia",
+                            "hakemusOid": "1.2.246.562.11.00001223556",
+                            "hakijaOid": "1.2.246.562.24.31678660760",
+                            "hakutoiveprioriteetti": 5,
+                            "harkinnanvarainen": false,
+                            "jarjestyskriteeritulokset": [
+                                {
+                                    "arvo": "",
+                                    "kuvaus": {
+                                        "EN": "",
+                                        "FI": "Hakijalla ei ole ulkomaista tutkintoa tai ammatti- tai erikoisammattitutkintoa",
+                                        "SV": ""
+                                    },
+                                    "nimi": "Ammattitutkinnolla ja ulkomaisella tutkinnolla hakevat",
+                                    "prioriteetti": 0,
+                                    "tila": "HYLATTY"
+                                }
+                            ],
+                            "sukunimi": "Vetel\u00e4inen"
+                        }
+                    ],
+                    "nimi": "Ammattitutkinnolla ja ulkomaisella tutkinnolla hakevat",
+                    "prioriteetti": 0,
+                    "siirretaanSijoitteluun": false,
+                    "tasasijasaanto": "YLITAYTTO",
+                    "valintatapajonoOid": "1413286578455-5049583043096609127",
+                    "valmisSijoiteltavaksi": false
+                },
+                {
+                    "aloituspaikat": 245,
+                    "eiVarasijatayttoa": false,
+                    "jonosijat": [
+                        {
+                            "etunimi": "Jaakko Matias",
+                            "hakemusOid": "1.2.246.562.11.00001212279",
+                            "hakijaOid": "1.2.246.562.24.43656814814",
+                            "hakutoiveprioriteetti": 5,
+                            "harkinnanvarainen": false,
+                            "jarjestyskriteeritulokset": [
+                                {
+                                    "arvo": "12",
+                                    "kuvaus": {
+                                        "FI": "Hakemus hyv\u00e4ksyttiin korkeammalle hakutoiveelle"
+                                    },
+                                    "nimi": "Koulumenestyspisteet (valintatapa 1A)",
+                                    "prioriteetti": 0,
+                                    "tila": "HYLATTY"
+                                },
+                                {
+                                    "arvo": "2",
+                                    "nimi": "Hakutoivej\u00e4rjestys tasapistetilanteessa",
+                                    "prioriteetti": 1,
+                                    "tila": "HYVAKSYTTAVISSA"
+                                },
+                                {
+                                    "arvo": "6.82",
+                                    "nimi": "Kaikkien aineiden keskiarvo tasapistetilanteessa",
+                                    "prioriteetti": 2,
+                                    "tila": "HYVAKSYTTAVISSA"
+                                }
+                            ],
+                            "sukunimi": "Rantam\u00e4ki"
+                        },
+                        {
+                            "etunimi": "Saara Sofia",
+                            "hakemusOid": "1.2.246.562.11.00001223556",
+                            "hakijaOid": "1.2.246.562.24.31678660760",
+                            "hakutoiveprioriteetti": 5,
+                            "harkinnanvarainen": false,
+                            "jarjestyskriteeritulokset": [
+                                {
+                                    "arvo": "16",
+                                    "kuvaus": {
+                                        "FI": "Hakemus hyv\u00e4ksyttiin korkeammalle hakutoiveelle"
+                                    },
+                                    "nimi": "Koulumenestyspisteet (valintatapa 1A)",
+                                    "prioriteetti": 0,
+                                    "tila": "HYLATTY"
+                                },
+                                {
+                                    "arvo": "2",
+                                    "nimi": "Hakutoivej\u00e4rjestys tasapistetilanteessa",
+                                    "prioriteetti": 1,
+                                    "tila": "HYVAKSYTTAVISSA"
+                                },
+                                {
+                                    "arvo": "7.40",
+                                    "nimi": "Kaikkien aineiden keskiarvo tasapistetilanteessa",
+                                    "prioriteetti": 2,
+                                    "tila": "HYVAKSYTTAVISSA"
+                                }
+                            ],
+                            "sukunimi": "Vetel\u00e4inen"
+                        }
+                    ],
+                    "nimi": "Ylioppilaat ja ammatillisella perustutkinnolla hakevat",
+                    "prioriteetti": 1,
+                    "siirretaanSijoitteluun": false,
+                    "tasasijasaanto": "YLITAYTTO",
+                    "valintatapajonoOid": "14132865784538194355018188293967",
+                    "valmisSijoiteltavaksi": false
+                }
+            ]
+        }
     ]
+
 }

@@ -191,14 +191,14 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                                                 hakukohteenValintaperusteet), hw,
                                         laskentahakemukset, lukuarvofunktio.get(), jk
                                         .getPrioriteetti(), viimeisinVaihe,
-                                        jonosijatHakemusOidinMukaan, jk.getNimi());
+                                        jonosijatHakemusOidinMukaan, jk.getNimi(), jarjestysnumero);
                             } else {
                                 hakemuslaskinService.suoritaLaskentaHakemukselle(
                                         new Hakukohde(hakukohdeOid,
                                                 hakukohteenValintaperusteet), hw,
                                         laskentahakemukset, totuusarvofunktio.get(), jk
                                         .getPrioriteetti(), viimeisinVaihe,
-                                        jonosijatHakemusOidinMukaan, jk.getNimi());
+                                        jonosijatHakemusOidinMukaan, jk.getNimi(),jarjestysnumero);
                             }
 
 

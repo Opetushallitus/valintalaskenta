@@ -21,6 +21,7 @@ public abstract class TestDataUtil {
 		HakemusDTO hakemus = new HakemusDTO();
 		hakemus.setHakemusoid(hakemusOid);
 		hakemus.setHakijaOid(hakijaOid);
+        hakemus.setHakuoid("1.2.246.562.29.173465377510");
 
 		return hakemus;
 	}

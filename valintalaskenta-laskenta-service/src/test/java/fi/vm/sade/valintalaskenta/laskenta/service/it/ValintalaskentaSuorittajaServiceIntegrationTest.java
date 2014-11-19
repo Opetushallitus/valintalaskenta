@@ -605,4 +605,27 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         Jarjestyskriteeritulos tulos = jonosija.getJarjestyskriteeritulokset().get(0);
         assertEquals(JarjestyskriteerituloksenTila.HYLATTY, tulos.getTila());
     }
+
+    @Test
+    @UsingDataSet(locations = "voidaanHyvaksya.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void testValisijoitteluHylkaysHyvaksytty() {
+
+        final String valinnanVaiheOid = "vv3";
+        final String valintatapajonoOid = "jono1";
+        final String hakemusOid = "1.2.246.562.11.00001212279";
+        final String hakukohdeOid = "1.2.246.562.20.66128426039";
+        final String hakuOid = "1.2.246.562.29.173465377510";
+        final String hakemusOid2 = "1.2.246.562.11.00001223556";
+
+        ValintaperusteetDTO vv3 = luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 3);
+        (vv3.getValinnanVaihe()).getValintatapajono().add(luoValintatapajono(valintatapajonoOid, 0, 10, luoJarjestyskriteeri(sata, 1)));
+        valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(luoHakemus(hakemusOid, hakemusOid, hakukohdeOid),luoHakemus(hakemusOid2, hakemusOid, hakukohdeOid)),
+                Arrays.asList(vv3), new ArrayList<>(), hakukohdeOid);
+
+        Valinnanvaihe vaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanVaiheOid);
+        assertNotNull(vaihe);
+
+        assertEquals(vaihe.getValintatapajonot().get(0).getJonosijat().stream().filter(j -> j.getHakemusOid().equals(hakemusOid)).findFirst().get().getJarjestyskriteeritulokset().get(0).getTila(), JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA);
+        assertEquals(vaihe.getValintatapajonot().get(0).getJonosijat().stream().filter(j -> j.getHakemusOid().equals(hakemusOid2)).findFirst().get().getJarjestyskriteeritulokset().get(0).getTila(), JarjestyskriteerituloksenTila.HYLATTY);
+    }
 }

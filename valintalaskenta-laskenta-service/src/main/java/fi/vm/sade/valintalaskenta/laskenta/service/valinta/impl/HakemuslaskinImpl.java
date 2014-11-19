@@ -135,11 +135,11 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                                             int jkPrioriteetti,
                                             Valinnanvaihe edellinenVaihe,
                                             Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan,
-                                            String jkNimi) {
+                                            String jkNimi, int jarjestysnumero) {
         Laskentatulos<BigDecimal> tulos = laskentaService.suoritaValintalaskenta(hakukohde,
                 laskettavaHakemus.getLaskentahakemus(), kaikkiHakemukset, lukuarvofunktio);
 
-        muodostaTulos(laskettavaHakemus, jkPrioriteetti, tulos, edellinenVaihe, jonosijatHakemusOidinMukaan, jkNimi);
+        muodostaTulos(laskettavaHakemus, jkPrioriteetti, tulos, edellinenVaihe, jonosijatHakemusOidinMukaan, jkNimi, jarjestysnumero);
 
     }
 
@@ -151,11 +151,11 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                                             int jkPrioriteetti,
                                             Valinnanvaihe edellinenVaihe,
                                             Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan,
-                                            String jkNimi) {
+                                            String jkNimi, int jarjestysnumero) {
         Laskentatulos<Boolean> tulos = laskentaService.suoritaValintalaskenta(hakukohde,
                 laskettavaHakemus.getLaskentahakemus(), kaikkiHakemukset, lukuarvofunktio);
 
-        muodostaTulos(laskettavaHakemus, jkPrioriteetti, tulos, edellinenVaihe, jonosijatHakemusOidinMukaan, jkNimi);
+        muodostaTulos(laskettavaHakemus, jkPrioriteetti, tulos, edellinenVaihe, jonosijatHakemusOidinMukaan, jkNimi, jarjestysnumero);
 
     }
 
@@ -164,7 +164,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                                             Laskentatulos tulos,
                                             Valinnanvaihe edellinenVaihe,
                                             Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan,
-                                            String jkNimi) {
+                                            String jkNimi, int jarjestysnumero) {
 
 
 
@@ -178,7 +178,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         if(tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY) && tulos.getTila().getTilatyyppi().equals(Tila.Tilatyyppi.HYVAKSYTTAVISSA)) {
             ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO
                     .haeEdeltavaValinnanvaihe(hakemus.getHakuoid(), edellinenVaihe.getHakukohdeOid(),
-                            edellinenVaihe.getJarjestysnumero());
+                            jarjestysnumero);
             if (edellinenOsallistuminen != null) {
                 ValintakoeOsallistuminen hakijanOsallistumiset = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakemus.getHakuoid(), hakemus.getHakemusoid());
                 if(hakijanOsallistumiset != null) {
