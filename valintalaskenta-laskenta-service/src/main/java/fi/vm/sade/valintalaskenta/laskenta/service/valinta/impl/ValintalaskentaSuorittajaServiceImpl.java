@@ -160,6 +160,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                 jono.setNimi(j.getNimi());
                 jono.setPrioriteetti(j.getPrioriteetti());
                 jono.setSiirretaanSijoitteluun(j.getSiirretaanSijoitteluun());
+                jono.setKaikkiEhdonTayttavatHyvaksytaan(j.getKaikkiEhdonTayttavatHyvaksytaan());
                 jono.setTasasijasaanto(Tasasijasaanto.valueOf(j.getTasasijasaanto()));
                 jono.setValintatapajonoOid(j.getOid());
                 jono.setValmisSijoiteltavaksi(j.getValmisSijoiteltavaksi());
