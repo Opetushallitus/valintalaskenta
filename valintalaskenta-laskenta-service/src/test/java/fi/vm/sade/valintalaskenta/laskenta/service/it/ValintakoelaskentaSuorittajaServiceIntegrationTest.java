@@ -14,6 +14,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
+import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinnanvaiheKasittelija;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
 import fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil;
 import org.apache.commons.io.IOUtils;
@@ -31,6 +32,7 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakemus;
@@ -59,6 +61,9 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
     @Autowired
     private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
+
+    @Autowired
+    private EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija;
 
     private static final FunktiokutsuDTO totuusarvoTrue;
     private static final FunktiokutsuDTO totuusarvoFalse;
@@ -184,6 +189,49 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().get(1).getOsallistuminenTulos().getOsallistuminen());
         assertEquals(Osallistuminen.EI_OSALLISTU, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(1).getOsallistuminenTulos().getOsallistuminen());
+
+    }
+
+    @Test
+    @UsingDataSet(locations = "voidaanHyvaksya.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void testMukanaKokeessaToisessaKohteessa() {
+        final String hakemusOid = "1.2.246.562.11.00001212279";
+        final String hakukohdeOid = "1.2.246.562.20.66128426039";
+        final String hakuOid = "1.2.246.562.29.173465377510";
+        final String hakemusOid2 = "1.2.246.562.11.00001223556";
+
+        ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
+        assertNotNull(osallistuminen);
+        boolean voidaanHyvaksya = edellinenValinnanvaiheKasittelija.koeOsallistuminenToisessaKohteessa(hakukohdeOid,osallistuminen);
+        assertTrue(voidaanHyvaksya);
+
+        osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid2);
+        assertNotNull(osallistuminen);
+        voidaanHyvaksya = edellinenValinnanvaiheKasittelija.koeOsallistuminenToisessaKohteessa(hakukohdeOid,osallistuminen);
+        assertTrue(!voidaanHyvaksya);
+
+        // Kopio koodia että nähdään mitä tapahtuu
+        List<String> kohteenValintakokeet = osallistuminen.getHakutoiveet()
+                .stream()
+                .filter(h -> h.getHakukohdeOid().equals(hakukohdeOid))
+                .flatMap(h->h.getValinnanVaiheet().stream())
+                .flatMap(v->v.getValintakokeet().stream())
+                .map(k->k.getValintakoeTunniste())
+                .collect(Collectors.toList());
+
+        assertEquals(kohteenValintakokeet, Arrays.asList("SOTE1_kaikkiosiot", "SOTEKOE_VK_RYHMA1"));
+
+        List<String> kokeidenTunnisteet = osallistuminen.getHakutoiveet()
+                .stream()
+                .filter(h -> !h.getHakukohdeOid().equals(hakukohdeOid))
+                .flatMap(h -> h.getValinnanVaiheet().stream())
+                .flatMap(v -> v.getValintakokeet().stream())
+                .map(k -> k.getValintakoeTunniste())
+                .collect(Collectors.toList());
+
+        assertEquals(3, kokeidenTunnisteet.stream().filter(s -> s.equals("SOTE1_kaikkiosiot")).count());
+        assertTrue(kokeidenTunnisteet.contains("SOTEKOE_KYAMK_ENSIHOITO"));
+        assertTrue(kokeidenTunnisteet.contains("kielikoe_amk_fi"));
 
     }
 

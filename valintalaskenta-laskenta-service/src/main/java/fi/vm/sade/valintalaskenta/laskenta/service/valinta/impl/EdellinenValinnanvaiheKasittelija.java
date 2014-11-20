@@ -6,11 +6,14 @@ import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hylattytila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Virhetila;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * User: wuoti
@@ -159,6 +162,24 @@ public class EdellinenValinnanvaiheKasittelija {
     public TilaJaSelite tilaEdellisenValinnanvaiheenMukaan(String hakemusOid, Tila laskettuTila, Valinnanvaihe edellinenValinnanvaihe) {
         return tilaEdellisenValinnanvaiheenTilanMukaan(laskettuTila,
                 hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, edellinenValinnanvaihe));
+    }
+
+    public boolean koeOsallistuminenToisessaKohteessa(String hakukohdeOid, ValintakoeOsallistuminen hakijanOsallistumiset) {
+        List<String> kohteenValintakokeet = hakijanOsallistumiset.getHakutoiveet()
+                .stream()
+                .filter(h -> h.getHakukohdeOid().equals(hakukohdeOid))
+                .flatMap(h->h.getValinnanVaiheet().stream())
+                .flatMap(v->v.getValintakokeet().stream())
+                .map(k->k.getValintakoeTunniste())
+                .collect(Collectors.toList());
+
+        return hakijanOsallistumiset.getHakutoiveet()
+                .stream()
+                .filter(h -> !h.getHakukohdeOid().equals(hakukohdeOid))
+                .flatMap(h->h.getValinnanVaiheet().stream())
+                .flatMap(v->v.getValintakokeet().stream())
+                .anyMatch(k -> kohteenValintakokeet.contains(k.getValintakoeTunniste())
+                        && k.getOsallistuminenTulos().getOsallistuminen().equals(Osallistuminen.OSALLISTUU));
     }
 
 }
