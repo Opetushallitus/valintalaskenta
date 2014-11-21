@@ -66,7 +66,8 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 			return "Onnistui!";
 		} catch (Exception e) {
             e.printStackTrace();
-			LOG.error("Valintalaskennassa tapahtui virhe {} {} {}",
+			LOG.error("Valintalaskennassa tapahtui virhe (hakukohteelle {}) {} {} {}",
+					hakukohdeOid,
 					e.getMessage(), e.getCause(),
 					Arrays.toString(e.getStackTrace()));
 
