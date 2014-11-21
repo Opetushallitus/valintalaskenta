@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.tulos.service.impl;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.ibm.wsdl.util.StringUtils;
 import fi.vm.sade.security.service.authz.util.AuthorizationUtil;
 import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.HakutoiveDTO;
@@ -643,7 +644,11 @@ public class ValintalaskentaTulosServiceImpl implements
 		}
 
 		Map<String, String> muokattuKasin = new HashMap<String, String>();
-		muokattuKasin.put("FI", "Muokattu käsin");
+        if(jonosija.getSelite() != null && !jonosija.getSelite().isEmpty()) {
+            muokattuKasin.put("FI", jonosija.getSelite());
+        } else {
+            muokattuKasin.put("FI", "Muokattu käsin");
+        }
 
 		jarjestyskriteeritulos.setKuvaus(muokattuKasin);
 		jarjestyskriteeritulos.setArvo(jonosija.getArvo());
