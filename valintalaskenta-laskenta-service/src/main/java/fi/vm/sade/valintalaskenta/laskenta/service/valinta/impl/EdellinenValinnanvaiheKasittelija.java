@@ -37,11 +37,11 @@ public class EdellinenValinnanvaiheKasittelija {
         TilaJaSelite palautettavaTila = null;
         List<TilaJaSelite> tilat = new ArrayList<TilaJaSelite>();
         if (edellinenValinnanvaihe == null) {
-            palautettavaTila = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, null);
+            palautettavaTila = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, new HashMap<>());
         } else if (edellinenValinnanvaihe.getValintatapajonot().isEmpty()) {
             // Jos edellisessä valinnan vaiheessa ei ole yhtään valintatapajonoa, voidaan olettaa, että hakemus
             // on hyväksyttävissä
-            palautettavaTila = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, null);
+            palautettavaTila = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, new HashMap<>());
         } else {
             for (final Valintatapajono jono : edellinenValinnanvaihe.getValintatapajonot()) {
                 Collection<Jonosija> filtteroidutJonosijat = Collections2.filter(jono.getJonosijat(), new Predicate<Jonosija>() {
@@ -140,11 +140,11 @@ public class EdellinenValinnanvaiheKasittelija {
                 palautettavaTila = new TilaJaSelite(tila, ((Virhetila) laskettuTila).getKuvaus());
             }
         } else if (Tila.Tilatyyppi.HYVAKSYTTAVISSA.equals(laskettuTila.getTilatyyppi())) {
-            palautettavaTila = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, null);
+            palautettavaTila = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, new HashMap<>());
         } else {
 
             // Jos jostakin syystä tilaa ei pystytä selvittämään, palautetaan määrittelemätön-tila
-            palautettavaTila = new TilaJaSelite(JarjestyskriteerituloksenTila.MAARITTELEMATON, null);
+            palautettavaTila = new TilaJaSelite(JarjestyskriteerituloksenTila.MAARITTELEMATON, new HashMap<>());
         }
 
         return palautettavaTila;

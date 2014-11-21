@@ -183,7 +183,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         boolean voidaanHyvaksya = false;
 
         // Hakija on hylätty, tarkistetaan onko hylätty välisijoittelussa
-        if(tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY)) {
+        if(tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY) && edellinenVaihe != null && edellinenVaihe.getJarjestysnumero() != jarjestysnumero-1) {
             edellinenOsallistuminen = valintakoeOsallistuminenDAO
                     .haeEdeltavaValinnanvaihe(hakemus.getHakuoid(), edellinenVaihe.getHakukohdeOid(),
                             jarjestysnumero);
@@ -196,6 +196,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                 }
             }
         }
+
 
         // Yliajetaan hylkäys, jos hylätty välisijoittelussa, mutta saanut koekutsun
         if(uusinTila.equals(Tila.Tilatyyppi.HYVAKSYTTAVISSA) || uusinTila.equals(Tila.Tilatyyppi.VIRHE)) {
@@ -216,7 +217,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                          "Hakemus hyväksyttiin korkeammalle hakutoiveelle",
                          "Hakemus ei mahtunut aloituspaikkojen sisään välisijoittelussa",
                          "Hyväksyttiin korkeammalle hakutoiveelle");
-                 if(valisijoitteluSelitteet.contains(tilaJaSelite.getSelite().get("FI"))) {
+                 if(tilaJaSelite.getSelite() != null && tilaJaSelite.getSelite().get("FI") != null && valisijoitteluSelitteet.contains(tilaJaSelite.getSelite().get("FI"))) {
                     tilaJaSelite.getSelite().put("FI", "Ei kutsuttu valintakokeeseen");
                  }
             }
