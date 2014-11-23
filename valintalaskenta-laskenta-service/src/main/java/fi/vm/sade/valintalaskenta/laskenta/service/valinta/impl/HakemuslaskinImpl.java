@@ -206,7 +206,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                 } else {
                     tilaJaSelite = new TilaJaSelite(JarjestyskriteerituloksenTila.VIRHE, ((Virhetila) tulos.getTila()).getKuvaus());
                 }
-            } else {
+            } else if(edellinenVaihe != null && edellinenVaihe.getJarjestysnumero() != jarjestysnumero-1){
                 List<String> valisijoitteluSelitteet = Arrays.asList(
                         "Hakemus hyväksyttiin korkeammalle hakutoiveelle",
                         "Hakemus ei mahtunut aloituspaikkojen sisään välisijoittelussa",
