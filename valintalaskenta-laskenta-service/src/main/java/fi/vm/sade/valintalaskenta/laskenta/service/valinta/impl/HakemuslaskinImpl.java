@@ -206,6 +206,14 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                 } else {
                     tilaJaSelite = new TilaJaSelite(JarjestyskriteerituloksenTila.VIRHE, ((Virhetila) tulos.getTila()).getKuvaus());
                 }
+            } else {
+                List<String> valisijoitteluSelitteet = Arrays.asList(
+                        "Hakemus hyväksyttiin korkeammalle hakutoiveelle",
+                        "Hakemus ei mahtunut aloituspaikkojen sisään välisijoittelussa",
+                        "Hyväksyttiin korkeammalle hakutoiveelle");
+                if(tilaJaSelite.getSelite() != null && tilaJaSelite.getSelite().get("FI") != null && valisijoitteluSelitteet.contains(tilaJaSelite.getSelite().get("FI"))) {
+                    tilaJaSelite.getSelite().put("FI", "Ei kutsuttu valintakokeeseen");
+                }
             }
         } else {
             if(voidaanHyvaksya) {
