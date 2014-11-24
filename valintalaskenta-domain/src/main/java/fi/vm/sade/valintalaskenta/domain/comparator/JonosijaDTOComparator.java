@@ -101,12 +101,8 @@ public class JonosijaDTOComparator implements Comparator<JonosijaDTO> {
                 return 1;
             } else if (otherValue == null || otherValue.getArvo() == null) {
                 return -1;
-            } else if (otherValue.getArvo().equals(thisValue.getArvo())) {
-                continue;
-            } else if (otherValue.getArvo().compareTo(thisValue.getArvo()) == 1) {
-                return 1;
-            } else if (otherValue.getArvo().compareTo(thisValue.getArvo()) == -1) {
-                return -1;
+            } else  {
+                return otherValue.getArvo().compareTo(thisValue.getArvo());
             }
         }
         return 0;
