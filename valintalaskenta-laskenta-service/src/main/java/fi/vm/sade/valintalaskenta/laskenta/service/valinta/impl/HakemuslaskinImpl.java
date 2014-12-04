@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -175,21 +176,58 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                 edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(),
                         tulos.getTila(), edellinenVaihe);
 
-        if(tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY) && tulos.getTila().getTilatyyppi().equals(Tila.Tilatyyppi.HYVAKSYTTAVISSA)) {
-            ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO
+
+        Tila.Tilatyyppi uusinTila = tulos.getTila().getTilatyyppi();
+        ValintakoeOsallistuminen edellinenOsallistuminen = null;
+        ValintakoeOsallistuminen hakijanOsallistumiset = null;
+        boolean voidaanHyvaksya = false;
+
+        // Hakija on hylätty, tarkistetaan onko hylätty välisijoittelussa
+        if(tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY) && edellinenVaihe != null && edellinenVaihe.getJarjestysnumero() != jarjestysnumero-1) {
+            edellinenOsallistuminen = valintakoeOsallistuminenDAO
                     .haeEdeltavaValinnanvaihe(hakemus.getHakuoid(), edellinenVaihe.getHakukohdeOid(),
                             jarjestysnumero);
             if (edellinenOsallistuminen != null) {
-                ValintakoeOsallistuminen hakijanOsallistumiset = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakemus.getHakuoid(), hakemus.getHakemusoid());
+                hakijanOsallistumiset = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakemus.getHakuoid(), hakemus.getHakemusoid());
                 if(hakijanOsallistumiset != null) {
-
-                    boolean voidaanHyvaksya = edellinenValinnanvaiheKasittelija
+                    voidaanHyvaksya = edellinenValinnanvaiheKasittelija
                             .koeOsallistuminenToisessaKohteessa(edellinenVaihe.getHakukohdeOid(), hakijanOsallistumiset);
 
-                    if(voidaanHyvaksya) {
-                        tilaJaSelite = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, new HashMap<>());
-                    }
                 }
+            }
+        }
+
+
+        // Yliajetaan hylkäys, jos hylätty välisijoittelussa, mutta saanut koekutsun
+        if(uusinTila.equals(Tila.Tilatyyppi.HYVAKSYTTAVISSA) || uusinTila.equals(Tila.Tilatyyppi.VIRHE)) {
+            if(voidaanHyvaksya) {
+                if(uusinTila.equals(Tila.Tilatyyppi.HYVAKSYTTAVISSA)) {
+                    tilaJaSelite = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, new HashMap<>());
+                } else {
+                    tilaJaSelite = new TilaJaSelite(JarjestyskriteerituloksenTila.VIRHE, ((Virhetila) tulos.getTila()).getKuvaus());
+                }
+            } else if(edellinenVaihe != null && edellinenVaihe.getJarjestysnumero() != jarjestysnumero-1){
+                List<String> valisijoitteluSelitteet = Arrays.asList(
+                        "Hakemus hyväksyttiin korkeammalle hakutoiveelle",
+                        "Hakemus ei mahtunut aloituspaikkojen sisään välisijoittelussa",
+                        "Hyväksyttiin korkeammalle hakutoiveelle");
+                if(tilaJaSelite.getSelite() != null && tilaJaSelite.getSelite().get("FI") != null && valisijoitteluSelitteet.contains(tilaJaSelite.getSelite().get("FI"))) {
+                    tilaJaSelite.getSelite().put("FI", "Ei kutsuttu valintakokeeseen");
+                }
+            }
+        } else {
+            if(voidaanHyvaksya) {
+                tilaJaSelite = new TilaJaSelite(JarjestyskriteerituloksenTila.HYLATTY,
+                        ((Hylattytila) tulos.getTila()).getKuvaus(),
+                        ((Hylattytila) tulos.getTila()).getTekninenKuvaus());
+            } else {
+                 List<String> valisijoitteluSelitteet = Arrays.asList(
+                         "Hakemus hyväksyttiin korkeammalle hakutoiveelle",
+                         "Hakemus ei mahtunut aloituspaikkojen sisään välisijoittelussa",
+                         "Hyväksyttiin korkeammalle hakutoiveelle");
+                 if(tilaJaSelite.getSelite() != null && tilaJaSelite.getSelite().get("FI") != null && valisijoitteluSelitteet.contains(tilaJaSelite.getSelite().get("FI"))) {
+                    tilaJaSelite.getSelite().put("FI", "Ei kutsuttu valintakokeeseen");
+                 }
             }
         }
 

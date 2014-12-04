@@ -48,6 +48,16 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                         List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
                         String hakukohdeOid)
 			throws RuntimeException {
+		if(hakemus == null) {
+			LOG.error("Hakemukset tuli nullina hakukohteelle {}", hakukohdeOid);
+		}
+		if(valintaperuste == null) {
+			LOG.error("Valintaperuste tuli nullina hakukohteelle {}", hakukohdeOid);
+		}
+		if(hakemus == null || valintaperuste == null) {
+			throw new RuntimeException("Hakemukset == null? "+(hakemus == null)+", valintaperusteet == null? "+(valintaperuste==null)+" hakukohteelle " + hakukohdeOid);
+					
+		}
 		try {
 			LOG.error(
 					"Suoritetaan laskenta. Hakemuksia {} kpl ja valintaperusteita {} kpl",
@@ -56,7 +66,8 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 			return "Onnistui!";
 		} catch (Exception e) {
             e.printStackTrace();
-			LOG.error("Valintalaskennassa tapahtui virhe {} {} {}",
+			LOG.error("Valintalaskennassa tapahtui virhe (hakukohteelle {}) {} {} {}",
+					hakukohdeOid,
 					e.getMessage(), e.getCause(),
 					Arrays.toString(e.getStackTrace()));
 

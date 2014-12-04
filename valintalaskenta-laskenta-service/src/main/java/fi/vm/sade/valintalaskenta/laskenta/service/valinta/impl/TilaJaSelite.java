@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -32,6 +33,11 @@ public class TilaJaSelite {
     }
 
     public Map<String, String> getSelite() {
+
+        if(selite == null) {
+            this.selite = new HashMap<>();
+        }
+
         return selite;
     }
 

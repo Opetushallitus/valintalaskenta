@@ -627,5 +627,6 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
 
         assertEquals(vaihe.getValintatapajonot().get(0).getJonosijat().stream().filter(j -> j.getHakemusOid().equals(hakemusOid)).findFirst().get().getJarjestyskriteeritulokset().get(0).getTila(), JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA);
         assertEquals(vaihe.getValintatapajonot().get(0).getJonosijat().stream().filter(j -> j.getHakemusOid().equals(hakemusOid2)).findFirst().get().getJarjestyskriteeritulokset().get(0).getTila(), JarjestyskriteerituloksenTila.HYLATTY);
+        assertEquals(vaihe.getValintatapajonot().get(0).getJonosijat().stream().filter(j -> j.getHakemusOid().equals(hakemusOid2)).findFirst().get().getJarjestyskriteeritulokset().get(0).getKuvaus().get("FI"), "Ei kutsuttu valintakokeeseen");
     }
 }

@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.argThat;
@@ -173,7 +174,7 @@ public class EdellinenValinnanvaiheKasittelijaTest {
         TilaJaSelite tilaJaSelite =
                 edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenTilanMukaan(laskettuTila, edellisenVaiheenTila);
         assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, tilaJaSelite.getTila());
-        assertNull(tilaJaSelite.getSelite());
+        assertTrue(tilaJaSelite.getSelite().isEmpty());
     }
 
     @Test
@@ -212,6 +213,6 @@ public class EdellinenValinnanvaiheKasittelijaTest {
         final String hakemusOid = "hakemusOid1";
         TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemusOid, new Hyvaksyttavissatila(), edellinenVaihe);
         assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, tilaJaSelite.getTila());
-        assertNull(tilaJaSelite.getSelite());
+        assertTrue(tilaJaSelite.getSelite().isEmpty());
     }
 }

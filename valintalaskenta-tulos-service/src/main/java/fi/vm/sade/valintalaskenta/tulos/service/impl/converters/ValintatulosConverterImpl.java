@@ -360,13 +360,26 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
 		Collections.sort(list, comparator);
 
 		int i = 1;
+		int j = -1;
 		JonosijaDTO previous = null;
 		Iterator<JonosijaDTO> it = list.iterator();
 		while (it.hasNext()) {
 			JonosijaDTO jonosija = it.next();
 
-			if (previous != null && comparator.compare(previous, jonosija) != 0) {
-				i++;
+			if (previous != null) {
+				int compareResult = comparator.compare(previous, jonosija);
+				if (compareResult != 0) {
+					if (j != -1) {
+						i = j;
+						j = -1;
+					}
+					i++;
+				} else if (compareResult == 0) {
+					if (j == -1) {
+						j = i;
+					}
+					j++;
+				}
 			}
 			jonosija.setJonosija(i);
 
