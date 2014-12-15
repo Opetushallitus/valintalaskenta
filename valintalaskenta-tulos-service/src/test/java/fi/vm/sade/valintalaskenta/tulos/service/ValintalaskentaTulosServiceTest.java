@@ -8,6 +8,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.HakutoiveDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
@@ -25,6 +26,7 @@ import java.util.List;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 @ContextConfiguration(locations = "classpath:application-context-test.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -131,5 +133,20 @@ public class ValintalaskentaTulosServiceTest {
             assertEquals(new BigDecimal("10.0"), kriteeri2.getArvo());
             assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, kriteeri2.getTila());
         }
+    }
+
+    @Test
+    @UsingDataSet(locations = "valinnanvaiheTasasija.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void testHaeTuloksetHakukohteelle() {
+        {
+            List<ValintatietoValinnanvaiheDTO> hakukohde = valintalaskentaTulosService.haeValinnanvaiheetHakukohteelle("hakukohde1");
+            hakukohde.get(0).getValintatapajonot().get(0).getJonosijat().stream().filter(h -> h.getSukunimi().equals("Lahtinen")).forEach(h -> {
+                assertEquals(1, h.getJonosija());
+            });
+            hakukohde.get(0).getValintatapajonot().get(0).getJonosijat().stream().filter(h -> !h.getSukunimi().equals("Lahtinen")).forEach(h -> {
+                assertFalse(h.getJonosija() == 1);
+            });
+        }
+
     }
 }
