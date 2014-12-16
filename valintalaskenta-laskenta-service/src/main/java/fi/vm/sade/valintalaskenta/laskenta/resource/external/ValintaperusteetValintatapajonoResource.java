@@ -75,5 +75,4 @@ public interface ValintaperusteetValintatapajonoResource {
     @Path("/{oid}")
     Response delete(@PathParam("oid") String oid);
 
-
 }

@@ -7,6 +7,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource;
 import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,9 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
 
 	@Autowired
 	private ValintalaskentaModelMapper modelMapper;
+
+	@Autowired
+	private ValintaperusteetResource valintaperusteetResource;
 
 	/**
 	 * 
@@ -81,8 +85,8 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
     @ApiOperation(value = "Lisää/Poistaa valintatapajonon sijoittelusta", response = ValintatapajonoDTO.class)
     public Response muokkaaSijotteluStatusta(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
                                              @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status) {
+		valintaperusteetResource.updateAutomaattinenSijoitteluunSiirto(valintatapajonoOid, status);
         Optional<Valintatapajono> dto = tulosService.muokkaaSijotteluStatusta(valintatapajonoOid, status);
-
         return dto.map(jono -> Response.status(Response.Status.ACCEPTED).entity(modelMapper.map(jono, ValintatapajonoDTO.class)).build()).orElse(Response.status(Response.Status.NOT_FOUND).build());
 
     }

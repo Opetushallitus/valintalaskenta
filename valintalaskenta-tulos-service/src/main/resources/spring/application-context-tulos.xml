@@ -2,8 +2,10 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jaxrs-client="http://cxf.apache.org/jaxrs-client" xmlns:jaxrs="http://cxf.apache.org/jaxrs"
        xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://cxf.apache.org/jaxrs-client http://cxf.apache.org/schemas/jaxrs-client.xsd
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
             http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
@@ -49,6 +51,16 @@
         <property name="title" value="Swagger API documentation"/>
         <property name="scan" value="true"/>
     </bean>
+
+    <jaxrs-client:client id="ValintatapajonoClient"
+                         serviceClass="fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource"
+                         address="https://${host.virkailija}"
+                         inheritHeaders="true">
+        <jaxrs-client:providers>
+            <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
+            <bean class="fi.vm.sade.valintalaskenta.tulos.ObjectMapperProvider" />
+        </jaxrs-client:providers>
+    </jaxrs-client:client>
 
     <import resource="application-context-tulos-ws.xml"/>
 
