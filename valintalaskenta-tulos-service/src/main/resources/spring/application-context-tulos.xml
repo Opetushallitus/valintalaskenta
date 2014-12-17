@@ -10,11 +10,6 @@
             http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
     <context:annotation-config/>
-    <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.ctrl"/>
-    <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.dao"/>
-    <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.service.impl"/>
-    <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.resource.impl"/>
-    <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.service.impl.converters"/>
 
     <!-- TODO: tarkista tarvitaanko näitä, kun nämä tulevat jo servicen puolelta -->
     <context:property-placeholder
@@ -52,15 +47,21 @@
         <property name="scan" value="true"/>
     </bean>
 
-    <jaxrs-client:client id="ValintatapajonoClient"
+    <jaxrs-client:client id="ValintaperusteetClient"
                          serviceClass="fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource"
-                         address="https://${host.virkailija}"
+                         address="${host.lib}/valintaperusteet-service/resources"
                          inheritHeaders="true">
         <jaxrs-client:providers>
             <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
             <bean class="fi.vm.sade.valintalaskenta.tulos.ObjectMapperProvider" />
         </jaxrs-client:providers>
     </jaxrs-client:client>
+
+    <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.ctrl"/>
+    <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.dao"/>
+    <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.service.impl"/>
+    <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.resource.impl"/>
+    <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.service.impl.converters"/>
 
     <import resource="application-context-tulos-ws.xml"/>
 
