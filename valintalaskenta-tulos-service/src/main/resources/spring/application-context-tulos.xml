@@ -49,7 +49,7 @@
 
     <jaxrs-client:client id="ValintaperusteetClient"
                          serviceClass="fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource"
-                         address="${host.lib}/valintaperusteet-service/resources"
+                         address="${host.ilb}/valintaperusteet-service/resources"
                          inheritHeaders="true">
         <jaxrs-client:providers>
             <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
