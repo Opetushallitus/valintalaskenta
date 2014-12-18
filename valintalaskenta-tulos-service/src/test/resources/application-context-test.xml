@@ -18,5 +18,5 @@
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.service.impl.converters"/>
 
     <bean id="modelMapper" class="fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper"/>
-
+    <bean id="valintaPerusteetResource" class="fi.vm.sade.valintalaskenta.tulos.context.ValintaperusteetResourceImpl"/>
 </beans>
