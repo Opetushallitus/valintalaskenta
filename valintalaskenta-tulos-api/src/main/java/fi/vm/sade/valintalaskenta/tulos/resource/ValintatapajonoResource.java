@@ -46,4 +46,10 @@ public interface ValintatapajonoResource {
     public Response muokkaaSijotteluStatusta(
             @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
             @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status);
+
+	@GET
+	@Path("/{valintatapajonoOid}/valmissijoiteltavaksi")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response haeSijoitteluStatus(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String oid);
+
 }

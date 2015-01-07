@@ -25,6 +25,7 @@ import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.resource.ValintatapajonoResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 
+import java.util.HashMap;
 import java.util.Optional;
 
 /**
@@ -90,4 +91,14 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
         return dto.map(jono -> Response.status(Response.Status.ACCEPTED).entity(modelMapper.map(jono, ValintatapajonoDTO.class)).build()).orElse(Response.status(Response.Status.NOT_FOUND).build());
 
     }
+
+	@GET
+	@Path("/{valintatapajonoOid}/valmissijoiteltavaksi")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response haeSijoitteluStatus(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String oid)
+	{
+		HashMap object = new HashMap();
+		object.put("value", tulosService.haeSijoitteluStatus(oid));
+		return Response.status(Response.Status.ACCEPTED).entity(object).build();
+	}
 }

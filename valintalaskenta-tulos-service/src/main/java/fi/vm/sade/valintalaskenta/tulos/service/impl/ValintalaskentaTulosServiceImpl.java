@@ -596,6 +596,19 @@ public class ValintalaskentaTulosServiceImpl implements
 
 	}
 
+	@Override
+	public boolean haeSijoitteluStatus(String valintatapajonoOid) {
+		Valinnanvaihe vaihe = valinnanvaiheDAO
+				.findByValintatapajonoOid(valintatapajonoOid);
+		return vaihe.getValintatapajonot()
+				.stream()
+				.filter(j -> j.getValintatapajonoOid().equals(
+						valintatapajonoOid))
+				.map(j -> j.getValmisSijoiteltavaksi())
+				.allMatch(b -> b);
+
+	}
+
 	/**
 	 * Muokattu jonosija works in mysterious ways.
 	 *
