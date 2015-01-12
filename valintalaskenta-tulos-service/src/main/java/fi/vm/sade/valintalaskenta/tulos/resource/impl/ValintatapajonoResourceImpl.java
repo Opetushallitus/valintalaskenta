@@ -1,30 +1,28 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.OPH_CRUD;
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.UPDATE_CRUD;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource;
+import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
+import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
+import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
+import fi.vm.sade.valintalaskenta.tulos.resource.ValintatapajonoResource;
+import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
-
-import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;
-import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
-import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
-import fi.vm.sade.valintalaskenta.tulos.resource.ValintatapajonoResource;
-import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
-
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.HashMap;
 import java.util.Optional;
+
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.UPDATE_CRUD;
 
 /**
  * @author Jussi Jartamo
@@ -40,6 +38,9 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
 
 	@Autowired
 	private ValintalaskentaModelMapper modelMapper;
+
+	@Autowired
+	private ValintaperusteetResource valintaperusteetResource;
 
 	/**
 	 * 
@@ -82,8 +83,17 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
     public Response muokkaaSijotteluStatusta(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
                                              @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status) {
         Optional<Valintatapajono> dto = tulosService.muokkaaSijotteluStatusta(valintatapajonoOid, status);
-
+		valintaperusteetResource.updateAutomaattinenSijoitteluunSiirto(valintatapajonoOid, status);
         return dto.map(jono -> Response.status(Response.Status.ACCEPTED).entity(modelMapper.map(jono, ValintatapajonoDTO.class)).build()).orElse(Response.status(Response.Status.NOT_FOUND).build());
-
     }
+
+	@GET
+	@Path("/{valintatapajonoOid}/valmissijoiteltavaksi")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response haeSijoitteluStatus(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String oid)
+	{
+		HashMap object = new HashMap();
+		object.put("value", tulosService.haeSijoitteluStatus(oid));
+		return Response.status(Response.Status.ACCEPTED).entity(object).build();
+	}
 }

@@ -58,4 +58,6 @@ public interface ValintalaskentaTulosService {
 
 	Optional<Valintatapajono> muokkaaSijotteluStatusta(
 			String valintatapajonoOid, boolean status);
+
+	boolean haeSijoitteluStatus(String valintatapajonoOid);
 }

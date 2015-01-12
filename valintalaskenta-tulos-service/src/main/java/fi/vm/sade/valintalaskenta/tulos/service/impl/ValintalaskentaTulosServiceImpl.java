@@ -1,8 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import com.ibm.wsdl.util.StringUtils;
 import fi.vm.sade.security.service.authz.util.AuthorizationUtil;
 import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.HakutoiveDTO;
@@ -15,10 +13,15 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import fi.vm.sade.valintalaskenta.tulos.dao.*;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
+import fi.vm.sade.valintalaskenta.tulos.service.exception.EiOikeuttaPoistaaValintatapajonoaSijoittelustaException;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -57,6 +60,9 @@ public class ValintalaskentaTulosServiceImpl implements
 
 	@Autowired
 	private ValintalaskentaModelMapper modelMapper;
+
+	@Value("${root.organisaatio.oid}")
+	private String rootOrgOid;
 
 	private Map<String, MuokattuJonosija> muokatutJonosijatJonoOidinMukaan(
 			List<MuokattuJonosija> muokatutJonosijat) {
@@ -578,6 +584,10 @@ public class ValintalaskentaTulosServiceImpl implements
 	@Override
 	public Optional<Valintatapajono> muokkaaSijotteluStatusta(
 			String valintatapajonoOid, boolean status) {
+		if(haeSijoitteluStatus(valintatapajonoOid) && !isOPH()) {
+            throw new EiOikeuttaPoistaaValintatapajonoaSijoittelustaException("Ei oikeutta poistaa valintatapajonoa sijoittelusta");
+		}
+
 		Valinnanvaihe vaihe = valinnanvaiheDAO
 				.findByValintatapajonoOid(valintatapajonoOid);
 
@@ -593,6 +603,19 @@ public class ValintalaskentaTulosServiceImpl implements
 				.stream()
 				.filter(j -> j.getValintatapajonoOid().equals(
 						valintatapajonoOid)).findFirst();
+
+	}
+
+	@Override
+	public boolean haeSijoitteluStatus(String valintatapajonoOid) {
+		Valinnanvaihe vaihe = valinnanvaiheDAO
+				.findByValintatapajonoOid(valintatapajonoOid);
+		return vaihe.getValintatapajonot()
+				.stream()
+				.filter(j -> j.getValintatapajonoOid().equals(
+						valintatapajonoOid))
+				.map(j -> j.getValmisSijoiteltavaksi())
+				.allMatch(b -> b);
 
 	}
 
@@ -679,4 +702,15 @@ public class ValintalaskentaTulosServiceImpl implements
 		muokattuJonosija.getLogEntries().add(logEntry);
 	}
 
+	private boolean isOPH() {
+		Authentication authentication = SecurityContextHolder.getContext()
+				.getAuthentication();
+		for (GrantedAuthority authority : authentication.getAuthorities()) {
+			if (authority.getAuthority().contains(rootOrgOid)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }
