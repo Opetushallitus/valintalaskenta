@@ -67,14 +67,26 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
             valisijoiteltavatJonot = new ImmutablePair<>(valisijoiteltavatJonot.getLeft(), haeKopiotValintaperusteista(valisijoiteltavatJonot.getRight().get(laskeDTO.getHakukohdeOid())));
         }
 		try {
+            ValintaperusteetDTO valintaperusteetDTO = laskeDTO.getValintaperuste().get(0);
+            boolean erillisHaku = laskeDTO.isErillishaku()
+                    && valintaperusteetDTO.getViimeinenValinnanvaihe()
+                    == valintaperusteetDTO.getValinnanVaihe().getValinnanVaiheJarjestysluku();
+
+            if(erillisHaku) {
+                // Aseta sijoittelun käyttämät kentät
+                valintaperusteetDTO.getValinnanVaihe().getValintatapajono().forEach(j -> {
+                    j.setSiirretaanSijoitteluun(true);
+                    j.setValmisSijoiteltavaksi(true);
+                });
+            }
+
 			valintalaskentaService.laske(laskeDTO.getHakemus(),
 					laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(),
 					laskeDTO.getHakukohdeOid());
 
-            ValintaperusteetDTO valintaperusteetDTO = laskeDTO.getValintaperuste().get(0);
-            if(laskeDTO.isErillishaku()
-                    && valintaperusteetDTO.getViimeinenValinnanvaihe()
-                    == valintaperusteetDTO.getValinnanVaihe().getValinnanVaiheJarjestysluku()) {
+
+            if(erillisHaku) {
+
                 List<String> jonot = valintaperusteetDTO.getValinnanVaihe().getValintatapajono().stream().map(j -> j.getOid()).collect(Collectors.toList());
                 Map<String, List<String>> map = new HashMap<>();
                 map.put(valintaperusteetDTO.getHakukohdeOid(), jonot);
@@ -123,6 +135,17 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
 
 		try {
             if(valisijoiteltavatJonot.getLeft().isEmpty()) {
+                if(laskeDTO.isErillishaku()) {
+                    laskeDTO.getValintaperuste().forEach(v -> {
+                        if(v.getValinnanVaihe().getValinnanVaiheJarjestysluku() == v.getViimeinenValinnanvaihe()) {
+                            v.getValinnanVaihe().getValintatapajono().forEach(j -> {
+                                j.setSiirretaanSijoitteluun(true);
+                                j.setValmisSijoiteltavaksi(true);
+                            });
+                        }
+                    });
+                }
+
                 valintalaskentaService.laskeKaikki(laskeDTO.getHakemus(),
                         laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(),
                         laskeDTO.getHakukohdeOid());
@@ -151,11 +174,22 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
                             LOG.error("Suoritetaan valintakoelaskenta {} hakemukselle", laskeDTO.getHakemus().size());
                             laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, dto.getValintaperuste()));
                         } else {
-                            valintalaskentaService.laske(dto.getHakemus(), dto.getValintaperuste(), dto.getHakijaryhmat(), dto.getHakukohdeOid());
                             ValintaperusteetDTO valintaperusteetDTO = dto.getValintaperuste().get(0);
-                            if(dto.isErillishaku()
+                            boolean erillisHaku = laskeDTO.isErillishaku()
                                     && valintaperusteetDTO.getViimeinenValinnanvaihe()
-                                    == valintaperusteetDTO.getValinnanVaihe().getValinnanVaiheJarjestysluku()) {
+                                    == valintaperusteetDTO.getValinnanVaihe().getValinnanVaiheJarjestysluku();
+
+                            if(erillisHaku) {
+                                // Aseta sijoittelun käyttämät kentät
+                                valintaperusteetDTO.getValinnanVaihe().getValintatapajono().forEach(j -> {
+                                    j.setSiirretaanSijoitteluun(true);
+                                    j.setValmisSijoiteltavaksi(true);
+                                });
+                            }
+
+                            valintalaskentaService.laske(dto.getHakemus(), dto.getValintaperuste(), dto.getHakijaryhmat(), dto.getHakukohdeOid());
+
+                            if(erillisHaku) {
                                 List<String> jonot = valintaperusteetDTO.getValinnanVaihe().getValintatapajono().stream().map(j -> j.getOid()).collect(Collectors.toList());
                                 Map<String, List<String>> kohteet = new HashMap<>();
                                 kohteet.put(valintaperusteetDTO.getHakukohdeOid(), jonot);
@@ -206,6 +240,20 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
                         LOG.error("Suoritetaan valintakoelaskenta {} hakemukselle", laskeDTO.getHakemus().size());
                         laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste()));
                     } else {
+
+                        ValintaperusteetDTO valintaperusteetDTO = laskeDTO.getValintaperuste().get(0);
+                        boolean erillisHaku = laskeDTO.isErillishaku()
+                                && valintaperusteetDTO.getViimeinenValinnanvaihe()
+                                == valintaperusteetDTO.getValinnanVaihe().getValinnanVaiheJarjestysluku();
+
+                        if(erillisHaku) {
+                            // Aseta sijoittelun käyttämät kentät
+                            valintaperusteetDTO.getValinnanVaihe().getValintatapajono().forEach(j -> {
+                                j.setSiirretaanSijoitteluun(true);
+                                j.setValmisSijoiteltavaksi(true);
+                            });
+                        }
+
                        valintalaskentaService.laske(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid());
                         if(valisijoiteltavatJonot.getLeft().contains(key)) {
                             Map<String, List<String>> kohteet = valisijoiteltavatJonot.getRight();
@@ -215,10 +263,8 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
                             }
 
                         }
-                        ValintaperusteetDTO valintaperusteetDTO = laskeDTO.getValintaperuste().get(0);
-                        if(laskeDTO.isErillishaku()
-                                && valintaperusteetDTO.getViimeinenValinnanvaihe()
-                                == valintaperusteetDTO.getValinnanVaihe().getValinnanVaiheJarjestysluku()) {
+
+                        if(erillisHaku) {
                             List<String> jonot = valintaperusteetDTO.getValinnanVaihe().getValintatapajono().stream().map(j -> j.getOid()).collect(Collectors.toList());
                             Map<String, List<String>> kohteet = new HashMap<>();
                             kohteet.put(valintaperusteetDTO.getHakukohdeOid(), jonot);
