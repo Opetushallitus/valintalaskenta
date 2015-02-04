@@ -164,6 +164,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                 jono.setTasasijasaanto(Tasasijasaanto.valueOf(j.getTasasijasaanto()));
                 jono.setValintatapajonoOid(j.getOid());
                 jono.setValmisSijoiteltavaksi(j.getValmisSijoiteltavaksi());
+                jono.setKaytetaanValintalaskentaa(j.getKaytetaanValintalaskentaa());
 
                 Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan = new HashMap<String, JonosijaJaSyotetytArvot>();
                 for (ValintaperusteetJarjestyskriteeriDTO jk : j.getJarjestyskriteerit()) {
