@@ -55,15 +55,14 @@ public class ValintalaskentakoostepalveluResourceImpl {
     @Consumes(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
     @ApiOperation(value = "Lisää tuloksia valinnanvaiheelle", response = ValinnanvaiheDTO.class)
-    public Response lisaaTuloksia(
+    public ValinnanvaiheDTO lisaaTuloksia(
             @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid,
             @ApiParam(value = "Tarjoaja OID", required = true) @QueryParam("tarjoajaOid") String tarjoajaOid,
             @ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe) {
         try {
             ValinnanvaiheDTO vastaus = tulosService.lisaaTuloksia(vaihe,
                     hakukohdeoid, tarjoajaOid);
-            return Response.status(Response.Status.ACCEPTED).entity(vastaus)
-                    .build();
+            return vastaus;
         } catch (Exception e) {
             LOGGER.error(
                     "Valintatapajonon pisteitä ei saatu päivitettyä hakukohteelle {}, {}\r\n{}\r\n{}",
@@ -71,8 +70,7 @@ public class ValintalaskentakoostepalveluResourceImpl {
                     Arrays.toString(e.getStackTrace()));
             // , new GsonBuilder()
             // .setPrettyPrinting().create().toJson(vaihe)
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .build();
+            throw e;
         }
     }
 
