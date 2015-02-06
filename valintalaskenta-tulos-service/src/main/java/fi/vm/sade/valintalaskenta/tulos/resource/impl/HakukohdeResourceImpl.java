@@ -1,7 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ_UPDATE_CRUD;
-
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.ROLE_VALINTOJENTOTEUTTAMINEN_TULOSTENTUONTI;
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,6 +9,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import fi.vm.sade.authentication.business.service.Authorizer;
 import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import org.codehaus.jackson.map.annotate.JsonView;
@@ -41,6 +42,8 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
 
 	@Autowired
 	private ValintalaskentaTulosService tulosService;
+	@Autowired
+	private Authorizer authorizer;
 
 	@GET
 	@Path("{hakukohdeoid}/valinnanvaihe")
@@ -58,12 +61,14 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JsonView({ JsonViews.Basic.class })
+	@PreAuthorize(READ_UPDATE_CRUD)
 	@ApiOperation(value = "Lisää tuloksia valinnanvaiheelle", response = ValinnanvaiheDTO.class)
 	public Response lisaaTuloksia(
 			@ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid,
             @ApiParam(value = "Tarjoaja OID", required = true) @QueryParam("tarjoajaOid") String tarjoajaOid,
 			@ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe) {
 		try {
+			authorizer.checkOrganisationAccess(tarjoajaOid, ROLE_VALINTOJENTOTEUTTAMINEN_TULOSTENTUONTI);
 			ValinnanvaiheDTO vastaus = tulosService.lisaaTuloksia(vaihe,
 					hakukohdeoid, tarjoajaOid);
 			return Response.status(Response.Status.ACCEPTED).entity(vastaus)

@@ -28,6 +28,11 @@
         </property>
     </bean>
 
+    <bean id="oidProvider" class="fi.vm.sade.security.OidProvider"/>
+    <bean id="organisationHierarchyAuthorizer" class="fi.vm.sade.security.OrganisationHierarchyAuthorizer"/>
+    <bean id="authorizer" class="fi.vm.sade.security.ThreadLocalAuthorizer"/>
+
+
     <bean id="modelMapper" class="fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper"/>
 
     <!-- Swagger API listing resource -->
