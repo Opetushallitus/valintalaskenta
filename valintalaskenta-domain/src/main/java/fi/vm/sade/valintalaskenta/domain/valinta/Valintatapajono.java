@@ -3,11 +3,8 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jackson.map.annotate.JsonView;
-
 import org.mongodb.morphia.annotations.Embedded;
 
-import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 import org.mongodb.morphia.annotations.Indexed;
 
@@ -17,41 +14,29 @@ import org.mongodb.morphia.annotations.Indexed;
 @Embedded
 public class Valintatapajono {
 
-	@JsonView(JsonViews.Basic.class)
     @Indexed
 	private String valintatapajonoOid;
 
-	@JsonView(JsonViews.Basic.class)
 	private String nimi;
 
-	@JsonView(JsonViews.Basic.class)
 	private int prioriteetti;
 
-	@JsonView(JsonViews.Basic.class)
 	private int aloituspaikat;
 
-	@JsonView(JsonViews.Basic.class)
 	private boolean siirretaanSijoitteluun;
 
-	@JsonView(JsonViews.Basic.class)
 	private Tasasijasaanto tasasijasaanto;
 
-	@JsonView(JsonViews.Basic.class)
 	private Boolean eiVarasijatayttoa;
 
-    @JsonView(JsonViews.Basic.class)
     private Boolean kaikkiEhdonTayttavatHyvaksytaan;
 
-    @JsonView(JsonViews.Basic.class)
     private Boolean kaytetaanValintalaskentaa;
 
-    @JsonView(JsonViews.Basic.class)
     private Boolean poissaOlevaTaytto;
 
-    @JsonView(JsonViews.Basic.class)
     private Boolean valmisSijoiteltavaksi = true;
 
-	@JsonView(JsonViews.Basic.class)
 	@Embedded
 	private List<Jonosija> jonosijat = new ArrayList<Jonosija>();
 

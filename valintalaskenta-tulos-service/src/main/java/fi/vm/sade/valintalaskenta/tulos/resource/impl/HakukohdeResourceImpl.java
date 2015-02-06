@@ -12,7 +12,6 @@ import javax.ws.rs.core.Response;
 import fi.vm.sade.authentication.business.service.Authorizer;
 import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
-import org.codehaus.jackson.map.annotate.JsonView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 
-import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.tulos.resource.HakukohdeResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
@@ -48,7 +46,6 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
 	@GET
 	@Path("{hakukohdeoid}/valinnanvaihe")
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Basic.class })
 	@PreAuthorize(READ_UPDATE_CRUD)
 	@ApiOperation(value = "Hakee hakukohteen valinnan vaiheiden tulokset", response = ValinnanvaiheDTO.class)
 	public List<ValintatietoValinnanvaiheDTO> hakukohde(
@@ -60,9 +57,8 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
 	@Path("{hakukohdeoid}/valinnanvaihe")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Basic.class })
-	@PreAuthorize(READ_UPDATE_CRUD)
-	@ApiOperation(value = "Lisää tuloksia valinnanvaiheelle", response = ValinnanvaiheDTO.class)
+    @PreAuthorize(READ_UPDATE_CRUD)
+    @ApiOperation(value = "Lisää tuloksia valinnanvaiheelle", response = ValinnanvaiheDTO.class)
 	public Response lisaaTuloksia(
 			@ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid,
             @ApiParam(value = "Tarjoaja OID", required = true) @QueryParam("tarjoajaOid") String tarjoajaOid,

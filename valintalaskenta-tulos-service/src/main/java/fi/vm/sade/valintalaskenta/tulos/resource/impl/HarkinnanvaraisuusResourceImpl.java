@@ -12,7 +12,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.codehaus.jackson.map.annotate.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
@@ -21,7 +20,6 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 
-import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.dto.HarkinnanvarainenHyvaksyminenDTO;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.resource.HarkinnanvaraisuusResource;
@@ -46,7 +44,6 @@ public class HarkinnanvaraisuusResourceImpl implements
 	@POST
 	@Path("/haku/{hakuOid}/hakukohde/{hakukohdeOid}/hakemus/{hakemusOid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Basic.class })
 	@PreAuthorize(UPDATE_CRUD)
 	@ApiOperation(value = "Asettaa tilan harkinnanvaraisesti hakeneelle hakijalle")
 	public void asetaTila(
@@ -61,7 +58,6 @@ public class HarkinnanvaraisuusResourceImpl implements
 
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Basic.class })
 	@PreAuthorize(UPDATE_CRUD)
 	@ApiOperation(value = "Asettaa tilan harkinnanvaraisesti hakeneelle hakijalle")
 	public void asetaTilat(
@@ -78,7 +74,6 @@ public class HarkinnanvaraisuusResourceImpl implements
 	@GET
 	@Path("/haku/{hakuOid}/hakukohde/{hakukohdeOid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Basic.class })
 	@PreAuthorize(READ_UPDATE_CRUD)
 	@ApiOperation(value = "Hakee hakukohteen harkinnanvaraisesti hakeneiden hakijoiden tilat", response = HarkinnanvarainenHyvaksyminenDTO.class)
 	public List<HarkinnanvarainenHyvaksyminenDTO> hakukohde(
@@ -92,7 +87,6 @@ public class HarkinnanvaraisuusResourceImpl implements
 	@GET
 	@Path("/haku/{hakuOid}/hakemus/{hakemusOid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Basic.class })
 	@PreAuthorize(READ_UPDATE_CRUD)
 	@ApiOperation(value = "Hakee hakemuksen harkinnanvaraisesti tilat", response = HarkinnanvarainenHyvaksyminenDTO.class)
 	public List<HarkinnanvarainenHyvaksyminenDTO> hakemus(

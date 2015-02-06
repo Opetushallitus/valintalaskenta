@@ -1,8 +1,6 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
 import org.mongodb.morphia.annotations.Embedded;
-import fi.vm.sade.valintalaskenta.domain.JsonViews;
-import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.Map;
 

@@ -2,8 +2,6 @@ package fi.vm.sade.valintalaskenta.domain.dto;
 
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
-import fi.vm.sade.valintalaskenta.domain.JsonViews;
-import org.codehaus.jackson.map.annotate.JsonView;
 
 /**
  * User: wuoti
@@ -13,23 +11,18 @@ import org.codehaus.jackson.map.annotate.JsonView;
 @ApiModel(value = "FunktioTulosDTO", description = "Laskennassa saatu funktio tulos")
 public class FunktioTulosDTO {
     @ApiModelProperty(value = "Tunniste", required = true)
-    @JsonView(JsonViews.Basic.class)
     private String tunniste;
 
     @ApiModelProperty(value = "Varsinainen arvo, joka laskennassa on saatu", required = true)
-    @JsonView(JsonViews.Basic.class)
     private String arvo;
 
     @ApiModelProperty(value = "Suomenkielinen nimi", required = false)
-    @JsonView(JsonViews.Basic.class)
     private String nimiFi;
 
     @ApiModelProperty(value = "Ruotsinkielinen nimi", required = false)
-    @JsonView(JsonViews.Basic.class)
     private String nimiSv;
 
     @ApiModelProperty(value = "Englanninkielinen nimi", required = false)
-    @JsonView(JsonViews.Basic.class)
     private String nimiEn;
 
     public String getTunniste() {

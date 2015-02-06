@@ -2,8 +2,6 @@ package fi.vm.sade.valintalaskenta.domain.dto;
 
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
-import fi.vm.sade.valintalaskenta.domain.JsonViews;
-import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,27 +15,21 @@ import java.util.List;
 public class MuokattuJonosijaDTO {
 
     @ApiModelProperty(value = "Hakukohde OID", required = true)
-    @JsonView(JsonViews.Basic.class)
     private String hakukohdeOid;
 
     @ApiModelProperty(value = "Haku OID", required = true)
-    @JsonView(JsonViews.Basic.class)
     private String hakuOid;
 
     @ApiModelProperty(value = "Valintatapajono OID", required = true)
-    @JsonView(JsonViews.Basic.class)
     private String valintatapajonoOid;
 
     @ApiModelProperty(value = "Hakukohde OID", required = true)
-    @JsonView(JsonViews.Basic.class)
     private String hakemusOid;
 
     @ApiModelProperty(value = "Prioriteetti", required = true)
-    @JsonView(JsonViews.Basic.class)
     private Integer prioriteetti; // hakutoive
 
     @ApiModelProperty(value = "Harkinnanvaraisuus")
-    @JsonView(JsonViews.Basic.class)
     private Boolean harkinnanvarainen;
 
     @ApiModelProperty(value = "Järjestyskriteeritulokset", required = true)

@@ -10,7 +10,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.codehaus.jackson.map.annotate.JsonView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,6 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 
-import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteerihistoriaDTO;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.resource.JonosijaHistoriaResource;
@@ -48,7 +46,6 @@ public class JonosijaHistoriaResourceImpl implements JonosijaHistoriaResource {
 	@GET
 	@Path("{valintatapajonoOid}/{hakemusOid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Basic.class })
 	@PreAuthorize(READ_UPDATE_CRUD)
 	@ApiOperation(value = "Hakee jonosijahistoriat valintatapajono OID:n ja hakemus OID:n perusteella", response = JarjestyskriteerihistoriaDTO.class)
 	public List<JarjestyskriteerihistoriaDTO> listJonosijaHistoria(

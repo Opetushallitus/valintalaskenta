@@ -2,9 +2,7 @@ package fi.vm.sade.valintalaskenta.domain.dto;
 
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
-import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
-import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,23 +13,18 @@ import java.util.List;
 @ApiModel(value = "Hakukohde", description = "Hakukohde")
 public class HakukohdeDTO {
     @ApiModelProperty(value = "Haku OID", required = true)
-    @JsonView(JsonViews.Basic.class)
     private String hakuoid;
 
     @ApiModelProperty(value = "Tarjoaja OID", required = true)
-    @JsonView(JsonViews.Basic.class)
     private String tarjoajaoid;
 
     @ApiModelProperty(value = "Hakukohde OID", required = true)
-    @JsonView(JsonViews.Basic.class)
     private String hakukohdeoid;
 
     @ApiModelProperty(value = "Valinnan vaiheet", required = true)
-    @JsonView(JsonViews.Basic.class)
     private List<ValintatietoValinnanvaiheDTO> valinnanvaihe = new ArrayList<ValintatietoValinnanvaiheDTO>();
 
     @ApiModelProperty(value = "Prioriteetti", required = true)
-    @JsonView(JsonViews.Basic.class)
     private int prioriteetti;
 
     private boolean kaikkiJonotSijoiteltu = true;

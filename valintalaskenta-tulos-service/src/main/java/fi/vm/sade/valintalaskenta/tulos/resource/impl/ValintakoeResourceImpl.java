@@ -12,7 +12,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.codehaus.jackson.map.annotate.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
@@ -21,7 +20,6 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 
-import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.resource.ValintakoeResource;
@@ -42,7 +40,6 @@ public class ValintakoeResourceImpl implements ValintakoeResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("hakemus/{hakemusOid}")
-	@JsonView({ JsonViews.Basic.class })
 	@PreAuthorize(READ_UPDATE_CRUD)
 	@ApiOperation(value = "Hakee valintakoeosallistumiset hakemukselle OID:n perusteella", response = ValintakoeOsallistuminenDTO.class)
 	public ValintakoeOsallistuminenDTO haku(
@@ -55,7 +52,6 @@ public class ValintakoeResourceImpl implements ValintakoeResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("hakutoive/{hakukohdeOid}")
-	@JsonView({ JsonViews.Basic.class })
 	@PreAuthorize(READ_UPDATE_CRUD)
 	@ApiOperation(value = "Hakee valintakoeosallistumiset hakukohteelle OID:n perusteella", response = ValintakoeOsallistuminenDTO.class)
 	public List<ValintakoeOsallistuminenDTO> hakuByHakutoive(
@@ -69,7 +65,6 @@ public class ValintakoeResourceImpl implements ValintakoeResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("hakutoive/")
-	@JsonView({ JsonViews.Basic.class })
 	@PreAuthorize(READ_UPDATE_CRUD)
 	@ApiOperation(value = "Hakee valintakoeosallistumiset hakukohteelle OID:n perusteella", response = ValintakoeOsallistuminenDTO.class)
 	public List<ValintakoeOsallistuminenDTO> hakuByOids(

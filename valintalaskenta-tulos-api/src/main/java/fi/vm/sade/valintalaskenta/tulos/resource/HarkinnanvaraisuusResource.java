@@ -9,13 +9,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.codehaus.jackson.map.annotate.JsonView;
-
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 
-import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import fi.vm.sade.valintalaskenta.domain.dto.HarkinnanvarainenHyvaksyminenDTO;
 
 /**
@@ -28,7 +25,6 @@ public interface HarkinnanvaraisuusResource {
 	@POST
 	@Path("/haku/{hakuOid}/hakukohde/{hakukohdeOid}/hakemus/{hakemusOid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Basic.class })
 	@ApiOperation(value = "Asettaa tilan harkinnanvaraisesti hakeneelle hakijalle")
 	public void asetaTila(
 			@ApiParam(value = "Haun OID", required = true) @PathParam("hakuOid") String hakuOid,
@@ -38,7 +34,6 @@ public interface HarkinnanvaraisuusResource {
 
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Basic.class })
 	@ApiOperation(value = "Asettaa tilan harkinnanvaraisesti hakeneelle hakijalle")
 	public void asetaTilat(
 			@ApiParam(value = "Asetettava tila", required = true) List<HarkinnanvarainenHyvaksyminenDTO> harkinnanvaraisetHyvaksymiset);
@@ -46,7 +41,6 @@ public interface HarkinnanvaraisuusResource {
 	@GET
 	@Path("/haku/{hakuOid}/hakukohde/{hakukohdeOid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Basic.class })
 	@ApiOperation(value = "Hakee hakukohteen harkinnanvaraisesti hakeneiden hakijoiden tilat", response = HarkinnanvarainenHyvaksyminenDTO.class)
 	public List<HarkinnanvarainenHyvaksyminenDTO> hakukohde(
 			@ApiParam(value = "Haku OID", required = true) @PathParam("hakuOid") String hakuOid,
@@ -55,7 +49,6 @@ public interface HarkinnanvaraisuusResource {
 	@GET
 	@Path("/haku/{hakuOid}/hakemus/{hakemusOid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Basic.class })
 	@ApiOperation(value = "Hakee hakemuksen harkinnanvaraisesti tilat", response = HarkinnanvarainenHyvaksyminenDTO.class)
 	public List<HarkinnanvarainenHyvaksyminenDTO> hakemus(
 			@ApiParam(value = "Haku OID", required = true) @PathParam("hakuOid") String hakuOid,

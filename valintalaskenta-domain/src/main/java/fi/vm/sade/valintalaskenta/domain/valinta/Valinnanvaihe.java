@@ -1,9 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import org.mongodb.morphia.annotations.*;
-import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import org.bson.types.ObjectId;
-import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.*;
 
@@ -17,31 +15,23 @@ public class Valinnanvaihe {
     @Id
     private ObjectId id;
 
-    @JsonView(JsonViews.Basic.class)
     private int jarjestysnumero;
 
-    @JsonView(JsonViews.Basic.class)
     private Date createdAt;
 
     @Indexed(unique = false, dropDups = false)
-    @JsonView(JsonViews.Basic.class)
     private String hakuOid;
 
     @Indexed(unique = false, dropDups = false)
-    @JsonView(JsonViews.Basic.class)
     private String hakukohdeOid;
 
     @Indexed(unique = false, dropDups = false)
-    @JsonView(JsonViews.Basic.class)
     private String valinnanvaiheOid;
 
-    @JsonView(JsonViews.Basic.class)
     private String tarjoajaOid;
 
-    @JsonView(JsonViews.Basic.class)
     private String nimi;
 
-    @JsonView(JsonViews.Basic.class)
     @Embedded
     private List<Valintatapajono> valintatapajonot = new ArrayList<Valintatapajono>();
 

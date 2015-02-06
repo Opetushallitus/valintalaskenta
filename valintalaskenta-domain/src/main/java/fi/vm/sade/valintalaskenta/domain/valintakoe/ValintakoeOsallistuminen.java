@@ -4,9 +4,7 @@ import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.PrePersist;
-import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import org.bson.types.ObjectId;
-import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,19 +23,14 @@ public class ValintakoeOsallistuminen {
 
     private String hakuOid;
 
-    @JsonView(JsonViews.Basic.class)
     private String hakemusOid;
 
-    @JsonView(JsonViews.Basic.class)
     private String hakijaOid;
 
-    @JsonView(JsonViews.Basic.class)
     private String etunimi;
 
-    @JsonView(JsonViews.Basic.class)
     private String sukunimi;
 
-    @JsonView(JsonViews.Basic.class)
     private Date createdAt;
 
     @Embedded

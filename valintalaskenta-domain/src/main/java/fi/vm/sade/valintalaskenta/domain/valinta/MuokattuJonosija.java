@@ -4,9 +4,7 @@ import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
-import fi.vm.sade.valintalaskenta.domain.JsonViews;
 import org.bson.types.ObjectId;
-import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,21 +19,16 @@ public class MuokattuJonosija {
     private ObjectId id;
 
     @Indexed(unique = false, dropDups = false)
-    @JsonView(JsonViews.Basic.class)
     private String hakukohdeOid;
 
     @Indexed(unique = false, dropDups = false)
-    @JsonView(JsonViews.Basic.class)
     private String hakuOid;
 
     @Indexed(unique = false, dropDups = false)
-    @JsonView(JsonViews.Basic.class)
     private String valintatapajonoOid;
 
-    @JsonView(JsonViews.Basic.class)
     private String hakemusOid;
 
-    @JsonView(JsonViews.Basic.class)
     private Integer prioriteetti; // hakutoive
 
     @Embedded
