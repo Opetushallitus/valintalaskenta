@@ -40,7 +40,8 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
 
 	@Autowired
 	private ValintalaskentaTulosService tulosService;
-	@Autowired
+
+    @Autowired
 	private Authorizer authorizer;
 
 	@GET
