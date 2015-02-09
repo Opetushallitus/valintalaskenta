@@ -21,6 +21,11 @@ public class ValintaperusteetResourceImpl implements ValintaperusteetResource {
     }
 
     @Override
+    public List<ValintatapajonoDTO> haeValintatapajonotSijoittelulle(List<String> hakukohdeOids) {
+        return new ArrayList<>();
+    }
+
+    @Override
     public List<ValintaperusteetDTO> haeValintaperusteet(String hakukohdeOid, Integer valinnanVaiheJarjestysluku) {
         return new ArrayList<>();
     }
