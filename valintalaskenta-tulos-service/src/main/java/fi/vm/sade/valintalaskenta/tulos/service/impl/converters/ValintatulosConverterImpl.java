@@ -266,6 +266,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
 					.getSyotetytArvot()));
 			dto.setFunktioTulokset(convertFunktioTulos(jonosija
 					.getFunktioTulokset()));
+            dto.setHylattyValisijoittelussa(jonosija.isHylattyValisijoittelussa());
 			list.add(dto);
 		}
 

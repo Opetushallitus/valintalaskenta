@@ -133,8 +133,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                                         Collections.sort(jonosija.getJarjestyskriteeritulokset(), (jk1, jk2) -> jk1.getPrioriteetti() - jk2.getPrioriteetti());
                                         Jarjestyskriteeritulos jarjestyskriteeritulos = jonosija.getJarjestyskriteeritulokset().get(0);
                                         jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.HYLATTY);
-                                        // Tuotantoon kun sotesoppa on selvinny
-                                        //jonosija.setHylattyValisijoittelussa(true);
+                                        jonosija.setHylattyValisijoittelussa(true);
                                         Map<String, String> kuvaukset = new HashMap<>();
                                         if(hakemusDTO.getTila() == HakemuksenTila.VARALLA) {
                                             kuvaukset.put("FI", "Hakemus ei mahtunut aloituspaikkojen sisään välisijoittelussa");

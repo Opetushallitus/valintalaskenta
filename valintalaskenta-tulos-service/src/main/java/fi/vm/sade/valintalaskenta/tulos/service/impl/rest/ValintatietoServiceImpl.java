@@ -216,6 +216,8 @@ public class ValintatietoServiceImpl implements ValintatietoService {
                 }).collect(Collectors.toList()));
             }
 
+            ht.setHylattyValisijoittelussa(jonosija.isHylattyValisijoittelussa());
+
             dto.getHakija().add(ht);
         }
         return dto;
