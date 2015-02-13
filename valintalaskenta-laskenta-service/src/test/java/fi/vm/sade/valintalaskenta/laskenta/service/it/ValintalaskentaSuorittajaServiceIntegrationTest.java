@@ -607,6 +607,39 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
     }
 
     @Test
+    @UsingDataSet(locations = "testViimeisinValinnanVaihe.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void testPoistaHylatyt() {
+        final String hakemusOid = "1.2.246.562.11.00000072753"; // Hylätty edellisessä vaiheessa
+        final String hakemusOid2 = "1.2.246.562.11.00000072672";
+        final String hakukohdeOid = "1.2.246.562.5.91937845484";
+        final String hakuOid = "1.2.246.562.5.2013080813081926341927";
+        final String valinnanVaiheOid = "vv3";
+        final String valintatapajonoOid = "jono1";
+
+        ValintaperusteetDTO vv3 = luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 2);
+        (vv3.getValinnanVaihe()).getValintatapajono().add(luoValintatapajono(valintatapajonoOid, 0, 10, luoJarjestyskriteeri(sata, 1)));
+        (vv3.getValinnanVaihe()).getValintatapajono().get(0).setPoistetaankoHylatyt(true);
+        valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(luoHakemus(hakemusOid, hakemusOid, hakukohdeOid), luoHakemus(hakemusOid2,hakemusOid, hakukohdeOid)),
+                Arrays.asList(vv3), new ArrayList<>(), hakukohdeOid);
+
+        Valinnanvaihe vaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanVaiheOid);
+        assertNotNull(vaihe);
+        assertEquals(valinnanVaiheOid, vaihe.getValinnanvaiheOid());
+        assertEquals(1, vaihe.getValintatapajonot().size());
+
+        Valintatapajono jono = vaihe.getValintatapajonot().get(0);
+        assertEquals(valintatapajonoOid, jono.getValintatapajonoOid());
+        assertEquals(1, jono.getJonosijat().size());
+
+        Jonosija jonosija = jono.getJonosijat().get(0);
+        assertEquals(hakemusOid2, jonosija.getHakemusOid());
+        assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+
+        Jarjestyskriteeritulos tulos = jonosija.getJarjestyskriteeritulokset().get(0);
+        assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, tulos.getTila());
+    }
+
+    @Test
     @UsingDataSet(locations = "voidaanHyvaksya.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testValisijoitteluHylkaysHyvaksytty() {
 

@@ -239,6 +239,15 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                     jono.getJonosijat().add(jonosija);
                 }
 
+                if(j.isPoistetaankoHylatyt()) {
+                    List<Jonosija> filteroity = jono.getJonosijat()
+                            .stream()
+                            .filter(sija -> !sija.getJarjestyskriteeritulokset().get(0).getTila()
+                                    .equals(JarjestyskriteerituloksenTila.HYLATTY))
+                            .collect(Collectors.toList());
+                    jono.setJonosijat(filteroity);
+                }
+
                 valinnanvaihe.getValintatapajonot().add(jono);
             }
 
