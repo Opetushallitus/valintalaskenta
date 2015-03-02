@@ -64,6 +64,9 @@ public class ValintalaskentaSuorittajaServiceImpl implements
     @Autowired
     private ValintalaskentaModelMapper modelMapper;
 
+    @Autowired
+    private EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija;
+
     @Override
     public void suoritaLaskenta(List<HakemusDTO> kaikkiHakemukset,
                                 List<ValintaperusteetDTO> valintaperusteet,
@@ -240,10 +243,15 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                 }
 
                 if(j.isPoistetaankoHylatyt()) {
+
                     List<Jonosija> filteroity = jono.getJonosijat()
                             .stream()
-                            .filter(sija -> !sija.getJarjestyskriteeritulokset().get(0).getTila()
-                                    .equals(JarjestyskriteerituloksenTila.HYLATTY))
+                            .filter(sija -> {
+                                boolean tila = !sija.getJarjestyskriteeritulokset().get(0).getTila()
+                                        .equals(JarjestyskriteerituloksenTila.HYLATTY);
+                                TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(sija.getHakemusOid(), edellinenVaihe);
+                                return tila || tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY);
+                            })
                             .collect(Collectors.toList());
                     jono.setJonosijat(filteroity);
                 }
