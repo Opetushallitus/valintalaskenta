@@ -610,6 +610,9 @@ public class ValintalaskentaTulosServiceImpl implements
 	public boolean haeSijoitteluStatus(String valintatapajonoOid) {
 		Valinnanvaihe vaihe = valinnanvaiheDAO
 				.findByValintatapajonoOid(valintatapajonoOid);
+        if(vaihe == null) {
+            return false;
+        }
 		return vaihe.getValintatapajonot()
 				.stream()
 				.filter(j -> j.getValintatapajonoOid().equals(
