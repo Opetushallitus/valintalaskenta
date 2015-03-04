@@ -79,6 +79,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 
     @Override
     public void create(Valinnanvaihe valinnanvaihe) {
+        valinnanvaihe.getValintatapajonot().forEach(datastore::save);
         datastore.save(valinnanvaihe);
     }
 

@@ -32,7 +32,7 @@ public class Valinnanvaihe {
 
     private String nimi;
 
-    @Embedded
+    @Reference
     private List<Valintatapajono> valintatapajonot = new ArrayList<Valintatapajono>();
 
     @PrePersist

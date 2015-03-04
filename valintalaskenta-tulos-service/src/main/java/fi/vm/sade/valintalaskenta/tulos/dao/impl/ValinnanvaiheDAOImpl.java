@@ -6,6 +6,7 @@ import java.util.stream.StreamSupport;
 
 import com.mongodb.*;
 import fi.vm.sade.valintalaskenta.tulos.dao.util.MongoMapReduceUtil;
+import org.mongodb.morphia.Key;
 import org.mongodb.morphia.mapping.Mapper;
 import org.mongodb.morphia.mapping.cache.DefaultEntityCache;
 import org.slf4j.Logger;
@@ -58,9 +59,15 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 //                .map(dbObject -> new Mapper().fromDBObject(Valinnanvaihe.class, (DBObject) dbObject.get("value"), new DefaultEntityCache()))
 //                .collect(Collectors.toList());
 
+        List<Valintatapajono> keys = datastore.find(Valintatapajono.class).retrievedFields(true, "id").field("jonosijat.hakemusOid").equal(hakemusOid).asList();
+
+        List<Valinnanvaihe> hakuOid1 = datastore.createQuery(Valinnanvaihe.class)
+                .field("hakuOid").equal(hakuOid)
+                .asList();
+
         return datastore.createQuery(Valinnanvaihe.class).field("hakuOid")
-                .equal(hakuOid).field("valintatapajonot.jonosijat.hakemusOid")
-                .equal(hakemusOid).asList();
+                .equal(hakuOid).field("valintatapajonot").in(keys)
+                .asList();
 
 	}
 
@@ -91,11 +98,19 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 	@Override
 	public void update(Valinnanvaihe valinnanvaihe,
 			List<Valintatapajono> jonot, String hakukohdeoid, String hakuoid, String tarjoajaOid) {
-		UpdateOperations ops = datastore
-				.createUpdateOperations(Valinnanvaihe.class)
-				.set("valintatapajonot", jonot)
-				.set("hakukohdeOid", hakukohdeoid).set("hakuOid", hakuoid).set("tarjoajaOid", tarjoajaOid);
-		datastore.update(valinnanvaihe, ops);
+
+        jonot.forEach(datastore::save);
+        valinnanvaihe.setHakukohdeOid(hakukohdeoid);
+        valinnanvaihe.setHakuOid(hakuoid);
+        valinnanvaihe.setTarjoajaOid(tarjoajaOid);
+        valinnanvaihe.setValintatapajonot(jonot);
+        saveOrUpdate(valinnanvaihe);
+
+//		UpdateOperations ops = datastore
+//				.createUpdateOperations(Valinnanvaihe.class)
+//				.set("valintatapajonot", jonot)
+//				.set("hakukohdeOid", hakukohdeoid).set("hakuOid", hakuoid).set("tarjoajaOid", tarjoajaOid);
+//		datastore.update(valinnanvaihe, ops);
 	}
 
 	@Override
@@ -106,6 +121,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 
     @Override
     public void saveOrUpdate(Valinnanvaihe vaihe) {
+        vaihe.getValintatapajonot().forEach(datastore::save);
         datastore.save(vaihe);
     }
 }

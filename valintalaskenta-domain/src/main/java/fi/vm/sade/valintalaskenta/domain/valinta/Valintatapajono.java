@@ -3,16 +3,22 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Embedded;
 
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
 
 /**
  * User: wuoti Date: 4.9.2013 Time: 10.25
  */
-@Embedded
+@Entity("Valintatapajono")
 public class Valintatapajono {
+
+    @Id
+    private ObjectId id;
 
     @Indexed
 	private String valintatapajonoOid;
