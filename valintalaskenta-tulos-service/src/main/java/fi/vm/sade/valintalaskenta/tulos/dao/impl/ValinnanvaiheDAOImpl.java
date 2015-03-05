@@ -59,11 +59,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 //                .map(dbObject -> new Mapper().fromDBObject(Valinnanvaihe.class, (DBObject) dbObject.get("value"), new DefaultEntityCache()))
 //                .collect(Collectors.toList());
 
-        List<Valintatapajono> keys = datastore.find(Valintatapajono.class).retrievedFields(true, "id").field("jonosijat.hakemusOid").equal(hakemusOid).asList();
-
-        List<Valinnanvaihe> hakuOid1 = datastore.createQuery(Valinnanvaihe.class)
-                .field("hakuOid").equal(hakuOid)
-                .asList();
+        List<Key<Valintatapajono>> keys = datastore.find(Valintatapajono.class).field("jonosijat.hakemusOid").equal(hakemusOid).asKeyList();
 
         return datastore.createQuery(Valinnanvaihe.class).field("hakuOid")
                 .equal(hakuOid).field("valintatapajonot").in(keys)

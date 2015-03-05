@@ -1,56 +1,54 @@
 {
+    "Valintatapajono": [
+        {
+            "_id": {
+                "$oid": "541bef0ae4b0e1d22689e606"
+            },
+            "valintatapajonoOid" : "valintatapajonoOid1",
+            "prioriteetti" : 0,
+            "jonosijat" : [
+                {
+                    "hakemusOid" : "hakemusOid1",
+                    "harkinnanvarainen" : false,
+                    "jarjestyskriteeritulokset" : [
+                        {
+                            "prioriteetti" : 0,
+                            "arvo" : "13.0",
+                            "tila" : "HYLATTY"
+                        },
+                        {
+                            "prioriteetti" : 1,
+                            "arvo" : "5.0",
+                            "tila" : "HYLATTY"
+                        }
+                    ]
+                },
+                {
+                    "hakemusOid" : "hakemusOid2",
+                    "jarjestyskriteeritulokset" : [
+                        {
+                            "prioriteetti" : 0,
+                            "arvo" : "20.0",
+                            "tila" : "HYVAKSYTTAVISSA"
+                        },
+                        {
+                            "prioriteetti" : 1,
+                            "arvo" : "10.0",
+                            "tila" : "HYVAKSYTTAVISSA"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
   "Valinnanvaihe": [
     {
       "hakuOid" : "hakuOid1",
       "hakukohdeOid" : "hakukohdeOid1",
       "valintatapajonot" : [
-          {"$ref": "Valintatapajono", "_id": {
-              "$oid": "541bef0ae4b0e1d22689e606"
-          }}
+          {"$ref": "Valintatapajono", "$id": {"$oid": "541bef0ae4b0e1d22689e606"}}
       ]
     }
-  ],
-  "Valintatapajono": [
-      {
-          "_id": {
-              "$oid": "541bef0ae4b0e1d22689e606"
-          },
-          "valintatapajonoOid" : "valintatapajonoOid1",
-          "prioriteetti" : 0,
-          "jonosijat" : [
-              {
-                  "hakemusOid" : "hakemusOid1",
-                  "harkinnanvarainen" : false,
-                  "jarjestyskriteeritulokset" : [
-                      {
-                          "prioriteetti" : 0,
-                          "arvo" : "13.0",
-                          "tila" : "HYLATTY"
-                      },
-                      {
-                          "prioriteetti" : 1,
-                          "arvo" : "5.0",
-                          "tila" : "HYLATTY"
-                      }
-                  ]
-              },
-              {
-                  "hakemusOid" : "hakemusOid2",
-                  "jarjestyskriteeritulokset" : [
-                      {
-                          "prioriteetti" : 0,
-                          "arvo" : "20.0",
-                          "tila" : "HYVAKSYTTAVISSA"
-                      },
-                      {
-                          "prioriteetti" : 1,
-                          "arvo" : "10.0",
-                          "tila" : "HYVAKSYTTAVISSA"
-                      }
-                  ]
-              }
-          ]
-      }
   ],
   "MuokattuJonosija" : [
     {

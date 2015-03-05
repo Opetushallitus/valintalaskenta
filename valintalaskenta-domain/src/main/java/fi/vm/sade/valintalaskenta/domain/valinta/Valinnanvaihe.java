@@ -40,7 +40,7 @@ public class Valinnanvaihe {
         createdAt = new Date();
     }
 
-    @PrePersist
+    @PostLoad
     private void jarjestaValintatapajonot() {
         Collections.sort(valintatapajonot, (o1, o2) -> o1.getPrioriteetti() - o2.getPrioriteetti());
     }
