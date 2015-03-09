@@ -693,7 +693,30 @@ public class ValintalaskentaTulosServiceImpl implements
 		return muokattuJonosija;
 	}
 
-	private void addLogEntry(String selite, MuokattuJonosija muokattuJonosija,
+    @Override
+    public MuokattuJonosija poistaMuokattuJonosija(String valintatapajonoOid, String hakemusOid, Integer jarjestyskriteeriPrioriteetti) {
+        MuokattuJonosija muokattuJonosija;
+        muokattuJonosija = muokattuJonosijaDAO.readByValintatapajonoOid(
+                valintatapajonoOid, hakemusOid);
+
+        if (muokattuJonosija == null) {
+            return null;
+        } else {
+
+            List<Jarjestyskriteeritulos> saastettavat = muokattuJonosija.getJarjestyskriteerit()
+                    .stream()
+                    .filter(j -> j.getPrioriteetti() != jarjestyskriteeriPrioriteetti)
+                    .collect(Collectors.toList());
+
+            muokattuJonosija.setJarjestyskriteerit(saastettavat);
+            muokattuJonosijaDAO.saveOrUpdate(muokattuJonosija);
+
+            return muokattuJonosija;
+
+        }
+    }
+
+    private void addLogEntry(String selite, MuokattuJonosija muokattuJonosija,
 			String muutos) {
 		LogEntry logEntry = new LogEntry();
 
