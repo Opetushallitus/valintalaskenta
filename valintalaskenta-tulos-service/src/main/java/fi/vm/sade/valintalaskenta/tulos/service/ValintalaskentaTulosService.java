@@ -30,6 +30,10 @@ public interface ValintalaskentaTulosService {
 			String hakemusOid, Integer jarjestyskriteeriPrioriteetti,
 			MuokattuJonosijaArvoDTO arvo);
 
+    MuokattuJonosija poistaMuokattuJonosija(String valintatapajonoOid,
+                                            String hakemusOid,
+                                            Integer jarjestyskriteeriPrioriteetti);
+
 	ValintakoeOsallistuminen haeValintakoeOsallistumiset(String hakemusOid);
 
 	List<ValintakoeOsallistuminen> haeValintakoeOsallistumiset(

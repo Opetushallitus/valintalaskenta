@@ -75,6 +75,29 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
 		}
 	}
 
+    @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/jonosija")
+    @PreAuthorize(UPDATE_CRUD)
+    @ApiOperation(value = "Muokkaa jonosijaa", response = MuokattuJonosijaDTO.class)
+    public Response poistaMuokattuJonosija(
+            @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
+            @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid,
+            @ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true) @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti) {
+        MuokattuJonosija muokattuJonosija = tulosService
+                .poistaMuokattuJonosija(valintatapajonoOid, hakemusOid,
+                        jarjestyskriteeriPrioriteetti);
+        if (muokattuJonosija != null) {
+            MuokattuJonosijaDTO map = modelMapper.map(muokattuJonosija,
+                    MuokattuJonosijaDTO.class);
+            return Response.status(Response.Status.ACCEPTED).entity(map)
+                    .build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
