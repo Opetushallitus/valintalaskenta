@@ -69,9 +69,12 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 
 	@Override
 	public Valinnanvaihe findByValintatapajonoOid(String valintatapajonoOid) {
+
+        List<Key<Valintatapajono>> keys = datastore.find(Valintatapajono.class).field("valintatapajonoOid").equal(valintatapajonoOid).asKeyList();
+
 		return datastore.createQuery(Valinnanvaihe.class)
-				.field("valintatapajonot.valintatapajonoOid")
-				.equal(valintatapajonoOid).get();
+				.field("valintatapajonot").in(keys)
+				.get();
 	}
 
 	@Override
