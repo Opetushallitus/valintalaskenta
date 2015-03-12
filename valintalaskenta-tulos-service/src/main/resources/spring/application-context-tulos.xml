@@ -62,12 +62,12 @@
         </jaxrs-client:providers>
     </jaxrs-client:client>
 
-    <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.ctrl"/>
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.dao"/>
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.service.impl"/>
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.resource.impl"/>
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.service.impl.converters"/>
 
     <import resource="application-context-tulos-ws.xml"/>
+
 
 </beans>
