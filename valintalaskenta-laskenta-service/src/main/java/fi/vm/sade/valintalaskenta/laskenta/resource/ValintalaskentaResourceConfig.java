@@ -27,7 +27,8 @@ public class ValintalaskentaResourceConfig extends ResourceConfig {
             }
         });
 
-        packages("fi.vm.sade.valintalaskenta");
+        packages("fi.vm.sade.valintalaskenta.tulos.resource.impl",
+                "fi.vm.sade.valintalaskenta.laskenta.resource");
 
         register(com.fasterxml.jackson.jaxrs.annotation.JacksonFeatures.class);
 

@@ -36,7 +36,7 @@ import javax.ws.rs.Produces;
  */
 @Component
 @Path("valintalaskenta")
-public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
+public class ValintalaskentaResourceImpl {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(ValintalaskentaResourceImpl.class);
 	@Autowired
@@ -55,7 +55,6 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
     private ValintaperusteetValintatapajonoResource valintatapajonoResource;
 
 
-	@Override
 	@Path("laske")
 	@Consumes("application/json")
 	@Produces("text/plain")
@@ -103,7 +102,6 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
         return "Onnistui!";
 	}
 
-	@Override
 	@Path("valintakokeet")
 	@Consumes("application/json")
 	@Produces("text/plain")
@@ -124,10 +122,9 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
 		}
 	}
 
-	@Override
 	@Path("laskekaikki")
-	@Consumes("application/json")
-	@Produces("text/plain")
+    @Consumes("application/json")
+    @Produces("text/plain")
 	@POST
 	public String laskeKaikki(LaskeDTO laskeDTO) {
         //System.out.println(new GsonBuilder().create().toJson(laskeDTO));
@@ -212,7 +209,6 @@ public class ValintalaskentaResourceImpl implements ValintalaskentaResource {
         return "Onnistui!";
 	}
 
-    @Override
     @Path("laskejasijoittele")
     @Consumes("application/json")
     @Produces("text/plain")

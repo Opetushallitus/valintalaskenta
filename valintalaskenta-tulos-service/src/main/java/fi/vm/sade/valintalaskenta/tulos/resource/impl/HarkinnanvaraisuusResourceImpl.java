@@ -29,11 +29,10 @@ import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
  * @author Jussi Jartamo
  */
 @Component
-@Path("harkinnanvarainenhyvaksynta")
+@Path("/harkinnanvarainenhyvaksynta")
 @PreAuthorize("isAuthenticated()")
 @Api(value = "/harkinnanvarainenhyvaksynta", description = "Resurssi harkinnanvaraisesti hakeneiden hakijoiden käsittelyyn")
-public class HarkinnanvaraisuusResourceImpl implements
-		HarkinnanvaraisuusResource {
+public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResource {
 
 	@Autowired
 	private ValintalaskentaTulosService tulosService;
