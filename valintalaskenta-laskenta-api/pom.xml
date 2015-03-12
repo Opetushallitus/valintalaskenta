@@ -22,10 +22,11 @@
 	            <artifactId>jackson-mapper-asl</artifactId>
 	            <scope>provided</scope>
 	        </dependency>
-	        <dependency>
+        <dependency>
             <groupId>com.wordnik</groupId>
-            <artifactId>swagger-jersey-jaxrs_2.10</artifactId>
+            <artifactId>swagger-jersey2-jaxrs_2.11</artifactId>
             <scope>provided</scope>
+            <version>${swagger.version}</version>
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.valintaperusteet</groupId>
