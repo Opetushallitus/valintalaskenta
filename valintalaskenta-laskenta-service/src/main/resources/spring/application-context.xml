@@ -113,6 +113,28 @@
     <import resource="application-context-db.xml" />
 	<import resource="application-context-service.xml" />
 	<import resource="application-context-tulos.xml" />
-	<import resource="application-context-ws.xml" />
+
+    <bean id="jsonProvider" class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
+    <bean id="cors-filter" class="fi.vm.sade.valintalaskenta.laskenta.resource.filter.CorsResponseFilter"/>
+
+    <jaxrs:server id="valintalaskennanResurssit">
+        <jaxrs:serviceBeans>
+            <ref bean="hakemusResourceImpl"/>
+            <ref bean="hakukohdeResourceImpl"/>
+            <ref bean="hakuResourceImpl"/>
+            <ref bean="harkinnanvaraisuusResourceImpl"/>
+            <ref bean="jonosijaHistoriaResourceImpl"/>
+            <ref bean="valintakoeResourceImpl"/>
+            <ref bean="valintalaskentakoostepalveluResourceImpl"/>
+            <ref bean="valintatapajonoResourceImpl"/>
+            <ref bean="valintatietoResourceImpl"/>
+            <ref bean="valintalaskentaResourceImpl"/>
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+            <ref bean="jsonProvider" />
+            <ref bean="cors-filter" />
+        </jaxrs:providers>
+    </jaxrs:server>
+
 
 </beans>

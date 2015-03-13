@@ -10,24 +10,4 @@
 	<context:property-placeholder/>
 	<context:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.config"/>
 
-<!--
-
- 
-
-    <context:annotation-config/>
-	<context:property-placeholder/>
-
-    <bean id="mongoUri" class="com.mongodb.MongoClientURI">
-        <constructor-arg type="java.lang.String" value="${valintalaskenta-laskenta-service.mongodb.uri}" />
-    </bean>
-
-    <bean id="mongo" class="com.mongodb.MongoClient" scope="singleton">
-        <constructor-arg type="com.mongodb.MongoClientURI" ref="mongoUri"/>
-    </bean>
-    <bean id="morphia" class="org.mongodb.morphia.Morphia" />
-    <bean id="datastore2" factory-bean="morphia" factory-method="createDatastore">
-        <constructor-arg type="com.mongodb.MongoClient" ref="mongo" />
-        <constructor-arg type="java.lang.String" value="${valintalaskenta-laskenta-service.mongodb.dbname}" />
-    </bean>
-    -->
 </beans>
