@@ -35,22 +35,7 @@
 
     <bean id="modelMapper" class="fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper"/>
 
-    <!-- Swagger API listing resource -->
-    <bean id="swaggerResourceJSON" class="com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON"/>
 
-    <!-- Swagger writers -->
-    <bean id="resourceWriter" class="com.wordnik.swagger.jaxrs.listing.ResourceListingProvider" scope="singleton"/>
-    <bean id="apiWriter" class="com.wordnik.swagger.jaxrs.listing.ApiDeclarationProvider" scope="singleton"/>
-
-    <!-- Swagger configuration -->
-    <bean id="swaggerConfig" class="com.wordnik.swagger.jaxrs.config.BeanConfig">
-        <property name="resourcePackage" value="fi.vm.sade.valintalaskenta.tulos.resource.impl"/>
-        <property name="version" value="1.0"/>
-        <property name="basePath" value="${valintalaskenta-laskenta-service.swagger.basepath}"/>
-
-        <property name="title" value="Swagger API documentation"/>
-        <property name="scan" value="true"/>
-    </bean>
 
     <jaxrs-client:client id="ValintaperusteetClient"
                          serviceClass="fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource"
