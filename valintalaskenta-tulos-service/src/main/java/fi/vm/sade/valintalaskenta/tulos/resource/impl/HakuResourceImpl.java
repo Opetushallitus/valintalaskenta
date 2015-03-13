@@ -23,11 +23,12 @@ import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.tulos.resource.HakuResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
+import org.springframework.stereotype.Controller;
 
 /**
  * @author Jussi Jartamo
  */
-@Component
+@Controller
 @Path("haku")
 @PreAuthorize("isAuthenticated()")
 @Api(value = "/haku", description = "Resurssi haun valintalaskennan virhetilanteiden hakemiseen")

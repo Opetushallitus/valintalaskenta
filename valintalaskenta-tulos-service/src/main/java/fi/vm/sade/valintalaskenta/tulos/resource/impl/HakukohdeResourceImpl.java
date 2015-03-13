@@ -25,11 +25,12 @@ import com.wordnik.swagger.annotations.ApiParam;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.tulos.resource.HakukohdeResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
+import org.springframework.stereotype.Controller;
 
 /**
  * @author Jussi Jartamo
  */
-@Component
+@Controller
 @Path("hakukohde")
 @PreAuthorize("isAuthenticated()")
 @Api(value = "/hakukohde", description = "Resurssi tulosten hakemiseen hakukohteittain")

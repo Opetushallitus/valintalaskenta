@@ -24,8 +24,9 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminen
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.resource.ValintakoeResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
+import org.springframework.stereotype.Controller;
 
-@Component
+@Controller
 @Path("valintakoe")
 @PreAuthorize("isAuthenticated()")
 @Api(value = "/valintakoe", description = "Resurssi valintakoeosallistumistulosten hakemiseen")

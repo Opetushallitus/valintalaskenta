@@ -15,6 +15,7 @@ import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -27,7 +28,7 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 /**
  * @author Jussi Jartamo
  */
-@Component
+@Controller
 @Path("valintatapajono")
 @PreAuthorize("isAuthenticated()")
 @Api(value = "/valintatapajono", description = "Resurssi valintatapajonon jonosijojen muokkaamiseen manuaalisesti")

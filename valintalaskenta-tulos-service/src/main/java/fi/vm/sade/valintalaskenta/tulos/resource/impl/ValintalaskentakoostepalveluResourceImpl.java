@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -22,7 +23,7 @@ import java.util.List;
  *
  * Palomuurilla suojattu resurssi
  */
-@Component
+@Controller
 @Path("valintalaskentakoostepalvelu/hakukohde")
 @Api(value = "/valintalaskentakoostepalvelu/hakukohde", description = "Resurssi tulosten hakemiseen hakukohteittain")
 public class ValintalaskentakoostepalveluResourceImpl {

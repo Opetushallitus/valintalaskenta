@@ -19,11 +19,12 @@ import com.wordnik.swagger.annotations.ApiParam;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.tulos.resource.HakemusResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
+import org.springframework.stereotype.Controller;
 
 /**
  * @author Jussi Jartamo
  */
-@Component
+@Controller
 @Path("hakemus")
 @PreAuthorize("isAuthenticated()")
 @Api(value = "/hakemus", description = "Resurssi hakemuskohtaisten tulosten hakemiseen")

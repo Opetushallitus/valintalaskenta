@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -34,7 +35,7 @@ import javax.ws.rs.Produces;
 /**
  * Created by jukais on 21.3.2014.
  */
-@Component
+@Controller
 @Path("valintalaskenta")
 public class ValintalaskentaResourceImpl {
 	private static final Logger LOG = LoggerFactory

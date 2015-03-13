@@ -8,6 +8,7 @@ import fi.vm.sade.valintalaskenta.tulos.service.impl.ValintatietoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import javax.ws.rs.*;
 import java.util.List;
@@ -17,7 +18,7 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 /**
  * Created by jukais on 25.3.2014.
  */
-@Component
+@Controller
 @Path("valintatieto")
 @PreAuthorize("isAuthenticated()")
 public class ValintatietoResourceImpl implements ValintatietoResource {

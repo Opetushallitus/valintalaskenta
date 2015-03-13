@@ -24,11 +24,12 @@ import fi.vm.sade.valintalaskenta.domain.dto.HarkinnanvarainenHyvaksyminenDTO;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.resource.HarkinnanvaraisuusResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
+import org.springframework.stereotype.Controller;
 
 /**
  * @author Jussi Jartamo
  */
-@Component
+@Controller
 @Path("/harkinnanvarainenhyvaksynta")
 @PreAuthorize("isAuthenticated()")
 @Api(value = "/harkinnanvarainenhyvaksynta", description = "Resurssi harkinnanvaraisesti hakeneiden hakijoiden käsittelyyn")

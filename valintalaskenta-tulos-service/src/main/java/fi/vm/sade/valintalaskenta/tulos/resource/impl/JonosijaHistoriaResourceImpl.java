@@ -24,11 +24,12 @@ import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteerihistoriaDTO;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.resource.JonosijaHistoriaResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
+import org.springframework.stereotype.Controller;
 
 /**
  * User: tommiha Date: 8/9/13 Time: 10:56 AM
  */
-@Component
+@Controller
 @Path("jonosijahistoria")
 @PreAuthorize("isAuthenticated()")
 @Api(value = "/jonosijahistoria", description = "Resurssi jonosijahistoriatiedon hakemiseen")

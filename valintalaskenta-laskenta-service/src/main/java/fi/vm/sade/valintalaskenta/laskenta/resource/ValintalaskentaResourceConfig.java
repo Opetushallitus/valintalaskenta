@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.laskenta.resource;
 
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.spring.scope.RequestContextFilter;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
@@ -12,6 +13,7 @@ import java.io.IOException;
  */
 public class ValintalaskentaResourceConfig extends ResourceConfig {
     public ValintalaskentaResourceConfig() {
+        register(RequestContextFilter.class);
         // json output and input
         /**
          * CORS Filter
