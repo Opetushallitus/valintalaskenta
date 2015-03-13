@@ -1,0 +1,362 @@
+{
+    "Valinnanvaihe": [
+        {
+            "jarjestysnumero": 0,
+            "hakuOid": "haku1",
+            "valinnanvaiheOid": "vaihe1",
+            "hakukohdeOid": "hakukohde1",
+            "nimi": "Varsinainen valinnanvaihe",
+            "valintatapajonot": [
+                {"$ref": "Valintatapajono", "$id": {"$oid": "541bef0ae4b0e1d22689e606"}}
+            ]
+        }
+    ],
+    "Valintatapajono": [
+        {
+            "_id": {
+                "$oid": "541bef0ae4b0e1d22689e606"
+            },
+            "valintatapajonoOid": "jono1",
+            "nimi": "Varsinaisen valinnanvaiheen valintatapajono",
+            "prioriteetti": 0,
+            "aloituspaikat": 144,
+            "siirretaanSijoitteluun": true,
+            "eiVarasijatayttoa": false,
+            "kaikkiEhdonTayttavatHyvaksytaan": false,
+            "kaytetaanValintalaskentaa": false,
+            "poissaOlevaTaytto": true,
+            "jonosijat": [
+                {
+                    "hakemusOid": "1.2.246.562.11.00001128774",
+                    "hakijaOid": "1.2.246.562.24.44292371192",
+                    "etunimi": "Marko Tapio",
+                    "sukunimi": "Hirvonen",
+                    "hakutoiveprioriteetti": 6,
+                    "harkinnanvarainen": false,
+                    "hylattyValisijoittelussa": false,
+                    "jarjestyskriteeritulokset": [
+                        {
+                            "prioriteetti": 0,
+                            "arvo": "70.00",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Valintatapa 1A sosiaali- ja terveysalalla, valintaryhmä 3"
+                        },
+                        {
+                            "prioriteetti": 1,
+                            "arvo": "1",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Hakutoivejärjestys tasapistetilanteessa"
+                        },
+                        {
+                            "prioriteetti": 2,
+                            "arvo": "49.00",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Sosiaali- ja terveysalan valintakoe valintaryhmässä 3"
+                        },
+                        {
+                            "prioriteetti": 3,
+                            "arvo": "7.975",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Kaikkien aineiden keskiarvo tasapistetilanteessa"
+                        },
+                        {
+                            "prioriteetti": 4,
+                            "arvo": "21",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Koulumenestyspisteet (valintatapa 1 A)"
+                        }
+                    ],
+                    "syotetytArvot": [
+                        {
+                            "tunniste": "SOTEKOE_VK_RYHMA3",
+                            "arvo": "49.00",
+                            "laskennallinenArvo": "49.00",
+                            "osallistuminen": "OSALLISTUI"
+                        },
+                        {
+                            "tunniste": "SOTE_kaikkiosiot_ryhma3",
+                            "arvo": "1",
+                            "laskennallinenArvo": "0",
+                            "osallistuminen": "OSALLISTUI"
+                        }
+                    ]
+                },
+                {
+                    "hakemusOid": "1.2.246.562.11.00001150344",
+                    "hakijaOid": "1.2.246.562.24.18046292754",
+                    "etunimi": "Kirsi Johanna",
+                    "sukunimi": "Ahllund",
+                    "hakutoiveprioriteetti": 1,
+                    "harkinnanvarainen": false,
+                    "hylattyValisijoittelussa": false,
+                    "jarjestyskriteeritulokset": [
+                        {
+                            "prioriteetti": 0,
+                            "arvo": "70.00",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Valintatapa 1A sosiaali- ja terveysalalla, valintaryhmä 3"
+                        },
+                        {
+                            "prioriteetti": 1,
+                            "arvo": "6",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Hakutoivejärjestys tasapistetilanteessa"
+                        },
+                        {
+                            "prioriteetti": 2,
+                            "arvo": "51.00",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Sosiaali- ja terveysalan valintakoe valintaryhmässä 3"
+                        },
+                        {
+                            "prioriteetti": 3,
+                            "arvo": "7.6",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Kaikkien aineiden keskiarvo tasapistetilanteessa"
+                        },
+                        {
+                            "prioriteetti": 4,
+                            "arvo": "19",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Koulumenestyspisteet (valintatapa 1 A)"
+                        }
+                    ],
+                    "syotetytArvot": [
+                        {
+                            "tunniste": "SOTEKOE_VK_RYHMA3",
+                            "arvo": "51.00",
+                            "laskennallinenArvo": "51.00",
+                            "osallistuminen": "OSALLISTUI"
+                        },
+                        {
+                            "tunniste": "SOTE_kaikkiosiot_ryhma3",
+                            "arvo": "1",
+                            "laskennallinenArvo": "0",
+                            "osallistuminen": "OSALLISTUI"
+                        }
+                    ]
+                },
+                {
+                    "hakemusOid": "1.2.246.562.11.00001146141",
+                    "hakijaOid": "1.2.246.562.24.71017738093",
+                    "etunimi": "Tanja Maarit Hannele",
+                    "sukunimi": "Toivio",
+                    "hakutoiveprioriteetti": 1,
+                    "harkinnanvarainen": false,
+                    "hylattyValisijoittelussa": false,
+                    "jarjestyskriteeritulokset": [
+                        {
+                            "prioriteetti": 0,
+                            "arvo": "70.00",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Valintatapa 1A sosiaali- ja terveysalalla, valintaryhmä 3"
+                        },
+                        {
+                            "prioriteetti": 1,
+                            "arvo": "6",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Hakutoivejärjestys tasapistetilanteessa"
+                        },
+                        {
+                            "prioriteetti": 2,
+                            "arvo": "48.00",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Sosiaali- ja terveysalan valintakoe valintaryhmässä 3"
+                        },
+                        {
+                            "prioriteetti": 3,
+                            "arvo": "8.0",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Kaikkien aineiden keskiarvo tasapistetilanteessa"
+                        },
+                        {
+                            "prioriteetti": 4,
+                            "arvo": "22",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Koulumenestyspisteet (valintatapa 1 A)"
+                        }
+                    ],
+                    "syotetytArvot": [
+                        {
+                            "tunniste": "SOTEKOE_VK_RYHMA3",
+                            "arvo": "48.00",
+                            "laskennallinenArvo": "48.00",
+                            "osallistuminen": "OSALLISTUI"
+                        },
+                        {
+                            "tunniste": "SOTE_kaikkiosiot_ryhma3",
+                            "arvo": "1",
+                            "laskennallinenArvo": "0",
+                            "osallistuminen": "OSALLISTUI"
+                        }
+                    ]
+                },
+                {
+                    "hakemusOid": "1.2.246.562.11.00001046636",
+                    "hakijaOid": "1.2.246.562.24.94313769921",
+                    "etunimi": "Jani Aulis",
+                    "sukunimi": "Linna",
+                    "hakutoiveprioriteetti": 2,
+                    "harkinnanvarainen": false,
+                    "hylattyValisijoittelussa": false,
+                    "jarjestyskriteeritulokset": [
+                        {
+                            "prioriteetti": 0,
+                            "arvo": "70.00",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Valintatapa 1A sosiaali- ja terveysalalla, valintaryhmä 3"
+                        },
+                        {
+                            "prioriteetti": 1,
+                            "arvo": "5",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Hakutoivejärjestys tasapistetilanteessa"
+                        },
+                        {
+                            "prioriteetti": 2,
+                            "arvo": "45.00",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Sosiaali- ja terveysalan valintakoe valintaryhmässä 3"
+                        },
+                        {
+                            "prioriteetti": 3,
+                            "arvo": "8.62",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Kaikkien aineiden keskiarvo tasapistetilanteessa"
+                        },
+                        {
+                            "prioriteetti": 4,
+                            "arvo": "25",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Koulumenestyspisteet (valintatapa 1 A)"
+                        }
+                    ],
+                    "syotetytArvot": [
+                        {
+                            "tunniste": "SOTEKOE_VK_RYHMA3",
+                            "arvo": "45.00",
+                            "laskennallinenArvo": "45.00",
+                            "osallistuminen": "OSALLISTUI"
+                        },
+                        {
+                            "tunniste": "SOTE_kaikkiosiot_ryhma3",
+                            "arvo": "1",
+                            "laskennallinenArvo": "0",
+                            "osallistuminen": "OSALLISTUI"
+                        }
+                    ]
+                },
+                {
+                    "hakemusOid": "1.2.246.562.11.00001012039",
+                    "hakijaOid": "1.2.246.562.24.38238848530",
+                    "etunimi": "Eero Johannes",
+                    "sukunimi": "Lahtinen",
+                    "hakutoiveprioriteetti": 1,
+                    "harkinnanvarainen": false,
+                    "hylattyValisijoittelussa": false,
+                    "jarjestyskriteeritulokset": [
+                        {
+                            "prioriteetti": 0,
+                            "arvo": "70.00",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Valintatapa 1A sosiaali- ja terveysalalla, valintaryhmä 3"
+                        },
+                        {
+                            "prioriteetti": 1,
+                            "arvo": "6",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Hakutoivejärjestys tasapistetilanteessa"
+                        },
+                        {
+                            "prioriteetti": 2,
+                            "arvo": "53.00",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Sosiaali- ja terveysalan valintakoe valintaryhmässä 3"
+                        },
+                        {
+                            "prioriteetti": 3,
+                            "arvo": "7.375",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Kaikkien aineiden keskiarvo tasapistetilanteessa"
+                        },
+                        {
+                            "prioriteetti": 4,
+                            "arvo": "17",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Koulumenestyspisteet (valintatapa 1 A)"
+                        }
+                    ],
+                    "syotetytArvot": [
+                        {
+                            "tunniste": "SOTEKOE_VK_RYHMA3",
+                            "arvo": "53.00",
+                            "laskennallinenArvo": "53.00",
+                            "osallistuminen": "OSALLISTUI"
+                        },
+                        {
+                            "tunniste": "SOTE_kaikkiosiot_ryhma3",
+                            "arvo": "1",
+                            "laskennallinenArvo": "0",
+                            "osallistuminen": "OSALLISTUI"
+                        }
+                    ]
+                },
+                {
+                    "hakemusOid": "oid6",
+                    "hakijaOid": "1.2.246.562.24.38238848530",
+                    "etunimi": "Pitäis olla tasasijalla",
+                    "sukunimi": "Lahtinen",
+                    "hakutoiveprioriteetti": 1,
+                    "harkinnanvarainen": false,
+                    "hylattyValisijoittelussa": false,
+                    "jarjestyskriteeritulokset": [
+                        {
+                            "prioriteetti": 0,
+                            "arvo": "70.00",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Valintatapa 1A sosiaali- ja terveysalalla, valintaryhmä 3"
+                        },
+                        {
+                            "prioriteetti": 1,
+                            "arvo": "6",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Hakutoivejärjestys tasapistetilanteessa"
+                        },
+                        {
+                            "prioriteetti": 2,
+                            "arvo": "53.00",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Sosiaali- ja terveysalan valintakoe valintaryhmässä 3"
+                        },
+                        {
+                            "prioriteetti": 3,
+                            "arvo": "7.375",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Kaikkien aineiden keskiarvo tasapistetilanteessa"
+                        },
+                        {
+                            "prioriteetti": 4,
+                            "arvo": "17",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Koulumenestyspisteet (valintatapa 1 A)"
+                        }
+                    ],
+                    "syotetytArvot": [
+                        {
+                            "tunniste": "SOTEKOE_VK_RYHMA3",
+                            "arvo": "53.00",
+                            "laskennallinenArvo": "53.00",
+                            "osallistuminen": "OSALLISTUI"
+                        },
+                        {
+                            "tunniste": "SOTE_kaikkiosiot_ryhma3",
+                            "arvo": "1",
+                            "laskennallinenArvo": "0",
+                            "osallistuminen": "OSALLISTUI"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
