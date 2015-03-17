@@ -130,7 +130,7 @@
 	<import resource="application-context-service.xml" />
 	<import resource="application-context-tulos.xml" />
 
-    <bean id="jsonProvider" class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
+    <bean id="jaxrsConfig" class="fi.vm.sade.valintalaskenta.laskenta.resource.JaxrsConfiguration" />
     <bean id="cors-filter" class="fi.vm.sade.valintalaskenta.laskenta.resource.filter.CorsResponseFilter"/>
 
     <jaxrs:server id="valintalaskennanResurssit">
