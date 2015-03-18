@@ -1,198 +1,188 @@
 {
-    "Valinnanvaihe": [
+    "Valintatapajono": [
         {
-            "jarjestysnumero": 0,
-            "hakuOid": "1.2.246.562.29.173465377510",
-            "hakukohdeOid": "1.2.246.562.20.70679320237",
-            "valinnanvaiheOid": "14103357550597533959554781220911",
-            "tarjoajaOid": "1.2.246.562.10.64213824028",
-            "nimi": "Varsinainen valinta",
-            "valintatapajonot": [
+            "valintatapajonoOid": "1410335755064-1436990924193196531",
+            "nimi": "Pisteet",
+            "prioriteetti": 0,
+            "aloituspaikat": 2,
+            "siirretaanSijoitteluun": true,
+            "tasasijasaanto": "ARVONTA",
+            "eiVarasijatayttoa": false,
+            "valmisSijoiteltavaksi": false,
+            "jonosijat": [
                 {
-                    "valintatapajonoOid": "1410335755064-1436990924193196531",
-                    "nimi": "Pisteet",
-                    "prioriteetti": 0,
-                    "aloituspaikat": 2,
-                    "siirretaanSijoitteluun": true,
-                    "tasasijasaanto": "ARVONTA",
-                    "eiVarasijatayttoa": false,
-                    "valmisSijoiteltavaksi": false,
-                    "jonosijat": [
+                    "hakemusOid": "1.2.246.562.11.00000876962",
+                    "hakijaOid": "1.2.246.562.24.70243695422",
+                    "etunimi": "hanna",
+                    "sukunimi": "hokkanen",
+                    "hakutoiveprioriteetti": 1,
+                    "harkinnanvarainen": false,
+                    "jarjestyskriteeritulokset": [
                         {
-                            "hakemusOid": "1.2.246.562.11.00000876962",
-                            "hakijaOid": "1.2.246.562.24.70243695422",
-                            "etunimi": "hanna",
-                            "sukunimi": "hokkanen",
-                            "hakutoiveprioriteetti": 1,
-                            "harkinnanvarainen": false,
-                            "jarjestyskriteeritulokset": [
-                                {
-                                    "prioriteetti": 0,
-                                    "arvo": "24",
-                                    "tila": "HYVAKSYTTAVISSA",
-                                    "historia": {
-                                        "$oid": "541bef0ae4b0e1d22689e606"
-                                    }
-                                },
-                                {
-                                    "prioriteetti": 1,
-                                    "arvo": "6",
-                                    "tila": "HYVAKSYTTAVISSA",
-                                    "nimi": "Hakutoivejärjestys tasapistetilanteessa",
-                                    "historia": {
-                                        "$oid": "541bef0ae4b0e1d22689e60a"
-                                    }
-                                },
-                                {
-                                    "prioriteetti": 2,
-                                    "arvo": "8.25",
-                                    "tila": "HYVAKSYTTAVISSA",
-                                    "nimi": "Kaikkien aineiden keskiarvo tasapistetilanteessa",
-                                    "historia": {
-                                        "$oid": "541bef0ae4b0e1d22689e60e"
-                                    }
-                                }
-                            ],
-                            "syotetytArvot": [
-                                {
-                                    "tunniste": "VALINTAKOE_TUNNISTE_VAIHDA",
-                                    "arvo": "4",
-                                    "laskennallinenArvo": "4",
-                                    "osallistuminen": "EI_VAADITA"
-                                }
-                            ]
+                            "prioriteetti": 0,
+                            "arvo": "24",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "historia": {
+                                "$oid": "541bef0ae4b0e1d22689e606"
+                            }
                         },
                         {
-                            "hakemusOid": "1.2.246.562.11.00000877644",
-                            "hakijaOid": "1.2.246.562.24.45544542047",
-                            "etunimi": "afasd",
-                            "sukunimi": "Mia",
-                            "hakutoiveprioriteetti": 4,
-                            "harkinnanvarainen": false,
-                            "jarjestyskriteeritulokset": [
-                                {
-                                    "prioriteetti": 0,
-                                    "arvo": "68",
-                                    "tila": "HYVAKSYTTAVISSA",
-                                    "historia": {
-                                        "$oid": "541bef0ae4b0e1d22689e607"
-                                    }
-                                },
-                                {
-                                    "prioriteetti": 1,
-                                    "arvo": "3",
-                                    "tila": "HYVAKSYTTAVISSA",
-                                    "nimi": "Hakutoivejärjestys tasapistetilanteessa",
-                                    "historia": {
-                                        "$oid": "541bef0ae4b0e1d22689e60b"
-                                    }
-                                },
-                                {
-                                    "prioriteetti": 2,
-                                    "arvo": "8.50",
-                                    "tila": "HYVAKSYTTAVISSA",
-                                    "nimi": "Kaikkien aineiden keskiarvo tasapistetilanteessa",
-                                    "historia": {
-                                        "$oid": "541bef0ae4b0e1d22689e60f"
-                                    }
-                                }
-                            ],
-                            "syotetytArvot": [
-                                {
-                                    "tunniste": "VALINTAKOE_TUNNISTE_VAIHDA",
-                                    "arvo": "44",
-                                    "laskennallinenArvo": "44",
-                                    "osallistuminen": "EI_VAADITA"
-                                }
-                            ]
+                            "prioriteetti": 1,
+                            "arvo": "6",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Hakutoivejärjestys tasapistetilanteessa",
+                            "historia": {
+                                "$oid": "541bef0ae4b0e1d22689e60a"
+                            }
                         },
                         {
-                            "hakemusOid": "1.2.246.562.11.00000877754",
-                            "hakijaOid": "1.2.246.562.24.82574120298",
-                            "etunimi": "PPPP HHHHH",
-                            "sukunimi": "LLLLLLL",
-                            "hakutoiveprioriteetti": 2,
-                            "harkinnanvarainen": false,
-                            "jarjestyskriteeritulokset": [
-                                {
-                                    "prioriteetti": 0,
-                                    "arvo": "76",
-                                    "tila": "HYVAKSYTTAVISSA",
-                                    "historia": {
-                                        "$oid": "541bef0ae4b0e1d22689e608"
-                                    }
-                                },
-                                {
-                                    "prioriteetti": 1,
-                                    "arvo": "5",
-                                    "tila": "HYVAKSYTTAVISSA",
-                                    "nimi": "Hakutoivejärjestys tasapistetilanteessa",
-                                    "historia": {
-                                        "$oid": "541bef0ae4b0e1d22689e60c"
-                                    }
-                                },
-                                {
-                                    "prioriteetti": 2,
-                                    "arvo": "8.10",
-                                    "tila": "HYVAKSYTTAVISSA",
-                                    "nimi": "Kaikkien aineiden keskiarvo tasapistetilanteessa",
-                                    "historia": {
-                                        "$oid": "541bef0ae4b0e1d22689e610"
-                                    }
-                                }
-                            ],
-                            "syotetytArvot": [
-                                {
-                                    "tunniste": "VALINTAKOE_TUNNISTE_VAIHDA",
-                                    "arvo": "66",
-                                    "laskennallinenArvo": "66",
-                                    "osallistuminen": "EI_VAADITA"
-                                }
-                            ]
+                            "prioriteetti": 2,
+                            "arvo": "8.25",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Kaikkien aineiden keskiarvo tasapistetilanteessa",
+                            "historia": {
+                                "$oid": "541bef0ae4b0e1d22689e60e"
+                            }
+                        }
+                    ],
+                    "syotetytArvot": [
+                        {
+                            "tunniste": "VALINTAKOE_TUNNISTE_VAIHDA",
+                            "arvo": "4",
+                            "laskennallinenArvo": "4",
+                            "osallistuminen": "EI_VAADITA"
+                        }
+                    ]
+                },
+                {
+                    "hakemusOid": "1.2.246.562.11.00000877644",
+                    "hakijaOid": "1.2.246.562.24.45544542047",
+                    "etunimi": "afasd",
+                    "sukunimi": "Mia",
+                    "hakutoiveprioriteetti": 4,
+                    "harkinnanvarainen": false,
+                    "jarjestyskriteeritulokset": [
+                        {
+                            "prioriteetti": 0,
+                            "arvo": "68",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "historia": {
+                                "$oid": "541bef0ae4b0e1d22689e607"
+                            }
                         },
                         {
-                            "hakemusOid": "1.2.246.562.11.00000877880",
-                            "hakijaOid": "1.2.246.562.24.32379660194",
-                            "etunimi": "Anthon",
-                            "sukunimi": "Trusk",
-                            "hakutoiveprioriteetti": 1,
-                            "harkinnanvarainen": false,
-                            "jarjestyskriteeritulokset": [
-                                {
-                                    "prioriteetti": 0,
-                                    "arvo": "33",
-                                    "tila": "HYVAKSYTTAVISSA",
-                                    "historia": {
-                                        "$oid": "541bef0ae4b0e1d22689e609"
-                                    }
-                                },
-                                {
-                                    "prioriteetti": 1,
-                                    "arvo": "6",
-                                    "tila": "HYVAKSYTTAVISSA",
-                                    "nimi": "Hakutoivejärjestys tasapistetilanteessa",
-                                    "historia": {
-                                        "$oid": "541bef0ae4b0e1d22689e60d"
-                                    }
-                                },
-                                {
-                                    "prioriteetti": 2,
-                                    "arvo": "0",
-                                    "tila": "HYVAKSYTTAVISSA",
-                                    "nimi": "Kaikkien aineiden keskiarvo tasapistetilanteessa",
-                                    "historia": {
-                                        "$oid": "541bef0ae4b0e1d22689e611"
-                                    }
-                                }
-                            ],
-                            "syotetytArvot": [
-                                {
-                                    "tunniste": "VALINTAKOE_TUNNISTE_VAIHDA",
-                                    "arvo": "33",
-                                    "laskennallinenArvo": "33",
-                                    "osallistuminen": "EI_VAADITA"
-                                }
-                            ]
+                            "prioriteetti": 1,
+                            "arvo": "3",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Hakutoivejärjestys tasapistetilanteessa",
+                            "historia": {
+                                "$oid": "541bef0ae4b0e1d22689e60b"
+                            }
+                        },
+                        {
+                            "prioriteetti": 2,
+                            "arvo": "8.50",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Kaikkien aineiden keskiarvo tasapistetilanteessa",
+                            "historia": {
+                                "$oid": "541bef0ae4b0e1d22689e60f"
+                            }
+                        }
+                    ],
+                    "syotetytArvot": [
+                        {
+                            "tunniste": "VALINTAKOE_TUNNISTE_VAIHDA",
+                            "arvo": "44",
+                            "laskennallinenArvo": "44",
+                            "osallistuminen": "EI_VAADITA"
+                        }
+                    ]
+                },
+                {
+                    "hakemusOid": "1.2.246.562.11.00000877754",
+                    "hakijaOid": "1.2.246.562.24.82574120298",
+                    "etunimi": "PPPP HHHHH",
+                    "sukunimi": "LLLLLLL",
+                    "hakutoiveprioriteetti": 2,
+                    "harkinnanvarainen": false,
+                    "jarjestyskriteeritulokset": [
+                        {
+                            "prioriteetti": 0,
+                            "arvo": "76",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "historia": {
+                                "$oid": "541bef0ae4b0e1d22689e608"
+                            }
+                        },
+                        {
+                            "prioriteetti": 1,
+                            "arvo": "5",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Hakutoivejärjestys tasapistetilanteessa",
+                            "historia": {
+                                "$oid": "541bef0ae4b0e1d22689e60c"
+                            }
+                        },
+                        {
+                            "prioriteetti": 2,
+                            "arvo": "8.10",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Kaikkien aineiden keskiarvo tasapistetilanteessa",
+                            "historia": {
+                                "$oid": "541bef0ae4b0e1d22689e610"
+                            }
+                        }
+                    ],
+                    "syotetytArvot": [
+                        {
+                            "tunniste": "VALINTAKOE_TUNNISTE_VAIHDA",
+                            "arvo": "66",
+                            "laskennallinenArvo": "66",
+                            "osallistuminen": "EI_VAADITA"
+                        }
+                    ]
+                },
+                {
+                    "hakemusOid": "1.2.246.562.11.00000877880",
+                    "hakijaOid": "1.2.246.562.24.32379660194",
+                    "etunimi": "Anthon",
+                    "sukunimi": "Trusk",
+                    "hakutoiveprioriteetti": 1,
+                    "harkinnanvarainen": false,
+                    "jarjestyskriteeritulokset": [
+                        {
+                            "prioriteetti": 0,
+                            "arvo": "33",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "historia": {
+                                "$oid": "541bef0ae4b0e1d22689e609"
+                            }
+                        },
+                        {
+                            "prioriteetti": 1,
+                            "arvo": "6",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Hakutoivejärjestys tasapistetilanteessa",
+                            "historia": {
+                                "$oid": "541bef0ae4b0e1d22689e60d"
+                            }
+                        },
+                        {
+                            "prioriteetti": 2,
+                            "arvo": "0",
+                            "tila": "HYVAKSYTTAVISSA",
+                            "nimi": "Kaikkien aineiden keskiarvo tasapistetilanteessa",
+                            "historia": {
+                                "$oid": "541bef0ae4b0e1d22689e611"
+                            }
+                        }
+                    ],
+                    "syotetytArvot": [
+                        {
+                            "tunniste": "VALINTAKOE_TUNNISTE_VAIHDA",
+                            "arvo": "33",
+                            "laskennallinenArvo": "33",
+                            "osallistuminen": "EI_VAADITA"
                         }
                     ]
                 }

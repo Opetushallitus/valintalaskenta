@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import org.bson.types.BasicBSONList;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,37 +36,29 @@ public class JarjestyskriteerihistoriaDAOImpl implements
 	@Override
 	public List<Jarjestyskriteerihistoria> findByValintatapajonoAndVersioAndHakemusOid(
 			String valintatapajonoOid, String hakemusOid) {
-		DBCollection collection = datastore.getCollection(Valinnanvaihe.class);
+		DBCollection collection = datastore.getCollection(Valintatapajono.class);
 
 		AggregationOutput aggregation = collection
 				.aggregate(
 						// Haetaan valintatapajono oidin mukaan
 						new BasicDBObject("$match", new BasicDBObject(
-								"valintatapajonot.valintatapajonoOid",
-								valintatapajonoOid)),
-
-						// Puretaan valintatapajonot
-						new BasicDBObject("$project", new BasicDBObject(
-								"valintatapajonot", 1)),
-						new BasicDBObject("$unwind", "$valintatapajonot"),
-						new BasicDBObject("$match", new BasicDBObject(
-								"valintatapajonot.valintatapajonoOid",
+								"valintatapajonoOid",
 								valintatapajonoOid)),
 						new BasicDBObject("$unwind",
-								"$valintatapajonot.jonosijat"),
+								"$jonosijat"),
 
 						// Haetaan tietyn hakemuksen jonosija ja siihen
 						// liittyvät historiat
 						new BasicDBObject("$match", new BasicDBObject(
-								"valintatapajonot.jonosijat.hakemusOid",
+								"jonosijat.hakemusOid",
 								hakemusOid)),
 						new BasicDBObject(
 								"$group",
 								new BasicDBObject("_id",
-										"$valintatapajonot.valintatapajonoOid")
+										"$valintatapajonoOid")
 										.append("historiat",
 												new BasicDBObject("$addToSet",
-														"$valintatapajonot.jonosijat.jarjestyskriteeritulokset.historia"))));
+														"$jonosijat.jarjestyskriteeritulokset.historia"))));
 
 		if (!aggregation.getCommandResult().ok()) {
 			throw new DaoException(aggregation.getCommandResult()
