@@ -1,8 +1,10 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 
+import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import org.mongodb.morphia.Datastore;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
+import org.mongodb.morphia.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -86,6 +88,12 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     @Override
     public void poistaValinnanvaihe(Valinnanvaihe valinnanvaihe) {
         datastore.delete(valinnanvaihe);
+    }
+
+    @Override
+    public void poistaJonot(String oid) {
+        final Query<Valintatapajono> query = datastore.createQuery(Valintatapajono.class).field("valintatapajonoOid").equal(oid);
+        datastore.delete(query);
     }
 
 

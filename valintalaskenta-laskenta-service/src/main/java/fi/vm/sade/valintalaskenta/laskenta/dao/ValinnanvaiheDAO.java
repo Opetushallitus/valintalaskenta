@@ -22,4 +22,6 @@ public interface ValinnanvaiheDAO {
     void create(Valinnanvaihe valinnanvaihe);
 
     void poistaValinnanvaihe(Valinnanvaihe valinnanvaihe);
+
+    void poistaJonot(String oid);
 }

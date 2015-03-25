@@ -416,13 +416,15 @@ public class ValintalaskentaSuorittajaServiceImpl implements
         List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.haeValinnanvaiheetJarjestysnumerolla(hakuOid, hakukohdeOid, jarjestysnumero);
         for (Valinnanvaihe vaihe : vaiheet) {
             if(!vaihe.getValinnanvaiheOid().equals(valinnanvaiheOid)) {
+                vaihe.getValintatapajonot().forEach(j -> valinnanvaiheDAO.poistaJonot(j.getValintatapajonoOid()));
                 valinnanvaiheDAO.poistaValinnanvaihe(vaihe);
             }
         }
 
-		// Poistetaan vanhat historiat
+		// Poistetaan vanhat jonot ja historiat
 		if (valinnanvaihe != null) {
-            List<Valintatapajono> saastettavat = new ArrayList<Valintatapajono>();
+            List<Valintatapajono> saastettavat = new ArrayList<>();
+            List<Valintatapajono> poistettavat = new ArrayList<>();
 			for (Valintatapajono jono : valinnanvaihe.getValintatapajonot()) {
                 if(jono.getKaytetaanValintalaskentaa() == null || jono.getKaytetaanValintalaskentaa()) {
                     for (Jonosija jonosija : jono.getJonosijat()) {
@@ -432,12 +434,14 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                                     .delete(tulos.getHistoria());
                         }
                     }
+                    poistettavat.add(jono);
                 } else {
                     saastettavat.add(jono);
                 }
 			}
 
 			valinnanvaihe.getValintatapajonot().clear();
+            poistettavat.forEach(j -> valinnanvaiheDAO.poistaJonot(j.getValintatapajonoOid()));
             valinnanvaihe.getValintatapajonot().addAll(saastettavat);
 		} else {
 			valinnanvaihe = new Valinnanvaihe();
