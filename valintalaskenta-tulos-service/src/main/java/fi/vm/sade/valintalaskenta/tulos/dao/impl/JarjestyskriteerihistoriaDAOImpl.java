@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
@@ -60,17 +61,28 @@ public class JarjestyskriteerihistoriaDAOImpl implements
 												new BasicDBObject("$addToSet",
 														"$jonosijat.jarjestyskriteeritulokset.historia"))));
 
-		if (!aggregation.getCommandResult().ok()) {
+        final Iterator<DBObject> iterator = aggregation.results().iterator();
+        if (!aggregation.getCommandResult().ok()) {
 			throw new DaoException(aggregation.getCommandResult()
 					.getErrorMessage());
-		} else if (!aggregation.results().iterator().hasNext()) {
+		} else if (!iterator.hasNext()) {
 			return Collections.EMPTY_LIST;
 		}
 
 		// Loopataan historiaviitteet läpi ja haetaan niitä vastaavat dokumentit
-		DBObject result = aggregation.results().iterator().next();
-		BasicBSONList historiat = (BasicBSONList) ((BasicBSONList) ((DBObject) result
-				.get("historiat"))).get(0);
+        BasicBSONList historiat = new BasicBSONList();
+        while(iterator.hasNext()) {
+            DBObject result = iterator.next();
+            final BasicBSONList current = (BasicBSONList)((BasicBSONList) result.get("historiat")).get(0);
+            if(!current.isEmpty()) {
+                historiat = current;
+                break;
+            }
+        }
+
+
+//        BasicBSONList historiat = (BasicBSONList) ((BasicBSONList) ((DBObject) result
+//                .get("historiat"))).get(0);
 
 		List<ObjectId> historiaIds = new ArrayList<ObjectId>();
 		for (Object ref : historiat) {

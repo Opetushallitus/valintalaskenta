@@ -6,6 +6,25 @@
               {
                   "hakemusOid" : "hakemusOid1",
                   "jarjestyskriteeritulokset" : [
+                      {  },
+                      {  }
+                  ]
+              },
+              {
+                  "hakemusOid" : "hakemusOid2",
+                  "jarjestyskriteeritulokset" : [
+                      {  },
+                      {  }
+                  ]
+              }
+          ]
+      },
+      {
+          "valintatapajonoOid" : "valintatapajonoOid1",
+          "jonosijat" : [
+              {
+                  "hakemusOid" : "hakemusOid1",
+                  "jarjestyskriteeritulokset" : [
                       { "historia" : { "$oid" : "52139e20ec975d4bfcb01247" } },
                       { "historia" : { "$oid" : "52139e20ec975d4bfcb01248" } }
                   ]
@@ -15,6 +34,25 @@
                   "jarjestyskriteeritulokset" : [
                       { "historia" : { "$oid" : "52139e20ec975d4bfcb01249" } },
                       { "historia" : { "$oid" : "52139e20ec975d4bfcb0124a" } }
+                  ]
+              }
+          ]
+      },
+      {
+          "valintatapajonoOid" : "valintatapajonoOid1",
+          "jonosijat" : [
+              {
+                  "hakemusOid" : "hakemusOid1",
+                  "jarjestyskriteeritulokset" : [
+                      {  },
+                      {  }
+                  ]
+              },
+              {
+                  "hakemusOid" : "hakemusOid2",
+                  "jarjestyskriteeritulokset" : [
+                      {  },
+                      {  }
                   ]
               }
           ]
