@@ -8,7 +8,9 @@ import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource;
 
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by teemu on 18.12.2014.
@@ -21,8 +23,8 @@ public class ValintaperusteetResourceImpl implements ValintaperusteetResource {
     }
 
     @Override
-    public List<ValintatapajonoDTO> haeValintatapajonotSijoittelulle(List<String> hakukohdeOids) {
-        return new ArrayList<>();
+    public Map<String, List<ValintatapajonoDTO>> haeValintatapajonotSijoittelulle(List<String> hakukohdeOids) {
+        return new HashMap<>();
     }
 
     @Override
