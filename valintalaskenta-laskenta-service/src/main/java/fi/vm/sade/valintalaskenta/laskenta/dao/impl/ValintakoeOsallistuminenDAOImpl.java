@@ -1,11 +1,13 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 
+import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
 import org.mongodb.morphia.Datastore;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 /**
@@ -18,7 +20,10 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
 
     @Autowired
     private Datastore morphiaDS;
-
+    @PostConstruct
+    public void ensureIndexes() {
+        morphiaDS.ensureIndexes(ValintakoeOsallistuminen.class);
+    }
     @Override
     public List<ValintakoeOsallistuminen> readAll() {
         return morphiaDS.find(ValintakoeOsallistuminen.class).asList();

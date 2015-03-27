@@ -1,9 +1,6 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
-import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.PrePersist;
+import org.mongodb.morphia.annotations.*;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
@@ -22,7 +19,7 @@ public class ValintakoeOsallistuminen {
     private ObjectId id;
 
     private String hakuOid;
-
+    @Indexed(unique = true)
     private String hakemusOid;
 
     private String hakijaOid;
