@@ -65,8 +65,7 @@ public class ValintakoeosallistumislaskinTest {
     }
 
     private Hakemus emptyHakemus() {
-        return new Hakemus("hakemusOid",
-                new HashMap<>(), new HashMap<>());
+        return new Hakemus("hakemusOid", new HashMap<>(), new HashMap<>(), new HashMap<>());
     }
 
     private Funktiokutsu getKutsu() {

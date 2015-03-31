@@ -24,8 +24,8 @@ public class HakemusDTOToHakemusConverter implements Converter<HakemusDTO, Hakem
         Map<String, String> target = dto.getAvaimet().stream().collect(Collectors.toMap(
                 AvainArvoDTO::getAvain, AvainArvoDTO::getArvo,
                 (s,a) -> s + ", " + a));
-
-        return new Hakemus(dto.getHakemusoid(), prioriteettiHakukohde, target);
+        //TODO suoritukset
+        return new Hakemus(dto.getHakemusoid(), prioriteettiHakukohde, target, new HashMap<>());
     }
 
 }

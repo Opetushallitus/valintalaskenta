@@ -94,8 +94,7 @@ public class HakemuslaskinServiceTest {
 				hakukohteet));
 
 		hakemus.setHarkinnanvaraisuus(harkinnanvaraisuus);
-		hakemus.setLaskentahakemus(new Hakemus(hakemusOid,
-				new HashMap<Integer, String>(), new HashMap<String, String>()));
+		hakemus.setLaskentahakemus(new Hakemus(hakemusOid, new HashMap<Integer, String>(), new HashMap<String, String>(), new HashMap<>()));
 
 		final Map<String, String> edellinenValinnanvaiheTilaSelite = new HashMap<String, String>();
 		edellinenValinnanvaiheTilaSelite.put("FI", "selite");
