@@ -4,6 +4,7 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -44,13 +45,28 @@ public class HakemusDTO {
     @ApiModelProperty(value = "Hakijan sukunimi", required = false)
     private String sukunimi;
 
+    /**
+     * @Deprecated Jatkossa käytetään avainSuoritusTiedot -kenttää
+     */
+    @Deprecated
     @ApiModelProperty(value = "Hakemuksen avain/arvo map", required = false)
     private List<AvainArvoDTO> avaimet = new ArrayList<AvainArvoDTO>();
+
+    @ApiModelProperty(value = "Hakemuksen avain/arvo map", required = false)
+    private List<AvainSuoritusTietoDTO> avainSuoritusTiedot = Collections.emptyList();
 
     public HakemusDTO(String hakuoid, String hakemusoid, List<HakukohdeDTO> hakukohteet) {
         this.hakuoid = hakuoid;
         this.hakemusoid = hakemusoid;
         this.hakukohteet = hakukohteet;
+    }
+
+    public List<AvainSuoritusTietoDTO> getAvainSuoritusTiedot() {
+        return avainSuoritusTiedot;
+    }
+
+    public void setAvainSuoritusTiedot(List<AvainSuoritusTietoDTO> avainSuoritusTiedot) {
+        this.avainSuoritusTiedot = avainSuoritusTiedot;
     }
 
     public HakemusDTO() {
