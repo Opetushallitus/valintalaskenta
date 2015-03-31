@@ -53,7 +53,7 @@ public class HakemusDTO {
     private List<AvainArvoDTO> avaimet = new ArrayList<AvainArvoDTO>();
 
     @ApiModelProperty(value = "Hakemuksen avain/arvo map", required = false)
-    private List<AvainSuoritusTietoDTO> avainSuoritusTiedot = Collections.emptyList();
+    private List<AvainMetatiedotDTO> avainMetatiedotDTO = Collections.emptyList();
 
     public HakemusDTO(String hakuoid, String hakemusoid, List<HakukohdeDTO> hakukohteet) {
         this.hakuoid = hakuoid;
@@ -61,12 +61,12 @@ public class HakemusDTO {
         this.hakukohteet = hakukohteet;
     }
 
-    public List<AvainSuoritusTietoDTO> getAvainSuoritusTiedot() {
-        return avainSuoritusTiedot;
+    public List<AvainMetatiedotDTO> getAvainMetatiedotDTO() {
+        return avainMetatiedotDTO;
     }
 
-    public void setAvainSuoritusTiedot(List<AvainSuoritusTietoDTO> avainSuoritusTiedot) {
-        this.avainSuoritusTiedot = avainSuoritusTiedot;
+    public void setAvainMetatiedotDTO(List<AvainMetatiedotDTO> avainMetatiedotDTO) {
+        this.avainMetatiedotDTO = avainMetatiedotDTO;
     }
 
     public HakemusDTO() {
