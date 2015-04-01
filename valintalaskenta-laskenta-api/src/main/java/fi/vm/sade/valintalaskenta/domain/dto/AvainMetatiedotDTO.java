@@ -24,7 +24,7 @@ public class AvainMetatiedotDTO {
         this.metatiedot = metatiedot;
     }
 
-    public List<Map<String, String>> getSuoritustiedot() {
+    public List<Map<String, String>> getMetatiedot() {
         return metatiedot;
     }
 

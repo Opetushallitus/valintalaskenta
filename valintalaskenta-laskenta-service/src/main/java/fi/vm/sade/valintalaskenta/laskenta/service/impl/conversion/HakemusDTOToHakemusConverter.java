@@ -8,7 +8,6 @@ import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,7 +26,7 @@ public class HakemusDTOToHakemusConverter implements Converter<HakemusDTO, Hakem
                 AvainArvoDTO::getAvain, AvainArvoDTO::getArvo,
                 (s,a) -> s + ", " + a));
         Map<String, List<Map<String,String>>> metatiedot = dto.getAvainMetatiedotDTO().stream().collect(Collectors.toMap(
-                AvainMetatiedotDTO::getAvain, AvainMetatiedotDTO::getSuoritustiedot,
+                AvainMetatiedotDTO::getAvain, AvainMetatiedotDTO::getMetatiedot,
                 (s,a) -> {
                     s.addAll(a);
                     return s;
