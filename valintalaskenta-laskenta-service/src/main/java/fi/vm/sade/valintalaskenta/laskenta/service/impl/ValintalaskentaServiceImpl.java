@@ -59,7 +59,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 					
 		}
 		try {
-			LOG.error(
+			LOG.info(
 					"Suoritetaan laskenta. Hakemuksia {} kpl ja valintaperusteita {} kpl",
 					new Object[] { hakemus.size(), valintaperuste.size() });
 			valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste, hakijaryhmat, hakukohdeOid);
@@ -106,7 +106,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 
         valintaperuste.stream().forEachOrdered(peruste -> {
             if(peruste.getValinnanVaihe().getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
-                LOG.error("Suoritetaan valintakoelaskenta {} hakemukselle", hakemus.size());
+                LOG.info("Suoritetaan valintakoelaskenta {} hakemukselle", hakemus.size());
                 hakemus.forEach(h -> valintakokeet(h, Arrays.asList(peruste)));
             } else {
                 laske(hakemus, Arrays.asList(peruste), hakijaryhmat, hakukohdeOid);

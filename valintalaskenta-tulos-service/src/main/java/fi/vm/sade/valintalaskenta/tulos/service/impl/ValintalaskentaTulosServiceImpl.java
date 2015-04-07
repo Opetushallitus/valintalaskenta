@@ -165,14 +165,14 @@ public class ValintalaskentaTulosServiceImpl implements
 
 	private void applyMuokatutJonosijatToHakukohde(String hakuOid,
 			List<HakukohdeDTO> b) {
-		LOGGER.error("Haetaan muokatut jonosijat {}!", hakuOid);
+		LOGGER.info("Haetaan muokatut jonosijat {}!", hakuOid);
 		List<MuokattuJonosija> a = muokattuJonosijaDAO.readByHakuOid(hakuOid);
-		LOGGER.error(
+		LOGGER.info(
 				"Muokatut jonosijat haettu, haetaan harkinnanvaraiset {}!",
 				hakuOid);
 		List<HarkinnanvarainenHyvaksyminen> c = harkinnanvarainenHyvaksyminenDAO
 				.haeHarkinnanvaraisetHyvaksymisetHaulle(hakuOid);
-		LOGGER.error(
+		LOGGER.info(
 				"Harkinnavaraiset haettu, loopataan hakukohteet {} - yhteensä {}",
 				hakuOid, b.size());
 		for (int i = 0; i < b.size(); i++) {
@@ -182,7 +182,7 @@ public class ValintalaskentaTulosServiceImpl implements
 			applyMuokatutJonosijat(hakukohde.getOid(),
 					hakukohde.getValinnanvaihe(), a, c);
 		}
-		LOGGER.error("Muokatut jonosijat laitettu kaikille hakukohteille {}!",
+		LOGGER.info("Muokatut jonosijat laitettu kaikille hakukohteille {}!",
 				hakuOid);
 	}
 
@@ -329,12 +329,12 @@ public class ValintalaskentaTulosServiceImpl implements
 				vaihe.setValintatapajonot(jonot);
 				result.add(vaihe);
 			} else {
-				LOGGER.error("Yhtään jonoa ei löytynyt!");
+				LOGGER.warn("Yhtään jonoa ei löytynyt {}!", hakukohdeoid);
 			}
 		});
 
 		if (result.isEmpty()) {
-			LOGGER.error("Yhtään valinnanvaihetta ei löytynyt!");
+			LOGGER.warn("Yhtään valinnanvaihetta ei löytynyt {}!", hakukohdeoid);
 			return Optional.empty();
 		}
 		List<HakukohdeDTO> b = valintatulosConverter
@@ -470,13 +470,13 @@ public class ValintalaskentaTulosServiceImpl implements
 
 	@Override
 	public List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid) {
-		LOGGER.error("Valintatietoja haetaan mongosta {}!", hakuOid);
+		LOGGER.info("Valintatietoja haetaan mongosta {}!", hakuOid);
 		List<Valinnanvaihe> a = valinnanvaiheDAO.readByHakuOid(hakuOid);
-		LOGGER.error("Valintatietoja haettu mongosta {}!", hakuOid);
+		LOGGER.info("Valintatietoja haettu mongosta {}!", hakuOid);
 		List<HakukohdeDTO> b = valintatulosConverter.convertValinnanvaihe(a);
-		LOGGER.error("Valintatiedot kovertoitu DTO:iksi {}!", hakuOid);
+		LOGGER.info("Valintatiedot kovertoitu DTO:iksi {}!", hakuOid);
 		applyMuokatutJonosijatToHakukohde(hakuOid, b);
-		LOGGER.error("Muokatut jonosijat liitetty {}!", hakuOid);
+		LOGGER.info("Muokatut jonosijat liitetty {}!", hakuOid);
 
         b.forEach(hakukohde -> {
             hakukohde.getHakijaryhma().addAll(haeHakijaryhmatHakukohteelle(hakukohde.getOid()));
