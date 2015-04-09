@@ -264,7 +264,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 
         poistaHaamuryhmat(hakijaryhmat, valintaperusteet.get(0).getHakukohdeOid());
 
-        LOG.error("Hakijaryhmien määrä {}", hakijaryhmat.size());
+        LOG.info("Hakijaryhmien määrä {} hakukohteessa {}", hakijaryhmat.size(), hakukohdeOid);
         // Hakijaryhmät
         if(!hakijaryhmat.isEmpty()) {
 //            Collections.sort(hakijaryhmat, (h1, h2) -> h1.getPrioriteetti() - h2.getPrioriteetti());
