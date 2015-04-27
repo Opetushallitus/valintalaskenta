@@ -26,6 +26,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     @PostConstruct
     public void ensureIndexes() {
         datastore.ensureIndexes(Valinnanvaihe.class);
+        datastore.ensureIndexes(Valintatapajono.class);
     }
 
     @Override
