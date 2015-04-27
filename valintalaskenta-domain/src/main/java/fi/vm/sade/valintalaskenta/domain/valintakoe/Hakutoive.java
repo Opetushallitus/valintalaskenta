@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
 import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Indexed;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 @Embedded("Hakutoive")
 public class Hakutoive {
 
+    @Indexed
     private String hakukohdeOid;
 
     @Embedded

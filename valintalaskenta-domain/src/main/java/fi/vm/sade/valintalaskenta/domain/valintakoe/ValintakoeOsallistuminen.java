@@ -13,7 +13,12 @@ import java.util.List;
  * Time: 13.02
  */
 @Entity("ValintakoeOsallistuminen")
+@Indexes({
+        @Index(name = "idx_haku_kohde_vaiheenjarjestysluku", value = "hakuOid, hakutoiveet.hakukohdeOid, hakutoiveet.valinnanVaiheet.valinnanVaiheJarjestysluku")
+})
 public class ValintakoeOsallistuminen {
+
+    public static final String INDEX_HAE_HAKU_KOHDE_VAIHEENJARJESTYSLUKU = "idx_haku_kohde_vaiheenjarjestysluku";
 
     @Id
     private ObjectId id;
