@@ -145,6 +145,7 @@
             <ref bean="valintatapajonoResourceImpl"/>
             <ref bean="valintatietoResourceImpl"/>
             <ref bean="valintalaskentaResourceImpl"/>
+            <ref bean="sessionResourceImpl"/>
             <ref bean="swaggerResourceJSON"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
