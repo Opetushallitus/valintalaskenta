@@ -10,12 +10,14 @@ import fi.vm.sade.service.valintaperusteet.dto.FunktiokutsuDTO;
 import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi;
+import fi.vm.sade.service.valintaperusteet.dto.model.Koekutsu;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinnanvaiheKasittelija;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
+import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.ValintakoelaskentaSuorittajaServiceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil;
 import org.apache.commons.io.IOUtils;
 import org.junit.Rule;
@@ -110,7 +112,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         kokeet1.put("valintakoetunniste2", totuusarvoTrue);
 
         ValintaperusteetDTO valintaperusteet1 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1,
-                valinnanVaiheJarjestysluku1, kokeet1);
+                valinnanVaiheJarjestysluku1, kokeet1, Koekutsu.YLIN_TOIVE, "kutsunKohdeAvain");
 
         final String valinnanVaiheOid2 = "valinnanVaiheOid2";
         final int valinnanVaiheJarjestysluku2 = 1;
@@ -119,7 +121,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         kokeet2.put(valintakoetunniste, totuusarvoFalse);
 
         ValintaperusteetDTO valintaperusteet2 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid2, valinnanVaiheOid2,
-                valinnanVaiheJarjestysluku2, kokeet2);
+                valinnanVaiheJarjestysluku2, kokeet2, Koekutsu.YLIN_TOIVE, "kutsunKohdeAvain");
 
         List<ValintaperusteetDTO> valintaperusteet = new ArrayList<ValintaperusteetDTO>();
         valintaperusteet.add(valintaperusteet1);
@@ -129,6 +131,41 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet);
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         assertNotNull(osallistuminen);
+        assertEquals(osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen(), Osallistuminen.OSALLISTUU);
+        assertEquals(osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(1).getOsallistuminenTulos().getOsallistuminen(), Osallistuminen.OSALLISTUU);
+    }
+
+    @Test
+    @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
+    public void testKoekutsuHakijanValinta() {
+        final String hakukohdeOid1 = "hakukohdeOid1";
+        final String hakukohdeOid2 = "hakukohdeOid2";
+        final String hakemusOid = "hakemusOid";
+
+        final HakemusDTO hakemus = luoHakemus(hakemusOid, "hakijaOid", hakukohdeOid1, hakukohdeOid2);
+
+        final String hakuOid = "hakuOid";
+        final String valintakoetunniste = "valintakoetunniste";
+
+        final String valinnanVaiheOid1 = "valinnanVaiheOid1";
+        final int valinnanVaiheJarjestysluku1 = 0;
+
+        Map<String, FunktiokutsuDTO> kokeet1 = new HashMap<String, FunktiokutsuDTO>();
+        kokeet1.put(valintakoetunniste, totuusarvoTrue);
+
+        ValintaperusteetDTO valintaperusteet1 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1,
+                valinnanVaiheJarjestysluku1, kokeet1, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde2");
+
+        List<ValintaperusteetDTO> valintaperusteet = new ArrayList<ValintaperusteetDTO>();
+        valintaperusteet.add(valintaperusteet1);
+
+        assertNull(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid));
+        valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet);
+        ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
+        assertNotNull(osallistuminen);
+        assertEquals(osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen(), Osallistuminen.OSALLISTUU);
+        assertEquals(osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValinnanVaiheOid(), ValintakoelaskentaSuorittajaServiceImpl.VALINNANVAIHE_HAKIJAN_VALINTA);
+        assertEquals(osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValinnanVaiheJarjestysluku(), new Integer(100));
     }
 
     @Test
