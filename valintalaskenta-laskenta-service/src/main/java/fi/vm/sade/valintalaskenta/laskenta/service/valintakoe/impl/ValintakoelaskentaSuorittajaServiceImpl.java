@@ -164,41 +164,27 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
                             }
                         }
 
-                        OsallistuminenTulos osallistuminen = null;
+                        OsallistuminenTulos osallistuminen = new OsallistuminenTulos();
                         Hakemus hak = hakemusConverter.convert(hakemus);
                         Funktiokutsu fuk = modelMapper.map(koe.getFunktiokutsu(), Funktiokutsu.class);
 
                         if (viimeisinValinnanVaihe != null) {
-                            TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija
-                                    .tilaEdellisenValinnanvaiheenMukaan(
-                                            hakemus.getHakemusoid(),
-                                            new Hyvaksyttavissatila(),
-                                            viimeisinValinnanVaihe);
+                            TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(
+                                    hakemus.getHakemusoid(), new Hyvaksyttavissatila(), viimeisinValinnanVaihe);
                             if (tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)) {
                                 if (koe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA)) {
-                                    osallistuminen = new OsallistuminenTulos();
-                                    osallistuminen.setKuvaus(tilaJaSelite.getSelite());
-                                    osallistuminen.setTekninenKuvaus(tilaJaSelite.getTekninenSelite());
-                                    osallistuminen.setLaskentaTila(tilaJaSelite.getTila().toString());
-                                    osallistuminen.setOsallistuminen(Osallistuminen.OSALLISTUU);
+                                    osallistuminen = createOsallistuminen(tilaJaSelite, Osallistuminen.OSALLISTUU);
                                 } else {
-                                    osallistuminen = getOsallistuminenTulos(new Hakukohde(vp.getHakukohdeOid(),
-                                            hakukohteenValintaperusteet), hak, fuk);
+                                    osallistuminen = getOsallistuminenTulos(new Hakukohde(vp.getHakukohdeOid(), hakukohteenValintaperusteet), hak, fuk);
                                 }
                             } else {
-                                osallistuminen = new OsallistuminenTulos();
-                                osallistuminen.setKuvaus(tilaJaSelite.getSelite());
-                                osallistuminen.setTekninenKuvaus(tilaJaSelite.getTekninenSelite());
-                                osallistuminen.setLaskentaTila(tilaJaSelite.getTila().toString());
-                                osallistuminen.setOsallistuminen(Osallistuminen.EI_OSALLISTU);
+                                osallistuminen = createOsallistuminen(tilaJaSelite, Osallistuminen.EI_OSALLISTU);
                             }
                         } else {
                             if (koe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA)) {
-                                osallistuminen = new OsallistuminenTulos();
                                 osallistuminen.setOsallistuminen(Osallistuminen.OSALLISTUU);
                             } else {
-                                osallistuminen = getOsallistuminenTulos(new Hakukohde(vp.getHakukohdeOid(),
-                                        hakukohteenValintaperusteet), hak, fuk);
+                                osallistuminen = getOsallistuminenTulos(new Hakukohde(vp.getHakukohdeOid(), hakukohteenValintaperusteet), hak, fuk);
                             }
                         }
 
@@ -312,6 +298,15 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
                 .laskeOsallistuminenYhdelleHakukohteelle(
                         hakukohde,
                         convert, map);
+    }
+
+    private OsallistuminenTulos createOsallistuminen(TilaJaSelite tilaJaSelite, Osallistuminen osallistuu) {
+        OsallistuminenTulos osallistuminen = new OsallistuminenTulos();
+        osallistuminen.setKuvaus(tilaJaSelite.getSelite());
+        osallistuminen.setTekninenKuvaus(tilaJaSelite.getTekninenSelite());
+        osallistuminen.setLaskentaTila(tilaJaSelite.getTila().toString());
+        osallistuminen.setOsallistuminen(osallistuu);
+        return osallistuminen;
     }
 
     private Map<String, String> muodostaHakukohteenValintaperusteetMap(
