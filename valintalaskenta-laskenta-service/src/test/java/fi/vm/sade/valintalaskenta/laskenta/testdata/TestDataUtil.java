@@ -1,12 +1,15 @@
 package fi.vm.sade.valintalaskenta.laskenta.testdata;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import fi.vm.sade.service.valintaperusteet.dto.*;
+import fi.vm.sade.service.valintaperusteet.dto.model.Koekutsu;
 import fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi;
-import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.*;
+import fi.vm.sade.valintalaskenta.domain.dto.AvainArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
@@ -22,6 +25,13 @@ public abstract class TestDataUtil {
 		hakemus.setHakemusoid(hakemusOid);
 		hakemus.setHakijaOid(hakijaOid);
         hakemus.setHakuoid("1.2.246.562.29.173465377510");
+
+		List<AvainArvoDTO> avaimet = new LinkedList<>();
+		AvainArvoDTO avain = new AvainArvoDTO();
+		avain.setAvain("hakukohdeKutsunKohde2");
+		avain.setArvo("hakukohdeOid2");
+		avaimet.add(avain);
+		hakemus.setAvaimet(avaimet);
 
 		return hakemus;
 	}
@@ -64,7 +74,7 @@ public abstract class TestDataUtil {
 		ValintaperusteetDTO perusteet = luoValintaperusteet(hakuOid,
 				hakukohdeOid);
 		perusteet.setValinnanVaihe(luoValintakoeValinnanVaihe(valinnanVaiheOid,
-				valinnanVaiheJarjestysluku, valintakoeTunnisteet));
+				valinnanVaiheJarjestysluku, Koekutsu.YLIN_TOIVE, "kutsunKohdeAvain", valintakoeTunnisteet));
 
 		return perusteet;
 	}
@@ -113,12 +123,12 @@ public abstract class TestDataUtil {
 
 	public static ValintaperusteetDTO luoValintaperusteetJaValintakoeValinnanVaihe(
 			String hakuOid, String hakukohdeOid, String valinnanVaiheOid,
-			int valinnanVaiheJarjestysluku,
-			Map<String, FunktiokutsuDTO> valintakokeetJaKaavat) {
+			int valinnanVaiheJarjestysluku, Map<String, FunktiokutsuDTO> valintakokeetJaKaavat,
+			Koekutsu kutsunKohde, String kutsunKohdeAvain) {
 		ValintaperusteetDTO perusteet = luoValintaperusteet(hakuOid,
 				hakukohdeOid);
 		perusteet.setValinnanVaihe(luoValinnanVaihe(valinnanVaiheOid,
-				valinnanVaiheJarjestysluku, valintakokeetJaKaavat));
+				valinnanVaiheJarjestysluku, valintakokeetJaKaavat, kutsunKohde, kutsunKohdeAvain));
 
 		return perusteet;
 	}
@@ -135,13 +145,14 @@ public abstract class TestDataUtil {
 
 	private static ValintaperusteetValinnanVaiheDTO luoValinnanVaihe(
 			String valinnanVaiheOid, int valinnanVaiheJarjestysluku,
-			Map<String, FunktiokutsuDTO> valintakokeetJaKaavat) {
+			Map<String, FunktiokutsuDTO> valintakokeetJaKaavat, Koekutsu kutsunKohde,
+			String kutsunKohdeAvain) {
 		ValintaperusteetValinnanVaiheDTO vaihe = luoValintakoeValinnanVaihe(
 				valinnanVaiheOid, valinnanVaiheJarjestysluku);
 
 		for (Map.Entry<String, FunktiokutsuDTO> e : valintakokeetJaKaavat
 				.entrySet()) {
-			ValintakoeDTO koe = luoValintakoe(e.getKey(), e.getKey());
+			ValintakoeDTO koe = luoValintakoe(e.getKey(), e.getKey(), kutsunKohde, kutsunKohdeAvain);
 			koe.setFunktiokutsu(e.getValue());
 			vaihe.getValintakoe().add(koe);
 		}
@@ -150,20 +161,20 @@ public abstract class TestDataUtil {
 	}
 
 	public static ValintaperusteetValinnanVaiheDTO luoValintakoeValinnanVaihe(
-			String valinnanVaiheOid, int jarjestysluku,
-			String... valintakoeTunnisteet) {
+			String valinnanVaiheOid, int jarjestysluku, Koekutsu kutsunKohde,
+			String kutsunKohdeAvain, String... valintakoeTunnisteet) {
 		ValintaperusteetValinnanVaiheDTO vaihe = luoValintakoeValinnanVaihe(
 				valinnanVaiheOid, jarjestysluku);
 
 		for (String tunniste : valintakoeTunnisteet) {
-			vaihe.getValintakoe().add(luoValintakoe(tunniste, tunniste));
+			vaihe.getValintakoe().add(luoValintakoe(tunniste, tunniste, kutsunKohde, kutsunKohdeAvain));
 		}
 
 		return vaihe;
 	}
 
 	public static ValintakoeDTO luoValintakoe(String valintakoeOid,
-			String tunniste) {
+			String tunniste, Koekutsu kutsunKohde, String kutsunKohdeAvain) {
 		ValintakoeDTO koe = new ValintakoeDTO();
 		koe.setFunktiokutsu(new FunktiokutsuDTO());
 		koe.setTunniste(tunniste);
@@ -171,6 +182,8 @@ public abstract class TestDataUtil {
 		koe.setLahetetaankoKoekutsut(true);
 		koe.setAktiivinen(true);
         koe.setKutsutaankoKaikki(false);
+		koe.setKutsunKohde(kutsunKohde);
+		koe.setKutsunKohdeAvain(kutsunKohdeAvain);
 		return koe;
 	}
 
