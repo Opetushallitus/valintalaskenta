@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util;
 
+import fi.vm.sade.service.valintaperusteet.dto.model.Koekutsu;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
 
 /**
@@ -19,6 +20,8 @@ public class HakukohdeValintakoeData {
     private boolean lahetetaankoKoekutsut;
     private boolean aktiivinen;
     private Integer kutsuttavienMaara;
+	private Koekutsu kutsunKohde;
+	private String kutsunKohdeAvain;
 
 	public String getNimi() {
 		return nimi;
@@ -107,4 +110,20 @@ public class HakukohdeValintakoeData {
     public void setKutsuttavienMaara(final Integer kutsuttavienMaara) {
         this.kutsuttavienMaara = kutsuttavienMaara;
     }
+
+	public Koekutsu getKutsunKohde() {
+		return kutsunKohde;
+	}
+
+	public void setKutsunKohde(Koekutsu kutsunKohde) {
+		this.kutsunKohde = kutsunKohde;
+	}
+
+	public String getKutsunKohdeAvain() {
+		return kutsunKohdeAvain;
+	}
+
+	public void setKutsunKohdeAvain(String kutsunKohdeAvain) {
+		this.kutsunKohdeAvain = kutsunKohdeAvain;
+	}
 }
