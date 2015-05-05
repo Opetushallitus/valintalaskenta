@@ -1,9 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta.testdata;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import fi.vm.sade.service.valintaperusteet.dto.*;
 import fi.vm.sade.service.valintaperusteet.dto.model.Koekutsu;
@@ -178,7 +175,7 @@ public abstract class TestDataUtil {
 		ValintakoeDTO koe = new ValintakoeDTO();
 		koe.setFunktiokutsu(new FunktiokutsuDTO());
 		koe.setTunniste(tunniste);
-		koe.setOid(valintakoeOid);
+		koe.setOid(UUID.randomUUID().toString());
 		koe.setLahetetaankoKoekutsut(true);
 		koe.setAktiivinen(true);
         koe.setKutsutaankoKaikki(false);
