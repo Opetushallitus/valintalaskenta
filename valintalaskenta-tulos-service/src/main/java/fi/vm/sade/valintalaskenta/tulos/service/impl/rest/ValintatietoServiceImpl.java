@@ -43,7 +43,6 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             List<ValintakoeOsallistuminen> valinnanvaiheet = tulosService
                     .haeValintakoeOsallistumisetByHakutoive(hakukohdeOid);
             Set<String> oidit = new HashSet<String>(valintakoeOid);
-            GregorianCalendar kalenteri = new GregorianCalendar();
             for (ValintakoeOsallistuminen koetulos : valinnanvaiheet) {
                 for (Hakutoive hakutoive : koetulos.getHakutoiveet()) {
                     for (ValintakoeValinnanvaihe vaihe : hakutoive
