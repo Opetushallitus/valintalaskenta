@@ -223,7 +223,28 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         assertNotNull(osallistuminen);
 
-        //todo assertit
+        assertEquals(2, osallistuminen.getHakutoiveet().size());
+
+        assertEquals("hakukohdeOid2", osallistuminen.getHakutoiveet().get(0).getHakukohdeOid());
+
+        assertEquals(2, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().size());
+        assertEquals(1, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().size());
+        assertEquals("valintakoetunniste1", osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(0).getValintakoeTunniste());
+        assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen());
+
+        assertEquals(1, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(1).getValintakokeet().size());
+        assertEquals("valintakoetunniste2", osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(1).getValintakokeet().get(0).getValintakoeTunniste());
+        assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(1).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen());
+
+        assertEquals("hakukohdeOid3", osallistuminen.getHakutoiveet().get(1).getHakukohdeOid());
+
+        assertEquals(1, osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().size());
+        assertEquals(2, osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().size());
+        assertEquals("valintakoetunniste3", osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().get(0).getValintakoeTunniste());
+        assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen());
+
+        assertEquals("valintakoetunniste2", osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().get(1).getValintakoeTunniste());
+        assertEquals(Osallistuminen.EI_OSALLISTU, osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().get(1).getOsallistuminenTulos().getOsallistuminen());
     }
 
     @Test
@@ -292,7 +313,26 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         assertNotNull(osallistuminen);
 
-        //todo assertit
+        assertEquals(2, osallistuminen.getHakutoiveet().size());
+
+        assertEquals("hakukohdeOid2", osallistuminen.getHakutoiveet().get(0).getHakukohdeOid());
+
+        assertEquals(2, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().size());
+
+        assertEquals(1, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().size());
+        assertEquals("valintakoetunniste1", osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(0).getValintakoeTunniste());
+        assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen());
+
+        assertEquals(1, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(1).getValintakokeet().size());
+        assertEquals("valintakoetunniste3", osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(1).getValintakokeet().get(0).getValintakoeTunniste());
+        assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(1).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen());
+
+        assertEquals("hakukohdeOid3", osallistuminen.getHakutoiveet().get(1).getHakukohdeOid());
+
+        assertEquals(1, osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().size());
+        assertEquals(1, osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().size());
+        assertEquals("valintakoetunniste2", osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().get(0).getValintakoeTunniste());
+        assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen());
     }
 
     @Test
