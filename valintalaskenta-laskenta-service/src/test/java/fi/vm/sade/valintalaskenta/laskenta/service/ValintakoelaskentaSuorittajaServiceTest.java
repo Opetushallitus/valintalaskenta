@@ -684,7 +684,6 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 			assertEquals(1, vaihe1.getValintakokeet().size());
 
 			Valintakoe vk1 = vaihe1.getValintakokeet().get(0);
-			assertEquals(valintakoetunniste, vk1.getValintakoeOid());
 			assertEquals(valintakoetunniste, vk1.getValintakoeTunniste());
 			assertEquals(Osallistuminen.OSALLISTUU, vk1
 					.getOsallistuminenTulos().getOsallistuminen());
@@ -703,7 +702,6 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 			assertEquals(1, vaihe2.getValintakokeet().size());
 
 			Valintakoe vk2 = vaihe2.getValintakokeet().get(0);
-			assertEquals(valintakoetunniste, vk2.getValintakoeOid());
 			assertEquals(valintakoetunniste, vk2.getValintakoeTunniste());
 			assertEquals(Osallistuminen.EI_OSALLISTU, vk2
 					.getOsallistuminenTulos().getOsallistuminen());

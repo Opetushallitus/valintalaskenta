@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import fi.vm.sade.service.valintaperusteet.dto.HakukohteenValintaperusteDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintakoeDTO;
@@ -212,6 +213,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
                         data.setNimi(koe.getNimi());
                         data.setLahetetaankoKoekutsut(koe.getLahetetaankoKoekutsut());
                         data.setAktiivinen(koe.getAktiivinen());
+                        data.setKutsunKohde(koe.getKutsunKohde());
+                        data.setKutsunKohdeAvain(koe.getKutsunKohdeAvain());
 
                         if (!valintakoeData.containsKey(tunniste)) {
                             valintakoeData.put(tunniste,
@@ -266,7 +269,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
                         data.setNimi(koe.getNimi());
                         data.setLahetetaankoKoekutsut(koe.isLahetetaankoKoekutsut());
                         data.setAktiivinen(koe.isAktiivinen());
-
+                        data.setKutsunKohde(koe.getKutsunKohde());
+                        data.setKutsunKohdeAvain(koe.getKutsunKohdeAvain());
                         olemassaOlevat.add(data);
                     }
                 })));
@@ -337,7 +341,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
         // valintakokeeseen, hakija ei osallistu
         // pienemmällä prioriteetilla oleviin samoihin valintakokeisiin.
         boolean osallistuminenLoydetty = false;
-        for (HakukohdeValintakoeData d : kokeet) {
+        final List<HakukohdeValintakoeData> lasketutKokeet = kokeet.stream().filter(koe -> !koe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA)).collect(Collectors.toList());
+        for (HakukohdeValintakoeData d : lasketutKokeet) {
 
             if (!osallistuminenLoydetty
                     && Osallistuminen.OSALLISTUU.equals(d
@@ -371,6 +376,20 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
                     .filter(t -> hakutoiveetByOid.containsKey(t.getHakukohdeOid()))
                     .filter(t -> !t.getHakukohdeOid().equals(data.getHakukohdeOid()))
                     .collect(Collectors.toList());
+
+            final Optional<Hakutoive> hakutoive = osallistuminen.getHakutoiveet().stream()
+                    .filter(t -> t.getHakukohdeOid().equals(data.getHakukohdeOid()))
+                    .map(h -> {
+                        final List<ValintakoeValinnanvaihe> collect = h.getValinnanVaiheet().stream()
+                                .filter(v -> v.getValinnanVaiheOid().equals(VALINNANVAIHE_HAKIJAN_VALINTA))
+                                .collect(Collectors.toList());
+                        h.setValinnanVaiheet(collect);
+                        return h;
+                    }).findFirst();
+
+            if (hakutoive.isPresent() && hakutoive.get().getValinnanVaiheet().size() > 0) {
+                toiveet.add(hakutoive.get());
+            }
             osallistuminen.getHakutoiveet().clear();
             osallistuminen.setHakutoiveet(toiveet);
         }
@@ -445,6 +464,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 		koe.setValintakoeTunniste(data.getValintakoeTunniste());
 		koe.setLahetetaankoKoekutsut(data.isLahetetaankoKoekutsut());
 		koe.setAktiivinen(data.isAktiivinen());
+        koe.setKutsunKohde(data.getKutsunKohde());
+        koe.setKutsunKohdeAvain(data.getKutsunKohdeAvain());
 	}
 
     protected Map<String, HakukohdeDTO> luoHakutoiveMap(

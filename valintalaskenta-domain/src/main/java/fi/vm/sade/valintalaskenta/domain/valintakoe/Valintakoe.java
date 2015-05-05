@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
+import fi.vm.sade.service.valintaperusteet.dto.model.Koekutsu;
 import org.mongodb.morphia.annotations.Embedded;
 
 /**
@@ -14,6 +15,8 @@ public class Valintakoe {
 	private OsallistuminenTulos osallistuminenTulos;
     private boolean lahetetaankoKoekutsut;
     private Integer kutsuttavienMaara;
+	private Koekutsu kutsunKohde = Koekutsu.YLIN_TOIVE;
+	private String kutsunKohdeAvain;
 
 	public boolean isAktiivinen() {
 		return aktiivinen;
@@ -70,4 +73,20 @@ public class Valintakoe {
     public void setKutsuttavienMaara(final Integer kutsuttavienMaara) {
         this.kutsuttavienMaara = kutsuttavienMaara;
     }
+
+	public Koekutsu getKutsunKohde() {
+		return kutsunKohde;
+	}
+
+	public void setKutsunKohde(Koekutsu kutsunKohde) {
+		this.kutsunKohde = kutsunKohde;
+	}
+
+	public String getKutsunKohdeAvain() {
+		return kutsunKohdeAvain;
+	}
+
+	public void setKutsunKohdeAvain(String kutsunKohdeAvain) {
+		this.kutsunKohdeAvain = kutsunKohdeAvain;
+	}
 }
