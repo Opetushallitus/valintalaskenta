@@ -199,6 +199,7 @@ public abstract class TestDataUtil {
 
 		HakukohdeValintakoeData koe = new HakukohdeValintakoeData();
 		koe.setHakukohdeOid(hakukohdeOid);
+		koe.setKutsunKohde(Koekutsu.YLIN_TOIVE);
 
 		OsallistuminenTulos osallistuminenTulos = new OsallistuminenTulos();
 		osallistuminenTulos.setOsallistuminen(osallistuminen);

@@ -15,7 +15,7 @@ public class Valintakoe {
 	private OsallistuminenTulos osallistuminenTulos;
     private boolean lahetetaankoKoekutsut;
     private Integer kutsuttavienMaara;
-	private Koekutsu kutsunKohde;
+	private Koekutsu kutsunKohde = Koekutsu.YLIN_TOIVE;
 	private String kutsunKohdeAvain;
 
 	public boolean isAktiivinen() {

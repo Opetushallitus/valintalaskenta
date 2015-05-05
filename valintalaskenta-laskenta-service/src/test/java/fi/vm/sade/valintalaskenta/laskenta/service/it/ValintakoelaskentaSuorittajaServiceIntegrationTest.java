@@ -227,6 +227,75 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     }
 
     @Test
+    @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
+    public void test2() {
+        final String hakukohdeOid1 = "hakukohdeOid1";
+        final String hakukohdeOid2 = "hakukohdeOid2";
+        final String hakukohdeOid3 = "hakukohdeOid3";
+        final String hakemusOid = "hakemusOid";
+
+        final HakemusDTO hakemus = luoHakemus(hakemusOid, "hakijaOid", hakukohdeOid1, hakukohdeOid2, hakukohdeOid3);
+        AvainArvoDTO avain = new AvainArvoDTO();
+        avain.setAvain("hakukohdeKutsunKohde1");
+        avain.setArvo("hakukohdeOid2");
+
+        AvainArvoDTO avain2 = new AvainArvoDTO();
+        avain2.setAvain("hakukohdeKutsunKohde2");
+        avain2.setArvo("hakukohdeOid3");
+
+        hakemus.setAvaimet(Arrays.asList(avain, avain2));
+
+        final String hakuOid = "hakuOid";
+        final String valintakoetunniste1 = "valintakoetunniste1";
+        final String valintakoetunniste2 = "valintakoetunniste2";
+        final String valintakoetunniste3 = "valintakoetunniste3";
+
+        final String valinnanVaiheOid1 = "valinnanVaiheOid1";
+        final int valinnanVaiheJarjestysluku1 = 0;
+
+        Map<String, FunktiokutsuDTO> kokeet1 = new HashMap<>();
+        kokeet1.put(valintakoetunniste1, totuusarvoTrue);
+        kokeet1.put(valintakoetunniste2, totuusarvoTrue);
+
+        ValintaperusteetDTO valintaperusteet1 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1,
+                valinnanVaiheJarjestysluku1, kokeet1, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde1");
+        valintaperusteet1.getValinnanVaihe().getValintakoe().stream().filter(koe -> koe.getTunniste().equals(valintakoetunniste2)).findFirst().get().setKutsunKohdeAvain("hakukohdeKutsunKohde2");
+
+        final String valinnanVaiheOid2 = "valinnanVaiheOid2";
+        final int valinnanVaiheJarjestysluku2 = 0;
+
+        Map<String, FunktiokutsuDTO> kokeet2 = new TreeMap<>();
+        kokeet2.put(valintakoetunniste2, totuusarvoTrue);
+        kokeet2.put(valintakoetunniste3, totuusarvoTrue);
+
+        ValintaperusteetDTO valintaperusteet2 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid2, valinnanVaiheOid2,
+                valinnanVaiheJarjestysluku2, kokeet2, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde2");
+        valintaperusteet2.getValinnanVaihe().getValintakoe().stream().filter(koe -> koe.getTunniste().equals(valintakoetunniste3)).findFirst().get().setKutsunKohde(Koekutsu.YLIN_TOIVE);
+
+        final String valinnanVaiheOid3 = "valinnanVaiheOid3";
+        final int valinnanVaiheJarjestysluku3 = 0;
+
+        Map<String, FunktiokutsuDTO> kokeet3 = new TreeMap<>();
+        kokeet3.put(valintakoetunniste1, totuusarvoTrue);
+        kokeet3.put(valintakoetunniste2, totuusarvoTrue);
+
+        ValintaperusteetDTO valintaperusteet3 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid3, valinnanVaiheOid3,
+                valinnanVaiheJarjestysluku3, kokeet3, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde1");
+        valintaperusteet3.getValinnanVaihe().getValintakoe().stream().filter(koe -> koe.getTunniste().equals(valintakoetunniste2)).findFirst().get().setKutsunKohdeAvain("hakukohdeKutsunKohde2");
+
+        assertNull(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid));
+
+        // todo randomisoi testien laskenta ja nollaa välissä
+        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(valintaperusteet1));
+        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(valintaperusteet2));
+        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(valintaperusteet3));
+        ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
+        assertNotNull(osallistuminen);
+
+        //todo assertit
+    }
+
+    @Test
     @UsingDataSet(locations = "testViimeisinValinnanVaihe.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testViimeisinValinnanVaihe() {
         final String hakemusOid = "1.2.246.562.11.00000072753";

@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import fi.vm.sade.service.valintaperusteet.dto.HakukohteenValintaperusteDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintakoeDTO;
@@ -375,6 +376,20 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
                     .filter(t -> hakutoiveetByOid.containsKey(t.getHakukohdeOid()))
                     .filter(t -> !t.getHakukohdeOid().equals(data.getHakukohdeOid()))
                     .collect(Collectors.toList());
+
+            final Optional<Hakutoive> hakutoive = osallistuminen.getHakutoiveet().stream()
+                    .filter(t -> t.getHakukohdeOid().equals(data.getHakukohdeOid()))
+                    .map(h -> {
+                        final List<ValintakoeValinnanvaihe> collect = h.getValinnanVaiheet().stream()
+                                .filter(v -> v.getValinnanVaiheOid().equals(VALINNANVAIHE_HAKIJAN_VALINTA))
+                                .collect(Collectors.toList());
+                        h.setValinnanVaiheet(collect);
+                        return h;
+                    }).findFirst();
+
+            if (hakutoive.isPresent() && hakutoive.get().getValinnanVaiheet().size() > 0) {
+                toiveet.add(hakutoive.get());
+            }
             osallistuminen.getHakutoiveet().clear();
             osallistuminen.setHakutoiveet(toiveet);
         }
