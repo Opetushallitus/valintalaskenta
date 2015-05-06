@@ -204,6 +204,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
                             }
                         } else {
                             data.setHakukohdeOid(vp.getHakukohdeOid());
+                            data.setLaskettavaHakukohdeOid(vp.getHakukohdeOid());
                             data.setValinnanVaiheJarjestysNro(vaihe.getValinnanVaiheJarjestysluku());
                             data.setValinnanVaiheOid(vaihe.getValinnanVaiheOid());
                         }
@@ -374,11 +375,11 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
             List<Hakutoive> toiveet = osallistuminen.getHakutoiveet()
                     .stream()
                     .filter(t -> hakutoiveetByOid.containsKey(t.getHakukohdeOid()))
-                    .filter(t -> !t.getHakukohdeOid().equals(data.getHakukohdeOid()))
+                    .filter(t -> !t.getHakukohdeOid().equals(data.getLaskettavaHakukohdeOid()))
                     .collect(Collectors.toList());
 
             final Optional<Hakutoive> hakutoive = osallistuminen.getHakutoiveet().stream()
-                    .filter(t -> t.getHakukohdeOid().equals(data.getHakukohdeOid()))
+                    .filter(t -> t.getHakukohdeOid().equals(data.getLaskettavaHakukohdeOid()))
                     .map(h -> {
                         final List<ValintakoeValinnanvaihe> collect = h.getValinnanVaiheet().stream()
                                 .filter(v -> v.getValinnanVaiheOid().equals(VALINNANVAIHE_HAKIJAN_VALINTA))

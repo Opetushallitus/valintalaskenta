@@ -9,6 +9,7 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
 public class HakukohdeValintakoeData {
 
 	private String hakuOid;
+	private String laskettavaHakukohdeOid;
 	private String hakukohdeOid;
 	private String valinnanVaiheOid;
 	private int valinnanVaiheJarjestysNro;
@@ -125,5 +126,13 @@ public class HakukohdeValintakoeData {
 
 	public void setKutsunKohdeAvain(String kutsunKohdeAvain) {
 		this.kutsunKohdeAvain = kutsunKohdeAvain;
+	}
+
+	public String getLaskettavaHakukohdeOid() {
+		return laskettavaHakukohdeOid;
+	}
+
+	public void setLaskettavaHakukohdeOid(String laskettavaHakukohdeOid) {
+		this.laskettavaHakukohdeOid = laskettavaHakukohdeOid;
 	}
 }
