@@ -374,17 +374,21 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 
             List<Hakutoive> toiveet = osallistuminen.getHakutoiveet()
                     .stream()
-                    .filter(t -> hakutoiveetByOid.containsKey(t.getHakukohdeOid()))
+                    .map(t -> {
+                        if (hakutoiveetByOid.containsKey(t.getHakukohdeOid())) {
+                            return t;
+                        } else {
+                            t.setValinnanVaiheet(getHakijanValintaVaiheet(t));
+                            return t;
+                        }
+                    })
                     .filter(t -> !t.getHakukohdeOid().equals(data.getLaskettavaHakukohdeOid()))
                     .collect(Collectors.toList());
 
             final Optional<Hakutoive> hakutoive = osallistuminen.getHakutoiveet().stream()
                     .filter(t -> t.getHakukohdeOid().equals(data.getLaskettavaHakukohdeOid()))
                     .map(h -> {
-                        final List<ValintakoeValinnanvaihe> collect = h.getValinnanVaiheet().stream()
-                                .filter(v -> v.getValinnanVaiheOid().equals(VALINNANVAIHE_HAKIJAN_VALINTA))
-                                .collect(Collectors.toList());
-                        h.setValinnanVaiheet(collect);
+                        h.setValinnanVaiheet(getHakijanValintaVaiheet(h));
                         return h;
                     }).findFirst();
 
@@ -404,7 +408,13 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
         return osallistuminen;
     }
 
-	protected void haeTaiLuoHakutoive(ValintakoeOsallistuminen osallistuminen,
+    private List<ValintakoeValinnanvaihe> getHakijanValintaVaiheet(Hakutoive t) {
+        return t.getValinnanVaiheet().stream()
+            .filter(v -> v.getValinnanVaiheOid().equals(VALINNANVAIHE_HAKIJAN_VALINTA))
+            .collect(Collectors.toList());
+    }
+
+    protected void haeTaiLuoHakutoive(ValintakoeOsallistuminen osallistuminen,
 			HakukohdeValintakoeData data) {
 		Hakutoive toive = null;
 		for (Hakutoive t : osallistuminen.getHakutoiveet()) {
