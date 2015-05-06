@@ -370,7 +370,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         final String hakemusOid = "1.2.246.562.11.00000072753";
         final String hakukohdeOid = "1.2.246.562.5.91937845484";
         final String hakuOid = "1.2.246.562.5.2013080813081926341927";
-        final String valinnanVaiheOid = "13887394798212581302211576347831";
+        final String valinnanVaiheOid = "vv2";
         final String valintakoetunniste = "koe1";
 
         ValintaperusteetDTO vv2 = luoValintaperusteetJaValintakoeValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 1, valintakoetunniste);
