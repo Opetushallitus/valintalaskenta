@@ -449,6 +449,92 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     }
 
     @Test
+    @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
+    public void test4() {
+        final String hakukohdeOid1 = "hakukohdeOid1";
+        final String hakukohdeOid2 = "hakukohdeOid2";
+        final String hakukohdeOid3 = "hakukohdeOid3";
+
+        final String hakuOid = "hakuOid";
+        final String valintakoetunniste1 = "valintakoetunniste1";
+        final String valintakoetunniste2 = "valintakoetunniste2";
+        final String valintakoetunniste3 = "valintakoetunniste3";
+
+        final String valinnanVaiheOid1 = "valinnanVaiheOid1";
+        final int valinnanVaiheJarjestysluku1 = 0;
+
+        Map<String, FunktiokutsuDTO> kokeet1 = new HashMap<>();
+        kokeet1.put(valintakoetunniste1, totuusarvoTrue);
+        kokeet1.put(valintakoetunniste2, totuusarvoTrue);
+
+        ValintaperusteetDTO valintaperusteet1 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1,
+                valinnanVaiheJarjestysluku1, kokeet1, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde1");
+        valintaperusteet1.getValinnanVaihe().getValintakoe().stream().filter(koe -> koe.getTunniste().equals(valintakoetunniste2)).findFirst().get().setKutsunKohdeAvain("hakukohdeKutsunKohde2");
+
+        final String valinnanVaiheOid2 = "valinnanVaiheOid2";
+        final int valinnanVaiheJarjestysluku2 = 0;
+
+        Map<String, FunktiokutsuDTO> kokeet2 = new TreeMap<>();
+        kokeet2.put(valintakoetunniste2, totuusarvoTrue);
+        kokeet2.put(valintakoetunniste3, totuusarvoTrue);
+
+        ValintaperusteetDTO valintaperusteet2 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid2, valinnanVaiheOid2,
+                valinnanVaiheJarjestysluku2, kokeet2, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde2");
+        valintaperusteet2.getValinnanVaihe().getValintakoe().stream().filter(koe -> koe.getTunniste().equals(valintakoetunniste3)).findFirst().get().setKutsunKohde(Koekutsu.YLIN_TOIVE);
+
+        final String valinnanVaiheOid3 = "valinnanVaiheOid3";
+        final int valinnanVaiheJarjestysluku3 = 0;
+
+        Map<String, FunktiokutsuDTO> kokeet3 = new TreeMap<>();
+        kokeet3.put(valintakoetunniste1, totuusarvoTrue);
+        kokeet3.put(valintakoetunniste2, totuusarvoTrue);
+
+        ValintaperusteetDTO valintaperusteet3 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid3, valinnanVaiheOid3,
+                valinnanVaiheJarjestysluku3, kokeet3, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde1");
+        valintaperusteet3.getValinnanVaihe().getValintakoe().stream().filter(koe -> koe.getTunniste().equals(valintakoetunniste2)).findFirst().get().setKutsunKohdeAvain("hakukohdeKutsunKohde2");
+
+        AvainArvoDTO avain = new AvainArvoDTO();
+        avain.setAvain("hakukohdeKutsunKohde1");
+        avain.setArvo("hakukohdeOid2");
+        AvainArvoDTO avain2 = new AvainArvoDTO();
+        avain2.setAvain("hakukohdeKutsunKohde2");
+        avain2.setArvo("hakukohdeOid3");
+
+        assertNull(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, "hakemusOid1"));
+        final HakemusDTO hakemus = luoHakemus("hakemusOid1", "hakijaOid", hakukohdeOid1, hakukohdeOid2, hakukohdeOid3);
+        hakemus.setAvaimet(Arrays.asList(avain, avain2));
+
+        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(valintaperusteet1, valintaperusteet2, valintaperusteet3));
+        final HakemusDTO hakemus2 = luoHakemus("hakemusOid2", "hakijaOid", hakukohdeOid1, hakukohdeOid3);
+        hakemus2.setAvaimet(Arrays.asList(avain, avain2));
+
+        valintakoelaskentaSuorittajaService.laske(hakemus2, Arrays.asList(valintaperusteet1, valintaperusteet2, valintaperusteet3));
+        assertTest4Results(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, "hakemusOid2"));
+    }
+
+    private void assertTest4Results(ValintakoeOsallistuminen osallistuminen) {
+        assertNotNull(osallistuminen);
+
+        assertEquals(2, osallistuminen.getHakutoiveet().size());
+
+        Hakutoive hakutoive1 = osallistuminen.getHakutoiveet().get(0);
+        assertEquals(1, hakutoive1.getValinnanVaiheet().size());
+        assertEquals(1, hakutoive1.getValinnanVaiheet().get(0).getValintakokeet().size());
+
+        final Optional<Valintakoe> valintakoetunniste2 = hakutoive1.getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste2")).findFirst();
+        assertTrue(valintakoetunniste2.isPresent());
+        assertEquals(Osallistuminen.OSALLISTUU, valintakoetunniste2.get().getOsallistuminenTulos().getOsallistuminen());
+
+        Hakutoive hakutoive2 = osallistuminen.getHakutoiveet().get(1);
+        assertEquals(1, hakutoive2.getValinnanVaiheet().size());
+        assertEquals(1, hakutoive2.getValinnanVaiheet().get(0).getValintakokeet().size());
+
+        final Optional<Valintakoe> valintakoetunniste1 = hakutoive2.getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste1")).findFirst();
+        assertTrue(valintakoetunniste1.isPresent());
+        assertEquals(Osallistuminen.OSALLISTUU, valintakoetunniste1.get().getOsallistuminenTulos().getOsallistuminen());
+    }
+
+    @Test
     @UsingDataSet(locations = "testViimeisinValinnanVaihe.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testViimeisinValinnanVaihe() {
         final String hakemusOid = "1.2.246.562.11.00000072753";
