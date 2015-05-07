@@ -332,8 +332,10 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
         // Käydään hakijan hakutoiveet läpi prioriteetin mukaan ja asetetaan
         // kullekin hakukohteelle
         // valintakoekohtainen osallistumistieto
+        final List<HakukohdeValintakoeData> kokeetHakukohteisiin = kokeet.stream()
+                .filter(k -> hakukohteetByOid.containsKey(k.getHakukohdeOid())).collect(Collectors.toList());
 
-        Collections.sort(kokeet, (o1, o2) -> hakukohteetByOid.get(o1.getHakukohdeOid())
+        Collections.sort(kokeetHakukohteisiin, (o1, o2) -> hakukohteetByOid.get(o1.getHakukohdeOid())
                 .getPrioriteetti()
                 - hakukohteetByOid.get(o2.getHakukohdeOid())
                 .getPrioriteetti());
@@ -342,7 +344,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
         // valintakokeeseen, hakija ei osallistu
         // pienemmällä prioriteetilla oleviin samoihin valintakokeisiin.
         boolean osallistuminenLoydetty = false;
-        final List<HakukohdeValintakoeData> lasketutKokeet = kokeet.stream().filter(koe -> !koe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA)).collect(Collectors.toList());
+        final List<HakukohdeValintakoeData> lasketutKokeet = kokeetHakukohteisiin.stream().filter(koe -> !koe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA)).collect(Collectors.toList());
         for (HakukohdeValintakoeData d : lasketutKokeet) {
 
             if (!osallistuminenLoydetty
