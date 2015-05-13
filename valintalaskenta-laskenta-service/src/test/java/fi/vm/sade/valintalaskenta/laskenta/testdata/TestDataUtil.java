@@ -17,11 +17,11 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.Hakukohd
  */
 public abstract class TestDataUtil {
 
-	public static HakemusDTO luoHakemus(String hakemusOid, String hakijaOid) {
+	public static HakemusDTO luoHakemus(String hakuOid, String hakemusOid, String hakijaOid) {
 		HakemusDTO hakemus = new HakemusDTO();
 		hakemus.setHakemusoid(hakemusOid);
 		hakemus.setHakijaOid(hakijaOid);
-        hakemus.setHakuoid("1.2.246.562.29.173465377510");
+        hakemus.setHakuoid(hakuOid);
 
 		List<AvainArvoDTO> avaimet = new LinkedList<>();
 		AvainArvoDTO avain = new AvainArvoDTO();
@@ -33,9 +33,9 @@ public abstract class TestDataUtil {
 		return hakemus;
 	}
 
-	public static HakemusDTO luoHakemus(String hakemusOid, String hakijaOid,
+	public static HakemusDTO luoHakemus(String hakuOid, String hakemusOid, String hakijaOid,
 			String... hakutoiveet) {
-		HakemusDTO hakemus = luoHakemus(hakemusOid, hakijaOid);
+		HakemusDTO hakemus = luoHakemus(hakuOid, hakemusOid, hakijaOid);
 
 		int i = 1;
 		for (String hakutoive : hakutoiveet) {

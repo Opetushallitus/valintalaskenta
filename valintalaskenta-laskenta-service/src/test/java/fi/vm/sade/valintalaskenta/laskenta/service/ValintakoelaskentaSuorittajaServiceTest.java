@@ -110,7 +110,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 		final String hakukohdeOid2 = "hakukohdeOid2";
 
-		final HakemusDTO hakemus = luoHakemus("hakemusOid", "hakijaOid",
+		final HakemusDTO hakemus = luoHakemus("hakuOid", "hakemusOid", "hakijaOid",
 				hakukohdeOid1, hakukohdeOid2);
 
 		final String hakuOid = "hakuOid";
@@ -157,7 +157,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 		final String hakukohdeOid2 = "hakukohdeOid2";
 
-		final HakemusDTO hakemus = luoHakemus("hakemusOid", "hakijaOid",
+		final HakemusDTO hakemus = luoHakemus("hakuOid", "hakemusOid", "hakijaOid",
 				hakukohdeOid1, hakukohdeOid2);
 
 		final String hakuOid = "hakuOid";
@@ -201,7 +201,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 		final String hakukohdeOid2 = "hakukohdeOid2";
 
-		final HakemusDTO hakemus = luoHakemus("hakemusOid", "hakijaOid",
+		final HakemusDTO hakemus = luoHakemus("hakuOid","hakemusOid", "hakijaOid",
 				hakukohdeOid1, hakukohdeOid2);
 
 		final String hakuOid = "hakuOid";
@@ -239,7 +239,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 	public void testViimeisinValinnanvaihe() {
 		final String hakukohdeOid1 = "hakukohdeOid1";
 		final String hakukohdeOid2 = "hakukohdeOid2";
-		final HakemusDTO hakemus = luoHakemus("hakemusOid", "hakijaOid",
+		final HakemusDTO hakemus = luoHakemus("hakuOid", "hakemusOid", "hakijaOid",
 				hakukohdeOid1, hakukohdeOid2);
 
 		final String hakuOid = "hakuOid";
@@ -417,7 +417,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 		final String hakukohdeOid2 = "hakukohdeOid2";
 
-		final HakemusDTO hakemus = luoHakemus("hakemusOid", "hakijaOid",
+		final HakemusDTO hakemus = luoHakemus("hakuOid", "hakemusOid", "hakijaOid",
 				hakukohdeOid1, hakukohdeOid2);
 
 		final String hakuOid = "hakuOid";
@@ -576,7 +576,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 		final String hakukohdeOid2 = "hakukohdeOid2";
 
-		final HakemusDTO hakemus = luoHakemus("hakemusOid", "hakijaOid",
+		final HakemusDTO hakemus = luoHakemus("hakuOid", "hakemusOid", "hakijaOid",
 				hakukohdeOid1, hakukohdeOid2);
 
 		final String hakuOid = "hakuOid";

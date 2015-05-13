@@ -103,6 +103,39 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
         final Map<String, HakukohdeDTO> hakutoiveetByOid = luoHakutoiveMap(hakemus
                 .getHakukohteet());
         Map<String, List<HakukohdeValintakoeData>> valintakoeData = new HashMap<String, List<HakukohdeValintakoeData>>();
+        if (valintaperusteet.size() == 0) {
+            return;
+        }
+
+        final List<ValintakoeDTO> laskettavat = valintaperusteet.stream().flatMap(vp -> vp.getValinnanVaihe().getValintakoe().stream()).filter(koe -> !koe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA)).collect(Collectors.toList());
+        final String hakukohdeOid = valintaperusteet.get(0).getHakukohdeOid();
+
+        if (laskettavat.size() == 0) {
+            final Optional<ValintakoeOsallistuminen> kaikkiOsallistumisetOpt = Optional.ofNullable(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakemus.getHakuoid(), hakemus.getHakemusoid()));
+            if (kaikkiOsallistumisetOpt.isPresent()) {
+                final ValintakoeOsallistuminen kaikkiOsallistumiset = kaikkiOsallistumisetOpt.get();
+                final List<ValintakoeValinnanvaihe> valinnanvaiheet = kaikkiOsallistumiset.getHakutoiveet().stream()
+                        .filter(h -> h.getHakukohdeOid().equals(hakukohdeOid))
+                        .flatMap(hakutoive -> hakutoive.getValinnanVaiheet().stream()).collect(Collectors.toList());
+                valinnanvaiheet.forEach(vv -> {
+                    final List<Valintakoe> saastettavat = vv.getValintakokeet().stream().filter(valintakoe -> valintakoe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA)).collect(Collectors.toList());
+                    vv.setValintakokeet(saastettavat);
+                });
+                if (valinnanvaiheet.size() > 0) {
+                    if (valinnanvaiheet.stream().flatMap(vv -> vv.getValintakokeet().stream()).count() == 0) {
+                        final List<Hakutoive> saastettavat = kaikkiOsallistumiset.getHakutoiveet().stream().filter(hakutoive -> !hakutoive.getHakukohdeOid().equals(hakukohdeOid)).collect(Collectors.toList());
+                        kaikkiOsallistumiset.setHakutoiveet(saastettavat);
+                    } else {
+                        kaikkiOsallistumiset.getHakutoiveet().forEach(hakutoive -> {
+                            if (hakutoive.getHakukohdeOid().equals(hakukohdeOid)) {
+                                hakutoive.setValinnanVaiheet(valinnanvaiheet);
+                            }
+                        });
+                    }
+                    valintakoeOsallistuminenDAO.createOrUpdate(kaikkiOsallistumiset);
+                }
+            }
+        }
 
         for (ValintaperusteetDTO vp : valintaperusteet) {
             Map<String, String> hakukohteenValintaperusteet = muodostaHakukohteenValintaperusteetMap(vp

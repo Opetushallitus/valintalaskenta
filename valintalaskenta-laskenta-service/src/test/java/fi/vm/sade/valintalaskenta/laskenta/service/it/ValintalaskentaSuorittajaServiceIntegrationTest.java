@@ -195,8 +195,8 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
             valinnanvaihe4.getValintatapajono().add(luoValintatapajono(valintatapajonoOid6, 1, 60, luoJarjestyskriteeri(kahdeksansataa, 1)));
             valintaperusteet4.setValinnanVaihe(valinnanvaihe4);
 
-            HakemusDTO hakemus1 = luoHakemus(hakemusOid1, hakijaOid1, hakukohdeOid1, hakukohdeOid2);
-            HakemusDTO hakemus2 = luoHakemus(hakemusOid2, hakijaOid2, hakukohdeOid2, hakukohdeOid1);
+            HakemusDTO hakemus1 = luoHakemus(hakuOid, hakemusOid1, hakijaOid1, hakukohdeOid1, hakukohdeOid2);
+            HakemusDTO hakemus2 = luoHakemus(hakuOid, hakemusOid2, hakijaOid2, hakukohdeOid2, hakukohdeOid1);
 
             valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(hakemus1, hakemus2), Arrays.asList(valintaperusteet2, valintaperusteet1), new ArrayList<>(), hakukohdeOid1);
             valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(hakemus1, hakemus2), Arrays.asList(valintaperusteet4, valintaperusteet3), new ArrayList<>(), hakukohdeOid2);
@@ -586,7 +586,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
 
         ValintaperusteetDTO vv3 = luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 2);
         (vv3.getValinnanVaihe()).getValintatapajono().add(luoValintatapajono(valintatapajonoOid, 0, 10, luoJarjestyskriteeri(sata, 1)));
-        valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(luoHakemus(hakemusOid, hakemusOid, hakukohdeOid)),
+        valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid)),
                 Arrays.asList(vv3), new ArrayList<>(), hakukohdeOid);
 
         Valinnanvaihe vaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanVaiheOid);
@@ -619,7 +619,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         ValintaperusteetDTO vv3 = luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 2);
         (vv3.getValinnanVaihe()).getValintatapajono().add(luoValintatapajono(valintatapajonoOid, 0, 10, luoJarjestyskriteeri(sata, 1)));
         (vv3.getValinnanVaihe()).getValintatapajono().get(0).setPoistetaankoHylatyt(true);
-        valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(luoHakemus(hakemusOid, hakemusOid, hakukohdeOid), luoHakemus(hakemusOid2,hakemusOid, hakukohdeOid)),
+        valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid), luoHakemus(hakuOid, hakemusOid2,hakemusOid, hakukohdeOid)),
                 Arrays.asList(vv3), new ArrayList<>(), hakukohdeOid);
 
         Valinnanvaihe vaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanVaiheOid);
@@ -652,7 +652,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
 
         ValintaperusteetDTO vv3 = luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 3);
         (vv3.getValinnanVaihe()).getValintatapajono().add(luoValintatapajono(valintatapajonoOid, 0, 10, luoJarjestyskriteeri(sata, 1)));
-        valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(luoHakemus(hakemusOid, hakemusOid, hakukohdeOid),luoHakemus(hakemusOid2, hakemusOid, hakukohdeOid)),
+        valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid),luoHakemus(hakuOid, hakemusOid2, hakemusOid, hakukohdeOid)),
                 Arrays.asList(vv3), new ArrayList<>(), hakukohdeOid);
 
         Valinnanvaihe vaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanVaiheOid);

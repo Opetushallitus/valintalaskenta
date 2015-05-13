@@ -90,7 +90,7 @@ public class HakemuslaskinServiceTest {
 
 		HakemusWrapper hakemus = new HakemusWrapper();
 		hakemus.setHakutoiveprioriteetti(hakutoiveprioriteetti);
-		hakemus.setHakemusDTO(TestDataUtil.luoHakemus(hakemusOid, hakijaOid,
+		hakemus.setHakemusDTO(TestDataUtil.luoHakemus("hakuOid", hakemusOid, hakijaOid,
 				hakukohteet));
 
 		hakemus.setHarkinnanvaraisuus(harkinnanvaraisuus);
