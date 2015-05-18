@@ -36,20 +36,20 @@ public class ValintatietoServiceImpl implements ValintatietoService {
     private ValintalaskentaModelMapper modelMapper;
 
     public List<HakemusOsallistuminenDTO> haeValintatiedotHakukohteelle(
-            List<String> valintakoeOid,
+            List<String> valintakoeTunnisteet,
             String hakukohdeOid) {
         List<HakemusOsallistuminenDTO> osallistumiset = new ArrayList<HakemusOsallistuminenDTO>();
         try {
             List<ValintakoeOsallistuminen> valinnanvaiheet = tulosService
                     .haeValintakoeOsallistumisetByHakutoive(hakukohdeOid);
-            Set<String> oidit = new HashSet<String>(valintakoeOid);
+            Set<String> tunnisteet = new HashSet<String>(valintakoeTunnisteet);
             for (ValintakoeOsallistuminen koetulos : valinnanvaiheet) {
                 for (Hakutoive hakutoive : koetulos.getHakutoiveet()) {
                     for (ValintakoeValinnanvaihe vaihe : hakutoive
                             .getValinnanVaiheet()) {
                         HakemusOsallistuminenDTO h = new HakemusOsallistuminenDTO();
                         for (Valintakoe valintakoe : vaihe.getValintakokeet()) {
-                            if (oidit.contains(valintakoe.getValintakoeOid())) {
+                            if (tunnisteet.contains(valintakoe.getValintakoeTunniste())) {
                                 ValintakoeOsallistuminenDTO osallistuminen = new ValintakoeOsallistuminenDTO();
                                 osallistuminen.setOsallistuminen(
                                         modelMapper.map(valintakoe.getOsallistuminenTulos().getOsallistuminen(), OsallistuminenDTO.class)

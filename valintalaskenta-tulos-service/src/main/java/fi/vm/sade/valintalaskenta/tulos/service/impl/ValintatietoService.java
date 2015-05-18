@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public interface ValintatietoService {
 
-    List<HakemusOsallistuminenDTO> haeValintatiedotHakukohteelle(List<String> valintakoeOid,
+    List<HakemusOsallistuminenDTO> haeValintatiedotHakukohteelle(List<String> valintakoeTunnisteet,
                                                                  String hakukohdeOid);
 
     HakuDTO haeValintatiedot(String hakuOid);
