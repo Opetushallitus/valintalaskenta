@@ -1,0 +1,80 @@
+{
+    "Valinnanvaihe": [
+        {
+            "jarjestysnumero": 0,
+            "hakuOid": "1.2.246.562.5.2013080813081926341927",
+            "hakukohdeOid": "1.2.246.562.5.91937845484",
+            "valinnanvaiheOid": "1388739479946-6344111160036037403",
+            "valintatapajonot": [
+                {"$ref": "Valintatapajono", "$id": {"$oid": "541bef0ae4b0e1d22689e606"}}
+            ]
+        },
+        {
+            "jarjestysnumero": 0,
+            "hakuOid": "1.2.246.562.5.2013080813081926341927",
+            "hakukohdeOid": "1.2.246.562.5.91937845485",
+            "valinnanvaiheOid": "1388739479946-6344111160036037404",
+            "valintatapajonot": [
+                {"$ref": "Valintatapajono", "$id": {"$oid": "541bef0ae4b0e1d22689e607"}}
+            ]
+        }
+
+    ],
+    "Valintatapajono": [
+        {
+            "_id": {
+                "$oid": "541bef0ae4b0e1d22689e606"
+            },
+            "valintatapajonoOid": "1388739480159-1173947553521563587",
+            "nimi": "Harkinnanvaraisten käsittelyvaiheen valintatapajono",
+            "prioriteetti": 0,
+            "aloituspaikat": 10,
+            "tasasijasaanto": "ARVONTA",
+            "jonosijat": [
+                {
+                    "hakemusOid": "1.2.246.562.11.00000072753",
+                    "etunimi": "Valtteri",
+                    "sukunimi": "Villi",
+                    "hakutoiveprioriteetti": 1,
+                    "harkinnanvarainen": false,
+                    "jarjestyskriteeritulokset": [
+                        {
+                            "prioriteetti": 0,
+                            "arvo": "",
+                            "tila": "HYLATTY"
+                        }
+                    ]
+                }
+            ]
+        },
+
+        {
+            "_id": {
+                "$oid": "541bef0ae4b0e1d22689e607"
+            },
+            "valintatapajonoOid": "1388739480159-1173947553521563588",
+            "nimi": "Harkinnanvaraisten käsittelyvaiheen valintatapajono",
+            "prioriteetti": 0,
+            "aloituspaikat": 10,
+            "tasasijasaanto": "ARVONTA",
+            "jonosijat": [
+                {
+                    "hakemusOid": "1.2.246.562.11.00000072753",
+                    "etunimi": "Valtteri",
+                    "sukunimi": "Villi",
+                    "hakutoiveprioriteetti": 2,
+                    "harkinnanvarainen": false,
+                    "jarjestyskriteeritulokset": [
+                        {
+                            "prioriteetti": 0,
+                            "arvo": "",
+                            "tila": "HYVAKSYTTAVISSA"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "ValintakoeOsallistuminen": [
+    ]
+}

@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakemus;
+import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteetJaValintakoeValinnanvaihe;
 import static org.junit.Assert.*;
 
@@ -108,13 +109,10 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         final String valinnanVaiheOid1 = "valinnanVaiheOid1";
         final int valinnanVaiheJarjestysluku1 = 0;
-
-        Map<String, FunktiokutsuDTO> kokeet1 = new HashMap<String, FunktiokutsuDTO>();
-        kokeet1.put(valintakoetunniste, totuusarvoTrue);
+        Map<String, FunktiokutsuDTO> kokeet1 = createValintakokeet(valintakoetunniste);
         kokeet1.put("valintakoetunniste2", totuusarvoTrue);
 
-        ValintaperusteetDTO valintaperusteet1 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1,
-                valinnanVaiheJarjestysluku1, kokeet1, Koekutsu.YLIN_TOIVE, "kutsunKohdeAvain");
+        ValintaperusteetDTO valintaperusteet1 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1, valinnanVaiheJarjestysluku1, kokeet1, Koekutsu.YLIN_TOIVE, "kutsunKohdeAvain");
 
         final String valinnanVaiheOid2 = "valinnanVaiheOid2";
         final int valinnanVaiheJarjestysluku2 = 1;
@@ -122,8 +120,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         Map<String, FunktiokutsuDTO> kokeet2 = new HashMap<String, FunktiokutsuDTO>();
         kokeet2.put(valintakoetunniste, totuusarvoFalse);
 
-        ValintaperusteetDTO valintaperusteet2 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid2, valinnanVaiheOid2,
-                valinnanVaiheJarjestysluku2, kokeet2, Koekutsu.YLIN_TOIVE, "kutsunKohdeAvain");
+        ValintaperusteetDTO valintaperusteet2 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid2, valinnanVaiheOid2, valinnanVaiheJarjestysluku2, kokeet2, Koekutsu.YLIN_TOIVE, "kutsunKohdeAvain");
 
         List<ValintaperusteetDTO> valintaperusteet = new ArrayList<ValintaperusteetDTO>();
         valintaperusteet.add(valintaperusteet1);
@@ -151,12 +148,9 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         final String valinnanVaiheOid1 = "valinnanVaiheOid1";
         final int valinnanVaiheJarjestysluku1 = 0;
+        Map<String, FunktiokutsuDTO> kokeet1 = createValintakokeet(valintakoetunniste);
 
-        Map<String, FunktiokutsuDTO> kokeet1 = new HashMap<String, FunktiokutsuDTO>();
-        kokeet1.put(valintakoetunniste, totuusarvoTrue);
-
-        ValintaperusteetDTO valintaperusteet1 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1,
-                valinnanVaiheJarjestysluku1, kokeet1, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde2");
+        ValintaperusteetDTO valintaperusteet1 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1, valinnanVaiheJarjestysluku1, kokeet1, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde2");
 
         List<ValintaperusteetDTO> valintaperusteet = new ArrayList<ValintaperusteetDTO>();
         valintaperusteet.add(valintaperusteet1);
@@ -184,12 +178,9 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         final String valinnanVaiheOid1 = "valinnanVaiheOid1";
         final int valinnanVaiheJarjestysluku1 = 0;
+        Map<String, FunktiokutsuDTO> kokeet1 = createValintakokeet(valintakoetunniste1);
 
-        Map<String, FunktiokutsuDTO> kokeet1 = new HashMap<>();
-        kokeet1.put(valintakoetunniste1, totuusarvoTrue);
-
-        ValintaperusteetDTO valintaperusteet1 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1,
-                valinnanVaiheJarjestysluku1, kokeet1, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde2");
+        ValintaperusteetDTO valintaperusteet1 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1, valinnanVaiheJarjestysluku1, kokeet1, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde2");
 
         final String valinnanVaiheOid2 = "valinnanVaiheOid2";
         final int valinnanVaiheJarjestysluku2 = 0;
@@ -198,8 +189,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         kokeet2.put(valintakoetunniste1, totuusarvoTrue);
         kokeet2.put(valintakoetunniste2, totuusarvoTrue);
 
-        ValintaperusteetDTO valintaperusteet2 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid2, valinnanVaiheOid2,
-                valinnanVaiheJarjestysluku2, kokeet2, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde2");
+        ValintaperusteetDTO valintaperusteet2 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid2, valinnanVaiheOid2, valinnanVaiheJarjestysluku2, kokeet2, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde2");
         valintaperusteet2.getValinnanVaihe().getValintakoe().get(1).setKutsunKohde(Koekutsu.YLIN_TOIVE);
 
         final String valinnanVaiheOid3 = "valinnanVaiheOid3";
@@ -209,8 +199,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         kokeet3.put(valintakoetunniste2, totuusarvoTrue);
         kokeet3.put(valintakoetunniste3, totuusarvoTrue);
 
-        ValintaperusteetDTO valintaperusteet3 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid3, valinnanVaiheOid3,
-                valinnanVaiheJarjestysluku3, kokeet3, Koekutsu.YLIN_TOIVE, "hakukohdeKutsunKohde2");
+        ValintaperusteetDTO valintaperusteet3 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid3, valinnanVaiheOid3, valinnanVaiheJarjestysluku3, kokeet3, Koekutsu.YLIN_TOIVE, "hakukohdeKutsunKohde2");
 
         testWithOrder("hakemusOid1", hakukohdeOid1, hakukohdeOid2, hakukohdeOid3, hakuOid, valintaperusteet1, valintaperusteet2, valintaperusteet3);
         testWithOrder("hakemusOid2", hakukohdeOid1, hakukohdeOid2, hakukohdeOid3, hakuOid, valintaperusteet1, valintaperusteet3, valintaperusteet2);
@@ -278,13 +267,10 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         final String valinnanVaiheOid1 = "valinnanVaiheOid1";
         final int valinnanVaiheJarjestysluku1 = 0;
-
-        Map<String, FunktiokutsuDTO> kokeet1 = new HashMap<>();
-        kokeet1.put(valintakoetunniste1, totuusarvoTrue);
+        Map<String, FunktiokutsuDTO> kokeet1 = createValintakokeet(valintakoetunniste1);
         kokeet1.put(valintakoetunniste2, totuusarvoTrue);
 
-        ValintaperusteetDTO valintaperusteet1 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1,
-                valinnanVaiheJarjestysluku1, kokeet1, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde1");
+        ValintaperusteetDTO valintaperusteet1 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1, valinnanVaiheJarjestysluku1, kokeet1, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde1");
         valintaperusteet1.getValinnanVaihe().getValintakoe().stream().filter(koe -> koe.getTunniste().equals(valintakoetunniste2)).findFirst().get().setKutsunKohdeAvain("hakukohdeKutsunKohde2");
 
         final String valinnanVaiheOid2 = "valinnanVaiheOid2";
@@ -294,8 +280,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         kokeet2.put(valintakoetunniste2, totuusarvoTrue);
         kokeet2.put(valintakoetunniste3, totuusarvoTrue);
 
-        ValintaperusteetDTO valintaperusteet2 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid2, valinnanVaiheOid2,
-                valinnanVaiheJarjestysluku2, kokeet2, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde2");
+        ValintaperusteetDTO valintaperusteet2 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid2, valinnanVaiheOid2, valinnanVaiheJarjestysluku2, kokeet2, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde2");
         valintaperusteet2.getValinnanVaihe().getValintakoe().stream().filter(koe -> koe.getTunniste().equals(valintakoetunniste3)).findFirst().get().setKutsunKohde(Koekutsu.YLIN_TOIVE);
 
         final String valinnanVaiheOid3 = "valinnanVaiheOid3";
@@ -305,8 +290,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         kokeet3.put(valintakoetunniste1, totuusarvoTrue);
         kokeet3.put(valintakoetunniste2, totuusarvoTrue);
 
-        ValintaperusteetDTO valintaperusteet3 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid3, valinnanVaiheOid3,
-                valinnanVaiheJarjestysluku3, kokeet3, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde1");
+        ValintaperusteetDTO valintaperusteet3 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid3, valinnanVaiheOid3, valinnanVaiheJarjestysluku3, kokeet3, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde1");
         valintaperusteet3.getValinnanVaihe().getValintakoe().stream().filter(koe -> koe.getTunniste().equals(valintakoetunniste2)).findFirst().get().setKutsunKohdeAvain("hakukohdeKutsunKohde2");
 
         testWithOrder2("hakemusOid1", hakukohdeOid1, hakukohdeOid2, hakukohdeOid3, hakuOid, valintaperusteet1, valintaperusteet2, valintaperusteet3);
@@ -378,13 +362,10 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         final String valinnanVaiheOid1 = "valinnanVaiheOid1";
         final int valinnanVaiheJarjestysluku1 = 0;
-
-        Map<String, FunktiokutsuDTO> kokeet1 = new HashMap<>();
-        kokeet1.put(valintakoetunniste1, totuusarvoTrue);
+        Map<String, FunktiokutsuDTO> kokeet1 = createValintakokeet(valintakoetunniste1);
         kokeet1.put(valintakoetunniste2, totuusarvoTrue);
 
-        ValintaperusteetDTO valintaperusteet1 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1,
-                valinnanVaiheJarjestysluku1, kokeet1, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde1");
+        ValintaperusteetDTO valintaperusteet1 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1, valinnanVaiheJarjestysluku1, kokeet1, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde1");
         valintaperusteet1.getValinnanVaihe().getValintakoe().stream().filter(koe -> koe.getTunniste().equals(valintakoetunniste2)).findFirst().get().setKutsunKohdeAvain("hakukohdeKutsunKohde2");
 
         final String valinnanVaiheOid2 = "valinnanVaiheOid2";
@@ -393,8 +374,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         Map<String, FunktiokutsuDTO> kokeet2 = new TreeMap<>();
         kokeet2.put(valintakoetunniste2, totuusarvoTrue);
 
-        ValintaperusteetDTO valintaperusteet2 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid2, valinnanVaiheOid2,
-                valinnanVaiheJarjestysluku2, kokeet2, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde2");
+        ValintaperusteetDTO valintaperusteet2 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid2, valinnanVaiheOid2, valinnanVaiheJarjestysluku2, kokeet2, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde2");
 
         final String valinnanVaiheOid3 = "valinnanVaiheOid3";
         final int valinnanVaiheJarjestysluku3 = 0;
@@ -402,8 +382,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         Map<String, FunktiokutsuDTO> kokeet3 = new TreeMap<>();
         kokeet3.put(valintakoetunniste1, totuusarvoTrue);
 
-        ValintaperusteetDTO valintaperusteet3 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid3, valinnanVaiheOid3,
-                valinnanVaiheJarjestysluku3, kokeet3, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde1");
+        ValintaperusteetDTO valintaperusteet3 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid3, valinnanVaiheOid3, valinnanVaiheJarjestysluku3, kokeet3, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde1");
 
         testWithOrder3("hakemusOid1", hakukohdeOid2, hakukohdeOid3, hakuOid, valintaperusteet1, valintaperusteet2, valintaperusteet3);
         testWithOrder3("hakemusOid2", hakukohdeOid2, hakukohdeOid3, hakuOid, valintaperusteet1, valintaperusteet3, valintaperusteet2);
@@ -463,13 +442,10 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         final String valinnanVaiheOid1 = "valinnanVaiheOid1";
         final int valinnanVaiheJarjestysluku1 = 0;
-
-        Map<String, FunktiokutsuDTO> kokeet1 = new HashMap<>();
-        kokeet1.put(valintakoetunniste1, totuusarvoTrue);
+        Map<String, FunktiokutsuDTO> kokeet1 = createValintakokeet(valintakoetunniste1);
         kokeet1.put(valintakoetunniste2, totuusarvoTrue);
 
-        ValintaperusteetDTO valintaperusteet1 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1,
-                valinnanVaiheJarjestysluku1, kokeet1, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde1");
+        ValintaperusteetDTO valintaperusteet1 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1, valinnanVaiheJarjestysluku1, kokeet1, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde1");
         valintaperusteet1.getValinnanVaihe().getValintakoe().stream().filter(koe -> koe.getTunniste().equals(valintakoetunniste2)).findFirst().get().setKutsunKohdeAvain("hakukohdeKutsunKohde2");
 
         final String valinnanVaiheOid2 = "valinnanVaiheOid2";
@@ -479,8 +455,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         kokeet2.put(valintakoetunniste2, totuusarvoTrue);
         kokeet2.put(valintakoetunniste3, totuusarvoTrue);
 
-        ValintaperusteetDTO valintaperusteet2 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid2, valinnanVaiheOid2,
-                valinnanVaiheJarjestysluku2, kokeet2, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde2");
+        ValintaperusteetDTO valintaperusteet2 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid2, valinnanVaiheOid2, valinnanVaiheJarjestysluku2, kokeet2, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde2");
         valintaperusteet2.getValinnanVaihe().getValintakoe().stream().filter(koe -> koe.getTunniste().equals(valintakoetunniste3)).findFirst().get().setKutsunKohde(Koekutsu.YLIN_TOIVE);
 
         final String valinnanVaiheOid3 = "valinnanVaiheOid3";
@@ -490,8 +465,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         kokeet3.put(valintakoetunniste1, totuusarvoTrue);
         kokeet3.put(valintakoetunniste2, totuusarvoTrue);
 
-        ValintaperusteetDTO valintaperusteet3 = TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid3, valinnanVaiheOid3,
-                valinnanVaiheJarjestysluku3, kokeet3, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde1");
+        ValintaperusteetDTO valintaperusteet3 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid3, valinnanVaiheOid3, valinnanVaiheJarjestysluku3, kokeet3, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde1");
         valintaperusteet3.getValinnanVaihe().getValintakoe().stream().filter(koe -> koe.getTunniste().equals(valintakoetunniste2)).findFirst().get().setKutsunKohdeAvain("hakukohdeKutsunKohde2");
 
         AvainArvoDTO avain = new AvainArvoDTO();
@@ -592,6 +566,41 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         assertEquals(Osallistuminen.EI_OSALLISTU, koe.getOsallistuminenTulos().getOsallistuminen());
     }
 
+    @Test
+    @UsingDataSet(locations = "testViimeisinValinnanVaiheEkaHylatty.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void testViimeisinValinnanVaiheEnsimmainenHakutoiveHylatty() {
+        // Testa
+        final String hakemusOid = "1.2.246.562.11.00000072753";
+        final String hakukohdeOid1 = "1.2.246.562.5.91937845484";
+        final String hakukohdeOid2 = "1.2.246.562.5.91937845485";
+        final String hakuOid = "1.2.246.562.5.2013080813081926341927";
+        final String koekutsuvaiheOid_kohde1 = "vv2_kohde1";
+        final String koekutsuvaiheOid_kohde2 = "vv2_kohde2";
+        final String valintakoetunniste = "koetunniste";
+
+        ValintaperusteetDTO vv2_kohde1 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, koekutsuvaiheOid_kohde1, 1, createValintakokeet(valintakoetunniste), Koekutsu.YLIN_TOIVE, "hakukohdeKutsunKohde2");
+        ValintaperusteetDTO vv2_kohde2 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid2, koekutsuvaiheOid_kohde2, 1, createValintakokeet(valintakoetunniste), Koekutsu.YLIN_TOIVE, "hakukohdeKutsunKohde2");
+
+        valintakoelaskentaSuorittajaService.laske(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid1, hakukohdeOid2), Arrays.asList(vv2_kohde1));
+        valintakoelaskentaSuorittajaService.laske(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid1, hakukohdeOid2), Arrays.asList(vv2_kohde2));
+
+        ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
+
+        assertNotNull(osallistuminen);
+
+        assertEquals(hakukohdeOid1, osallistuminen.getHakutoiveet().get(0).getHakukohdeOid());
+        assertEquals(Osallistuminen.EI_OSALLISTU, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen());
+
+        assertEquals(hakukohdeOid2, osallistuminen.getHakutoiveet().get(1).getHakukohdeOid());
+        assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen());
+
+    }
+
+    private Map<String, FunktiokutsuDTO> createValintakokeet(final String valintakoetunniste) {
+        Map<String, FunktiokutsuDTO> kokeet1 = new HashMap<>();
+        kokeet1.put(valintakoetunniste, totuusarvoTrue);
+        return kokeet1;
+    }
 
     @Test
     @UsingDataSet(locations = "osallistuminen.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
