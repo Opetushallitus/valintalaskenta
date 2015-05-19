@@ -163,9 +163,9 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet);
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         assertNotNull(osallistuminen);
-        assertEquals(osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen(), Osallistuminen.OSALLISTUU);
-        assertEquals(osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValinnanVaiheOid(), ValintakoelaskentaSuorittajaServiceImpl.VALINNANVAIHE_HAKIJAN_VALINTA);
-        assertEquals(osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValinnanVaiheJarjestysluku(), new Integer(100));
+        assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen());
+        assertEquals(ValintakoelaskentaSuorittajaServiceImpl.VALINNANVAIHE_HAKIJAN_VALINTA, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValinnanVaiheOid());
+        assertEquals(new Integer(100), osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValinnanVaiheJarjestysluku());
         assertEquals(1, osallistuminen.getHakutoiveet().size());
     }
 
