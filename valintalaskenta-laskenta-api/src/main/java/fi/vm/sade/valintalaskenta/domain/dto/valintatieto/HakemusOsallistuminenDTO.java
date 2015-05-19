@@ -13,6 +13,7 @@ public class HakemusOsallistuminenDTO {
     private String etunimi;
     private String sukunimi;
     private String hakemusOid;
+    private String hakukohdeOid; // <- hakijan hakutoive tämän hakukohteen hakemuksella
 
     public List<ValintakoeOsallistuminenDTO> getOsallistumiset() {
         if(osallistumiset == null) {
@@ -25,6 +26,13 @@ public class HakemusOsallistuminenDTO {
         this.osallistumiset = osallistumiset;
     }
 
+    public String getHakukohdeOid() {
+        return hakukohdeOid;
+    }
+
+    public void setHakukohdeOid(String hakukohdeOid) {
+        this.hakukohdeOid = hakukohdeOid;
+    }
 
     public void setLuontiPvm(Date luontiPvm) {
         this.luontiPvm = luontiPvm;

@@ -48,6 +48,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
                     for (ValintakoeValinnanvaihe vaihe : hakutoive
                             .getValinnanVaiheet()) {
                         HakemusOsallistuminenDTO h = new HakemusOsallistuminenDTO();
+                        h.setHakukohdeOid(hakutoive.getHakukohdeOid());
                         for (Valintakoe valintakoe : vaihe.getValintakokeet()) {
                             if (tunnisteet.contains(valintakoe.getValintakoeTunniste())) {
                                 ValintakoeOsallistuminenDTO osallistuminen = new ValintakoeOsallistuminenDTO();
