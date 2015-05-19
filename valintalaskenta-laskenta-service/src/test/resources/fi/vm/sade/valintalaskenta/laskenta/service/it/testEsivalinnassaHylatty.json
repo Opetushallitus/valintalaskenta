@@ -59,6 +59,7 @@
                                 {
                                     "valintakoeOid": "13887394815186315041955335611484",
                                     "valintakoeTunniste": "kielikoe_tunniste",
+                                    "aktiivinen": true,
                                     "osallistuminenTulos": {
                                         "osallistuminen": "OSALLISTUU",
                                         "laskentaTila": "HYVAKSYTTAVISSA",

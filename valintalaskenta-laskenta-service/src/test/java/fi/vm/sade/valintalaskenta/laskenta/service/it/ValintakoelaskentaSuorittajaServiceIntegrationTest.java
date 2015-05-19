@@ -551,7 +551,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         AvainArvoDTO avain2 = new AvainArvoDTO();
         avain2.setAvain("hakukohdeKutsunKohde");
         avain2.setArvo(hakukohdeOid);
-        final HakemusDTO hakemus = luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid);
+        final HakemusDTO hakemus = luoHakemus(hakuOid, hakemusOid, "hakijaOid", hakukohdeOid);
         hakemus.setAvaimet(Arrays.asList(avain2));
 
         valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(vv2));

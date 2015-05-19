@@ -49,14 +49,6 @@ public abstract class TestDataUtil {
 		return hakemus;
 	}
 
-	public static HakemusDTO luoHakemus(String hakemusOid, String hakijaOid,
-			HakukohdeDTO... hakutoiveet) {
-		HakemusDTO hakemus = luoHakemus(hakemusOid, hakijaOid);
-		hakemus.getHakukohteet().addAll(Arrays.asList(hakutoiveet));
-
-		return hakemus;
-	}
-
 	public static ValintaperusteetDTO luoValintaperusteet(String hakuOid,
 			String hakukohdeOid) {
 		ValintaperusteetDTO perusteet = new ValintaperusteetDTO();
