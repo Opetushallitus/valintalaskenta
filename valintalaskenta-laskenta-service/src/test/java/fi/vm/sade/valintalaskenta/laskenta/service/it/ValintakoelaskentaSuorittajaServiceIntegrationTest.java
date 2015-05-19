@@ -9,6 +9,7 @@ import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import fi.vm.sade.service.valintaperusteet.dto.FunktiokutsuDTO;
 import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
+import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoJarjestyskriteereillaDTO;
 import fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi;
 import fi.vm.sade.service.valintaperusteet.dto.model.Koekutsu;
 import fi.vm.sade.valintalaskenta.domain.dto.AvainArvoDTO;
@@ -532,6 +533,33 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         final Optional<Valintakoe> valintakoetunniste1 = hakutoive2.getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste1")).findFirst();
         assertTrue(valintakoetunniste1.isPresent());
         assertEquals(Osallistuminen.OSALLISTUU, valintakoetunniste1.get().getOsallistuminenTulos().getOsallistuminen());
+    }
+
+    @Test
+    @UsingDataSet(locations = "testEsivalinnassaHylatty.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void testEiKoekutsujaAikaisemminHylatyilleHakijanValinnoille() {
+        final String hakemusOid = "1.2.246.562.11.00000072753";
+        final String hakukohdeOid = "1.2.246.562.5.91937845484";
+        final String hakuOid = "1.2.246.562.5.2013080813081926341927";
+        final String valinnanVaiheOid = "valinnanVaiheHakijanValinta";
+        final String valintakoetunniste = "kielikoe_tunniste";
+
+        ValintaperusteetDTO vv2 = luoValintaperusteetJaValintakoeValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 1, valintakoetunniste);
+        vv2.getValinnanVaihe().getValintakoe().stream().filter(koe -> koe.getTunniste().equals(valintakoetunniste)).findFirst().get().setKutsunKohde(Koekutsu.HAKIJAN_VALINTA);
+        vv2.getValinnanVaihe().getValintakoe().stream().filter(koe -> koe.getTunniste().equals(valintakoetunniste)).findFirst().get().setKutsunKohdeAvain("hakukohdeKutsunKohde");
+
+        AvainArvoDTO avain2 = new AvainArvoDTO();
+        avain2.setAvain("hakukohdeKutsunKohde");
+        avain2.setArvo(hakukohdeOid);
+        final HakemusDTO hakemus = luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid);
+        hakemus.setAvaimet(Arrays.asList(avain2));
+
+        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(vv2));
+
+        ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
+        assertNotNull(osallistuminen);
+
+        //todo: add asserts (work in progress)
     }
 
     @Test
