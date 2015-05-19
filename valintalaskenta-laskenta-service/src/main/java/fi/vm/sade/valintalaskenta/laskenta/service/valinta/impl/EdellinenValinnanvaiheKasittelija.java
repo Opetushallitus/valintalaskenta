@@ -15,11 +15,6 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * User: wuoti
- * Date: 4.9.2013
- * Time: 14.40
- */
 @Component
 public class EdellinenValinnanvaiheKasittelija {
 
@@ -34,82 +29,72 @@ public class EdellinenValinnanvaiheKasittelija {
 
     public TilaJaSelite hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(final String hakemusOid,
                                                                              Valinnanvaihe edellinenValinnanvaihe) {
-        TilaJaSelite palautettavaTila = null;
-        List<TilaJaSelite> tilat = new ArrayList<TilaJaSelite>();
-        if (edellinenValinnanvaihe == null) {
-            palautettavaTila = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, new HashMap<>());
-        } else if (edellinenValinnanvaihe.getValintatapajonot().isEmpty()) {
-            // Jos edellisessä valinnan vaiheessa ei ole yhtään valintatapajonoa, voidaan olettaa, että hakemus
-            // on hyväksyttävissä
-            palautettavaTila = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, new HashMap<>());
-        } else {
-            for (final Valintatapajono jono : edellinenValinnanvaihe.getValintatapajonot()) {
-                Collection<Jonosija> filtteroidutJonosijat = Collections2.filter(jono.getJonosijat(), new Predicate<Jonosija>() {
-                    @Override
-                    public boolean apply(Jonosija jonosija) {
-                        return jonosija.getHakemusOid().equals(hakemusOid);
-                    }
-                });
-
-                Jonosija jonosija = filtteroidutJonosijat.isEmpty() ? null : filtteroidutJonosijat.iterator().next();
-
-                TilaJaSelite tilaJonossa = null;
-                if (jonosija == null) {
-                    // Jos hakemus ei ole ollut mukana edellisessä valinnan vaiheessa, hakemus ei voi tulla
-                    // hyväksyttäväksi tässä valinnan vaiheessa. Breikataan pois.
-                    palautettavaTila = new TilaJaSelite(
-                            JarjestyskriteerituloksenTila.VIRHE,
-                            suomenkielinenMap("Hakemus ei ole ollut mukana laskennassa edellisessä valinnan vaiheessa"));
-                    break;
-                } else if (jonosija.getJarjestyskriteeritulokset().isEmpty()) {
-                    // Mitä tehdään, jos hakemukselle ei ole laskentatulosta? Kai se on hyväksyttävissä
-                    tilaJonossa = new TilaJaSelite(
-                            JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA,
-                            suomenkielinenMap("Hakemukselle ei ole laskentatulosta jonossa"));
-                } else {
-                    Jarjestyskriteeritulos tulos = jonosija.getJarjestyskriteeritulokset().get(0);
-
-                    Optional<MuokattuJonosija> muokattuJonosija = Optional.ofNullable(muokattuJonosijaDAO.readByValintatapajonoOid(jono.getValintatapajonoOid(), hakemusOid));
-                    muokattuJonosija.ifPresent(mj -> {
-                        Optional<Jarjestyskriteeritulos> muokattuTulos = mj.getJarjestyskriteerit().stream().filter(j -> j.getPrioriteetti() == tulos.getPrioriteetti()).findFirst();
-                        muokattuTulos.ifPresent(m -> {
-                            tulos.setTila(m.getTila());
-                            tulos.setArvo(m.getArvo());
-                        });
-                    });
-
-                    tilaJonossa = new TilaJaSelite(tulos.getTila(), tulos.getKuvaus());
-                }
-
-                tilat.add(tilaJonossa);
-            }
-
-            // Tarkistetaan, että palautettavaa tilaa ei ole vielä asetettu
-            if (palautettavaTila == null) {
-
-                // Filtteroidaan kaikki HYVAKSYTTAVISSA-tilat. Jos yksikin tällainen löytyy, hakemus on
-                // hyväksyttävissä myös tässä valinnan vaiheessa.
-                Collection<TilaJaSelite> filtteroidutTilat = Collections2.filter(tilat, new Predicate<TilaJaSelite>() {
-                    @Override
-                    public boolean apply(TilaJaSelite edellinenValinnanvaiheTila) {
-                        return JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA.equals(edellinenValinnanvaiheTila.getTila());
-                    }
-                });
-
-                if (filtteroidutTilat.isEmpty()) {
-
-                    Map<String,String> hylkaysSelitteet = tilat.get(tilat.size()-1).getSelite();
-                    String tekninenSelite = "Hakemus ei ole hyväksyttävissä yhdessäkään edellisen valinnan vaiheen valintatapajonossa";
-
-                    palautettavaTila = new TilaJaSelite(JarjestyskriteerituloksenTila.HYLATTY,
-                            hylkaysSelitteet, tekninenSelite);
-                } else {
-                    palautettavaTila = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, new HashMap<String, String>());
-                }
-            }
+        // Jos edellisessä valinnan vaiheessa ei ole yhtään valintatapajonoa, voidaan olettaa, että hakemus
+        // on hyväksyttävissä
+        if (edellinenValinnanvaihe == null || edellinenValinnanvaihe.getValintatapajonot().isEmpty()) {
+            return new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, new HashMap<>());
         }
 
-        return palautettavaTila;
+        List<TilaJaSelite> tilat = new ArrayList<TilaJaSelite>();
+        for (final Valintatapajono jono : edellinenValinnanvaihe.getValintatapajonot()) {
+            Jonosija jonosija = getJonosijaForHakemus(hakemusOid, jono.getJonosijat());
+
+            TilaJaSelite tilaJonossa = null;
+            if (jonosija == null) {
+                // Jos hakemus ei ole ollut mukana edellisessä valinnan vaiheessa, hakemus ei voi tulla
+                // hyväksyttäväksi tässä valinnan vaiheessa.
+                return new TilaJaSelite(
+                    JarjestyskriteerituloksenTila.VIRHE,
+                    suomenkielinenMap("Hakemus ei ole ollut mukana laskennassa edellisessä valinnan vaiheessa"));
+            } else if (jonosija.getJarjestyskriteeritulokset().isEmpty()) {
+                // Mitä tehdään, jos hakemukselle ei ole laskentatulosta? Kai se on hyväksyttävissä
+                tilaJonossa = new TilaJaSelite(
+                    JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA,
+                    suomenkielinenMap("Hakemukselle ei ole laskentatulosta jonossa"));
+            } else {
+                Jarjestyskriteeritulos tulos = jonosija.getJarjestyskriteeritulokset().get(0);
+
+                Optional<MuokattuJonosija> muokattuJonosija = Optional.ofNullable(muokattuJonosijaDAO.readByValintatapajonoOid(jono.getValintatapajonoOid(), hakemusOid));
+                muokattuJonosija.ifPresent(mj -> {
+                    Optional<Jarjestyskriteeritulos> muokattuTulos = mj.getJarjestyskriteerit().stream().filter(j -> j.getPrioriteetti() == tulos.getPrioriteetti()).findFirst();
+                    muokattuTulos.ifPresent(m -> {
+                        tulos.setTila(m.getTila());
+                        tulos.setArvo(m.getArvo());
+                    });
+                });
+
+                tilaJonossa = new TilaJaSelite(tulos.getTila(), tulos.getKuvaus());
+            }
+
+            tilat.add(tilaJonossa);
+        }
+
+        // Filtteroidaan kaikki HYVAKSYTTAVISSA-tilat. Jos yksikin tällainen löytyy, hakemus on
+        // hyväksyttävissä myös tässä valinnan vaiheessa.
+        Collection<TilaJaSelite> filtteroidutTilat = Collections2.filter(tilat, new Predicate<TilaJaSelite>() {
+            @Override
+            public boolean apply(TilaJaSelite edellinenValinnanvaiheTila) {
+                return JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA.equals(edellinenValinnanvaiheTila.getTila());
+            }
+        });
+
+        if (filtteroidutTilat.isEmpty()) {
+            Map<String,String> hylkaysSelitteet = tilat.get(tilat.size()-1).getSelite();
+            String tekninenSelite = "Hakemus ei ole hyväksyttävissä yhdessäkään edellisen valinnan vaiheen valintatapajonossa";
+            return new TilaJaSelite(JarjestyskriteerituloksenTila.HYLATTY, hylkaysSelitteet, tekninenSelite);
+        } else {
+            return new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, new HashMap<String, String>());
+        }
+    }
+
+    private Jonosija getJonosijaForHakemus(final String hakemusOid, final List<Jonosija> jonosijat) {
+        Collection<Jonosija> filtteroidutJonosijat = Collections2.filter(jonosijat, new Predicate<Jonosija>() {
+            @Override
+            public boolean apply(Jonosija jonosija) {
+                return jonosija.getHakemusOid().equals(hakemusOid);
+            }
+        });
+        return filtteroidutJonosijat.isEmpty() ? null : filtteroidutJonosijat.iterator().next();
     }
 
     private Map<String, String> suomenkielinenMap(String teksti) {
