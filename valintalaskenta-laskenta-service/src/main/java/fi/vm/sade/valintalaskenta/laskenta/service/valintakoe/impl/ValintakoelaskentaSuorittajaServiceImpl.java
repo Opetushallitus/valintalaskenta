@@ -106,36 +106,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
         if (valintaperusteet.size() == 0) {
             return;
         }
-
-        final List<ValintakoeDTO> laskettavat = valintaperusteet.stream().flatMap(vp -> vp.getValinnanVaihe().getValintakoe().stream()).filter(koe -> !koe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA)).collect(Collectors.toList());
-        final String hakukohdeOid = valintaperusteet.get(0).getHakukohdeOid();
-
-        if (laskettavat.size() == 0) {
-            final Optional<ValintakoeOsallistuminen> kaikkiOsallistumisetOpt = Optional.ofNullable(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakemus.getHakuoid(), hakemus.getHakemusoid()));
-            if (kaikkiOsallistumisetOpt.isPresent()) {
-                final ValintakoeOsallistuminen kaikkiOsallistumiset = kaikkiOsallistumisetOpt.get();
-                final List<ValintakoeValinnanvaihe> valinnanvaiheet = kaikkiOsallistumiset.getHakutoiveet().stream()
-                        .filter(h -> h.getHakukohdeOid().equals(hakukohdeOid))
-                        .flatMap(hakutoive -> hakutoive.getValinnanVaiheet().stream()).collect(Collectors.toList());
-                valinnanvaiheet.forEach(vv -> {
-                    final List<Valintakoe> saastettavat = vv.getValintakokeet().stream().filter(valintakoe -> valintakoe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA)).collect(Collectors.toList());
-                    vv.setValintakokeet(saastettavat);
-                });
-                if (valinnanvaiheet.size() > 0) {
-                    if (valinnanvaiheet.stream().flatMap(vv -> vv.getValintakokeet().stream()).count() == 0) {
-                        final List<Hakutoive> saastettavat = kaikkiOsallistumiset.getHakutoiveet().stream().filter(hakutoive -> !hakutoive.getHakukohdeOid().equals(hakukohdeOid)).collect(Collectors.toList());
-                        kaikkiOsallistumiset.setHakutoiveet(saastettavat);
-                    } else {
-                        kaikkiOsallistumiset.getHakutoiveet().forEach(hakutoive -> {
-                            if (hakutoive.getHakukohdeOid().equals(hakukohdeOid)) {
-                                hakutoive.setValinnanVaiheet(valinnanvaiheet);
-                            }
-                        });
-                    }
-                    valintakoeOsallistuminenDAO.createOrUpdate(kaikkiOsallistumiset);
-                }
-            }
-        }
+        poistaVanhatOsallistumiset(hakemus, valintaperusteet);
 
         for (ValintaperusteetDTO vp : valintaperusteet) {
             Map<String, String> hakukohteenValintaperusteet = muodostaHakukohteenValintaperusteetMap(vp
@@ -329,6 +300,42 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
             valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen);
         }
 
+    }
+
+    private void poistaVanhatOsallistumiset(final HakemusDTO hakemus, final List<ValintaperusteetDTO> valintaperusteet) {
+        final String hakukohdeOid = valintaperusteet.get(0).getHakukohdeOid();
+
+        final Stream<ValintakoeDTO> laskettavat = valintaperusteet.stream()
+                .flatMap(vp -> vp.getValinnanVaihe().getValintakoe().stream())
+                .filter(koe -> !koe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA));
+        final boolean onMuitaValintakokeitaKuinHakijanValitsemia = laskettavat.count() > 0;
+
+        if (!onMuitaValintakokeitaKuinHakijanValitsemia) {
+            final Optional<ValintakoeOsallistuminen> kaikkiOsallistumisetOpt = Optional.ofNullable(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakemus.getHakuoid(), hakemus.getHakemusoid()));
+            if (kaikkiOsallistumisetOpt.isPresent()) {
+                final ValintakoeOsallistuminen kaikkiOsallistumiset = kaikkiOsallistumisetOpt.get();
+                final List<ValintakoeValinnanvaihe> valinnanvaiheet = kaikkiOsallistumiset.getHakutoiveet().stream()
+                        .filter(h -> h.getHakukohdeOid().equals(hakukohdeOid))
+                        .flatMap(hakutoive -> hakutoive.getValinnanVaiheet().stream()).collect(Collectors.toList());
+                valinnanvaiheet.forEach(vv -> {
+                    final List<Valintakoe> saastettavat = vv.getValintakokeet().stream().filter(valintakoe -> valintakoe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA)).collect(Collectors.toList());
+                    vv.setValintakokeet(saastettavat);
+                });
+                if (valinnanvaiheet.size() > 0) {
+                    if (valinnanvaiheet.stream().flatMap(vv -> vv.getValintakokeet().stream()).count() == 0) {
+                        final List<Hakutoive> saastettavat = kaikkiOsallistumiset.getHakutoiveet().stream().filter(hakutoive -> !hakutoive.getHakukohdeOid().equals(hakukohdeOid)).collect(Collectors.toList());
+                        kaikkiOsallistumiset.setHakutoiveet(saastettavat);
+                    } else {
+                        kaikkiOsallistumiset.getHakutoiveet().forEach(hakutoive -> {
+                            if (hakutoive.getHakukohdeOid().equals(hakukohdeOid)) {
+                                hakutoive.setValinnanVaiheet(valinnanvaiheet);
+                            }
+                        });
+                    }
+                    valintakoeOsallistuminenDAO.createOrUpdate(kaikkiOsallistumiset);
+                }
+            }
+        }
     }
 
     private OsallistuminenTulos getOsallistuminenTulos(Hakukohde hakukohde, Hakemus convert, Funktiokutsu map) {
