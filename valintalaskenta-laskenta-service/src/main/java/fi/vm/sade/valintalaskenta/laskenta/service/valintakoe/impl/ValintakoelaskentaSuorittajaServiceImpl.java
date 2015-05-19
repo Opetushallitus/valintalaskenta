@@ -282,11 +282,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
         }
     }
 
-    private OsallistuminenTulos getOsallistuminenTulos(Hakukohde hakukohde, Hakemus convert, Funktiokutsu map) {
-        return valintakoeosallistumislaskin
-                .laskeOsallistuminenYhdelleHakukohteelle(
-                        hakukohde,
-                        convert, map);
+    private OsallistuminenTulos getOsallistuminenTulos(Hakukohde hakukohde, Hakemus convert, Funktiokutsu fuk) {
+        return valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(hakukohde, convert, fuk);
     }
 
     private OsallistuminenTulos createOsallistuminen(TilaJaSelite tilaJaSelite, Osallistuminen osallistuu) {
