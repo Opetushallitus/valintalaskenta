@@ -17,6 +17,8 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * User: wuoti
@@ -123,5 +125,13 @@ public class ValintakoeOsallistuminenDAOTest {
         ValintakoeOsallistuminen haettu2 = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid2);
         assertEquals(osallistuminen2.getHakuOid(), haettu2.getHakuOid());
         assertEquals(osallistuminen2.getHakemusOid(), haettu2.getHakemusOid());
+    }
+
+    @Test
+    @UsingDataSet(locations = "testEdellinenOsallistuminen.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void testHaeEdeltavaValinnanvaihe() {
+        assertNotNull(valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid1", "hakuKohdeOid1", 1));
+        assertNull(valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid1", "hakuKohdeOid2", 1));
+        assertNotNull(valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid1", "hakuKohdeOid1", 6));
     }
 }

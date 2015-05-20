@@ -1,0 +1,67 @@
+{
+    "ValintakoeOsallistuminen": [
+        {
+            "hakuOid": "hakuOid1",
+            "hakemusOid": "hakemusOid1",
+            "etunimi": "Keijo",
+            "sukunimi": "Keskeyttänyt",
+            "hakutoiveet": [
+                {
+                    "hakukohdeOid": "hakuKohdeOid1",
+                    "valinnanVaiheet": [
+                        {
+                            "valinnanVaiheOid": "valinnanVaiheOid1",
+                            "valinnanVaiheJarjestysluku": 0,
+                            "valintakokeet": [
+                                {
+                                    "valintakoeOid": "valintakoeOid1",
+                                    "valintakoeTunniste": "kielikoe_tunniste",
+                                    "osallistuminenTulos": {
+                                        "osallistuminen": "EI_OSALLISTU",
+                                        "laskentaTila": "HYVAKSYTTAVISSA",
+                                        "laskentaTulos": true
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "valinnanVaiheOid": "valinnanVaiheOid2",
+                            "valinnanVaiheJarjestysluku": 5,
+                            "valintakokeet": [
+                                {
+                                    "valintakoeOid": "valintakoeOid1b",
+                                    "valintakoeTunniste": "kielikoe_tunniste",
+                                    "osallistuminenTulos": {
+                                        "osallistuminen": "EI_OSALLISTU",
+                                        "laskentaTila": "HYVAKSYTTAVISSA",
+                                        "laskentaTulos": true
+                                    }
+                                }
+                            ]
+                        }
+
+                    ]
+                },
+                {
+                    "hakukohdeOid": "hakuKohdeOid2",
+                    "valinnanVaiheet": [
+                        {
+                            "valinnanVaiheOid": "valinnanVaiheOid2",
+                            "valinnanVaiheJarjestysluku": 1,
+                            "valintakokeet": [
+                                {
+                                    "valintakoeOid": "valintakoeOid1",
+                                    "valintakoeTunniste": "kielikoe_tunniste",
+                                    "osallistuminenTulos": {
+                                        "osallistuminen": "EI_OSALLISTU",
+                                        "laskentaTila": "HYVAKSYTTAVISSA",
+                                        "laskentaTulos": true
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }]
+}

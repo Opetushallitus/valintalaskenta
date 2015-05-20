@@ -1,13 +1,28 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 
+import com.mongodb.AggregationOutput;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
+import fi.vm.sade.valintalaskenta.tulos.dao.exception.DaoException;
+import org.bson.types.BasicBSONList;
+import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.aggregation.AggregationPipeline;
+import org.mongodb.morphia.aggregation.Projection;
+import org.mongodb.morphia.query.MorphiaIterator;
+import org.mongodb.morphia.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -48,14 +63,17 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
     public ValintakoeOsallistuminen haeEdeltavaValinnanvaihe(String hakuOid, String hakukohdeOid, int jarjestysnumero) {
         ValintakoeOsallistuminen edellinen = null;
 
-        if (jarjestysnumero > 0) {
-            edellinen = morphiaDS.find(ValintakoeOsallistuminen.class)
-                    .field("hakuOid").equal(hakuOid)
-                    .field("hakutoiveet.hakukohdeOid").equal(hakukohdeOid)
-                    .field("hakutoiveet.valinnanVaiheet.valinnanVaiheJarjestysluku").equal(jarjestysnumero - 1)
-                    .limit(1)
-                    .hintIndex(useIndexQueries ? ValintakoeOsallistuminen.INDEX_HAE_HAKU_KOHDE_VAIHEENJARJESTYSLUKU : null)
-                    .get();
+        final Query<ValintakoeOsallistuminen> query = morphiaDS.createQuery(ValintakoeOsallistuminen.class);
+        final MorphiaIterator<ValintakoeOsallistuminen, ValintakoeOsallistuminen> edellisenVaiheenOsallistumiset = morphiaDS.<ValintakoeOsallistuminen, ValintakoeOsallistuminen>createAggregation(ValintakoeOsallistuminen.class)
+                .match(query.field("hakuOid").equal(hakuOid))
+                .project(Projection.projection("_id").suppress(), Projection.projection("hakutoiveet"), Projection.projection("hakuOid"))
+                .unwind("hakutoiveet")
+                .match(query.field("hakutoiveet.hakukohdeOid").equal(hakukohdeOid))
+                .unwind("hakutoiveet.valinnanVaiheet")
+                .match(query.field("hakutoiveet.valinnanVaiheet.valinnanVaiheJarjestysluku").equal(jarjestysnumero - 1))
+                .aggregate(ValintakoeOsallistuminen.class);
+        if (edellisenVaiheenOsallistumiset.hasNext()) {
+            edellinen = edellisenVaiheenOsallistumiset.next();
         }
 
         return edellinen;
