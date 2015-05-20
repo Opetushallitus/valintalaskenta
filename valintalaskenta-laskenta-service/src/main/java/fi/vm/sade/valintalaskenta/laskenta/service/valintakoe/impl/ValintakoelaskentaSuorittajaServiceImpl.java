@@ -122,6 +122,10 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
                         // olemassa ja järjestysnumero > 0,
                         // tarkistetaaan löytyykö edellistä valintakoevaihetta vai
                         // heitetäänö virhe
+                        LOG.info("hakukohde {}, koe {}, vaiheen oid {}, jarjestysluku {}",
+                                vp.getHakukohdeOid(), koe.getOid(), vaihe.getValinnanVaiheOid(),
+                                vaihe.getValinnanVaiheJarjestysluku());
+
                         if (edellinenVaihe == null && vaihe.getValinnanVaiheJarjestysluku() > 0) {
                             ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku());
                             if (edellinenOsallistuminen == null) {
