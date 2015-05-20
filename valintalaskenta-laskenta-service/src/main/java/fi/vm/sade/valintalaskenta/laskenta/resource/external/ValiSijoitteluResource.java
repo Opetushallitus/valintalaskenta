@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Controller
 @Path("valisijoittele")
-public interface SijoitteluResource {
+public interface ValiSijoitteluResource {
 
     @POST
     @Path("{hakuOid}")

@@ -22,7 +22,10 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static fi.vm.sade.sijoittelu.tulos.dto.HakemuksenTila.PERUUNTUNUT;
+import static fi.vm.sade.sijoittelu.tulos.dto.HakemuksenTila.VARALLA;
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.CRUD;
+import static java.util.Arrays.asList;
 
 /**
  * @author Jussi Jartamo
@@ -107,9 +110,9 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
         valintaperuste.stream().forEachOrdered(peruste -> {
             if(peruste.getValinnanVaihe().getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
                 LOG.info("Suoritetaan valintakoelaskenta {} hakemukselle", hakemus.size());
-                hakemus.forEach(h -> valintakokeet(h, Arrays.asList(peruste)));
+                hakemus.forEach(h -> valintakokeet(h, asList(peruste)));
             } else {
-                laske(hakemus, Arrays.asList(peruste), hakijaryhmat, hakukohdeOid);
+                laske(hakemus, asList(peruste), hakijaryhmat, hakukohdeOid);
             }
         });
 
@@ -118,7 +121,6 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 
     @Override
     public void applyValisijoittelu(Map<String, List<String>> valisijoiteltavatJonot, Map<String, fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO> hakemusHashMap) {
-
         valisijoiteltavatJonot.keySet().parallelStream().forEach(hakukohdeOid -> {
             List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid);
             vaiheet.forEach(vaihe -> {
@@ -129,20 +131,18 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                 if (valisijoitteluVaihe) {
                     vaihe.getValintatapajonot()
                             .forEach(jono -> {
-                                if (hakukohteenValisijoitelujonot.indexOf(jono.getValintatapajonoOid()) != -1) {
+                                if (hakukohteenValisijoitelujonot.contains(jono.getValintatapajonoOid())) {
                                     jono.getJonosijat().forEach(jonosija -> {
-                                        fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO hakemusDTO = hakemusHashMap.get(hakukohdeOid + jono.getValintatapajonoOid()
-                                                + jonosija.getHakemusOid());
-                                        List<HakemuksenTila> tilat = Arrays.asList(HakemuksenTila.VARALLA, HakemuksenTila.PERUUNTUNUT);
-                                        if (hakemusDTO != null && tilat.indexOf(hakemusDTO.getTila()) != -1) {
+                                        fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO hakemusDTO = hakemusHashMap.get(hakukohdeOid + jono.getValintatapajonoOid() + jonosija.getHakemusOid());
+                                        if (hakemusDTO != null && asList(VARALLA, PERUUNTUNUT).contains(hakemusDTO.getTila())) {
                                             Collections.sort(jonosija.getJarjestyskriteeritulokset(), (jk1, jk2) -> jk1.getPrioriteetti() - jk2.getPrioriteetti());
                                             Jarjestyskriteeritulos jarjestyskriteeritulos = jonosija.getJarjestyskriteeritulokset().get(0);
                                             jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.HYLATTY);
                                             jonosija.setHylattyValisijoittelussa(true);
                                             Map<String, String> kuvaukset = new HashMap<>();
-                                            if (hakemusDTO.getTila() == HakemuksenTila.VARALLA) {
+                                            if (hakemusDTO.getTila() == VARALLA) {
                                                 kuvaukset.put("FI", "Hakemus ei mahtunut aloituspaikkojen sisään välisijoittelussa");
-                                            } else if (hakemusDTO.getTila() == HakemuksenTila.PERUUNTUNUT) {
+                                            } else if (hakemusDTO.getTila() == PERUUNTUNUT) {
                                                 kuvaukset.put("FI", "Hyväksyttiin korkeammalle hakutoiveelle");
                                             }
                                             jarjestyskriteeritulos.setKuvaus(kuvaukset);

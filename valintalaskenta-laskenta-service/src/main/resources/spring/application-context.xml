@@ -44,7 +44,7 @@
 
     <jaxrs-client:client id="sijoitteluRestClient"
                          address="${valintalaskentakoostepalvelu.sijoittelu.rest.url}"
-                         serviceClass="fi.vm.sade.valintalaskenta.laskenta.resource.external.SijoitteluResource"
+                         serviceClass="fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource"
                          inheritHeaders="true">
         <jaxrs-client:outInterceptors>
             <bean

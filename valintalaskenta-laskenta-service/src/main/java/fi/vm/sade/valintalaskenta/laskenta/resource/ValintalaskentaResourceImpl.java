@@ -12,7 +12,7 @@ import fi.vm.sade.sijoittelu.tulos.dto.HakukohdeDTO;
 import fi.vm.sade.sijoittelu.tulos.dto.ValisijoitteluDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource;
-import fi.vm.sade.valintalaskenta.laskenta.resource.external.SijoitteluResource;
+import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 
@@ -43,7 +43,7 @@ public class ValintalaskentaResourceImpl {
     private ValisijoitteluKasittelija valisijoitteluKasittelija;
 
     @Autowired
-    private SijoitteluResource sijoitteluResource;
+    private ValiSijoitteluResource valiSijoitteluResource;
 
     @Autowired
     private ErillisSijoitteluResource erillisSijoitteluResource;
@@ -229,19 +229,19 @@ public class ValintalaskentaResourceImpl {
             lista.forEach(laskeDTO -> valintalaskentaService.laskeKaikki(laskeDTO.getHakemus(),
                     laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid()));
         } else {
-            Map<Integer, List<LaskeDTO>> map = new TreeMap<>();
+            Map<Integer, List<LaskeDTO>> laskettavatHakukohteetVaiheittain = new TreeMap<>();
             lista.forEach(laskeDTO -> {
                 laskeDTO.getValintaperuste().forEach(v -> {
-                    List<LaskeDTO> dtos = map.getOrDefault(v.getValinnanVaihe().getValinnanVaiheJarjestysluku(), new ArrayList<>());
+                    List<LaskeDTO> dtos = laskettavatHakukohteetVaiheittain.getOrDefault(v.getValinnanVaihe().getValinnanVaiheJarjestysluku(), new ArrayList<>());
                     dtos.add(new LaskeDTO(laskeDTO.isErillishaku(),laskeDTO.getHakukohdeOid(), laskeDTO.getHakemus(), Arrays.asList(v), laskeDTO.getHakijaryhmat()));
-                    map.put(v.getValinnanVaihe().getValinnanVaiheJarjestysluku(), dtos);
+                    laskettavatHakukohteetVaiheittain.put(v.getValinnanVaihe().getValinnanVaiheJarjestysluku(), dtos);
                 });
             });
 
-            map.keySet().stream().forEachOrdered(key -> {
-                map.get(key).forEach(laskeDTO -> {
+            laskettavatHakukohteetVaiheittain.keySet().stream().forEachOrdered(vaiheenJarjestysNumero -> {
+                laskettavatHakukohteetVaiheittain.get(vaiheenJarjestysNumero).forEach(laskeDTO -> {
 
-                    LOG.info("Aloitetaan laskenta hakukohteessa {}", laskeDTO.getHakukohdeOid());
+                    LOG.info("Aloitetaan laskenta hakukohteessa {}, vaihe {}", laskeDTO.getHakukohdeOid(), vaiheenJarjestysNumero);
 
                     ValintaperusteetValinnanVaiheDTO valinnanVaihe = laskeDTO.getValintaperuste().get(0).getValinnanVaihe();
                     if(valinnanVaihe.getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
@@ -262,8 +262,8 @@ public class ValintalaskentaResourceImpl {
                             });
                         }
 
-                       valintalaskentaService.laske(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid());
-                        if(valisijoiteltavatJonot.valinnanvaiheet.contains(key)) {
+                        valintalaskentaService.laske(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid());
+                        if(valisijoiteltavatJonot.valinnanvaiheet.contains(vaiheenJarjestysNumero)) {
                             Map<String, List<String>> kohteet = valisijoiteltavatJonot.jonot;
                             if(kohteet.containsKey(laskeDTO.getHakukohdeOid())) {
                                 List<String> jonot = kohteet.get(laskeDTO.getHakukohdeOid());
@@ -306,7 +306,7 @@ public class ValintalaskentaResourceImpl {
         }
         ValisijoitteluDTO dto = new ValisijoitteluDTO();
         dto.setHakukohteet(valisijoiteltavatJonot);
-        List<HakukohdeDTO> sijoitellut = sijoitteluResource.sijoittele(hakuoid, dto);
+        List<HakukohdeDTO> sijoitellut = valiSijoitteluResource.sijoittele(hakuoid, dto);
 
         Map<String, HakemusDTO> hakemusHashMap = new ConcurrentHashMap<>();
 
