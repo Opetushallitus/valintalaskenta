@@ -243,13 +243,15 @@ public class ValintalaskentaResourceImpl {
 
                     LOG.info("Aloitetaan laskenta hakukohteessa {}, vaihe {}", laskeDTO.getHakukohdeOid(), vaiheenJarjestysNumero);
 
-                    ValintaperusteetValinnanVaiheDTO valinnanVaihe = laskeDTO.getValintaperuste().get(0).getValinnanVaihe();
+                    final ValintaperusteetDTO valintaPerusteet = laskeDTO.getValintaperuste().get(0);
+
+                    ValintaperusteetValinnanVaiheDTO valinnanVaihe = valintaPerusteet.getValinnanVaihe();
                     if(valinnanVaihe.getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
                         LOG.info("Suoritetaan valintakoelaskenta {} hakemukselle", laskeDTO.getHakemus().size());
                         laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste()));
                     } else {
 
-                        ValintaperusteetDTO valintaperusteetDTO = laskeDTO.getValintaperuste().get(0);
+                        ValintaperusteetDTO valintaperusteetDTO = valintaPerusteet;
                         boolean erillisHaku = laskeDTO.isErillishaku()
                                 && valintaperusteetDTO.getViimeinenValinnanvaihe()
                                 == valintaperusteetDTO.getValinnanVaihe().getValinnanVaiheJarjestysluku();
@@ -267,9 +269,9 @@ public class ValintalaskentaResourceImpl {
                             Map<String, List<String>> kohteet = valisijoiteltavatJonot.jonot;
                             if(kohteet.containsKey(laskeDTO.getHakukohdeOid())) {
                                 List<String> jonot = kohteet.get(laskeDTO.getHakukohdeOid());
+                                LOG.info("Suoritetaan välisijoittelu hakukohteelle {}", laskeDTO.getHakukohdeOid());
                                 valisijoitteleKopiot(laskeDTO, haeKopiotValintaperusteista(jonot));
                             }
-
                         }
 
                         if(erillisHaku) {
@@ -295,15 +297,7 @@ public class ValintalaskentaResourceImpl {
     }
 
     private void valisijoitteleKopiot(LaskeDTO laskeDTO, Map<String, List<String>> valisijoiteltavatJonot) {
-        String hakuoid;
-        try {
-            hakuoid = laskeDTO.getValintaperuste().get(0).getHakuOid();
-        } catch (Exception e) {
-            LOG.error(
-                    "Välisijoittelulle ei löytynyt hakuoidia!",
-                    e.getMessage(), Arrays.toString(e.getStackTrace()));
-            throw e;
-        }
+        String hakuoid = getHakuOid(laskeDTO);
         ValisijoitteluDTO dto = new ValisijoitteluDTO();
         dto.setHakukohteet(valisijoiteltavatJonot);
         List<HakukohdeDTO> sijoitellut = valiSijoitteluResource.sijoittele(hakuoid, dto);
@@ -322,6 +316,17 @@ public class ValintalaskentaResourceImpl {
         );
 
         valintalaskentaService.applyValisijoittelu(valisijoiteltavatJonot, hakemusHashMap);
+    }
+
+    private String getHakuOid(final LaskeDTO laskeDTO) {
+        String hakuoid;
+        try {
+            hakuoid = laskeDTO.getValintaperuste().get(0).getHakuOid();
+        } catch (Exception e) {
+            LOG.error("Välisijoittelulle ei löytynyt hakuoidia!", e.getMessage(), Arrays.toString(e.getStackTrace()));
+            throw e;
+        }
+        return hakuoid;
     }
 
     private void erillissijoitteleJonot(LaskeDTO laskeDTO, Map<String, List<String>> jonot) {
