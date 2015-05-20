@@ -1,21 +1,29 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl;
 
-import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.stereotype.Component;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-/**
- * Created by kjsaila on 21/09/14.
- */
+import org.springframework.stereotype.Component;
+
+import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
+
 @Component
 public class ValisijoitteluKasittelija {
+    public static final class ValisijoiteltavatJonot {
+        public final Set<Integer> valinnanvaiheet;
+        public final Map<String, List<String>> jonot;
 
-    public Pair<Set<Integer>, Map<String, List<String>>> valisijoiteltavatJonot(List<LaskeDTO> lista) {
+        public ValisijoiteltavatJonot(final Set<Integer> valinnanvaiheet, final Map<String, List<String>> jonot) {
+            this.valinnanvaiheet = valinnanvaiheet;
+            this.jonot = jonot;
+        }
+    }
+    public ValisijoiteltavatJonot valisijoiteltavatJonot(List<LaskeDTO> lista) {
         Map<String, List<String>> hakukohteet = new ConcurrentHashMap<>();
         Set<Integer> valinnanvaiheet = new TreeSet<>();
         lista.forEach(dto -> {
@@ -40,8 +48,7 @@ public class ValisijoitteluKasittelija {
             }
         });
 
-        return new ImmutablePair<>(valinnanvaiheet, hakukohteet);
+        return new ValisijoiteltavatJonot(valinnanvaiheet, hakukohteet);
 
     }
-
 }

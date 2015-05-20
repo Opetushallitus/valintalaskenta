@@ -4,7 +4,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import com.google.gson.GsonBuilder;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetValinnanVaiheDTO;
 import fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi;
@@ -12,7 +11,6 @@ import fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO;
 import fi.vm.sade.sijoittelu.tulos.dto.HakukohdeDTO;
 import fi.vm.sade.sijoittelu.tulos.dto.ValisijoitteluDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
-import fi.vm.sade.valintalaskenta.domain.resource.ValintalaskentaResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.SijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
@@ -20,11 +18,9 @@ import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
 import javax.ws.rs.Consumes;
@@ -65,9 +61,9 @@ public class ValintalaskentaResourceImpl {
 
         LOG.info("Aloitetaan laskenta hakukohteessa {}", laskeDTO.getHakukohdeOid());
 
-        Pair<Set<Integer>, Map<String, List<String>>> valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Arrays.asList(laskeDTO));
-        if(!valisijoiteltavatJonot.getLeft().isEmpty()) {
-            valisijoiteltavatJonot = new ImmutablePair<>(valisijoiteltavatJonot.getLeft(), haeKopiotValintaperusteista(valisijoiteltavatJonot.getRight().get(laskeDTO.getHakukohdeOid())));
+        ValisijoitteluKasittelija.ValisijoiteltavatJonot valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Arrays.asList(laskeDTO));
+        if(!valisijoiteltavatJonot.valinnanvaiheet.isEmpty()) {
+            valisijoiteltavatJonot = new ValisijoitteluKasittelija.ValisijoiteltavatJonot(valisijoiteltavatJonot.valinnanvaiheet, haeKopiotValintaperusteista(valisijoiteltavatJonot.jonot.get(laskeDTO.getHakukohdeOid())));
         }
 		try {
             ValintaperusteetDTO valintaperusteetDTO = laskeDTO.getValintaperuste().get(0);
@@ -100,8 +96,8 @@ public class ValintalaskentaResourceImpl {
 					Arrays.toString(e.getStackTrace()));
 			throw e;
 		}
-        if(!valisijoiteltavatJonot.getLeft().isEmpty()) {
-            valisijoitteleKopiot(laskeDTO, valisijoiteltavatJonot.getRight());
+        if(!valisijoiteltavatJonot.valinnanvaiheet.isEmpty()) {
+            valisijoitteleKopiot(laskeDTO, valisijoiteltavatJonot.jonot);
         }
 
         LOG.info("Laskenta suoritettu hakukohteessa {}", laskeDTO.getHakukohdeOid());
@@ -139,10 +135,10 @@ public class ValintalaskentaResourceImpl {
 
         LOG.info("Aloitetaan laskenta hakukohteessa {}", laskeDTO.getHakukohdeOid());
 
-        Pair<Set<Integer>, Map<String, List<String>>> valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Arrays.asList(laskeDTO));
+        ValisijoitteluKasittelija.ValisijoiteltavatJonot valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Arrays.asList(laskeDTO));
 
 		try {
-            if(valisijoiteltavatJonot.getLeft().isEmpty()) {
+            if(valisijoiteltavatJonot.valinnanvaiheet.isEmpty()) {
                 if(laskeDTO.isErillishaku()) {
                     laskeDTO.getValintaperuste().forEach(v -> {
                         if(v.getValinnanVaihe().getValinnanVaiheJarjestysluku() == v.getViimeinenValinnanvaihe()) {
@@ -205,8 +201,8 @@ public class ValintalaskentaResourceImpl {
                             }
                         }
                     });
-                    if(valisijoiteltavatJonot.getLeft().contains(key)) {
-                        valisijoitteleKopiot(laskeDTO, new ImmutablePair<>(valisijoiteltavatJonot.getLeft(), haeKopiotValintaperusteista(valisijoiteltavatJonot.getRight().get(laskeDTO.getHakukohdeOid()))).getRight());
+                    if(valisijoiteltavatJonot.valinnanvaiheet.contains(key)) {
+                        valisijoitteleKopiot(laskeDTO, new ImmutablePair<>(valisijoiteltavatJonot.valinnanvaiheet, haeKopiotValintaperusteista(valisijoiteltavatJonot.jonot.get(laskeDTO.getHakukohdeOid()))).getRight());
                     }
                 });
             }
@@ -228,9 +224,8 @@ public class ValintalaskentaResourceImpl {
     @POST
     public String laskeJaSijoittele(List<LaskeDTO> lista) {
 
-        Pair<Set<Integer>, Map<String, List<String>>> valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(lista);
-
-        if(valisijoiteltavatJonot.getLeft().isEmpty()) {
+        ValisijoitteluKasittelija.ValisijoiteltavatJonot valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(lista);
+        if(valisijoiteltavatJonot.valinnanvaiheet.isEmpty()) {
             lista.forEach(laskeDTO -> valintalaskentaService.laskeKaikki(laskeDTO.getHakemus(),
                     laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid()));
         } else {
@@ -268,8 +263,8 @@ public class ValintalaskentaResourceImpl {
                         }
 
                        valintalaskentaService.laske(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid());
-                        if(valisijoiteltavatJonot.getLeft().contains(key)) {
-                            Map<String, List<String>> kohteet = valisijoiteltavatJonot.getRight();
+                        if(valisijoiteltavatJonot.valinnanvaiheet.contains(key)) {
+                            Map<String, List<String>> kohteet = valisijoiteltavatJonot.jonot;
                             if(kohteet.containsKey(laskeDTO.getHakukohdeOid())) {
                                 List<String> jonot = kohteet.get(laskeDTO.getHakukohdeOid());
                                 valisijoitteleKopiot(laskeDTO, haeKopiotValintaperusteista(jonot));

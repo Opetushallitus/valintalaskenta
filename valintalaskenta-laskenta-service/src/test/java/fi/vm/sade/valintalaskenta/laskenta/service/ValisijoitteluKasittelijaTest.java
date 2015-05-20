@@ -4,13 +4,9 @@ import fi.vm.sade.service.valintaperusteet.dto.ValintakoeDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetValinnanVaiheDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoJarjestyskriteereillaDTO;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.*;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
-import fi.vm.sade.valintalaskenta.domain.valinta.*;
-import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinnanvaiheKasittelija;
-import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.TilaJaSelite;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
-import org.apache.commons.lang3.tuple.Pair;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -94,18 +90,16 @@ public class ValisijoitteluKasittelijaTest {
         LaskeDTO hakukohde1 = new LaskeDTO(false,"hakukohde1", new ArrayList<>(), Arrays.asList(perusteet1, perusteet2, perusteet3));
         LaskeDTO hakukohde2 = new LaskeDTO(false,"hakukohde2", new ArrayList<>(), Arrays.asList(perusteet4, perusteet5));
 
-        Pair<Set<Integer>,Map<String,List<String>>> jonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Arrays.asList(hakukohde1, hakukohde2));
-
-        assertEquals(2, jonot.getRight().size());
-        assertEquals(2, jonot.getRight().get("hakukohde1").size());
-        assertEquals(1, jonot.getRight().get("hakukohde2").size());
-        assertTrue(jonot.getLeft().contains(1));
-        assertTrue(!jonot.getLeft().contains(2));
-        assertTrue(jonot.getLeft().contains(3));
-
-        assertTrue(jonot.getRight().get("hakukohde1").indexOf("jono1") != -1);
-        assertTrue(jonot.getRight().get("hakukohde1").indexOf("jono3") != -1);
-        assertTrue(jonot.getRight().get("hakukohde2").indexOf("jono3") != -1);
+        ValisijoitteluKasittelija.ValisijoiteltavatJonot jonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Arrays.asList(hakukohde1, hakukohde2));
+        assertEquals(2, jonot.jonot.size());
+        assertEquals(2, jonot.jonot.get("hakukohde1").size());
+        assertEquals(1, jonot.jonot.get("hakukohde2").size());
+        assertTrue(jonot.valinnanvaiheet.contains(1));
+        assertTrue(!jonot.valinnanvaiheet.contains(2));
+        assertTrue(jonot.valinnanvaiheet.contains(3));
+        assertTrue(jonot.jonot.get("hakukohde1").indexOf("jono1") != -1);
+        assertTrue(jonot.jonot.get("hakukohde1").indexOf("jono3") != -1);
+        assertTrue(jonot.jonot.get("hakukohde2").indexOf("jono3") != -1);
 
     }
 }
