@@ -441,10 +441,11 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 			}
 
             valinnanvaihe.getValintatapajonot().clear();
-            poistettavat.forEach(j -> valinnanvaiheDAO.poistaJonot(j.getValintatapajonoOid()));
             valinnanvaihe.getValintatapajonot().addAll(saastettavat);
             valinnanvaiheDAO.create(valinnanvaihe);
-		} else {
+            poistettavat.forEach(j -> valinnanvaiheDAO.poistaJonot(j.getValintatapajonoOid()));
+
+        } else {
 			valinnanvaihe = new Valinnanvaihe();
 		}
 
