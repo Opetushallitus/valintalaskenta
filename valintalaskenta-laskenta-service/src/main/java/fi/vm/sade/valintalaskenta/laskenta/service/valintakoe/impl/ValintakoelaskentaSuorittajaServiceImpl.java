@@ -122,10 +122,10 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
                         // olemassa ja järjestysnumero > 0,
                         // tarkistetaaan löytyykö edellistä valintakoevaihetta vai
                         // heitetäänö virhe
-                        LOG.info("(Uuid={}) Hakukohde {}, koe {}, vaiheen oid {}, jarjestysluku {}",
+                        /*LOG.info("(Uuid={}) Hakukohde {}, koe {}, vaiheen oid {}, jarjestysluku {}",
                                 uuid,
                                 vp.getHakukohdeOid(), koe.getOid(), vaihe.getValinnanVaiheOid(),
-                                vaihe.getValinnanVaiheJarjestysluku());
+                                vaihe.getValinnanVaiheJarjestysluku());*/
 
                         if (edellinenVaihe == null && vaihe.getValinnanVaiheJarjestysluku() > 0) {
                             ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku());
@@ -206,7 +206,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
             List<HakukohdeValintakoeData> olemassaOlevat = new ArrayList<>();
 //            asetaOsallistumisetKokeisiin(kokeet, hakutoiveetByOid);
             for (HakukohdeValintakoeData c : kokeet) {
-                LOG.info("(Uuid={}) Hakukohde: {}, valintakoe: {}", uuid, c.getHakukohdeOid(), c.getValintakoeOid());
+                //LOG.info("(Uuid={}) Hakukohde: {}, valintakoe: {}", uuid, c.getHakukohdeOid(), c.getValintakoeOid());
                 if (!osallistumisetByHaku.containsKey(c.getHakuOid())) {
                     osallistumisetByHaku.put(c.getHakuOid(), luoValintakoeOsallistuminen(c, hakemus, hakutoiveetByOid));
                 }

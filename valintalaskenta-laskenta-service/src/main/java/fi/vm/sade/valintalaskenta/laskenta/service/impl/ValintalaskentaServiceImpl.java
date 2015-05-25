@@ -63,9 +63,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 					
 		}
 		try {
-			LOG.info(
-					"(Uuid={}) Suoritetaan laskenta. Hakemuksia {} kpl ja valintaperusteita {} kpl",
-					uuid, hakemus.size(), valintaperuste.size());
+
 			valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste, hakijaryhmat, hakukohdeOid, uuid);
 			return "Onnistui!";
 		} catch (Exception e) {
