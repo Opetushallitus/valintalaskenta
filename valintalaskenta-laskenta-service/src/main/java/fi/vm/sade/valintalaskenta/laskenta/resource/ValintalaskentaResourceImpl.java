@@ -318,7 +318,7 @@ public class ValintalaskentaResourceImpl {
                                 hakukohteidenMaaraValinnanVaiheessa,
                                 laskeDTO.getHakukohdeOid());
                     } catch (Throwable t) {
-                        LOG.error("(Uuid={}, {}={}/{}, hakukohde={}/{}) Laskenta suoritettu hakukohteessa {}",
+                        LOG.error("(Uuid={}, {}={}/{}, hakukohde={}/{}) virhe hakukohteelle {}",
                                 laskeDTO.getUuid(),
                                 valinnanVaihe.getValinnanVaiheTyyppi(),
                                 vaiheenJarjestysNumero,
