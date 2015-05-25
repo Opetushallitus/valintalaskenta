@@ -96,8 +96,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 	}
 
     @Override
-    public void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet) {
-        LOG.info("Laskentaan valintakoeosallistumiset hakemukselle {}", hakemus.getHakemusoid());
+    public void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet, String uuid) {
+        LOG.info("(Uuid={}) Laskentaan valintakoeosallistumiset hakemukselle {}", uuid, hakemus.getHakemusoid());
         final Map<String, HakukohdeDTO> hakutoiveetByOid = luoHakutoiveMap(hakemus.getHakukohteet());
         Map<String, List<HakukohdeValintakoeData>> valintakoeData = new HashMap<String, List<HakukohdeValintakoeData>>();
         if (valintaperusteet.size() == 0) {
@@ -112,7 +112,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
                     if (koe.getAktiivinen()) {
                         String tunniste = haeTunniste(koe.getTunniste(), hakukohteenValintaperusteet);
                         if (tunniste == null) {
-                            LOG.error("Valintakokoeen tunnistetta ei pystytty määrittelemään. HakukohdeOid: {} - ValintakoeOid: {}", vp.getHakukohdeOid(), koe.getOid());
+                            LOG.error("(Uuid={}) Valintakokoeen tunnistetta ei pystytty määrittelemään. HakukohdeOid: {} - ValintakoeOid: {}", uuid, vp.getHakukohdeOid(), koe.getOid());
                             continue;
                         }
                         // Haetaan tätä valinnan vaihetta edeltävä varsinainen
@@ -122,14 +122,15 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
                         // olemassa ja järjestysnumero > 0,
                         // tarkistetaaan löytyykö edellistä valintakoevaihetta vai
                         // heitetäänö virhe
-                        LOG.info("hakukohde {}, koe {}, vaiheen oid {}, jarjestysluku {}",
+                        LOG.info("(Uuid={}) Hakukohde {}, koe {}, vaiheen oid {}, jarjestysluku {}",
+                                uuid,
                                 vp.getHakukohdeOid(), koe.getOid(), vaihe.getValinnanVaiheOid(),
                                 vaihe.getValinnanVaiheJarjestysluku());
 
                         if (edellinenVaihe == null && vaihe.getValinnanVaiheJarjestysluku() > 0) {
                             ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku());
                             if (edellinenOsallistuminen == null) {
-                                LOG.warn("Valinnanvaiheen järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt");
+                                LOG.warn("(Uuid={}) Valinnanvaiheen järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt", uuid);
                                 continue;
                             }
                         }
@@ -174,7 +175,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
                             if (avainArvo.isPresent()) {
                                 data.setHakukohdeOid(avainArvo.get().getArvo());
                             } else {
-                                LOG.error("Hakemukselta {} puuttuu kutsun kohde {}", hakemus.getHakemusoid(), koe.getKutsunKohdeAvain());
+                                LOG.error("(Uuid={}) Hakemukselta {} puuttuu kutsun kohde {}", uuid, hakemus.getHakemusoid(), koe.getKutsunKohdeAvain());
                                 throw new RuntimeException("Hakemukselta ei löytynyt kutsun kohdetta!");
                             }
                         } else {
@@ -205,7 +206,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
             List<HakukohdeValintakoeData> olemassaOlevat = new ArrayList<>();
 //            asetaOsallistumisetKokeisiin(kokeet, hakutoiveetByOid);
             for (HakukohdeValintakoeData c : kokeet) {
-                LOG.info("Hakukohde: {}, valintakoe: {}", new Object[] {c.getHakukohdeOid(), c.getValintakoeOid()});
+                LOG.info("(Uuid={}) Hakukohde: {}, valintakoe: {}", uuid, new Object[] {c.getHakukohdeOid(), c.getValintakoeOid()});
                 if (!osallistumisetByHaku.containsKey(c.getHakuOid())) {
                     osallistumisetByHaku.put(c.getHakuOid(), luoValintakoeOsallistuminen(c, hakemus, hakutoiveetByOid));
                 }

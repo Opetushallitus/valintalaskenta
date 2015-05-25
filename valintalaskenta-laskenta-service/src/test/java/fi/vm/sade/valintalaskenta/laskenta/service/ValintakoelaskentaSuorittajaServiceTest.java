@@ -57,7 +57,7 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.Hakukohd
  * User: wuoti Date: 3.5.2013 Time: 12.00
  */
 public class ValintakoelaskentaSuorittajaServiceTest {
-
+	private final String uuid = null;
 	private ValintakoelaskentaSuorittajaService valintakoelaskentaSuorittajaService;
 
 	private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAOMock;
@@ -140,7 +140,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		ArgumentCaptor<ValintakoeOsallistuminen> captor = ArgumentCaptor
 				.forClass(ValintakoeOsallistuminen.class);
  		valintakoelaskentaSuorittajaService.laske(hakemus,
-                Arrays.asList(valintaperusteet1));
+                Arrays.asList(valintaperusteet1), uuid);
 		verify(valintakoeOsallistuminenDAOMock, times(1)).createOrUpdate(
 				captor.capture());
 
@@ -185,7 +185,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 				osallistuminenTulos);
 
 		valintakoelaskentaSuorittajaService.laske(hakemus,
-                Arrays.asList(valintaperusteet1));
+                Arrays.asList(valintaperusteet1), uuid);
 		verify(valintakoeOsallistuminenDAOMock, times(0)).createOrUpdate(
 				any(ValintakoeOsallistuminen.class));
 
@@ -229,7 +229,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 				osallistuminenTulos);
 
 		valintakoelaskentaSuorittajaService.laske(hakemus,
-                Arrays.asList(valintaperusteet1));
+                Arrays.asList(valintaperusteet1), uuid);
 		verify(valintakoeOsallistuminenDAOMock, times(0)).createOrUpdate(
 				any(ValintakoeOsallistuminen.class));
 
@@ -374,7 +374,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		valintaperusteet.add(valintaperusteet1);
 		valintaperusteet.add(valintaperusteet2);
 
-		valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet);
+		valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid);
 		verify(valintakoeOsallistuminenDAOMock, times(1)).createOrUpdate(
 				captor.capture());
 
@@ -532,7 +532,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		valintaperusteet.add(valintaperusteet1);
 		valintaperusteet.add(valintaperusteet2);
 
-		valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet);
+		valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid);
 		verify(valintakoeOsallistuminenDAOMock, times(1)).createOrUpdate(
 				captor.capture());
 
@@ -653,7 +653,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		valintaperusteet.add(valintaperusteet1);
 		valintaperusteet.add(valintaperusteet2);
 
-		valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet);
+		valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid);
 		verify(valintakoeOsallistuminenDAOMock, times(1)).createOrUpdate(
 				captor.capture());
 

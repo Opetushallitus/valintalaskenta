@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
  * Created by jukais on 26.3.2014.
  */
 public class LaskeDTO {
+	private final String uuid; // <- Käynnistetyn laskennan tunniste, referenssi logeihin
 	private final String hakukohdeOid;
 	private final boolean erillishaku;
 	private final List<HakemusDTO> hakemus;
@@ -21,6 +22,7 @@ public class LaskeDTO {
 	private final List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat;
 
 	public LaskeDTO() {
+		this.uuid = null;
 		this.hakemus = Collections.emptyList();
 		this.valintaperuste = Collections.emptyList();
 		this.hakukohdeOid = StringUtils.EMPTY;
@@ -28,8 +30,11 @@ public class LaskeDTO {
 		this.erillishaku = false;
 	}
 
-	public LaskeDTO(boolean erillishaku, String hakukohdeOid,
+	public LaskeDTO(
+			String uuid,
+			boolean erillishaku, String hakukohdeOid,
 			List<HakemusDTO> hakemus, List<ValintaperusteetDTO> valintaperuste) {
+		this.uuid = uuid;
 		this.hakukohdeOid = hakukohdeOid;
 		this.hakemus = hakemus != null ? hakemus : Collections
 				.<HakemusDTO> emptyList();
@@ -39,9 +44,12 @@ public class LaskeDTO {
 		this.erillishaku = erillishaku;
 	}
 
-	public LaskeDTO(boolean erillishaku, String hakukohdeOid,
+	public LaskeDTO(
+			String uuid,
+			boolean erillishaku, String hakukohdeOid,
 			List<HakemusDTO> hakemus, List<ValintaperusteetDTO> valintaperuste,
 			List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat) {
+		this.uuid = uuid;
 		this.hakukohdeOid = hakukohdeOid;
 		this.hakemus = hakemus != null ? hakemus : Collections
 				.<HakemusDTO> emptyList();
@@ -50,6 +58,10 @@ public class LaskeDTO {
 		this.hakijaryhmat = hakijaryhmat != null ? hakijaryhmat : Collections
 				.<ValintaperusteetHakijaryhmaDTO> emptyList();
 		this.erillishaku = erillishaku;
+	}
+
+	public String getUuid() {
+		return uuid;
 	}
 
 	public String getHakukohdeOid() {

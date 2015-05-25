@@ -49,7 +49,8 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     public String laske(List<HakemusDTO> hakemus,
                         List<ValintaperusteetDTO> valintaperuste,
                         List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
-                        String hakukohdeOid)
+                        String hakukohdeOid,
+                        String uuid)
 			throws RuntimeException {
 		if(hakemus == null) {
 			LOG.error("Hakemukset tuli nullina hakukohteelle {}", hakukohdeOid);
@@ -63,9 +64,9 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 		}
 		try {
 			LOG.info(
-					"Suoritetaan laskenta. Hakemuksia {} kpl ja valintaperusteita {} kpl",
-					new Object[] { hakemus.size(), valintaperuste.size() });
-			valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste, hakijaryhmat, hakukohdeOid);
+					"(Uuid={}) Suoritetaan laskenta. Hakemuksia {} kpl ja valintaperusteita {} kpl",
+					uuid, hakemus.size(), valintaperuste.size());
+			valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste, hakijaryhmat, hakukohdeOid, uuid);
 			return "Onnistui!";
 		} catch (Exception e) {
             e.printStackTrace();
@@ -88,10 +89,11 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 	 */
 	@Override
     public String valintakokeet(HakemusDTO hakemus,
-                                List<ValintaperusteetDTO> valintaperuste)
+                                List<ValintaperusteetDTO> valintaperuste,
+                                String uuid)
 			throws RuntimeException {
 		try {
-			valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste);
+			valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste,uuid);
 			return "Onnistui!";
 		} catch (Exception e) {
 			LOG.error("Valintakoevaihe epäonnistui", e);
@@ -103,16 +105,17 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     public String laskeKaikki(List<HakemusDTO> hakemus,
                               List<ValintaperusteetDTO> valintaperuste,
                               List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
-                              String hakukohdeOid) throws RuntimeException {
+                              String hakukohdeOid,
+                              String uuid) throws RuntimeException {
         valintaperuste.sort((o1,o2) ->
                 o1.getValinnanVaihe().getValinnanVaiheJarjestysluku() - o2.getValinnanVaihe().getValinnanVaiheJarjestysluku());
 
         valintaperuste.stream().forEachOrdered(peruste -> {
             if(peruste.getValinnanVaihe().getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
                 LOG.info("Suoritetaan valintakoelaskenta {} hakemukselle", hakemus.size());
-                hakemus.forEach(h -> valintakokeet(h, asList(peruste)));
+                hakemus.forEach(h -> valintakokeet(h, asList(peruste),uuid));
             } else {
-                laske(hakemus, asList(peruste), hakijaryhmat, hakukohdeOid);
+                laske(hakemus, asList(peruste), hakijaryhmat, hakukohdeOid, uuid);
             }
         });
 

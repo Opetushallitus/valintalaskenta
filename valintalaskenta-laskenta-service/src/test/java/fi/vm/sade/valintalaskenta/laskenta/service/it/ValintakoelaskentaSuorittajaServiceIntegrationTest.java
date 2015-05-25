@@ -54,7 +54,7 @@ import static org.junit.Assert.*;
 @TestExecutionListeners(listeners = {DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class})
 public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
-
+    private final String uuid = null;
     @Rule
     public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
 
@@ -127,7 +127,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         valintaperusteet.add(valintaperusteet2);
 
         assertNull(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid));
-        valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet);
+        valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid);
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         assertNotNull(osallistuminen);
         assertEquals(osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen(), Osallistuminen.OSALLISTUU);
@@ -155,7 +155,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         List<ValintaperusteetDTO> valintaperusteet = new ArrayList<ValintaperusteetDTO>();
         valintaperusteet.add(valintaperusteet1);
 
-        valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet);
+        valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid);
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         assertNotNull(osallistuminen);
         assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen());
@@ -212,9 +212,9 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     private void testWithOrder(String hakemusOid, String hakukohdeOid1, String hakukohdeOid2, String hakukohdeOid3, String hakuOid, ValintaperusteetDTO vp1, ValintaperusteetDTO vp2, ValintaperusteetDTO vp3) {
         final HakemusDTO hakemus = luoHakemus("hakuOid", hakemusOid, "hakijaOid", hakukohdeOid1, hakukohdeOid2, hakukohdeOid3);
         assertNull(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid));
-        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(vp1));
-        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(vp2));
-        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(vp3));
+        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(vp1), uuid);
+        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(vp2), uuid);
+        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(vp3), uuid);
         assertTest1Results(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid));
     }
 
@@ -312,9 +312,9 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         hakemus.setAvaimet(Arrays.asList(avain, avain2));
 
         assertNull(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid));
-        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(vp1));
-        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(vp2));
-        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(vp3));
+        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(vp1), uuid);
+        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(vp2), uuid);
+        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(vp3), uuid);
         assertTest2Results(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid));
     }
 
@@ -403,9 +403,9 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         hakemus.setAvaimet(Arrays.asList(avain, avain2));
 
         assertNull(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid));
-        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(vp1));
-        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(vp2));
-        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(vp3));
+        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(vp1), uuid);
+        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(vp2), uuid);
+        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(vp3), uuid);
         assertTest3Results(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid));
     }
 
@@ -479,11 +479,11 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         final HakemusDTO hakemus = luoHakemus("hakuOid", "hakemusOid1", "hakijaOid", hakukohdeOid1, hakukohdeOid2, hakukohdeOid3);
         hakemus.setAvaimet(Arrays.asList(avain, avain2));
 
-        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(valintaperusteet1, valintaperusteet2, valintaperusteet3));
+        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(valintaperusteet1, valintaperusteet2, valintaperusteet3), uuid);
         final HakemusDTO hakemus2 = luoHakemus("hakuOid", "hakemusOid2", "hakijaOid", hakukohdeOid1, hakukohdeOid3);
         hakemus2.setAvaimet(Arrays.asList(avain, avain2));
 
-        valintakoelaskentaSuorittajaService.laske(hakemus2, Arrays.asList(valintaperusteet1, valintaperusteet2, valintaperusteet3));
+        valintakoelaskentaSuorittajaService.laske(hakemus2, Arrays.asList(valintaperusteet1, valintaperusteet2, valintaperusteet3), uuid);
         assertTest4Results(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, "hakemusOid2"));
     }
 
@@ -528,7 +528,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         final HakemusDTO hakemus = luoHakemus(hakuOid, hakemusOid, "hakijaOid", hakukohdeOid);
         hakemus.setAvaimet(Arrays.asList(avain2));
 
-        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(vv2));
+        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(vv2), uuid);
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         assertNotNull(osallistuminen);
@@ -546,7 +546,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         final String valintakoetunniste = "koe1";
 
         ValintaperusteetDTO vv2 = luoValintaperusteetJaValintakoeValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 1, valintakoetunniste);
-        valintakoelaskentaSuorittajaService.laske(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid), Arrays.asList(vv2));
+        valintakoelaskentaSuorittajaService.laske(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid), Arrays.asList(vv2), uuid);
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         assertNotNull(osallistuminen);
@@ -581,8 +581,8 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         ValintaperusteetDTO vv2_kohde1 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, koekutsuvaiheOid_kohde1, 1, createValintakokeet(valintakoetunniste), Koekutsu.YLIN_TOIVE, "hakukohdeKutsunKohde2");
         ValintaperusteetDTO vv2_kohde2 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid2, koekutsuvaiheOid_kohde2, 1, createValintakokeet(valintakoetunniste), Koekutsu.YLIN_TOIVE, "hakukohdeKutsunKohde2");
 
-        valintakoelaskentaSuorittajaService.laske(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid1, hakukohdeOid2), Arrays.asList(vv2_kohde1));
-        valintakoelaskentaSuorittajaService.laske(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid1, hakukohdeOid2), Arrays.asList(vv2_kohde2));
+        valintakoelaskentaSuorittajaService.laske(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid1, hakukohdeOid2), Arrays.asList(vv2_kohde1), uuid);
+        valintakoelaskentaSuorittajaService.laske(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid1, hakukohdeOid2), Arrays.asList(vv2_kohde2), uuid);
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
 
@@ -613,7 +613,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
                         .getInputStream()), new TypeToken<LaskeDTO>() {
         }.getType());
 
-        valintakoelaskentaSuorittajaService.laske(dto.getHakemus().get(0), dto.getValintaperuste());
+        valintakoelaskentaSuorittajaService.laske(dto.getHakemus().get(0), dto.getValintaperuste(), uuid);
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid("1.2.246.562.5.2013080813081926341927", "1.2.246.562.11.00000304421");
 

@@ -71,7 +71,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements
     public void suoritaLaskenta(List<HakemusDTO> kaikkiHakemukset,
                                 List<ValintaperusteetDTO> valintaperusteet,
                                 List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
-                                String hakukohdeOid) {
+                                String hakukohdeOid,
+                                String uuid) {
 
         Map<String, Hakemukset> hakemuksetHakukohteittain = jarjestaHakemuksetHakukohteittain(kaikkiHakemukset);
 
@@ -89,8 +90,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 
             if (!hakemuksetHakukohteittain.containsKey(hakukohdeOid)) {
                 LOG.error(
-                        "Hakukohteelle {} ei ole yhtään hakemusta. Hypätään yli.",
-                        hakukohdeOid);
+                        "(Uuid={}) Hakukohteelle {} ei ole yhtään hakemusta. Hypätään yli.",
+                        uuid, hakukohdeOid);
                 continue;
             }
 
@@ -114,8 +115,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements
             final int jarjestysnumero = vaihe.getValinnanVaiheJarjestysluku();
 
             LOG.info(
-                    "Haku {}, hakukohde {}, valinnanvaihe {} - jarjestysnumero {}",
-                    hakuOid, hakukohdeOid, valinnanvaiheOid,
+                    "(Uuid={}) Haku {}, hakukohde {}, valinnanvaihe {} - jarjestysnumero {}",
+                    uuid, hakuOid, hakukohdeOid, valinnanvaiheOid,
                     jarjestysnumero);
             Valinnanvaihe edellinenVaihe = valinnanvaiheDAO
                     .haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid,
@@ -128,7 +129,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                         .haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid,
                                 jarjestysnumero);
                 if (edellinenOsallistuminen == null) {
-                    LOG.warn("Valinnanvaiheen järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt");
+                    LOG.warn("(Uuid={}) Valinnanvaiheen järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt",
+                            uuid);
                     continue;
                 }
             }
@@ -210,8 +212,9 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                         }
                     } catch (LaskentakaavaEiOleValidiException e) {
                         LOG.error(
-                                "Hakukohteen {} Valintatapajonon {} prioriteetilla {} olevan järjestyskriteerin "
+                                "(Uuid={}) Hakukohteen {} Valintatapajonon {} prioriteetilla {} olevan järjestyskriteerin "
                                         + "funktiokutsu ei ole validi. Laskentaa ei voida suorittaa.",
+                                uuid,
                                 hakukohdeOid, j.getOid(), jk.getPrioriteetti());
                         continue;
                     }
@@ -264,15 +267,15 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 
         poistaHaamuryhmat(hakijaryhmat, valintaperusteet.get(0).getHakukohdeOid());
 
-        LOG.info("Hakijaryhmien määrä {} hakukohteessa {}", hakijaryhmat.size(), hakukohdeOid);
+        LOG.info("(Uuid={}) Hakijaryhmien määrä {} hakukohteessa {}", uuid, hakijaryhmat.size(), hakukohdeOid);
         // Hakijaryhmät
         if(!hakijaryhmat.isEmpty()) {
 //            Collections.sort(hakijaryhmat, (h1, h2) -> h1.getPrioriteetti() - h2.getPrioriteetti());
             hakijaryhmat.parallelStream().forEach(h -> {
                 if (!hakemuksetHakukohteittain.containsKey(hakukohdeOid)) {
                     LOG.info(
-                            "Hakukohteelle {} ei ole yhtään hakemusta. Hypätään yli.",
-                            hakukohdeOid);
+                            "(Uuid={}) Hakukohteelle {} ei ole yhtään hakemusta. Hypätään yli.",
+                            uuid, hakukohdeOid);
                     return;
                 }
 
@@ -328,9 +331,9 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                     }
                 } catch (LaskentakaavaEiOleValidiException e) {
                     LOG.error(
-                            "Hakukohteen {} Hakijaryhmän {} "
+                            "(Uuid={}) Hakukohteen {} Hakijaryhmän {} "
                                     + "funktiokutsu ei ole validi. Laskentaa ei voida suorittaa.",
-                            hakukohdeOid, h.getOid());
+                            uuid, hakukohdeOid, h.getOid());
                     return;
                 }
 
@@ -358,7 +361,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                     }
                     hakijaryhma.getJonosijat().add(jonosija);
                 }
-                LOG.info("persistoidaan hakijaryhmä {}", hakijaryhma.getHakijaryhmaOid());
+                LOG.info("(Uuid={}) Persistoidaan hakijaryhmä {}", uuid, hakijaryhma.getHakijaryhmaOid());
                 hakijaryhmaDAO.create(hakijaryhma);
 
             });

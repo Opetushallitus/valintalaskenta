@@ -15,18 +15,21 @@ public interface ValintalaskentaService {
     String laske(List<HakemusDTO> hakemus,
                  List<ValintaperusteetDTO> valintaperuste,
                  List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
-                 String hakukohdeOid)
+                 String hakukohdeOid,
+                 String uuid)
                 throws RuntimeException;
 
 
     String valintakokeet(HakemusDTO hakemus,
-                         List<ValintaperusteetDTO> valintaperuste)
+                         List<ValintaperusteetDTO> valintaperuste,
+                         String uuid)
                         throws RuntimeException;
 
     String laskeKaikki(List<HakemusDTO> hakemus,
                  List<ValintaperusteetDTO> valintaperuste,
                  List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
-                 String hakukohdeOid)
+                 String hakukohdeOid,
+                 String uuid)
             throws RuntimeException;
 
     void applyValisijoittelu(Map<String, List<String>> valisijoiteltavatJonot, Map<String, fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO> hakemusHashMap);
