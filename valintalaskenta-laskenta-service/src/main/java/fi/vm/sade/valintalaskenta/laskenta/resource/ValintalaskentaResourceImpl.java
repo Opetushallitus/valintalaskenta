@@ -214,7 +214,7 @@ public class ValintalaskentaResourceImpl {
 			throw e;
 		}
 
-        LOG.info("Laskenta suoritettu hakukohteessa {}", laskeDTO.getHakukohdeOid());
+        LOG.info("(Uuid={}) Laskenta suoritettu hakukohteessa {}", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid());
 
         return "Onnistui!";
 	}
