@@ -206,7 +206,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
             List<HakukohdeValintakoeData> olemassaOlevat = new ArrayList<>();
 //            asetaOsallistumisetKokeisiin(kokeet, hakutoiveetByOid);
             for (HakukohdeValintakoeData c : kokeet) {
-                LOG.info("(Uuid={}) Hakukohde: {}, valintakoe: {}", uuid, new Object[] {c.getHakukohdeOid(), c.getValintakoeOid()});
+                LOG.info("(Uuid={}) Hakukohde: {}, valintakoe: {}", uuid, c.getHakukohdeOid(), c.getValintakoeOid());
                 if (!osallistumisetByHaku.containsKey(c.getHakuOid())) {
                     osallistumisetByHaku.put(c.getHakuOid(), luoValintakoeOsallistuminen(c, hakemus, hakutoiveetByOid));
                 }
