@@ -14,12 +14,9 @@ import java.util.List;
  */
 @Entity("ValintakoeOsallistuminen")
 @Indexes({
-        @Index(name = "idx_haku_kohde_vaiheenjarjestysluku", value = "hakuOid, hakutoiveet.hakukohdeOid, hakutoiveet.valinnanVaiheet.valinnanVaiheJarjestysluku")
+        @Index(name = "idx_haku", value = "hakuOid")
 })
 public class ValintakoeOsallistuminen {
-
-    public static final String INDEX_HAE_HAKU_KOHDE_VAIHEENJARJESTYSLUKU = "idx_haku_kohde_vaiheenjarjestysluku";
-
     @Id
     private ObjectId id;
 
