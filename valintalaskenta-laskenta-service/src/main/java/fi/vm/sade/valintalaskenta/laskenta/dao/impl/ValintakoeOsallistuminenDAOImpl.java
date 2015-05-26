@@ -71,6 +71,7 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
                 .match(query.field("hakutoiveet.hakukohdeOid").equal(hakukohdeOid))
                 .unwind("hakutoiveet.valinnanVaiheet")
                 .match(query.field("hakutoiveet.valinnanVaiheet.valinnanVaiheJarjestysluku").equal(jarjestysnumero - 1))
+                .limit(1)
                 .aggregate(ValintakoeOsallistuminen.class);
         if (edellisenVaiheenOsallistumiset.hasNext()) {
             edellinen = edellisenVaiheenOsallistumiset.next();
