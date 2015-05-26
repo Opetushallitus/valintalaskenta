@@ -88,19 +88,8 @@
 
     <jaxrs-client:client id="ValintatapajonoClient"
                          serviceClass="fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource"
-                         address="https://${host.virkailija}"
+                         address="${host.ilb}"
                          inheritHeaders="true">
-        <jaxrs-client:outInterceptors>
-            <bean class="fi.vm.sade.authentication.cas.CasApplicationAsAUserInterceptor">
-                <property name="webCasUrl" value="${web.url.cas}" />
-                <property name="targetService"
-                          value="${cas.service.valintaperusteet-service}/j_spring_cas_security_check" />
-                <property name="appClientUsername"
-                          value="${valintalaskentakoostepalvelu.app.username.to.valintaperusteet}" />
-                <property name="appClientPassword"
-                          value="${valintalaskentakoostepalvelu.app.password.to.valintaperusteet}" />
-            </bean>
-        </jaxrs-client:outInterceptors>
         <jaxrs-client:providers>
             <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
             <bean class="fi.vm.sade.valintalaskenta.laskenta.ObjectMapperProvider" />
