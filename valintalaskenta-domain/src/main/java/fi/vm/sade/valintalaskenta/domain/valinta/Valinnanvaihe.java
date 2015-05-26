@@ -11,6 +11,9 @@ import java.util.*;
  * Time: 10.22
  */
 @Entity("Valinnanvaihe")
+@Indexes(
+    @Index(name = "idx_hakuoid_valinnanvaihe_oid", value = "hakuOid, valinnanvaiheOid", unique = true)
+)
 public class Valinnanvaihe {
     @Id
     private ObjectId id;
