@@ -258,7 +258,7 @@ public class ValintalaskentaResourceImpl {
                                     valinnanVaihe.getValinnanVaiheTyyppi(),
                                     vaiheenJarjestysNumero,
                                     valinnanVaiheidenMaara,
-                                    i,
+                                    i+1,
                                     hakukohteidenMaaraValinnanVaiheessa,
                                     laskeDTO.getHakemus().size());
                             laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste(), laskeDTO.getUuid()));
@@ -281,7 +281,7 @@ public class ValintalaskentaResourceImpl {
                                     valinnanVaihe.getValinnanVaiheTyyppi(),
                                     vaiheenJarjestysNumero,
                                     valinnanVaiheidenMaara,
-                                    i,
+                                    i+1,
                                     hakukohteidenMaaraValinnanVaiheessa,
                                     laskeDTO.getHakemus().size());
                             valintalaskentaService.laske(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid(), laskeDTO.getUuid());
@@ -294,7 +294,7 @@ public class ValintalaskentaResourceImpl {
                                             valinnanVaihe.getValinnanVaiheTyyppi(),
                                             vaiheenJarjestysNumero,
                                             valinnanVaiheidenMaara,
-                                            i,
+                                            i+1,
                                             hakukohteidenMaaraValinnanVaiheessa,
                                             laskeDTO.getHakukohdeOid());
                                     valisijoitteleKopiot(laskeDTO, haeKopiotValintaperusteista(jonot));
@@ -314,7 +314,7 @@ public class ValintalaskentaResourceImpl {
                                 valinnanVaihe.getValinnanVaiheTyyppi(),
                                 vaiheenJarjestysNumero,
                                 valinnanVaiheidenMaara,
-                                i,
+                                i+1,
                                 hakukohteidenMaaraValinnanVaiheessa,
                                 laskeDTO.getHakukohdeOid());
                     } catch (Throwable t) {
@@ -323,7 +323,7 @@ public class ValintalaskentaResourceImpl {
                                 valinnanVaihe.getValinnanVaiheTyyppi(),
                                 vaiheenJarjestysNumero,
                                 valinnanVaiheidenMaara,
-                                i,
+                                i+1,
                                 hakukohteidenMaaraValinnanVaiheessa,
                                 laskeDTO.getHakukohdeOid()
                                 , t);
