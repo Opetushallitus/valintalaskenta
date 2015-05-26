@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@Path("valisijoittele")
+@Path("/sijoittelu-service/resources/valisijoittele")
 public interface ValiSijoitteluResource {
 
     @POST
