@@ -18,6 +18,25 @@ import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
  */
 @ApiModel(value = "JonosijaDTO", description = "Jonosija")
 public class JonosijaDTO {
+	public JonosijaDTO() {
+	}
+
+	public JonosijaDTO(final int jonosija, final String hakemusOid, final String hakijaOid, final SortedSet<JarjestyskriteeritulosDTO> jarjestyskriteerit, final int prioriteetti, final String sukunimi, final String etunimi, final boolean harkinnanvarainen, final JarjestyskriteerituloksenTila tuloksenTila, final List<String> historiat, final List<SyotettyArvoDTO> syotetytArvot, final List<FunktioTulosDTO> funktioTulokset, final boolean muokattu, final boolean hylattyValisijoittelussa) {
+		this.jonosija = jonosija;
+		this.hakemusOid = hakemusOid;
+		this.hakijaOid = hakijaOid;
+		this.jarjestyskriteerit = jarjestyskriteerit;
+		this.prioriteetti = prioriteetti;
+		this.sukunimi = sukunimi;
+		this.etunimi = etunimi;
+		this.harkinnanvarainen = harkinnanvarainen;
+		this.tuloksenTila = tuloksenTila;
+		this.historiat = historiat;
+		this.syotetytArvot = syotetytArvot;
+		this.funktioTulokset = funktioTulokset;
+		this.muokattu = muokattu;
+		this.hylattyValisijoittelussa = hylattyValisijoittelussa;
+	}
 
 	@ApiModelProperty(value = "Jonosijanumero", required = true)
 	private int jonosija;
