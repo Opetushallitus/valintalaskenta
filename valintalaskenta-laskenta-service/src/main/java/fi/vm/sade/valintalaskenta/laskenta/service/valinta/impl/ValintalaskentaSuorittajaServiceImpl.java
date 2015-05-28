@@ -89,8 +89,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements
             String tarjoajaOid = vp.getTarjoajaOid();
 
             if (!hakemuksetHakukohteittain.containsKey(hakukohdeOid)) {
-                LOG.error(
-                        "(Uuid={}) Hakukohteelle {} ei ole yhtään hakemusta. Hypätään yli.",
+                LOG.error("(Uuid={}) Hakukohteelle {} ei ole yhtään hakemusta. Hypätään yli.",
                         uuid, hakukohdeOid);
                 continue;
             }
@@ -114,20 +113,16 @@ public class ValintalaskentaSuorittajaServiceImpl implements
             final String valinnanvaiheOid = vaihe.getValinnanVaiheOid();
             final int jarjestysnumero = vaihe.getValinnanVaiheJarjestysluku();
 
-            LOG.info(
-                    "(Uuid={}) Haku {}, hakukohde {}, valinnanvaihe {} - jarjestysnumero {}",
+            LOG.info("(Uuid={}) Haku {}, hakukohde {}, valinnanvaihe {} - jarjestysnumero {}",
                     uuid, hakuOid, hakukohdeOid, valinnanvaiheOid,
                     jarjestysnumero);
-            Valinnanvaihe edellinenVaihe = valinnanvaiheDAO
-                    .haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid,
-                            jarjestysnumero);
+            Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
 
             // jos edellinenVaihe == null ja järjestysluku > 0 tarkistetaaan
             // löytyykö edellistä valintakoevaihetta vai heitetäänö virhe
             if (edellinenVaihe == null && jarjestysnumero > 0) {
                 ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO
-                        .haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid,
-                                jarjestysnumero);
+                        .haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
                 if (edellinenOsallistuminen == null) {
                     LOG.warn("(Uuid={}) Valinnanvaiheen järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt",
                             uuid);
@@ -137,13 +132,10 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 
             final Valinnanvaihe viimeisinVaihe;
             if (jarjestysnumero > 0) {
-                if (edellinenVaihe != null
-                        && edellinenVaihe.getJarjestysnumero() == jarjestysnumero - 1) {
+                if (edellinenVaihe != null && edellinenVaihe.getJarjestysnumero() == jarjestysnumero - 1) {
                     viimeisinVaihe = edellinenVaihe;
                 } else {
-                    viimeisinVaihe = valinnanvaiheDAO
-                            .haeViimeisinValinnanvaihe(hakuOid, hakukohdeOid,
-                                    jarjestysnumero);
+                    viimeisinVaihe = valinnanvaiheDAO.haeViimeisinValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
                 }
             } else {
                 viimeisinVaihe = null;
@@ -157,8 +149,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements
             valinnanvaihe.setTarjoajaOid(tarjoajaOid);
             valinnanvaihe.setNimi(vp.getValinnanVaihe().getNimi());
 
-            for (ValintatapajonoJarjestyskriteereillaDTO j : vaihe
-                    .getValintatapajono()) {
+            for (ValintatapajonoJarjestyskriteereillaDTO j : vaihe.getValintatapajono()) {
                 Valintatapajono jono = new Valintatapajono();
                 jono.setAloituspaikat(j.getAloituspaikat());
                 jono.setEiVarasijatayttoa(j.getEiVarasijatayttoa());
@@ -179,8 +170,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                         Optional<Lukuarvofunktio> lukuarvofunktio = Optional.empty();
                         Optional<Totuusarvofunktio> totuusarvofunktio = Optional.empty();
 
-                        if(Funktiotyyppi.LUKUARVOFUNKTIO.equals(funktiokutsu
-                                .getFunktionimi().getTyyppi())) {
+                        if(Funktiotyyppi.LUKUARVOFUNKTIO.equals(funktiokutsu.getFunktionimi().getTyyppi())) {
                             lukuarvofunktio = Optional.ofNullable(Laskentadomainkonvertteri
                                     .muodostaLukuarvolasku(funktiokutsu));
                         } else {
@@ -194,15 +184,13 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 
                             if(lukuarvofunktio.isPresent()) {
                                 hakemuslaskinService.suoritaLaskentaHakemukselle(
-                                        new Hakukohde(hakukohdeOid,
-                                                hakukohteenValintaperusteet), hw,
+                                        new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet), hw,
                                         laskentahakemukset, lukuarvofunktio.get(), jk
                                         .getPrioriteetti(), viimeisinVaihe,
                                         jonosijatHakemusOidinMukaan, jk.getNimi(), jarjestysnumero);
                             } else {
                                 hakemuslaskinService.suoritaLaskentaHakemukselle(
-                                        new Hakukohde(hakukohdeOid,
-                                                hakukohteenValintaperusteet), hw,
+                                        new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet), hw,
                                         laskentahakemukset, totuusarvofunktio.get(), jk
                                         .getPrioriteetti(), viimeisinVaihe,
                                         jonosijatHakemusOidinMukaan, jk.getNimi(),jarjestysnumero);
@@ -211,8 +199,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 
                         }
                     } catch (LaskentakaavaEiOleValidiException e) {
-                        LOG.error(
-                                "(Uuid={}) Hakukohteen {} Valintatapajonon {} prioriteetilla {} olevan järjestyskriteerin "
+                        LOG.error("(Uuid={}) Hakukohteen {} Valintatapajonon {} prioriteetilla {} olevan järjestyskriteerin "
                                         + "funktiokutsu ei ole validi. Laskentaa ei voida suorittaa.",
                                 uuid,
                                 hakukohdeOid, j.getOid(), jk.getPrioriteetti());
@@ -220,16 +207,13 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                     }
                 }
 
-                for (JonosijaJaSyotetytArvot js : jonosijatHakemusOidinMukaan
-                        .values()) {
+                for (JonosijaJaSyotetytArvot js : jonosijatHakemusOidinMukaan.values()) {
                     Jonosija jonosija = js.getJonosija();
                     for (SyotettyArvo a : js.getSyotetytArvot().values()) {
                         fi.vm.sade.valintalaskenta.domain.valinta.SyotettyArvo syotettyArvo = new fi.vm.sade.valintalaskenta.domain.valinta.SyotettyArvo();
                         syotettyArvo.setArvo(a.getArvo());
-                        syotettyArvo.setLaskennallinenArvo(a
-                                .getLaskennallinenArvo());
-                        syotettyArvo.setOsallistuminen(a.getOsallistuminen()
-                                .name());
+                        syotettyArvo.setLaskennallinenArvo(a.getLaskennallinenArvo());
+                        syotettyArvo.setOsallistuminen(a.getOsallistuminen().name());
                         syotettyArvo.setTunniste(a.getTunniste());
                         jonosija.getSyotetytArvot().add(syotettyArvo);
                     }
@@ -246,7 +230,6 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                 }
 
                 if(j.isPoistetaankoHylatyt()) {
-
                     List<Jonosija> filteroity = jono.getJonosijat()
                             .stream()
                             .filter(sija -> {
@@ -258,10 +241,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                             .collect(Collectors.toList());
                     jono.setJonosijat(filteroity);
                 }
-
                 valinnanvaihe.getValintatapajonot().add(jono);
             }
-
             valinnanvaiheDAO.create(valinnanvaihe);
         }
 
@@ -273,16 +254,12 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 //            Collections.sort(hakijaryhmat, (h1, h2) -> h1.getPrioriteetti() - h2.getPrioriteetti());
             hakijaryhmat.parallelStream().forEach(h -> {
                 if (!hakemuksetHakukohteittain.containsKey(hakukohdeOid)) {
-                    LOG.info(
-                            "(Uuid={}) Hakukohteelle {} ei ole yhtään hakemusta. Hypätään yli.",
-                            uuid, hakukohdeOid);
+                    LOG.info("(Uuid={}) Hakukohteelle {} ei ole yhtään hakemusta. Hypätään yli.", uuid, hakukohdeOid);
                     return;
                 }
 
-                List<HakemusWrapper> hakemukset = hakemuksetHakukohteittain.get(
-                        hakukohdeOid).getHakemukset();
-                List<Hakemus> laskentahakemukset = hakemuksetHakukohteittain.get(
-                        hakukohdeOid).getLaskentahakemukset();
+                List<HakemusWrapper> hakemukset = hakemuksetHakukohteittain.get(hakukohdeOid).getHakemukset();
+                List<Hakemus> laskentahakemukset = hakemuksetHakukohteittain.get(hakukohdeOid).getLaskentahakemukset();
                 if (hakemukset == null
                         || hakemukset.isEmpty()) {
                     return;
@@ -297,8 +274,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                     Optional<Lukuarvofunktio> lukuarvofunktio = Optional.empty();
                     Optional<Totuusarvofunktio> totuusarvofunktio = Optional.empty();
 
-                    if(Funktiotyyppi.LUKUARVOFUNKTIO.equals(funktiokutsu
-                            .getFunktionimi().getTyyppi())) {
+                    if(Funktiotyyppi.LUKUARVOFUNKTIO.equals(funktiokutsu.getFunktionimi().getTyyppi())) {
                         lukuarvofunktio = Optional.ofNullable(Laskentadomainkonvertteri
                                 .muodostaLukuarvolasku(funktiokutsu));
                     } else {
@@ -310,19 +286,16 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                             valintaperusteet.get(0).getHakukohteenValintaperuste());
 
                     for (HakemusWrapper hw : hakemukset) {
-                        LOG.debug("hakemus {}", new Object[] { hw
-                                .getHakemusDTO().getHakemusoid() });
+                        LOG.debug("hakemus {}", new Object[] { hw.getHakemusDTO().getHakemusoid() });
 
                         if(lukuarvofunktio.isPresent()) {
                             hakemuslaskinService.suoritaHakijaryhmaLaskentaHakemukselle(
-                                    new Hakukohde(hakukohdeOid,
-                                            hakukohteenValintaperusteet), hw,
+                                    new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet), hw,
                                     laskentahakemukset, lukuarvofunktio.get(),
                                     jonosijatHakemusOidinMukaan);
                         } else {
                             hakemuslaskinService.suoritaHakijaryhmaLaskentaHakemukselle(
-                                    new Hakukohde(hakukohdeOid,
-                                            hakukohteenValintaperusteet), hw,
+                                    new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet), hw,
                                     laskentahakemukset, totuusarvofunktio.get(),
                                     jonosijatHakemusOidinMukaan);
                         }
@@ -330,15 +303,13 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 
                     }
                 } catch (LaskentakaavaEiOleValidiException e) {
-                    LOG.error(
-                            "(Uuid={}) Hakukohteen {} Hakijaryhmän {} "
+                    LOG.error("(Uuid={}) Hakukohteen {} Hakijaryhmän {} "
                                     + "funktiokutsu ei ole validi. Laskentaa ei voida suorittaa.",
                             uuid, hakukohdeOid, h.getOid());
                     return;
                 }
 
-                for (JonosijaJaSyotetytArvot js : jonosijatHakemusOidinMukaan
-                        .values()) {
+                for (JonosijaJaSyotetytArvot js : jonosijatHakemusOidinMukaan.values()) {
                     Jonosija jonosija = js.getJonosija();
                     for (SyotettyArvo a : js.getSyotetytArvot().values()) {
                         fi.vm.sade.valintalaskenta.domain.valinta.SyotettyArvo syotettyArvo = new fi.vm.sade.valintalaskenta.domain.valinta.SyotettyArvo();
