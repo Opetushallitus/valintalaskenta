@@ -4,6 +4,7 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 import fi.vm.sade.valintalaskenta.domain.dto.HakijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,8 +34,22 @@ public class ValintatietoValintatapajonoDTO extends ValintatapajonoDTO {
     @ApiModelProperty(value = "Erillishaussa käytetty sijoitteluajo", required = false)
     private Long sijoitteluajoId;
 
+    public ValintatietoValintatapajonoDTO() {
+    }
+
+    public ValintatietoValintatapajonoDTO(String valintatapajonooid, String nimi, int prioriteetti, int aloituspaikat, boolean siirretaanSijoitteluun, Tasasijasaanto tasasijasaanto, Boolean eiVarasijatayttoa, Boolean kaikkiEhdonTayttavatHyvaksytaan, Boolean poissaOlevaTaytto, Boolean kaytetaanValintalaskentaa, Boolean valmisSijoiteltavaksi, List<JonosijaDTO> jonosijat, Boolean aktiivinen, List<HakijaDTO> hakija, Integer varasijat, Integer varasijaTayttoPaivat, Date varasijojaKaytetaanAlkaen, Date varasijojaTaytetaanAsti, String tayttojono, Long sijoitteluajoId) {
+        super(valintatapajonooid, nimi, prioriteetti, aloituspaikat, siirretaanSijoitteluun, tasasijasaanto, eiVarasijatayttoa, kaikkiEhdonTayttavatHyvaksytaan, poissaOlevaTaytto, kaytetaanValintalaskentaa, valmisSijoiteltavaksi, jonosijat, aktiivinen);
+        this.hakija = hakija;
+        this.varasijat = varasijat;
+        this.varasijaTayttoPaivat = varasijaTayttoPaivat;
+        this.varasijojaKaytetaanAlkaen = varasijojaKaytetaanAlkaen;
+        this.varasijojaTaytetaanAsti = varasijojaTaytetaanAsti;
+        this.tayttojono = tayttojono;
+        this.sijoitteluajoId = sijoitteluajoId;
+    }
+
     public List<HakijaDTO> getHakija() {
-        if(hakija == null) {
+        if (hakija == null) {
             hakija = new ArrayList<HakijaDTO>();
         }
         return hakija;

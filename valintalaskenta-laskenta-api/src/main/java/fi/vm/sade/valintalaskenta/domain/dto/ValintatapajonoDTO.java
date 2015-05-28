@@ -1,13 +1,11 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
-
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Jussi Jartamo
@@ -16,25 +14,25 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 public class ValintatapajonoDTO {
 
     @ApiModelProperty(value = "OID", required = true)
-	private String valintatapajonooid;
+    private String valintatapajonooid;
 
-	@ApiModelProperty(value = "Nimi", required = true)
-	private String nimi;
+    @ApiModelProperty(value = "Nimi", required = true)
+    private String nimi;
 
-	@ApiModelProperty(value = "Prioriteetti", required = true)
-	private int prioriteetti;
+    @ApiModelProperty(value = "Prioriteetti", required = true)
+    private int prioriteetti;
 
-	@ApiModelProperty(value = "Aloituspaikat", required = true)
-	private int aloituspaikat;
+    @ApiModelProperty(value = "Aloituspaikat", required = true)
+    private int aloituspaikat;
 
-	@ApiModelProperty(value = "Siirretäänkö jono sijoitteluun", required = true)
-	private boolean siirretaanSijoitteluun;
+    @ApiModelProperty(value = "Siirretäänkö jono sijoitteluun", required = true)
+    private boolean siirretaanSijoitteluun;
 
-	@ApiModelProperty(value = "Tasasijasääntö", required = true)
-	private Tasasijasaanto tasasijasaanto;
+    @ApiModelProperty(value = "Tasasijasääntö", required = true)
+    private Tasasijasaanto tasasijasaanto;
 
-	@ApiModelProperty(value = "Onko varasijatäyttö käytössä", required = true)
-	private Boolean eiVarasijatayttoa;
+    @ApiModelProperty(value = "Onko varasijatäyttö käytössä", required = true)
+    private Boolean eiVarasijatayttoa;
 
     @ApiModelProperty(value = "Hyväksytäänkö kaikki hyväksyttävissä olevat aloituspaikoista riippumatta", required = true)
     private Boolean kaikkiEhdonTayttavatHyvaksytaan = false;
@@ -48,88 +46,107 @@ public class ValintatapajonoDTO {
     @ApiModelProperty(value = "Onko valintatapajono valmis sijoiteltavaksi", required = false)
     private Boolean valmisSijoiteltavaksi = true;
 
-	@ApiModelProperty(value = "Jonosijat", required = true)
-	private List<JonosijaDTO> jonosijat = new ArrayList<JonosijaDTO>();
+    @ApiModelProperty(value = "Jonosijat", required = true)
+    private List<JonosijaDTO> jonosijat = new ArrayList<JonosijaDTO>();
 
     @ApiModelProperty(value = "Onko valintatapajono aktiivinen", required = false)
     private Boolean aktiivinen = true;
 
-	public String getNimi() {
-		return nimi;
-	}
+    public ValintatapajonoDTO() {
+    }
 
-	public void setNimi(String nimi) {
-		this.nimi = nimi;
-	}
+    public ValintatapajonoDTO(String valintatapajonooid, String nimi, int prioriteetti, int aloituspaikat, boolean siirretaanSijoitteluun, Tasasijasaanto tasasijasaanto, Boolean eiVarasijatayttoa, Boolean kaikkiEhdonTayttavatHyvaksytaan, Boolean poissaOlevaTaytto, Boolean kaytetaanValintalaskentaa, Boolean valmisSijoiteltavaksi, List<JonosijaDTO> jonosijat, Boolean aktiivinen) {
+        this.valintatapajonooid = valintatapajonooid;
+        this.nimi = nimi;
+        this.prioriteetti = prioriteetti;
+        this.aloituspaikat = aloituspaikat;
+        this.siirretaanSijoitteluun = siirretaanSijoitteluun;
+        this.tasasijasaanto = tasasijasaanto;
+        this.eiVarasijatayttoa = eiVarasijatayttoa;
+        this.kaikkiEhdonTayttavatHyvaksytaan = kaikkiEhdonTayttavatHyvaksytaan;
+        this.poissaOlevaTaytto = poissaOlevaTaytto;
+        this.kaytetaanValintalaskentaa = kaytetaanValintalaskentaa;
+        this.valmisSijoiteltavaksi = valmisSijoiteltavaksi;
+        this.jonosijat = jonosijat;
+        this.aktiivinen = aktiivinen;
+    }
 
-	public boolean isSiirretaanSijoitteluun() {
-		return siirretaanSijoitteluun;
-	}
+    public String getNimi() {
+        return nimi;
+    }
 
-	public void setSiirretaanSijoitteluun(boolean siirretaanSijoitteluun) {
-		this.siirretaanSijoitteluun = siirretaanSijoitteluun;
-	}
+    public void setNimi(String nimi) {
+        this.nimi = nimi;
+    }
 
-	public int getPrioriteetti() {
-		return prioriteetti;
-	}
+    public boolean isSiirretaanSijoitteluun() {
+        return siirretaanSijoitteluun;
+    }
 
-	public int getAloituspaikat() {
-		return aloituspaikat;
-	}
+    public void setSiirretaanSijoitteluun(boolean siirretaanSijoitteluun) {
+        this.siirretaanSijoitteluun = siirretaanSijoitteluun;
+    }
 
-	public void setAloituspaikat(int aloituspaikat) {
-		this.aloituspaikat = aloituspaikat;
-	}
+    public int getPrioriteetti() {
+        return prioriteetti;
+    }
 
-	public void setPrioriteetti(int prioriteetti) {
-		this.prioriteetti = prioriteetti;
-	}
+    public int getAloituspaikat() {
+        return aloituspaikat;
+    }
 
-	public String getOid() {
-		return valintatapajonooid;
-	}
+    public void setAloituspaikat(int aloituspaikat) {
+        this.aloituspaikat = aloituspaikat;
+    }
 
-	public void setOid(String oid) {
-		this.valintatapajonooid = oid;
-	}
+    public void setPrioriteetti(int prioriteetti) {
+        this.prioriteetti = prioriteetti;
+    }
 
-	@Override
-	public int hashCode() {
-		return valintatapajonooid.hashCode();
-	}
+    public String getOid() {
+        return valintatapajonooid;
+    }
 
-	public boolean equals(Object obj) {
-		if (obj instanceof ValintatapajonoDTO) {
-			ValintatapajonoDTO vtj = (ValintatapajonoDTO) obj;
-			return this == vtj;
-		}
-		return false;
-	}
+    public void setOid(String oid) {
+        this.valintatapajonooid = oid;
+    }
 
-	public Tasasijasaanto getTasasijasaanto() {
-		return tasasijasaanto;
-	}
+    @Override
+    public int hashCode() {
+        return valintatapajonooid.hashCode();
+    }
 
-	public void setTasasijasaanto(Tasasijasaanto tasasijasaanto) {
-		this.tasasijasaanto = tasasijasaanto;
-	}
+    public boolean equals(Object obj) {
+        if (obj instanceof ValintatapajonoDTO) {
+            ValintatapajonoDTO vtj = (ValintatapajonoDTO) obj;
+            return this == vtj;
+        }
+        return false;
+    }
 
-	public List<JonosijaDTO> getJonosijat() {
-		return jonosijat;
-	}
+    public Tasasijasaanto getTasasijasaanto() {
+        return tasasijasaanto;
+    }
 
-	public void setJonosijat(List<JonosijaDTO> jonosijat) {
-		this.jonosijat = jonosijat;
-	}
+    public void setTasasijasaanto(Tasasijasaanto tasasijasaanto) {
+        this.tasasijasaanto = tasasijasaanto;
+    }
 
-	public Boolean getEiVarasijatayttoa() {
-		return eiVarasijatayttoa;
-	}
+    public List<JonosijaDTO> getJonosijat() {
+        return jonosijat;
+    }
 
-	public void setEiVarasijatayttoa(Boolean eiVarasijatayttoa) {
-		this.eiVarasijatayttoa = eiVarasijatayttoa;
-	}
+    public void setJonosijat(List<JonosijaDTO> jonosijat) {
+        this.jonosijat = jonosijat;
+    }
+
+    public Boolean getEiVarasijatayttoa() {
+        return eiVarasijatayttoa;
+    }
+
+    public void setEiVarasijatayttoa(Boolean eiVarasijatayttoa) {
+        this.eiVarasijatayttoa = eiVarasijatayttoa;
+    }
 
     public Boolean getKaikkiEhdonTayttavatHyvaksytaan() {
         return kaikkiEhdonTayttavatHyvaksytaan;
