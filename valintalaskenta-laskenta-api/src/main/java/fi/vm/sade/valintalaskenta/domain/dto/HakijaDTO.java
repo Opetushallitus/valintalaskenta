@@ -22,6 +22,25 @@ public class HakijaDTO {
     private Boolean harkinnanvarainen = false;
     private boolean hylattyValisijoittelussa = false;
 
+    public HakijaDTO() {
+    }
+
+    public HakijaDTO(final int jonosija, final String oid, final String hakemusOid, final JarjestyskriteerituloksenTilaDTO tila, final int prioriteetti, final String etunimi, final String sukunimi, final Integer tasasijaJonosija, final BigDecimal pisteet, final List<SyotettyArvoDTO> syotettyArvo, final List<AvainArvoDTO> tilanKuvaus, final Boolean harkinnanvarainen, final boolean hylattyValisijoittelussa) {
+        this.jonosija = jonosija;
+        this.oid = oid;
+        this.hakemusOid = hakemusOid;
+        this.tila = tila;
+        this.prioriteetti = prioriteetti;
+        this.etunimi = etunimi;
+        this.sukunimi = sukunimi;
+        this.tasasijaJonosija = tasasijaJonosija;
+        this.pisteet = pisteet;
+        this.syotettyArvo = syotettyArvo;
+        this.tilanKuvaus = tilanKuvaus;
+        this.harkinnanvarainen = harkinnanvarainen;
+        this.hylattyValisijoittelussa = hylattyValisijoittelussa;
+    }
+
     public int getJonosija() {
         return jonosija;
     }
