@@ -670,6 +670,7 @@
                     "hakijaOid": "1.2.246.562.24.43656814814",
                     "hakutoiveprioriteetti": 5,
                     "harkinnanvarainen": false,
+                    "hylattyValisijoittelussa": true,
                     "jarjestyskriteeritulokset": [
                         {
                             "arvo": "12",

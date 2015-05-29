@@ -184,19 +184,23 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
 
         // Hakija on hylätty, tarkistetaan onko hylätty välisijoittelussa
         if(tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY) && edellinenVaihe != null && edellinenVaihe.getJarjestysnumero() != jarjestysnumero-1) {
-            edellinenOsallistuminen = valintakoeOsallistuminenDAO
-                    .haeEdeltavaValinnanvaihe(hakemus.getHakuoid(), edellinenVaihe.getHakukohdeOid(),
-                            jarjestysnumero);
-            if (edellinenOsallistuminen != null) {
-                hakijanOsallistumiset = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakemus.getHakuoid(), hakemus.getHakemusoid());
-                if(hakijanOsallistumiset != null) {
-                    voidaanHyvaksya = edellinenValinnanvaiheKasittelija
-                            .koeOsallistuminenToisessaKohteessa(edellinenVaihe.getHakukohdeOid(), hakijanOsallistumiset);
+            boolean hylattyValisijoittelussa = edellinenVaihe.getValintatapajonot()
+                    .stream()
+                    .flatMap(j -> j.getJonosijat().stream())
+                    .filter(j -> j.getHakemusOid().equals(hakemus.getHakemusoid()))
+                    .anyMatch(j -> j.isHylattyValisijoittelussa());
 
+            if(hylattyValisijoittelussa) {
+                edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(hakemus.getHakuoid(), edellinenVaihe.getHakukohdeOid(), jarjestysnumero);
+                if (edellinenOsallistuminen != null) {
+                    hakijanOsallistumiset = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakemus.getHakuoid(), hakemus.getHakemusoid());
+                    if(hakijanOsallistumiset != null) {
+                        voidaanHyvaksya = edellinenValinnanvaiheKasittelija
+                                .koeOsallistuminenToisessaKohteessa(edellinenVaihe.getHakukohdeOid(), hakijanOsallistumiset);
+                    }
                 }
             }
         }
-
 
         // Yliajetaan hylkäys, jos hylätty välisijoittelussa, mutta saanut koekutsun
         if(uusinTila.equals(Tila.Tilatyyppi.HYVAKSYTTAVISSA) || uusinTila.equals(Tila.Tilatyyppi.VIRHE)) {
