@@ -37,11 +37,8 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valinta.ValintalaskentaSuorit
  * @author Jussi Jartamo
  */
 @Service
-public class ValintalaskentaSuorittajaServiceImpl implements
-        ValintalaskentaSuorittajaService {
-
-    private static final Logger LOG = LoggerFactory
-            .getLogger(ValintalaskentaSuorittajaServiceImpl.class);
+public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuorittajaService {
+    private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaSuorittajaServiceImpl.class);
 
     @Autowired
     private HakemusDTOToHakemusConverter hakemusConverter;
@@ -68,64 +65,47 @@ public class ValintalaskentaSuorittajaServiceImpl implements
     private EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija;
 
     @Override
-    public void suoritaLaskenta(List<HakemusDTO> kaikkiHakemukset,
-                                List<ValintaperusteetDTO> valintaperusteet,
-                                List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
-                                String hakukohdeOid,
-                                String uuid) {
+    public void suoritaLaskenta(List<HakemusDTO> kaikkiHakemukset, List<ValintaperusteetDTO> valintaperusteet, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat, String hakukohdeOid, String uuid) {
 
         Map<String, Hakemukset> hakemuksetHakukohteittain = jarjestaHakemuksetHakukohteittain(kaikkiHakemukset);
 
         // Järjestetään valintaperusteet valinnan vaiheiden järjestysnumeron
         // mukaan
-        Collections.sort(valintaperusteet,
-                (o1, o2) -> o1.getValinnanVaihe()
-                        .getValinnanVaiheJarjestysluku()
-                        - o2.getValinnanVaihe()
-                        .getValinnanVaiheJarjestysluku());
+        Collections.sort(valintaperusteet, (o1, o2) -> o1.getValinnanVaihe().getValinnanVaiheJarjestysluku() - o2.getValinnanVaihe().getValinnanVaiheJarjestysluku());
 
         for (ValintaperusteetDTO vp : valintaperusteet) {
             String hakuOid = vp.getHakuOid();
             String tarjoajaOid = vp.getTarjoajaOid();
 
             if (!hakemuksetHakukohteittain.containsKey(hakukohdeOid)) {
-                LOG.error("(Uuid={}) Hakukohteelle {} ei ole yhtään hakemusta. Hypätään yli.",
-                        uuid, hakukohdeOid);
+                LOG.error("(Uuid={}) Hakukohteelle {} ei ole yhtään hakemusta. Hypätään yli.", uuid, hakukohdeOid);
                 continue;
             }
 
-            List<HakemusWrapper> hakemukset = hakemuksetHakukohteittain.get(
-                    hakukohdeOid).getHakemukset();
-            List<Hakemus> laskentahakemukset = hakemuksetHakukohteittain.get(
-                    hakukohdeOid).getLaskentahakemukset();
+            List<HakemusWrapper> hakemukset = hakemuksetHakukohteittain.get(hakukohdeOid).getHakemukset();
+            List<Hakemus> laskentahakemukset = hakemuksetHakukohteittain.get(hakukohdeOid).getLaskentahakemukset();
             if (hakemukset == null
                     || hakemukset.isEmpty()
                     || (vp.getValinnanVaihe().getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE))) {
                 continue;
             }
 
-            Map<String, String> hakukohteenValintaperusteet = muodostaHakukohteenValintaperusteetMap(vp
-                    .getHakukohteenValintaperuste());
+            Map<String, String> hakukohteenValintaperusteet = muodostaHakukohteenValintaperusteetMap(vp.getHakukohteenValintaperuste());
 
-            ValintaperusteetValinnanVaiheDTO vaihe = vp
-                    .getValinnanVaihe();
+            ValintaperusteetValinnanVaiheDTO vaihe = vp.getValinnanVaihe();
 
             final String valinnanvaiheOid = vaihe.getValinnanVaiheOid();
             final int jarjestysnumero = vaihe.getValinnanVaiheJarjestysluku();
 
-            LOG.info("(Uuid={}) Haku {}, hakukohde {}, valinnanvaihe {} - jarjestysnumero {}",
-                    uuid, hakuOid, hakukohdeOid, valinnanvaiheOid,
-                    jarjestysnumero);
+            LOG.info("(Uuid={}) Haku {}, hakukohde {}, valinnanvaihe {} - jarjestysnumero {}", uuid, hakuOid, hakukohdeOid, valinnanvaiheOid, jarjestysnumero);
             Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
 
             // jos edellinenVaihe == null ja järjestysluku > 0 tarkistetaaan
             // löytyykö edellistä valintakoevaihetta vai heitetäänö virhe
             if (edellinenVaihe == null && jarjestysnumero > 0) {
-                ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO
-                        .haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
+                ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
                 if (edellinenOsallistuminen == null) {
-                    LOG.warn("(Uuid={}) Valinnanvaiheen järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt",
-                            uuid);
+                    LOG.warn("(Uuid={}) Valinnanvaiheen järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt", uuid);
                     continue;
                 }
             }
@@ -162,7 +142,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                 jono.setValmisSijoiteltavaksi(j.getValmisSijoiteltavaksi());
                 jono.setKaytetaanValintalaskentaa(j.getKaytetaanValintalaskentaa());
 
-                Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan = new HashMap<String, JonosijaJaSyotetytArvot>();
+                Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan = new HashMap<>();
                 for (ValintaperusteetJarjestyskriteeriDTO jk : j.getJarjestyskriteerit()) {
                     try {
                         Funktiokutsu funktiokutsu = modelMapper.map(jk.getFunktiokutsu(), Funktiokutsu.class);
@@ -171,38 +151,43 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                         Optional<Totuusarvofunktio> totuusarvofunktio = Optional.empty();
 
                         if (Funktiotyyppi.LUKUARVOFUNKTIO.equals(funktiokutsu.getFunktionimi().getTyyppi())) {
-                            lukuarvofunktio = Optional.ofNullable(Laskentadomainkonvertteri
-                                    .muodostaLukuarvolasku(funktiokutsu));
+                            lukuarvofunktio = Optional.ofNullable(Laskentadomainkonvertteri.muodostaLukuarvolasku(funktiokutsu));
                         } else {
-                            totuusarvofunktio = Optional.ofNullable(Laskentadomainkonvertteri
-                                    .muodostaTotuusarvolasku(funktiokutsu));
+                            totuusarvofunktio = Optional.ofNullable(Laskentadomainkonvertteri.muodostaTotuusarvolasku(funktiokutsu));
                         }
 
                         for (HakemusWrapper hw : hakemukset) {
-                            LOG.debug("hakemus {}", new Object[]{hw
-                                    .getHakemusDTO().getHakemusoid()});
+                            LOG.debug("hakemus {}", new Object[]{hw.getHakemusDTO().getHakemusoid()});
 
                             if (lukuarvofunktio.isPresent()) {
                                 hakemuslaskinService.suoritaLaskentaHakemukselle(
-                                        new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet), hw,
-                                        laskentahakemukset, lukuarvofunktio.get(), jk
-                                                .getPrioriteetti(), viimeisinVaihe,
-                                        jonosijatHakemusOidinMukaan, jk.getNimi(), jarjestysnumero);
+                                        new Hakukohde(hakukohdeOid,hakukohteenValintaperusteet),
+                                        hw,
+                                        laskentahakemukset,
+                                        lukuarvofunktio.get(),
+                                        jk.getPrioriteetti(),
+                                        viimeisinVaihe,
+                                        jonosijatHakemusOidinMukaan,
+                                        jk.getNimi(),jarjestysnumero
+                                );
                             } else {
                                 hakemuslaskinService.suoritaLaskentaHakemukselle(
-                                        new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet), hw,
-                                        laskentahakemukset, totuusarvofunktio.get(), jk
-                                                .getPrioriteetti(), viimeisinVaihe,
-                                        jonosijatHakemusOidinMukaan, jk.getNimi(), jarjestysnumero);
+                                        new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet),
+                                        hw,
+                                        laskentahakemukset,
+                                        totuusarvofunktio.get(),
+                                        jk.getPrioriteetti(),
+                                        viimeisinVaihe,
+                                        jonosijatHakemusOidinMukaan,
+                                        jk.getNimi(),
+                                        jarjestysnumero
+                                );
                             }
 
 
                         }
                     } catch (LaskentakaavaEiOleValidiException e) {
-                        LOG.error("(Uuid={}) Hakukohteen {} Valintatapajonon {} prioriteetilla {} olevan järjestyskriteerin "
-                                        + "funktiokutsu ei ole validi. Laskentaa ei voida suorittaa.",
-                                uuid,
-                                hakukohdeOid, j.getOid(), jk.getPrioriteetti());
+                        LOG.error("(Uuid={}) Hakukohteen {} Valintatapajonon {} prioriteetilla {} olevan järjestyskriteerin funktiokutsu ei ole validi. Laskentaa ei voida suorittaa.", uuid, hakukohdeOid, j.getOid(), jk.getPrioriteetti());
                         continue;
                     }
                 }
@@ -230,11 +215,9 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                 }
 
                 if (j.isPoistetaankoHylatyt()) {
-                    List<Jonosija> filteroity = jono.getJonosijat()
-                            .stream()
+                    List<Jonosija> filteroity = jono.getJonosijat().stream()
                             .filter(sija -> {
-                                boolean tila = !sija.getJarjestyskriteeritulokset().get(0).getTila()
-                                        .equals(JarjestyskriteerituloksenTila.HYLATTY);
+                                boolean tila = !sija.getJarjestyskriteeritulokset().get(0).getTila().equals(JarjestyskriteerituloksenTila.HYLATTY);
                                 TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(sija.getHakemusOid(), edellinenVaihe);
                                 return tila || tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY);
                             })
@@ -251,7 +234,6 @@ public class ValintalaskentaSuorittajaServiceImpl implements
         LOG.info("(Uuid={}) Hakijaryhmien määrä {} hakukohteessa {}", uuid, hakijaryhmat.size(), hakukohdeOid);
         // Hakijaryhmät
         if (!hakijaryhmat.isEmpty()) {
-//            Collections.sort(hakijaryhmat, (h1, h2) -> h1.getPrioriteetti() - h2.getPrioriteetti());
             hakijaryhmat.parallelStream().forEach(h -> {
                 if (!hakemuksetHakukohteittain.containsKey(hakukohdeOid)) {
                     LOG.info("(Uuid={}) Hakukohteelle {} ei ole yhtään hakemusta. Hypätään yli.", uuid, hakukohdeOid);
@@ -260,14 +242,13 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 
                 List<HakemusWrapper> hakemukset = hakemuksetHakukohteittain.get(hakukohdeOid).getHakemukset();
                 List<Hakemus> laskentahakemukset = hakemuksetHakukohteittain.get(hakukohdeOid).getLaskentahakemukset();
-                if (hakemukset == null
-                        || hakemukset.isEmpty()) {
+                if (hakemukset == null || hakemukset.isEmpty()) {
                     return;
                 }
 
                 Hakijaryhma hakijaryhma = haeTaiLuoHakijaryhma(h);
 
-                Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan = new HashMap<String, JonosijaJaSyotetytArvot>();
+                Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan = new HashMap<>();
                 try {
                     Funktiokutsu funktiokutsu = modelMapper.map(h.getFunktiokutsu(), Funktiokutsu.class);
 
@@ -275,37 +256,38 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                     Optional<Totuusarvofunktio> totuusarvofunktio = Optional.empty();
 
                     if (Funktiotyyppi.LUKUARVOFUNKTIO.equals(funktiokutsu.getFunktionimi().getTyyppi())) {
-                        lukuarvofunktio = Optional.ofNullable(Laskentadomainkonvertteri
-                                .muodostaLukuarvolasku(funktiokutsu));
+                        lukuarvofunktio = Optional.ofNullable(Laskentadomainkonvertteri.muodostaLukuarvolasku(funktiokutsu));
                     } else {
-                        totuusarvofunktio = Optional.ofNullable(Laskentadomainkonvertteri
-                                .muodostaTotuusarvolasku(funktiokutsu));
+                        totuusarvofunktio = Optional.ofNullable(Laskentadomainkonvertteri.muodostaTotuusarvolasku(funktiokutsu));
                     }
 
-                    Map<String, String> hakukohteenValintaperusteet = muodostaHakukohteenValintaperusteetMap(
-                            valintaperusteet.get(0).getHakukohteenValintaperuste());
+                    Map<String, String> hakukohteenValintaperusteet = muodostaHakukohteenValintaperusteetMap(valintaperusteet.get(0).getHakukohteenValintaperuste());
 
                     for (HakemusWrapper hw : hakemukset) {
                         LOG.debug("hakemus {}", new Object[]{hw.getHakemusDTO().getHakemusoid()});
 
                         if (lukuarvofunktio.isPresent()) {
                             hakemuslaskinService.suoritaHakijaryhmaLaskentaHakemukselle(
-                                    new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet), hw,
-                                    laskentahakemukset, lukuarvofunktio.get(),
-                                    jonosijatHakemusOidinMukaan);
+                                    new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet),
+                                    hw,
+                                    laskentahakemukset,
+                                    lukuarvofunktio.get(),
+                                    jonosijatHakemusOidinMukaan
+                            );
                         } else {
                             hakemuslaskinService.suoritaHakijaryhmaLaskentaHakemukselle(
-                                    new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet), hw,
-                                    laskentahakemukset, totuusarvofunktio.get(),
-                                    jonosijatHakemusOidinMukaan);
+                                    new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet),
+                                    hw,
+                                    laskentahakemukset,
+                                    totuusarvofunktio.get(),
+                                    jonosijatHakemusOidinMukaan
+                            );
                         }
 
 
                     }
                 } catch (LaskentakaavaEiOleValidiException e) {
-                    LOG.error("(Uuid={}) Hakukohteen {} Hakijaryhmän {} "
-                                    + "funktiokutsu ei ole validi. Laskentaa ei voida suorittaa.",
-                            uuid, hakukohdeOid, h.getOid());
+                    LOG.error("(Uuid={}) Hakukohteen {} Hakijaryhmän {} funktiokutsu ei ole validi. Laskentaa ei voida suorittaa.", uuid, hakukohdeOid, h.getOid());
                     return;
                 }
 
@@ -314,10 +296,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                     for (SyotettyArvo a : js.getSyotetytArvot().values()) {
                         fi.vm.sade.valintalaskenta.domain.valinta.SyotettyArvo syotettyArvo = new fi.vm.sade.valintalaskenta.domain.valinta.SyotettyArvo();
                         syotettyArvo.setArvo(a.getArvo());
-                        syotettyArvo.setLaskennallinenArvo(a
-                                .getLaskennallinenArvo());
-                        syotettyArvo.setOsallistuminen(a.getOsallistuminen()
-                                .name());
+                        syotettyArvo.setLaskennallinenArvo(a.getLaskennallinenArvo());
+                        syotettyArvo.setOsallistuminen(a.getOsallistuminen().name());
                         syotettyArvo.setTunniste(a.getTunniste());
                         jonosija.getSyotetytArvot().add(syotettyArvo);
                     }
@@ -339,9 +319,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements
         }
     }
 
-    private Map<String, String> muodostaHakukohteenValintaperusteetMap(
-            List<HakukohteenValintaperusteDTO> hakukohteenValintaperuste) {
-        Map<String, String> map = new HashMap<String, String>();
+    private Map<String, String> muodostaHakukohteenValintaperusteetMap(List<HakukohteenValintaperusteDTO> hakukohteenValintaperuste) {
+        Map<String, String> map = new HashMap<>();
 
         LOG.debug("Hakukohteen valintaperusteet:");
         for (HakukohteenValintaperusteDTO vp : hakukohteenValintaperuste) {
@@ -353,7 +332,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 
     private Map<String, Hakemukset> jarjestaHakemuksetHakukohteittain(
             List<HakemusDTO> hakemukset) {
-        Map<String, Hakemukset> hakukohdeHakemukset = new HashMap<String, Hakemukset>();
+        Map<String, Hakemukset> hakukohdeHakemukset = new HashMap<>();
         for (HakemusDTO hakemus : hakemukset) {
             for (HakukohdeDTO hakukohde : hakemus.getHakukohteet()) {
                 String hakukohdeOid = hakukohde.getOid();
@@ -374,16 +353,14 @@ public class ValintalaskentaSuorittajaServiceImpl implements
                 }
 
                 hakukohdeHakemukset.get(hakukohdeOid).getHakemukset().add(h);
-                hakukohdeHakemukset.get(hakukohdeOid).getLaskentahakemukset()
-                        .add(h.getLaskentahakemus());
+                hakukohdeHakemukset.get(hakukohdeOid).getLaskentahakemukset().add(h.getLaskentahakemus());
             }
         }
         return hakukohdeHakemukset;
     }
 
     private Valinnanvaihe haeTaiLuoValinnanvaihe(String valinnanvaiheOid, String hakuOid, String hakukohdeOid, int jarjestysnumero) {
-        Valinnanvaihe valinnanvaihe = valinnanvaiheDAO
-                .haeValinnanvaihe(valinnanvaiheOid);
+        Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanvaiheOid);
 
         // Tarkistetaan ettei jää haamuvaiheita OVT-7668
         List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.haeValinnanvaiheetJarjestysnumerolla(hakuOid, hakukohdeOid, jarjestysnumero);
@@ -401,10 +378,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements
             for (Valintatapajono jono : valinnanvaihe.getValintatapajonot()) {
                 if (jono.getKaytetaanValintalaskentaa() == null || jono.getKaytetaanValintalaskentaa()) {
                     for (Jonosija jonosija : jono.getJonosijat()) {
-                        for (Jarjestyskriteeritulos tulos : jonosija
-                                .getJarjestyskriteeritulokset()) {
-                            jarjestyskriteerihistoriaDAO
-                                    .delete(tulos.getHistoria());
+                        for (Jarjestyskriteeritulos tulos : jonosija.getJarjestyskriteeritulokset()) {
+                            jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
                         }
                     }
                     poistettavat.add(jono);
@@ -429,7 +404,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements
         List<String> oidit = hakijaryhmat.stream().map(ValintaperusteetHakijaryhmaDTO::getOid).collect(Collectors.toList());
 
         hakijaryhmaDAO.haeHakijaryhmat(hakukohdeOid).stream()
-                .filter(h -> oidit.indexOf(h.getHakijaryhmaOid()) == -1).forEach(hakijaryhmaDAO::poistaHakijaryhma);
+                .filter(h -> oidit.indexOf(h.getHakijaryhmaOid()) == -1)
+                .forEach(hakijaryhmaDAO::poistaHakijaryhma);
     }
 
     private Hakijaryhma haeTaiLuoHakijaryhma(ValintaperusteetHakijaryhmaDTO dto) {
@@ -447,10 +423,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements
 
         // Poistetaan vanhat historiat
         for (Jonosija jonosija : hakijaryhma.getJonosijat()) {
-            for (Jarjestyskriteeritulos tulos : jonosija
-                    .getJarjestyskriteeritulokset()) {
-                jarjestyskriteerihistoriaDAO
-                        .delete(tulos.getHistoria());
+            for (Jarjestyskriteeritulos tulos : jonosija.getJarjestyskriteeritulokset()) {
+                jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
             }
         }
 
