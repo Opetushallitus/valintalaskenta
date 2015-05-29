@@ -12,8 +12,17 @@ import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
  * @author Jussi Jartamo
  */
 @ApiModel(value = "JarjestyskriteeritulosDTO", description = "Järjestyskriteerin tulos")
-public class JarjestyskriteeritulosDTO implements
-		Comparable<JarjestyskriteeritulosDTO> {
+public class JarjestyskriteeritulosDTO implements Comparable<JarjestyskriteeritulosDTO> {
+	public JarjestyskriteeritulosDTO() {
+	}
+
+	public JarjestyskriteeritulosDTO(final BigDecimal arvo, final JarjestyskriteerituloksenTila tila, final Map<String, String> kuvaus, final int prioriteetti, final String nimi) {
+		this.arvo = arvo;
+		this.tila = tila;
+		this.kuvaus = kuvaus;
+		this.prioriteetti = prioriteetti;
+		this.nimi = nimi;
+	}
 
 	@ApiModelProperty(value = "Järjestyskriteerin lukuarvo", required = true)
 	private BigDecimal arvo;
