@@ -61,6 +61,28 @@
                             ]
                         }
                     ]
+                },
+                {
+                    "hakukohdeOid": "hakuKohdeOid3",
+                    "laskettavaHakukohdeOid": "hakuKohdeOid4",
+                    "valinnanVaiheet": [
+                        {
+                            "valinnanVaiheOid": "valinnanVaiheOid3",
+                            "valinnanVaiheJarjestysluku": 100,
+                            "laskettavaJarjestysluku": 2,
+                            "valintakokeet": [
+                                {
+                                    "valintakoeOid": "valintakoeOid1",
+                                    "valintakoeTunniste": "kielikoe_tunniste",
+                                    "osallistuminenTulos": {
+                                        "osallistuminen": "EI_OSALLISTU",
+                                        "laskentaTila": "HYVAKSYTTAVISSA",
+                                        "laskentaTulos": true
+                                    }
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         }]

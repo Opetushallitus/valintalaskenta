@@ -17,6 +17,9 @@ public class Hakutoive {
     @Indexed
     private String hakukohdeOid;
 
+    @Indexed
+    private String laskettavaHakukohdeOid;
+
     @Embedded
     private List<ValintakoeValinnanvaihe> valinnanVaiheet = new ArrayList<ValintakoeValinnanvaihe>();
 
@@ -34,5 +37,13 @@ public class Hakutoive {
 
     public void setValinnanVaiheet(List<ValintakoeValinnanvaihe> valinnanVaiheet) {
         this.valinnanVaiheet = valinnanVaiheet;
+    }
+
+    public String getLaskettavaHakukohdeOid() {
+        return laskettavaHakukohdeOid;
+    }
+
+    public void setLaskettavaHakukohdeOid(String laskettavaHakukohdeOid) {
+        this.laskettavaHakukohdeOid = laskettavaHakukohdeOid;
     }
 }

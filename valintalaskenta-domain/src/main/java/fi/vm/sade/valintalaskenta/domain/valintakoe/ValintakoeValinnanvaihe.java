@@ -14,6 +14,7 @@ import java.util.List;
 public class ValintakoeValinnanvaihe {
     private String valinnanVaiheOid;
     private Integer valinnanVaiheJarjestysluku;
+    private Integer laskettavaJarjestysluku;
 
     @Embedded
     private List<Valintakoe> valintakokeet = new ArrayList<Valintakoe>();
@@ -40,5 +41,13 @@ public class ValintakoeValinnanvaihe {
 
     public void setValintakokeet(List<Valintakoe> valintakokeet) {
         this.valintakokeet = valintakokeet;
+    }
+
+    public Integer getLaskettavaJarjestysluku() {
+        return laskettavaJarjestysluku;
+    }
+
+    public void setLaskettavaJarjestysluku(Integer laskettavaJarjestysluku) {
+        this.laskettavaJarjestysluku = laskettavaJarjestysluku;
     }
 }

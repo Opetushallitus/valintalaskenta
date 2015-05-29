@@ -133,5 +133,6 @@ public class ValintakoeOsallistuminenDAOTest {
         assertNotNull(valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid1", "hakuKohdeOid1", 1));
         assertNull(valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid1", "hakuKohdeOid2", 1));
         assertNotNull(valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid1", "hakuKohdeOid1", 6));
+        assertNotNull(valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid1", "hakuKohdeOid4", 3));
     }
 }

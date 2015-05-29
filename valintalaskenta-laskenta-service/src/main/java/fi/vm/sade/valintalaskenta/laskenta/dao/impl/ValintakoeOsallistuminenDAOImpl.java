@@ -62,21 +62,44 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
     @Override
     public ValintakoeOsallistuminen haeEdeltavaValinnanvaihe(String hakuOid, String hakukohdeOid, int jarjestysnumero) {
         ValintakoeOsallistuminen edellinen = null;
+        final MorphiaIterator<ValintakoeOsallistuminen, ValintakoeOsallistuminen> lasketutEdellisenVaiheenOsallistumiset =
+                lasketutValintakoeOsallistumiset(hakuOid, hakukohdeOid, jarjestysnumero);
+        if (lasketutEdellisenVaiheenOsallistumiset.hasNext()) {
+            edellinen = lasketutEdellisenVaiheenOsallistumiset.next();
+        } else {
+            final MorphiaIterator<ValintakoeOsallistuminen, ValintakoeOsallistuminen> hakijanValintaEdellisenVaiheenOsallistumiset =
+                    hakijanValintaValintakoeOsallistumiset(hakuOid, hakukohdeOid, jarjestysnumero);
+            if (hakijanValintaEdellisenVaiheenOsallistumiset.hasNext()) {
+                edellinen = hakijanValintaEdellisenVaiheenOsallistumiset.next();
+            }
+        }
+        return edellinen;
+    }
 
+    // Olemassaolevat laskennat (kevat 2015) vaatii tämän, uudet laskennat eivät.
+    private MorphiaIterator<ValintakoeOsallistuminen, ValintakoeOsallistuminen> lasketutValintakoeOsallistumiset(String hakuOid, String hakukohdeOid, int jarjestysnumero) {
         final Query<ValintakoeOsallistuminen> query = morphiaDS.createQuery(ValintakoeOsallistuminen.class);
-        final MorphiaIterator<ValintakoeOsallistuminen, ValintakoeOsallistuminen> edellisenVaiheenOsallistumiset = morphiaDS.<ValintakoeOsallistuminen, ValintakoeOsallistuminen>createAggregation(ValintakoeOsallistuminen.class)
+        return morphiaDS.<ValintakoeOsallistuminen, ValintakoeOsallistuminen>createAggregation(ValintakoeOsallistuminen.class)
+                    .match(query.field("hakuOid").equal(hakuOid))
+                    .project(Projection.projection("_id").suppress(), Projection.projection("hakutoiveet"), Projection.projection("hakuOid"))
+                    .unwind("hakutoiveet")
+                    .match(query.field("hakutoiveet.hakukohdeOid").equal(hakukohdeOid))
+                    .unwind("hakutoiveet.valinnanVaiheet")
+                    .match(query.field("hakutoiveet.valinnanVaiheet.valinnanVaiheJarjestysluku").equal(jarjestysnumero - 1))
+                    .limit(1)
+                    .aggregate(ValintakoeOsallistuminen.class);
+    }
+
+    private MorphiaIterator<ValintakoeOsallistuminen, ValintakoeOsallistuminen> hakijanValintaValintakoeOsallistumiset(String hakuOid, String hakukohdeOid, int jarjestysnumero) {
+        final Query<ValintakoeOsallistuminen> query = morphiaDS.createQuery(ValintakoeOsallistuminen.class);
+        return morphiaDS.<ValintakoeOsallistuminen, ValintakoeOsallistuminen>createAggregation(ValintakoeOsallistuminen.class)
                 .match(query.field("hakuOid").equal(hakuOid))
                 .project(Projection.projection("_id").suppress(), Projection.projection("hakutoiveet"), Projection.projection("hakuOid"))
                 .unwind("hakutoiveet")
-                .match(query.field("hakutoiveet.hakukohdeOid").equal(hakukohdeOid))
+                .match(query.field("hakutoiveet.laskettavaHakukohdeOid").equal(hakukohdeOid))
                 .unwind("hakutoiveet.valinnanVaiheet")
-                .match(query.field("hakutoiveet.valinnanVaiheet.valinnanVaiheJarjestysluku").equal(jarjestysnumero - 1))
+                .match(query.field("hakutoiveet.valinnanVaiheet.laskettavaJarjestysluku").equal(jarjestysnumero - 1))
                 .limit(1)
                 .aggregate(ValintakoeOsallistuminen.class);
-        if (edellisenVaiheenOsallistumiset.hasNext()) {
-            edellinen = edellisenVaiheenOsallistumiset.next();
-        }
-
-        return edellinen;
     }
 }

@@ -13,6 +13,7 @@ public class HakukohdeValintakoeData {
 	private String hakukohdeOid;
 	private String valinnanVaiheOid;
 	private int valinnanVaiheJarjestysNro;
+	private int laskettavaValinnanVaiheJarjestysNro;
 
 	private String valintakoeTunniste;
 	private String valintakoeOid;
@@ -134,5 +135,13 @@ public class HakukohdeValintakoeData {
 
 	public void setLaskettavaHakukohdeOid(String laskettavaHakukohdeOid) {
 		this.laskettavaHakukohdeOid = laskettavaHakukohdeOid;
+	}
+
+	public int getLaskettavaValinnanVaiheJarjestysNro() {
+		return laskettavaValinnanVaiheJarjestysNro;
+	}
+
+	public void setLaskettavaValinnanVaiheJarjestysNro(int laskettavaValinnanVaiheJarjestysNro) {
+		this.laskettavaValinnanVaiheJarjestysNro = laskettavaValinnanVaiheJarjestysNro;
 	}
 }

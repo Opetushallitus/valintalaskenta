@@ -168,6 +168,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
                         }
                         HakukohdeValintakoeData data = new HakukohdeValintakoeData();
                         data.setHakuOid(vp.getHakuOid());
+                        data.setLaskettavaHakukohdeOid(vp.getHakukohdeOid());
+                        data.setLaskettavaValinnanVaiheJarjestysNro(vaihe.getValinnanVaiheJarjestysluku());
                         if (koe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA)) {
                             data.setValinnanVaiheOid(VALINNANVAIHE_HAKIJAN_VALINTA);
                             data.setValinnanVaiheJarjestysNro(100);
@@ -180,7 +182,6 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
                             }
                         } else {
                             data.setHakukohdeOid(vp.getHakukohdeOid());
-                            data.setLaskettavaHakukohdeOid(vp.getHakukohdeOid());
                             data.setValinnanVaiheJarjestysNro(vaihe.getValinnanVaiheJarjestysluku());
                             data.setValinnanVaiheOid(vaihe.getValinnanVaiheOid());
                         }
@@ -417,8 +418,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 		haeTaiLuoValinnanVaihe(toive, data);
 	}
 
-	protected void haeTaiLuoValinnanVaihe(Hakutoive hakutoive,
-			HakukohdeValintakoeData data) {
+	protected void haeTaiLuoValinnanVaihe(Hakutoive hakutoive, HakukohdeValintakoeData data) {
+        hakutoive.setLaskettavaHakukohdeOid(data.getLaskettavaHakukohdeOid());
 		ValintakoeValinnanvaihe vaihe = null;
 
 		for (ValintakoeValinnanvaihe v : hakutoive.getValinnanVaiheet()) {
@@ -433,7 +434,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 			hakutoive.getValinnanVaiheet().add(vaihe);
 		}
 		vaihe.setValinnanVaiheOid(data.getValinnanVaiheOid());
-		vaihe.setValinnanVaiheJarjestysluku(data.getValinnanVaiheJarjestysNro());
+        vaihe.setValinnanVaiheJarjestysluku(data.getValinnanVaiheJarjestysNro());
+        vaihe.setLaskettavaJarjestysluku(data.getLaskettavaValinnanVaiheJarjestysNro());
 
 		haeTaiLuoValintakoe(vaihe, data);
 	}
