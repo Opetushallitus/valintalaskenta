@@ -218,12 +218,11 @@ public class ValintalaskentaTulosServiceImpl implements
 	private void applyHarkinnanvarainenHyvaksynta(JonosijaDTO jonosija,
 			HarkinnanvarainenHyvaksyminen hyvaksyminen) {
 		if (hyvaksyminen.getHarkinnanvaraisuusTila() == HarkinnanvaraisuusTila.HYVAKSYTTY) {
-			if (jonosija.getJarjestyskriteerit().first() != null) {
-				jonosija.getJarjestyskriteerit()
-						.first()
-						.setTila(
-								JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI);
-			}
+            JarjestyskriteeritulosDTO jarjestyskriteeritulos = jonosija.getJarjestyskriteerit().first();
+            if (jarjestyskriteeritulos != null) {
+                jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI);
+                jarjestyskriteeritulos.setKuvaus(new HashMap<String, String>());
+            }
 			jonosija.setTuloksenTila(JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI);
 		}
 	}
