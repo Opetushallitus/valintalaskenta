@@ -653,14 +653,14 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
 
         ValintaperusteetDTO vv3 = luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 3);
         (vv3.getValinnanVaihe()).getValintatapajono().add(luoValintatapajono(valintatapajonoOid, 0, 10, luoJarjestyskriteeri(sata, 1)));
-        valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid),luoHakemus(hakuOid, hakemusOid2, hakemusOid, hakukohdeOid)),
+        valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid), luoHakemus(hakuOid, hakemusOid2, hakemusOid, hakukohdeOid)),
                 Arrays.asList(vv3), new ArrayList<>(), hakukohdeOid, uuid);
 
         Valinnanvaihe vaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanVaiheOid);
         assertNotNull(vaihe);
 
-        assertEquals(vaihe.getValintatapajonot().get(0).getJonosijat().stream().filter(j -> j.getHakemusOid().equals(hakemusOid)).findFirst().get().getJarjestyskriteeritulokset().get(0).getTila(), JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA);
-        assertEquals(vaihe.getValintatapajonot().get(0).getJonosijat().stream().filter(j -> j.getHakemusOid().equals(hakemusOid2)).findFirst().get().getJarjestyskriteeritulokset().get(0).getTila(), JarjestyskriteerituloksenTila.HYLATTY);
-        assertEquals(vaihe.getValintatapajonot().get(0).getJonosijat().stream().filter(j -> j.getHakemusOid().equals(hakemusOid2)).findFirst().get().getJarjestyskriteeritulokset().get(0).getKuvaus().get("FI"), "Ei kutsuttu valintakokeeseen");
+        assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, vaihe.getValintatapajonot().get(0).getJonosijat().stream().filter(j -> j.getHakemusOid().equals(hakemusOid)).findFirst().get().getJarjestyskriteeritulokset().get(0).getTila());
+        assertEquals(JarjestyskriteerituloksenTila.HYLATTY, vaihe.getValintatapajonot().get(0).getJonosijat().stream().filter(j -> j.getHakemusOid().equals(hakemusOid2)).findFirst().get().getJarjestyskriteeritulokset().get(0).getTila());
+        assertEquals("Ei kutsuttu valintakokeeseen", vaihe.getValintatapajonot().get(0).getJonosijat().stream().filter(j -> j.getHakemusOid().equals(hakemusOid2)).findFirst().get().getJarjestyskriteeritulokset().get(0).getKuvaus().get("FI"));
     }
 }
