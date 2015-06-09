@@ -368,33 +368,34 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             }
         }
 
-        // Poistetaan vanhat jonot ja historiat
         if (valinnanvaihe != null) {
-            List<Valintatapajono> saastettavat = new ArrayList<>();
-            List<Valintatapajono> poistettavat = new ArrayList<>();
-            for (Valintatapajono jono : valinnanvaihe.getValintatapajonot()) {
-                if (jono.getKaytetaanValintalaskentaa() == null || jono.getKaytetaanValintalaskentaa()) {
-                    for (Jonosija jonosija : jono.getJonosijat()) {
-                        for (Jarjestyskriteeritulos tulos : jonosija.getJarjestyskriteeritulokset()) {
-                            jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
-                        }
-                    }
-                    poistettavat.add(jono);
-                } else {
-                    saastettavat.add(jono);
-                }
-            }
-
-            valinnanvaihe.getValintatapajonot().clear();
-            valinnanvaihe.getValintatapajonot().addAll(saastettavat);
-            valinnanvaiheDAO.create(valinnanvaihe);
-            poistettavat.forEach(j -> valinnanvaiheDAO.poistaJonot(j.getValintatapajonoOid()));
-
+            poistaVanhatJonotJaHistoriat(valinnanvaihe);
         } else {
             valinnanvaihe = new Valinnanvaihe();
         }
-
         return valinnanvaihe;
+    }
+
+    private void poistaVanhatJonotJaHistoriat(Valinnanvaihe valinnanvaihe) {
+        List<Valintatapajono> saastettavat = new ArrayList<>();
+        List<Valintatapajono> poistettavat = new ArrayList<>();
+        for (Valintatapajono jono : valinnanvaihe.getValintatapajonot()) {
+            if (jono.getKaytetaanValintalaskentaa() == null || jono.getKaytetaanValintalaskentaa()) {
+                for (Jonosija jonosija : jono.getJonosijat()) {
+                    for (Jarjestyskriteeritulos tulos : jonosija.getJarjestyskriteeritulokset()) {
+                        jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
+                    }
+                }
+                poistettavat.add(jono);
+            } else {
+                saastettavat.add(jono);
+            }
+        }
+
+        valinnanvaihe.getValintatapajonot().clear();
+        valinnanvaihe.getValintatapajonot().addAll(saastettavat);
+        valinnanvaiheDAO.create(valinnanvaihe);
+        poistettavat.forEach(j -> valinnanvaiheDAO.poistaJonot(j.getValintatapajonoOid()));
     }
 
     private void poistaHaamuryhmat(List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat, String hakukohdeOid) {
