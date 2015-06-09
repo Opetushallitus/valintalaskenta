@@ -330,8 +330,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         return map;
     }
 
-    private Map<String, Hakemukset> jarjestaHakemuksetHakukohteittain(
-            List<HakemusDTO> hakemukset) {
+    private Map<String, Hakemukset> jarjestaHakemuksetHakukohteittain(List<HakemusDTO> hakemukset) {
         Map<String, Hakemukset> hakukohdeHakemukset = new HashMap<>();
         for (HakemusDTO hakemus : hakemukset) {
             for (HakukohdeDTO hakukohde : hakemus.getHakukohteet()) {
@@ -341,8 +340,6 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                 }
                 HakemusWrapper h = new HakemusWrapper();
                 h.setHakemusDTO(hakemus);
-
-
                 h.setLaskentahakemus(hakemusConverter.convert(hakemus));
 
                 for (HakukohdeDTO hakutoive : hakemus.getHakukohteet()) {
@@ -421,16 +418,17 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         hakijaryhma.setTarkkaKiintio(dto.isTarkkaKiintio());
         hakijaryhma.setValintatapajonoOid(dto.getValintatapajonoOid());
 
-        // Poistetaan vanhat historiat
+        poistaVanhatHistoriat(hakijaryhma);
+        hakijaryhma.getJonosijat().clear();
+
+        return hakijaryhma;
+    }
+
+    private void poistaVanhatHistoriat(Hakijaryhma hakijaryhma) {
         for (Jonosija jonosija : hakijaryhma.getJonosijat()) {
             for (Jarjestyskriteeritulos tulos : jonosija.getJarjestyskriteeritulokset()) {
                 jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
             }
         }
-
-        hakijaryhma.getJonosijat().clear();
-
-        return hakijaryhma;
-
     }
 }
