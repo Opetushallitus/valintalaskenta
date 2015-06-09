@@ -66,12 +66,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
     @Override
     public void suoritaLaskenta(List<HakemusDTO> kaikkiHakemukset, List<ValintaperusteetDTO> valintaperusteet, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat, String hakukohdeOid, String uuid) {
-
         Map<String, Hakemukset> hakemuksetHakukohteittain = jarjestaHakemuksetHakukohteittain(kaikkiHakemukset);
-
-        // Järjestetään valintaperusteet valinnan vaiheiden järjestysnumeron
-        // mukaan
-        Collections.sort(valintaperusteet, (o1, o2) -> o1.getValinnanVaihe().getValinnanVaiheJarjestysluku() - o2.getValinnanVaihe().getValinnanVaiheJarjestysluku());
+        jarjestaValinnanVaiheenJarjestysluvunMukaan(valintaperusteet);
 
         for (ValintaperusteetDTO vp : valintaperusteet) {
             String hakuOid = vp.getHakuOid();
@@ -317,6 +313,10 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
             });
         }
+    }
+
+    private void jarjestaValinnanVaiheenJarjestysluvunMukaan(List<ValintaperusteetDTO> valintaperusteet) {
+        Collections.sort(valintaperusteet, (o1, o2) -> o1.getValinnanVaihe().getValinnanVaiheJarjestysluku() - o2.getValinnanVaihe().getValinnanVaiheJarjestysluku());
     }
 
     private Map<String, String> muodostaHakukohteenValintaperusteetMap(List<HakukohteenValintaperusteDTO> hakukohteenValintaperuste) {
