@@ -4,14 +4,8 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.bson.types.ObjectId;
 
-/**
- * User: tommiha
- * Date: 8/7/13
- * Time: 1:08 PM
- */
 @Entity("Jarjestyskriteerihistoria")
 public class Jarjestyskriteerihistoria {
-
     @Id
     private ObjectId id;
 
