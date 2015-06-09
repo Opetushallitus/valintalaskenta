@@ -11,11 +11,6 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.JonosijaJaSyotet
 import java.util.List;
 import java.util.Map;
 
-/**
- * User: wuoti
- * Date: 5.9.2013
- * Time: 9.44
- */
 public interface HakemuslaskinService {
 
     void suoritaHakijaryhmaLaskentaHakemukselle(Hakukohde hakukohde, HakemusWrapper laskettavaHakemus,
