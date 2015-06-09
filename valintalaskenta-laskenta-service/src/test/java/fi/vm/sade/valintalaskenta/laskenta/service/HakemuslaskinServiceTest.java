@@ -42,11 +42,7 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.JonosijaJaSyotet
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.TilaJaSelite;
 import fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil;
 
-/**
- * User: wuoti Date: 5.9.2013 Time: 9.55
- */
 public class HakemuslaskinServiceTest {
-
     private HakemuslaskinService hakemuslaskinService;
 
     private LaskentaService laskentaServiceMock;
@@ -62,25 +58,16 @@ public class HakemuslaskinServiceTest {
         edellinenValinnanvaiheKasittelijaMock = mock(EdellinenValinnanvaiheKasittelija.class);
         valintakoeOsallistuminenDAOMock = mock(ValintakoeOsallistuminenDAO.class);
 
-        ReflectionTestUtils.setField(hakemuslaskinService, "laskentaService",
-                laskentaServiceMock);
-        ReflectionTestUtils.setField(hakemuslaskinService,
-                "jarjestyskriteerihistoriaDAO",
-                jarjestyskriteerihistoriaDAOMock);
-        ReflectionTestUtils.setField(hakemuslaskinService,
-                "edellinenValinnanvaiheKasittelija",
-                edellinenValinnanvaiheKasittelijaMock);
-        ReflectionTestUtils.setField(hakemuslaskinService,
-                "valintakoeOsallistuminenDAO",
-                valintakoeOsallistuminenDAOMock);
+        ReflectionTestUtils.setField(hakemuslaskinService, "laskentaService", laskentaServiceMock);
+        ReflectionTestUtils.setField(hakemuslaskinService, "jarjestyskriteerihistoriaDAO", jarjestyskriteerihistoriaDAOMock);
+        ReflectionTestUtils.setField(hakemuslaskinService, "edellinenValinnanvaiheKasittelija", edellinenValinnanvaiheKasittelijaMock);
+        ReflectionTestUtils.setField(hakemuslaskinService, "valintakoeOsallistuminenDAO", valintakoeOsallistuminenDAOMock);
     }
 
     @Test
     public void test() {
-        final String[] hakukohteet = {"hakukohdeOid1", "hakukohdeOid2",
-                "hakukohdeOid3"};
-        final Hakukohde laskettavaHakukohde = new Hakukohde(hakukohteet[0],
-                new HashMap<String, String>());
+        final String[] hakukohteet = {"hakukohdeOid1", "hakukohdeOid2", "hakukohdeOid3"};
+        final Hakukohde laskettavaHakukohde = new Hakukohde(hakukohteet[0], new HashMap<>());
         final String hakemusOid = "hakemusOid1";
         final String hakijaOid = "hakijaOid1";
         final boolean harkinnanvaraisuus = false;
@@ -90,9 +77,7 @@ public class HakemuslaskinServiceTest {
 
         HakemusWrapper hakemus = new HakemusWrapper();
         hakemus.setHakutoiveprioriteetti(hakutoiveprioriteetti);
-        hakemus.setHakemusDTO(TestDataUtil.luoHakemus("hakuOid", hakemusOid, hakijaOid,
-                hakukohteet));
-
+        hakemus.setHakemusDTO(TestDataUtil.luoHakemus("hakuOid", hakemusOid, hakijaOid, hakukohteet));
         hakemus.setHarkinnanvaraisuus(harkinnanvaraisuus);
         hakemus.setLaskentahakemus(new Hakemus(hakemusOid, new HashMap<Integer, String>(), new HashMap<String, String>(), new HashMap<>()));
 
@@ -123,8 +108,7 @@ public class HakemuslaskinServiceTest {
                 hakemus, new ArrayList<Hakemus>(), mock(Lukuarvofunktio.class),
                 1, new Valinnanvaihe(), jonosijat, "jkNimi", 1);
 
-        verify(jarjestyskriteerihistoriaDAOMock, times(1)).create(
-                any(Jarjestyskriteerihistoria.class));
+        verify(jarjestyskriteerihistoriaDAOMock, times(1)).create(any(Jarjestyskriteerihistoria.class));
 
         assertEquals(1, jonosijat.values().size());
         Jonosija jonosija = jonosijat.values().iterator().next().getJonosija();
@@ -133,16 +117,13 @@ public class HakemuslaskinServiceTest {
         assertEquals(hakijaOid, jonosija.getHakijaOid());
         assertEquals(hakutoiveprioriteetti, jonosija.getHakutoiveprioriteetti());
         assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
-        Jarjestyskriteeritulos jktulos = jonosija
-                .getJarjestyskriteeritulokset().get(0);
+        Jarjestyskriteeritulos jktulos = jonosija.getJarjestyskriteeritulokset().get(0);
 
         // Laskennan arvoa ei enää tallenneta järjestyskriteeritulokseen jos
         // hakemus on hylätty edellisessä valinnanvaiheessa
         // assertEquals(jarjestyskriteeriarvo, jktulos.getArvo());
         assertEquals(null, jktulos.getArvo());
         assertEquals(tilaEdellisenVaiheenMukaan.getTila(), jktulos.getTila());
-        assertEquals(tilaEdellisenVaiheenMukaan.getSelite(),
-                jktulos.getKuvaus());
+        assertEquals(tilaEdellisenVaiheenMukaan.getSelite(), jktulos.getKuvaus());
     }
-
 }
