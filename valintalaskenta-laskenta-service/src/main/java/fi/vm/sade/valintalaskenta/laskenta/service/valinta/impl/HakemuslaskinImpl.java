@@ -69,11 +69,8 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
     public void suoritaHakijaryhmaLaskentaHakemukselle(Hakukohde hakukohde, HakemusWrapper laskettavaHakemus, List<Hakemus> kaikkiHakemukset, Lukuarvofunktio lukuarvofunktio, Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan) {
         Laskentatulos<BigDecimal> tulos = laskentaService.suoritaValintalaskenta(hakukohde,
                 laskettavaHakemus.getLaskentahakemus(), kaikkiHakemukset, lukuarvofunktio);
-
         HakemusDTO hakemus = laskettavaHakemus.getHakemusDTO();
-
         TilaJaSelite tilaJaSelite = hakijaryhmanTilaJaSelite(tulos);
-
         Jarjestyskriteeritulos jktulos = muodostaJarjestysKriteeritulos(tilaJaSelite, 0, "Hakijaryhmän tulokset", tulos.getTulos());
 
         if (!jonosijatHakemusOidinMukaan.containsKey(hakemus.getHakemusoid())) {
@@ -98,11 +95,8 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
     public void suoritaHakijaryhmaLaskentaHakemukselle(Hakukohde hakukohde, HakemusWrapper laskettavaHakemus, List<Hakemus> kaikkiHakemukset, Totuusarvofunktio totuusarvofunktio, Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan) {
         Laskentatulos<Boolean> tulos = laskentaService.suoritaValintalaskenta(hakukohde,
                 laskettavaHakemus.getLaskentahakemus(), kaikkiHakemukset, totuusarvofunktio);
-
         HakemusDTO hakemus = laskettavaHakemus.getHakemusDTO();
-
         TilaJaSelite tilaJaSelite = hakijaryhmanTilaJaSelite(tulos);
-
         Jarjestyskriteeritulos jktulos = muodostaJarjestysKriteeritulos(tilaJaSelite, 0, "Hakijaryhmän tulokset", null);
 
         if (!jonosijatHakemusOidinMukaan.containsKey(hakemus.getHakemusoid())) {
@@ -134,9 +128,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                                             String jkNimi, int jarjestysnumero) {
         Laskentatulos<BigDecimal> tulos = laskentaService.suoritaValintalaskenta(hakukohde,
                 laskettavaHakemus.getLaskentahakemus(), kaikkiHakemukset, lukuarvofunktio);
-
         muodostaTulos(laskettavaHakemus, jkPrioriteetti, tulos, edellinenVaihe, jonosijatHakemusOidinMukaan, jkNimi, jarjestysnumero);
-
     }
 
     @Override
@@ -150,9 +142,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                                             String jkNimi, int jarjestysnumero) {
         Laskentatulos<Boolean> tulos = laskentaService.suoritaValintalaskenta(hakukohde,
                 laskettavaHakemus.getLaskentahakemus(), kaikkiHakemukset, lukuarvofunktio);
-
         muodostaTulos(laskettavaHakemus, jkPrioriteetti, tulos, edellinenVaihe, jonosijatHakemusOidinMukaan, jkNimi, jarjestysnumero);
-
     }
 
     private void muodostaTulos(HakemusWrapper laskettavaHakemus,
@@ -161,17 +151,9 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                                             Valinnanvaihe edellinenVaihe,
                                             Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan,
                                             String jkNimi, int jarjestysnumero) {
-
-
-
-
         HakemusDTO hakemus = laskettavaHakemus.getHakemusDTO();
-
-        TilaJaSelite tilaJaSelite =
-                edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(),
+        TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(),
                         tulos.getTila(), edellinenVaihe);
-
-
         Tila.Tilatyyppi uusinTila = tulos.getTila().getTilatyyppi();
         ValintakoeOsallistuminen edellinenOsallistuminen = null;
         ValintakoeOsallistuminen hakijanOsallistumiset = null;
@@ -263,7 +245,6 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         jkhistoria.setHistoria(tulos.getHistoria().toString());
         jarjestyskriteerihistoriaDAO.create(jkhistoria);
         jktulos.setHistoria(jkhistoria.getId());
-
     }
 
     private Jarjestyskriteeritulos muodostaJarjestysKriteeritulos(TilaJaSelite tilaJaSelite, int prioriteetti, String nimi, BigDecimal tulos) {
