@@ -9,11 +9,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * User: wuoti
- * Date: 4.9.2013
- * Time: 10.26
- */
 @Embedded
 public class Jonosija {
 

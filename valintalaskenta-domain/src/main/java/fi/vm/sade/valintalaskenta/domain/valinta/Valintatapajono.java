@@ -11,12 +11,8 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
 
-/**
- * User: wuoti Date: 4.9.2013 Time: 10.25
- */
 @Entity("Valintatapajono")
 public class Valintatapajono {
-
     @Id
     private ObjectId id;
 
