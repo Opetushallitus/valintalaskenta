@@ -4,9 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by jukais on 21.3.2014.
- */
 public class HakijaDTO {
     private int jonosija;
     private String oid;

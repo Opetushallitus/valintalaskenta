@@ -1,11 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain.dto.valintatieto;
 
-
 import fi.vm.sade.valintalaskenta.domain.dto.OsallistuminenDTO;
 
-/**
- * Created by jukais on 20.3.2014.
- */
 public class ValintakoeOsallistuminenDTO {
     private OsallistuminenDTO osallistuminen;
     private String valintakoeOid;

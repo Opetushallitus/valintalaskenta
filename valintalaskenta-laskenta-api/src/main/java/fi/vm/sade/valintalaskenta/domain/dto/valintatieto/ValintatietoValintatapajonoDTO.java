@@ -10,9 +10,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by jukais on 20.3.2014.
- */
 public class ValintatietoValintatapajonoDTO extends ValintatapajonoDTO {
     private List<HakijaDTO> hakija;
 

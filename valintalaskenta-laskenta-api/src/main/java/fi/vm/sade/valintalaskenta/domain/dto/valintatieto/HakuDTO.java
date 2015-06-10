@@ -6,9 +6,6 @@ import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by jukais on 20.3.2014.
- */
 public class HakuDTO {
     private String hakuOid;
     private List<HakukohdeDTO> hakukohteet;

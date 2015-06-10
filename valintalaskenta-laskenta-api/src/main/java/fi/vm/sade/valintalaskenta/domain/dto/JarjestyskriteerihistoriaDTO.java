@@ -3,11 +3,6 @@ package fi.vm.sade.valintalaskenta.domain.dto;
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-/**
- * User: wuoti
- * Date: 9.12.2013
- * Time: 9.08
- */
 @ApiModel(value = "JarjestyskriteerihistoriaDTO", description = "Järjestyskriteerihistoria")
 public class JarjestyskriteerihistoriaDTO {
 

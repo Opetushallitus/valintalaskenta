@@ -4,9 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author Jussi Jartamo
- */
 public class AvainMetatiedotDTO {
     private final String avain;
     private final List<Map<String, String>> metatiedot;

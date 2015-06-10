@@ -8,9 +8,6 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 
-/**
- * @author Jussi Jartamo
- */
 @ApiModel(value = "JarjestyskriteeritulosDTO", description = "Järjestyskriteerin tulos")
 public class JarjestyskriteeritulosDTO implements Comparable<JarjestyskriteeritulosDTO> {
 	public JarjestyskriteeritulosDTO() {

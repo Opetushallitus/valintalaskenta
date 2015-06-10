@@ -12,10 +12,6 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 
-/**
- * Created with IntelliJ IDEA. User: kkammone Date: 13.5.2013 Time: 9:50 To
- * change this template use File | Settings | File Templates.
- */
 @ApiModel(value = "JonosijaDTO", description = "Jonosija")
 public class JonosijaDTO {
 	public JonosijaDTO() {

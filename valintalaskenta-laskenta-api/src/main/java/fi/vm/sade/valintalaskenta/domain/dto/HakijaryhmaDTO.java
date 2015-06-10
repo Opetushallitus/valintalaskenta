@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by jukais on 21.3.2014.
- */
 public class HakijaryhmaDTO {
     private String nimi;
 

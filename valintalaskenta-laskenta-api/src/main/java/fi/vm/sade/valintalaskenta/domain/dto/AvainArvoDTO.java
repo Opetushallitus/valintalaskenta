@@ -4,9 +4,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import java.util.Optional;
 
-/**
- * Created by jukais on 20.3.2014.
- */
 public class AvainArvoDTO {
     private String avain;
     private String arvo;

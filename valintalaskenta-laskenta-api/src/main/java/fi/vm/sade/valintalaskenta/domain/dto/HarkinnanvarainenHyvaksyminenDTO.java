@@ -4,11 +4,6 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvaraisuusTila;
 
-/**
- * User: wuoti
- * Date: 9.12.2013
- * Time: 8.58
- */
 @ApiModel(value = "HarkinnanvarainenHyvaksyminenDTO", description = "Harkinnanvarainen hyväksyminen")
 public class HarkinnanvarainenHyvaksyminenDTO {
 

@@ -7,11 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author Jussi Jartamo
- *         <p/>
- *         Yhden hakemuksen tulokset
- */
 @ApiModel(value = "HakemusDTO", description = "Yhden hakemuksen tiedot")
 public class HakemusDTO {
 
