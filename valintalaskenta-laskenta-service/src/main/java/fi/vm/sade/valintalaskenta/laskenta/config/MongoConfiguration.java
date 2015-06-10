@@ -14,13 +14,9 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
 /**
- * 
- * @author jussija
- *
  *         <bean id="mongoUri" class="com.mongodb.MongoClientURI">
  *         <constructor-arg type="java.lang.String"
  *         value="${valintalaskenta-laskenta-service.mongodb.uri}" /> </bean>
- * 
  *         <bean id="mongo" class="com.mongodb.MongoClient" scope="singleton">
  *         <constructor-arg type="com.mongodb.MongoClientURI" ref="mongoUri"/>
  *         </bean> <bean id="morphia" class="org.mongodb.morphia.Morphia" />
@@ -29,42 +25,34 @@ import com.mongodb.MongoClientURI;
  *         type="com.mongodb.MongoClient" ref="mongo" /> <constructor-arg
  *         type="java.lang.String"
  *         value="${valintalaskenta-laskenta-service.mongodb.dbname}" /> </bean>
- *
  */
 @Configuration
 public class MongoConfiguration {
+    @Bean(name = "mongoUri")
+    public MongoClientURI getMongoUri(@Value("${valintalaskenta-laskenta-service.mongodb.uri}") String uri) throws IOException {
+        return new MongoClientURI(uri);
+    }
 
-	@Bean(name = "mongoUri")
-	public MongoClientURI getMongoUri(
-			@Value("${valintalaskenta-laskenta-service.mongodb.uri}") String uri)
-			throws IOException {
-		return new MongoClientURI(uri);
-	}
+    @Bean(name = "mongo")
+    public MongoClient getMongoClient(MongoClientURI clientUri) throws UnknownHostException {
+        return new MongoClient(clientUri);
+    }
 
-	@Bean(name = "mongo")
-	public MongoClient getMongoClient(MongoClientURI clientUri)
-			throws UnknownHostException {
-		return new MongoClient(clientUri);
-	}
+    @Bean(name = "morphia")
+    public Morphia getMorphia() {
+        Morphia morphia = new Morphia();
+        morphia.getMapper().getOptions().objectFactory = new DefaultCreator() {
+            @Override
+            protected ClassLoader getClassLoaderForClass() {
+                return MongoConfiguration.class.getClassLoader();
+            }
+        };
+        return morphia;
+    }
 
-	@Bean(name = "morphia")
-	public Morphia getMorphia() {
-		Morphia morphia = new Morphia();
-		morphia.getMapper().getOptions().objectFactory = new DefaultCreator() {
-			@Override
-			protected ClassLoader getClassLoaderForClass() {
-				return MongoConfiguration.class.getClassLoader();
-			}
-
-		};
-		return morphia;
-	}
-
-	@Bean(name = "datastore2")
-	public Datastore getDatastore(
-			Morphia morphia,
-			MongoClient mongo,
-			@Value("${valintalaskenta-laskenta-service.mongodb.dbname}") String dbname) {
-		return morphia.createDatastore(mongo, dbname);
-	}
+    @Bean(name = "datastore2")
+    public Datastore getDatastore(Morphia morphia, MongoClient mongo,
+                                  @Value("${valintalaskenta-laskenta-service.mongodb.dbname}") String dbname) {
+        return morphia.createDatastore(mongo, dbname);
+    }
 }
