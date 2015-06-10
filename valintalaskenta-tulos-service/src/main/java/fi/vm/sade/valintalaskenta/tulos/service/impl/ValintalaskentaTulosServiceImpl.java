@@ -235,8 +235,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             List<Valintatapajono> jonot = vaihe
                     .getValintatapajonot()
                     .stream()
-                    .filter(j -> valintatapajonot.indexOf(j
-                            .getValintatapajonoOid()) != -1)
+                    .filter(j -> valintatapajonot.indexOf(j.getValintatapajonoOid()) != -1)
                     .collect(Collectors.toList());
             if (!jonot.isEmpty()) {
                 vaihe.setValintatapajonot(jonot);
