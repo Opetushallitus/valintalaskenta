@@ -323,8 +323,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                 Iterator<Jonosija> k = jono.getJonosijat().iterator();
                 while (k.hasNext()) {
                     Jonosija jonosija = k.next();
-                    Iterator<Jarjestyskriteeritulos> l = jonosija
-                            .getJarjestyskriteeritulokset().iterator();
+                    Iterator<Jarjestyskriteeritulos> l = jonosija.getJarjestyskriteeritulokset().iterator();
                     while (l.hasNext()) {
                         Jarjestyskriteeritulos jktulos = l.next();
                         if (!JarjestyskriteerituloksenTila.VIRHE.equals(jktulos.getTila())) {
