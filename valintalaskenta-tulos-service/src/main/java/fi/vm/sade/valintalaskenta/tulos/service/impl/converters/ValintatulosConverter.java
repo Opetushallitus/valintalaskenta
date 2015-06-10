@@ -13,12 +13,7 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA. User: kkammone Date: 7.8.2013 Time: 10:34 To
- * change this template use File | Settings | File Templates.
- */
 public interface ValintatulosConverter {
-
     void sort(List<JonosijaDTO> list);
 
     List<JonosijaDTO> convertJonosija(Collection<Jonosija> jonosijat);
