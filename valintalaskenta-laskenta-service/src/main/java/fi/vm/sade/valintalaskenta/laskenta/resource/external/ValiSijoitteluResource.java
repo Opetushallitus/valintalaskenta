@@ -17,5 +17,4 @@ public interface ValiSijoitteluResource {
     @Consumes("application/json")
     @Produces("application/json")
     public List<HakukohdeDTO> sijoittele(@PathParam("hakuOid") String hakuOid, ValisijoitteluDTO hakukohteet);
-
 }
