@@ -6,11 +6,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeDTO;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by jukais on 20.3.2014.
- */
 public class ValintatietoValinnanvaiheDTO extends ValinnanvaiheDTO {
-
     public ValintatietoValinnanvaiheDTO() {
     }
 
