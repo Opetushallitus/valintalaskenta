@@ -9,10 +9,8 @@ import javax.ws.rs.core.MediaType;
 
 @Path("session")
 public interface SessionResource {
-
     @GET
     @Path("/maxinactiveinterval")
     @Produces(MediaType.TEXT_PLAIN)
     public String maxInactiveInterval(@Context HttpServletRequest req);
-
 }
