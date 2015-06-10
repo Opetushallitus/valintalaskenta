@@ -19,24 +19,23 @@ import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
 @Api(value = "/valintatapajono", description = "Resurssi valintatapajonon jonosijojen muokkaamiseen manuaalisesti")
 public interface ValintatapajonoResource {
 
-	/**
-	 * 
-	 * @param valintatapajonoOid
-	 * @param hakemusOid
-	 * @param jarjestyskriteeriPrioriteetti
-	 * @param arvo
-	 * @return
-	 */
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/jonosija")
-	@ApiOperation(value = "Muokkaa jonosijaa", response = MuokattuJonosijaDTO.class)
-	public Response muutaJonosija(
-			@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
-			@ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid,
-			@ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true) @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
-			@ApiParam(value = "Järjestyskriteerin uusi arvo", required = true) MuokattuJonosijaArvoDTO arvo);
+    /**
+     * @param valintatapajonoOid
+     * @param hakemusOid
+     * @param jarjestyskriteeriPrioriteetti
+     * @param arvo
+     * @return
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/jonosija")
+    @ApiOperation(value = "Muokkaa jonosijaa", response = MuokattuJonosijaDTO.class)
+    public Response muutaJonosija(
+            @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
+            @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid,
+            @ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true) @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
+            @ApiParam(value = "Järjestyskriteerin uusi arvo", required = true) MuokattuJonosijaArvoDTO arvo);
 
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
@@ -57,9 +56,9 @@ public interface ValintatapajonoResource {
             @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
             @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status);
 
-	@GET
-	@Path("/{valintatapajonoOid}/valmissijoiteltavaksi")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response haeSijoitteluStatus(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String oid);
+    @GET
+    @Path("/{valintatapajonoOid}/valmissijoiteltavaksi")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response haeSijoitteluStatus(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String oid);
 
 }
