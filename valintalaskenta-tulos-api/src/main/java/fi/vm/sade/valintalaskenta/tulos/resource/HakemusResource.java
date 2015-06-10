@@ -13,18 +13,16 @@ import com.wordnik.swagger.annotations.ApiParam;
 
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 
-/**
- * @author Jussi Jartamo
- */
 @Path("hakemus")
 @Api(value = "/hakemus", description = "Resurssi hakemuskohtaisten tulosten hakemiseen")
 public interface HakemusResource {
 
-	@GET
-	@Path("{hakuoid}/{hakemusoid}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Hakee hakemuksen tulokset haku OID:n ja hakemuksen OID:n perustella", response = HakemusDTO.class)
-	public HakemusDTO hakemus(
-			@ApiParam(value = "Haku OID", required = true) @PathParam("hakuoid") String hakuoid,
-			@ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusoid") String hakemusoid);
+    @GET
+    @Path("{hakuoid}/{hakemusoid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Hakee hakemuksen tulokset haku OID:n ja hakemuksen OID:n perustella", response = HakemusDTO.class)
+    public HakemusDTO hakemus(
+            @ApiParam(value = "Haku OID", required = true) @PathParam("hakuoid") String hakuoid,
+            @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusoid") String hakemusoid
+    );
 }
