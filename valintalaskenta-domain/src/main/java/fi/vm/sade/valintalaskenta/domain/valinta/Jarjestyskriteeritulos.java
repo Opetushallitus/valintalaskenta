@@ -8,11 +8,6 @@ import org.bson.types.ObjectId;
 import java.math.BigDecimal;
 import java.util.Map;
 
-/**
- * User: wuoti
- * Date: 4.9.2013
- * Time: 10.30
- */
 @Embedded
 @Converters(BigDecimalConverter.class)
 public class Jarjestyskriteeritulos {
