@@ -4,15 +4,7 @@ import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: kkammone
- * Date: 5.8.2013
- * Time: 15:04
- * To change this template use File | Settings | File Templates.
- */
 public interface MuokattuJonosijaDAO {
-
     MuokattuJonosija readByValintatapajonoOid(String valintatapajonoOid, String hakemusOid);
 
     void saveOrUpdate(MuokattuJonosija muokattuJonosija);
@@ -22,5 +14,4 @@ public interface MuokattuJonosijaDAO {
     List<MuokattuJonosija> readByhakukohdeOid(String hakukohdeOid);
 
     List<MuokattuJonosija> readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid);
-
 }
