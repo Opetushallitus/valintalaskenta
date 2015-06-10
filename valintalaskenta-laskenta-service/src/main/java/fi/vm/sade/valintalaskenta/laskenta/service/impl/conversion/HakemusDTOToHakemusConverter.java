@@ -12,11 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- *
- * @author Jussi Jartamo
- *
- */
 @Component("HakemusDTOKonvertteri")
 public class HakemusDTOToHakemusConverter implements Converter<HakemusDTO, Hakemus> {
 

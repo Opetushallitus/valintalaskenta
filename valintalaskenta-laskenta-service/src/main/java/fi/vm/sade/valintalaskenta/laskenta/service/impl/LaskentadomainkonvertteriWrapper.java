@@ -6,11 +6,6 @@ import fi.vm.sade.service.valintaperusteet.laskenta.Totuusarvofunktio;
 import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
 import org.springframework.stereotype.Component;
 
-/**
- * User: wuoti
- * Date: 6.5.2013
- * Time: 9.07
- */
 @Component
 public class LaskentadomainkonvertteriWrapper {
 

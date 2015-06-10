@@ -27,9 +27,6 @@ import static fi.vm.sade.sijoittelu.tulos.dto.HakemuksenTila.VARALLA;
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.CRUD;
 import static java.util.Arrays.asList;
 
-/**
- * @author Jussi Jartamo
- */
 @Service
 public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaServiceImpl.class);
