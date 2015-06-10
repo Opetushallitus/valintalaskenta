@@ -5,13 +5,6 @@ import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
 import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
 
-/**
- * User: wuoti
- * Date: 6.5.2013
- * Time: 8.50
- */
 public interface Valintakoeosallistumislaskin {
-
-    OsallistuminenTulos laskeOsallistuminenYhdelleHakukohteelle(Hakukohde hakukohde, Hakemus hakemus,
-                                                                Funktiokutsu kaava);
+    OsallistuminenTulos laskeOsallistuminenYhdelleHakukohteelle(Hakukohde hakukohde, Hakemus hakemus, Funktiokutsu kaava);
 }

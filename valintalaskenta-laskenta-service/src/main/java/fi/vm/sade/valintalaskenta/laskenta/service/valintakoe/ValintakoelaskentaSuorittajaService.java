@@ -5,13 +5,6 @@ import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 
 import java.util.List;
 
-/**
- * User: wuoti
- * Date: 2.5.2013
- * Time: 9.15
- */
 public interface ValintakoelaskentaSuorittajaService {
-
-    void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet,
-               String uuid);
+    void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet, String uuid);
 }
