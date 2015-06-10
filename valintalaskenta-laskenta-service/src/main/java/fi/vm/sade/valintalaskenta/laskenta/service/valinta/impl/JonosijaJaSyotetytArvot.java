@@ -9,11 +9,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * User: wuoti
- * Date: 17.9.2013
- * Time: 14.26
- */
 public class JonosijaJaSyotetytArvot {
     public JonosijaJaSyotetytArvot(Jonosija jonosija, Map<String, SyotettyArvo> syotetytArvot, Map<String, FunktioTulos> funktioTulokset) {
         this.jonosija = jonosija;
@@ -22,7 +17,7 @@ public class JonosijaJaSyotetytArvot {
     }
 
     public JonosijaJaSyotetytArvot(Jonosija jonosija) {
-        this(jonosija, new HashMap<String, SyotettyArvo>(), new HashMap<String, FunktioTulos>());
+        this(jonosija, new HashMap<>(), new HashMap<>());
     }
 
     private Jonosija jonosija;

@@ -187,8 +187,6 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                  }
             }
         }
-
-
         TilaJaSelite edellinenTila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(), edellinenVaihe);
 
         BigDecimal arvo = getTulos(tulos, tilaJaSelite, edellinenTila);

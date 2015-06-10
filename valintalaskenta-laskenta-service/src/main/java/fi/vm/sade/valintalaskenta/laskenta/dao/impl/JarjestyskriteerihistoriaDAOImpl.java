@@ -7,11 +7,6 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-/**
- * User: tommiha
- * Date: 8/9/13
- * Time: 10:38 AM
- */
 @Repository("jonosijaHistoriaDAO")
 public class JarjestyskriteerihistoriaDAOImpl implements JarjestyskriteerihistoriaDAO {
 
