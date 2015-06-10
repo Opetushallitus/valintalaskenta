@@ -65,11 +65,7 @@ public class ValintalaskentaResourceImpl {
                     == valintaperusteetDTO.getValinnanVaihe().getValinnanVaiheJarjestysluku();
 
             if (erillisHaku) {
-                // Aseta sijoittelun käyttämät kentät
-                valintaperusteetDTO.getValinnanVaihe().getValintatapajono().forEach(j -> {
-                    j.setSiirretaanSijoitteluun(true);
-                    j.setValmisSijoiteltavaksi(true);
-                });
+                setSijoittelunKayttamanKentat(valintaperusteetDTO);
             }
             LOG.info("(Uuid={}) Suoritetaan laskenta. Hakemuksia {} kpl ja valintaperusteita {} kpl",
                     laskeDTO.getUuid(), laskeDTO.getHakemus().size(), laskeDTO.getValintaperuste().size());
@@ -123,10 +119,7 @@ public class ValintalaskentaResourceImpl {
                 if (laskeDTO.isErillishaku()) {
                     laskeDTO.getValintaperuste().forEach(v -> {
                         if (v.getValinnanVaihe().getValinnanVaiheJarjestysluku() == v.getViimeinenValinnanvaihe()) {
-                            v.getValinnanVaihe().getValintatapajono().forEach(j -> {
-                                j.setSiirretaanSijoitteluun(true);
-                                j.setValmisSijoiteltavaksi(true);
-                            });
+                            setSijoittelunKayttamanKentat(v);
                         }
                     });
                 }
@@ -166,10 +159,7 @@ public class ValintalaskentaResourceImpl {
 
                             if (erillisHaku) {
                                 // Aseta sijoittelun käyttämät kentät
-                                valintaperusteetDTO.getValinnanVaihe().getValintatapajono().forEach(j -> {
-                                    j.setSiirretaanSijoitteluun(true);
-                                    j.setValmisSijoiteltavaksi(true);
-                                });
+                                setSijoittelunKayttamanKentat(valintaperusteetDTO);
                             }
                             LOG.info("(Uuid={}) Suoritetaan laskenta. Hakemuksia {} kpl ja valintaperusteita {} kpl",
                                     laskeDTO.getUuid(), laskeDTO.getHakemus().size(), laskeDTO.getValintaperuste().size());
@@ -196,6 +186,13 @@ public class ValintalaskentaResourceImpl {
 
         LOG.info("(Uuid={}) Laskenta suoritettu hakukohteessa {}", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid());
         return "Onnistui!";
+    }
+
+    private void setSijoittelunKayttamanKentat(ValintaperusteetDTO v) {
+        v.getValinnanVaihe().getValintatapajono().forEach(j -> {
+            j.setSiirretaanSijoitteluun(true);
+            j.setValmisSijoiteltavaksi(true);
+        });
     }
 
     @Path("laskejasijoittele")
@@ -244,10 +241,7 @@ public class ValintalaskentaResourceImpl {
 
                             if (erillisHaku) {
                                 // Aseta sijoittelun käyttämät kentät
-                                valintaperusteetDTO.getValinnanVaihe().getValintatapajono().forEach(j -> {
-                                    j.setSiirretaanSijoitteluun(true);
-                                    j.setValmisSijoiteltavaksi(true);
-                                });
+                                setSijoittelunKayttamanKentat(valintaperusteetDTO);
                             }
                             LOG.info("(Uuid={}, {}={}/{}, hakukohde={}/{}) Suoritetaan laskenta {} hakemukselle",
                                     laskeDTO.getUuid(),
