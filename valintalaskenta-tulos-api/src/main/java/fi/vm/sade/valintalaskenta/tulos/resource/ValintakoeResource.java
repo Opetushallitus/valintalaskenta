@@ -20,26 +20,26 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminen
 @Api(value = "/valintakoe", description = "Resurssi valintakoeosallistumistulosten hakemiseen")
 public interface ValintakoeResource {
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("hakemus/{hakemusOid}")
-	@ApiOperation(value = "Hakee valintakoeosallistumiset hakemukselle OID:n perusteella", response = ValintakoeOsallistuminenDTO.class)
-	public ValintakoeOsallistuminenDTO haku(
-			@ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid);
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("hakemus/{hakemusOid}")
+    @ApiOperation(value = "Hakee valintakoeosallistumiset hakemukselle OID:n perusteella", response = ValintakoeOsallistuminenDTO.class)
+    public ValintakoeOsallistuminenDTO haku(
+            @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid);
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("hakutoive/{hakukohdeOid}")
-	@ApiOperation(value = "Hakee valintakoeosallistumiset hakukohteelle OID:n perusteella", response = ValintakoeOsallistuminenDTO.class)
-	public List<ValintakoeOsallistuminenDTO> hakuByHakutoive(
-			@ApiParam(value = "Hakukohde OID", required = true) @PathParam("hakukohdeOid") String hakukohdeOid);
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("hakutoive/{hakukohdeOid}")
+    @ApiOperation(value = "Hakee valintakoeosallistumiset hakukohteelle OID:n perusteella", response = ValintakoeOsallistuminenDTO.class)
+    public List<ValintakoeOsallistuminenDTO> hakuByHakutoive(
+            @ApiParam(value = "Hakukohde OID", required = true) @PathParam("hakukohdeOid") String hakukohdeOid);
 
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("hakemus/")
-	@ApiOperation(value = "Hakee valintakoeosallistumiset hakukohteelle OID:n perusteella", response = ValintakoeOsallistuminenDTO.class)
-	public List<ValintakoeOsallistuminenDTO> hakuByOids(
-			@ApiParam(value = "Hakukohde OIDS", required = true) List<String> hakukohdeOid);
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("hakemus/")
+    @ApiOperation(value = "Hakee valintakoeosallistumiset hakukohteelle OID:n perusteella", response = ValintakoeOsallistuminenDTO.class)
+    public List<ValintakoeOsallistuminenDTO> hakuByOids(
+            @ApiParam(value = "Hakukohde OIDS", required = true) List<String> hakukohdeOid);
 
 }
