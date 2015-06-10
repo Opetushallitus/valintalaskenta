@@ -70,11 +70,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
         for (Valinnanvaihe vv : valinnanVaiheet) {
             HakukohdeDTO hakukohdeDTO = getOrCreateHakukohdeDTO(hakukohdeDTOtOidinMukaan, vv);
-            ValintatietoValinnanvaiheDTO vvdto = new ValintatietoValinnanvaiheDTO();
-            vvdto.setCreatedAt(vv.getCreatedAt());
-            vvdto.setJarjestysnumero(vv.getJarjestysnumero());
-            vvdto.setValinnanvaiheoid(vv.getValinnanvaiheOid());
-            vvdto.setHakuOid(hakuOid);
+            ValintatietoValinnanvaiheDTO vvdto = createValintatietoValinnanvaiheDTO(hakuOid, vv.getCreatedAt(), vv.getValinnanvaiheOid(), vv.getJarjestysnumero());
             for (Valintatapajono jono : vv.getValintatapajonot()) {
                 jono.setJonosijat(new ArrayList<>(
                         Collections2.filter(jono.getJonosijat(), jonosija -> hakemusOid.equals(jonosija.getHakemusOid())))
@@ -96,11 +92,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                 hakukohdeDTOtOidinMukaan.put(toive.getHakukohdeOid(), hakukohdeDTO);
             }
             for (ValintakoeValinnanvaiheDTO vv : toive.getValinnanVaiheet()) {
-                ValintatietoValinnanvaiheDTO vvdto = new ValintatietoValinnanvaiheDTO();
-                vvdto.setCreatedAt(kokeet.getCreatedAt());
-                vvdto.setJarjestysnumero(vv.getValinnanVaiheJarjestysluku());
-                vvdto.setValinnanvaiheoid(vv.getValinnanVaiheOid());
-                vvdto.setHakuOid(hakuOid);
+                ValintatietoValinnanvaiheDTO vvdto = createValintatietoValinnanvaiheDTO(hakuOid, kokeet.getCreatedAt(), vv.getValinnanVaiheOid(), vv.getValinnanVaiheJarjestysluku());
                 vvdto.getValintakokeet().addAll(vv.getValintakokeet());
                 hakukohdeDTO.getValinnanvaihe().add(vvdto);
             }
@@ -109,6 +101,15 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             applyMuokatutJonosijat(hk.getOid(), hk.getValinnanvaihe(), muokatutJonosijat, harkinnanvaraiset);
         }
         return new HakemusDTO(hakuOid, hakemusOid, new ArrayList<>(hakukohdeDTOtOidinMukaan.values()));
+    }
+
+    private ValintatietoValinnanvaiheDTO createValintatietoValinnanvaiheDTO(String hakuOid, Date createdAt, String valinnanvaiheOid, int jarjestysnumero) {
+        ValintatietoValinnanvaiheDTO vvdto = new ValintatietoValinnanvaiheDTO();
+        vvdto.setHakuOid(hakuOid);
+        vvdto.setCreatedAt(createdAt);
+        vvdto.setValinnanvaiheoid(valinnanvaiheOid);
+        vvdto.setJarjestysnumero(jarjestysnumero);
+        return vvdto;
     }
 
     private void applyMuokatutJonosijatToValinnanvaihe(String hakukohdeoid,
