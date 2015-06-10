@@ -12,14 +12,8 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * User: wuoti
- * Date: 4.9.2013
- * Time: 12.02
- */
 @Repository("valinnanvaiheDAO")
 public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
-
     @Autowired
     private Datastore datastore;
 
@@ -48,7 +42,6 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     @Override
     public Valinnanvaihe haeViimeisinValinnanvaihe(String hakuOid, String hakukohdeOid, int jarjestysnumero) {
         Valinnanvaihe edellinen = null;
-
         if (jarjestysnumero > 0) {
             edellinen = datastore.find(Valinnanvaihe.class)
                     .field("hakuOid").equal(hakuOid)
@@ -58,7 +51,6 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
                     .limit(1)
                     .get();
         }
-
         return edellinen;
     }
 
@@ -71,7 +63,6 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 
     @Override
     public List<Valinnanvaihe> haeValinnanvaiheetJarjestysnumerolla(String hakuOid, String hakukohdeOid, int jarjestysnumero) {
-
         return datastore.find(Valinnanvaihe.class)
                 .field("hakuOid").equal(hakuOid)
                 .field("hakukohdeOid").equal(hakukohdeOid)
@@ -96,6 +87,4 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         final Query<Valintatapajono> query = datastore.createQuery(Valintatapajono.class).field("valintatapajonoOid").equal(oid);
         datastore.delete(query);
     }
-
-
 }

@@ -25,14 +25,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * User: wuoti
- * Date: 2.5.2013
- * Time: 14.05
- */
 @Repository("ValintakoeOsallistuminenDAO")
 public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminenDAO {
-
     @Value("${valintalaskenta-laskenta-service.mongodb.useIndexQueries:false}")
     private boolean useIndexQueries;
 
@@ -50,8 +44,7 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
 
     @Override
     public ValintakoeOsallistuminen readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid) {
-        return morphiaDS.find(ValintakoeOsallistuminen.class, "hakuOid", hakuOid)
-                .filter("hakemusOid", hakemusOid).get();
+        return morphiaDS.find(ValintakoeOsallistuminen.class, "hakuOid", hakuOid).filter("hakemusOid", hakemusOid).get();
     }
 
     @Override

@@ -4,11 +4,6 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 
 import java.util.List;
 
-/**
- * User: wuoti
- * Date: 4.9.2013
- * Time: 12.01
- */
 public interface ValinnanvaiheDAO {
 
     Valinnanvaihe haeEdeltavaValinnanvaihe(String hakuOid, String hakukohdeOid, int jarjestysnumero);
