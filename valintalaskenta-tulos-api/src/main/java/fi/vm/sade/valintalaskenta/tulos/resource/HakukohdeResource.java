@@ -15,19 +15,15 @@ import com.wordnik.swagger.annotations.ApiParam;
 
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 
-/**
- * @author Jussi Jartamo
- */
 @Path("hakukohde")
 @Api(value = "/hakukohde", description = "Resurssi tulosten hakemiseen hakukohteittain")
 public interface HakukohdeResource {
-
-	@GET
-	@Path("{hakukohdeoid}/valinnanvaihe")
-	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Hakee hakukohteen valinnan vaiheiden tulokset", response = ValinnanvaiheDTO.class)
-	public List<ValintatietoValinnanvaiheDTO> hakukohde(
-			@ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid);
+    @GET
+    @Path("{hakukohdeoid}/valinnanvaihe")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Hakee hakukohteen valinnan vaiheiden tulokset", response = ValinnanvaiheDTO.class)
+    public List<ValintatietoValinnanvaiheDTO> hakukohde(
+            @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid);
 
     @POST
     @Path("{hakukohdeoid}/valinnanvaihe")
