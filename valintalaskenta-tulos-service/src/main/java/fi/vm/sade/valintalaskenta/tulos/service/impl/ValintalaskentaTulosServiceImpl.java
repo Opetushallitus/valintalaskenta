@@ -274,10 +274,10 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
     @Override
     public List<ValintatietoValinnanvaiheDTO> haeValinnanvaiheetHakukohteelle(String hakukohdeoid) {
-        List<Valinnanvaihe> a = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeoid);
-        List<ValintatietoValinnanvaiheDTO> b = valintatulosConverter.convertValinnanvaiheList(a);
-        applyMuokatutJonosijatToValinnanvaihe(hakukohdeoid, b);
-        return b;
+        List<Valinnanvaihe> valinnanVaihes = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeoid);
+        List<ValintatietoValinnanvaiheDTO> valintatietoValinnanVaihes = valintatulosConverter.convertValinnanvaiheList(valinnanVaihes);
+        applyMuokatutJonosijatToValinnanvaihe(hakukohdeoid, valintatietoValinnanVaihes);
+        return valintatietoValinnanVaihes;
     }
 
     @Override
