@@ -2,12 +2,6 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import org.mongodb.morphia.annotations.Embedded;
 
-/**
- * User: wuoti
- * Date: 17.9.2013
- * Time: 14.33
-
- */
 @Embedded
 public class FunktioTulos {
     private String tunniste;

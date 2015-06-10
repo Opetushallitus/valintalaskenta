@@ -5,11 +5,6 @@ import org.bson.types.ObjectId;
 
 import java.util.*;
 
-/**
- * User: wuoti
- * Date: 4.9.2013
- * Time: 10.22
- */
 @Entity("Valinnanvaihe")
 @Indexes(
     @Index(name = "idx_hakuoid_valinnanvaihe_oid", value = "hakuOid, valinnanvaiheOid", unique = true)

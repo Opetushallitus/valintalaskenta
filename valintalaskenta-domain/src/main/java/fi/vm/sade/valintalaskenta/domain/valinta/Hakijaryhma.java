@@ -17,13 +17,8 @@ public class Hakijaryhma {
 
     private Date createdAt;
 
-//    @Indexed(unique = false, dropDups = false)
-//    private String hakuOid;
-
     @Indexed(unique = false, dropDups = false)
     private String hakukohdeOid;
-
-//    private String tarjoajaOid;
 
     private String nimi;
 
@@ -55,14 +50,6 @@ public class Hakijaryhma {
         this.createdAt = createdAt;
     }
 
-//    public String getHakuOid() {
-//        return hakuOid;
-//    }
-//
-//    public void setHakuOid(String hakuOid) {
-//        this.hakuOid = hakuOid;
-//    }
-
     public String getHakukohdeOid() {
         return hakukohdeOid;
     }
@@ -70,15 +57,6 @@ public class Hakijaryhma {
     public void setHakukohdeOid(String hakukohdeOid) {
         this.hakukohdeOid = hakukohdeOid;
     }
-
-
-//    public String getTarjoajaOid() {
-//        return tarjoajaOid;
-//    }
-//
-//    public void setTarjoajaOid(String tarjoajaOid) {
-//        this.tarjoajaOid = tarjoajaOid;
-//    }
 
     public String getNimi() {
         return nimi;

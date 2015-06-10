@@ -5,11 +5,6 @@ import org.mongodb.morphia.annotations.Embedded;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * User: wuoti
- * Date: 2.5.2013
- * Time: 13.31
- */
 @Embedded
 public class ValintakoeValinnanvaihe {
     private String valinnanVaiheOid;

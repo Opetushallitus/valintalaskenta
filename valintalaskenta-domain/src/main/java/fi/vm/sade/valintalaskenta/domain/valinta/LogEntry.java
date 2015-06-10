@@ -6,13 +6,6 @@ import org.bson.types.ObjectId;
 
 import java.util.Date;
 
-/**
- * Created with IntelliJ IDEA.
- * User: jukais
- * Date: 13.8.2013
- * Time: 7.36
- * To change this template use File | Settings | File Templates.
- */
 @Embedded("LogEntry")
 public class LogEntry {
     @Id

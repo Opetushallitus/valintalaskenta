@@ -3,9 +3,6 @@ package fi.vm.sade.valintalaskenta.domain.valintakoe;
 import fi.vm.sade.service.valintaperusteet.dto.model.Koekutsu;
 import org.mongodb.morphia.annotations.Embedded;
 
-/**
- * User: wuoti Date: 2.5.2013 Time: 13.32
- */
 @Embedded
 public class Valintakoe {
 	private String valintakoeOid;

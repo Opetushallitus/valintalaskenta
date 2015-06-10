@@ -4,14 +4,8 @@ import org.mongodb.morphia.annotations.Embedded;
 
 import java.util.Map;
 
-/**
- * User: wuoti
- * Date: 28.8.2013
- * Time: 12.58
- */
 @Embedded
 public class OsallistuminenTulos {
-
     private Osallistuminen osallistuminen;
     private Map<String,String> kuvaus;
     private String laskentaTila;

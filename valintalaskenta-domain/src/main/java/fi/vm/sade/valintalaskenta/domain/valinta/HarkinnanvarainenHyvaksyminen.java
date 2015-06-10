@@ -4,16 +4,8 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.bson.types.ObjectId;
 
-/**
- * Created with IntelliJ IDEA.
- * User: kkammone
- * Date: 12.9.2013
- * Time: 14:23
- * To change this template use File | Settings | File Templates.
- */
 @Entity("HarkinnanvarainenHyvaksyminen")
 public class HarkinnanvarainenHyvaksyminen {
-
     @Id
     private ObjectId id;
 

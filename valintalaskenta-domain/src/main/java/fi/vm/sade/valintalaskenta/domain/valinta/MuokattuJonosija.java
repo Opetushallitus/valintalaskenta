@@ -9,9 +9,6 @@ import org.bson.types.ObjectId;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * User: kkammone Date: 13.5.2013 Time: 9:50
- */
 @Entity("MuokattuJonosija")
 public class MuokattuJonosija {
 

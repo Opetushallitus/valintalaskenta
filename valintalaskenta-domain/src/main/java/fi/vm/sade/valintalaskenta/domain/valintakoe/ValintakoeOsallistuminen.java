@@ -7,11 +7,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * User: wuoti
- * Date: 2.5.2013
- * Time: 13.02
- */
 @Entity("ValintakoeOsallistuminen")
 @Indexes({
         @Index(name = "idx_haku", value = "hakuOid")
