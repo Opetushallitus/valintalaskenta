@@ -18,13 +18,7 @@ import org.modelmapper.spi.MappingContext;
 
 import java.util.*;
 
-/**
- * User: wuoti
- * Date: 9.12.2013
- * Time: 9.18
- */
 public class ValintalaskentaModelMapper extends ModelMapper {
-
     public ValintalaskentaModelMapper() {
         super();
 
@@ -220,67 +214,43 @@ public class ValintalaskentaModelMapper extends ModelMapper {
             }
         });
 
-
         this.addMappings(new PropertyMap<FunktioargumentinLapsiDTO, Funktiokutsu>() {
             @Override
             protected void configure() {
-
                 using(virheListConverter).map(source.getValidointivirheet()).setValidointivirheet(null);
             }
         });
 
-
-
         this.addMappings(new PropertyMap<Funktiokutsu, FunktiokutsuDTO>() {
             @Override
             protected void configure() {
-
-
                 using(funktioargumenttiToDtoConverter).map(source.getFunktioargumentit()).setFunktioargumentit(null);
-
                 using(valintaperusteViiteToDtoConverter).map(source.getValintaperusteviitteet()).setValintaperusteviitteet(null);
-
             }
         });
 
         this.addMappings(new PropertyMap<FunktiokutsuDTO, Funktiokutsu>() {
             @Override
             protected void configure() {
-
-
                 using(dtoToFunktioargumenttiConverter).map(source.getFunktioargumentit()).setFunktioargumentit(null);
-
                 using(virheListConverter).map(source.getValidointivirheet()).setValidointivirheet(null);
-
                 using(dtoToValintaperusteViiteConverter).map(source.getValintaperusteviitteet()).setValintaperusteviitteet(null);
-
-
             }
         });
 
         this.addMappings(new PropertyMap<Funktiokutsu, ValintaperusteetFunktiokutsuDTO>() {
             @Override
             protected void configure() {
-
-
                 using(funktioargumenttiToValintaperusteetDtoConverter).map(source.getFunktioargumentit()).setFunktioargumentit(null);
-
-
             }
         });
 
         this.addMappings(new PropertyMap<ValintaperusteetFunktiokutsuDTO, Funktiokutsu>() {
             @Override
             protected void configure() {
-
-
                 using(valintaperusteetDtoFunktioargumenttiToConverter).map(source.getFunktioargumentit()).setFunktioargumentit(null);
-
-
             }
         });
-
-
 
         this.addMappings(new PropertyMap<JonosijaDTO, Jonosija>() {
             @Override
@@ -297,13 +267,10 @@ public class ValintalaskentaModelMapper extends ModelMapper {
                             j.setTila(arg.getTila());
                             result.add(j);
                         }
-
                         return result;
                     }
                 };
-
                 using(dtoToJarjestyskriteeritulosConverter).map(source.getJarjestyskriteerit()).setJarjestyskriteeritulokset(null);
-
                 map().setHakutoiveprioriteetti(source.getPrioriteetti());
             }
         });
@@ -323,17 +290,13 @@ public class ValintalaskentaModelMapper extends ModelMapper {
                             j.setTila(arg.getTila());
                             result.add(j);
                         }
-
                         return result;
                     }
                 };
-
                 using(JarjestyskriteeritulosToDtoConverter).map(source.getJarjestyskriteeritulokset()).setJarjestyskriteerit(null);
-
                 map().setPrioriteetti(source.getHakutoiveprioriteetti());
             }
         });
-
     }
 
     public Funktiokutsu convertFromDto(FunktiokutsuDTO dto) {
@@ -378,21 +341,16 @@ public class ValintalaskentaModelMapper extends ModelMapper {
             if (arg.getLapsi() != null && arg.getLapsi().getLapsityyppi().equals(FunktioargumentinLapsiDTO.FUNKTIOKUTSUTYYPPI)) {
                 asetaIndeksitRekursiivisesti(arg.getLapsi());
             }
-
         }
         Funktiokutsu funktiokutsu = map(kutsu, Funktiokutsu.class);
         return funktiokutsu;
     }
 
     public <FROM, TO> List<TO> mapList(List<FROM> list, final Class<TO> to) {
-
         List<TO> toList = new ArrayList<TO>();
-
         for (FROM f : list) {
             toList.add(map(f, to));
         }
-
         return toList;
     }
-
 }
