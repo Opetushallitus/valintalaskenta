@@ -381,8 +381,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     public List<ValintakoeOsallistuminen> haeValintakoeOsallistumiset(Collection<String> hakemusOids) {
         return hakemusOids
                 .stream()
-                .map(hakemusOid -> valintakoeOsallistuminenDAO
-                        .findByHakemusOid(hakemusOid)).filter(Objects::nonNull)
+                .map(hakemusOid -> valintakoeOsallistuminenDAO.findByHakemusOid(hakemusOid))
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
@@ -453,8 +453,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         Valinnanvaihe vaihe = valinnanvaiheDAO.findByValintatapajonoOid(valintatapajonoOid);
         vaihe.getValintatapajonot()
                 .stream()
-                .filter(j -> j.getValintatapajonoOid().equals(
-                        valintatapajonoOid))
+                .filter(j -> j.getValintatapajonoOid().equals(valintatapajonoOid))
                 .forEach(j -> j.setValmisSijoiteltavaksi(status));
         valinnanvaiheDAO.saveOrUpdate(vaihe);
         return vaihe
@@ -507,7 +506,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             muokattuJonosija.getJarjestyskriteerit().add(jarjestyskriteeritulos);
         }
 
-        Map<String, String> muokattuKasin = new HashMap<String, String>();
+        Map<String, String> muokattuKasin = new HashMap<>();
         if (jonosija.getSelite() != null && !jonosija.getSelite().isEmpty()) {
             muokattuKasin.put("FI", jonosija.getSelite());
         } else {
@@ -518,9 +517,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         jarjestyskriteeritulos.setArvo(jonosija.getArvo());
         jarjestyskriteeritulos.setTila(jonosija.getTila());
 
-        addLogEntry(
-                jonosija.getSelite(),
-                muokattuJonosija,
+        addLogEntry(jonosija.getSelite(), muokattuJonosija,
                 "jarjestyskriteeriPrioriteetti: "
                         + jarjestyskriteeriPrioriteetti + " arvo: "
                         + jonosija.getArvo() + " tila: "
