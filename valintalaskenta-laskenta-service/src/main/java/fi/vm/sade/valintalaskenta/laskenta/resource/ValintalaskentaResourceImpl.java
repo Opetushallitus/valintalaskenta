@@ -73,10 +73,7 @@ public class ValintalaskentaResourceImpl {
                     laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(),
                     laskeDTO.getHakukohdeOid(), laskeDTO.getUuid());
             if (erillisHaku) {
-                List<String> jonot = valintaperusteetDTO.getValinnanVaihe().getValintatapajono().stream().map(j -> j.getOid()).collect(Collectors.toList());
-                Map<String, List<String>> map = new HashMap<>();
-                map.put(valintaperusteetDTO.getHakukohdeOid(), jonot);
-                erillissijoitteleJonot(laskeDTO, map);
+                erillisSijoittele(laskeDTO, valintaperusteetDTO);
             }
         } catch (Exception e) {
             LOG.error("(Uuid={}) Valintalaskenta epaonnistui: {}\r\n{}", laskeDTO.getUuid(), e.getMessage(), Arrays.toString(e.getStackTrace()));
@@ -131,10 +128,7 @@ public class ValintalaskentaResourceImpl {
                     laskeDTO.getValintaperuste().stream()
                             .filter(v -> v.getValinnanVaihe().getValinnanVaiheJarjestysluku() == v.getViimeinenValinnanvaihe())
                             .forEach(v -> {
-                                List<String> jonot = v.getValinnanVaihe().getValintatapajono().stream().map(j -> j.getOid()).collect(Collectors.toList());
-                                Map<String, List<String>> map = new HashMap<>();
-                                map.put(v.getHakukohdeOid(), jonot);
-                                erillissijoitteleJonot(laskeDTO, map);
+                                erillisSijoittele(laskeDTO, v);
                             });
                 }
             } else {
@@ -166,10 +160,7 @@ public class ValintalaskentaResourceImpl {
                             valintalaskentaService.laske(dto.getHakemus(), dto.getValintaperuste(), dto.getHakijaryhmat(), dto.getHakukohdeOid(), laskeDTO.getUuid());
 
                             if (erillisHaku) {
-                                List<String> jonot = valintaperusteetDTO.getValinnanVaihe().getValintatapajono().stream().map(j -> j.getOid()).collect(Collectors.toList());
-                                Map<String, List<String>> kohteet = new HashMap<>();
-                                kohteet.put(valintaperusteetDTO.getHakukohdeOid(), jonot);
-                                erillissijoitteleJonot(dto, kohteet);
+                                erillisSijoittele(dto, valintaperusteetDTO);
                             }
                         }
                     });
@@ -269,10 +260,7 @@ public class ValintalaskentaResourceImpl {
                             }
 
                             if (erillisHaku) {
-                                List<String> jonot = valintaperusteetDTO.getValinnanVaihe().getValintatapajono().stream().map(j -> j.getOid()).collect(Collectors.toList());
-                                Map<String, List<String>> kohteet = new HashMap<>();
-                                kohteet.put(valintaperusteetDTO.getHakukohdeOid(), jonot);
-                                erillissijoitteleJonot(laskeDTO, kohteet);
+                                erillisSijoittele(laskeDTO, valintaperusteetDTO);
                             }
                         }
 
@@ -302,6 +290,13 @@ public class ValintalaskentaResourceImpl {
         }
 
         return "Onnistui";
+    }
+
+    private void erillisSijoittele(LaskeDTO laskeDTO, ValintaperusteetDTO valintaperusteetDTO) {
+        List<String> jonot = valintaperusteetDTO.getValinnanVaihe().getValintatapajono().stream().map(j -> j.getOid()).collect(Collectors.toList());
+        Map<String, List<String>> kohteet = new HashMap<>();
+        kohteet.put(valintaperusteetDTO.getHakukohdeOid(), jonot);
+        erillissijoitteleJonot(laskeDTO, kohteet);
     }
 
     private Map<String, List<String>> haeKopiotValintaperusteista(List<String> jonot) {
