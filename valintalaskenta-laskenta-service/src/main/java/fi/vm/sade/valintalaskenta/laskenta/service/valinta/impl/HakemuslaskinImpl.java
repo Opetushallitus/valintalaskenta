@@ -26,11 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * User: wuoti
- * Date: 5.9.2013
- * Time: 9.42
- */
 @Service
 public class HakemuslaskinImpl implements HakemuslaskinService {
 
