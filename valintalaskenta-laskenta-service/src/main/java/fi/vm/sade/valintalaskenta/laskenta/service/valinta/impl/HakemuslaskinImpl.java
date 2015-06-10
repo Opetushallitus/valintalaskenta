@@ -191,18 +191,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
 
         TilaJaSelite edellinenTila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(), edellinenVaihe);
 
-        BigDecimal arvo;
-        if(tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY) &&
-                (!tulos.getTila().getTilatyyppi().equals(Tila.Tilatyyppi.HYLATTY) ||
-                        (tulos.getTila().getTilatyyppi().equals(Tila.Tilatyyppi.HYLATTY) && tilaJaSelite.getSelite().equals(edellinenTila.getSelite())))) {
-            arvo = null;
-        } else {
-            if(tulos.getTulos() != null && tulos.getTulos() instanceof BigDecimal) {
-                arvo = (BigDecimal)tulos.getTulos();
-            } else {
-                arvo = null;
-            }
-        }
+        BigDecimal arvo = getTulos(tulos, tilaJaSelite, edellinenTila);
         Jarjestyskriteeritulos jktulos = muodostaJarjestysKriteeritulos(tilaJaSelite, jkPrioriteetti, jkNimi, arvo);
 
         if (!jonosijatHakemusOidinMukaan.containsKey(hakemus.getHakemusoid())) {
@@ -221,6 +210,20 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         jkhistoria.setHistoria(tulos.getHistoria().toString());
         jarjestyskriteerihistoriaDAO.create(jkhistoria);
         jktulos.setHistoria(jkhistoria.getId());
+    }
+
+    private BigDecimal getTulos(Laskentatulos tulos, TilaJaSelite tilaJaSelite, TilaJaSelite edellinenTila) {
+        if(tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY) &&
+                (!tulos.getTila().getTilatyyppi().equals(Tila.Tilatyyppi.HYLATTY) ||
+                        (tulos.getTila().getTilatyyppi().equals(Tila.Tilatyyppi.HYLATTY) && tilaJaSelite.getSelite().equals(edellinenTila.getSelite())))) {
+            return null;
+        } else {
+            if(tulos.getTulos() != null && tulos.getTulos() instanceof BigDecimal) {
+                return (BigDecimal)tulos.getTulos();
+            } else {
+                return null;
+            }
+        }
     }
 
     private boolean isVoidaanHyvaksyaVaikkaHylattyValisijoittelussa(Valinnanvaihe edellinenVaihe, int jarjestysnumero, HakemusDTO hakemus, TilaJaSelite tilaJaSelite) {
