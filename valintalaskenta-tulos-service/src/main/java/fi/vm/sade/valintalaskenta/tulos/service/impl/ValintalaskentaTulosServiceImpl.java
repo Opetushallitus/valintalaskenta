@@ -342,17 +342,16 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     private HakukohdeDTO getOrCreateHakukohdeDTO(Map<String, HakukohdeDTO> hakukohdeDTOtOidinMukaan, Valinnanvaihe vv) {
-        HakukohdeDTO hakukohdeDTO = null;
         if (hakukohdeDTOtOidinMukaan.containsKey(vv.getHakukohdeOid())) {
-            hakukohdeDTO = hakukohdeDTOtOidinMukaan.get(vv.getHakukohdeOid());
+            return hakukohdeDTOtOidinMukaan.get(vv.getHakukohdeOid());
         } else {
-            hakukohdeDTO = new HakukohdeDTO();
+            HakukohdeDTO hakukohdeDTO = new HakukohdeDTO();
             hakukohdeDTO.setHakuoid(vv.getHakuOid());
             hakukohdeDTO.setOid(vv.getHakukohdeOid());
             hakukohdeDTO.setTarjoajaoid(vv.getTarjoajaOid());
             hakukohdeDTOtOidinMukaan.put(vv.getHakukohdeOid(), hakukohdeDTO);
+            return hakukohdeDTO;
         }
-        return hakukohdeDTO;
     }
 
     @Override
