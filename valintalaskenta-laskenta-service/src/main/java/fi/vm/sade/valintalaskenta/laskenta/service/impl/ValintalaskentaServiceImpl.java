@@ -32,9 +32,7 @@ import static java.util.Arrays.asList;
  */
 @Service
 public class ValintalaskentaServiceImpl implements ValintalaskentaService {
-
-    private static final Logger LOG = LoggerFactory
-            .getLogger(ValintalaskentaServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaServiceImpl.class);
 
     @Autowired
     private ValintalaskentaSuorittajaService valintalaskentaSuorittaja;
@@ -46,12 +44,8 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     private ValinnanvaiheDAO valinnanvaiheDAO;
 
     @Override
-    public String laske(List<HakemusDTO> hakemus,
-                        List<ValintaperusteetDTO> valintaperuste,
-                        List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
-                        String hakukohdeOid,
-                        String uuid)
-            throws RuntimeException {
+    public String laske(List<HakemusDTO> hakemus, List<ValintaperusteetDTO> valintaperuste, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
+                        String hakukohdeOid, String uuid) throws RuntimeException {
         if (hakemus == null) {
             LOG.error("Hakemukset tuli nullina hakukohteelle {}", hakukohdeOid);
         }
@@ -60,10 +54,8 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
         }
         if (hakemus == null || valintaperuste == null) {
             throw new RuntimeException("Hakemukset == null? " + (hakemus == null) + ", valintaperusteet == null? " + (valintaperuste == null) + " hakukohteelle " + hakukohdeOid);
-
         }
         try {
-
             valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste, hakijaryhmat, hakukohdeOid, uuid);
             return "Onnistui!";
         } catch (Exception e) {
@@ -72,24 +64,12 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                     hakukohdeOid,
                     e.getMessage(), e.getCause(),
                     Arrays.toString(e.getStackTrace()));
-
             throw new RuntimeException(e.getMessage(), e.getCause());
         }
     }
 
-    /**
-     * Metodi ottaa hakemuksen, valintaperusteet ja tallentaa kantaan yhden
-     * hakijan tiedot
-     *
-     * @param hakemus
-     * @param valintaperuste
-     * @return
-     */
     @Override
-    public String valintakokeet(HakemusDTO hakemus,
-                                List<ValintaperusteetDTO> valintaperuste,
-                                String uuid)
-            throws RuntimeException {
+    public String valintakokeet(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperuste, String uuid) throws RuntimeException {
         try {
             valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste, uuid);
             return "Onnistui!";
@@ -100,13 +80,9 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     }
 
     @Override
-    public String laskeKaikki(List<HakemusDTO> hakemus,
-                              List<ValintaperusteetDTO> valintaperuste,
-                              List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
-                              String hakukohdeOid,
-                              String uuid) throws RuntimeException {
-        valintaperuste.sort((o1, o2) ->
-                o1.getValinnanVaihe().getValinnanVaiheJarjestysluku() - o2.getValinnanVaihe().getValinnanVaiheJarjestysluku());
+    public String laskeKaikki(List<HakemusDTO> hakemus, List<ValintaperusteetDTO> valintaperuste, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
+                              String hakukohdeOid, String uuid) throws RuntimeException {
+        valintaperuste.sort((o1, o2) -> o1.getValinnanVaihe().getValinnanVaiheJarjestysluku() - o2.getValinnanVaihe().getValinnanVaiheJarjestysluku());
 
         valintaperuste.stream().forEachOrdered(peruste -> {
             if (peruste.getValinnanVaihe().getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
@@ -116,7 +92,6 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                 laske(hakemus, asList(peruste), hakijaryhmat, hakukohdeOid, uuid);
             }
         });
-
         return "Onnistui!";
     }
 
@@ -173,5 +148,4 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
             });
         });
     }
-
 }
