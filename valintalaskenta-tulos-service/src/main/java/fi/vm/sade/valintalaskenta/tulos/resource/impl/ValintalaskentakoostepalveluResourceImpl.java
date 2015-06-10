@@ -50,10 +50,8 @@ public class ValintalaskentakoostepalveluResourceImpl {
             ValinnanvaiheDTO vastaus = tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid);
             return vastaus;
         } catch (Exception e) {
-            LOGGER.error(
-                    "Valintatapajonon pisteitä ei saatu päivitettyä hakukohteelle {}, {}\r\n{}\r\n{}",
-                    hakukohdeoid, e.getMessage(),
-                    Arrays.toString(e.getStackTrace()));
+            LOGGER.error("Valintatapajonon pisteitä ei saatu päivitettyä hakukohteelle {}, {}\r\n{}\r\n{}",
+                    hakukohdeoid, e.getMessage(), Arrays.toString(e.getStackTrace()));
             throw e;
         }
     }

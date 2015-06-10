@@ -25,56 +25,41 @@ import java.util.Optional;
 
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.UPDATE_CRUD;
 
-/**
- * @author Jussi Jartamo
- */
 @Controller
 @Path("valintatapajono")
 @PreAuthorize("isAuthenticated()")
 @Api(value = "/valintatapajono", description = "Resurssi valintatapajonon jonosijojen muokkaamiseen manuaalisesti")
 public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
 
-	@Autowired
-	private ValintalaskentaTulosService tulosService;
+    @Autowired
+    private ValintalaskentaTulosService tulosService;
 
-	@Autowired
-	private ValintalaskentaModelMapper modelMapper;
+    @Autowired
+    private ValintalaskentaModelMapper modelMapper;
 
-	@Autowired
-	private ValintaperusteetResource valintaperusteetResource;
+    @Autowired
+    private ValintaperusteetResource valintaperusteetResource;
 
-	/**
-	 * 
-	 * @param valintatapajonoOid
-	 * @param hakemusOid
-	 * @param jarjestyskriteeriPrioriteetti
-	 * @param arvo
-	 * @return
-	 */
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/jonosija")
-	@PreAuthorize(UPDATE_CRUD)
-	@ApiOperation(value = "Muokkaa jonosijaa", response = MuokattuJonosijaDTO.class)
-	public Response muutaJonosija(
-			@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
-			@ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid,
-			@ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true) @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
-			@ApiParam(value = "Järjestyskriteerin uusi arvo", required = true) MuokattuJonosijaArvoDTO arvo) {
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/jonosija")
+    @PreAuthorize(UPDATE_CRUD)
+    @ApiOperation(value = "Muokkaa jonosijaa", response = MuokattuJonosijaDTO.class)
+    public Response muutaJonosija(
+            @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
+            @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid,
+            @ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true) @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
+            @ApiParam(value = "Järjestyskriteerin uusi arvo", required = true) MuokattuJonosijaArvoDTO arvo) {
 
-		MuokattuJonosija muokattuJonosija = tulosService
-				.muutaJarjestyskriteeri(valintatapajonoOid, hakemusOid,
-						jarjestyskriteeriPrioriteetti, arvo);
-		if (muokattuJonosija != null) {
-			MuokattuJonosijaDTO map = modelMapper.map(muokattuJonosija,
-					MuokattuJonosijaDTO.class);
-			return Response.status(Response.Status.ACCEPTED).entity(map)
-					.build();
-		} else {
-			return Response.status(Response.Status.NOT_FOUND).build();
-		}
-	}
+        MuokattuJonosija muokattuJonosija = tulosService.muutaJarjestyskriteeri(valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, arvo);
+        if (muokattuJonosija != null) {
+            MuokattuJonosijaDTO map = modelMapper.map(muokattuJonosija, MuokattuJonosijaDTO.class);
+            return Response.status(Response.Status.ACCEPTED).entity(map).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
 
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
@@ -86,14 +71,10 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
             @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
             @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid,
             @ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true) @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti) {
-        MuokattuJonosija muokattuJonosija = tulosService
-                .poistaMuokattuJonosija(valintatapajonoOid, hakemusOid,
-                        jarjestyskriteeriPrioriteetti);
+        MuokattuJonosija muokattuJonosija = tulosService.poistaMuokattuJonosija(valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti);
         if (muokattuJonosija != null) {
-            MuokattuJonosijaDTO map = modelMapper.map(muokattuJonosija,
-                    MuokattuJonosijaDTO.class);
-            return Response.status(Response.Status.ACCEPTED).entity(map)
-                    .build();
+            MuokattuJonosijaDTO map = modelMapper.map(muokattuJonosija, MuokattuJonosijaDTO.class);
+            return Response.status(Response.Status.ACCEPTED).entity(map).build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -107,17 +88,16 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
     public Response muokkaaSijotteluStatusta(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
                                              @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status) {
         Optional<Valintatapajono> dto = tulosService.muokkaaSijotteluStatusta(valintatapajonoOid, status);
-		valintaperusteetResource.updateAutomaattinenSijoitteluunSiirto(valintatapajonoOid, status);
+        valintaperusteetResource.updateAutomaattinenSijoitteluunSiirto(valintatapajonoOid, status);
         return dto.map(jono -> Response.status(Response.Status.ACCEPTED).entity(modelMapper.map(jono, ValintatapajonoDTO.class)).build()).orElse(Response.status(Response.Status.NOT_FOUND).build());
     }
 
-	@GET
-	@Path("/{valintatapajonoOid}/valmissijoiteltavaksi")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response haeSijoitteluStatus(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String oid)
-	{
-		HashMap object = new HashMap();
-		object.put("value", tulosService.haeSijoitteluStatus(oid));
-		return Response.status(Response.Status.ACCEPTED).entity(object).build();
-	}
+    @GET
+    @Path("/{valintatapajonoOid}/valmissijoiteltavaksi")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response haeSijoitteluStatus(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String oid) {
+        HashMap object = new HashMap();
+        object.put("value", tulosService.haeSijoitteluStatus(oid));
+        return Response.status(Response.Status.ACCEPTED).entity(object).build();
+    }
 }

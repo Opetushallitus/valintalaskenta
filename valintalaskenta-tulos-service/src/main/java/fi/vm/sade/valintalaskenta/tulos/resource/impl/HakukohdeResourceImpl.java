@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ_UPDATE_CRUD;
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.ROLE_VALINTOJENTOTEUTTAMINEN_TULOSTENTUONTI;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,61 +28,49 @@ import fi.vm.sade.valintalaskenta.tulos.resource.HakukohdeResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.springframework.stereotype.Controller;
 
-/**
- * @author Jussi Jartamo
- */
 @Controller
 @Path("hakukohde")
 @PreAuthorize("isAuthenticated()")
 @Api(value = "/hakukohde", description = "Resurssi tulosten hakemiseen hakukohteittain")
 public class HakukohdeResourceImpl implements HakukohdeResource {
-
-	protected static final Logger LOGGER = LoggerFactory
-			.getLogger(HakukohdeResourceImpl.class);
-
-	@Autowired
-	private ValintalaskentaTulosService tulosService;
+    protected static final Logger LOGGER = LoggerFactory.getLogger(HakukohdeResourceImpl.class);
 
     @Autowired
-	private Authorizer authorizer;
+    private ValintalaskentaTulosService tulosService;
 
-	@GET
-	@Path("{hakukohdeoid}/valinnanvaihe")
-	@Produces(MediaType.APPLICATION_JSON)
-	@PreAuthorize(READ_UPDATE_CRUD)
-	@ApiOperation(value = "Hakee hakukohteen valinnan vaiheiden tulokset", response = ValinnanvaiheDTO.class)
-	public List<ValintatietoValinnanvaiheDTO> hakukohde(
-			@ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid) {
-		return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
-	}
+    @Autowired
+    private Authorizer authorizer;
 
-	@POST
-	@Path("{hakukohdeoid}/valinnanvaihe")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
+    @GET
+    @Path("{hakukohdeoid}/valinnanvaihe")
+    @Produces(MediaType.APPLICATION_JSON)
+    @PreAuthorize(READ_UPDATE_CRUD)
+    @ApiOperation(value = "Hakee hakukohteen valinnan vaiheiden tulokset", response = ValinnanvaiheDTO.class)
+    public List<ValintatietoValinnanvaiheDTO> hakukohde(
+            @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid) {
+        return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
+    }
+
+    @POST
+    @Path("{hakukohdeoid}/valinnanvaihe")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     @PreAuthorize(READ_UPDATE_CRUD)
     @ApiOperation(value = "Lisää tuloksia valinnanvaiheelle", response = ValinnanvaiheDTO.class)
-	public Response lisaaTuloksia(
-			@ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid,
+    public Response lisaaTuloksia(
+            @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid,
             @ApiParam(value = "Tarjoaja OID", required = true) @QueryParam("tarjoajaOid") String tarjoajaOid,
-			@ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe) {
-		try {
-			authorizer.checkOrganisationAccess(tarjoajaOid, ROLE_VALINTOJENTOTEUTTAMINEN_TULOSTENTUONTI);
-			ValinnanvaiheDTO vastaus = tulosService.lisaaTuloksia(vaihe,
-					hakukohdeoid, tarjoajaOid);
-			return Response.status(Response.Status.ACCEPTED).entity(vastaus)
-					.build();
-		} catch (Exception e) {
-			LOGGER.error(
-					"Valintatapajonon pisteitä ei saatu päivitettyä hakukohteelle {}, {}\r\n{}\r\n{}",
-					hakukohdeoid, e.getMessage(),
-					Arrays.toString(e.getStackTrace()));
-			// , new GsonBuilder()
-			// .setPrettyPrinting().create().toJson(vaihe)
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-					.build();
-		}
-	}
+            @ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe) {
+        try {
+            authorizer.checkOrganisationAccess(tarjoajaOid, ROLE_VALINTOJENTOTEUTTAMINEN_TULOSTENTUONTI);
+            ValinnanvaiheDTO vastaus = tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid);
+            return Response.status(Response.Status.ACCEPTED).entity(vastaus).build();
+        } catch (Exception e) {
+            LOGGER.error("Valintatapajonon pisteitä ei saatu päivitettyä hakukohteelle {}, {}\r\n{}\r\n{}", hakukohdeoid, e.getMessage(),
+                    Arrays.toString(e.getStackTrace()));
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
     @GET
     @Path("{hakukohdeoid}/hakijaryhma")

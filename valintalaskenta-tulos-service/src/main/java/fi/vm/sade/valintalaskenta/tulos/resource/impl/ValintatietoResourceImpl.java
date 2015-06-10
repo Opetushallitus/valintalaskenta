@@ -15,14 +15,10 @@ import java.util.List;
 
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ_UPDATE_CRUD;
 
-/**
- * Created by jukais on 25.3.2014.
- */
 @Controller
 @Path("valintatieto")
 @PreAuthorize("isAuthenticated()")
 public class ValintatietoResourceImpl implements ValintatietoResource {
-
     @Autowired
     private ValintatietoService valintatietoService;
 

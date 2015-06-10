@@ -25,36 +25,31 @@ import fi.vm.sade.valintalaskenta.tulos.resource.HakuResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.springframework.stereotype.Controller;
 
-/**
- * @author Jussi Jartamo
- */
 @Controller
 @Path("haku")
 @PreAuthorize("isAuthenticated()")
 @Api(value = "/haku", description = "Resurssi haun valintalaskennan virhetilanteiden hakemiseen")
 public class HakuResourceImpl implements HakuResource {
+    protected static final Logger LOGGER = LoggerFactory.getLogger(HakuResourceImpl.class);
 
-	protected static final Logger LOGGER = LoggerFactory
-			.getLogger(HakuResourceImpl.class);
+    @Autowired
+    private ValintalaskentaTulosService tulosService;
 
-	@Autowired
-	private ValintalaskentaTulosService tulosService;
+    @GET
+    @Path("{hakuOid}/virheet")
+    @Produces(MediaType.APPLICATION_JSON)
+    @PreAuthorize(READ_UPDATE_CRUD)
+    @ApiOperation(value = "Hakee haun valintalaskennan virhetilanteet OID:n perusteella", response = HakukohdeDTO.class)
+    public List<HakukohdeDTO> virheet(@PathParam("hakuOid") String hakuOid) {
+        return tulosService.haeVirheetHaulle(hakuOid);
+    }
 
-	@GET
-	@Path("{hakuOid}/virheet")
-	@Produces(MediaType.APPLICATION_JSON)
-	@PreAuthorize(READ_UPDATE_CRUD)
-	@ApiOperation(value = "Hakee haun valintalaskennan virhetilanteet OID:n perusteella", response = HakukohdeDTO.class)
-	public List<HakukohdeDTO> virheet(@PathParam("hakuOid") String hakuOid) {
-		return tulosService.haeVirheetHaulle(hakuOid);
-	}
-
-	@GET
-	@Path("{hakuOid}/valintakoevirheet")
-	@Produces(MediaType.APPLICATION_JSON)
-	@PreAuthorize(READ_UPDATE_CRUD)
-	public List<ValintakoeOsallistuminenDTO> valintakoevirheet(
-			@PathParam("hakuOid") String hakuOid) {
-		return tulosService.haeValintakoevirheetHaulle(hakuOid);
-	}
+    @GET
+    @Path("{hakuOid}/valintakoevirheet")
+    @Produces(MediaType.APPLICATION_JSON)
+    @PreAuthorize(READ_UPDATE_CRUD)
+    public List<ValintakoeOsallistuminenDTO> valintakoevirheet(
+            @PathParam("hakuOid") String hakuOid) {
+        return tulosService.haeValintakoevirheetHaulle(hakuOid);
+    }
 }

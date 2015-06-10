@@ -21,26 +21,22 @@ import fi.vm.sade.valintalaskenta.tulos.resource.HakemusResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.springframework.stereotype.Controller;
 
-/**
- * @author Jussi Jartamo
- */
 @Controller
 @Path("hakemus")
 @PreAuthorize("isAuthenticated()")
 @Api(value = "/hakemus", description = "Resurssi hakemuskohtaisten tulosten hakemiseen")
 public class HakemusResourceImpl implements HakemusResource {
+    @Autowired
+    private ValintalaskentaTulosService tulosService;
 
-	@Autowired
-	private ValintalaskentaTulosService tulosService;
-
-	@GET
-	@Path("{hakuoid}/{hakemusoid}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@PreAuthorize(READ_UPDATE_CRUD)
-	@ApiOperation(value = "Hakee hakemuksen tulokset haku OID:n ja hakemuksen OID:n perustella", response = HakemusDTO.class)
-	public HakemusDTO hakemus(
-			@ApiParam(value = "Haku OID", required = true) @PathParam("hakuoid") String hakuoid,
-			@ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusoid") String hakemusoid) {
-		return tulosService.haeTuloksetHakemukselle(hakuoid, hakemusoid);
-	}
+    @GET
+    @Path("{hakuoid}/{hakemusoid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @PreAuthorize(READ_UPDATE_CRUD)
+    @ApiOperation(value = "Hakee hakemuksen tulokset haku OID:n ja hakemuksen OID:n perustella", response = HakemusDTO.class)
+    public HakemusDTO hakemus(
+            @ApiParam(value = "Haku OID", required = true) @PathParam("hakuoid") String hakuoid,
+            @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusoid") String hakemusoid) {
+        return tulosService.haeTuloksetHakemukselle(hakuoid, hakemusoid);
+    }
 }
