@@ -6,26 +6,18 @@ import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 
 import java.util.*;
 
-/**
- * Created with IntelliJ IDEA. User: kkammone Date: 13.5.2013 Time: 14:13 To
- * change this template use File | Settings | File Templates.
- */
 public class JonosijaDTOComparator implements Comparator<JonosijaDTO> {
 
-    private Map<Integer, JarjestyskriteeritulosDTO> jarjestyskriteeritPrioriteetinMukaan(
-            Collection<JarjestyskriteeritulosDTO> jks) {
+    private Map<Integer, JarjestyskriteeritulosDTO> jarjestyskriteeritPrioriteetinMukaan(Collection<JarjestyskriteeritulosDTO> jks) {
         Map<Integer, JarjestyskriteeritulosDTO> map = new HashMap<Integer, JarjestyskriteeritulosDTO>();
-
         for (JarjestyskriteeritulosDTO dto : jks) {
             map.put(dto.getPrioriteetti(), dto);
         }
-
         return map;
     }
 
     @Override
     public int compare(JonosijaDTO thiz, JonosijaDTO other) {
-
         // Virheelliset parhaille jonosijoille, jotta niihin voidaan ottaa kantaa
         boolean thizVirhe = (thiz.getTuloksenTila() != null && thiz.getTuloksenTila() == JarjestyskriteerituloksenTila.VIRHE)
                 || !thiz.getJarjestyskriteerit().isEmpty()
@@ -76,10 +68,8 @@ public class JonosijaDTOComparator implements Comparator<JonosijaDTO> {
             return -1;
         }
 
-        Map<Integer, JarjestyskriteeritulosDTO> thizJarjestyskriteerit = jarjestyskriteeritPrioriteetinMukaan(thiz
-                .getJarjestyskriteerit());
-        Map<Integer, JarjestyskriteeritulosDTO> otherJarjestyskriteerit = jarjestyskriteeritPrioriteetinMukaan(other
-                .getJarjestyskriteerit());
+        Map<Integer, JarjestyskriteeritulosDTO> thizJarjestyskriteerit = jarjestyskriteeritPrioriteetinMukaan(thiz.getJarjestyskriteerit());
+        Map<Integer, JarjestyskriteeritulosDTO> otherJarjestyskriteerit = jarjestyskriteeritPrioriteetinMukaan(other.getJarjestyskriteerit());
 
         TreeSet<Integer> keys = new TreeSet<Integer>();
         keys.addAll(thizJarjestyskriteerit.keySet());
@@ -111,5 +101,4 @@ public class JonosijaDTOComparator implements Comparator<JonosijaDTO> {
         }
         return 0;
     }
-
 }
