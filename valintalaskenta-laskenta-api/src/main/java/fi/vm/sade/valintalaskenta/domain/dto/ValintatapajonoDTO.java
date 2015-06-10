@@ -7,9 +7,6 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Jussi Jartamo
- */
 @ApiModel(value = "ValintatapajonoDTO", description = "Valintatapajono")
 public class ValintatapajonoDTO {
 

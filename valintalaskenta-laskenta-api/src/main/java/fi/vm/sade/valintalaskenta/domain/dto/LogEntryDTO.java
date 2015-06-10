@@ -5,11 +5,6 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 
-/**
- * User: wuoti
- * Date: 9.12.2013
- * Time: 10.01
- */
 @ApiModel(value = "LogEntryDTO", description = "Lokiviesti")
 public class LogEntryDTO {
 

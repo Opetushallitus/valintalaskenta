@@ -6,11 +6,6 @@ import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 
 import java.math.BigDecimal;
 
-/**
- * User: jukais
- * Date: 15.8.2013
- * Time: 7.33
- */
 @ApiModel(value="MuokattuJonosijaArvoDTO", description = "Muokattu jonosija")
 public class MuokattuJonosijaArvoDTO {
 
