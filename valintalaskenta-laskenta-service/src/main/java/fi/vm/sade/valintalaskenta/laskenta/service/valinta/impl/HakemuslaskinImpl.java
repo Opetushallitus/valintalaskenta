@@ -71,14 +71,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         TilaJaSelite tilaJaSelite = hakijaryhmanTilaJaSelite(tulos);
         Jarjestyskriteeritulos jktulos = muodostaJarjestysKriteeritulos(tilaJaSelite, 0, "Hakijaryhmän tulokset", tulos.getTulos());
 
-        if (!jonosijatHakemusOidinMukaan.containsKey(hakemus.getHakemusoid())) {
-            Jonosija jonosija = muodostaJonosija(hakemus,
-                    laskettavaHakemus.getHakutoiveprioriteetti(),
-                    laskettavaHakemus.isHarkinnanvaraisuus());
-            jonosijatHakemusOidinMukaan.put(hakemus.getHakemusoid(), new JonosijaJaSyotetytArvot(jonosija));
-        }
-
-        JonosijaJaSyotetytArvot jonosija = jonosijatHakemusOidinMukaan.get(hakemus.getHakemusoid());
+        JonosijaJaSyotetytArvot jonosija = getJonosijaJaSyotetytArvot(laskettavaHakemus, jonosijatHakemusOidinMukaan, hakemus);
         jonosija.getJonosija().getJarjestyskriteeritulokset().add(jktulos);
         jonosija.lisaaSyotetytArvot(tulos.getSyotetytArvot());
         jonosija.lisaaFunktioTulokset(tulos.getFunktioTulokset());
@@ -97,14 +90,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         TilaJaSelite tilaJaSelite = hakijaryhmanTilaJaSelite(tulos);
         Jarjestyskriteeritulos jktulos = muodostaJarjestysKriteeritulos(tilaJaSelite, 0, "Hakijaryhmän tulokset", null);
 
-        if (!jonosijatHakemusOidinMukaan.containsKey(hakemus.getHakemusoid())) {
-            Jonosija jonosija = muodostaJonosija(hakemus,
-                    laskettavaHakemus.getHakutoiveprioriteetti(),
-                    laskettavaHakemus.isHarkinnanvaraisuus());
-            jonosijatHakemusOidinMukaan.put(hakemus.getHakemusoid(), new JonosijaJaSyotetytArvot(jonosija));
-        }
-
-        JonosijaJaSyotetytArvot jonosija = jonosijatHakemusOidinMukaan.get(hakemus.getHakemusoid());
+        JonosijaJaSyotetytArvot jonosija = getJonosijaJaSyotetytArvot(laskettavaHakemus, jonosijatHakemusOidinMukaan, hakemus);
         jonosija.getJonosija().getJarjestyskriteeritulokset().add(jktulos);
         jonosija.lisaaSyotetytArvot(tulos.getSyotetytArvot());
         jonosija.lisaaFunktioTulokset(tulos.getFunktioTulokset());
@@ -192,14 +178,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         BigDecimal arvo = getTulos(tulos, tilaJaSelite, edellinenTila);
         Jarjestyskriteeritulos jktulos = muodostaJarjestysKriteeritulos(tilaJaSelite, jkPrioriteetti, jkNimi, arvo);
 
-        if (!jonosijatHakemusOidinMukaan.containsKey(hakemus.getHakemusoid())) {
-            Jonosija jonosija = muodostaJonosija(hakemus,
-                    laskettavaHakemus.getHakutoiveprioriteetti(),
-                    laskettavaHakemus.isHarkinnanvaraisuus());
-            jonosijatHakemusOidinMukaan.put(hakemus.getHakemusoid(), new JonosijaJaSyotetytArvot(jonosija));
-        }
-
-        JonosijaJaSyotetytArvot jonosija = jonosijatHakemusOidinMukaan.get(hakemus.getHakemusoid());
+        JonosijaJaSyotetytArvot jonosija = getJonosijaJaSyotetytArvot(laskettavaHakemus, jonosijatHakemusOidinMukaan, hakemus);
         jonosija.getJonosija().getJarjestyskriteeritulokset().add(jktulos);
         jonosija.lisaaSyotetytArvot(tulos.getSyotetytArvot());
         jonosija.lisaaFunktioTulokset(tulos.getFunktioTulokset());
@@ -208,6 +187,19 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         jkhistoria.setHistoria(tulos.getHistoria().toString());
         jarjestyskriteerihistoriaDAO.create(jkhistoria);
         jktulos.setHistoria(jkhistoria.getId());
+    }
+
+    private JonosijaJaSyotetytArvot getJonosijaJaSyotetytArvot(HakemusWrapper laskettavaHakemus, Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan, HakemusDTO hakemus) {
+        if (!jonosijatHakemusOidinMukaan.containsKey(hakemus.getHakemusoid())) {
+            Jonosija jonosija = muodostaJonosija(hakemus,
+                    laskettavaHakemus.getHakutoiveprioriteetti(),
+                    laskettavaHakemus.isHarkinnanvaraisuus());
+            final JonosijaJaSyotetytArvot jonosijaJaSyotetytArvot = new JonosijaJaSyotetytArvot(jonosija);
+            jonosijatHakemusOidinMukaan.put(hakemus.getHakemusoid(), jonosijaJaSyotetytArvot);
+            return jonosijaJaSyotetytArvot;
+        } else {
+            return jonosijatHakemusOidinMukaan.get(hakemus.getHakemusoid());
+        }
     }
 
     private BigDecimal getTulos(Laskentatulos tulos, TilaJaSelite tilaJaSelite, TilaJaSelite edellinenTila) {
