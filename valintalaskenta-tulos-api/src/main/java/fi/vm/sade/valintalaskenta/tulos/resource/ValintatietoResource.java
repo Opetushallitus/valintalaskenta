@@ -8,12 +8,8 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.HakuDTO;
 import javax.ws.rs.*;
 import java.util.List;
 
-/**
- * Created by jukais on 24.3.2014.
- */
 @Path("valintatieto")
 public interface ValintatietoResource {
-
     @POST
     @Path("hakukohde/{hakukohdeOid}")
     @Consumes("application/json")
