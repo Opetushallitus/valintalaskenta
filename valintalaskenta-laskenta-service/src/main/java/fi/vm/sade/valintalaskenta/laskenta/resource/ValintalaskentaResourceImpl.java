@@ -31,8 +31,7 @@ import javax.ws.rs.Produces;
 @Controller
 @Path("valintalaskenta")
 public class ValintalaskentaResourceImpl {
-    private static final Logger LOG = LoggerFactory
-            .getLogger(ValintalaskentaResourceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaResourceImpl.class);
     @Autowired
     private ValintalaskentaService valintalaskentaService;
 
@@ -103,8 +102,7 @@ public class ValintalaskentaResourceImpl {
     public String valintakokeet(LaskeDTO laskeDTO) {
         try {
             LOG.info("(Uuid={}) Suoritetaan valintakoelaskenta {} hakemukselle hakukohteessa {}", laskeDTO.getUuid(), laskeDTO.getHakemus().size(), laskeDTO.getHakukohdeOid());
-            laskeDTO.getHakemus()
-                    .forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste(), laskeDTO.getUuid()));
+            laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste(), laskeDTO.getUuid()));
             LOG.info("(Uuid={}) Valintakoelaskenta suoritettu {} hakemukselle hakukohteessa {}", laskeDTO.getUuid(), laskeDTO.getHakemus().size(), laskeDTO.getHakukohdeOid());
             return "Onnistui";
         } catch (Exception e) {
