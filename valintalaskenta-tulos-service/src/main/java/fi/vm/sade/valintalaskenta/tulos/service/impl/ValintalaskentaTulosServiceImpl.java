@@ -62,16 +62,6 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 	@Value("${root.organisaatio.oid}")
 	private String rootOrgOid;
 
-	private Map<String, MuokattuJonosija> muokatutJonosijatJonoOidinMukaan(
-			List<MuokattuJonosija> muokatutJonosijat) {
-		Map<String, MuokattuJonosija> map = new HashMap<String, MuokattuJonosija>();
-		for (MuokattuJonosija jonosija : muokatutJonosijat) {
-			map.put(jonosija.getValintatapajonoOid(), jonosija);
-		}
-
-		return map;
-	}
-
 	public HakemusDTO haeTuloksetHakemukselle(final String hakuOid, final String hakemusOid) {
 		List<Valinnanvaihe> valinnanVaiheet = valinnanvaiheDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
 		Map<String, HakukohdeDTO> hakukohdeDTOtOidinMukaan = new HashMap<String, HakukohdeDTO>();
