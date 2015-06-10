@@ -3,9 +3,6 @@ package fi.vm.sade.valintalaskenta.domain.dto.valintakoe;
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-/**
- * User: wuoti Date: 29.8.2013 Time: 8.31
- */
 @ApiModel(value = "ValintakoeDTO", description = "Valintakoe")
 public class ValintakoeDTO {
 
