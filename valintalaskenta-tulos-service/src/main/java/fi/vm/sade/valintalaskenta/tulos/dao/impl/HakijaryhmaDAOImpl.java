@@ -21,23 +21,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-/**
- * @author Jussi Jartamo
- */
 @Repository
 public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
+    private static final Logger LOGGER = LoggerFactory.getLogger(HakijaryhmaDAOImpl.class);
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(HakijaryhmaDAOImpl.class);
+    @Qualifier("datastore2")
+    @Autowired
+    private Datastore datastore;
 
-	@Qualifier("datastore2")
-	@Autowired
-	private Datastore datastore;
-
-	@Override
-	public List<Hakijaryhma> readByHakukohdeOid(String hakukohdeoid) {
-		return datastore.createQuery(Hakijaryhma.class).field("hakukohdeOid")
-				.equal(hakukohdeoid).asList();
-	}
-
+    @Override
+    public List<Hakijaryhma> readByHakukohdeOid(String hakukohdeoid) {
+        return datastore.createQuery(Hakijaryhma.class).field("hakukohdeOid").equal(hakukohdeoid).asList();
+    }
 }
