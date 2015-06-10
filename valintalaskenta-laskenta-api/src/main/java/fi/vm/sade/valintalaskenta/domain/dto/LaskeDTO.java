@@ -10,9 +10,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-/**
- * Created by jukais on 26.3.2014.
- */
 public class LaskeDTO {
     private final String uuid; // <- Käynnistetyn laskennan tunniste, referenssi logeihin
     private final String hakukohdeOid;
@@ -30,9 +27,7 @@ public class LaskeDTO {
         this.erillishaku = false;
     }
 
-    public LaskeDTO(
-            String uuid,
-            boolean erillishaku, String hakukohdeOid,
+    public LaskeDTO(String uuid, boolean erillishaku, String hakukohdeOid,
             List<HakemusDTO> hakemus, List<ValintaperusteetDTO> valintaperuste) {
         this.uuid = uuid;
         this.hakukohdeOid = hakukohdeOid;
@@ -44,9 +39,7 @@ public class LaskeDTO {
         this.erillishaku = erillishaku;
     }
 
-    public LaskeDTO(
-            String uuid,
-            boolean erillishaku, String hakukohdeOid,
+    public LaskeDTO(String uuid, boolean erillishaku, String hakukohdeOid,
             List<HakemusDTO> hakemus, List<ValintaperusteetDTO> valintaperuste,
             List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat) {
         this.uuid = uuid;
