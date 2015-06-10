@@ -6,9 +6,6 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import java.util.List;
 
 public interface ValintakoeOsallistuminenDAO {
-
-    //  List<ValintakoeOsallistuminen> findAll();
-
     ValintakoeOsallistuminen findByHakemusOid(String hakemusOid);
 
     List<ValintakoeOsallistuminen> findByHakutoive(String hakukohdeOid);

@@ -5,11 +5,7 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 
 import java.util.List;
 
-/**
- * @author Jussi Jartamo
- */
 public interface ValinnanvaiheDAO {
-
     List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid);
 
     List<Valinnanvaihe> readByHakuOid(String hakuoid);
