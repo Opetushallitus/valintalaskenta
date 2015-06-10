@@ -1,13 +1,5 @@
 package fi.vm.sade.valintalaskenta.laskenta;
 
-/**
- * Created with IntelliJ IDEA.
- * User: jukais
- * Date: 16.1.2013
- * Time: 18.03
- * To change this template use File | Settings | File Templates.
- */
-
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -21,7 +13,6 @@ import java.util.Collection;
 @Component
 @Provider
 public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
-
     private final ObjectMapper objectMapper;
 
     public ObjectMapperProvider() {
