@@ -23,73 +23,50 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.tulos.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.exception.DaoException;
 
-/**
- * User: tommiha Date: 8/12/13 Time: 2:20 PM
- */
 @Repository("jonosijaHistoriaTulosDAO")
-public class JarjestyskriteerihistoriaDAOImpl implements
-		JarjestyskriteerihistoriaDAO {
+public class JarjestyskriteerihistoriaDAOImpl implements JarjestyskriteerihistoriaDAO {
+    @Qualifier("datastore2")
+    @Autowired
+    private Datastore datastore;
 
-	@Qualifier("datastore2")
-	@Autowired
-	private Datastore datastore;
+    @Override
+    public List<Jarjestyskriteerihistoria> findByValintatapajonoAndVersioAndHakemusOid(String valintatapajonoOid, String hakemusOid) {
+        DBCollection collection = datastore.getCollection(Valintatapajono.class);
 
-	@Override
-	public List<Jarjestyskriteerihistoria> findByValintatapajonoAndVersioAndHakemusOid(
-			String valintatapajonoOid, String hakemusOid) {
-		DBCollection collection = datastore.getCollection(Valintatapajono.class);
+        AggregationOutput aggregation = collection
+                .aggregate(
+                        // Haetaan valintatapajono oidin mukaan
+                        new BasicDBObject("$match", new BasicDBObject("valintatapajonoOid", valintatapajonoOid)),
+                        new BasicDBObject("$unwind", "$jonosijat"),
 
-		AggregationOutput aggregation = collection
-				.aggregate(
-						// Haetaan valintatapajono oidin mukaan
-						new BasicDBObject("$match", new BasicDBObject(
-								"valintatapajonoOid",
-								valintatapajonoOid)),
-						new BasicDBObject("$unwind",
-								"$jonosijat"),
-
-						// Haetaan tietyn hakemuksen jonosija ja siihen
-						// liittyvät historiat
-						new BasicDBObject("$match", new BasicDBObject(
-								"jonosijat.hakemusOid",
-								hakemusOid)),
-						new BasicDBObject(
-								"$group",
-								new BasicDBObject("_id",
-										"$valintatapajonoOid")
-										.append("historiat",
-												new BasicDBObject("$addToSet",
-														"$jonosijat.jarjestyskriteeritulokset.historia"))));
+                        // Haetaan tietyn hakemuksen jonosija ja siihen
+                        // liittyvät historiat
+                        new BasicDBObject("$match", new BasicDBObject("jonosijat.hakemusOid", hakemusOid)),
+                        new BasicDBObject("$group",
+                                new BasicDBObject("_id", "$valintatapajonoOid")
+                                        .append("historiat", new BasicDBObject("$addToSet", "$jonosijat.jarjestyskriteeritulokset.historia"))));
 
         final Iterator<DBObject> iterator = aggregation.results().iterator();
         if (!aggregation.getCommandResult().ok()) {
-			throw new DaoException(aggregation.getCommandResult()
-					.getErrorMessage());
-		} else if (!iterator.hasNext()) {
-			return Collections.EMPTY_LIST;
-		}
+            throw new DaoException(aggregation.getCommandResult().getErrorMessage());
+        } else if (!iterator.hasNext()) {
+            return Collections.EMPTY_LIST;
+        }
 
-		// Loopataan historiaviitteet läpi ja haetaan niitä vastaavat dokumentit
+        // Loopataan historiaviitteet läpi ja haetaan niitä vastaavat dokumentit
         BasicBSONList historiat = new BasicBSONList();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             DBObject result = iterator.next();
-            final BasicBSONList current = (BasicBSONList)((BasicBSONList) result.get("historiat")).get(0);
-            if(!current.isEmpty()) {
+            final BasicBSONList current = (BasicBSONList) ((BasicBSONList) result.get("historiat")).get(0);
+            if (!current.isEmpty()) {
                 historiat = current;
                 break;
             }
         }
-
-
-//        BasicBSONList historiat = (BasicBSONList) ((BasicBSONList) ((DBObject) result
-//                .get("historiat"))).get(0);
-
-		List<ObjectId> historiaIds = new ArrayList<ObjectId>();
-		for (Object ref : historiat) {
-			historiaIds.add((ObjectId) ref);
-		}
-
-		return datastore.createQuery(Jarjestyskriteerihistoria.class)
-				.field("_id").hasAnyOf(historiaIds).asList();
-	}
+        List<ObjectId> historiaIds = new ArrayList<ObjectId>();
+        for (Object ref : historiat) {
+            historiaIds.add((ObjectId) ref);
+        }
+        return datastore.createQuery(Jarjestyskriteerihistoria.class).field("_id").hasAnyOf(historiaIds).asList();
+    }
 }
