@@ -12,20 +12,9 @@ import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
 
-/**
- * @author Jussi Jartamo
- */
 @Path("valintatapajono")
 @Api(value = "/valintatapajono", description = "Resurssi valintatapajonon jonosijojen muokkaamiseen manuaalisesti")
 public interface ValintatapajonoResource {
-
-    /**
-     * @param valintatapajonoOid
-     * @param hakemusOid
-     * @param jarjestyskriteeriPrioriteetti
-     * @param arvo
-     * @return
-     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -60,5 +49,4 @@ public interface ValintatapajonoResource {
     @Path("/{valintatapajonoOid}/valmissijoiteltavaksi")
     @Produces(MediaType.APPLICATION_JSON)
     public Response haeSijoitteluStatus(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String oid);
-
 }
