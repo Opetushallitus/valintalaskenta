@@ -69,16 +69,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         ValintakoeOsallistuminenDTO kokeet = modelMapper.map(haeValintakoeOsallistumiset(hakemusOid), ValintakoeOsallistuminenDTO.class);
 
         for (Valinnanvaihe vv : valinnanVaiheet) {
-            HakukohdeDTO hakukohdeDTO = null;
-            if (hakukohdeDTOtOidinMukaan.containsKey(vv.getHakukohdeOid())) {
-                hakukohdeDTO = hakukohdeDTOtOidinMukaan.get(vv.getHakukohdeOid());
-            } else {
-                hakukohdeDTO = new HakukohdeDTO();
-                hakukohdeDTO.setHakuoid(vv.getHakuOid());
-                hakukohdeDTO.setOid(vv.getHakukohdeOid());
-                hakukohdeDTO.setTarjoajaoid(vv.getTarjoajaOid());
-                hakukohdeDTOtOidinMukaan.put(vv.getHakukohdeOid(), hakukohdeDTO);
-            }
+            HakukohdeDTO hakukohdeDTO = getOrCreateHakukohdeDTO(hakukohdeDTOtOidinMukaan, vv);
             ValintatietoValinnanvaiheDTO vvdto = new ValintatietoValinnanvaiheDTO();
             vvdto.setCreatedAt(vv.getCreatedAt());
             vvdto.setJarjestysnumero(vv.getJarjestysnumero());
@@ -344,19 +335,24 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         }
         Map<String, HakukohdeDTO> hakukohdeDTOtOidinMukaan = new HashMap<>();
         for (Valinnanvaihe vv : valinnanvaiheet) {
-            HakukohdeDTO hakukohdeDTO = null;
-            if (hakukohdeDTOtOidinMukaan.containsKey(vv.getHakukohdeOid())) {
-                hakukohdeDTO = hakukohdeDTOtOidinMukaan.get(vv.getHakukohdeOid());
-            } else {
-                hakukohdeDTO = new HakukohdeDTO();
-                hakukohdeDTO.setHakuoid(vv.getHakuOid());
-                hakukohdeDTO.setOid(vv.getHakukohdeOid());
-                hakukohdeDTO.setTarjoajaoid(vv.getTarjoajaOid());
-                hakukohdeDTOtOidinMukaan.put(vv.getHakukohdeOid(), hakukohdeDTO);
-            }
+            HakukohdeDTO hakukohdeDTO = getOrCreateHakukohdeDTO(hakukohdeDTOtOidinMukaan, vv);
             hakukohdeDTO.getValinnanvaihe().add(valintatulosConverter.convertValinnanvaihe(vv));
         }
         return new ArrayList<>(hakukohdeDTOtOidinMukaan.values());
+    }
+
+    private HakukohdeDTO getOrCreateHakukohdeDTO(Map<String, HakukohdeDTO> hakukohdeDTOtOidinMukaan, Valinnanvaihe vv) {
+        HakukohdeDTO hakukohdeDTO = null;
+        if (hakukohdeDTOtOidinMukaan.containsKey(vv.getHakukohdeOid())) {
+            hakukohdeDTO = hakukohdeDTOtOidinMukaan.get(vv.getHakukohdeOid());
+        } else {
+            hakukohdeDTO = new HakukohdeDTO();
+            hakukohdeDTO.setHakuoid(vv.getHakuOid());
+            hakukohdeDTO.setOid(vv.getHakukohdeOid());
+            hakukohdeDTO.setTarjoajaoid(vv.getTarjoajaOid());
+            hakukohdeDTOtOidinMukaan.put(vv.getHakukohdeOid(), hakukohdeDTO);
+        }
+        return hakukohdeDTO;
     }
 
     @Override
