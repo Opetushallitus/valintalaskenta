@@ -11,7 +11,6 @@ import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Virhetila;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
@@ -24,7 +23,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class HakemuslaskinImpl implements HakemuslaskinService {
@@ -155,29 +153,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(),
                         tulos.getTila(), edellinenVaihe);
         Tila.Tilatyyppi uusinTila = tulos.getTila().getTilatyyppi();
-        ValintakoeOsallistuminen edellinenOsallistuminen = null;
-        ValintakoeOsallistuminen hakijanOsallistumiset = null;
-        boolean voidaanHyvaksya = false;
-
-        // Hakija on hylätty, tarkistetaan onko hylätty välisijoittelussa
-        if(tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY) && edellinenVaihe != null && edellinenVaihe.getJarjestysnumero() != jarjestysnumero-1) {
-            boolean hylattyValisijoittelussa = edellinenVaihe.getValintatapajonot()
-                    .stream()
-                    .flatMap(j -> j.getJonosijat().stream())
-                    .filter(j -> j.getHakemusOid().equals(hakemus.getHakemusoid()))
-                    .anyMatch(j -> j.isHylattyValisijoittelussa());
-
-            if(hylattyValisijoittelussa) {
-                edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(hakemus.getHakuoid(), edellinenVaihe.getHakukohdeOid(), jarjestysnumero);
-                if (edellinenOsallistuminen != null) {
-                    hakijanOsallistumiset = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakemus.getHakuoid(), hakemus.getHakemusoid());
-                    if(hakijanOsallistumiset != null) {
-                        voidaanHyvaksya = edellinenValinnanvaiheKasittelija
-                                .koeOsallistuminenToisessaKohteessa(edellinenVaihe.getHakukohdeOid(), hakijanOsallistumiset);
-                    }
-                }
-            }
-        }
+        boolean voidaanHyvaksya = isVoidaanHyvaksyaVaikkaHylattyValisijoittelussa(edellinenVaihe, jarjestysnumero, hakemus, tilaJaSelite);
 
         // Yliajetaan hylkäys, jos hylätty välisijoittelussa, mutta saanut koekutsun
         if(uusinTila.equals(Tila.Tilatyyppi.HYVAKSYTTAVISSA) || uusinTila.equals(Tila.Tilatyyppi.VIRHE)) {
@@ -245,6 +221,28 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         jkhistoria.setHistoria(tulos.getHistoria().toString());
         jarjestyskriteerihistoriaDAO.create(jkhistoria);
         jktulos.setHistoria(jkhistoria.getId());
+    }
+
+    private boolean isVoidaanHyvaksyaVaikkaHylattyValisijoittelussa(Valinnanvaihe edellinenVaihe, int jarjestysnumero, HakemusDTO hakemus, TilaJaSelite tilaJaSelite) {
+        boolean voidaanHyvaksya = false;
+        final boolean hakijaHylatty = tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY) && edellinenVaihe != null && edellinenVaihe.getJarjestysnumero() != jarjestysnumero - 1;
+        if (hakijaHylatty) {
+            boolean hylattyValisijoittelussa = edellinenVaihe.getValintatapajonot()
+                    .stream()
+                    .flatMap(j -> j.getJonosijat().stream())
+                    .filter(j -> j.getHakemusOid().equals(hakemus.getHakemusoid()))
+                    .anyMatch(j -> j.isHylattyValisijoittelussa());
+            if (hylattyValisijoittelussa) {
+                ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(hakemus.getHakuoid(), edellinenVaihe.getHakukohdeOid(), jarjestysnumero);
+                if (edellinenOsallistuminen != null) {
+                    ValintakoeOsallistuminen hakijanOsallistumiset = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakemus.getHakuoid(), hakemus.getHakemusoid());
+                    if(hakijanOsallistumiset != null) {
+                        voidaanHyvaksya = edellinenValinnanvaiheKasittelija.koeOsallistuminenToisessaKohteessa(edellinenVaihe.getHakukohdeOid(), hakijanOsallistumiset);
+                    }
+                }
+            }
+        }
+        return voidaanHyvaksya;
     }
 
     private Jarjestyskriteeritulos muodostaJarjestysKriteeritulos(TilaJaSelite tilaJaSelite, int prioriteetti, String nimi, BigDecimal tulos) {
