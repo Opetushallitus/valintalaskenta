@@ -1,9 +1,7 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.laskenta.dao.HakijaryhmaDAO;
-import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import org.mongodb.morphia.Datastore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
