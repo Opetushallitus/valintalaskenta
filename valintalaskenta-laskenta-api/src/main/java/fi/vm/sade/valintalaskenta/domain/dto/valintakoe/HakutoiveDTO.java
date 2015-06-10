@@ -6,11 +6,6 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * User: wuoti
- * Date: 29.8.2013
- * Time: 8.29
- */
 @ApiModel(value="HakutoiveDTO", description = "Hakutoive")
 public class HakutoiveDTO {
 

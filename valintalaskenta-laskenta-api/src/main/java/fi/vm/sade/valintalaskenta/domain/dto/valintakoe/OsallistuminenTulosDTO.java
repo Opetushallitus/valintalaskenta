@@ -6,11 +6,6 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 
 import java.util.Map;
 
-/**
- * User: wuoti
- * Date: 29.8.2013
- * Time: 8.32
- */
 @ApiModel(value = "OsallistuminenTulosDTO", description = "Osallitumistulos - kertoo, pitääkö hakijan osallistua valintakokeeseen")
 public class OsallistuminenTulosDTO {
     @ApiModelProperty(value = "Varsinainen tulos", required = true)
