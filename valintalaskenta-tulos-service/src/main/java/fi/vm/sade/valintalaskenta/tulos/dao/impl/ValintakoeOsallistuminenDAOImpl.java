@@ -13,33 +13,28 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.tulos.dao.ValintakoeOsallistuminenDAO;
 
 @Repository
-public class ValintakoeOsallistuminenDAOImpl implements
-		ValintakoeOsallistuminenDAO {
+public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminenDAO {
+    @Qualifier("datastore2")
+    @Autowired
+    private Datastore datastore;
 
-	@Qualifier("datastore2")
-	@Autowired
-	private Datastore datastore;
+    @Override
+    public ValintakoeOsallistuminen findByHakemusOid(String hakemusOid) {
+        return datastore.find(ValintakoeOsallistuminen.class, "hakemusOid", hakemusOid).get();
+    }
 
-	@Override
-	public ValintakoeOsallistuminen findByHakemusOid(String hakemusOid) {
-		return datastore.find(ValintakoeOsallistuminen.class, "hakemusOid",
-				hakemusOid).get();
-	}
+    @Override
+    public List<ValintakoeOsallistuminen> findByHakutoive(String hakukohdeOid) {
+        return datastore.find(ValintakoeOsallistuminen.class).field("hakutoiveet.hakukohdeOid").equal(hakukohdeOid).asList();
+    }
 
-	@Override
-	public List<ValintakoeOsallistuminen> findByHakutoive(String hakukohdeOid) {
-		return datastore.find(ValintakoeOsallistuminen.class)
-				.field("hakutoiveet.hakukohdeOid").equal(hakukohdeOid).asList();
-	}
-
-	@Override
-	public List<ValintakoeOsallistuminen> findByHakuAndOsallistuminen(
-			String hakuOid, Osallistuminen osallistuminen) {
-		return datastore
-				.find(ValintakoeOsallistuminen.class)
-				.field("hakuOid")
-				.equal(hakuOid)
-				.field("hakutoiveet.valinnanVaiheet.valintakokeet.osallistuminenTulos.osallistuminen")
-				.equal(osallistuminen).asList();
-	}
+    @Override
+    public List<ValintakoeOsallistuminen> findByHakuAndOsallistuminen(String hakuOid, Osallistuminen osallistuminen) {
+        return datastore
+                .find(ValintakoeOsallistuminen.class)
+                .field("hakuOid")
+                .equal(hakuOid)
+                .field("hakutoiveet.valinnanVaiheet.valintakokeet.osallistuminenTulos.osallistuminen")
+                .equal(osallistuminen).asList();
+    }
 }
