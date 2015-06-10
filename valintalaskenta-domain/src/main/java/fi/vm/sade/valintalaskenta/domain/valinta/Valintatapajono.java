@@ -21,19 +21,19 @@ public class Valintatapajono {
     private ObjectId id;
 
     @Indexed
-	private String valintatapajonoOid;
+    private String valintatapajonoOid;
 
-	private String nimi;
+    private String nimi;
 
-	private int prioriteetti;
+    private int prioriteetti;
 
-	private int aloituspaikat;
+    private int aloituspaikat;
 
-	private boolean siirretaanSijoitteluun;
+    private boolean siirretaanSijoitteluun;
 
-	private Tasasijasaanto tasasijasaanto;
+    private Tasasijasaanto tasasijasaanto;
 
-	private Boolean eiVarasijatayttoa;
+    private Boolean eiVarasijatayttoa;
 
     private Boolean kaikkiEhdonTayttavatHyvaksytaan;
 
@@ -43,74 +43,74 @@ public class Valintatapajono {
 
     private Boolean valmisSijoiteltavaksi = true;
 
-	@Embedded
-	private List<Jonosija> jonosijat = new ArrayList<Jonosija>();
+    @Embedded
+    private List<Jonosija> jonosijat = new ArrayList<Jonosija>();
 
     private Long sijoitteluajoId;
 
-	public String getValintatapajonoOid() {
-		return valintatapajonoOid;
-	}
+    public String getValintatapajonoOid() {
+        return valintatapajonoOid;
+    }
 
-	public void setValintatapajonoOid(String valintatapajonoOid) {
-		this.valintatapajonoOid = valintatapajonoOid;
-	}
+    public void setValintatapajonoOid(String valintatapajonoOid) {
+        this.valintatapajonoOid = valintatapajonoOid;
+    }
 
-	public String getNimi() {
-		return nimi;
-	}
+    public String getNimi() {
+        return nimi;
+    }
 
-	public void setNimi(String nimi) {
-		this.nimi = nimi;
-	}
+    public void setNimi(String nimi) {
+        this.nimi = nimi;
+    }
 
-	public int getPrioriteetti() {
-		return prioriteetti;
-	}
+    public int getPrioriteetti() {
+        return prioriteetti;
+    }
 
-	public void setPrioriteetti(int prioriteetti) {
-		this.prioriteetti = prioriteetti;
-	}
+    public void setPrioriteetti(int prioriteetti) {
+        this.prioriteetti = prioriteetti;
+    }
 
-	public int getAloituspaikat() {
-		return aloituspaikat;
-	}
+    public int getAloituspaikat() {
+        return aloituspaikat;
+    }
 
-	public void setAloituspaikat(int aloituspaikat) {
-		this.aloituspaikat = aloituspaikat;
-	}
+    public void setAloituspaikat(int aloituspaikat) {
+        this.aloituspaikat = aloituspaikat;
+    }
 
-	public boolean isSiirretaanSijoitteluun() {
-		return siirretaanSijoitteluun;
-	}
+    public boolean isSiirretaanSijoitteluun() {
+        return siirretaanSijoitteluun;
+    }
 
-	public void setSiirretaanSijoitteluun(boolean siirretaanSijoitteluun) {
-		this.siirretaanSijoitteluun = siirretaanSijoitteluun;
-	}
+    public void setSiirretaanSijoitteluun(boolean siirretaanSijoitteluun) {
+        this.siirretaanSijoitteluun = siirretaanSijoitteluun;
+    }
 
-	public Tasasijasaanto getTasasijasaanto() {
-		return tasasijasaanto;
-	}
+    public Tasasijasaanto getTasasijasaanto() {
+        return tasasijasaanto;
+    }
 
-	public void setTasasijasaanto(Tasasijasaanto tasasijasaanto) {
-		this.tasasijasaanto = tasasijasaanto;
-	}
+    public void setTasasijasaanto(Tasasijasaanto tasasijasaanto) {
+        this.tasasijasaanto = tasasijasaanto;
+    }
 
-	public Boolean getEiVarasijatayttoa() {
-		return eiVarasijatayttoa;
-	}
+    public Boolean getEiVarasijatayttoa() {
+        return eiVarasijatayttoa;
+    }
 
-	public void setEiVarasijatayttoa(Boolean eiVarasijatayttoa) {
-		this.eiVarasijatayttoa = eiVarasijatayttoa;
-	}
+    public void setEiVarasijatayttoa(Boolean eiVarasijatayttoa) {
+        this.eiVarasijatayttoa = eiVarasijatayttoa;
+    }
 
-	public List<Jonosija> getJonosijat() {
-		return jonosijat;
-	}
+    public List<Jonosija> getJonosijat() {
+        return jonosijat;
+    }
 
-	public void setJonosijat(List<Jonosija> jonosijat) {
-		this.jonosijat = jonosijat;
-	}
+    public void setJonosijat(List<Jonosija> jonosijat) {
+        this.jonosijat = jonosijat;
+    }
 
     public Boolean getKaikkiEhdonTayttavatHyvaksytaan() {
         return kaikkiEhdonTayttavatHyvaksytaan;
