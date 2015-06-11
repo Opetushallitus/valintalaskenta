@@ -31,10 +31,8 @@ public class LaskeDTO {
             List<HakemusDTO> hakemus, List<ValintaperusteetDTO> valintaperuste) {
         this.uuid = uuid;
         this.hakukohdeOid = hakukohdeOid;
-        this.hakemus = hakemus != null ? hakemus : Collections
-                .<HakemusDTO>emptyList();
-        this.valintaperuste = valintaperuste != null ? valintaperuste
-                : Collections.<ValintaperusteetDTO>emptyList();
+        this.hakemus = hakemus != null ? hakemus : Collections.<HakemusDTO>emptyList();
+        this.valintaperuste = valintaperuste != null ? valintaperuste : Collections.<ValintaperusteetDTO>emptyList();
         this.hakijaryhmat = Collections.emptyList();
         this.erillishaku = erillishaku;
     }
@@ -44,12 +42,9 @@ public class LaskeDTO {
             List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat) {
         this.uuid = uuid;
         this.hakukohdeOid = hakukohdeOid;
-        this.hakemus = hakemus != null ? hakemus : Collections
-                .<HakemusDTO>emptyList();
-        this.valintaperuste = valintaperuste != null ? valintaperuste
-                : Collections.<ValintaperusteetDTO>emptyList();
-        this.hakijaryhmat = hakijaryhmat != null ? hakijaryhmat : Collections
-                .<ValintaperusteetHakijaryhmaDTO>emptyList();
+        this.hakemus = hakemus != null ? hakemus : Collections.<HakemusDTO>emptyList();
+        this.valintaperuste = valintaperuste != null ? valintaperuste : Collections.<ValintaperusteetDTO>emptyList();
+        this.hakijaryhmat = hakijaryhmat != null ? hakijaryhmat : Collections.<ValintaperusteetHakijaryhmaDTO>emptyList();
         this.erillishaku = erillishaku;
     }
 

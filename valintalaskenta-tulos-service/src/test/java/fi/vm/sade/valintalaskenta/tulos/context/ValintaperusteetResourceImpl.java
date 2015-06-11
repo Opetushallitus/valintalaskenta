@@ -12,9 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by teemu on 18.12.2014.
- */
 public class ValintaperusteetResourceImpl implements ValintaperusteetResource {
 
     @Override
