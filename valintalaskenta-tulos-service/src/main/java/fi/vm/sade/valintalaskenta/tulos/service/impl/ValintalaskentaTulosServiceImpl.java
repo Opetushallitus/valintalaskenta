@@ -27,9 +27,6 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * @author Jussi Jartamo
- */
 @Service
 public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ValintalaskentaTulosServiceImpl.class);

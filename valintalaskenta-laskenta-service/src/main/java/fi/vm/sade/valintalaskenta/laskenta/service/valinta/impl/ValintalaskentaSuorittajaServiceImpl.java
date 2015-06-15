@@ -33,9 +33,6 @@ import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.HakemuslaskinService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.ValintalaskentaSuorittajaService;
 
-/**
- * @author Jussi Jartamo
- */
 @Service
 public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuorittajaService {
     private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaSuorittajaServiceImpl.class);

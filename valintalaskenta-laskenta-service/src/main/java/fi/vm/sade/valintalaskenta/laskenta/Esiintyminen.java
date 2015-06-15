@@ -1,15 +1,11 @@
 package fi.vm.sade.valintalaskenta.laskenta;
 
 /**
- * 
- * @author Jussi Jartamo
- * 
  *         Monessako jonossa hakemus esiintyy ja monestiko hakemus on
  *         hyväksytty. Jos hakemus ei ole hyväksytty kertaakaan niin hakemus on
  *         hylättävä jatkossa vaikka myöhemmissä vaiheissa tulisi onnistumisia.
  */
 public class Esiintyminen {
-
     private Integer hyvaksyttavissa;
     private Integer esiintyy;
 
