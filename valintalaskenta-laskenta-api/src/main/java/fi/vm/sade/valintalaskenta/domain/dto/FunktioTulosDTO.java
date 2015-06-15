@@ -20,6 +20,13 @@ public class FunktioTulosDTO {
     @ApiModelProperty(value = "Englanninkielinen nimi", required = false)
     private String nimiEn;
 
+    public FunktioTulosDTO() {}
+
+    public FunktioTulosDTO(String tunniste, String arvo) {
+        this.tunniste = tunniste;
+        this.arvo = arvo;
+    }
+
     public String getTunniste() {
         return tunniste;
     }
