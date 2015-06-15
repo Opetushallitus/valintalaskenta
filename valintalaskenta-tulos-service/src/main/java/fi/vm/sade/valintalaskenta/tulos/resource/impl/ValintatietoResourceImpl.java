@@ -28,9 +28,9 @@ public class ValintatietoResourceImpl implements ValintatietoResource {
     @Consumes("application/json")
     @Produces("application/json")
     @PreAuthorize(READ_UPDATE_CRUD)
-    public List<HakemusOsallistuminenDTO> haeValintatiedotHakukohteelle(@PathParam("hakukohdeOid")String hakukohdeOid,
+    public List<HakemusOsallistuminenDTO> haeValintatiedotHakukohteelle(@PathParam("hakukohdeOid") String hakukohdeOid,
                                                                         List<String> valintakoeTunnisteet) {
-        return valintatietoService.haeValintatiedotHakukohteelle(valintakoeTunnisteet,hakukohdeOid);
+        return valintatietoService.haeValintatiedotHakukohteelle(valintakoeTunnisteet, hakukohdeOid);
     }
 
     @Override

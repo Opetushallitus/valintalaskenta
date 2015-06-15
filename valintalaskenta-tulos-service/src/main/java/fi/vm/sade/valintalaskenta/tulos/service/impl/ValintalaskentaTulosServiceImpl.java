@@ -70,7 +70,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             ValintatietoValinnanvaiheDTO vvdto = createValintatietoValinnanvaiheDTO(hakuOid, vv.getCreatedAt(), vv.getValinnanvaiheOid(), vv.getJarjestysnumero());
             for (Valintatapajono jono : vv.getValintatapajonot()) {
                 jono.setJonosijat(new ArrayList<>(
-                        Collections2.filter(jono.getJonosijat(), jonosija -> hakemusOid.equals(jonosija.getHakemusOid())))
+                                Collections2.filter(jono.getJonosijat(), jonosija -> hakemusOid.equals(jonosija.getHakemusOid())))
                 );
                 vvdto.getValintatapajonot().add(valintatulosConverter.convertValintatapajono(jono));
             }

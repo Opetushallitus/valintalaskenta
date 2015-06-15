@@ -206,7 +206,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
                 ht.setPisteet(jonosija.getJarjestyskriteerit().first().getArvo());
             }
 
-            if(jonosija.getJarjestyskriteerit().size() > 0 && !jonosija.getJarjestyskriteerit().first().getKuvaus().isEmpty()) {
+            if (jonosija.getJarjestyskriteerit().size() > 0 && !jonosija.getJarjestyskriteerit().first().getKuvaus().isEmpty()) {
                 Map<String, String> kuvaus = jonosija.getJarjestyskriteerit().first().getKuvaus();
                 ht.setTilanKuvaus(kuvaus.keySet().stream().map(k -> {
                     AvainArvoDTO a = new AvainArvoDTO();
