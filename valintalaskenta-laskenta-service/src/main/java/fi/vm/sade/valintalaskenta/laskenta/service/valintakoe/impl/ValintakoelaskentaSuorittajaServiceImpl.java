@@ -126,27 +126,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                                 viimeisinValinnanVaihe = valinnanvaiheDAO.haeViimeisinValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku());
                             }
                         }
-                        OsallistuminenTulos osallistuminen = new OsallistuminenTulos();
-                        Hakemus hak = hakemusConverter.convert(hakemus);
-                        Funktiokutsu fuk = modelMapper.map(koe.getFunktiokutsu(), Funktiokutsu.class);
-                        if (viimeisinValinnanVaihe != null) {
-                            TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(), new Hyvaksyttavissatila(), viimeisinValinnanVaihe);
-                            if (tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)) {
-                                if (koe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA)) {
-                                    osallistuminen = createOsallistuminen(tilaJaSelite, Osallistuminen.OSALLISTUU);
-                                } else {
-                                    osallistuminen = getOsallistuminenTulos(new Hakukohde(vp.getHakukohdeOid(), hakukohteenValintaperusteet), hak, fuk);
-                                }
-                            } else {
-                                osallistuminen = createOsallistuminen(tilaJaSelite, Osallistuminen.EI_OSALLISTU);
-                            }
-                        } else {
-                            if (koe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA)) {
-                                osallistuminen.setOsallistuminen(Osallistuminen.OSALLISTUU);
-                            } else {
-                                osallistuminen = getOsallistuminenTulos(new Hakukohde(vp.getHakukohdeOid(), hakukohteenValintaperusteet), hak, fuk);
-                            }
-                        }
+                        OsallistuminenTulos osallistuminen = getOsallistuminenTulos(hakemus, vp, hakukohteenValintaperusteet, koe, viimeisinValinnanVaihe);
                         HakukohdeValintakoeData data = new HakukohdeValintakoeData();
                         data.setHakuOid(vp.getHakuOid());
                         data.setLaskettavaHakukohdeOid(vp.getHakukohdeOid());
@@ -228,6 +208,31 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         for (ValintakoeOsallistuminen osallistuminen : osallistumisetByHaku.values()) {
             valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen);
         }
+    }
+
+    private OsallistuminenTulos getOsallistuminenTulos(HakemusDTO hakemus, ValintaperusteetDTO vp, Map<String, String> hakukohteenValintaperusteet, ValintakoeDTO koe, Valinnanvaihe viimeisinValinnanVaihe) {
+        OsallistuminenTulos osallistuminen = new OsallistuminenTulos();
+        Hakemus hak = hakemusConverter.convert(hakemus);
+        Funktiokutsu fuk = modelMapper.map(koe.getFunktiokutsu(), Funktiokutsu.class);
+        if (viimeisinValinnanVaihe != null) {
+            TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(), new Hyvaksyttavissatila(), viimeisinValinnanVaihe);
+            if (tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)) {
+                if (koe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA)) {
+                    osallistuminen = createOsallistuminen(tilaJaSelite, Osallistuminen.OSALLISTUU);
+                } else {
+                    osallistuminen = getOsallistuminenTulos(new Hakukohde(vp.getHakukohdeOid(), hakukohteenValintaperusteet), hak, fuk);
+                }
+            } else {
+                osallistuminen = createOsallistuminen(tilaJaSelite, Osallistuminen.EI_OSALLISTU);
+            }
+        } else {
+            if (koe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA)) {
+                osallistuminen.setOsallistuminen(Osallistuminen.OSALLISTUU);
+            } else {
+                osallistuminen = getOsallistuminenTulos(new Hakukohde(vp.getHakukohdeOid(), hakukohteenValintaperusteet), hak, fuk);
+            }
+        }
+        return osallistuminen;
     }
 
     private void poistaVanhatOsallistumiset(final HakemusDTO hakemus, final List<ValintaperusteetDTO> valintaperusteet) {
