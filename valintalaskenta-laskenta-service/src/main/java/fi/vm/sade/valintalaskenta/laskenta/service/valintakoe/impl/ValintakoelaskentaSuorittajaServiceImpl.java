@@ -101,6 +101,9 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                             LOG.error("(Uuid={}) Valintakokoeen tunnistetta ei pystytty määrittelemään. HakukohdeOid: {} - ValintakoeOid: {}", uuid, vp.getHakukohdeOid(), koe.getOid());
                             continue;
                         }
+                        if (!valintakoeData.containsKey(tunniste)) {
+                            valintakoeData.put(tunniste, new ArrayList<>());
+                        }
                         // Haetaan tätä valinnan vaihetta edeltävä varsinainen
                         // valinnan vaihe, jos sellainen on olemassa
                         // jos edellistä varsinaista valinnan vaihetta ei ole
@@ -117,7 +120,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                         }
                         Valinnanvaihe viimeisinValinnanVaihe = getViimeisinValinnanvaihe(vp, vaihe, edellinenVaihe);
                         OsallistuminenTulos osallistuminen = getOsallistuminenTulos(hakemus, vp, hakukohteenValintaperusteet, koe, viimeisinValinnanVaihe);
-                        HakukohdeValintakoeData data = getHakukohdeValintakoeData(hakemus, uuid, valintakoeData, vp, vaihe, koe, tunniste);
+                        HakukohdeValintakoeData data = getHakukohdeValintakoeData(hakemus, uuid, vp, vaihe, koe, tunniste);
                         data.setOsallistuminenTulos(osallistuminen);
                         valintakoeData.get(tunniste).add(data);
                     }
@@ -172,7 +175,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         }
     }
 
-    private HakukohdeValintakoeData getHakukohdeValintakoeData(HakemusDTO hakemus, String uuid, Map<String, List<HakukohdeValintakoeData>> valintakoeData, ValintaperusteetDTO vp, ValintaperusteetValinnanVaiheDTO vaihe, ValintakoeDTO koe, String tunniste) {
+    private HakukohdeValintakoeData getHakukohdeValintakoeData(HakemusDTO hakemus, String uuid, ValintaperusteetDTO vp, ValintaperusteetValinnanVaiheDTO vaihe, ValintakoeDTO koe, String tunniste) {
         HakukohdeValintakoeData data = new HakukohdeValintakoeData();
         handleKutsunKohde(hakemus, uuid, vp, vaihe, koe, data);
         data.setHakuOid(vp.getHakuOid());
@@ -185,9 +188,6 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         data.setAktiivinen(koe.getAktiivinen());
         data.setKutsunKohde(koe.getKutsunKohde());
         data.setKutsunKohdeAvain(koe.getKutsunKohdeAvain());
-        if (!valintakoeData.containsKey(tunniste)) {
-            valintakoeData.put(tunniste, new ArrayList<>());
-        }
         return data;
     }
 
