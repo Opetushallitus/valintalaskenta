@@ -122,25 +122,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
             for (HakukohdeValintakoeData c : kokeet) {
                 osallistumisetByHaku.putIfAbsent(c.getHakuOid(), luoValintakoeOsallistuminen(c, hakemus, hakutoiveetByOid));
                 olemassaOlevat.add(c);
-                ValintakoeOsallistuminen osallistuminen = osallistumisetByHaku.get(c.getHakuOid());
-                osallistuminen.getHakutoiveet().forEach(h -> h.getValinnanVaiheet().forEach(v -> v.getValintakokeet().forEach(koe -> {
-                    if (koe.getValintakoeTunniste().equals(c.getValintakoeTunniste()) && !koe.getValintakoeOid().equals(c.getValintakoeOid())) {
-                        HakukohdeValintakoeData data = new HakukohdeValintakoeData();
-                        data.setHakuOid(c.getHakuOid());
-                        data.setHakukohdeOid(h.getHakukohdeOid());
-                        data.setOsallistuminenTulos(koe.getOsallistuminenTulos());
-                        data.setValinnanVaiheJarjestysNro(v.getValinnanVaiheJarjestysluku());
-                        data.setValinnanVaiheOid(v.getValinnanVaiheOid());
-                        data.setValintakoeOid(koe.getValintakoeOid());
-                        data.setValintakoeTunniste(koe.getValintakoeTunniste());
-                        data.setNimi(koe.getNimi());
-                        data.setLahetetaankoKoekutsut(koe.isLahetetaankoKoekutsut());
-                        data.setAktiivinen(koe.isAktiivinen());
-                        data.setKutsunKohde(koe.getKutsunKohde());
-                        data.setKutsunKohdeAvain(koe.getKutsunKohdeAvain());
-                        olemassaOlevat.add(data);
-                    }
-                })));
+                addValintaKokeetByMatchingTunnisteAndDifferentValintakoeOid(osallistumisetByHaku, olemassaOlevat, c);
             }
             asetaOsallistumisetKokeisiin(olemassaOlevat, hakutoiveetByOid);
             for (HakukohdeValintakoeData c : olemassaOlevat) {
@@ -151,6 +133,28 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         for (ValintakoeOsallistuminen osallistuminen : osallistumisetByHaku.values()) {
             valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen);
         }
+    }
+
+    private void addValintaKokeetByMatchingTunnisteAndDifferentValintakoeOid(Map<String, ValintakoeOsallistuminen> osallistumisetByHaku, List<HakukohdeValintakoeData> olemassaOlevat, HakukohdeValintakoeData c) {
+        ValintakoeOsallistuminen osallistuminen = osallistumisetByHaku.get(c.getHakuOid());
+        osallistuminen.getHakutoiveet().forEach(h -> h.getValinnanVaiheet().forEach(v -> v.getValintakokeet().forEach(koe -> {
+            if (koe.getValintakoeTunniste().equals(c.getValintakoeTunniste()) && !koe.getValintakoeOid().equals(c.getValintakoeOid())) {
+                HakukohdeValintakoeData data = new HakukohdeValintakoeData();
+                data.setHakuOid(c.getHakuOid());
+                data.setHakukohdeOid(h.getHakukohdeOid());
+                data.setOsallistuminenTulos(koe.getOsallistuminenTulos());
+                data.setValinnanVaiheJarjestysNro(v.getValinnanVaiheJarjestysluku());
+                data.setValinnanVaiheOid(v.getValinnanVaiheOid());
+                data.setValintakoeOid(koe.getValintakoeOid());
+                data.setValintakoeTunniste(koe.getValintakoeTunniste());
+                data.setNimi(koe.getNimi());
+                data.setLahetetaankoKoekutsut(koe.isLahetetaankoKoekutsut());
+                data.setAktiivinen(koe.isAktiivinen());
+                data.setKutsunKohde(koe.getKutsunKohde());
+                data.setKutsunKohdeAvain(koe.getKutsunKohdeAvain());
+                olemassaOlevat.add(data);
+            }
+        })));
     }
 
     private boolean invalidEdellinenValinnanVaine(String uuid, ValintaperusteetDTO vp, ValintaperusteetValinnanVaiheDTO vaihe, Valinnanvaihe edellinenVaihe) {
