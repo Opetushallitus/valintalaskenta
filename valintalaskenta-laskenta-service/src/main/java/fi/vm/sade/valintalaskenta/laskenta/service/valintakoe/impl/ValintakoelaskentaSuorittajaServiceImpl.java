@@ -115,17 +115,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                                 continue;
                             }
                         }
-                        // Haetaan viimeisin varsinainen valinnan vaihe, jos
-                        // sellainen on olemassa (tämä saattaa olla sama kuin
-                        // edeltävä vaihe)
-                        Valinnanvaihe viimeisinValinnanVaihe = null;
-                        if (vaihe.getValinnanVaiheJarjestysluku() > 0) {
-                            if (edellinenVaihe != null && edellinenVaihe.getJarjestysnumero() == vaihe.getValinnanVaiheJarjestysluku() - 1) {
-                                viimeisinValinnanVaihe = edellinenVaihe;
-                            } else {
-                                viimeisinValinnanVaihe = valinnanvaiheDAO.haeViimeisinValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku());
-                            }
-                        }
+                        Valinnanvaihe viimeisinValinnanVaihe = getViimeisinValinnanvaihe(vp, vaihe, edellinenVaihe);
                         OsallistuminenTulos osallistuminen = getOsallistuminenTulos(hakemus, vp, hakukohteenValintaperusteet, koe, viimeisinValinnanVaihe);
                         HakukohdeValintakoeData data = new HakukohdeValintakoeData();
                         data.setHakuOid(vp.getHakuOid());
@@ -208,6 +198,19 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         for (ValintakoeOsallistuminen osallistuminen : osallistumisetByHaku.values()) {
             valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen);
         }
+    }
+
+    private Valinnanvaihe getViimeisinValinnanvaihe(ValintaperusteetDTO vp, ValintaperusteetValinnanVaiheDTO vaihe, Valinnanvaihe edellinenVaihe) {
+        // Haetaan viimeisin varsinainen valinnan vaihe, jos sellainen on olemassa (tämä saattaa olla sama kuin edeltävä vaihe)
+        Valinnanvaihe viimeisinValinnanVaihe = null;
+        if (vaihe.getValinnanVaiheJarjestysluku() > 0) {
+            if (edellinenVaihe != null && edellinenVaihe.getJarjestysnumero() == vaihe.getValinnanVaiheJarjestysluku() - 1) {
+                viimeisinValinnanVaihe = edellinenVaihe;
+            } else {
+                viimeisinValinnanVaihe = valinnanvaiheDAO.haeViimeisinValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku());
+            }
+        }
+        return viimeisinValinnanVaihe;
     }
 
     private OsallistuminenTulos getOsallistuminenTulos(HakemusDTO hakemus, ValintaperusteetDTO vp, Map<String, String> hakukohteenValintaperusteet, ValintakoeDTO koe, Valinnanvaihe viimeisinValinnanVaihe) {
