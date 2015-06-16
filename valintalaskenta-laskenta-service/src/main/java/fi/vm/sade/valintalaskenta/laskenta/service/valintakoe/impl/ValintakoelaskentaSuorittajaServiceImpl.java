@@ -101,9 +101,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                             LOG.error("(Uuid={}) Valintakokoeen tunnistetta ei pystytty määrittelemään. HakukohdeOid: {} - ValintakoeOid: {}", uuid, vp.getHakukohdeOid(), koe.getOid());
                             continue;
                         }
-                        if (!valintakoeData.containsKey(tunniste)) {
-                            valintakoeData.put(tunniste, new ArrayList<>());
-                        }
+                        valintakoeData.putIfAbsent(tunniste, new ArrayList<>());
                         Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdeltavaValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku());
                         if (invalidEdellinenValinnanVaine(uuid, vp, vaihe, edellinenVaihe)) {
                             continue;
