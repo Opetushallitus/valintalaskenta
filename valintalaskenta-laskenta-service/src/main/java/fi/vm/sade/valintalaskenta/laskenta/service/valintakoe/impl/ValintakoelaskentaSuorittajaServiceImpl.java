@@ -121,6 +121,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
             List<HakukohdeValintakoeData> olemassaOlevat = new ArrayList<>();
             for (HakukohdeValintakoeData c : kokeet) {
                 osallistumisetByHaku.putIfAbsent(c.getHakuOid(), luoValintakoeOsallistuminen(c, hakemus, hakutoiveetByOid));
+                olemassaOlevat.add(c);
                 ValintakoeOsallistuminen osallistuminen = osallistumisetByHaku.get(c.getHakuOid());
                 osallistuminen.getHakutoiveet().forEach(h -> h.getValinnanVaiheet().forEach(v -> v.getValintakokeet().forEach(koe -> {
                     if (koe.getValintakoeTunniste().equals(c.getValintakoeTunniste()) && !koe.getValintakoeOid().equals(c.getValintakoeOid())) {
@@ -140,7 +141,6 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                         olemassaOlevat.add(data);
                     }
                 })));
-                olemassaOlevat.add(c);
             }
             asetaOsallistumisetKokeisiin(olemassaOlevat, hakutoiveetByOid);
             for (HakukohdeValintakoeData c : olemassaOlevat) {
