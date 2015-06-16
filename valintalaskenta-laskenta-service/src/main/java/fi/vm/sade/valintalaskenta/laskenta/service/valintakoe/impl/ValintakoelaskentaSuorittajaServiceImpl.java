@@ -41,19 +41,11 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoelaskenta
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoeosallistumislaskin;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.HakukohdeValintakoeData;
 
-/**
- * User: wuoti Date: 2.5.2013 Time: 9.16
- */
 @Service
-public class ValintakoelaskentaSuorittajaServiceImpl implements
-        ValintakoelaskentaSuorittajaService {
-
+public class ValintakoelaskentaSuorittajaServiceImpl implements ValintakoelaskentaSuorittajaService {
     private final String r = "\\{\\{([A-Za-z0–9\\-_]+)\\.([A-Za-z0–9\\-_]+)\\}\\}";
     private final Pattern pattern = Pattern.compile(r);
-
-    private static final Logger LOG = LoggerFactory
-            .getLogger(ValintakoelaskentaSuorittajaServiceImpl.class);
-
+    private static final Logger LOG = LoggerFactory.getLogger(ValintakoelaskentaSuorittajaServiceImpl.class);
     public static final String VALINNANVAIHE_HAKIJAN_VALINTA = "valinnanVaiheHakijanValinta";
 
     @Autowired
@@ -74,32 +66,26 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
     @Autowired
     private ValintalaskentaModelMapper modelMapper;
 
-    private String haeTunniste(String mustache,
-                               Map<String, String> hakukohteenValintaperusteet) {
-
+    private String haeTunniste(String mustache, Map<String, String> hakukohteenValintaperusteet) {
         final Matcher m = pattern.matcher(mustache);
-
         String avain = null;
         while (m.find()) {
-            if (!m.group(1).isEmpty() && m.group(1).contentEquals("hakukohde")
-                    && !m.group(2).isEmpty()) {
+            if (!m.group(1).isEmpty() && m.group(1).contentEquals("hakukohde") && !m.group(2).isEmpty()) {
                 avain = m.group(2);
             }
         }
         if (avain == null) {
             return mustache;
         } else {
-            String arvo = hakukohteenValintaperusteet.get(avain);
-            return arvo;
+            return hakukohteenValintaperusteet.get(avain);
         }
-
     }
 
     @Override
     public void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet, String uuid) {
         LOG.info("(Uuid={}) Laskentaan valintakoeosallistumiset hakemukselle {}", uuid, hakemus.getHakemusoid());
         final Map<String, HakukohdeDTO> hakutoiveetByOid = luoHakutoiveMap(hakemus.getHakukohteet());
-        Map<String, List<HakukohdeValintakoeData>> valintakoeData = new HashMap<String, List<HakukohdeValintakoeData>>();
+        Map<String, List<HakukohdeValintakoeData>> valintakoeData = new HashMap<>();
         if (valintaperusteet.size() == 0) {
             return;
         }
@@ -117,16 +103,11 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
                         }
                         // Haetaan tätä valinnan vaihetta edeltävä varsinainen
                         // valinnan vaihe, jos sellainen on olemassa
-                        Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdeltavaValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku());
                         // jos edellistä varsinaista valinnan vaihetta ei ole
                         // olemassa ja järjestysnumero > 0,
                         // tarkistetaaan löytyykö edellistä valintakoevaihetta vai
                         // heitetäänö virhe
-                        /*LOG.info("(Uuid={}) Hakukohde {}, koe {}, vaiheen oid {}, jarjestysluku {}",
-                                uuid,
-                                vp.getHakukohdeOid(), koe.getOid(), vaihe.getValinnanVaiheOid(),
-                                vaihe.getValinnanVaiheJarjestysluku());*/
-
+                        Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdeltavaValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku());
                         if (edellinenVaihe == null && vaihe.getValinnanVaiheJarjestysluku() > 0) {
                             ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku());
                             if (edellinenOsallistuminen == null) {
