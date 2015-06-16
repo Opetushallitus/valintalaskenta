@@ -104,19 +104,9 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                         if (!valintakoeData.containsKey(tunniste)) {
                             valintakoeData.put(tunniste, new ArrayList<>());
                         }
-                        // Haetaan tätä valinnan vaihetta edeltävä varsinainen
-                        // valinnan vaihe, jos sellainen on olemassa
-                        // jos edellistä varsinaista valinnan vaihetta ei ole
-                        // olemassa ja järjestysnumero > 0,
-                        // tarkistetaaan löytyykö edellistä valintakoevaihetta vai
-                        // heitetäänö virhe
                         Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdeltavaValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku());
-                        if (edellinenVaihe == null && vaihe.getValinnanVaiheJarjestysluku() > 0) {
-                            ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku());
-                            if (edellinenOsallistuminen == null) {
-                                LOG.warn("(Uuid={}) Valinnanvaiheen järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt", uuid);
-                                continue;
-                            }
+                        if (invalidEdellinenValinnanVaine(uuid, vp, vaihe, edellinenVaihe)) {
+                            continue;
                         }
                         Valinnanvaihe viimeisinValinnanVaihe = getViimeisinValinnanvaihe(vp, vaihe, edellinenVaihe);
                         OsallistuminenTulos osallistuminen = getOsallistuminenTulos(hakemus, vp, hakukohteenValintaperusteet, koe, viimeisinValinnanVaihe);
@@ -173,6 +163,18 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         for (ValintakoeOsallistuminen osallistuminen : osallistumisetByHaku.values()) {
             valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen);
         }
+    }
+
+    private boolean invalidEdellinenValinnanVaine(String uuid, ValintaperusteetDTO vp, ValintaperusteetValinnanVaiheDTO vaihe, Valinnanvaihe edellinenVaihe) {
+        if (edellinenVaihe == null && vaihe.getValinnanVaiheJarjestysluku() > 0) {
+            // tarkistetaaan löytyykö edellistä valintakoevaihetta vai heitetäänö virhe
+            ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku());
+            if (edellinenOsallistuminen == null) {
+                LOG.warn("(Uuid={}) Valinnanvaiheen järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt", uuid);
+                return true;
+            }
+        }
+        return false;
     }
 
     private HakukohdeValintakoeData getHakukohdeValintakoeData(HakemusDTO hakemus, String uuid, ValintaperusteetDTO vp, ValintaperusteetValinnanVaiheDTO vaihe, ValintakoeDTO koe, String tunniste) {
