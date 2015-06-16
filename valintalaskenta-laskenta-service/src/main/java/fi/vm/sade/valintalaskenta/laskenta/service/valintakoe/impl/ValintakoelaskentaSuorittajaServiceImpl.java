@@ -174,9 +174,24 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
 
     private HakukohdeValintakoeData getHakukohdeValintakoeData(HakemusDTO hakemus, String uuid, Map<String, List<HakukohdeValintakoeData>> valintakoeData, ValintaperusteetDTO vp, ValintaperusteetValinnanVaiheDTO vaihe, ValintakoeDTO koe, String tunniste) {
         HakukohdeValintakoeData data = new HakukohdeValintakoeData();
+        handleKutsunKohde(hakemus, uuid, vp, vaihe, koe, data);
         data.setHakuOid(vp.getHakuOid());
         data.setLaskettavaHakukohdeOid(vp.getHakukohdeOid());
         data.setLaskettavaValinnanVaiheJarjestysNro(vaihe.getValinnanVaiheJarjestysluku());
+        data.setValintakoeOid(koe.getOid());
+        data.setValintakoeTunniste(tunniste);
+        data.setNimi(koe.getNimi());
+        data.setLahetetaankoKoekutsut(koe.getLahetetaankoKoekutsut());
+        data.setAktiivinen(koe.getAktiivinen());
+        data.setKutsunKohde(koe.getKutsunKohde());
+        data.setKutsunKohdeAvain(koe.getKutsunKohdeAvain());
+        if (!valintakoeData.containsKey(tunniste)) {
+            valintakoeData.put(tunniste, new ArrayList<>());
+        }
+        return data;
+    }
+
+    private void handleKutsunKohde(HakemusDTO hakemus, String uuid, ValintaperusteetDTO vp, ValintaperusteetValinnanVaiheDTO vaihe, ValintakoeDTO koe, HakukohdeValintakoeData data) {
         if (koe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA)) {
             data.setValinnanVaiheOid(VALINNANVAIHE_HAKIJAN_VALINTA);
             data.setValinnanVaiheJarjestysNro(100);
@@ -192,17 +207,6 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
             data.setValinnanVaiheJarjestysNro(vaihe.getValinnanVaiheJarjestysluku());
             data.setValinnanVaiheOid(vaihe.getValinnanVaiheOid());
         }
-        data.setValintakoeOid(koe.getOid());
-        data.setValintakoeTunniste(tunniste);
-        data.setNimi(koe.getNimi());
-        data.setLahetetaankoKoekutsut(koe.getLahetetaankoKoekutsut());
-        data.setAktiivinen(koe.getAktiivinen());
-        data.setKutsunKohde(koe.getKutsunKohde());
-        data.setKutsunKohdeAvain(koe.getKutsunKohdeAvain());
-        if (!valintakoeData.containsKey(tunniste)) {
-            valintakoeData.put(tunniste, new ArrayList<>());
-        }
-        return data;
     }
 
     private Valinnanvaihe getViimeisinValinnanvaihe(ValintaperusteetDTO vp, ValintaperusteetValinnanVaiheDTO vaihe, Valinnanvaihe edellinenVaihe) {
