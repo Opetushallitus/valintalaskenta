@@ -117,36 +117,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                         }
                         Valinnanvaihe viimeisinValinnanVaihe = getViimeisinValinnanvaihe(vp, vaihe, edellinenVaihe);
                         OsallistuminenTulos osallistuminen = getOsallistuminenTulos(hakemus, vp, hakukohteenValintaperusteet, koe, viimeisinValinnanVaihe);
-                        HakukohdeValintakoeData data = new HakukohdeValintakoeData();
-                        data.setHakuOid(vp.getHakuOid());
-                        data.setLaskettavaHakukohdeOid(vp.getHakukohdeOid());
-                        data.setLaskettavaValinnanVaiheJarjestysNro(vaihe.getValinnanVaiheJarjestysluku());
-                        if (koe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA)) {
-                            data.setValinnanVaiheOid(VALINNANVAIHE_HAKIJAN_VALINTA);
-                            data.setValinnanVaiheJarjestysNro(100);
-                            final Optional<AvainArvoDTO> avainArvo = hakemus.getAvaimet().stream().filter(avainArvoDTO -> avainArvoDTO.getAvain().equals(koe.getKutsunKohdeAvain())).findFirst();
-                            if (avainArvo.isPresent()) {
-                                data.setHakukohdeOid(avainArvo.get().getArvo());
-                            } else {
-                                LOG.error("(Uuid={}) Hakemukselta {} puuttuu kutsun kohde {}", uuid, hakemus.getHakemusoid(), koe.getKutsunKohdeAvain());
-                                throw new RuntimeException("Hakemukselta ei löytynyt kutsun kohdetta!");
-                            }
-                        } else {
-                            data.setHakukohdeOid(vp.getHakukohdeOid());
-                            data.setValinnanVaiheJarjestysNro(vaihe.getValinnanVaiheJarjestysluku());
-                            data.setValinnanVaiheOid(vaihe.getValinnanVaiheOid());
-                        }
+                        HakukohdeValintakoeData data = getHakukohdeValintakoeData(hakemus, uuid, valintakoeData, vp, vaihe, koe, tunniste);
                         data.setOsallistuminenTulos(osallistuminen);
-                        data.setValintakoeOid(koe.getOid());
-                        data.setValintakoeTunniste(tunniste);
-                        data.setNimi(koe.getNimi());
-                        data.setLahetetaankoKoekutsut(koe.getLahetetaankoKoekutsut());
-                        data.setAktiivinen(koe.getAktiivinen());
-                        data.setKutsunKohde(koe.getKutsunKohde());
-                        data.setKutsunKohdeAvain(koe.getKutsunKohdeAvain());
-                        if (!valintakoeData.containsKey(tunniste)) {
-                            valintakoeData.put(tunniste, new ArrayList<>());
-                        }
                         valintakoeData.get(tunniste).add(data);
                     }
                 }
@@ -198,6 +170,39 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         for (ValintakoeOsallistuminen osallistuminen : osallistumisetByHaku.values()) {
             valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen);
         }
+    }
+
+    private HakukohdeValintakoeData getHakukohdeValintakoeData(HakemusDTO hakemus, String uuid, Map<String, List<HakukohdeValintakoeData>> valintakoeData, ValintaperusteetDTO vp, ValintaperusteetValinnanVaiheDTO vaihe, ValintakoeDTO koe, String tunniste) {
+        HakukohdeValintakoeData data = new HakukohdeValintakoeData();
+        data.setHakuOid(vp.getHakuOid());
+        data.setLaskettavaHakukohdeOid(vp.getHakukohdeOid());
+        data.setLaskettavaValinnanVaiheJarjestysNro(vaihe.getValinnanVaiheJarjestysluku());
+        if (koe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA)) {
+            data.setValinnanVaiheOid(VALINNANVAIHE_HAKIJAN_VALINTA);
+            data.setValinnanVaiheJarjestysNro(100);
+            final Optional<AvainArvoDTO> avainArvo = hakemus.getAvaimet().stream().filter(avainArvoDTO -> avainArvoDTO.getAvain().equals(koe.getKutsunKohdeAvain())).findFirst();
+            if (avainArvo.isPresent()) {
+                data.setHakukohdeOid(avainArvo.get().getArvo());
+            } else {
+                LOG.error("(Uuid={}) Hakemukselta {} puuttuu kutsun kohde {}", uuid, hakemus.getHakemusoid(), koe.getKutsunKohdeAvain());
+                throw new RuntimeException("Hakemukselta ei löytynyt kutsun kohdetta!");
+            }
+        } else {
+            data.setHakukohdeOid(vp.getHakukohdeOid());
+            data.setValinnanVaiheJarjestysNro(vaihe.getValinnanVaiheJarjestysluku());
+            data.setValinnanVaiheOid(vaihe.getValinnanVaiheOid());
+        }
+        data.setValintakoeOid(koe.getOid());
+        data.setValintakoeTunniste(tunniste);
+        data.setNimi(koe.getNimi());
+        data.setLahetetaankoKoekutsut(koe.getLahetetaankoKoekutsut());
+        data.setAktiivinen(koe.getAktiivinen());
+        data.setKutsunKohde(koe.getKutsunKohde());
+        data.setKutsunKohdeAvain(koe.getKutsunKohdeAvain());
+        if (!valintakoeData.containsKey(tunniste)) {
+            valintakoeData.put(tunniste, new ArrayList<>());
+        }
+        return data;
     }
 
     private Valinnanvaihe getViimeisinValinnanvaihe(ValintaperusteetDTO vp, ValintaperusteetValinnanVaiheDTO vaihe, Valinnanvaihe edellinenVaihe) {
