@@ -115,20 +115,14 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                 }
             }
         }
-        Map<String, ValintakoeOsallistuminen> osallistumisetByHaku = new HashMap<String, ValintakoeOsallistuminen>();
+        Map<String, ValintakoeOsallistuminen> osallistumisetByHaku = new HashMap<>();
         for (Map.Entry<String, List<HakukohdeValintakoeData>> entry : valintakoeData.entrySet()) {
             List<HakukohdeValintakoeData> kokeet = entry.getValue();
             List<HakukohdeValintakoeData> olemassaOlevat = new ArrayList<>();
-//            asetaOsallistumisetKokeisiin(kokeet, hakutoiveetByOid);
             for (HakukohdeValintakoeData c : kokeet) {
-                //LOG.info("(Uuid={}) Hakukohde: {}, valintakoe: {}", uuid, c.getHakukohdeOid(), c.getValintakoeOid());
                 if (!osallistumisetByHaku.containsKey(c.getHakuOid())) {
                     osallistumisetByHaku.put(c.getHakuOid(), luoValintakoeOsallistuminen(c, hakemus, hakutoiveetByOid));
                 }
-//                ValintakoeOsallistuminen osallistuminen = osallistumisetByHaku
-//                        .get(c.getHakuOid());
-//
-//                haeTaiLuoHakutoive(osallistuminen, c);
             }
             for (HakukohdeValintakoeData c : kokeet) {
                 ValintakoeOsallistuminen osallistuminen = osallistumisetByHaku.get(c.getHakuOid());
