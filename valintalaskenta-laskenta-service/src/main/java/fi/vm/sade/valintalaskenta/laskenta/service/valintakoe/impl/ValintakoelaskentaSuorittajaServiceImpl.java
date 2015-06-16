@@ -46,54 +46,54 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.Hakukohd
  */
 @Service
 public class ValintakoelaskentaSuorittajaServiceImpl implements
-		ValintakoelaskentaSuorittajaService {
+        ValintakoelaskentaSuorittajaService {
 
-	private final String r = "\\{\\{([A-Za-z0–9\\-_]+)\\.([A-Za-z0–9\\-_]+)\\}\\}";
-	private final Pattern pattern = Pattern.compile(r);
+    private final String r = "\\{\\{([A-Za-z0–9\\-_]+)\\.([A-Za-z0–9\\-_]+)\\}\\}";
+    private final Pattern pattern = Pattern.compile(r);
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(ValintakoelaskentaSuorittajaServiceImpl.class);
+    private static final Logger LOG = LoggerFactory
+            .getLogger(ValintakoelaskentaSuorittajaServiceImpl.class);
 
     public static final String VALINNANVAIHE_HAKIJAN_VALINTA = "valinnanVaiheHakijanValinta";
 
     @Autowired
     private HakemusDTOToHakemusConverter hakemusConverter;
 
-	@Autowired
-	private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
+    @Autowired
+    private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
 
-	@Autowired
-	private Valintakoeosallistumislaskin valintakoeosallistumislaskin;
+    @Autowired
+    private Valintakoeosallistumislaskin valintakoeosallistumislaskin;
 
-	@Autowired
-	private ValinnanvaiheDAO valinnanvaiheDAO;
+    @Autowired
+    private ValinnanvaiheDAO valinnanvaiheDAO;
 
-	@Autowired
-	private EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija;
+    @Autowired
+    private EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija;
 
     @Autowired
     private ValintalaskentaModelMapper modelMapper;
 
-	private String haeTunniste(String mustache,
-			Map<String, String> hakukohteenValintaperusteet) {
+    private String haeTunniste(String mustache,
+                               Map<String, String> hakukohteenValintaperusteet) {
 
-		final Matcher m = pattern.matcher(mustache);
+        final Matcher m = pattern.matcher(mustache);
 
-		String avain = null;
-		while (m.find()) {
-			if (!m.group(1).isEmpty() && m.group(1).contentEquals("hakukohde")
-					&& !m.group(2).isEmpty()) {
-				avain = m.group(2);
-			}
-		}
-		if (avain == null) {
-			return mustache;
-		} else {
-			String arvo = hakukohteenValintaperusteet.get(avain);
-			return arvo;
-		}
+        String avain = null;
+        while (m.find()) {
+            if (!m.group(1).isEmpty() && m.group(1).contentEquals("hakukohde")
+                    && !m.group(2).isEmpty()) {
+                avain = m.group(2);
+            }
+        }
+        if (avain == null) {
+            return mustache;
+        } else {
+            String arvo = hakukohteenValintaperusteet.get(avain);
+            return arvo;
+        }
 
-	}
+    }
 
     @Override
     public void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet, String uuid) {
@@ -272,8 +272,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
                     final boolean eiValintakokeita = valinnanvaiheet.stream().flatMap(vv -> vv.getValintakokeet().stream()).count() == 0;
                     if (eiValintakokeita) {
                         final List<Hakutoive> saastettavat = kaikkiOsallistumiset.getHakutoiveet().stream()
-                            .filter(hakutoive -> !hakutoive.getHakukohdeOid().equals(ensimmainenHakukohde))
-                            .collect(Collectors.toList());
+                                .filter(hakutoive -> !hakutoive.getHakukohdeOid().equals(ensimmainenHakukohde))
+                                .collect(Collectors.toList());
                         kaikkiOsallistumiset.setHakutoiveet(saastettavat);
                     } else {
                         kaikkiOsallistumiset.getHakutoiveet().forEach(hakutoive -> {
@@ -320,8 +320,12 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
         // kullekin hakukohteelle
         // valintakoekohtainen osallistumistieto
         Collections.sort(kokeet, (o1, o2) ->
-                hakukohteetByOid.getOrDefault(o1.getHakukohdeOid(), new HakukohdeDTO() {{setPrioriteetti(Integer.MAX_VALUE); }}).getPrioriteetti()
-                - hakukohteetByOid.getOrDefault(o2.getHakukohdeOid(), new HakukohdeDTO() {{setPrioriteetti(Integer.MAX_VALUE); }}).getPrioriteetti());
+                hakukohteetByOid.getOrDefault(o1.getHakukohdeOid(), new HakukohdeDTO() {{
+                    setPrioriteetti(Integer.MAX_VALUE);
+                }}).getPrioriteetti()
+                        - hakukohteetByOid.getOrDefault(o2.getHakukohdeOid(), new HakukohdeDTO() {{
+                    setPrioriteetti(Integer.MAX_VALUE);
+                }}).getPrioriteetti());
 
         // Jos hakija osallistuu korkeamman prioriteetin hakuktoiveen
         // valintakokeeseen, hakija ei osallistu
@@ -395,75 +399,75 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements
 
     private List<ValintakoeValinnanvaihe> getHakijanValintaVaiheet(Hakutoive t) {
         return t.getValinnanVaiheet().stream()
-            .filter(v -> v.getValinnanVaiheOid().equals(VALINNANVAIHE_HAKIJAN_VALINTA))
-            .collect(Collectors.toList());
+                .filter(v -> v.getValinnanVaiheOid().equals(VALINNANVAIHE_HAKIJAN_VALINTA))
+                .collect(Collectors.toList());
     }
 
     protected void haeTaiLuoHakutoive(ValintakoeOsallistuminen osallistuminen,
-			HakukohdeValintakoeData data) {
-		Hakutoive toive = null;
-		for (Hakutoive t : osallistuminen.getHakutoiveet()) {
-			if (data.getHakukohdeOid().equals(t.getHakukohdeOid())) {
-				toive = t;
-				break;
-			}
-		}
+                                      HakukohdeValintakoeData data) {
+        Hakutoive toive = null;
+        for (Hakutoive t : osallistuminen.getHakutoiveet()) {
+            if (data.getHakukohdeOid().equals(t.getHakukohdeOid())) {
+                toive = t;
+                break;
+            }
+        }
 
-		if (toive == null) {
-			toive = new Hakutoive();
-			osallistuminen.getHakutoiveet().add(toive);
-		}
-		toive.setHakukohdeOid(data.getHakukohdeOid());
+        if (toive == null) {
+            toive = new Hakutoive();
+            osallistuminen.getHakutoiveet().add(toive);
+        }
+        toive.setHakukohdeOid(data.getHakukohdeOid());
 
-		haeTaiLuoValinnanVaihe(toive, data);
-	}
+        haeTaiLuoValinnanVaihe(toive, data);
+    }
 
-	protected void haeTaiLuoValinnanVaihe(Hakutoive hakutoive, HakukohdeValintakoeData data) {
+    protected void haeTaiLuoValinnanVaihe(Hakutoive hakutoive, HakukohdeValintakoeData data) {
         hakutoive.setLaskettavaHakukohdeOid(data.getLaskettavaHakukohdeOid());
-		ValintakoeValinnanvaihe vaihe = null;
+        ValintakoeValinnanvaihe vaihe = null;
 
-		for (ValintakoeValinnanvaihe v : hakutoive.getValinnanVaiheet()) {
-			if (data.getValinnanVaiheOid().equals(v.getValinnanVaiheOid())) {
-				vaihe = v;
-				break;
-			}
-		}
+        for (ValintakoeValinnanvaihe v : hakutoive.getValinnanVaiheet()) {
+            if (data.getValinnanVaiheOid().equals(v.getValinnanVaiheOid())) {
+                vaihe = v;
+                break;
+            }
+        }
 
-		if (vaihe == null) {
-			vaihe = new ValintakoeValinnanvaihe();
-			hakutoive.getValinnanVaiheet().add(vaihe);
-		}
-		vaihe.setValinnanVaiheOid(data.getValinnanVaiheOid());
+        if (vaihe == null) {
+            vaihe = new ValintakoeValinnanvaihe();
+            hakutoive.getValinnanVaiheet().add(vaihe);
+        }
+        vaihe.setValinnanVaiheOid(data.getValinnanVaiheOid());
         vaihe.setValinnanVaiheJarjestysluku(data.getValinnanVaiheJarjestysNro());
         vaihe.setLaskettavaJarjestysluku(data.getLaskettavaValinnanVaiheJarjestysNro());
 
-		haeTaiLuoValintakoe(vaihe, data);
-	}
+        haeTaiLuoValintakoe(vaihe, data);
+    }
 
-	protected void haeTaiLuoValintakoe(ValintakoeValinnanvaihe valinnanVaihe,
-			HakukohdeValintakoeData data) {
-		Valintakoe koe = null;
-		for (Valintakoe k : valinnanVaihe.getValintakokeet()) {
-			if (data.getValintakoeTunniste().equals(k.getValintakoeTunniste())) {
-				koe = k;
-				break;
-			}
-		}
+    protected void haeTaiLuoValintakoe(ValintakoeValinnanvaihe valinnanVaihe,
+                                       HakukohdeValintakoeData data) {
+        Valintakoe koe = null;
+        for (Valintakoe k : valinnanVaihe.getValintakokeet()) {
+            if (data.getValintakoeTunniste().equals(k.getValintakoeTunniste())) {
+                koe = k;
+                break;
+            }
+        }
 
-		if (koe == null) {
-			koe = new Valintakoe();
-			valinnanVaihe.getValintakokeet().add(koe);
-		}
+        if (koe == null) {
+            koe = new Valintakoe();
+            valinnanVaihe.getValintakokeet().add(koe);
+        }
 
-		koe.setOsallistuminenTulos(data.getOsallistuminenTulos());
-		koe.setValintakoeOid(data.getValintakoeOid());
-		koe.setNimi(data.getNimi());
-		koe.setValintakoeTunniste(data.getValintakoeTunniste());
-		koe.setLahetetaankoKoekutsut(data.isLahetetaankoKoekutsut());
-		koe.setAktiivinen(data.isAktiivinen());
+        koe.setOsallistuminenTulos(data.getOsallistuminenTulos());
+        koe.setValintakoeOid(data.getValintakoeOid());
+        koe.setNimi(data.getNimi());
+        koe.setValintakoeTunniste(data.getValintakoeTunniste());
+        koe.setLahetetaankoKoekutsut(data.isLahetetaankoKoekutsut());
+        koe.setAktiivinen(data.isAktiivinen());
         koe.setKutsunKohde(data.getKutsunKohde());
         koe.setKutsunKohdeAvain(data.getKutsunKohdeAvain());
-	}
+    }
 
     protected Map<String, HakukohdeDTO> luoHakutoiveMap(
             List<HakukohdeDTO> hakutoiveet) {
