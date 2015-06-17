@@ -71,8 +71,6 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                 LOG.error("(Uuid={}) Hakukohteelle {} ei ole yhtään hakemusta. Hypätään yli.", uuid, hakukohdeOid);
                 continue;
             }
-            String hakuOid = vp.getHakuOid();
-            String tarjoajaOid = vp.getTarjoajaOid();
             List<HakemusWrapper> hakemukset = hakemuksetHakukohteittain.get(hakukohdeOid).getHakemukset();
             List<Hakemus> laskentahakemukset = hakemuksetHakukohteittain.get(hakukohdeOid).getLaskentahakemukset();
             if (hakemukset == null
@@ -82,9 +80,9 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             }
             Map<String, String> hakukohteenValintaperusteet = muodostaHakukohteenValintaperusteetMap(vp.getHakukohteenValintaperuste());
             ValintaperusteetValinnanVaiheDTO vaihe = vp.getValinnanVaihe();
-
             final String valinnanvaiheOid = vaihe.getValinnanVaiheOid();
             final int jarjestysnumero = vaihe.getValinnanVaiheJarjestysluku();
+            final String hakuOid = vp.getHakuOid();
 
             LOG.info("(Uuid={}) Haku {}, hakukohde {}, valinnanvaihe {} - jarjestysnumero {}", uuid, hakuOid, hakukohdeOid, valinnanvaiheOid, jarjestysnumero);
             Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
@@ -115,7 +113,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             valinnanvaihe.setHakuOid(hakuOid);
             valinnanvaihe.setJarjestysnumero(jarjestysnumero);
             valinnanvaihe.setValinnanvaiheOid(valinnanvaiheOid);
-            valinnanvaihe.setTarjoajaOid(tarjoajaOid);
+            valinnanvaihe.setTarjoajaOid(vp.getTarjoajaOid());
             valinnanvaihe.setNimi(vp.getValinnanVaihe().getNimi());
 
             laskeValintatapajonot(hakukohdeOid, uuid, hakemukset, laskentahakemukset, hakukohteenValintaperusteet, vaihe, jarjestysnumero, edellinenVaihe, viimeisinVaihe, valinnanvaihe);
