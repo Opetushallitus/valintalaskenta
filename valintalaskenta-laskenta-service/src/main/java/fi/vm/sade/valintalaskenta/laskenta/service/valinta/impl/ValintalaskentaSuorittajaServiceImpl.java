@@ -86,15 +86,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
             LOG.info("(Uuid={}) Haku {}, hakukohde {}, valinnanvaihe {} - jarjestysnumero {}", uuid, hakuOid, hakukohdeOid, valinnanvaiheOid, jarjestysnumero);
             Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
-
-            // jos edellinenVaihe == null ja järjestysluku > 0 tarkistetaaan
-            // löytyykö edellistä valintakoevaihetta vai heitetäänö virhe
-            if (edellinenVaihe == null && jarjestysnumero > 0) {
-                ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
-                if (edellinenOsallistuminen == null) {
-                    LOG.warn("(Uuid={}) Valinnanvaiheen järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt", uuid);
-                    continue;
-                }
+            if (invalidEdellinenVaihe(hakukohdeOid, uuid, jarjestysnumero, hakuOid, edellinenVaihe)) {
+                continue;
             }
             final Valinnanvaihe viimeisinVaihe = getViimeisinValinnanVaihe(hakukohdeOid, jarjestysnumero, hakuOid, edellinenVaihe);
             Valinnanvaihe valinnanvaihe = haeTaiLuoValinnanvaihe(valinnanvaiheOid, hakuOid, hakukohdeOid, jarjestysnumero);
@@ -112,6 +105,17 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         poistaHaamuryhmat(hakijaryhmat, valintaperusteet.get(0).getHakukohdeOid());
         LOG.info("(Uuid={}) Hakijaryhmien määrä {} hakukohteessa {}", uuid, hakijaryhmat.size(), hakukohdeOid);
         laskeHakijaryhmat(valintaperusteet, hakijaryhmat, hakukohdeOid, uuid, hakemuksetHakukohteittain);
+    }
+
+    private boolean invalidEdellinenVaihe(String hakukohdeOid, String uuid, int jarjestysnumero, String hakuOid, Valinnanvaihe edellinenVaihe) {
+        if (edellinenVaihe == null && jarjestysnumero > 0) {
+            ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
+            if (edellinenOsallistuminen == null) {
+                LOG.warn("(Uuid={}) Valinnanvaiheen järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt", uuid);
+                return true;
+            }
+        }
+        return false;
     }
 
     private Valinnanvaihe getViimeisinValinnanVaihe(String hakukohdeOid, int jarjestysnumero, String hakuOid, Valinnanvaihe edellinenVaihe) {
