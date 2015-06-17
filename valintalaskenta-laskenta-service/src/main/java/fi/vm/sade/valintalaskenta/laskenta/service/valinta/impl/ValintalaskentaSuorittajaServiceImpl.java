@@ -219,18 +219,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
     private void laskeValintatapajonot(String hakukohdeOid, String uuid, List<HakemusWrapper> hakemukset, List<Hakemus> laskentahakemukset, Map<String, String> hakukohteenValintaperusteet, ValintaperusteetValinnanVaiheDTO vaihe, int jarjestysnumero, Valinnanvaihe edellinenVaihe, Valinnanvaihe viimeisinVaihe, Valinnanvaihe valinnanvaihe) {
         for (ValintatapajonoJarjestyskriteereillaDTO j : vaihe.getValintatapajono()) {
-            Valintatapajono jono = new Valintatapajono();
-            jono.setAloituspaikat(j.getAloituspaikat());
-            jono.setEiVarasijatayttoa(j.getEiVarasijatayttoa());
-            jono.setNimi(j.getNimi());
-            jono.setPrioriteetti(j.getPrioriteetti());
-            jono.setSiirretaanSijoitteluun(j.getSiirretaanSijoitteluun());
-            jono.setKaikkiEhdonTayttavatHyvaksytaan(j.getKaikkiEhdonTayttavatHyvaksytaan());
-            jono.setTasasijasaanto(Tasasijasaanto.valueOf(j.getTasasijasaanto()));
-            jono.setValintatapajonoOid(j.getOid());
-            jono.setValmisSijoiteltavaksi(j.getValmisSijoiteltavaksi());
-            jono.setKaytetaanValintalaskentaa(j.getKaytetaanValintalaskentaa());
-
+            Valintatapajono jono = createValintatapajono(j);
             Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan = new HashMap<>();
             for (ValintaperusteetJarjestyskriteeriDTO jk : j.getJarjestyskriteerit()) {
                 Funktiokutsu funktiokutsu = modelMapper.map(jk.getFunktiokutsu(), Funktiokutsu.class);
@@ -311,6 +300,21 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             }
             valinnanvaihe.getValintatapajonot().add(jono);
         }
+    }
+
+    private Valintatapajono createValintatapajono(ValintatapajonoJarjestyskriteereillaDTO j) {
+        Valintatapajono jono = new Valintatapajono();
+        jono.setAloituspaikat(j.getAloituspaikat());
+        jono.setEiVarasijatayttoa(j.getEiVarasijatayttoa());
+        jono.setNimi(j.getNimi());
+        jono.setPrioriteetti(j.getPrioriteetti());
+        jono.setSiirretaanSijoitteluun(j.getSiirretaanSijoitteluun());
+        jono.setKaikkiEhdonTayttavatHyvaksytaan(j.getKaikkiEhdonTayttavatHyvaksytaan());
+        jono.setTasasijasaanto(Tasasijasaanto.valueOf(j.getTasasijasaanto()));
+        jono.setValintatapajonoOid(j.getOid());
+        jono.setValmisSijoiteltavaksi(j.getValmisSijoiteltavaksi());
+        jono.setKaytetaanValintalaskentaa(j.getKaytetaanValintalaskentaa());
+        return jono;
     }
 
     private void jarjestaValinnanVaiheenJarjestysluvunMukaan(List<ValintaperusteetDTO> valintaperusteet) {
