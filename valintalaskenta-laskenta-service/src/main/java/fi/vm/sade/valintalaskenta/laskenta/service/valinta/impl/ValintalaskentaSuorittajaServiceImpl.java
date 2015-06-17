@@ -191,30 +191,34 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                 }
 
                 for (JonosijaJaSyotetytArvot js : jonosijatHakemusOidinMukaan.values()) {
-                    Jonosija jonosija = js.getJonosija();
-                    for (SyotettyArvo a : js.getSyotetytArvot().values()) {
-                        fi.vm.sade.valintalaskenta.domain.valinta.SyotettyArvo syotettyArvo = new fi.vm.sade.valintalaskenta.domain.valinta.SyotettyArvo();
-                        syotettyArvo.setArvo(a.getArvo());
-                        syotettyArvo.setLaskennallinenArvo(a.getLaskennallinenArvo());
-                        syotettyArvo.setOsallistuminen(a.getOsallistuminen().name());
-                        syotettyArvo.setTunniste(a.getTunniste());
-                        jonosija.getSyotetytArvot().add(syotettyArvo);
-                    }
-                    for (FunktioTulos a : js.getFunktioTulokset().values()) {
-                        fi.vm.sade.valintalaskenta.domain.valinta.FunktioTulos funktioTulos = new fi.vm.sade.valintalaskenta.domain.valinta.FunktioTulos();
-                        funktioTulos.setArvo(a.getArvo());
-                        funktioTulos.setTunniste(a.getTunniste());
-                        funktioTulos.setNimiFi(a.getNimiFi());
-                        funktioTulos.setNimiSv(a.getNimiSv());
-                        funktioTulos.setNimiEn(a.getNimiEn());
-                        jonosija.getFunktioTulokset().add(funktioTulos);
-                    }
-                    hakijaryhma.getJonosijat().add(jonosija);
+                    hakijaryhma.getJonosijat().add(createJonosija(js));
                 }
                 LOG.info("(Uuid={}) Persistoidaan hakijaryhmä {}", uuid, hakijaryhma.getHakijaryhmaOid());
                 hakijaryhmaDAO.create(hakijaryhma);
             });
         }
+    }
+
+    private Jonosija createJonosija(JonosijaJaSyotetytArvot js) {
+        Jonosija jonosija = js.getJonosija();
+        for (SyotettyArvo a : js.getSyotetytArvot().values()) {
+            fi.vm.sade.valintalaskenta.domain.valinta.SyotettyArvo syotettyArvo = new fi.vm.sade.valintalaskenta.domain.valinta.SyotettyArvo();
+            syotettyArvo.setArvo(a.getArvo());
+            syotettyArvo.setLaskennallinenArvo(a.getLaskennallinenArvo());
+            syotettyArvo.setOsallistuminen(a.getOsallistuminen().name());
+            syotettyArvo.setTunniste(a.getTunniste());
+            jonosija.getSyotetytArvot().add(syotettyArvo);
+        }
+        for (FunktioTulos a : js.getFunktioTulokset().values()) {
+            fi.vm.sade.valintalaskenta.domain.valinta.FunktioTulos funktioTulos = new fi.vm.sade.valintalaskenta.domain.valinta.FunktioTulos();
+            funktioTulos.setArvo(a.getArvo());
+            funktioTulos.setTunniste(a.getTunniste());
+            funktioTulos.setNimiFi(a.getNimiFi());
+            funktioTulos.setNimiSv(a.getNimiSv());
+            funktioTulos.setNimiEn(a.getNimiEn());
+            jonosija.getFunktioTulokset().add(funktioTulos);
+        }
+        return jonosija;
     }
 
     private void laskeValintatapajonot(String hakukohdeOid, String uuid, List<HakemusWrapper> hakemukset, List<Hakemus> laskentahakemukset, Map<String, String> hakukohteenValintaperusteet, ValintaperusteetValinnanVaiheDTO vaihe, int jarjestysnumero, Valinnanvaihe edellinenVaihe, Valinnanvaihe viimeisinVaihe, Valinnanvaihe valinnanvaihe) {
@@ -267,25 +271,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             }
 
             for (JonosijaJaSyotetytArvot js : jonosijatHakemusOidinMukaan.values()) {
-                Jonosija jonosija = js.getJonosija();
-                for (SyotettyArvo a : js.getSyotetytArvot().values()) {
-                    fi.vm.sade.valintalaskenta.domain.valinta.SyotettyArvo syotettyArvo = new fi.vm.sade.valintalaskenta.domain.valinta.SyotettyArvo();
-                    syotettyArvo.setArvo(a.getArvo());
-                    syotettyArvo.setLaskennallinenArvo(a.getLaskennallinenArvo());
-                    syotettyArvo.setOsallistuminen(a.getOsallistuminen().name());
-                    syotettyArvo.setTunniste(a.getTunniste());
-                    jonosija.getSyotetytArvot().add(syotettyArvo);
-                }
-                for (FunktioTulos a : js.getFunktioTulokset().values()) {
-                    fi.vm.sade.valintalaskenta.domain.valinta.FunktioTulos funktioTulos = new fi.vm.sade.valintalaskenta.domain.valinta.FunktioTulos();
-                    funktioTulos.setArvo(a.getArvo());
-                    funktioTulos.setTunniste(a.getTunniste());
-                    funktioTulos.setNimiFi(a.getNimiFi());
-                    funktioTulos.setNimiSv(a.getNimiSv());
-                    funktioTulos.setNimiEn(a.getNimiEn());
-                    jonosija.getFunktioTulokset().add(funktioTulos);
-                }
-                jono.getJonosijat().add(jonosija);
+                jono.getJonosijat().add(createJonosija(js));
             }
 
             if (j.isPoistetaankoHylatyt()) {
