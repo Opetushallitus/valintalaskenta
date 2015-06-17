@@ -60,9 +60,7 @@ public class ValintalaskentaResourceImpl {
         }
         try {
             ValintaperusteetDTO valintaperusteetDTO = laskeDTO.getValintaperuste().get(0);
-            boolean erillisHaku = laskeDTO.isErillishaku()
-                    && valintaperusteetDTO.getViimeinenValinnanvaihe()
-                    == valintaperusteetDTO.getValinnanVaihe().getValinnanVaiheJarjestysluku();
+            boolean erillisHaku = isErillisHaku(laskeDTO, valintaperusteetDTO);
 
             if (erillisHaku) {
                 setSijoittelunKayttamanKentat(valintaperusteetDTO);
@@ -86,6 +84,12 @@ public class ValintalaskentaResourceImpl {
         LOG.info("(Uuid={}) Laskenta suoritettu hakukohteessa {}", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid());
 
         return "Onnistui!";
+    }
+
+    private boolean isErillisHaku(LaskeDTO laskeDTO, ValintaperusteetDTO valintaperusteetDTO) {
+        return laskeDTO.isErillishaku()
+                        && valintaperusteetDTO.getViimeinenValinnanvaihe()
+                        == valintaperusteetDTO.getValinnanVaihe().getValinnanVaiheJarjestysluku();
     }
 
     @Path("valintakokeet")
@@ -147,9 +151,7 @@ public class ValintalaskentaResourceImpl {
                             laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, dto.getValintaperuste(), laskeDTO.getUuid()));
                         } else {
                             ValintaperusteetDTO valintaperusteetDTO = dto.getValintaperuste().get(0);
-                            boolean erillisHaku = laskeDTO.isErillishaku()
-                                    && valintaperusteetDTO.getViimeinenValinnanvaihe()
-                                    == valintaperusteetDTO.getValinnanVaihe().getValinnanVaiheJarjestysluku();
+                            boolean erillisHaku = isErillisHaku(laskeDTO, valintaperusteetDTO);
 
                             if (erillisHaku) {
                                 // Aseta sijoittelun käyttämät kentät
@@ -226,9 +228,7 @@ public class ValintalaskentaResourceImpl {
                             laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste(), laskeDTO.getUuid()));
                         } else {
                             ValintaperusteetDTO valintaperusteetDTO = valintaPerusteet;
-                            boolean erillisHaku = laskeDTO.isErillishaku()
-                                    && valintaperusteetDTO.getViimeinenValinnanvaihe()
-                                    == valintaperusteetDTO.getValinnanVaihe().getValinnanVaiheJarjestysluku();
+                            boolean erillisHaku = isErillisHaku(laskeDTO, valintaperusteetDTO);
 
                             if (erillisHaku) {
                                 // Aseta sijoittelun käyttämät kentät
