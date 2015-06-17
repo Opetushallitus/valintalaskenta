@@ -67,14 +67,12 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         jarjestaValinnanVaiheenJarjestysluvunMukaan(valintaperusteet);
 
         for (ValintaperusteetDTO vp : valintaperusteet) {
-            String hakuOid = vp.getHakuOid();
-            String tarjoajaOid = vp.getTarjoajaOid();
-
             if (!hakemuksetHakukohteittain.containsKey(hakukohdeOid)) {
                 LOG.error("(Uuid={}) Hakukohteelle {} ei ole yhtään hakemusta. Hypätään yli.", uuid, hakukohdeOid);
                 continue;
             }
-
+            String hakuOid = vp.getHakuOid();
+            String tarjoajaOid = vp.getTarjoajaOid();
             List<HakemusWrapper> hakemukset = hakemuksetHakukohteittain.get(hakukohdeOid).getHakemukset();
             List<Hakemus> laskentahakemukset = hakemuksetHakukohteittain.get(hakukohdeOid).getLaskentahakemukset();
             if (hakemukset == null
@@ -82,9 +80,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                     || (vp.getValinnanVaihe().getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE))) {
                 continue;
             }
-
             Map<String, String> hakukohteenValintaperusteet = muodostaHakukohteenValintaperusteetMap(vp.getHakukohteenValintaperuste());
-
             ValintaperusteetValinnanVaiheDTO vaihe = vp.getValinnanVaihe();
 
             final String valinnanvaiheOid = vaihe.getValinnanVaiheOid();
