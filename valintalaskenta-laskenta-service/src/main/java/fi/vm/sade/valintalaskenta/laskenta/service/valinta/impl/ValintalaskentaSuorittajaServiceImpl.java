@@ -314,12 +314,9 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
     private Map<String, String> muodostaHakukohteenValintaperusteetMap(List<HakukohteenValintaperusteDTO> hakukohteenValintaperuste) {
         Map<String, String> map = new HashMap<>();
-
-        LOG.debug("Hakukohteen valintaperusteet:");
         for (HakukohteenValintaperusteDTO vp : hakukohteenValintaperuste) {
             map.put(vp.getTunniste(), vp.getArvo());
         }
-
         return map;
     }
 
