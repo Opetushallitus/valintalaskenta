@@ -73,9 +73,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             }
             List<HakemusWrapper> hakemukset = hakemuksetHakukohteittain.get(hakukohdeOid).getHakemukset();
             List<Hakemus> laskentahakemukset = hakemuksetHakukohteittain.get(hakukohdeOid).getLaskentahakemukset();
-            if (hakemukset == null
-                    || hakemukset.isEmpty()
-                    || (vp.getValinnanVaihe().getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE))) {
+            if (emptyHakemuksetOrValinnanVaiheTyyppiValintakoe(vp, hakemukset)) {
                 continue;
             }
             Map<String, String> hakukohteenValintaperusteet = muodostaHakukohteenValintaperusteetMap(vp.getHakukohteenValintaperuste());
@@ -105,6 +103,12 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         poistaHaamuryhmat(hakijaryhmat, valintaperusteet.get(0).getHakukohdeOid());
         LOG.info("(Uuid={}) Hakijaryhmien määrä {} hakukohteessa {}", uuid, hakijaryhmat.size(), hakukohdeOid);
         laskeHakijaryhmat(valintaperusteet, hakijaryhmat, hakukohdeOid, uuid, hakemuksetHakukohteittain);
+    }
+
+    private boolean emptyHakemuksetOrValinnanVaiheTyyppiValintakoe(ValintaperusteetDTO vp, List<HakemusWrapper> hakemukset) {
+        return hakemukset == null
+                || hakemukset.isEmpty()
+                || (vp.getValinnanVaihe().getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE));
     }
 
     private boolean invalidEdellinenVaihe(String hakukohdeOid, String uuid, int jarjestysnumero, String hakuOid, Valinnanvaihe edellinenVaihe) {
