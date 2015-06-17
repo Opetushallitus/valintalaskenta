@@ -96,18 +96,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                     continue;
                 }
             }
-
-            final Valinnanvaihe viimeisinVaihe;
-            if (jarjestysnumero > 0) {
-                if (edellinenVaihe != null && edellinenVaihe.getJarjestysnumero() == jarjestysnumero - 1) {
-                    viimeisinVaihe = edellinenVaihe;
-                } else {
-                    viimeisinVaihe = valinnanvaiheDAO.haeViimeisinValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
-                }
-            } else {
-                viimeisinVaihe = null;
-            }
-
+            final Valinnanvaihe viimeisinVaihe = getViimeisinValinnanVaihe(hakukohdeOid, jarjestysnumero, hakuOid, edellinenVaihe);
             Valinnanvaihe valinnanvaihe = haeTaiLuoValinnanvaihe(valinnanvaiheOid, hakuOid, hakukohdeOid, jarjestysnumero);
             valinnanvaihe.setHakukohdeOid(hakukohdeOid);
             valinnanvaihe.setHakuOid(hakuOid);
@@ -123,6 +112,20 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         poistaHaamuryhmat(hakijaryhmat, valintaperusteet.get(0).getHakukohdeOid());
         LOG.info("(Uuid={}) Hakijaryhmien määrä {} hakukohteessa {}", uuid, hakijaryhmat.size(), hakukohdeOid);
         laskeHakijaryhmat(valintaperusteet, hakijaryhmat, hakukohdeOid, uuid, hakemuksetHakukohteittain);
+    }
+
+    private Valinnanvaihe getViimeisinValinnanVaihe(String hakukohdeOid, int jarjestysnumero, String hakuOid, Valinnanvaihe edellinenVaihe) {
+        final Valinnanvaihe viimeisinVaihe;
+        if (jarjestysnumero > 0) {
+            if (edellinenVaihe != null && edellinenVaihe.getJarjestysnumero() == jarjestysnumero - 1) {
+                viimeisinVaihe = edellinenVaihe;
+            } else {
+                viimeisinVaihe = valinnanvaiheDAO.haeViimeisinValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
+            }
+        } else {
+            viimeisinVaihe = null;
+        }
+        return viimeisinVaihe;
     }
 
     private void laskeHakijaryhmat(List<ValintaperusteetDTO> valintaperusteet, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat, String hakukohdeOid, String uuid, Map<String, Hakemukset> hakemuksetHakukohteittain) {
