@@ -5,19 +5,21 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import fi.vm.sade.authentication.business.service.Authorizer;
+import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
+import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource;
 import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Component;
 
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -41,6 +43,9 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
     @Autowired
     private Authorizer authorizer;
 
+    @Autowired
+    private ValintaperusteetResource valintaperusteetResource;
+
     @GET
     @Path("{hakukohdeoid}/valinnanvaihe")
     @Produces(MediaType.APPLICATION_JSON)
@@ -63,13 +68,24 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
             @ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe) {
         try {
             authorizer.checkOrganisationAccess(tarjoajaOid, ROLE_VALINTOJENTOTEUTTAMINEN_TULOSTENTUONTI);
-            ValinnanvaiheDTO vastaus = tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid);
-            return Response.status(Response.Status.ACCEPTED).entity(vastaus).build();
+
+            List<ValintaperusteetDTO> valintaperusteet = valintaperusteetResource.haeValintaperusteet(hakukohdeoid, null);
+
+            Optional<ValintaperusteetDTO> valinnanVaiheValintaperusteissa = valintaperusteet.stream()
+                    .filter(valintaperuste -> valintaperuste.getValinnanVaihe().getValinnanVaiheOid().equals(vaihe.getValinnanvaiheoid()))
+                    .findAny();
+
+            if (!valinnanVaiheValintaperusteissa.isPresent()) {
+                LOGGER.error("Päivitettävää valinnanvaihetta ei löytynyt valintaperusteista, hakukohde {}, valinnanvaihe {}", hakukohdeoid, vaihe.getValinnanvaiheoid());
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            }
+
         } catch (Exception e) {
             LOGGER.error("Valintatapajonon pisteitä ei saatu päivitettyä hakukohteelle {}, {}\r\n{}\r\n{}", hakukohdeoid, e.getMessage(),
                     Arrays.toString(e.getStackTrace()));
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
+        return Response.status(Response.Status.ACCEPTED).entity(tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid)).build();
     }
 
     @GET
