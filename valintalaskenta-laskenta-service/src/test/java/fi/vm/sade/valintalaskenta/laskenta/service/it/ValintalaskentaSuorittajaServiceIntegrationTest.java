@@ -9,6 +9,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
+import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.ValintalaskentaSuorittajaService;
 import org.junit.Rule;
 import org.junit.Test;
@@ -54,6 +55,9 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
 
     @Autowired
     private ValinnanvaiheDAO valinnanvaiheDAO;
+
+    @Autowired
+    private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
 
     @Autowired
     private JarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAO;

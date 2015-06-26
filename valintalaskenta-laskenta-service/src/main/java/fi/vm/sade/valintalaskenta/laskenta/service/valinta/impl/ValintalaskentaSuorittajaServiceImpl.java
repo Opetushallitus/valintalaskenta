@@ -96,7 +96,9 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             valinnanvaihe.setTarjoajaOid(vp.getTarjoajaOid());
             valinnanvaihe.setNimi(vp.getValinnanVaihe().getNimi());
 
-            laskeValintatapajonot(hakukohdeOid, uuid, hakemukset, laskentahakemukset, hakukohteenValintaperusteet, vaihe, jarjestysnumero, edellinenVaihe, viimeisinVaihe, valinnanvaihe);
+            ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
+
+            laskeValintatapajonot(hakukohdeOid, uuid, hakemukset, laskentahakemukset, hakukohteenValintaperusteet, vaihe, jarjestysnumero, edellinenVaihe, viimeisinVaihe, valinnanvaihe, edellinenOsallistuminen);
             valinnanvaiheDAO.create(valinnanvaihe);
         }
 
@@ -221,7 +223,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         return jonosija;
     }
 
-    private void laskeValintatapajonot(String hakukohdeOid, String uuid, List<HakemusWrapper> hakemukset, List<Hakemus> laskentahakemukset, Map<String, String> hakukohteenValintaperusteet, ValintaperusteetValinnanVaiheDTO vaihe, int jarjestysnumero, Valinnanvaihe edellinenVaihe, Valinnanvaihe viimeisinVaihe, Valinnanvaihe valinnanvaihe) {
+    private void laskeValintatapajonot(String hakukohdeOid, String uuid, List<HakemusWrapper> hakemukset, List<Hakemus> laskentahakemukset, Map<String, String> hakukohteenValintaperusteet, ValintaperusteetValinnanVaiheDTO vaihe, int jarjestysnumero, Valinnanvaihe edellinenVaihe, Valinnanvaihe viimeisinVaihe, Valinnanvaihe valinnanvaihe, ValintakoeOsallistuminen edellinenOsallistuminen) {
         for (ValintatapajonoJarjestyskriteereillaDTO j : vaihe.getValintatapajono()) {
             if (j.getKaytetaanValintalaskentaa() == null || j.getKaytetaanValintalaskentaa()) {
                 Valintatapajono jono = createValintatapajono(j);
@@ -253,7 +255,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                                     jk.getPrioriteetti(),
                                     viimeisinVaihe,
                                     jonosijatHakemusOidinMukaan,
-                                    jk.getNimi(),jarjestysnumero
+                                    jk.getNimi(),jarjestysnumero, edellinenOsallistuminen
                             );
                         } else {
                             hakemuslaskinService.suoritaLaskentaHakemukselle(
@@ -265,7 +267,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                                     viimeisinVaihe,
                                     jonosijatHakemusOidinMukaan,
                                     jk.getNimi(),
-                                    jarjestysnumero
+                                    jarjestysnumero, edellinenOsallistuminen
                             );
                         }
                     }

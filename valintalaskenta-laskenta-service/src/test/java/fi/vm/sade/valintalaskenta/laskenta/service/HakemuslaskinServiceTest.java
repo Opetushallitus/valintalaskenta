@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +49,6 @@ public class HakemuslaskinServiceTest {
     private LaskentaService laskentaServiceMock;
     private JarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAOMock;
     private EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelijaMock;
-    private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAOMock;
 
     @Before
     public void setUp() {
@@ -56,12 +56,10 @@ public class HakemuslaskinServiceTest {
         laskentaServiceMock = mock(LaskentaService.class);
         jarjestyskriteerihistoriaDAOMock = mock(JarjestyskriteerihistoriaDAO.class);
         edellinenValinnanvaiheKasittelijaMock = mock(EdellinenValinnanvaiheKasittelija.class);
-        valintakoeOsallistuminenDAOMock = mock(ValintakoeOsallistuminenDAO.class);
 
         ReflectionTestUtils.setField(hakemuslaskinService, "laskentaService", laskentaServiceMock);
         ReflectionTestUtils.setField(hakemuslaskinService, "jarjestyskriteerihistoriaDAO", jarjestyskriteerihistoriaDAOMock);
         ReflectionTestUtils.setField(hakemuslaskinService, "edellinenValinnanvaiheKasittelija", edellinenValinnanvaiheKasittelijaMock);
-        ReflectionTestUtils.setField(hakemuslaskinService, "valintakoeOsallistuminenDAO", valintakoeOsallistuminenDAOMock);
     }
 
     @Test
@@ -106,7 +104,7 @@ public class HakemuslaskinServiceTest {
 
         hakemuslaskinService.suoritaLaskentaHakemukselle(laskettavaHakukohde,
                 hakemus, new ArrayList<Hakemus>(), mock(Lukuarvofunktio.class),
-                1, new Valinnanvaihe(), jonosijat, "jkNimi", 1);
+                1, new Valinnanvaihe(), jonosijat, "jkNimi", 1, new ValintakoeOsallistuminen());
 
         verify(jarjestyskriteerihistoriaDAOMock, times(1)).create(any(Jarjestyskriteerihistoria.class));
 
