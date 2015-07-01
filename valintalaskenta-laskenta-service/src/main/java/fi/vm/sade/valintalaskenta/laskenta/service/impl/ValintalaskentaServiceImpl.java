@@ -56,11 +56,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
             valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste, hakijaryhmat, hakukohdeOid, uuid);
             return "Onnistui!";
         } catch (Exception e) {
-            e.printStackTrace();
-            LOG.error("Valintalaskennassa tapahtui virhe (hakukohteelle {}) {} {} {}",
-                    hakukohdeOid,
-                    e.getMessage(), e.getCause(),
-                    Arrays.toString(e.getStackTrace()));
+            LOG.error("Valintalaskennassa tapahtui virhe hakukohteelle " + hakukohdeOid, e);
             throw new RuntimeException(e.getMessage(), e.getCause());
         }
     }
