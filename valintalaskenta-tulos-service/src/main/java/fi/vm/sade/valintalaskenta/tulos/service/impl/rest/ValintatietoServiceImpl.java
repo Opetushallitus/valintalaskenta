@@ -77,11 +77,8 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             }
         } catch (Exception e) {
             LOG.error("Valintakoelaskennan osallitujia ei saatu haettua hakukohteelle {}!", hakukohdeOid);
-            LOG.error("Virhe osallistujien hakemisessa: {} {} {}",
-                    e.getMessage(), e.getCause(),
-                    Arrays.toString(e.getStackTrace()));
-            throw new RuntimeException(
-                    "Valintatieto osallistujille pyyntö epäonnistui!", e);
+            LOG.error("Virhe osallistujien hakemisessa!", e);
+            throw new RuntimeException("Valintatieto osallistujille pyyntö epäonnistui!", e);
         }
         return osallistumiset;
     }
@@ -109,9 +106,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             return hakuDTO;
         } catch (Exception e) {
             LOG.error("Valintatietoja ei saatu haettua haulle {}!", hakuOid);
-            LOG.error("Virhe valintatietojen hakemisessa: {} {} {}",
-                    e.getMessage(), e.getCause(),
-                    Arrays.toString(e.getStackTrace()));
+            LOG.error("Virhe valintatietojen hakemisessa!", e);
             throw new RuntimeException("Valintatietojen haku epäonnistui!", e);
         }
 
@@ -144,9 +139,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             return hakuDTO;
         } catch (Exception e) {
             LOG.error("Valintatietoja ei saatu haettua haulle {}!", hakuoid);
-            LOG.error("Virhe valintatietojen hakemisessa: {} {} {}",
-                    e.getMessage(), e.getCause(),
-                    Arrays.toString(e.getStackTrace()));
+            LOG.error("Virhe valintatietojen hakemisessa!", e);
             throw new RuntimeException("Valintatietojen haku epäonnistui!", e);
         }
     }

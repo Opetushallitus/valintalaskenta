@@ -81,8 +81,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
             }
 
         } catch (Exception e) {
-            LOGGER.error("Valintatapajonon pisteitä ei saatu päivitettyä hakukohteelle {}, {}\r\n{}\r\n{}", hakukohdeoid, e.getMessage(),
-                    Arrays.toString(e.getStackTrace()));
+            LOGGER.error("Valintatapajonon pisteitä ei saatu päivitettyä hakukohteelle " + hakukohdeoid,e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         return Response.status(Response.Status.ACCEPTED).entity(tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid)).build();

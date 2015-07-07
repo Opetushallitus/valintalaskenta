@@ -47,11 +47,9 @@ public class ValintalaskentakoostepalveluResourceImpl {
             @ApiParam(value = "Tarjoaja OID", required = true) @QueryParam("tarjoajaOid") String tarjoajaOid,
             @ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe) {
         try {
-            ValinnanvaiheDTO vastaus = tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid);
-            return vastaus;
+            return tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid);
         } catch (Exception e) {
-            LOGGER.error("Valintatapajonon pisteitä ei saatu päivitettyä hakukohteelle {}, {}\r\n{}\r\n{}",
-                    hakukohdeoid, e.getMessage(), Arrays.toString(e.getStackTrace()));
+            LOGGER.error("Valintatapajonon pisteitä ei saatu päivitettyä hakukohteelle " + hakukohdeoid, e);
             throw e;
         }
     }
