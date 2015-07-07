@@ -74,7 +74,7 @@ public class ValintalaskentaResourceImpl {
                 erillisSijoittele(laskeDTO, valintaperusteetDTO);
             }
         } catch (Exception e) {
-            LOG.error("(Uuid={}) Valintalaskenta epaonnistui: {}\r\n{}", laskeDTO.getUuid(), e.getMessage(), Arrays.toString(e.getStackTrace()));
+            LOG.error("Valintalaskenta epaonnistui! uuid=" + laskeDTO.getUuid(), e);
             throw e;
         }
         if (!valisijoiteltavatJonot.valinnanvaiheet.isEmpty()) {
@@ -103,7 +103,7 @@ public class ValintalaskentaResourceImpl {
             LOG.info("(Uuid={}) Valintakoelaskenta suoritettu {} hakemukselle hakukohteessa {}", laskeDTO.getUuid(), laskeDTO.getHakemus().size(), laskeDTO.getHakukohdeOid());
             return "Onnistui";
         } catch (Exception e) {
-            LOG.error("(Uuid={}) Valintakoelaskenta epaonnistui: {}\r\n{}", laskeDTO.getUuid(), e.getMessage(), Arrays.toString(e.getStackTrace()));
+            LOG.error("Valintakoelaskenta epaonnistui! uuid=" + laskeDTO.getUuid(), e);
             throw e;
         }
     }
@@ -172,8 +172,7 @@ public class ValintalaskentaResourceImpl {
                 });
             }
         } catch (Exception e) {
-            LOG.error("(Uuid={}) Valintalaskenta ja valintakoelaskenta epaonnistui: {}\r\n{}",
-                    laskeDTO.getUuid(), e.getMessage(), Arrays.toString(e.getStackTrace()));
+            LOG.error("Valintalaskenta ja valintakoelaskenta epaonnistui! uuid=" + laskeDTO.getUuid(), e);
             throw e;
         }
 
@@ -330,7 +329,7 @@ public class ValintalaskentaResourceImpl {
         try {
             hakuoid = laskeDTO.getValintaperuste().get(0).getHakuOid();
         } catch (Exception e) {
-            LOG.error("(Uuid={}) Välisijoittelulle ei löytynyt hakuoidia!", laskeDTO.getUuid(), e.getMessage(), Arrays.toString(e.getStackTrace()));
+            LOG.error("Välisijoittelulle ei löytynyt hakuoidia! uuid=" + laskeDTO.getUuid(), e);
             throw e;
         }
         return hakuoid;
@@ -341,8 +340,7 @@ public class ValintalaskentaResourceImpl {
         try {
             hakuoid = laskeDTO.getValintaperuste().get(0).getHakuOid();
         } catch (Exception e) {
-            LOG.error("(Uuid={}) Erillissijoittelulle ei löytynyt hakuoidia!",
-                    laskeDTO.getUuid(), e.getMessage(), Arrays.toString(e.getStackTrace()));
+            LOG.error("Erillissijoittelulle ei löytynyt hakuoidia! uuid=" + laskeDTO.getUuid(), e);
             throw e;
         }
         ValisijoitteluDTO dto = new ValisijoitteluDTO();
