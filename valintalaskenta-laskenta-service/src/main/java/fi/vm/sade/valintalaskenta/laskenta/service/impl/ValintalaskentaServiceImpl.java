@@ -57,7 +57,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
             return "Onnistui!";
         } catch (Exception e) {
             LOG.error("Valintalaskennassa tapahtui virhe hakukohteelle " + hakukohdeOid, e);
-            throw new RuntimeException(e.getMessage(), e.getCause());
+            throw new RuntimeException(e);
         }
     }
 
@@ -68,7 +68,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
             return "Onnistui!";
         } catch (Exception e) {
             LOG.error("Valintakoevaihe epäonnistui", e);
-            throw new RuntimeException(e.getMessage(), e.getCause());
+            throw new RuntimeException(e);
         }
     }
 

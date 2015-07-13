@@ -287,9 +287,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
                 LOG.error("jktuloksesta ei saa edes tyyppiä ulos");
             }
             jdto.setKuvaus(Collections.<String, String>emptyMap());
-            LOG.error(
-                    "Siirto kantaentiteetistä(Jarjestyskriteeritulos.class) dto:ksi epäonnistui: {}",
-                    e.getMessage());
+            LOG.error("Siirto kantaentiteetistä(Jarjestyskriteeritulos.class) dto:ksi epäonnistui!", e);
         }
         jdto.setTila(jktulos.getTila());
         jdto.setNimi(jktulos.getNimi());
