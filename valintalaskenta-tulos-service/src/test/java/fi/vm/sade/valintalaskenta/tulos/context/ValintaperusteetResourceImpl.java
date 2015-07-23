@@ -45,7 +45,7 @@ public class ValintaperusteetResourceImpl implements ValintaperusteetResource {
     }
 
     @Override
-    public Boolean updateAutomaattinenSijoitteluunSiirto(String oid, Boolean arvo) {
-        return false;
+    public ValintatapajonoDTO updateAutomaattinenSijoitteluunSiirto(String oid, Boolean arvo) {
+        return new ValintatapajonoDTO();
     }
 }

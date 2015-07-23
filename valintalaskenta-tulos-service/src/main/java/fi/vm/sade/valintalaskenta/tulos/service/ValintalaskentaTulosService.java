@@ -9,6 +9,8 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public interface ValintalaskentaTulosService {
 
@@ -52,7 +54,7 @@ public interface ValintalaskentaTulosService {
 
     ValinnanvaiheDTO lisaaTuloksia(ValinnanvaiheDTO vaihe, String hakukohdeoid, String tarjoajaOid);
 
-    Optional<Valintatapajono> muokkaaSijotteluStatusta(String valintatapajonoOid, boolean status);
+    Optional<Valintatapajono> muokkaaValintatapajonoa(String valintatapajonoOid, Consumer<Valintatapajono> muokkausFunktio);
 
     boolean haeSijoitteluStatus(String valintatapajonoOid);
 }

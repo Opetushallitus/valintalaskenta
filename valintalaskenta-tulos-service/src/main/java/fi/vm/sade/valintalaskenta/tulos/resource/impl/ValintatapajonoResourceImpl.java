@@ -87,8 +87,23 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
     @ApiOperation(value = "Lisää/Poistaa valintatapajonon sijoittelusta", response = ValintatapajonoDTO.class)
     public Response muokkaaSijotteluStatusta(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
                                              @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status) {
-        Optional<Valintatapajono> dto = tulosService.muokkaaSijotteluStatusta(valintatapajonoOid, status);
-        valintaperusteetResource.updateAutomaattinenSijoitteluunSiirto(valintatapajonoOid, status);
+        Optional<Valintatapajono> dto = tulosService.muokkaaValintatapajonoa(valintatapajonoOid,
+                jono -> {
+                    fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO jonoDto = valintaperusteetResource.updateAutomaattinenSijoitteluunSiirto(valintatapajonoOid, status);
+                    jono.setAloituspaikat(jonoDto.getAloituspaikat());
+                    jono.setEiVarasijatayttoa(jonoDto.getEiVarasijatayttoa());
+                    //jono.setJonosijat(jonoDto.get);
+                    jono.setKaikkiEhdonTayttavatHyvaksytaan(jonoDto.getKaikkiEhdonTayttavatHyvaksytaan());
+                    jono.setKaytetaanValintalaskentaa(jonoDto.getKaytetaanValintalaskentaa());
+                    jono.setNimi(jonoDto.getNimi());
+                    jono.setPoissaOlevaTaytto(jonoDto.getPoissaOlevaTaytto());
+                    jono.setPrioriteetti(jonoDto.getPrioriteetti());
+                    jono.setSiirretaanSijoitteluun(jonoDto.getSiirretaanSijoitteluun());
+                    //jono.setSijoitteluajoId(jonoDto.getS);
+                    //jono.setTasasijasaanto(jonoDto.get);
+                    //jono.setValintatapajonoOid();
+                    jono.setValmisSijoiteltavaksi(status);
+                });
         return dto.map(jono -> Response.status(Response.Status.ACCEPTED).entity(modelMapper.map(jono, ValintatapajonoDTO.class)).build()).orElse(Response.status(Response.Status.NOT_FOUND).build());
     }
 

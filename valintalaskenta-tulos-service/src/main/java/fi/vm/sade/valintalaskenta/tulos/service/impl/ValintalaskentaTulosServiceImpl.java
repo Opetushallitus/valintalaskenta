@@ -25,6 +25,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -442,15 +444,15 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
-    public Optional<Valintatapajono> muokkaaSijotteluStatusta(String valintatapajonoOid, boolean status) {
+    public Optional<Valintatapajono> muokkaaValintatapajonoa(String valintatapajonoOid, Consumer<Valintatapajono> muokkausFunktio) {
         if (haeSijoitteluStatus(valintatapajonoOid) && !isOPH()) {
-            throw new EiOikeuttaPoistaaValintatapajonoaSijoittelustaException("Ei oikeutta poistaa valintatapajonoa sijoittelusta");
+            throw new EiOikeuttaPoistaaValintatapajonoaSijoittelustaException("Ei oikeutta muokata valintatapajonoa");
         }
         Valinnanvaihe vaihe = valinnanvaiheDAO.findByValintatapajonoOid(valintatapajonoOid);
         vaihe.getValintatapajonot()
                 .stream()
                 .filter(j -> j.getValintatapajonoOid().equals(valintatapajonoOid))
-                .forEach(j -> j.setValmisSijoiteltavaksi(status));
+                .forEach(j -> muokkausFunktio.accept(j));
         valinnanvaiheDAO.saveOrUpdate(vaihe);
         return vaihe
                 .getValintatapajonot()
