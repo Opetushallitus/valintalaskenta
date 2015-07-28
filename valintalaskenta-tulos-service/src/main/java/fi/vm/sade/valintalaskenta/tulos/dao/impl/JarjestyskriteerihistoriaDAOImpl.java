@@ -7,10 +7,12 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
+import fi.vm.sade.valintalaskenta.tulos.dao.util.JarjestyskriteeriKooderi;
 import org.apache.commons.io.IOUtils;
 import org.bson.types.BasicBSONList;
 import org.bson.types.ObjectId;
@@ -79,43 +81,11 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
         }
         return hae(historiaIds);
     }
-    public void recreate(Jarjestyskriteerihistoria jarjestyskriteerihistoria) {
-        datastore.save(zip(jarjestyskriteerihistoria));
-    }
 
     public List<Jarjestyskriteerihistoria> hae(List<ObjectId> historiaIds) {
-        List<Jarjestyskriteerihistoria> h = datastore.createQuery(Jarjestyskriteerihistoria.class).field("_id").hasAnyOf(historiaIds).asList();
-        h.stream().filter(h0 -> h0.getHistoria() != null)
-                .forEach(h0 -> recreate(h0));// Poistaa luettaessa zippaamattomat historiat ja persistoi zipattuna
-        return h.stream().map(h0 -> unzip(h0)).collect(Collectors.toList());
+        List<Jarjestyskriteerihistoria> historiat = datastore.createQuery(Jarjestyskriteerihistoria.class).field("_id").hasAnyOf(historiaIds).asList();
+        historiat.stream().filter(JarjestyskriteeriKooderi::tarvitseekoEnkoodata).map(JarjestyskriteeriKooderi::enkoodaa).forEach(datastore::save);
+        return historiat.stream().map(JarjestyskriteeriKooderi::dekoodaa).collect(Collectors.toList());
     }
 
-    private Jarjestyskriteerihistoria zip(Jarjestyskriteerihistoria j) {
-        if(j.getHistoriaGzip() == null && j.getHistoria() != null) {
-            try {
-                ByteArrayOutputStream b = new ByteArrayOutputStream();
-                GZIPOutputStream g = new GZIPOutputStream(b);
-                IOUtils.write(j.getHistoria().getBytes(), g);
-                IOUtils.closeQuietly(g);
-                j.setHistoriaGzip(b.toByteArray());
-                j.setHistoria(null);
-            } catch (Throwable t) {
-                LOG.error("Historian gzippaaminen epaonnistui!",t);
-                throw new RuntimeException("Historian gzippaaminen epaonnistui!",t);
-            }
-        }
-        return j;
-    }
-
-    private Jarjestyskriteerihistoria unzip(Jarjestyskriteerihistoria j) {
-        if(j.getHistoriaGzip() != null && j.getHistoria() == null) {
-            try {
-                j.setHistoria(IOUtils.toString(new GZIPInputStream(new ByteArrayInputStream(j.getHistoriaGzip()))));
-            } catch (Throwable t) {
-                LOG.error("Historian unzippaaminen epaonnistui!",t);
-                throw new RuntimeException("Historian unzippaaminen epaonnistui!",t);
-            }
-        }
-        return j;
-    }
 }
