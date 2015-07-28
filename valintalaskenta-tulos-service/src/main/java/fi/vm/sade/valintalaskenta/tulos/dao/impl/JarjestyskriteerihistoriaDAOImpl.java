@@ -1,13 +1,21 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
+import org.apache.commons.io.IOUtils;
 import org.bson.types.BasicBSONList;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -25,6 +33,8 @@ import fi.vm.sade.valintalaskenta.tulos.dao.exception.DaoException;
 
 @Repository("jonosijaHistoriaTulosDAO")
 public class JarjestyskriteerihistoriaDAOImpl implements JarjestyskriteerihistoriaDAO {
+    private static final Logger LOG = LoggerFactory.getLogger(JarjestyskriteerihistoriaDAOImpl.class);
+
     @Qualifier("datastore2")
     @Autowired
     private Datastore datastore;
@@ -67,6 +77,45 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
         for (Object ref : historiat) {
             historiaIds.add((ObjectId) ref);
         }
-        return datastore.createQuery(Jarjestyskriteerihistoria.class).field("_id").hasAnyOf(historiaIds).asList();
+        return hae(historiaIds);
+    }
+    public void recreate(Jarjestyskriteerihistoria jarjestyskriteerihistoria) {
+        datastore.save(zip(jarjestyskriteerihistoria));
+    }
+
+    public List<Jarjestyskriteerihistoria> hae(List<ObjectId> historiaIds) {
+        List<Jarjestyskriteerihistoria> h = datastore.createQuery(Jarjestyskriteerihistoria.class).field("_id").hasAnyOf(historiaIds).asList();
+        h.stream().filter(h0 -> h0.getHistoria() != null)
+                .forEach(h0 -> recreate(h0));// Poistaa luettaessa zippaamattomat historiat ja persistoi zipattuna
+        return h.stream().map(h0 -> unzip(h0)).collect(Collectors.toList());
+    }
+
+    private Jarjestyskriteerihistoria zip(Jarjestyskriteerihistoria j) {
+        if(j.getHistoriaGzip() == null && j.getHistoria() != null) {
+            try {
+                ByteArrayOutputStream b = new ByteArrayOutputStream();
+                GZIPOutputStream g = new GZIPOutputStream(b);
+                IOUtils.write(j.getHistoria().getBytes(), g);
+                IOUtils.closeQuietly(g);
+                j.setHistoriaGzip(b.toByteArray());
+                j.setHistoria(null);
+            } catch (Throwable t) {
+                LOG.error("Historian gzippaaminen epaonnistui!",t);
+                throw new RuntimeException("Historian gzippaaminen epaonnistui!",t);
+            }
+        }
+        return j;
+    }
+
+    private Jarjestyskriteerihistoria unzip(Jarjestyskriteerihistoria j) {
+        if(j.getHistoriaGzip() != null && j.getHistoria() == null) {
+            try {
+                j.setHistoria(IOUtils.toString(new GZIPInputStream(new ByteArrayInputStream(j.getHistoriaGzip()))));
+            } catch (Throwable t) {
+                LOG.error("Historian unzippaaminen epaonnistui!",t);
+                throw new RuntimeException("Historian unzippaaminen epaonnistui!",t);
+            }
+        }
+        return j;
     }
 }
