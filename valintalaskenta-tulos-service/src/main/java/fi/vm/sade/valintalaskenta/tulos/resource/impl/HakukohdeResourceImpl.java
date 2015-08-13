@@ -30,6 +30,9 @@ import fi.vm.sade.valintalaskenta.tulos.resource.HakukohdeResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.springframework.stereotype.Controller;
 
+import static fi.vm.sade.valintalaskenta.tulos.LaskentaAudit.AUDIT;
+import static fi.vm.sade.auditlog.LogMessage.builder;
+
 @Controller
 @Path("hakukohde")
 @PreAuthorize("isAuthenticated()")
@@ -79,12 +82,27 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
                 LOGGER.error("Päivitettävää valinnanvaihetta ei löytynyt valintaperusteista, hakukohde {}, valinnanvaihe {}", hakukohdeoid, vaihe.getValinnanvaiheoid());
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
-
         } catch (Exception e) {
             LOGGER.error("Valintatapajonon pisteitä ei saatu päivitettyä hakukohteelle " + hakukohdeoid,e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-        return Response.status(Response.Status.ACCEPTED).entity(tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid)).build();
+        ValinnanvaiheDTO valinnanvaihe = tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid);
+        valinnanvaihe.getValintatapajonot()
+                .forEach(
+                        v -> {
+                            v.getHakija().forEach(h -> {
+                                AUDIT.log(builder()
+                                        .hakemusOid(h.getHakemusOid())
+                                        .valinnanvaiheOid(valinnanvaihe.getValinnanvaiheoid())
+                                        .hakukohdeOid(hakukohdeoid)
+                                        .valintatapajonoOid(v.getOid())
+                                        .add("jonosija", new Integer(h.getJonosija()))
+                                        .message("Valinnanvaiheen tuonti käyttöliittymästä")
+                                        .build());
+                            });
+                        }
+                );
+        return Response.status(Response.Status.ACCEPTED).entity(valinnanvaihe).build();
     }
 
     @GET

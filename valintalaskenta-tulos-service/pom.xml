@@ -12,6 +12,11 @@
     <name>Valintalaskenta :: Tulos Service</name>
 
     <dependencies>
+        <dependency>
+            <groupId>fi.vm.sade</groupId>
+            <artifactId>auditlogger</artifactId>
+            <version>1.0.3-SNAPSHOT</version>
+        </dependency>
     <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
