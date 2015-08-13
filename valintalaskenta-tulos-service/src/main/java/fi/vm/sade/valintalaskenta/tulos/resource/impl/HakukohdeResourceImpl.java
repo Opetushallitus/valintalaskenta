@@ -16,6 +16,7 @@ import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource;
 import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,13 +88,14 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         ValinnanvaiheDTO valinnanvaihe = tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid);
-        valinnanvaihe.getValintatapajonot()
+        vaihe.getValintatapajonot()
                 .forEach(
                         v -> {
                             v.getHakija().forEach(h -> {
                                 AUDIT.log(builder()
+                                        .id(LaskentaAudit.username())
                                         .hakemusOid(h.getHakemusOid())
-                                        .valinnanvaiheOid(valinnanvaihe.getValinnanvaiheoid())
+                                        .valinnanvaiheOid(vaihe.getValinnanvaiheoid())
                                         .hakukohdeOid(hakukohdeoid)
                                         .valintatapajonoOid(v.getOid())
                                         .add("jonosija", new Integer(h.getJonosija()))
