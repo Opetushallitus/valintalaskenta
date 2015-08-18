@@ -32,7 +32,7 @@ import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.springframework.stereotype.Controller;
 
 import static fi.vm.sade.valintalaskenta.tulos.LaskentaAudit.AUDIT;
-import static fi.vm.sade.auditlog.LogMessage.builder;
+import static fi.vm.sade.auditlog.valintaperusteet.LogMessage.builder;
 
 @Controller
 @Path("hakukohde")
