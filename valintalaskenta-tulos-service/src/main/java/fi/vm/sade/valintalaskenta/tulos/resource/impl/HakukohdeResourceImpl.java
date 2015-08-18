@@ -88,6 +88,11 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         ValinnanvaiheDTO valinnanvaihe = tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid);
+        auditLog(hakukohdeoid, vaihe);
+        return Response.status(Response.Status.ACCEPTED).entity(valinnanvaihe).build();
+    }
+
+    private void auditLog(@ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid, @ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe) {
         vaihe.getValintatapajonot()
                 .forEach(
                         v -> {
@@ -98,13 +103,12 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
                                         .valinnanvaiheOid(vaihe.getValinnanvaiheoid())
                                         .hakukohdeOid(hakukohdeoid)
                                         .valintatapajonoOid(v.getOid())
-                                        .add("jonosija", new Integer(h.getJonosija()))
+                                        .add("jonosija", h.getJonosija())
                                         .message("Valinnanvaiheen tuonti käyttöliittymästä")
                                         .build());
                             });
                         }
                 );
-        return Response.status(Response.Status.ACCEPTED).entity(valinnanvaihe).build();
     }
 
     @GET
