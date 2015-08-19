@@ -11,6 +11,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import fi.vm.sade.auditlog.valintaperusteet.ValintaperusteetOperation;
 import fi.vm.sade.authentication.business.service.Authorizer;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource;
@@ -104,7 +105,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
                                         .hakukohdeOid(hakukohdeoid)
                                         .valintatapajonoOid(v.getOid())
                                         .add("jonosija", h.getJonosija())
-                                        .message("Valinnanvaiheen tuonti käyttöliittymästä")
+                                        .setOperaatio(ValintaperusteetOperation.VALINNANVAIHE_TUONTI_KAYTTOLIITTYMA)
                                         .build());
                             });
                         }
