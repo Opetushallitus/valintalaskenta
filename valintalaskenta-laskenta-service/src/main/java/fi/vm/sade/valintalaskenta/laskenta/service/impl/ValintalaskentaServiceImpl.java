@@ -103,6 +103,15 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                                 if (hakukohteenValisijoitelujonot.contains(jono.getValintatapajonoOid())) {
                                     jono.getJonosijat().forEach(jonosija -> {
                                         fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO hakemusDTO = hakemusHashMap.get(hakukohdeOid + jono.getValintatapajonoOid() + jonosija.getHakemusOid());
+
+                                        if(jonosija.isHylattyValisijoittelussa() && hakemusDTO.getTila().isHyvaksytty()) {
+                                            Collections.sort(jonosija.getJarjestyskriteeritulokset(), (jk1, jk2) -> jk1.getPrioriteetti() - jk2.getPrioriteetti());
+                                            Jarjestyskriteeritulos jarjestyskriteeritulos = jonosija.getJarjestyskriteeritulokset().get(0);
+                                            jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA);
+                                            jonosija.setHylattyValisijoittelussa(false);
+                                            jarjestyskriteeritulos.setKuvaus(new HashMap<>());
+                                        }
+                                        
                                         if (hakemusDTO != null && asList(VARALLA, PERUUNTUNUT).contains(hakemusDTO.getTila())) {
                                             Collections.sort(jonosija.getJarjestyskriteeritulokset(), (jk1, jk2) -> jk1.getPrioriteetti() - jk2.getPrioriteetti());
                                             Jarjestyskriteeritulos jarjestyskriteeritulos = jonosija.getJarjestyskriteeritulokset().get(0);
