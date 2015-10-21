@@ -126,14 +126,18 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             hakuDTO.setHakuOid(hakuoid);
 
             for (HakukohdeDTO v : kohteet) {
-                HakukohdeDTO ht = new HakukohdeDTO();
-                ht.setOid(v.getOid());
-                ht.setTarjoajaoid(v.getTarjoajaoid());
-                hakuDTO.getHakukohteet().add(ht);
+                if(v != null) {
+                    HakukohdeDTO ht = new HakukohdeDTO();
+                    ht.setOid(v.getOid());
+                    ht.setTarjoajaoid(v.getTarjoajaoid());
+                    hakuDTO.getHakukohteet().add(ht);
 
-                for (ValinnanvaiheDTO valinnanvaiheDTO : v.getValinnanvaihe()) {
-                    ht.getValinnanvaihe().add(
-                            createValinnanvaiheTyyppi(valinnanvaiheDTO));
+                    for (ValinnanvaiheDTO valinnanvaiheDTO : v.getValinnanvaihe()) {
+                        if (valinnanvaiheDTO != null) {
+                            ht.getValinnanvaihe().add(
+                                    createValinnanvaiheTyyppi(valinnanvaiheDTO));
+                        }
+                    }
                 }
             }
             return hakuDTO;
