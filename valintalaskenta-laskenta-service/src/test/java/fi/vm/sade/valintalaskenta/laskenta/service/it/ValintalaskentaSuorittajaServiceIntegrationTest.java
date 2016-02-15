@@ -668,6 +668,6 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
 
         assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, vaihe.getValintatapajonot().get(0).getJonosijat().stream().filter(j -> j.getHakemusOid().equals(hakemusOid)).findFirst().get().getJarjestyskriteeritulokset().get(0).getTila());
         assertEquals(JarjestyskriteerituloksenTila.HYLATTY, vaihe.getValintatapajonot().get(0).getJonosijat().stream().filter(j -> j.getHakemusOid().equals(hakemusOid2)).findFirst().get().getJarjestyskriteeritulokset().get(0).getTila());
-        assertEquals("Ei kutsuttu valintakokeeseen", vaihe.getValintatapajonot().get(0).getJonosijat().stream().filter(j -> j.getHakemusOid().equals(hakemusOid2)).findFirst().get().getJarjestyskriteeritulokset().get(0).getKuvaus().get("FI"));
+        assertEquals("Pisteesi eivät riittäneet valintakoekutsuun", vaihe.getValintatapajonot().get(0).getJonosijat().stream().filter(j -> j.getHakemusOid().equals(hakemusOid2)).findFirst().get().getJarjestyskriteeritulokset().get(0).getKuvaus().get("FI"));
     }
 }
