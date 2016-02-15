@@ -120,8 +120,12 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                                             Map<String, String> kuvaukset = new HashMap<>();
                                             if (hakemusDTO.getTila() == VARALLA) {
                                                 kuvaukset.put("FI", "Pisteesi eivät riittäneet valintakoekutsuun");
+                                                kuvaukset.put("SV", "Dina poäng räckte inte till för en kallelse till urvalsprov");
+                                                kuvaukset.put("EN", "You did not score high enough for an invitation to the entrance examination");
                                             } else if (hakemusDTO.getTila() == PERUUNTUNUT) {
                                                 kuvaukset.put("FI", "Hyväksyttiin korkeammalle hakutoiveelle");
+                                                kuvaukset.put("SV", "Godkänd till ett högre ansökningsönskemål");
+                                                kuvaukset.put("EN", "Accepted to a higher preference");
                                             }
                                             jarjestyskriteeritulos.setKuvaus(kuvaukset);
                                         }

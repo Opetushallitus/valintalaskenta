@@ -162,7 +162,9 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                         "Pisteesi eivät riittäneet valintakoekutsuun",
                         "Hyväksyttiin korkeammalle hakutoiveelle");
                 if(tilaJaSelite.getSelite() != null && tilaJaSelite.getSelite().get("FI") != null && valisijoitteluSelitteet.contains(tilaJaSelite.getSelite().get("FI"))) {
-                    tilaJaSelite.getSelite().put("FI", "Ei kutsuttu valintakokeeseen");
+                    tilaJaSelite.getSelite().put("FI", "Pisteesi eivät riittäneet valintakoekutsuun");
+                    tilaJaSelite.getSelite().put("SV", "Dina poäng räckte inte till för en kallelse till urvalsprov");
+                    tilaJaSelite.getSelite().put("EN", "You did not score high enough for an invitation to the entrance examination");
                 }
             }
         } else {
@@ -177,7 +179,9 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                          "Pisteesi eivät riittäneet valintakoekutsuun",
                          "Hyväksyttiin korkeammalle hakutoiveelle");
                  if(tilaJaSelite.getSelite() != null && tilaJaSelite.getSelite().get("FI") != null && valisijoitteluSelitteet.contains(tilaJaSelite.getSelite().get("FI"))) {
-                    tilaJaSelite.getSelite().put("FI", "Ei kutsuttu valintakokeeseen");
+                     tilaJaSelite.getSelite().put("FI", "Pisteesi eivät riittäneet valintakoekutsuun");
+                     tilaJaSelite.getSelite().put("SV", "Dina poäng räckte inte till för en kallelse till urvalsprov");
+                     tilaJaSelite.getSelite().put("EN", "You did not score high enough for an invitation to the entrance examination");
                  }
             }
         }
