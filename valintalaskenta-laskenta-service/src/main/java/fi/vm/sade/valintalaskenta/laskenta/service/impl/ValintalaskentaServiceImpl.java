@@ -119,7 +119,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                                             jonosija.setHylattyValisijoittelussa(true);
                                             Map<String, String> kuvaukset = new HashMap<>();
                                             if (hakemusDTO.getTila() == VARALLA) {
-                                                kuvaukset.put("FI", "Hakemus ei mahtunut aloituspaikkojen sisään välisijoittelussa");
+                                                kuvaukset.put("FI", "Pisteesi eivät riittäneet valintakoekutsuun");
                                             } else if (hakemusDTO.getTila() == PERUUNTUNUT) {
                                                 kuvaukset.put("FI", "Hyväksyttiin korkeammalle hakutoiveelle");
                                             }

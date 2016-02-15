@@ -159,6 +159,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                 List<String> valisijoitteluSelitteet = Arrays.asList(
                         "Hakemus hyväksyttiin korkeammalle hakutoiveelle",
                         "Hakemus ei mahtunut aloituspaikkojen sisään välisijoittelussa",
+                        "Pisteesi eivät riittäneet valintakoekutsuun",
                         "Hyväksyttiin korkeammalle hakutoiveelle");
                 if(tilaJaSelite.getSelite() != null && tilaJaSelite.getSelite().get("FI") != null && valisijoitteluSelitteet.contains(tilaJaSelite.getSelite().get("FI"))) {
                     tilaJaSelite.getSelite().put("FI", "Ei kutsuttu valintakokeeseen");
@@ -173,6 +174,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                  List<String> valisijoitteluSelitteet = Arrays.asList(
                          "Hakemus hyväksyttiin korkeammalle hakutoiveelle",
                          "Hakemus ei mahtunut aloituspaikkojen sisään välisijoittelussa",
+                         "Pisteesi eivät riittäneet valintakoekutsuun",
                          "Hyväksyttiin korkeammalle hakutoiveelle");
                  if(tilaJaSelite.getSelite() != null && tilaJaSelite.getSelite().get("FI") != null && valisijoitteluSelitteet.contains(tilaJaSelite.getSelite().get("FI"))) {
                     tilaJaSelite.getSelite().put("FI", "Ei kutsuttu valintakokeeseen");
