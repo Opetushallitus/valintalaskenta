@@ -3,7 +3,7 @@
     <parent>
         <groupId>fi.vm.sade.valintaperusteet</groupId>
         <artifactId>valintalaskentabuild</artifactId>
-        <version>yhdenpaikansaanto-SNAPSHOT</version>
+        <version>2.0-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
     <artifactId>valintalaskenta-tulos-service</artifactId>
