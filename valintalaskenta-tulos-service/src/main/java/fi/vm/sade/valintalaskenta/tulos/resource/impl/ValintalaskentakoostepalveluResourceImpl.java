@@ -63,7 +63,7 @@ public class ValintalaskentakoostepalveluResourceImpl {
     @ApiOperation(value = "Hakee valintakoeosallistumiset hakukohteelle OID:n perusteella", response = ValintakoeOsallistuminenDTO.class)
     public List<ValintakoeOsallistuminenDTO> hakuByOids(
             List<String> hakukohdeOids) {
-        return modelMapper.mapList(tulosService.haeValintakoeOsallistumiset(hakukohdeOids), ValintakoeOsallistuminenDTO.class);
+        return modelMapper.mapList(tulosService.haeValintakoeOsallistumisetByHakukohdes(hakukohdeOids), ValintakoeOsallistuminenDTO.class);
     }
 
     @GET

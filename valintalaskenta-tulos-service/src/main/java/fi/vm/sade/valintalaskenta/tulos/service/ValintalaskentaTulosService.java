@@ -57,4 +57,6 @@ public interface ValintalaskentaTulosService {
     Optional<Valintatapajono> muokkaaValintatapajonoa(String valintatapajonoOid, Consumer<Valintatapajono> muokkausFunktio);
 
     boolean haeSijoitteluStatus(String valintatapajonoOid);
+
+    List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakukohdes(List<String> hakukohdeOids);
 }

@@ -10,5 +10,7 @@ public interface ValintakoeOsallistuminenDAO {
 
     List<ValintakoeOsallistuminen> findByHakutoive(String hakukohdeOid);
 
+    List<ValintakoeOsallistuminen> findByHakutoiveet(List<String> hakukohdeOids);
+
     List<ValintakoeOsallistuminen> findByHakuAndOsallistuminen(String hakuOid, Osallistuminen osallistuminen);
 }

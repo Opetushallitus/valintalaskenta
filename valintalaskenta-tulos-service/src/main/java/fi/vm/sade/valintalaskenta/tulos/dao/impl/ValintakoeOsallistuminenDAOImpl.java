@@ -29,6 +29,11 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
     }
 
     @Override
+    public List<ValintakoeOsallistuminen> findByHakutoiveet(List<String> hakukohdeOids) {
+        return datastore.find(ValintakoeOsallistuminen.class).field("hakutoiveet.hakukohdeOid").in(hakukohdeOids).asList();
+    }
+
+    @Override
     public List<ValintakoeOsallistuminen> findByHakuAndOsallistuminen(String hakuOid, Osallistuminen osallistuminen) {
         return datastore
                 .find(ValintakoeOsallistuminen.class)

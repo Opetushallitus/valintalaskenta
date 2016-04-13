@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -380,6 +381,14 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         return hakemusOids
                 .stream()
                 .map(hakemusOid -> valintakoeOsallistuminenDAO.findByHakemusOid(hakemusOid))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakukohdes(List<String> hakukohdeOids) {
+        return valintakoeOsallistuminenDAO.findByHakutoiveet(hakukohdeOids)
+                .stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
