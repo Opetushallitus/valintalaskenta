@@ -58,16 +58,6 @@
             <groupId>org.mongodb.morphia</groupId>
             <artifactId>morphia</artifactId>
         </dependency>
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib-nodep</artifactId>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>com.thoughtworks.proxytoys</groupId>
-            <artifactId>proxytoys</artifactId>
-            <type>jar</type>
-        </dependency>
 
         <!-- Tests -->
         <dependency>
