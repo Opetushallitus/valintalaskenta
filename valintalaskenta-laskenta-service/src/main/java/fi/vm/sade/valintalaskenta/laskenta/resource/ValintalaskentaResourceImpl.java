@@ -281,7 +281,7 @@ public class ValintalaskentaResourceImpl {
                                 hakukohteidenMaaraValinnanVaiheessa,
                                 laskeDTO.getHakukohdeOid()
                                 , t);
-                        throw new RuntimeException(t);
+                        throw t;
                     }
                 }
 
