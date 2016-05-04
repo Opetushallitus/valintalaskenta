@@ -128,7 +128,7 @@
         <jaxrs:providers>
             <ref bean="jsonProvider" />
             <ref bean="cors-filter" />
-            <bean class="fi.vm.sade.valintalaskenta.laskenta.resource.exception.LaskentaExceptionHandler"/>
+            <bean id="LaskentaExceptionHandler" class="fi.vm.sade.valintalaskenta.laskenta.resource.exception.LaskentaExceptionHandler"/>
         </jaxrs:providers>
     </jaxrs:server>
 
