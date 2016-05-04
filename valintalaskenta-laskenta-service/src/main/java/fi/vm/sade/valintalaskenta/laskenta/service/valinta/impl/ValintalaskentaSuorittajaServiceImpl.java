@@ -9,6 +9,8 @@ import fi.vm.sade.service.valintaperusteet.laskenta.Totuusarvofunktio;
 import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.HakijaryhmaDAO;
+import fi.vm.sade.valintalaskenta.laskenta.service.exception.LaskentaEdellinenValinnanvaiheLaskemattaException;
+import fi.vm.sade.valintalaskenta.laskenta.service.exception.LaskentaVaarantyyppisellaFunktiollaException;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.HakemusDTOToHakemusConverter;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import org.slf4j.Logger;
@@ -85,7 +87,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             LOG.info("(Uuid={}) Haku {}, hakukohde {}, valinnanvaihe {} - jarjestysnumero {}", uuid, hakuOid, hakukohdeOid, valinnanvaiheOid, jarjestysnumero);
             Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
             if (invalidEdellinenVaihe(hakukohdeOid, uuid, jarjestysnumero, hakuOid, edellinenVaihe)) {
-                continue;
+                throw new LaskentaEdellinenValinnanvaiheLaskemattaException("Edellinen valinnanvaihe on laskematta");
             }
             final Valinnanvaihe viimeisinVaihe = getViimeisinValinnanVaihe(hakukohdeOid, jarjestysnumero, hakuOid, edellinenVaihe);
             Valinnanvaihe valinnanvaihe = haeTaiLuoValinnanvaihe(valinnanvaiheOid, hakuOid, hakukohdeOid, jarjestysnumero);
