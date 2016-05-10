@@ -16,7 +16,6 @@ import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
 import fi.vm.sade.valintalaskenta.domain.dto.AvainArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
-import fi.vm.sade.valintalaskenta.laskenta.service.exception.LaskentaEdellinenValinnanvaiheLaskemattaException;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.HakemusDTOToHakemusConverter;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import org.slf4j.Logger;
@@ -105,7 +104,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                         valintakoeData.putIfAbsent(tunniste, new ArrayList<>());
                         Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdeltavaValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku());
                         if (invalidEdellinenValinnanVaine(uuid, vp, vaihe, edellinenVaihe)) {
-                            throw new LaskentaEdellinenValinnanvaiheLaskemattaException("Edellinen valinnanvaihe on laskematta");
+                            continue;
                         }
                         Valinnanvaihe viimeisinValinnanVaihe = getViimeisinValinnanvaihe(vp, vaihe, edellinenVaihe);
                         OsallistuminenTulos osallistuminen = getOsallistuminenTulos(hakemus, vp, hakukohteenValintaperusteet, koe, viimeisinValinnanVaihe);

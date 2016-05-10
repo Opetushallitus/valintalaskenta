@@ -115,7 +115,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         ValintaperusteetDTO valintaperusteet1 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1, valinnanVaiheJarjestysluku1, kokeet1, Koekutsu.YLIN_TOIVE, "kutsunKohdeAvain");
 
         final String valinnanVaiheOid2 = "valinnanVaiheOid2";
-        final int valinnanVaiheJarjestysluku2 = 0;
+        final int valinnanVaiheJarjestysluku2 = 1;
 
         Map<String, FunktiokutsuDTO> kokeet2 = new HashMap<String, FunktiokutsuDTO>();
         kokeet2.put(valintakoetunniste, totuusarvoFalse);
