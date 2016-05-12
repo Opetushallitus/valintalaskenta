@@ -77,7 +77,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         jonosija.lisaaFunktioTulokset(tulos.getFunktioTulokset());
 
         Jarjestyskriteerihistoria jkhistoria = new Jarjestyskriteerihistoria();
-        jkhistoria.setHistoria(tulos.getHistoria().toString());
+        jkhistoria.setHistoria(tulos.getHistoria());
         jarjestyskriteerihistoriaDAO.create(jkhistoria);
         jktulos.setHistoria(jkhistoria.getId());
     }
@@ -96,7 +96,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         jonosija.lisaaFunktioTulokset(tulos.getFunktioTulokset());
 
         Jarjestyskriteerihistoria jkhistoria = new Jarjestyskriteerihistoria();
-        jkhistoria.setHistoria(tulos.getHistoria().toString());
+        jkhistoria.setHistoria(tulos.getHistoria());
         jarjestyskriteerihistoriaDAO.create(jkhistoria);
         jktulos.setHistoria(jkhistoria.getId());
     }
@@ -196,7 +196,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         jonosija.lisaaFunktioTulokset(tulos.getFunktioTulokset());
 
         Jarjestyskriteerihistoria jkhistoria = new Jarjestyskriteerihistoria();
-        jkhistoria.setHistoria(tulos.getHistoria().toString());
+        jkhistoria.setHistoria(tulos.getHistoria());
         jarjestyskriteerihistoriaDAO.create(jkhistoria);
         jktulos.setHistoria(jkhistoria.getId());
     }

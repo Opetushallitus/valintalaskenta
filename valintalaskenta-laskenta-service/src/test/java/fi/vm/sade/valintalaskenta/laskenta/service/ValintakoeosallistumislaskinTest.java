@@ -58,7 +58,7 @@ public class ValintakoeosallistumislaskinTest {
         when(laskentadomainkonvertteriWrapperMock.muodostaTotuusarvolasku(funktiokutsu)).thenReturn(
                 any(Totuusarvofunktio.class));
 
-        final Laskentatulos<Boolean> tulos1 = new Laskentatulos<Boolean>(tila, tulos, new StringBuffer(), new HashMap<String, SyotettyArvo>(), new HashMap<String, FunktioTulos>());
+        final Laskentatulos<Boolean> tulos1 = new Laskentatulos<Boolean>(tila, tulos, "", new HashMap<String, SyotettyArvo>(), new HashMap<String, FunktioTulos>());
         when(
                 laskentaServiceMock.suoritaValintakoelaskenta(hakukohde,
                         any(Hakemus.class), any(Totuusarvofunktio.class))).thenReturn(tulos1);

@@ -88,7 +88,7 @@ public class HakemuslaskinServiceTest {
         final Tila laskettuTila = new Hyvaksyttavissatila();
         final BigDecimal jarjestyskriteeriarvo = new BigDecimal("100.0");
         Laskentatulos<BigDecimal> tulos = new Laskentatulos<BigDecimal>(
-                laskettuTila, jarjestyskriteeriarvo, new StringBuffer(),
+                laskettuTila, jarjestyskriteeriarvo, "",
                 new HashMap<String, SyotettyArvo>(),
                 new HashMap<String, FunktioTulos>());
         when(
