@@ -183,6 +183,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
             if (valintatapajono.getSijoitteluajoId() != null) {
                 dto.setSijoitteluajoId(valintatapajono.getSijoitteluajoId());
             }
+            dto.setKaytetaanKokonaispisteita(valintatapajono.getKaytetaanKokonaispisteita());
             list.add(dto);
         }
         return list;
