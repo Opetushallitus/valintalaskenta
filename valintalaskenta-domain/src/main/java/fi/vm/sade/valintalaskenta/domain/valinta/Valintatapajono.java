@@ -39,6 +39,8 @@ public class Valintatapajono {
 
     private Boolean valmisSijoiteltavaksi = true;
 
+    private Boolean kaytetaanKokonaispisteita;
+
     @Embedded
     private List<Jonosija> jonosijat = new ArrayList<Jonosija>();
 
@@ -130,6 +132,14 @@ public class Valintatapajono {
 
     public void setKaytetaanValintalaskentaa(Boolean kaytetaanValintalaskentaa) {
         this.kaytetaanValintalaskentaa = kaytetaanValintalaskentaa;
+    }
+
+    public Boolean getKaytetaanKokonaispisteita() {
+        return kaytetaanKokonaispisteita;
+    }
+
+    public void setKaytetaanKokonaispisteita(Boolean kaytetaanKokonaispisteita) {
+        this.kaytetaanKokonaispisteita = kaytetaanKokonaispisteita;
     }
 
     public Boolean getValmisSijoiteltavaksi() {

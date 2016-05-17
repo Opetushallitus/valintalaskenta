@@ -49,6 +49,9 @@ public class ValintatapajonoDTO {
     @ApiModelProperty(value = "Onko valintatapajono aktiivinen", required = false)
     private Boolean aktiivinen = true;
 
+    @ApiModelProperty(value = "Käytetäänkö kokonaispisteitä jonosijojen sijaan, jos laskenta ei ole käytössä", required = false)
+    private Boolean kaytetaanKokonaispisteita;
+
     public ValintatapajonoDTO() {
     }
 
@@ -191,5 +194,13 @@ public class ValintatapajonoDTO {
 
     public void setAktiivinen(Boolean aktiivinen) {
         this.aktiivinen = aktiivinen;
+    }
+
+    public Boolean getKaytetaanKokonaispisteita() {
+        return kaytetaanKokonaispisteita;
+    }
+
+    public void setKaytetaanKokonaispisteita(Boolean kaytetaanKokonaispisteita) {
+        this.kaytetaanKokonaispisteita = kaytetaanKokonaispisteita;
     }
 }
