@@ -103,10 +103,12 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     }
 
     private void populateJonosijat(Valinnanvaihe valinnanvaihe) {
-        valinnanvaihe.getValintatapajonot().forEach(valintatapajono -> {
-            valintatapajono.setJonosijat(datastore.createQuery(Jonosija.class)
-                    .field("_id").in(valintatapajono.getJonosijaIdt())
-                    .asList());
-        });
+        if (null != valinnanvaihe) {
+            valinnanvaihe.getValintatapajonot().forEach(valintatapajono -> {
+                valintatapajono.setJonosijat(datastore.createQuery(Jonosija.class)
+                        .field("_id").in(valintatapajono.getJonosijaIdt())
+                        .asList());
+            });
+        }
     }
 }
