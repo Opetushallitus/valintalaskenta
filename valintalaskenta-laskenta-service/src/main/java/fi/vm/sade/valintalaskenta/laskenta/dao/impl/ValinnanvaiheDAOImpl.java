@@ -1,6 +1,8 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 
+import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
+import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository("valinnanvaiheDAO")
 public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
@@ -34,6 +37,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
                     .field("jarjestysnumero").equal(jarjestysnumero - 1)
                     .limit(1)
                     .get();
+            populateJonosijat(edellinen);
         }
 
         return edellinen;
@@ -50,41 +54,60 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
                     .order("-jarjestysnumero")
                     .limit(1)
                     .get();
+            populateJonosijat(edellinen);
         }
         return edellinen;
     }
 
     @Override
     public Valinnanvaihe haeValinnanvaihe(String valinnanvaiheOid) {
-        return datastore.find(Valinnanvaihe.class)
+        Valinnanvaihe valinnanvaihe = datastore.find(Valinnanvaihe.class)
                 .field("valinnanvaiheOid").equal(valinnanvaiheOid)
                 .get();
+        populateJonosijat(valinnanvaihe);
+        return valinnanvaihe;
     }
 
     @Override
     public List<Valinnanvaihe> haeValinnanvaiheetJarjestysnumerolla(String hakuOid, String hakukohdeOid, int jarjestysnumero) {
-        return datastore.find(Valinnanvaihe.class)
+        List<Valinnanvaihe> valinnanvaiheet = datastore.find(Valinnanvaihe.class)
                 .field("hakuOid").equal(hakuOid)
                 .field("hakukohdeOid").equal(hakukohdeOid)
                 .field("jarjestysnumero").equal(jarjestysnumero)
                 .asList();
+        valinnanvaiheet.forEach(this::populateJonosijat);
+        return valinnanvaiheet;
 
     }
 
     @Override
-    public void create(Valinnanvaihe valinnanvaihe) {
-        valinnanvaihe.getValintatapajonot().forEach(datastore::save);
+    public void saveOrUpdate(Valinnanvaihe valinnanvaihe) {
+        valinnanvaihe.getValintatapajonot().forEach(valintatapajono -> {
+            valintatapajono.setJonosijaIdt(valintatapajono.getJonosijat().stream()
+                    .map(jonosija -> (ObjectId) datastore.save(jonosija).getId())
+                    .collect(Collectors.toList()));
+            datastore.save(valintatapajono);
+        });
         datastore.save(valinnanvaihe);
     }
 
     @Override
     public void poistaValinnanvaihe(Valinnanvaihe valinnanvaihe) {
+        valinnanvaihe.getValintatapajonot().forEach(this::poistaJono);
         datastore.delete(valinnanvaihe);
     }
 
     @Override
-    public void poistaJonot(String oid) {
-        final Query<Valintatapajono> query = datastore.createQuery(Valintatapajono.class).field("valintatapajonoOid").equal(oid);
-        datastore.delete(query);
+    public void poistaJono(Valintatapajono jono) {
+        datastore.delete(datastore.createQuery(Jonosija.class).field("_id").in(jono.getJonosijaIdt()));
+        datastore.delete(jono);
+    }
+
+    private void populateJonosijat(Valinnanvaihe valinnanvaihe) {
+        valinnanvaihe.getValintatapajonot().forEach(valintatapajono -> {
+            valintatapajono.setJonosijat(datastore.createQuery(Jonosija.class)
+                    .field("_id").in(valintatapajono.getJonosijaIdt())
+                    .asList());
+        });
     }
 }

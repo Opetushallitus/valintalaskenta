@@ -1,16 +1,17 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Indexed;
-import org.mongodb.morphia.annotations.PrePersist;
+import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-@Embedded
+@Entity("Jonosija")
 public class Jonosija {
+    @Id
+    private ObjectId id;
 
     @Indexed
     private String hakemusOid;

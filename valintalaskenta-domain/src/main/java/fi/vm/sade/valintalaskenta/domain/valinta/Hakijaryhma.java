@@ -34,8 +34,10 @@ public class Hakijaryhma {
 
     private String valintatapajonoOid;
 
-    @Embedded
-    private List<Jonosija> jonosijat = new ArrayList<Jonosija>();
+    private List<ObjectId> jonosijaIdt = new ArrayList<>();
+
+    @Transient
+    private List<Jonosija> jonosijat;
 
     @PrePersist
     private void prePersist() {
@@ -130,7 +132,18 @@ public class Hakijaryhma {
         this.valintatapajonoOid = valintatapajonoOid;
     }
 
+    public List<ObjectId> getJonosijaIdt() {
+        return jonosijaIdt;
+    }
+
+    public void setJonosijaIdt(List<ObjectId> jonosijaIdt) {
+        this.jonosijaIdt = jonosijaIdt;
+    }
+
     public List<Jonosija> getJonosijat() {
+        if (null == jonosijat) {
+            throw new IllegalStateException("Jonosijat not loaded");
+        }
         return jonosijat;
     }
 

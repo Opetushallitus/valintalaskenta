@@ -99,7 +99,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
 
             laskeValintatapajonot(hakukohdeOid, uuid, hakemukset, laskentahakemukset, hakukohteenValintaperusteet, vaihe, jarjestysnumero, edellinenVaihe, viimeisinVaihe, valinnanvaihe, edellinenOsallistuminen);
-            valinnanvaiheDAO.create(valinnanvaihe);
+            valinnanvaiheDAO.saveOrUpdate(valinnanvaihe);
         }
 
         poistaHaamuryhmat(hakijaryhmat, valintaperusteet.get(0).getHakukohdeOid());
@@ -352,7 +352,6 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.haeValinnanvaiheetJarjestysnumerolla(hakuOid, hakukohdeOid, jarjestysnumero);
         for (Valinnanvaihe vaihe : vaiheet) {
             if (!vaihe.getValinnanvaiheOid().equals(valinnanvaiheOid)) {
-                vaihe.getValintatapajonot().forEach(j -> valinnanvaiheDAO.poistaJonot(j.getValintatapajonoOid()));
                 valinnanvaiheDAO.poistaValinnanvaihe(vaihe);
             }
         }
@@ -383,8 +382,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
         valinnanvaihe.getValintatapajonot().clear();
         valinnanvaihe.getValintatapajonot().addAll(saastettavat);
-        valinnanvaiheDAO.create(valinnanvaihe);
-        poistettavat.forEach(j -> valinnanvaiheDAO.poistaJonot(j.getValintatapajonoOid()));
+        valinnanvaiheDAO.saveOrUpdate(valinnanvaihe);
+        poistettavat.forEach(valinnanvaiheDAO::poistaJono);
     }
 
     private void poistaHaamuryhmat(List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat, String hakukohdeOid) {

@@ -1,14 +1,18 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import com.mongodb.*;
+import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.tulos.dao.util.MongoMapReduceUtil;
+import org.bson.types.ObjectId;
 import org.mongodb.morphia.Key;
 import org.mongodb.morphia.mapping.Mapper;
 import org.mongodb.morphia.mapping.cache.DefaultEntityCache;
+import org.mongodb.morphia.query.MorphiaKeyIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,56 +37,76 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     @Override
     public List<Valinnanvaihe> readByHakuOidAndHakemusOid(String hakuOid,
                                                           String hakemusOid) {
-        List<Key<Valintatapajono>> keys = datastore.find(Valintatapajono.class).field("jonosijat.hakemusOid").equal(hakemusOid).asKeyList();
-        return datastore.createQuery(Valinnanvaihe.class).field("hakuOid")
-                .equal(hakuOid).field("valintatapajonot").in(keys)
+        List<ObjectId> hakemuksenJonosijaIdt = new LinkedList<>();
+        datastore.find(Jonosija.class)
+                .field("hakemusOid").equal(hakemusOid)
+                .fetchKeys().forEach(key -> hakemuksenJonosijaIdt.add((ObjectId) key.getId()));
+        List<Key<Valintatapajono>> hakemuksenJonot = datastore.find(Valintatapajono.class)
+                .field("jonosijaIdt").in(hakemuksenJonosijaIdt)
+                .asKeyList();
+        List<Valinnanvaihe> valinnanvaiheet = datastore.createQuery(Valinnanvaihe.class)
+                .field("hakuOid").equal(hakuOid)
+                .field("valintatapajonot").in(hakemuksenJonot)
                 .asList();
+        valinnanvaiheet.forEach(this::populateJonosijat);
+        return valinnanvaiheet;
     }
 
     @Override
     public Valinnanvaihe findByValintatapajonoOid(String valintatapajonoOid) {
-        List<Key<Valintatapajono>> keys = datastore.find(Valintatapajono.class).field("valintatapajonoOid").equal(valintatapajonoOid).asKeyList();
-        return datastore.createQuery(Valinnanvaihe.class)
+        List<Key<Valintatapajono>> keys = datastore.find(Valintatapajono.class)
+                .field("valintatapajonoOid").equal(valintatapajonoOid)
+                .asKeyList();
+        Valinnanvaihe valinnanvaihe = datastore.createQuery(Valinnanvaihe.class)
                 .field("valintatapajonot").in(keys)
                 .get();
+        populateJonosijat(valinnanvaihe);
+        return valinnanvaihe;
     }
 
     @Override
     public List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid) {
-        return datastore.createQuery(Valinnanvaihe.class).field("hakukohdeOid")
-                .equal(hakukohdeoid).asList();
+        List<Valinnanvaihe> valinnanvaiheet = datastore.createQuery(Valinnanvaihe.class)
+                .field("hakukohdeOid").equal(hakukohdeoid)
+                .asList();
+        valinnanvaiheet.forEach(this::populateJonosijat);
+        return valinnanvaiheet;
     }
 
     @Override
     public List<Valinnanvaihe> readByHakuOid(String hakuoid) {
-        return datastore.createQuery(Valinnanvaihe.class).field("hakuOid")
-                .equal(hakuoid).asList();
-    }
-
-    @Override
-    public void create(Valinnanvaihe valinnanvaihe) {
-        valinnanvaihe.getValintatapajonot().forEach(datastore::save);
-        datastore.save(valinnanvaihe);
-    }
-
-    @Override
-    public void update(Valinnanvaihe valinnanvaihe, List<Valintatapajono> jonot, String hakukohdeoid, String hakuoid, String tarjoajaOid) {
-        jonot.forEach(datastore::save);
-        valinnanvaihe.setHakukohdeOid(hakukohdeoid);
-        valinnanvaihe.setHakuOid(hakuoid);
-        valinnanvaihe.setTarjoajaOid(tarjoajaOid);
-        valinnanvaihe.setValintatapajonot(jonot);
-        saveOrUpdate(valinnanvaihe);
+        List<Valinnanvaihe> valinnanvaiheet = datastore.createQuery(Valinnanvaihe.class)
+                .field("hakuOid").equal(hakuoid)
+                .asList();
+        valinnanvaiheet.forEach(this::populateJonosijat);
+        return valinnanvaiheet;
     }
 
     @Override
     public Valinnanvaihe haeValinnanvaihe(String valinnanvaiheOid) {
-        return datastore.find(Valinnanvaihe.class).field("valinnanvaiheOid").equal(valinnanvaiheOid).get();
+        Valinnanvaihe valinnanvaihe = datastore.find(Valinnanvaihe.class)
+                .field("valinnanvaiheOid").equal(valinnanvaiheOid)
+                .get();
+        populateJonosijat(valinnanvaihe);
+        return valinnanvaihe;
     }
 
     @Override
     public void saveOrUpdate(Valinnanvaihe vaihe) {
-        vaihe.getValintatapajonot().forEach(datastore::save);
+        vaihe.getValintatapajonot().forEach(valintatapajono -> {
+            valintatapajono.setJonosijaIdt(valintatapajono.getJonosijat().stream()
+                    .map(jonosija -> (ObjectId) datastore.save(jonosija).getId())
+                    .collect(Collectors.toList()));
+            datastore.save(valintatapajono);
+        });
         datastore.save(vaihe);
+    }
+
+    private void populateJonosijat(Valinnanvaihe valinnanvaihe) {
+        valinnanvaihe.getValintatapajonot().forEach(valintatapajono -> {
+            valintatapajono.setJonosijat(datastore.createQuery(Jonosija.class)
+                    .field("_id").in(valintatapajono.getJonosijaIdt())
+                    .asList());
+        });
     }
 }

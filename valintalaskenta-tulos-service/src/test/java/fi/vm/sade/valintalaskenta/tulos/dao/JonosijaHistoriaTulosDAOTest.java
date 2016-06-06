@@ -14,7 +14,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
@@ -44,7 +43,7 @@ public class JonosijaHistoriaTulosDAOTest {
         final String valintatapajonoOid = "valintatapajonoOid1";
         final String hakemusOid = "hakemusOid1";
         List<Jarjestyskriteerihistoria> jonosijaHistoriat =
-                jonosijaHistoriaTulosDAO.findByValintatapajonoAndVersioAndHakemusOid(valintatapajonoOid, hakemusOid);
+                jonosijaHistoriaTulosDAO.findByValintatapajonoAndHakemusOid(valintatapajonoOid, hakemusOid);
 
         assertEquals(2, jonosijaHistoriat.size());
         Collections.sort(jonosijaHistoriat, (o1, o2) -> o1.getHistoria().compareTo(o2.getHistoria()));
@@ -59,7 +58,7 @@ public class JonosijaHistoriaTulosDAOTest {
         final String valintatapajonoOid = "1410335755064-1436990924193196531";
         final String hakemusOid = "1.2.246.562.11.00000876962";
         List<Jarjestyskriteerihistoria> jonosijaHistoriat =
-                jonosijaHistoriaTulosDAO.findByValintatapajonoAndVersioAndHakemusOid(valintatapajonoOid, hakemusOid);
+                jonosijaHistoriaTulosDAO.findByValintatapajonoAndHakemusOid(valintatapajonoOid, hakemusOid);
 
         assertEquals(3, jonosijaHistoriat.size());
         Collections.sort(jonosijaHistoriat, (o1, o2) -> o1.getHistoria().compareTo(o2.getHistoria()));

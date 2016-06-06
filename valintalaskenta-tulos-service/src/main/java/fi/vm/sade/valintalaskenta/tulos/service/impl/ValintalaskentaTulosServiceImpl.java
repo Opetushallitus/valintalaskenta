@@ -26,8 +26,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -400,7 +398,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
     @Override
     public List<Jarjestyskriteerihistoria> haeJonosijaHistoria(String valintatapajonoOid, String hakemusOid) {
-        return jarjestyskriteerihistoriaDAO.findByValintatapajonoAndVersioAndHakemusOid(valintatapajonoOid, hakemusOid);
+        return jarjestyskriteerihistoriaDAO.findByValintatapajonoAndHakemusOid(valintatapajonoOid, hakemusOid);
     }
 
     @Override
@@ -432,7 +430,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         Valinnanvaihe annettu = modelMapper.map(vaihe, Valinnanvaihe.class);
         annettu.setHakukohdeOid(hakukohdeoid);
         if (haettu == null) {
-            valinnanvaiheDAO.create(annettu);
+            valinnanvaiheDAO.saveOrUpdate(annettu);
         } else {
             List<Valintatapajono> vanhat = new ArrayList<Valintatapajono>();
             for (Valintatapajono jono : haettu.getValintatapajonot()) {
@@ -447,7 +445,11 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                 }
             }
             annettu.getValintatapajonot().addAll(vanhat);
-            valinnanvaiheDAO.update(haettu, annettu.getValintatapajonot(), hakukohdeoid, vaihe.getHakuOid(), tarjoajaOid);
+            haettu.setHakukohdeOid(hakukohdeoid);
+            haettu.setHakuOid(vaihe.getHakuOid());
+            haettu.setTarjoajaOid(tarjoajaOid);
+            haettu.setValintatapajonot(annettu.getValintatapajonot());
+            valinnanvaiheDAO.saveOrUpdate(haettu);
         }
         return vaihe;
     }

@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.*;
 
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Indexed;
 
 @Entity("Valintatapajono")
 public class Valintatapajono {
@@ -41,8 +38,10 @@ public class Valintatapajono {
 
     private Boolean kaytetaanKokonaispisteita;
 
-    @Embedded
-    private List<Jonosija> jonosijat = new ArrayList<Jonosija>();
+    private List<ObjectId> jonosijaIdt = new ArrayList<>();
+
+    @Transient
+    private List<Jonosija> jonosijat;
 
     private Long sijoitteluajoId;
 
@@ -102,7 +101,18 @@ public class Valintatapajono {
         this.eiVarasijatayttoa = eiVarasijatayttoa;
     }
 
+    public List<ObjectId> getJonosijaIdt() {
+        return jonosijaIdt;
+    }
+
+    public void setJonosijaIdt(List<ObjectId> jonosijaIdt) {
+        this.jonosijaIdt = jonosijaIdt;
+    }
+
     public List<Jonosija> getJonosijat() {
+        if (null == jonosijat) {
+            throw new IllegalStateException("Jonosijat not loaded");
+        }
         return jonosijat;
     }
 
