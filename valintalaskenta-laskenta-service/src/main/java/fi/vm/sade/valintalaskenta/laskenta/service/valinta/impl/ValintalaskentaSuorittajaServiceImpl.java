@@ -273,9 +273,9 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                     }
                 }
 
-                for (JonosijaJaSyotetytArvot js : jonosijatHakemusOidinMukaan.values()) {
-                    jono.getJonosijat().add(createJonosija(js));
-                }
+                jono.setJonosijat(jonosijatHakemusOidinMukaan.values().stream()
+                        .map(this::createJonosija)
+                        .collect(Collectors.toList()));
 
                 if (j.isPoistetaankoHylatyt()) {
                     List<Jonosija> filteroity = jono.getJonosijat().stream()
