@@ -1,77 +1,88 @@
 {
-    "Valinnanvaihe": [
-        {
-            "jarjestysnumero": 0,
-            "hakuOid": "1.2.246.562.5.2013080813081926341927",
-            "hakukohdeOid": "1.2.246.562.5.91937845484",
-            "valinnanvaiheOid": "1388739479946-6344111160036037403",
-            "valintatapajonot": [
-                {"$ref": "Valintatapajono", "$id": {"$oid": "541bef0ae4b0e1d22689e606"}}
-            ]
-        }
-
-
-    ],
-    "Valintatapajono": [
+    "Jonosija": [
         {
             "_id": {
-                "$oid": "541bef0ae4b0e1d22689e606"
+                "$oid": "541bef0ae4b0e1d22689e600"
             },
-            "valintatapajonoOid": "1388739480159-1173947553521563587",
-            "nimi": "Ei-hakukelpoiset",
-            "prioriteetti": 0,
-            "aloituspaikat": 10,
-            "tasasijasaanto": "YLITAYTTO",
-            "jonosijat": [
+            "etunimi": "Emmi",
+            "hakemusOid": "1.2.246.562.11.00000072753",
+            "hakutoiveprioriteetti": 1,
+            "harkinnanvarainen": false,
+            "jarjestyskriteeritulokset": [
                 {
-                    "hakemusOid": "1.2.246.562.11.00000072753",
-                    "etunimi": "Emmi",
-                    "sukunimi": "EsivalinnassaEpaonnistunut",
-                    "hakutoiveprioriteetti": 1,
-                    "harkinnanvarainen": false,
-                    "jarjestyskriteeritulokset": [
-                        {
-                            "prioriteetti": 0,
-                            "arvo": "0.0",
-                            "tila": "HYLATTY",
-                            "kuvaus": "Hakemus ei mahtunut aloituspaikkojen sisään välisijoittelussa",
-                            "nimi": "Esivalinnan koulumenestys"
-                        }
-                    ]
+                    "arvo": "0.0",
+                    "kuvaus": "Hakemus ei mahtunut aloituspaikkojen sis\u00e4\u00e4n v\u00e4lisijoittelussa",
+                    "nimi": "Esivalinnan koulumenestys",
+                    "prioriteetti": 0,
+                    "tila": "HYLATTY"
+                }
+            ],
+            "sukunimi": "EsivalinnassaEpaonnistunut"
+        }
+    ],
+    "Valinnanvaihe": [
+        {
+            "hakuOid": "1.2.246.562.5.2013080813081926341927",
+            "hakukohdeOid": "1.2.246.562.5.91937845484",
+            "jarjestysnumero": 0,
+            "valinnanvaiheOid": "1388739479946-6344111160036037403",
+            "valintatapajonot": [
+                {
+                    "$id": {
+                        "$oid": "541bef0ae4b0e1d22689e606"
+                    },
+                    "$ref": "Valintatapajono"
                 }
             ]
         }
     ],
     "ValintakoeOsallistuminen": [
         {
-            "hakuOid": "1.2.246.562.5.2013080813081926341927",
-            "hakemusOid": "1.2.246.562.11.00000072753",
             "etunimi": "Emmi",
-            "sukunimi": "EsivalinnassaEpaonnistunut",
+            "hakemusOid": "1.2.246.562.11.00000072753",
+            "hakuOid": "1.2.246.562.5.2013080813081926341927",
             "hakutoiveet": [
                 {
                     "hakukohdeOid": "1.2.246.562.5.91937845484",
                     "valinnanVaiheet": [
                         {
-                            "valinnanVaiheOid": "valinnanVaiheHakijanValinta",
                             "valinnanVaiheJarjestysluku": 100,
+                            "valinnanVaiheOid": "valinnanVaiheHakijanValinta",
                             "valintakokeet": [
                                 {
-                                    "valintakoeOid": "13887394815186315041955335611484",
-                                    "valintakoeTunniste": "kielikoe_tunniste",
                                     "aktiivinen": true,
+                                    "kutsunKohde": "HAKIJAN_VALINTA",
                                     "osallistuminenTulos": {
-                                        "osallistuminen": "OSALLISTUU",
                                         "laskentaTila": "HYVAKSYTTAVISSA",
-                                        "laskentaTulos": true
+                                        "laskentaTulos": true,
+                                        "osallistuminen": "OSALLISTUU"
                                     },
-                                    "kutsunKohde": "HAKIJAN_VALINTA"
+                                    "valintakoeOid": "13887394815186315041955335611484",
+                                    "valintakoeTunniste": "kielikoe_tunniste"
                                 }
                             ]
                         }
                     ]
                 }
-            ]
+            ],
+            "sukunimi": "EsivalinnassaEpaonnistunut"
+        }
+    ],
+    "Valintatapajono": [
+        {
+            "_id": {
+                "$oid": "541bef0ae4b0e1d22689e606"
+            },
+            "aloituspaikat": 10,
+            "jonosijaIdt": [
+                {
+                    "$oid": "541bef0ae4b0e1d22689e600"
+                }
+            ],
+            "nimi": "Ei-hakukelpoiset",
+            "prioriteetti": 0,
+            "tasasijasaanto": "YLITAYTTO",
+            "valintatapajonoOid": "1388739480159-1173947553521563587"
         }
     ]
 }

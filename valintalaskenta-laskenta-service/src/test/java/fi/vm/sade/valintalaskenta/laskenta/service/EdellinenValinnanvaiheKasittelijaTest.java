@@ -18,9 +18,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -66,11 +64,13 @@ public class EdellinenValinnanvaiheKasittelijaTest {
     public void testHakemusEiMukanaValinnanvaiheessa() {
         Valintatapajono jono = new Valintatapajono();
 
+        List<Jonosija> jonosijat = new LinkedList<>();
         for (int i = 2; i <= 10; ++i) {
             Jonosija jonosija = new Jonosija();
             jonosija.setHakemusOid("hakemusOid" + i);
-            jono.getJonosijat().add(jonosija);
+            jonosijat.add(jonosija);
         }
+        jono.setJonosijat(jonosijat);
 
         Valinnanvaihe vaihe = new Valinnanvaihe();
         vaihe.getValintatapajonot().add(jono);
@@ -94,12 +94,15 @@ public class EdellinenValinnanvaiheKasittelijaTest {
         final String hakemusOid = "hakemusOid1";
 
         Valintatapajono jono1 = new Valintatapajono();
+        jono1.setJonosijat(new LinkedList<>());
         jono1.getJonosijat().add(luoJonosija(hakemusOid, JarjestyskriteerituloksenTila.HYLATTY));
 
         Valintatapajono jono2 = new Valintatapajono();
+        jono2.setJonosijat(new LinkedList<>());
         jono2.getJonosijat().add(luoJonosija(hakemusOid, JarjestyskriteerituloksenTila.VIRHE));
 
         Valintatapajono jono3 = new Valintatapajono();
+        jono3.setJonosijat(new LinkedList<>());
         jono3.getJonosijat().add(luoJonosija(hakemusOid, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA));
 
         Valinnanvaihe vaihe = new Valinnanvaihe();
@@ -114,12 +117,15 @@ public class EdellinenValinnanvaiheKasittelijaTest {
         final String hakemusOid = "hakemusOid1";
 
         Valintatapajono jono1 = new Valintatapajono();
+        jono1.setJonosijat(new LinkedList<>());
         jono1.getJonosijat().add(luoJonosija(hakemusOid, JarjestyskriteerituloksenTila.HYLATTY));
 
         Valintatapajono jono2 = new Valintatapajono();
+        jono2.setJonosijat(new LinkedList<>());
         jono2.getJonosijat().add(luoJonosija(hakemusOid, JarjestyskriteerituloksenTila.VIRHE));
 
         Valintatapajono jono3 = new Valintatapajono();
+        jono3.setJonosijat(new LinkedList<>());
         jono3.getJonosijat().add(luoJonosija(hakemusOid, JarjestyskriteerituloksenTila.MAARITTELEMATON));
 
         Valinnanvaihe vaihe = new Valinnanvaihe();

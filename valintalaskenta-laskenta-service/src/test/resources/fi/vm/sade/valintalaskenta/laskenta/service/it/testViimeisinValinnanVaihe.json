@@ -1,159 +1,182 @@
 {
-    "Valinnanvaihe": [
-        {
-            "jarjestysnumero": 0,
-            "hakuOid": "1.2.246.562.5.2013080813081926341927",
-            "hakukohdeOid": "1.2.246.562.5.91937845484",
-            "valinnanvaiheOid": "1388739479946-6344111160036037403",
-            "valintatapajonot": [
-                {"$ref": "Valintatapajono", "$id": {"$oid": "541bef0ae4b0e1d22689e606"}}
-            ]
-        }
-
-
-    ],
-    "Valintatapajono": [
+    "Jonosija": [
         {
             "_id": {
-                "$oid": "541bef0ae4b0e1d22689e606"
+                "$oid": "541bef0ae4b0e1d22689e600"
             },
-            "valintatapajonoOid": "1388739480159-1173947553521563587",
-            "nimi": "Harkinnanvaraisten käsittelyvaiheen valintatapajono",
-            "prioriteetti": 0,
-            "aloituspaikat": 10,
-            "tasasijasaanto": "ARVONTA",
-            "jonosijat": [
+            "etunimi": "Valtteri",
+            "hakemusOid": "1.2.246.562.11.00000072672",
+            "hakutoiveprioriteetti": 5,
+            "harkinnanvarainen": false,
+            "jarjestyskriteeritulokset": [
                 {
-                    "hakemusOid": "1.2.246.562.11.00000072672",
-                    "etunimi": "Valtteri",
-                    "sukunimi": "Villi",
-                    "hakutoiveprioriteetti": 5,
-                    "harkinnanvarainen": false,
-                    "jarjestyskriteeritulokset": [
-                        {
-                            "prioriteetti": 0,
-                            "arvo": "",
-                            "tila": "HYVAKSYTTAVISSA"
-                        }
-                    ]
-                },
+                    "arvo": "",
+                    "prioriteetti": 0,
+                    "tila": "HYVAKSYTTAVISSA"
+                }
+            ],
+            "sukunimi": "Villi"
+        },
+        {
+            "_id": {
+                "$oid": "541bef0ae4b0e1d22689e601"
+            },
+            "etunimi": "Keijo",
+            "hakemusOid": "1.2.246.562.11.00000072753",
+            "hakutoiveprioriteetti": 1,
+            "harkinnanvarainen": false,
+            "jarjestyskriteeritulokset": [
                 {
-                    "hakemusOid": "1.2.246.562.11.00000072753",
-                    "etunimi": "Keijo",
-                    "sukunimi": "Keskeyttänyt",
-                    "hakutoiveprioriteetti": 1,
-                    "harkinnanvarainen": false,
-                    "jarjestyskriteeritulokset": [
-                        {
-                            "prioriteetti": 0,
-                            "arvo": "0.0",
-                            "tila": "HYLATTY",
-                            "kuvaus": "Ulkomailla suoritettu koulutus tai oppivelvollisuuden keskeytyminen"
-                        }
-                    ]
-                },
+                    "arvo": "0.0",
+                    "kuvaus": "Ulkomailla suoritettu koulutus tai oppivelvollisuuden keskeytyminen",
+                    "prioriteetti": 0,
+                    "tila": "HYLATTY"
+                }
+            ],
+            "sukunimi": "Keskeytt\u00e4nyt"
+        },
+        {
+            "_id": {
+                "$oid": "541bef0ae4b0e1d22689e602"
+            },
+            "etunimi": "Ulla",
+            "hakemusOid": "1.2.246.562.11.00000072740",
+            "hakutoiveprioriteetti": 3,
+            "harkinnanvarainen": false,
+            "jarjestyskriteeritulokset": [
                 {
-                    "hakemusOid": "1.2.246.562.11.00000072740",
-                    "etunimi": "Ulla",
-                    "sukunimi": "Unelias",
-                    "hakutoiveprioriteetti": 3,
-                    "harkinnanvarainen": false,
-                    "jarjestyskriteeritulokset": [
-                        {
-                            "prioriteetti": 0,
-                            "arvo": "",
-                            "tila": "HYVAKSYTTAVISSA"
-                        }
-                    ]
+                    "arvo": "",
+                    "prioriteetti": 0,
+                    "tila": "HYVAKSYTTAVISSA"
+                }
+            ],
+            "sukunimi": "Unelias"
+        }
+    ],
+    "Valinnanvaihe": [
+        {
+            "hakuOid": "1.2.246.562.5.2013080813081926341927",
+            "hakukohdeOid": "1.2.246.562.5.91937845484",
+            "jarjestysnumero": 0,
+            "valinnanvaiheOid": "1388739479946-6344111160036037403",
+            "valintatapajonot": [
+                {
+                    "$id": {
+                        "$oid": "541bef0ae4b0e1d22689e606"
+                    },
+                    "$ref": "Valintatapajono"
                 }
             ]
         }
     ],
     "ValintakoeOsallistuminen": [
         {
-            "hakuOid": "1.2.246.562.5.2013080813081926341927",
-            "hakemusOid": "1.2.246.562.11.00000072753",
             "etunimi": "Keijo",
-            "sukunimi": "Keskeyttänyt",
+            "hakemusOid": "1.2.246.562.11.00000072753",
+            "hakuOid": "1.2.246.562.5.2013080813081926341927",
             "hakutoiveet": [
                 {
                     "hakukohdeOid": "1.2.246.562.5.91937845484",
                     "valinnanVaiheet": [
                         {
-                            "valinnanVaiheOid": "13887394798212581302211576347831",
                             "valinnanVaiheJarjestysluku": 1,
+                            "valinnanVaiheOid": "13887394798212581302211576347831",
                             "valintakokeet": [
                                 {
-                                    "valintakoeOid": "13887394815186315041955335611484",
-                                    "valintakoeTunniste": "kielikoe_tunniste",
                                     "osallistuminenTulos": {
-                                        "osallistuminen": "EI_OSALLISTU",
                                         "laskentaTila": "HYVAKSYTTAVISSA",
-                                        "laskentaTulos": true
-                                    }
+                                        "laskentaTulos": true,
+                                        "osallistuminen": "EI_OSALLISTU"
+                                    },
+                                    "valintakoeOid": "13887394815186315041955335611484",
+                                    "valintakoeTunniste": "kielikoe_tunniste"
                                 }
                             ]
                         }
                     ]
                 }
-            ]
+            ],
+            "sukunimi": "Keskeytt\u00e4nyt"
         },
         {
-            "hakuOid": "1.2.246.562.5.2013080813081926341927",
-            "hakemusOid": "1.2.246.562.11.00000072672",
             "etunimi": "Valtteri",
-            "sukunimi": "Villi",
+            "hakemusOid": "1.2.246.562.11.00000072672",
+            "hakuOid": "1.2.246.562.5.2013080813081926341927",
             "hakutoiveet": [
                 {
                     "hakukohdeOid": "1.2.246.562.5.91937845484",
                     "valinnanVaiheet": [
                         {
-                            "valinnanVaiheOid": "13887394798212581302211576347831",
                             "valinnanVaiheJarjestysluku": 1,
+                            "valinnanVaiheOid": "13887394798212581302211576347831",
                             "valintakokeet": [
                                 {
-                                    "valintakoeOid": "13887394815186315041955335611484",
-                                    "valintakoeTunniste": "kielikoe_tunniste",
                                     "osallistuminenTulos": {
-                                        "osallistuminen": "OSALLISTUU",
                                         "laskentaTila": "HYVAKSYTTAVISSA",
-                                        "laskentaTulos": true
-                                    }
+                                        "laskentaTulos": true,
+                                        "osallistuminen": "OSALLISTUU"
+                                    },
+                                    "valintakoeOid": "13887394815186315041955335611484",
+                                    "valintakoeTunniste": "kielikoe_tunniste"
                                 }
                             ]
                         }
                     ]
                 }
-            ]
+            ],
+            "sukunimi": "Villi"
         },
         {
             "className": "fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen",
-            "hakuOid": "1.2.246.562.5.2013080813081926341927",
-            "hakemusOid": "1.2.246.562.11.00000072740",
             "etunimi": "Ulla",
-            "sukunimi": "Unelias",
+            "hakemusOid": "1.2.246.562.11.00000072740",
+            "hakuOid": "1.2.246.562.5.2013080813081926341927",
             "hakutoiveet": [
                 {
                     "hakukohdeOid": "1.2.246.562.5.91937845484",
                     "valinnanVaiheet": [
                         {
-                            "valinnanVaiheOid": "13887394798212581302211576347831",
                             "valinnanVaiheJarjestysluku": 1,
+                            "valinnanVaiheOid": "13887394798212581302211576347831",
                             "valintakokeet": [
                                 {
-                                    "valintakoeOid": "13887394815186315041955335611484",
-                                    "valintakoeTunniste": "kielikoe_tunniste",
                                     "osallistuminenTulos": {
-                                        "osallistuminen": "OSALLISTUU",
                                         "laskentaTila": "HYVAKSYTTAVISSA",
-                                        "laskentaTulos": true
-                                    }
+                                        "laskentaTulos": true,
+                                        "osallistuminen": "OSALLISTUU"
+                                    },
+                                    "valintakoeOid": "13887394815186315041955335611484",
+                                    "valintakoeTunniste": "kielikoe_tunniste"
                                 }
                             ]
                         }
                     ]
                 }
-            ]
+            ],
+            "sukunimi": "Unelias"
+        }
+    ],
+    "Valintatapajono": [
+        {
+            "_id": {
+                "$oid": "541bef0ae4b0e1d22689e606"
+            },
+            "aloituspaikat": 10,
+            "jonosijaIdt": [
+                {
+                    "$oid": "541bef0ae4b0e1d22689e600"
+                },
+                {
+                    "$oid": "541bef0ae4b0e1d22689e601"
+                },
+                {
+                    "$oid": "541bef0ae4b0e1d22689e602"
+                }
+            ],
+            "nimi": "Harkinnanvaraisten k\u00e4sittelyvaiheen valintatapajono",
+            "prioriteetti": 0,
+            "tasasijasaanto": "ARVONTA",
+            "valintatapajonoOid": "1388739480159-1173947553521563587"
         }
     ]
 }

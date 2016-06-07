@@ -49,7 +49,6 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
         datastore.find(Jonosija.class)
                 .field("hakemusOid").equal(hakemusOid)
                 .field("_id").in(jononJonosijaIdt)
-                .fetch()
                 .forEach(jonosija -> {
                     jonosija.getJarjestyskriteeritulokset().forEach(jarjestyskriteeritulos -> {
                         historiaIdt.add(jarjestyskriteeritulos.getHistoria());

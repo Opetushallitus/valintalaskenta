@@ -1,4 +1,39 @@
 {
+    "Jonosija": [
+        {
+            "_id": {"$oid": "52139e20ec975d4bfcb01260"},
+            "hakemusOid" : "hakemusOid1",
+            "harkinnanvarainen" : false,
+            "jarjestyskriteeritulokset" : [
+                {
+                    "prioriteetti" : 0,
+                    "arvo" : "13.0",
+                    "tila" : "HYLATTY"
+                },
+                {
+                    "prioriteetti" : 1,
+                    "arvo" : "5.0",
+                    "tila" : "HYLATTY"
+                }
+            ]
+        },
+        {
+            "_id": {"$oid": "52139e20ec975d4bfcb01261"},
+            "hakemusOid" : "hakemusOid2",
+            "jarjestyskriteeritulokset" : [
+                {
+                    "prioriteetti" : 0,
+                    "arvo" : "20.0",
+                    "tila" : "HYVAKSYTTAVISSA"
+                },
+                {
+                    "prioriteetti" : 1,
+                    "arvo" : "10.0",
+                    "tila" : "HYVAKSYTTAVISSA"
+                }
+            ]
+        }
+    ],
     "Valintatapajono": [
         {
             "_id": {
@@ -6,38 +41,9 @@
             },
             "valintatapajonoOid" : "valintatapajonoOid1",
             "prioriteetti" : 0,
-            "jonosijat" : [
-                {
-                    "hakemusOid" : "hakemusOid1",
-                    "harkinnanvarainen" : false,
-                    "jarjestyskriteeritulokset" : [
-                        {
-                            "prioriteetti" : 0,
-                            "arvo" : "13.0",
-                            "tila" : "HYLATTY"
-                        },
-                        {
-                            "prioriteetti" : 1,
-                            "arvo" : "5.0",
-                            "tila" : "HYLATTY"
-                        }
-                    ]
-                },
-                {
-                    "hakemusOid" : "hakemusOid2",
-                    "jarjestyskriteeritulokset" : [
-                        {
-                            "prioriteetti" : 0,
-                            "arvo" : "20.0",
-                            "tila" : "HYVAKSYTTAVISSA"
-                        },
-                        {
-                            "prioriteetti" : 1,
-                            "arvo" : "10.0",
-                            "tila" : "HYVAKSYTTAVISSA"
-                        }
-                    ]
-                }
+            "jonosijaIdt" : [
+                {"$oid": "52139e20ec975d4bfcb01260"},
+                {"$oid": "52139e20ec975d4bfcb01261"}
             ]
         }
     ],

@@ -1,79 +1,97 @@
 {
+  "Jonosija": [
+    {
+      "_id": { "$oid" : "52139e20ec975d4bfcb0124f" },
+      "hakemusOid" : "hakemusOid1",
+      "jarjestyskriteeritulokset" : [
+        {  },
+        {  }
+      ]
+    },
+    {
+      "_id": { "$oid" : "52139e20ec975d4bfcb01250" },
+      "hakemusOid" : "hakemusOid2",
+      "jarjestyskriteeritulokset" : [
+        {  },
+        {  }
+      ]
+    },
+    {
+      "_id": { "$oid" : "52139e20ec975d4bfcb01251" },
+      "hakemusOid" : "hakemusOid1",
+      "jarjestyskriteeritulokset" : [
+        { "historia" : { "$oid" : "52139e20ec975d4bfcb01247" } },
+        { "historia" : { "$oid" : "52139e20ec975d4bfcb01248" } }
+      ]
+    },
+    {
+      "_id": { "$oid" : "52139e20ec975d4bfcb01252" },
+      "hakemusOid" : "hakemusOid2",
+      "jarjestyskriteeritulokset" : [
+        { "historia" : { "$oid" : "52139e20ec975d4bfcb01249" } },
+        { "historia" : { "$oid" : "52139e20ec975d4bfcb0124a" } }
+      ]
+    },
+    {
+      "_id": { "$oid" : "52139e20ec975d4bfcb01253" },
+      "hakemusOid" : "hakemusOid1",
+      "jarjestyskriteeritulokset" : [
+        {  },
+        {  }
+      ]
+    },
+    {
+      "_id": { "$oid" : "52139e20ec975d4bfcb01254" },
+      "hakemusOid" : "hakemusOid2",
+      "jarjestyskriteeritulokset" : [
+        {  },
+        {  }
+      ]
+    },
+    {
+      "_id": { "$oid" : "52139e20ec975d4bfcb01255" },
+      "hakemusOid" : "hakemusOid1",
+      "jarjestyskriteeritulokset" : [
+        { "historia" : { "$oid" : "52139e20ec975d4bfcb0124b" } },
+        { "historia" : { "$oid" : "52139e20ec975d4bfcb0124c" } }
+      ]
+    },
+    {
+      "_id": { "$oid" : "52139e20ec975d4bfcb01256" },
+      "hakemusOid" : "hakemusOid2",
+      "jarjestyskriteeritulokset" : [
+        { "historia" : { "$oid" : "52139e20ec975d4bfcb0124d" } },
+        { "historia" : { "$oid" : "52139e20ec975d4bfcb0124e" } }
+      ]
+    }
+  ],
   "Valintatapajono": [
       {
           "valintatapajonoOid" : "valintatapajonoOid1",
-          "jonosijat" : [
-              {
-                  "hakemusOid" : "hakemusOid1",
-                  "jarjestyskriteeritulokset" : [
-                      {  },
-                      {  }
-                  ]
-              },
-              {
-                  "hakemusOid" : "hakemusOid2",
-                  "jarjestyskriteeritulokset" : [
-                      {  },
-                      {  }
-                  ]
-              }
+          "jonosijaIdt" : [
+            { "$oid" : "52139e20ec975d4bfcb0124f" },
+            { "$oid" : "52139e20ec975d4bfcb01250" }
           ]
       },
       {
           "valintatapajonoOid" : "valintatapajonoOid1",
-          "jonosijat" : [
-              {
-                  "hakemusOid" : "hakemusOid1",
-                  "jarjestyskriteeritulokset" : [
-                      { "historia" : { "$oid" : "52139e20ec975d4bfcb01247" } },
-                      { "historia" : { "$oid" : "52139e20ec975d4bfcb01248" } }
-                  ]
-              },
-              {
-                  "hakemusOid" : "hakemusOid2",
-                  "jarjestyskriteeritulokset" : [
-                      { "historia" : { "$oid" : "52139e20ec975d4bfcb01249" } },
-                      { "historia" : { "$oid" : "52139e20ec975d4bfcb0124a" } }
-                  ]
-              }
+          "jonosijaIdt" : [
+            { "$oid" : "52139e20ec975d4bfcb01251" },
+            { "$oid" : "52139e20ec975d4bfcb01252" }
           ]
       },
       {
           "valintatapajonoOid" : "valintatapajonoOid1",
-          "jonosijat" : [
-              {
-                  "hakemusOid" : "hakemusOid1",
-                  "jarjestyskriteeritulokset" : [
-                      {  },
-                      {  }
-                  ]
-              },
-              {
-                  "hakemusOid" : "hakemusOid2",
-                  "jarjestyskriteeritulokset" : [
-                      {  },
-                      {  }
-                  ]
-              }
+          "jonosijaIdt" : [
+            { "$oid" : "52139e20ec975d4bfcb01253" },
+            { "$oid" : "52139e20ec975d4bfcb01254" }
           ]
       },
       {
           "valintatapajonoOid" : "valintatapajonoOid2",
-          "jonosijat" : [
-              {
-                  "hakemusOid" : "hakemusOid1",
-                  "jarjestyskriteeritulokset" : [
-                      { "historia" : { "$oid" : "52139e20ec975d4bfcb0124b" } },
-                      { "historia" : { "$oid" : "52139e20ec975d4bfcb0124c" } }
-                  ]
-              },
-              {
-                  "hakemusOid" : "hakemusOid2",
-                  "jarjestyskriteeritulokset" : [
-                      { "historia" : { "$oid" : "52139e20ec975d4bfcb0124d" } },
-                      { "historia" : { "$oid" : "52139e20ec975d4bfcb0124e" } }
-                  ]
-              }
+          "jonosijaIdt" : [
+            { "$oid" : "52139e20ec975d4bfcb01255" },
+            { "$oid" : "52139e20ec975d4bfcb01256" }
           ]
       }
   ],
