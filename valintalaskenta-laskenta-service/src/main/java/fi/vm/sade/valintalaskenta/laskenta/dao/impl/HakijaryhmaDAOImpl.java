@@ -31,9 +31,7 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
         Optional<Hakijaryhma> ryhmaOpt = Optional.ofNullable(datastore.find(Hakijaryhma.class)
                 .field("hakijaryhmaOid").equal(hakijaryhmaOid)
                 .get());
-        ryhmaOpt.ifPresent(ryhma -> {
-            ryhma.setJonosijat(datastore.createQuery(Jonosija.class).field("_id").in(ryhma.getJonosijaIdt()).asList());
-        });
+        ryhmaOpt.ifPresent(this::populateJonosijat);
         return ryhmaOpt;
     }
 
@@ -43,9 +41,7 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
                 .field("hakukohdeOid").equal(hakukohdeOid)
                 .field("prioriteetti").equal(prioriteetti)
                 .asList();
-        ryhmat.forEach(ryhma -> {
-            ryhma.setJonosijat(datastore.createQuery(Jonosija.class).field("_id").in(ryhma.getJonosijaIdt()).asList());
-        });
+        ryhmat.forEach(this::populateJonosijat);
         return ryhmat;
     }
 
@@ -54,9 +50,7 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
         List<Hakijaryhma> ryhmat = datastore.find(Hakijaryhma.class)
                 .field("hakukohdeOid").equal(hakukohdeOid)
                 .asList();
-        ryhmat.forEach(ryhma -> {
-            ryhma.setJonosijat(datastore.createQuery(Jonosija.class).field("_id").in(ryhma.getJonosijaIdt()).asList());
-        });
+        ryhmat.forEach(this::populateJonosijat);
         return ryhmat;
     }
 
@@ -72,5 +66,11 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
     public void poistaHakijaryhma(Hakijaryhma hakijaryhma) {
         hakijaryhma.getJonosijat().forEach(datastore::delete);
         datastore.delete(hakijaryhma);
+    }
+
+    private void populateJonosijat(Hakijaryhma ryhma) {
+        ryhma.setJonosijat(datastore.createQuery(Jonosija.class)
+                .field("_id").in(ryhma.getJonosijaIdt())
+                .asList());
     }
 }
