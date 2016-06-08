@@ -22,9 +22,13 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
 
     @Override
     public List<Hakijaryhma> readByHakukohdeOid(String hakukohdeoid) {
-        List<Hakijaryhma> ryhmat = datastore.createQuery(Hakijaryhma.class).field("hakukohdeOid").equal(hakukohdeoid).asList();
+        List<Hakijaryhma> ryhmat = datastore.createQuery(Hakijaryhma.class)
+                .field("hakukohdeOid").equal(hakukohdeoid)
+                .asList();
         ryhmat.forEach(ryhma -> {
-            ryhma.setJonosijat(datastore.createQuery(Jonosija.class).field("_id").in(ryhma.getJonosijaIdt()).asList());
+            ryhma.setJonosijat(datastore.createQuery(Jonosija.class)
+                    .field("_id").in(ryhma.getJonosijaIdt())
+                    .asList());
         });
         return ryhmat;
     }
