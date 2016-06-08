@@ -1,11 +1,15 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 
+import fi.vm.sade.service.valintaperusteet.resource.HakijaryhmaResource;
 import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
+import fi.vm.sade.valintalaskenta.domain.valinta.HakijaryhmaMigrationDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.laskenta.dao.HakijaryhmaDAO;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Key;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +21,7 @@ import java.util.stream.Collectors;
 
 @Repository("hakijaryhmaDAO")
 public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
+    private static final Logger LOGGER = LoggerFactory.getLogger(HakijaryhmaDAOImpl.class);
 
     @Autowired
     private Datastore datastore;
@@ -28,37 +33,30 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
 
     @Override
     public Optional<Hakijaryhma> haeHakijaryhma(String hakijaryhmaOid) {
-        Optional<Hakijaryhma> ryhmaOpt = Optional.ofNullable(datastore.find(Hakijaryhma.class)
+        return Optional.ofNullable(datastore.find(HakijaryhmaMigrationDTO.class)
                 .field("hakijaryhmaOid").equal(hakijaryhmaOid)
-                .get());
-        ryhmaOpt.ifPresent(this::populateJonosijat);
-        return ryhmaOpt;
+                .get())
+                .map(this::migrateOne);
     }
 
     @Override
     public List<Hakijaryhma> haeHakijaryhmatPrioriteetilla(String hakukohdeOid, int prioriteetti) {
-        List<Hakijaryhma> ryhmat = datastore.find(Hakijaryhma.class)
+        return migrateMany(datastore.find(HakijaryhmaMigrationDTO.class)
                 .field("hakukohdeOid").equal(hakukohdeOid)
                 .field("prioriteetti").equal(prioriteetti)
-                .asList();
-        ryhmat.forEach(this::populateJonosijat);
-        return ryhmat;
+                .asList());
     }
 
     @Override
     public List<Hakijaryhma> haeHakijaryhmat(String hakukohdeOid) {
-        List<Hakijaryhma> ryhmat = datastore.find(Hakijaryhma.class)
+        return migrateMany(datastore.find(HakijaryhmaMigrationDTO.class)
                 .field("hakukohdeOid").equal(hakukohdeOid)
-                .asList();
-        ryhmat.forEach(this::populateJonosijat);
-        return ryhmat;
+                .asList());
     }
 
     @Override
     public void create(Hakijaryhma hakijaryhma) {
-        hakijaryhma.setJonosijaIdt(hakijaryhma.getJonosijat().stream()
-                .map(jonosija -> (ObjectId) datastore.save(jonosija).getId())
-                .collect(Collectors.toList()));
+        saveJonosijat(hakijaryhma);
         datastore.save(hakijaryhma);
     }
 
@@ -72,5 +70,30 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
         ryhma.setJonosijat(datastore.createQuery(Jonosija.class)
                 .field("_id").in(ryhma.getJonosijaIdt())
                 .asList());
+    }
+
+    private void saveJonosijat(Hakijaryhma ryhma) {
+        ryhma.setJonosijaIdt(ryhma.getJonosijat().stream()
+                .map(jonosija -> (ObjectId) datastore.save(jonosija).getId())
+                .collect(Collectors.toList()));
+    }
+
+    private Hakijaryhma migrateOne(HakijaryhmaMigrationDTO ryhma) {
+        if (null == ryhma.getJonosijat()) {
+            Hakijaryhma alreadyMigratedRyhma = datastore.createQuery(Hakijaryhma.class)
+                    .field("_id").equal(ryhma.getId())
+                    .get();
+            populateJonosijat(alreadyMigratedRyhma);
+            return alreadyMigratedRyhma;
+        } else {
+            LOGGER.info("Migrating hakijaryhma {}", ryhma.getHakijaryhmaOid());
+            Hakijaryhma migratedRyhma = ryhma.migrate();
+            create(migratedRyhma);
+            return migratedRyhma;
+        }
+    }
+
+    private List<Hakijaryhma> migrateMany(List<HakijaryhmaMigrationDTO> ryhmat) {
+        return ryhmat.stream().map(this::migrateOne).collect(Collectors.toList());
     }
 }

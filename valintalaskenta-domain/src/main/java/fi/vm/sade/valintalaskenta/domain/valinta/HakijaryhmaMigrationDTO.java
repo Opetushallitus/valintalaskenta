@@ -3,10 +3,12 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.*;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity("Hakijaryhma")
-public class Hakijaryhma {
+public class HakijaryhmaMigrationDTO {
     @Id
     private ObjectId id;
 
@@ -34,18 +36,16 @@ public class Hakijaryhma {
 
     private String valintatapajonoOid;
 
-    private List<ObjectId> jonosijaIdt;
-
-    @Transient
-    private List<Jonosija> jonosijat;
+    @Embedded
+    private List<JonosijaMigrationDTO> jonosijat;
 
     @PrePersist
     private void prePersist() {
         createdAt = new Date();
     }
 
-    public void setId(ObjectId id) {
-        this.id = id;
+    public ObjectId getId() {
+        return this.id;
     }
 
     public Date getCreatedAt() {
@@ -136,22 +136,31 @@ public class Hakijaryhma {
         this.valintatapajonoOid = valintatapajonoOid;
     }
 
-    public List<ObjectId> getJonosijaIdt() {
-        return jonosijaIdt;
-    }
-
-    public void setJonosijaIdt(List<ObjectId> jonosijaIdt) {
-        this.jonosijaIdt = jonosijaIdt;
-    }
-
-    public List<Jonosija> getJonosijat() {
-        if (null == jonosijat) {
-            throw new IllegalStateException("Jonosijat not loaded");
-        }
+    public List<JonosijaMigrationDTO> getJonosijat() {
         return jonosijat;
     }
 
-    public void setJonosijat(List<Jonosija> jonosijat) {
+    public void setJonosijat(List<JonosijaMigrationDTO> jonosijat) {
         this.jonosijat = jonosijat;
+    }
+
+    public Hakijaryhma migrate() {
+        Hakijaryhma ryhma = new Hakijaryhma();
+        ryhma.setId(id);
+        ryhma.setHakijaryhmaOid(hakijaryhmaOid);
+        ryhma.setPrioriteetti(prioriteetti);
+        ryhma.setCreatedAt(createdAt);
+        ryhma.setHakukohdeOid(hakukohdeOid);
+        ryhma.setNimi(nimi);
+        ryhma.setKuvaus(kuvaus);
+        ryhma.setKiintio(kiintio);
+        ryhma.setKaytaKaikki(kaytaKaikki);
+        ryhma.setTarkkaKiintio(tarkkaKiintio);
+        ryhma.setKaytetaanRyhmaanKuuluvia(kaytetaanRyhmaanKuuluvia);
+        ryhma.setValintatapajonoOid(valintatapajonoOid);
+        ryhma.setJonosijat(jonosijat.stream()
+                .map(jonosijaMigrationDTO -> jonosijaMigrationDTO.migrate())
+                .collect(Collectors.toList()));
+        return ryhma;
     }
 }
