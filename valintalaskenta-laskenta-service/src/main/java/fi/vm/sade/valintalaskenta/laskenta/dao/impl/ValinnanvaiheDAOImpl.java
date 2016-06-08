@@ -83,9 +83,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     @Override
     public void saveOrUpdate(Valinnanvaihe valinnanvaihe) {
         valinnanvaihe.getValintatapajonot().forEach(valintatapajono -> {
-            valintatapajono.setJonosijaIdt(valintatapajono.getJonosijat().stream()
-                    .map(jonosija -> (ObjectId) datastore.save(jonosija).getId())
-                    .collect(Collectors.toList()));
+            saveJonosijat(valintatapajono);
             datastore.save(valintatapajono);
         });
         datastore.save(valinnanvaihe);
@@ -101,6 +99,12 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     public void poistaJono(Valintatapajono jono) {
         datastore.delete(datastore.createQuery(Jonosija.class).field("_id").in(jono.getJonosijaIdt()));
         datastore.delete(jono);
+    }
+
+    private void saveJonosijat(Valintatapajono valintatapajono) {
+        valintatapajono.setJonosijaIdt(valintatapajono.getJonosijat().stream()
+                .map(jonosija -> (ObjectId) datastore.save(jonosija).getId())
+                .collect(Collectors.toList()));
     }
 
     private void populateJonosijat(Valinnanvaihe valinnanvaihe) {

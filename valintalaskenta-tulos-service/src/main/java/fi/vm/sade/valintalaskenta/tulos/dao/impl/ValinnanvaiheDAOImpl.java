@@ -94,12 +94,16 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     @Override
     public void saveOrUpdate(Valinnanvaihe vaihe) {
         vaihe.getValintatapajonot().forEach(valintatapajono -> {
-            valintatapajono.setJonosijaIdt(valintatapajono.getJonosijat().stream()
-                    .map(jonosija -> (ObjectId) datastore.save(jonosija).getId())
-                    .collect(Collectors.toList()));
+            saveJonosijat(valintatapajono);
             datastore.save(valintatapajono);
         });
         datastore.save(vaihe);
+    }
+
+    private void saveJonosijat(Valintatapajono valintatapajono) {
+        valintatapajono.setJonosijaIdt(valintatapajono.getJonosijat().stream()
+                .map(jonosija -> (ObjectId) datastore.save(jonosija).getId())
+                .collect(Collectors.toList()));
     }
 
     private void populateJonosijat(Valinnanvaihe valinnanvaihe) {
