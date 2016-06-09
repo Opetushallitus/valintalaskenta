@@ -1,15 +1,19 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import org.mongodb.morphia.annotations.*;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity("Valinnanvaihe")
 @Indexes(
     @Index(name = "idx_hakuoid_valinnanvaihe_oid", value = "hakuOid, valinnanvaiheOid", unique = true)
 )
-public class Valinnanvaihe {
+public class ValinnanvaiheMigrationDTO {
     @Id
     private ObjectId id;
 
@@ -31,7 +35,7 @@ public class Valinnanvaihe {
     private String nimi;
 
     @Reference
-    private List<Valintatapajono> valintatapajonot = new ArrayList<Valintatapajono>();
+    private List<ValintatapajonoMigrationDTO> valintatapajonot = new ArrayList<ValintatapajonoMigrationDTO>();
 
     @PrePersist
     private void prePersist() {
@@ -43,8 +47,8 @@ public class Valinnanvaihe {
         Collections.sort(valintatapajonot, (o1, o2) -> o1.getPrioriteetti() - o2.getPrioriteetti());
     }
 
-    public void setId(ObjectId id) {
-        this.id = id;
+    public ObjectId getId() {
+        return this.id;
     }
 
     public int getJarjestysnumero() {
@@ -95,11 +99,11 @@ public class Valinnanvaihe {
         this.tarjoajaOid = tarjoajaOid;
     }
 
-    public List<Valintatapajono> getValintatapajonot() {
+    public List<ValintatapajonoMigrationDTO> getValintatapajonot() {
         return valintatapajonot;
     }
 
-    public void setValintatapajonot(List<Valintatapajono> valintatapajonot) {
+    public void setValintatapajonot(List<ValintatapajonoMigrationDTO> valintatapajonot) {
         this.valintatapajonot = valintatapajonot;
     }
 

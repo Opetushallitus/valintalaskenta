@@ -1,15 +1,15 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.*;
 
-import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity("Valintatapajono")
-public class Valintatapajono {
+public class ValintatapajonoMigrationDTO {
     @Id
     private ObjectId id;
 
@@ -38,15 +38,13 @@ public class Valintatapajono {
 
     private Boolean kaytetaanKokonaispisteita;
 
-    private List<ObjectId> jonosijaIdt;
-
-    @Transient
-    private List<Jonosija> jonosijat;
+    @Embedded
+    private List<JonosijaMigrationDTO> jonosijat;
 
     private Long sijoitteluajoId;
 
-    public void setId(ObjectId id) {
-        this.id = id;
+    public ObjectId getId() {
+        return this.id;
     }
 
     public String getValintatapajonoOid() {
@@ -105,22 +103,11 @@ public class Valintatapajono {
         this.eiVarasijatayttoa = eiVarasijatayttoa;
     }
 
-    public List<ObjectId> getJonosijaIdt() {
-        return jonosijaIdt;
-    }
-
-    public void setJonosijaIdt(List<ObjectId> jonosijaIdt) {
-        this.jonosijaIdt = jonosijaIdt;
-    }
-
-    public List<Jonosija> getJonosijat() {
-        if (null == jonosijat) {
-            throw new IllegalStateException("Jonosijat not loaded");
-        }
+    public List<JonosijaMigrationDTO> getJonosijat() {
         return jonosijat;
     }
 
-    public void setJonosijat(List<Jonosija> jonosijat) {
+    public void setJonosijat(List<JonosijaMigrationDTO> jonosijat) {
         this.jonosijat = jonosijat;
     }
 
@@ -170,5 +157,27 @@ public class Valintatapajono {
 
     public void setSijoitteluajoId(Long sijoitteluajoId) {
         this.sijoitteluajoId = sijoitteluajoId;
+    }
+
+    public Valintatapajono migrate() {
+        Valintatapajono jono = new Valintatapajono();
+        jono.setId(id);
+        jono.setValintatapajonoOid(valintatapajonoOid);
+        jono.setNimi(nimi);
+        jono.setPrioriteetti(prioriteetti);
+        jono.setAloituspaikat(aloituspaikat);
+        jono.setSiirretaanSijoitteluun(siirretaanSijoitteluun);
+        jono.setTasasijasaanto(tasasijasaanto);
+        jono.setEiVarasijatayttoa(eiVarasijatayttoa);
+        jono.setKaikkiEhdonTayttavatHyvaksytaan(kaikkiEhdonTayttavatHyvaksytaan);
+        jono.setKaytetaanValintalaskentaa(kaytetaanValintalaskentaa);
+        jono.setPoissaOlevaTaytto(poissaOlevaTaytto);
+        jono.setValmisSijoiteltavaksi(valmisSijoiteltavaksi);
+        jono.setKaytetaanKokonaispisteita(kaytetaanKokonaispisteita);
+        jono.setJonosijat(jonosijat.stream()
+                .map(jonosija -> jonosija.migrate())
+                .collect(Collectors.toList()));
+        jono.setSijoitteluajoId(sijoitteluajoId);
+        return jono;
     }
 }
