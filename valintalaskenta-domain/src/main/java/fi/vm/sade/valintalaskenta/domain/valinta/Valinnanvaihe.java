@@ -5,7 +5,7 @@ import org.bson.types.ObjectId;
 
 import java.util.*;
 
-@Entity("Valinnanvaihe")
+@Entity(value = "Valinnanvaihe", noClassnameStored = true)
 @Indexes(
     @Index(name = "idx_hakuoid_valinnanvaihe_oid", value = "hakuOid, valinnanvaiheOid", unique = true)
 )

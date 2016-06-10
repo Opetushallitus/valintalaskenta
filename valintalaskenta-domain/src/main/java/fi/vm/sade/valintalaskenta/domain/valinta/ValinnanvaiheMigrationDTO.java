@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Entity("Valinnanvaihe")
+@Entity(value = "Valinnanvaihe", noClassnameStored = true)
 @Indexes(
     @Index(name = "idx_hakuoid_valinnanvaihe_oid", value = "hakuOid, valinnanvaiheOid", unique = true)
 )

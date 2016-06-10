@@ -8,7 +8,7 @@ import org.mongodb.morphia.annotations.*;
 
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 
-@Entity("Valintatapajono")
+@Entity(value = "Valintatapajono", noClassnameStored = true)
 public class Valintatapajono {
     @Id
     private ObjectId id;

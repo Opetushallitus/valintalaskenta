@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Entity("Hakijaryhma")
+@Entity(value = "Hakijaryhma", noClassnameStored = true)
 public class HakijaryhmaMigrationDTO {
     @Id
     private ObjectId id;

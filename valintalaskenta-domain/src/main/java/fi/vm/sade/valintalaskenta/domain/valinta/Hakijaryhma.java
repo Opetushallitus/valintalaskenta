@@ -5,7 +5,7 @@ import org.mongodb.morphia.annotations.*;
 
 import java.util.*;
 
-@Entity("Hakijaryhma")
+@Entity(value = "Hakijaryhma", noClassnameStored = true)
 public class Hakijaryhma {
     @Id
     private ObjectId id;
