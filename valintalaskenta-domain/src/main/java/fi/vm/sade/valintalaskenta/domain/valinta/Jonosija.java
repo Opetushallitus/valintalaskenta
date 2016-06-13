@@ -37,6 +37,10 @@ public class Jonosija {
     @Embedded
     private List<FunktioTulos> funktioTulokset = new ArrayList<FunktioTulos>();
 
+    public ObjectId getId() {
+        return this.id;
+    }
+
     public String getHakemusOid() {
         return hakemusOid;
     }

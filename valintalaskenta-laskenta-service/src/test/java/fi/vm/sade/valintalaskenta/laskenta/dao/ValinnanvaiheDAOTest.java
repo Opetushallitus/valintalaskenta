@@ -3,7 +3,9 @@ package fi.vm.sade.valintalaskenta.laskenta.dao;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
+import org.bson.types.ObjectId;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,9 +17,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
+import java.util.List;
+
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 
 /**
@@ -69,4 +72,39 @@ public class ValinnanvaiheDAOTest {
         assertEquals(valinnanvaiheOid, valinnanvaihe.getValinnanvaiheOid());
     }
 
+    @Test
+    @UsingDataSet(locations = "valinnanvaiheMigrationTestData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void testMigrationOfValinnanvaihe() {
+        Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.haeValinnanvaihe("vanhaValinnanvaiheOid");
+        assertNotNull(valinnanvaihe);
+        valinnanvaihe.getValintatapajonot().forEach(valintatapajono -> {
+            List<Jonosija> jonosijat = valintatapajono.getJonosijat();
+            List<ObjectId> jonosijaIdt = valintatapajono.getJonosijaIdt();
+            assertNotNull(jonosijat);
+            assertNotNull(jonosijaIdt);
+            assertEquals(3, jonosijaIdt.size());
+            assertEquals(3, jonosijat.size());
+            for (int i = 0; i < Math.max(jonosijat.size(), jonosijaIdt.size()); i++) {
+                assertEquals(jonosijaIdt.get(i), jonosijat.get(i).getId());
+            }
+        });
+    }
+
+    @Test
+    @UsingDataSet(locations = "valinnanvaiheMigrationTestData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void testLoadingOfMigratedValinnanvaihe() {
+        Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.haeValinnanvaihe("migroituValinnanvaiheOid");
+        assertNotNull(valinnanvaihe);
+        valinnanvaihe.getValintatapajonot().forEach(valintatapajono -> {
+            List<Jonosija> jonosijat = valintatapajono.getJonosijat();
+            List<ObjectId> jonosijaIdt = valintatapajono.getJonosijaIdt();
+            assertNotNull(jonosijat);
+            assertNotNull(jonosijaIdt);
+            assertEquals(3, jonosijaIdt.size());
+            assertEquals(3, jonosijat.size());
+            for (int i = 0; i < Math.max(jonosijat.size(), jonosijaIdt.size()); i++) {
+                assertEquals(jonosijaIdt.get(i), jonosijat.get(i).getId());
+            }
+        });
+    }
 }

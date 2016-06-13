@@ -1,0 +1,186 @@
+{
+    "Jonosija": [
+        {
+            "_id": {
+                "$oid": "541bef0ae4b0e1d22689e608"
+            },
+            "etunimi": "Etunimi",
+            "hakemusOid": "oid1",
+            "hakijaOid": "hakijaoid",
+            "hakutoiveprioriteetti": 1,
+            "harkinnanvarainen": false,
+            "jarjestyskriteeritulokset": [
+                {
+                    "arvo": "50",
+                    "nimi": "Testikriteeri",
+                    "prioriteetti": 0,
+                    "tila": "HYVAKSYTTAVISSA"
+                }
+            ],
+            "sukunimi": ""
+        },
+        {
+            "_id": {
+                "$oid": "541bef0ae4b0e1d22689e609"
+            },
+            "etunimi": "Etunimi",
+            "hakemusOid": "oid2",
+            "hakijaOid": "hakijaoid",
+            "hakutoiveprioriteetti": 1,
+            "harkinnanvarainen": false,
+            "jarjestyskriteeritulokset": [
+                {
+                    "arvo": "40",
+                    "nimi": "Testikriteeri",
+                    "prioriteetti": 0,
+                    "tila": "HYVAKSYTTAVISSA"
+                }
+            ],
+            "sukunimi": ""
+        },
+        {
+            "_id": {
+                "$oid": "541bef0ae4b0e1d22689e610"
+            },
+            "etunimi": "Etunimi",
+            "hakemusOid": "oid3",
+            "hakijaOid": "hakijaoid",
+            "hakutoiveprioriteetti": 1,
+            "harkinnanvarainen": false,
+            "jarjestyskriteeritulokset": [
+                {
+                    "arvo": "30",
+                    "nimi": "Testikriteeri",
+                    "prioriteetti": 0,
+                    "tila": "HYVAKSYTTAVISSA"
+                }
+            ],
+            "sukunimi": ""
+        }
+    ],
+    "Valinnanvaihe": [
+        {
+            "hakuOid": "haku1",
+            "hakukohdeOid": "hakukohde1",
+            "jarjestysnumero": 1,
+            "nimi": "Varsinainen valinta",
+            "tarjoajaOid": "1.2.246.562.10.28342991297",
+            "valinnanvaiheOid": "vanhaValinnanvaiheOid",
+            "valintatapajonot": [
+                {
+                    "$id": {
+                        "$oid": "541bef0ae4b0e1d22689e606"
+                    },
+                    "$ref": "Valintatapajono"
+                }
+            ]
+        },
+        {
+            "hakuOid": "haku1",
+            "hakukohdeOid": "hakukohde1",
+            "jarjestysnumero": 1,
+            "nimi": "Varsinainen valinta",
+            "tarjoajaOid": "1.2.246.562.10.28342991297",
+            "valinnanvaiheOid": "migroituValinnanvaiheOid",
+            "valintatapajonot": [
+                {
+                    "$id": {
+                        "$oid": "541bef0ae4b0e1d22689e607"
+                    },
+                    "$ref": "Valintatapajono"
+                }
+            ]
+        }
+    ],
+    "Valintatapajono": [
+        {
+            "_id": {
+                "$oid": "541bef0ae4b0e1d22689e606"
+            },
+            "aloituspaikat": 4,
+            "eiVarasijatayttoa": false,
+            "jonosijat": [
+                {
+                    "etunimi": "Etunimi",
+                    "hakemusOid": "oid1",
+                    "hakijaOid": "hakijaoid",
+                    "hakutoiveprioriteetti": 1,
+                    "harkinnanvarainen": false,
+                    "jarjestyskriteeritulokset": [
+                        {
+                            "arvo": "50",
+                            "nimi": "Testikriteeri",
+                            "prioriteetti": 0,
+                            "tila": "HYVAKSYTTAVISSA"
+                        }
+                    ],
+                    "sukunimi": ""
+                },
+                {
+                    "etunimi": "Etunimi",
+                    "hakemusOid": "oid2",
+                    "hakijaOid": "hakijaoid",
+                    "hakutoiveprioriteetti": 1,
+                    "harkinnanvarainen": false,
+                    "jarjestyskriteeritulokset": [
+                        {
+                            "arvo": "40",
+                            "nimi": "Testikriteeri",
+                            "prioriteetti": 0,
+                            "tila": "HYVAKSYTTAVISSA"
+                        }
+                    ],
+                    "sukunimi": ""
+                },
+                {
+                    "etunimi": "Etunimi",
+                    "hakemusOid": "oid3",
+                    "hakijaOid": "hakijaoid",
+                    "hakutoiveprioriteetti": 1,
+                    "harkinnanvarainen": false,
+                    "jarjestyskriteeritulokset": [
+                        {
+                            "arvo": "30",
+                            "nimi": "Testikriteeri",
+                            "prioriteetti": 0,
+                            "tila": "HYVAKSYTTAVISSA"
+                        }
+                    ],
+                    "sukunimi": ""
+                }
+            ],
+            "nimi": "Pisteet",
+            "poissaOlevaTaytto": true,
+            "prioriteetti": 0,
+            "siirretaanSijoitteluun": true,
+            "tasasijasaanto": "ARVONTA",
+            "valintatapajonoOid": "jono1",
+            "valmisSijoiteltavaksi": true,
+            "varasijojaKaytetaanAlkaen": {
+                "$date": "2019-08-26T15:12:40.623Z"
+            }
+        },
+        {
+            "_id": {
+                "$oid": "541bef0ae4b0e1d22689e607"
+            },
+            "aloituspaikat": 4,
+            "eiVarasijatayttoa": false,
+            "jonosijaIdt": [
+                { "$oid": "541bef0ae4b0e1d22689e608" },
+                { "$oid": "541bef0ae4b0e1d22689e609" },
+                { "$oid": "541bef0ae4b0e1d22689e610" }
+            ],
+            "nimi": "Pisteet",
+            "poissaOlevaTaytto": true,
+            "prioriteetti": 0,
+            "siirretaanSijoitteluun": true,
+            "tasasijasaanto": "ARVONTA",
+            "valintatapajonoOid": "jono1",
+            "valmisSijoiteltavaksi": true,
+            "varasijojaKaytetaanAlkaen": {
+                "$date": "2019-08-26T15:12:40.623Z"
+            }
+        }
+    ]
+}
