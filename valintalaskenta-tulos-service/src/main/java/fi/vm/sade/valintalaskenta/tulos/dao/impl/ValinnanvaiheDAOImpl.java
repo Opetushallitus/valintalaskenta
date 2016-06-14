@@ -1,29 +1,24 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import com.mongodb.*;
-import fi.vm.sade.valintalaskenta.domain.valinta.*;
-import fi.vm.sade.valintalaskenta.tulos.dao.util.MongoMapReduceUtil;
+import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.valinta.ValinnanvaiheMigrationDTO;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.valinta.ValintatapajonoMigrationDTO;
+import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Key;
-import org.mongodb.morphia.mapping.Mapper;
-import org.mongodb.morphia.mapping.cache.DefaultEntityCache;
-import org.mongodb.morphia.query.MorphiaKeyIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.query.UpdateOperations;
-
-import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
@@ -130,8 +125,15 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         migrated.setTarjoajaOid(vaihe.getTarjoajaOid());
         migrated.setNimi(vaihe.getNimi());
         migrated.setValintatapajonot(vaihe.getValintatapajonot().stream()
-                .map(jono -> migrate(jono))
-                .collect(Collectors.toList()));
+            .map(jono -> {
+                try {
+                    return migrate(jono);
+                } catch (RuntimeException e) {
+                    LOGGER.error(String.format("Error when calling migrate for jono %s of valinnanvaihe %s", jono.getId(), vaihe.getId()), e);
+                    throw e;
+                }
+            })
+            .collect(Collectors.toList()));
         return migrated;
     }
 
