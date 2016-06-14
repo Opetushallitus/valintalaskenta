@@ -37,7 +37,7 @@ public class Hakijaryhma {
     private List<ObjectId> jonosijaIdt;
 
     @Transient
-    private List<Jonosija> jonosijat;
+    private List<Jonosija> jonosijat = new ArrayList<>();
 
     @PrePersist
     private void prePersist() {
