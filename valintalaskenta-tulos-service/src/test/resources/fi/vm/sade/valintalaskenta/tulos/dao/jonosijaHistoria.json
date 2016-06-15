@@ -183,6 +183,7 @@
     ],
     "Valintatapajono": [
         {
+            "schemaVersion": 2,
             "valintatapajonoOid": "1410335755064-1436990924193196531",
             "nimi": "Pisteet",
             "prioriteetti": 0,

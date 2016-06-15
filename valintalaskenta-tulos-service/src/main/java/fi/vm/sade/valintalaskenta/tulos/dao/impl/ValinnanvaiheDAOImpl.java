@@ -99,7 +99,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     }
 
     private Valintatapajono migrate(ValintatapajonoMigrationDTO jono) {
-        if (null == jono.getJonosijat()) {
+        if (jono.getSchemaVersion() == Valintatapajono.CURRENT_SCHEMA_VERSION) {
             Valintatapajono alreadyMigrated = datastore.find(Valintatapajono.class)
                     .field("_id").equal(jono.getId())
                     .get();

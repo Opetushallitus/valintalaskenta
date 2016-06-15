@@ -60,6 +60,7 @@
     ],
     "Hakijaryhma": [
         {
+            "schemaVersion": 2,
             "hakijaryhmaOid": "migroituHakijaryhmaOid",
             "hakukohdeOid": "1.2.246.562.20.18895322503",
             "jonosijaIdt": [
@@ -78,6 +79,17 @@
             "kiintio": 2,
             "kuvaus": "Ensikertalaisten kiinti\u00f6",
             "nimi": "Ensikertalaisten kiinti\u00f6",
+            "prioriteetti": 0,
+            "tarkkaKiintio": false
+        },
+        {
+            "hakijaryhmaOid": "tyhjaHakijaryhmaOid",
+            "hakukohdeOid": "1.2.246.562.20.18895322503",
+            "kaytaKaikki": false,
+            "kaytetaanRyhmaanKuuluvia": true,
+            "kiintio": 0,
+            "kuvaus": "Tyhja kiinti\u00f6",
+            "nimi": "Tyhja kiinti\u00f6",
             "prioriteetti": 0,
             "tarkkaKiintio": false
         },

@@ -10,8 +10,12 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 
 @Entity(value = "Valintatapajono", noClassnameStored = true)
 public class Valintatapajono {
+    public static final int CURRENT_SCHEMA_VERSION = 2;
+
     @Id
     private ObjectId id;
+
+    private int schemaVersion = CURRENT_SCHEMA_VERSION;
 
     @Indexed
     private String valintatapajonoOid;
@@ -47,6 +51,14 @@ public class Valintatapajono {
 
     public void setId(ObjectId id) {
         this.id = id;
+    }
+
+    public int getSchemaVersion() {
+        return schemaVersion;
+    }
+
+    public void setSchemaVersion(int schemaVersion) {
+        this.schemaVersion = schemaVersion;
     }
 
     public String getValintatapajonoOid() {
@@ -106,7 +118,7 @@ public class Valintatapajono {
     }
 
     public List<ObjectId> getJonosijaIdt() {
-        return jonosijaIdt;
+        return jonosijaIdt == null ? new ArrayList<>() : jonosijaIdt;
     }
 
     public void setJonosijaIdt(List<ObjectId> jonosijaIdt) {

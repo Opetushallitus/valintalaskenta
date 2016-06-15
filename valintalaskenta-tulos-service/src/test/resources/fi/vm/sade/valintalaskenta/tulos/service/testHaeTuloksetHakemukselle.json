@@ -39,6 +39,7 @@
             "_id": {
                 "$oid": "541bef0ae4b0e1d22689e606"
             },
+            "schemaVersion": 2,
             "valintatapajonoOid" : "valintatapajonoOid1",
             "prioriteetti" : 0,
             "jonosijaIdt" : [

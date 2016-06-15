@@ -7,8 +7,12 @@ import java.util.*;
 
 @Entity(value = "Hakijaryhma", noClassnameStored = true)
 public class Hakijaryhma {
+    public static final int CURRENT_SCHEMA_VERSION = 2;
+
     @Id
     private ObjectId id;
+
+    private int schemaVersion = CURRENT_SCHEMA_VERSION;
 
     @Indexed
     private String hakijaryhmaOid;
@@ -46,6 +50,14 @@ public class Hakijaryhma {
 
     public void setId(ObjectId id) {
         this.id = id;
+    }
+
+    public int getSchemaVersion() {
+        return schemaVersion;
+    }
+
+    public void setSchemaVersion(int schemaVersion) {
+        this.schemaVersion = schemaVersion;
     }
 
     public Date getCreatedAt() {
@@ -137,7 +149,7 @@ public class Hakijaryhma {
     }
 
     public List<ObjectId> getJonosijaIdt() {
-        return jonosijaIdt;
+        return jonosijaIdt == null ? new ArrayList<>() : jonosijaIdt;
     }
 
     public void setJonosijaIdt(List<ObjectId> jonosijaIdt) {
@@ -146,7 +158,9 @@ public class Hakijaryhma {
 
     public List<Jonosija> getJonosijat() {
         if (null == jonosijat) {
-            throw new IllegalStateException("Jonosijat not loaded");
+            throw new IllegalStateException(
+                    String.format("Jonosijat not loaded for hakijaryhma %s with jonosijaids %s",
+                            hakijaryhmaOid, jonosijaIdt));
         }
         return jonosijat;
     }

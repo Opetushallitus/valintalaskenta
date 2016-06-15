@@ -29,25 +29,27 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
         List<HakijaryhmaMigrationDTO> ryhmat = datastore.createQuery(HakijaryhmaMigrationDTO.class)
                 .field("hakukohdeOid").equal(hakukohdeoid)
                 .asList();
-        List<Hakijaryhma> migratedRyhmat = ryhmat.stream().map(ryhma -> {
-            if (null == ryhma.getJonosijat()) {
-                Hakijaryhma alreadyMigratedRyhma = datastore.createQuery(Hakijaryhma.class)
-                        .field("_id").equal(ryhma.getId())
-                        .get();
-                alreadyMigratedRyhma.setJonosijat(datastore.createQuery(Jonosija.class)
-                        .field("_id").in(alreadyMigratedRyhma.getJonosijaIdt())
-                        .asList());
-                return alreadyMigratedRyhma;
-            } else {
-                LOGGER.info("Migrating hakijaryhma {}", ryhma.getHakijaryhmaOid());
-                Hakijaryhma migratedRyhma = ryhma.migrate();
-                migratedRyhma.setJonosijaIdt(migratedRyhma.getJonosijat().stream()
-                        .map(jonosija -> (ObjectId) datastore.save(jonosija).getId())
-                        .collect(Collectors.toList()));
-                datastore.save(migratedRyhma);
-                return migratedRyhma;
-            }
-        }).collect(Collectors.toList());
+        List<Hakijaryhma> migratedRyhmat = ryhmat.stream().map(this::migrate).collect(Collectors.toList());
         return migratedRyhmat;
+    }
+
+    private Hakijaryhma migrate(HakijaryhmaMigrationDTO ryhma) {
+        if (ryhma.getSchemaVersion() == Hakijaryhma.CURRENT_SCHEMA_VERSION) {
+            Hakijaryhma alreadyMigratedRyhma = datastore.createQuery(Hakijaryhma.class)
+                    .field("_id").equal(ryhma.getId())
+                    .get();
+            alreadyMigratedRyhma.setJonosijat(datastore.createQuery(Jonosija.class)
+                    .field("_id").in(alreadyMigratedRyhma.getJonosijaIdt())
+                    .asList());
+            return alreadyMigratedRyhma;
+        } else {
+            LOGGER.info("Migrating hakijaryhma {}", ryhma.getHakijaryhmaOid());
+            Hakijaryhma migratedRyhma = ryhma.migrate();
+            migratedRyhma.setJonosijaIdt(migratedRyhma.getJonosijat().stream()
+                    .map(jonosija -> (ObjectId) datastore.save(jonosija).getId())
+                    .collect(Collectors.toList()));
+            datastore.save(migratedRyhma);
+            return migratedRyhma;
+        }
     }
 }

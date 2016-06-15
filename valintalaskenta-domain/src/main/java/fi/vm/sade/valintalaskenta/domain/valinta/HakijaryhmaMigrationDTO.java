@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,6 +12,8 @@ import java.util.stream.Collectors;
 public class HakijaryhmaMigrationDTO {
     @Id
     private ObjectId id;
+
+    private int schemaVersion;
 
     @Indexed
     private String hakijaryhmaOid;
@@ -46,6 +49,14 @@ public class HakijaryhmaMigrationDTO {
 
     public ObjectId getId() {
         return this.id;
+    }
+
+    public int getSchemaVersion() {
+        return schemaVersion;
+    }
+
+    public void setSchemaVersion(int schemaVersion) {
+        this.schemaVersion = schemaVersion;
     }
 
     public Date getCreatedAt() {
@@ -136,10 +147,6 @@ public class HakijaryhmaMigrationDTO {
         this.valintatapajonoOid = valintatapajonoOid;
     }
 
-    public List<JonosijaMigrationDTO> getJonosijat() {
-        return jonosijat;
-    }
-
     public void setJonosijat(List<JonosijaMigrationDTO> jonosijat) {
         this.jonosijat = jonosijat;
     }
@@ -147,6 +154,7 @@ public class HakijaryhmaMigrationDTO {
     public Hakijaryhma migrate() {
         Hakijaryhma ryhma = new Hakijaryhma();
         ryhma.setId(id);
+        ryhma.setSchemaVersion(Hakijaryhma.CURRENT_SCHEMA_VERSION);
         ryhma.setHakijaryhmaOid(hakijaryhmaOid);
         ryhma.setPrioriteetti(prioriteetti);
         ryhma.setCreatedAt(createdAt);
@@ -158,9 +166,13 @@ public class HakijaryhmaMigrationDTO {
         ryhma.setTarkkaKiintio(tarkkaKiintio);
         ryhma.setKaytetaanRyhmaanKuuluvia(kaytetaanRyhmaanKuuluvia);
         ryhma.setValintatapajonoOid(valintatapajonoOid);
-        ryhma.setJonosijat(jonosijat.stream()
-                .map(jonosijaMigrationDTO -> jonosijaMigrationDTO.migrate())
-                .collect(Collectors.toList()));
+        if (null == jonosijat) {
+            ryhma.setJonosijat(new ArrayList<>());
+        } else {
+            ryhma.setJonosijat(jonosijat.stream()
+                    .map(jonosijaMigrationDTO -> jonosijaMigrationDTO.migrate())
+                    .collect(Collectors.toList()));
+        }
         return ryhma;
     }
 }

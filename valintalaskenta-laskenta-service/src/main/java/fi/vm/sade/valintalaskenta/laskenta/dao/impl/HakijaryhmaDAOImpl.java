@@ -79,7 +79,7 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
     }
 
     private Hakijaryhma migrateOne(HakijaryhmaMigrationDTO ryhma) {
-        if (null == ryhma.getJonosijat()) {
+        if (ryhma.getSchemaVersion() == Hakijaryhma.CURRENT_SCHEMA_VERSION) {
             Hakijaryhma alreadyMigratedRyhma = datastore.createQuery(Hakijaryhma.class)
                     .field("_id").equal(ryhma.getId())
                     .get();

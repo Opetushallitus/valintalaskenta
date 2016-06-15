@@ -13,6 +13,8 @@ public class ValintatapajonoMigrationDTO {
     @Id
     private ObjectId id;
 
+    private int schemaVersion;
+
     @Indexed
     private String valintatapajonoOid;
 
@@ -45,6 +47,14 @@ public class ValintatapajonoMigrationDTO {
 
     public ObjectId getId() {
         return this.id;
+    }
+
+    public int getSchemaVersion() {
+        return schemaVersion;
+    }
+
+    public void setSchemaVersion(int schemaVersion) {
+        this.schemaVersion = schemaVersion;
     }
 
     public String getValintatapajonoOid() {
@@ -103,10 +113,6 @@ public class ValintatapajonoMigrationDTO {
         this.eiVarasijatayttoa = eiVarasijatayttoa;
     }
 
-    public List<JonosijaMigrationDTO> getJonosijat() {
-        return jonosijat;
-    }
-
     public void setJonosijat(List<JonosijaMigrationDTO> jonosijat) {
         this.jonosijat = jonosijat;
     }
@@ -162,6 +168,7 @@ public class ValintatapajonoMigrationDTO {
     public Valintatapajono migrate() {
         Valintatapajono jono = new Valintatapajono();
         jono.setId(id);
+        jono.setSchemaVersion(Valintatapajono.CURRENT_SCHEMA_VERSION);
         jono.setValintatapajonoOid(valintatapajonoOid);
         jono.setNimi(nimi);
         jono.setPrioriteetti(prioriteetti);
@@ -174,9 +181,13 @@ public class ValintatapajonoMigrationDTO {
         jono.setPoissaOlevaTaytto(poissaOlevaTaytto);
         jono.setValmisSijoiteltavaksi(valmisSijoiteltavaksi);
         jono.setKaytetaanKokonaispisteita(kaytetaanKokonaispisteita);
-        jono.setJonosijat(jonosijat.stream()
-                .map(jonosija -> jonosija.migrate())
-                .collect(Collectors.toList()));
+        if (null == jonosijat) {
+            jono.setJonosijat(new ArrayList<>());
+        } else {
+            jono.setJonosijat(jonosijat.stream()
+                    .map(jonosija -> jonosija.migrate())
+                    .collect(Collectors.toList()));
+        }
         jono.setSijoitteluajoId(sijoitteluajoId);
         return jono;
     }

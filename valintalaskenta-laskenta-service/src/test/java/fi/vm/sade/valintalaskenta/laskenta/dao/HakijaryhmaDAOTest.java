@@ -6,6 +6,7 @@ import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import org.bson.types.ObjectId;
+import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +23,7 @@ import java.util.List;
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 
 @ContextConfiguration(locations = "classpath:application-context-test.xml")
@@ -41,14 +43,12 @@ public class HakijaryhmaDAOTest {
 
     @Test
     @UsingDataSet(locations = "hakijaryhmaMigrationTestData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-    public void testMigrationOfHakijaryma() throws InterruptedException {
+    public void testMigrationOfHakijaryma() {
         Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("vanhaHakijaryhmaOid").get();
         List<Jonosija> jonosijat = hakijaryhma.getJonosijat();
         List<ObjectId> jonosijaIdt = hakijaryhma.getJonosijaIdt();
-        assertNotNull(jonosijat);
-        assertNotNull(jonosijaIdt);
-        assertEquals(3, jonosijat.size());
-        assertEquals(3, jonosijaIdt.size());
+        assertThat(jonosijat, Matchers.hasSize(3));
+        assertThat(jonosijaIdt, Matchers.hasSize(3));
         for (int i = 0; i < Math.max(jonosijat.size(), jonosijaIdt.size()); i++) {
             assertEquals(jonosijaIdt.get(i), jonosijat.get(i).getId());
         }
@@ -56,16 +56,22 @@ public class HakijaryhmaDAOTest {
 
     @Test
     @UsingDataSet(locations = "hakijaryhmaMigrationTestData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-    public void testLoadingOfMigratedHakijaryhma() throws InterruptedException {
+    public void testLoadingOfMigratedHakijaryhma() {
         Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("migroituHakijaryhmaOid").get();
         List<Jonosija> jonosijat = hakijaryhma.getJonosijat();
         List<ObjectId> jonosijaIdt = hakijaryhma.getJonosijaIdt();
-        assertNotNull(jonosijat);
-        assertNotNull(jonosijaIdt);
-        assertEquals(3, jonosijat.size());
-        assertEquals(3, jonosijaIdt.size());
+        assertThat(jonosijat, Matchers.hasSize(3));
+        assertThat(jonosijaIdt, Matchers.hasSize(3));
         for (int i = 0; i < Math.max(jonosijat.size(), jonosijaIdt.size()); i++) {
             assertEquals(jonosijaIdt.get(i), jonosijat.get(i).getId());
         }
+    }
+
+    @Test
+    @UsingDataSet(locations = "hakijaryhmaMigrationTestData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void testLoadingHakijaryhmaWithoutJonosijas() {
+        Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("tyhjaHakijaryhmaOid").get();
+        assertThat(hakijaryhma.getJonosijaIdt(), Matchers.empty());
+        assertThat(hakijaryhma.getJonosijat(), Matchers.empty());
     }
 }

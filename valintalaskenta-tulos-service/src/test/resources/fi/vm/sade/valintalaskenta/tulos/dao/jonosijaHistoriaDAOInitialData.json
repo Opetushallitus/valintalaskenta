@@ -68,6 +68,7 @@
   "Valintatapajono": [
       {
           "valintatapajonoOid" : "valintatapajonoOid1",
+          "schemaVersion": 2,
           "jonosijaIdt" : [
             { "$oid" : "52139e20ec975d4bfcb0124f" },
             { "$oid" : "52139e20ec975d4bfcb01250" }
@@ -75,6 +76,7 @@
       },
       {
           "valintatapajonoOid" : "valintatapajonoOid1",
+          "schemaVersion": 2,
           "jonosijaIdt" : [
             { "$oid" : "52139e20ec975d4bfcb01251" },
             { "$oid" : "52139e20ec975d4bfcb01252" }
@@ -82,6 +84,7 @@
       },
       {
           "valintatapajonoOid" : "valintatapajonoOid1",
+          "schemaVersion": 2,
           "jonosijaIdt" : [
             { "$oid" : "52139e20ec975d4bfcb01253" },
             { "$oid" : "52139e20ec975d4bfcb01254" }
@@ -89,6 +92,7 @@
       },
       {
           "valintatapajonoOid" : "valintatapajonoOid2",
+          "schemaVersion": 2,
           "jonosijaIdt" : [
             { "$oid" : "52139e20ec975d4bfcb01255" },
             { "$oid" : "52139e20ec975d4bfcb01256" }

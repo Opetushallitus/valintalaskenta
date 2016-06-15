@@ -90,6 +90,22 @@
                     "$ref": "Valintatapajono"
                 }
             ]
+        },
+        {
+            "hakuOid": "haku1",
+            "hakukohdeOid": "hakukohde1",
+            "jarjestysnumero": 1,
+            "nimi": "Varsinainen valinta",
+            "tarjoajaOid": "1.2.246.562.10.28342991297",
+            "valinnanvaiheOid": "tyhjaValinnanvaiheOid",
+            "valintatapajonot": [
+                {
+                    "$id": {
+                        "$oid": "541bef0ae4b0e1d22689e611"
+                    },
+                    "$ref": "Valintatapajono"
+                }
+            ]
         }
     ],
     "Valintatapajono": [
@@ -164,6 +180,7 @@
             "_id": {
                 "$oid": "541bef0ae4b0e1d22689e607"
             },
+            "schemaVersion": 2,
             "aloituspaikat": 4,
             "eiVarasijatayttoa": false,
             "jonosijaIdt": [
@@ -171,6 +188,23 @@
                 { "$oid": "541bef0ae4b0e1d22689e609" },
                 { "$oid": "541bef0ae4b0e1d22689e610" }
             ],
+            "nimi": "Pisteet",
+            "poissaOlevaTaytto": true,
+            "prioriteetti": 0,
+            "siirretaanSijoitteluun": true,
+            "tasasijasaanto": "ARVONTA",
+            "valintatapajonoOid": "jono1",
+            "valmisSijoiteltavaksi": true,
+            "varasijojaKaytetaanAlkaen": {
+                "$date": "2019-08-26T15:12:40.623Z"
+            }
+        },
+        {
+            "_id": {
+                "$oid": "541bef0ae4b0e1d22689e611"
+            },
+            "aloituspaikat": 0,
+            "eiVarasijatayttoa": false,
             "nimi": "Pisteet",
             "poissaOlevaTaytto": true,
             "prioriteetti": 0,

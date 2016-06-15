@@ -71,6 +71,7 @@
             "_id": {
                 "$oid": "541bef0ae4b0e1d22689e606"
             },
+            "schemaVersion": 2,
             "aloituspaikat": 10,
             "jonosijaIdt": [
                 {
@@ -86,6 +87,7 @@
             "_id": {
                 "$oid": "541bef0ae4b0e1d22689e607"
             },
+            "schemaVersion": 2,
             "aloituspaikat": 10,
             "jonosijaIdt": [
                 {

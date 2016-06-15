@@ -6,6 +6,7 @@ import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import org.bson.types.ObjectId;
+import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -80,10 +81,8 @@ public class ValinnanvaiheDAOTest {
         valinnanvaihe.getValintatapajonot().forEach(valintatapajono -> {
             List<Jonosija> jonosijat = valintatapajono.getJonosijat();
             List<ObjectId> jonosijaIdt = valintatapajono.getJonosijaIdt();
-            assertNotNull(jonosijat);
-            assertNotNull(jonosijaIdt);
-            assertEquals(3, jonosijaIdt.size());
-            assertEquals(3, jonosijat.size());
+            assertThat(jonosijat, Matchers.hasSize(3));
+            assertThat(jonosijaIdt, Matchers.hasSize(3));
             for (int i = 0; i < Math.max(jonosijat.size(), jonosijaIdt.size()); i++) {
                 assertEquals(jonosijaIdt.get(i), jonosijat.get(i).getId());
             }
@@ -98,13 +97,21 @@ public class ValinnanvaiheDAOTest {
         valinnanvaihe.getValintatapajonot().forEach(valintatapajono -> {
             List<Jonosija> jonosijat = valintatapajono.getJonosijat();
             List<ObjectId> jonosijaIdt = valintatapajono.getJonosijaIdt();
-            assertNotNull(jonosijat);
-            assertNotNull(jonosijaIdt);
-            assertEquals(3, jonosijaIdt.size());
-            assertEquals(3, jonosijat.size());
+            assertThat(jonosijat, Matchers.hasSize(3));
+            assertThat(jonosijaIdt, Matchers.hasSize(3));
             for (int i = 0; i < Math.max(jonosijat.size(), jonosijaIdt.size()); i++) {
                 assertEquals(jonosijaIdt.get(i), jonosijat.get(i).getId());
             }
+        });
+    }
+
+    @Test
+    @UsingDataSet(locations = "valinnanvaiheMigrationTestData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void testLoadingValintatapajonoWithoutJonosijat() {
+        Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.haeValinnanvaihe("tyhjaValinnanvaiheOid");
+        valinnanvaihe.getValintatapajonot().forEach(valintatapajono -> {
+            assertThat(valintatapajono.getJonosijat(), Matchers.empty());
+            assertThat(valintatapajono.getJonosijaIdt(), Matchers.empty());
         });
     }
 }
