@@ -115,7 +115,9 @@ public class Valintatapajono {
 
     public List<Jonosija> getJonosijat() {
         if (null == jonosijat) {
-            throw new IllegalStateException("Jonosijat not loaded");
+            throw new IllegalStateException(
+                    String.format("Jonosijat not loaded for valintatapajono %s with jonosijaids %s",
+                            valintatapajonoOid, jonosijaIdt));
         }
         return jonosijat;
     }
