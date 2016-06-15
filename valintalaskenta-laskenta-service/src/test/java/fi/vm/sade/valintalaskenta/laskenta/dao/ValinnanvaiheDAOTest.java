@@ -5,6 +5,7 @@ import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import org.bson.types.ObjectId;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
@@ -18,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
@@ -113,5 +115,19 @@ public class ValinnanvaiheDAOTest {
             assertThat(valintatapajono.getJonosijat(), Matchers.empty());
             assertThat(valintatapajono.getJonosijaIdt(), Matchers.empty());
         });
+    }
+
+    @Test
+    public void testSavingAndLoadingNewValinnanvaihe() {
+        Valinnanvaihe valinnanvaihe = new Valinnanvaihe();
+        Valintatapajono valintatapajono = new Valintatapajono();
+        valinnanvaihe.setValintatapajonot(Arrays.asList(valintatapajono));
+        valintatapajono.setJonosijat(Arrays.asList(new Jonosija(), new Jonosija()));
+        valinnanvaihe.setValinnanvaiheOid("uusiValinnanvaiheOid");
+        valinnanvaiheDAO.saveOrUpdate(valinnanvaihe);
+        Valinnanvaihe savedValinnanvaihe = valinnanvaiheDAO.haeValinnanvaihe("uusiValinnanvaiheOid");
+        assertNotNull(savedValinnanvaihe);
+        assertThat(savedValinnanvaihe.getValintatapajonot().get(0).getJonosijat(), Matchers.hasSize(2));
+        assertThat(savedValinnanvaihe.getValintatapajonot().get(0).getJonosijaIdt(), Matchers.hasSize(2));
     }
 }

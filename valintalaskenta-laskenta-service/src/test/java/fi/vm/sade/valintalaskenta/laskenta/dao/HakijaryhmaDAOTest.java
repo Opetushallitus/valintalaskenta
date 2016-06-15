@@ -18,6 +18,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
@@ -73,5 +75,16 @@ public class HakijaryhmaDAOTest {
         Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("tyhjaHakijaryhmaOid").get();
         assertThat(hakijaryhma.getJonosijaIdt(), Matchers.empty());
         assertThat(hakijaryhma.getJonosijat(), Matchers.empty());
+    }
+
+    @Test
+    public void testSavingAndLoadingNewHakijaryhma() {
+        Hakijaryhma hakijaryhma = new Hakijaryhma();
+        hakijaryhma.setJonosijat(Arrays.asList(new Jonosija(), new Jonosija()));
+        hakijaryhma.setHakijaryhmaOid("uusiHakijaryhmaOid");
+        hakijaryhmaDAO.create(hakijaryhma);
+        Hakijaryhma savedHakijaryhma = hakijaryhmaDAO.haeHakijaryhma("uusiHakijaryhmaOid").get();
+        assertThat(savedHakijaryhma.getJonosijat(), Matchers.hasSize(2));
+        assertThat(savedHakijaryhma.getJonosijaIdt(), Matchers.hasSize(2));
     }
 }
