@@ -118,6 +118,16 @@ public class ValinnanvaiheDAOTest {
     }
 
     @Test
+    @UsingDataSet(locations = "valinnanvaiheMigrationTestData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void testLoadingMigratedValintatapajonoWithoutJonosijat() {
+        Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.haeValinnanvaihe("migroituTyhjaValinnanvaiheOid");
+        valinnanvaihe.getValintatapajonot().forEach(valintatapajono -> {
+            assertThat(valintatapajono.getJonosijat(), Matchers.empty());
+            assertThat(valintatapajono.getJonosijaIdt(), Matchers.empty());
+        });
+    }
+
+    @Test
     public void testSavingAndLoadingNewValinnanvaihe() {
         Valinnanvaihe valinnanvaihe = new Valinnanvaihe();
         Valintatapajono valintatapajono = new Valintatapajono();

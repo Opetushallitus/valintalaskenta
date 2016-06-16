@@ -43,18 +43,23 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
                 .field("valintatapajonoOid").equal(valintatapajonoOid)
                 .forEach(valintatapajono -> jononJonosijaIdt.addAll(migrate(valintatapajono).getJonosijaIdt()));
         List<ObjectId> historiaIdt = new LinkedList<>();
-        datastore.find(Jonosija.class)
-                .field("hakemusOid").equal(hakemusOid)
-                .field("_id").in(jononJonosijaIdt)
-                .forEach(jonosija -> {
-                    jonosija.getJarjestyskriteeritulokset().forEach(jarjestyskriteeritulos -> {
-                        historiaIdt.add(jarjestyskriteeritulos.getHistoria());
+        if (!jononJonosijaIdt.isEmpty()) {
+            datastore.find(Jonosija.class)
+                    .field("hakemusOid").equal(hakemusOid)
+                    .field("_id").in(jononJonosijaIdt)
+                    .forEach(jonosija -> {
+                        jonosija.getJarjestyskriteeritulokset().forEach(jarjestyskriteeritulos -> {
+                            historiaIdt.add(jarjestyskriteeritulos.getHistoria());
+                        });
                     });
-                });
+        }
         return hae(historiaIdt);
     }
 
     private List<Jarjestyskriteerihistoria> hae(List<ObjectId> historiaIds) {
+        if (historiaIds.isEmpty()) {
+            return new ArrayList<>();
+        }
         List<Jarjestyskriteerihistoria> historiat = datastore.createQuery(Jarjestyskriteerihistoria.class).field("_id").hasAnyOf(historiaIds).asList();
         historiat.stream().filter(JarjestyskriteeriKooderi::tarvitseekoEnkoodata).map(JarjestyskriteeriKooderi::enkoodaa).forEach(datastore::save);
         return historiat.stream().map(JarjestyskriteeriKooderi::dekoodaa).collect(Collectors.toList());
@@ -67,9 +72,14 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
     }
 
     private void populateJonosijat(Valintatapajono valintatapajono) {
-        valintatapajono.setJonosijat(datastore.createQuery(Jonosija.class)
-                .field("_id").in(valintatapajono.getJonosijaIdt())
-                .asList());
+        List<ObjectId> jonosijaIdt = valintatapajono.getJonosijaIdt();
+        if (jonosijaIdt.isEmpty()) {
+            valintatapajono.setJonosijat(new ArrayList<>());
+        } else {
+            valintatapajono.setJonosijat(datastore.createQuery(Jonosija.class)
+                    .field("_id").in(jonosijaIdt)
+                    .asList());
+        }
     }
 
     private Valintatapajono migrate(ValintatapajonoMigrationDTO jono) {

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -67,9 +68,14 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
     }
 
     private void populateJonosijat(Hakijaryhma ryhma) {
-        ryhma.setJonosijat(datastore.createQuery(Jonosija.class)
-                .field("_id").in(ryhma.getJonosijaIdt())
-                .asList());
+        List<ObjectId> jonosijaIdt = ryhma.getJonosijaIdt();
+        if (jonosijaIdt.isEmpty()) {
+            ryhma.setJonosijat(new ArrayList<>());
+        } else {
+            ryhma.setJonosijat(datastore.createQuery(Jonosija.class)
+                    .field("_id").in(jonosijaIdt)
+                    .asList());
+        }
     }
 
     private void saveJonosijat(Hakijaryhma ryhma) {

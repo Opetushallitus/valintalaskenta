@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -93,9 +94,14 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     }
 
     private void populateJonosijat(Valintatapajono valintatapajono) {
-        valintatapajono.setJonosijat(datastore.createQuery(Jonosija.class)
-                .field("_id").in(valintatapajono.getJonosijaIdt())
-                .asList());
+        List<ObjectId> jonosijaIdt = valintatapajono.getJonosijaIdt();
+        if (jonosijaIdt.isEmpty()) {
+            valintatapajono.setJonosijat(new ArrayList<>());
+        } else {
+            valintatapajono.setJonosijat(datastore.createQuery(Jonosija.class)
+                    .field("_id").in(jonosijaIdt)
+                    .asList());
+        }
     }
 
     private Valintatapajono migrate(ValintatapajonoMigrationDTO jono) {

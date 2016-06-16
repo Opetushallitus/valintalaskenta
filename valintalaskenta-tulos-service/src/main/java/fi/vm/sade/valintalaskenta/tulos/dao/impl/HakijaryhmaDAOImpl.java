@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,9 +39,14 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
             Hakijaryhma alreadyMigratedRyhma = datastore.createQuery(Hakijaryhma.class)
                     .field("_id").equal(ryhma.getId())
                     .get();
-            alreadyMigratedRyhma.setJonosijat(datastore.createQuery(Jonosija.class)
-                    .field("_id").in(alreadyMigratedRyhma.getJonosijaIdt())
-                    .asList());
+            List<ObjectId> jonosijaIdt = alreadyMigratedRyhma.getJonosijaIdt();
+            if (jonosijaIdt.isEmpty()) {
+                alreadyMigratedRyhma.setJonosijat(new ArrayList<>());
+            } else {
+                alreadyMigratedRyhma.setJonosijat(datastore.createQuery(Jonosija.class)
+                        .field("_id").in(jonosijaIdt)
+                        .asList());
+            }
             return alreadyMigratedRyhma;
         } else {
             LOGGER.info("Migrating hakijaryhma {}", ryhma.getHakijaryhmaOid());
