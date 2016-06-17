@@ -96,7 +96,10 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 
     @Override
     public void poistaJono(Valintatapajono jono) {
-        datastore.delete(datastore.createQuery(Jonosija.class).field("_id").in(jono.getJonosijaIdt()));
+        List<ObjectId> jonosijaIdt = jono.getJonosijaIdt();
+        if (!jonosijaIdt.isEmpty()) {
+            datastore.delete(datastore.createQuery(Jonosija.class).field("_id").in(jonosijaIdt));
+        }
         datastore.delete(jono);
     }
 

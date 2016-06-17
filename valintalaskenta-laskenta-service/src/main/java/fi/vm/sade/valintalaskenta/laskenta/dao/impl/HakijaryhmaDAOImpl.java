@@ -63,7 +63,10 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
 
     @Override
     public void poistaHakijaryhma(Hakijaryhma hakijaryhma) {
-        hakijaryhma.getJonosijat().forEach(datastore::delete);
+        List<ObjectId> jonosijaIdt = hakijaryhma.getJonosijaIdt();
+        if (!jonosijaIdt.isEmpty()) {
+            datastore.delete(datastore.createQuery(Jonosija.class).field("_id").in(jonosijaIdt));
+        }
         datastore.delete(hakijaryhma);
     }
 

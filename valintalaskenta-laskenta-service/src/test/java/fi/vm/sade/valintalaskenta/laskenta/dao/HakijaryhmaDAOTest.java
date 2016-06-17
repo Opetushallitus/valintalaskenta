@@ -21,11 +21,10 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 
 @ContextConfiguration(locations = "classpath:application-context-test.xml")
@@ -75,6 +74,14 @@ public class HakijaryhmaDAOTest {
         Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("tyhjaHakijaryhmaOid").get();
         assertThat(hakijaryhma.getJonosijaIdt(), Matchers.empty());
         assertThat(hakijaryhma.getJonosijat(), Matchers.empty());
+    }
+
+    @Test
+    @UsingDataSet(locations = "hakijaryhmaMigrationTestData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void testDeletingHakijaryhmaWithoutJonosijas() {
+        Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("tyhjaHakijaryhmaOid").get();
+        hakijaryhmaDAO.poistaHakijaryhma(hakijaryhma);
+        assertEquals(Optional.empty(), hakijaryhmaDAO.haeHakijaryhma("tyhjaHakijaryhmaOid"));
     }
 
     @Test
