@@ -36,9 +36,15 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         datastore.find(Jonosija.class)
                 .field("hakemusOid").equal(hakemusOid)
                 .fetchKeys().forEach(key -> hakemuksenJonosijaIdt.add((ObjectId) key.getId()));
+        if (hakemuksenJonosijaIdt.isEmpty()) {
+            return new ArrayList<>();
+        }
         List<Key<Valintatapajono>> hakemuksenJonot = datastore.find(Valintatapajono.class)
                 .field("jonosijaIdt").in(hakemuksenJonosijaIdt)
                 .asKeyList();
+        if (hakemuksenJonot.isEmpty()) {
+            return new ArrayList<>();
+        }
         return migrate(datastore.createQuery(ValinnanvaiheMigrationDTO.class)
                 .field("hakuOid").equal(hakuOid)
                 .field("valintatapajonot").in(hakemuksenJonot)
@@ -50,6 +56,9 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         List<Key<Valintatapajono>> keys = datastore.find(Valintatapajono.class)
                 .field("valintatapajonoOid").equal(valintatapajonoOid)
                 .asKeyList();
+        if (keys.isEmpty()) {
+            return null;
+        }
         return migrate(datastore.createQuery(ValinnanvaiheMigrationDTO.class)
                 .field("valintatapajonot").in(keys)
                 .get());
