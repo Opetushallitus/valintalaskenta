@@ -1,15 +1,32 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import org.mongodb.morphia.annotations.*;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Index;
+import org.mongodb.morphia.annotations.Indexed;
+import org.mongodb.morphia.annotations.Indexes;
+import org.mongodb.morphia.annotations.PostLoad;
+import org.mongodb.morphia.annotations.PrePersist;
+import org.mongodb.morphia.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity(value = "Valinnanvaihe", noClassnameStored = true)
 @Indexes(
     @Index(name = "idx_hakuoid_valinnanvaihe_oid", value = "hakuOid, valinnanvaiheOid", unique = true)
 )
 public class Valinnanvaihe {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Valinnanvaihe.class);
+
     @Id
     private ObjectId id;
 
@@ -109,5 +126,21 @@ public class Valinnanvaihe {
 
     public void setNimi(String nimi) {
         this.nimi = nimi;
+    }
+
+    public void reportDuplicateValintatapajonoOids() {
+        Set<String> uniqueJonoOids = new HashSet<>();
+        for (Valintatapajono valintatapajono : valintatapajonot) {
+            String valintatapajonoOid = valintatapajono.getValintatapajonoOid();
+            if (uniqueJonoOids.contains(valintatapajonoOid)) {
+                logDuplicate(valintatapajonoOid);
+            }
+            uniqueJonoOids.add(valintatapajonoOid);
+        }
+    }
+
+    private void logDuplicate(String valintatapajonoOid) {
+        LOGGER.error("Warning: duplicate valintatapajonoOid" + valintatapajonoOid + " detected when saving Valinnanvaihe " + valinnanvaiheOid +
+            " . Valintatapajonos are: " + valintatapajonot.stream().map(ToStringBuilder::reflectionToString), new RuntimeException());
     }
 }

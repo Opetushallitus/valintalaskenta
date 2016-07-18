@@ -81,6 +81,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 
     @Override
     public void saveOrUpdate(Valinnanvaihe valinnanvaihe) {
+        valinnanvaihe.reportDuplicateValintatapajonoOids();
         valinnanvaihe.getValintatapajonot().forEach(valintatapajono -> {
             saveJonosijat(valintatapajono);
             datastore.save(valintatapajono);
