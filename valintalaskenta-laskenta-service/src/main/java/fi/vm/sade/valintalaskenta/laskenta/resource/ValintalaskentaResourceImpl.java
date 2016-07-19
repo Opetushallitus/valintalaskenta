@@ -346,6 +346,9 @@ public class ValintalaskentaResourceImpl {
         ValisijoitteluDTO dto = new ValisijoitteluDTO();
         dto.setHakukohteet(jonot);
         Long ajo = erillisSijoitteluResource.sijoittele(hakuoid, dto);
+        if (ajo == null) {
+            throw new RuntimeException("Erillissijoittelu haulle " + hakuoid + " näyttää epäonnistuneen, koska rajapinta palautti null");
+        }
 
         valintalaskentaService.applyErillissijoittelu(jonot, ajo);
     }

@@ -17,6 +17,6 @@ public interface ErillisSijoitteluResource {
     @Path("{hakuOid}")
     @Consumes("application/json")
     @Produces("application/json")
-    long sijoittele(@PathParam("hakuOid") String hakuOid, ValisijoitteluDTO hakukohteet);
+    Long sijoittele(@PathParam("hakuOid") String hakuOid, ValisijoitteluDTO hakukohteet);
 
 }
