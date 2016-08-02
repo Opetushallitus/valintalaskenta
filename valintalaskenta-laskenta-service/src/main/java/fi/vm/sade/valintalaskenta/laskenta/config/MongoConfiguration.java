@@ -41,12 +41,12 @@ public class MongoConfiguration {
     @Bean(name = "morphia")
     public Morphia getMorphia() {
         Morphia morphia = new Morphia();
-        morphia.getMapper().getOptions().objectFactory = new DefaultCreator() {
+        morphia.getMapper().getOptions().setObjectFactory(new DefaultCreator() {
             @Override
             protected ClassLoader getClassLoaderForClass() {
                 return MongoConfiguration.class.getClassLoader();
             }
-        };
+        });
         return morphia;
     }
 

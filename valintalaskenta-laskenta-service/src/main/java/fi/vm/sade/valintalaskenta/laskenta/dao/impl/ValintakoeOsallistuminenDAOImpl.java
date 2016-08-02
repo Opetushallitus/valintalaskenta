@@ -55,12 +55,12 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
     @Override
     public ValintakoeOsallistuminen haeEdeltavaValinnanvaihe(String hakuOid, String hakukohdeOid, int jarjestysnumero) {
         ValintakoeOsallistuminen edellinen = null;
-        final MorphiaIterator<ValintakoeOsallistuminen, ValintakoeOsallistuminen> lasketutEdellisenVaiheenOsallistumiset =
+        final Iterator<ValintakoeOsallistuminen> lasketutEdellisenVaiheenOsallistumiset =
                 lasketutValintakoeOsallistumiset(hakuOid, hakukohdeOid, jarjestysnumero);
         if (lasketutEdellisenVaiheenOsallistumiset.hasNext()) {
             edellinen = lasketutEdellisenVaiheenOsallistumiset.next();
         } else {
-            final MorphiaIterator<ValintakoeOsallistuminen, ValintakoeOsallistuminen> hakijanValintaEdellisenVaiheenOsallistumiset =
+            final Iterator<ValintakoeOsallistuminen> hakijanValintaEdellisenVaiheenOsallistumiset =
                     hakijanValintaValintakoeOsallistumiset(hakuOid, hakukohdeOid, jarjestysnumero);
             if (hakijanValintaEdellisenVaiheenOsallistumiset.hasNext()) {
                 edellinen = hakijanValintaEdellisenVaiheenOsallistumiset.next();
@@ -70,7 +70,7 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
     }
 
     // Olemassaolevat laskennat (kevat 2015) vaatii tämän, uudet laskennat eivät.
-    private MorphiaIterator<ValintakoeOsallistuminen, ValintakoeOsallistuminen> lasketutValintakoeOsallistumiset(String hakuOid, String hakukohdeOid, int jarjestysnumero) {
+    private Iterator<ValintakoeOsallistuminen> lasketutValintakoeOsallistumiset(String hakuOid, String hakukohdeOid, int jarjestysnumero) {
         final Query<ValintakoeOsallistuminen> query = morphiaDS.createQuery(ValintakoeOsallistuminen.class);
         return morphiaDS.<ValintakoeOsallistuminen, ValintakoeOsallistuminen>createAggregation(ValintakoeOsallistuminen.class)
                     .match(query.field("hakuOid").equal(hakuOid))
@@ -83,7 +83,7 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
                     .aggregate(ValintakoeOsallistuminen.class);
     }
 
-    private MorphiaIterator<ValintakoeOsallistuminen, ValintakoeOsallistuminen> hakijanValintaValintakoeOsallistumiset(String hakuOid, String hakukohdeOid, int jarjestysnumero) {
+    private Iterator<ValintakoeOsallistuminen> hakijanValintaValintakoeOsallistumiset(String hakuOid, String hakukohdeOid, int jarjestysnumero) {
         final Query<ValintakoeOsallistuminen> query = morphiaDS.createQuery(ValintakoeOsallistuminen.class);
         return morphiaDS.<ValintakoeOsallistuminen, ValintakoeOsallistuminen>createAggregation(ValintakoeOsallistuminen.class)
                 .match(query.field("hakuOid").equal(hakuOid))
