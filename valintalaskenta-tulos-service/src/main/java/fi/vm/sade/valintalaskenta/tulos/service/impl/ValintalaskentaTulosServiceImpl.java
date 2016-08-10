@@ -1,7 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl;
 
 import com.google.common.collect.Collections2;
-import fi.vm.sade.security.service.authz.util.AuthorizationUtil;
 import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.HakutoiveDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
@@ -12,6 +11,7 @@ import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import fi.vm.sade.valintalaskenta.tulos.dao.*;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
+import fi.vm.sade.valintalaskenta.tulos.service.AuthorizationUtil;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import fi.vm.sade.valintalaskenta.tulos.service.exception.EiOikeuttaPoistaaValintatapajonoaSijoittelustaException;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverter;
