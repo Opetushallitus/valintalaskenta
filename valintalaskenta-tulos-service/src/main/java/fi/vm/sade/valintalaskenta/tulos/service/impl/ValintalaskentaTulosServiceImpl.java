@@ -125,7 +125,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         LOGGER.info("Harkinnavaraiset haettu, loopataan hakukohteet {} - yhteensä {}", hakuOid, b.size());
         for (int i = 0; i < b.size(); i++) {
             HakukohdeDTO hakukohde = b.get(i);
-            LOGGER.info("Laitetaan jonosijat hakukohteelle {} - indeksi {}", hakukohde.getOid(), i);
+            LOGGER.debug("Laitetaan jonosijat hakukohteelle {} - indeksi {}", hakukohde.getOid(), i);
             applyMuokatutJonosijat(hakukohde.getOid(), hakukohde.getValinnanvaihe(), a, c);
         }
         LOGGER.info("Muokatut jonosijat laitettu kaikille hakukohteille {}!", hakuOid);
