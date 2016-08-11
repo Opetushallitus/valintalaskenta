@@ -11,7 +11,8 @@ import java.util.stream.Collectors;
 
 @Entity(value = "Valinnanvaihe", noClassnameStored = true)
 @Indexes(
-    @Index(name = "idx_hakuoid_valinnanvaihe_oid", value = "hakuOid, valinnanvaiheOid", unique = true)
+        @Index(fields = {@Field("hakuOid"), @Field("valinnanvaiheOid")},
+                options = @IndexOptions(name = "idx_hakuoid_valinnanvaihe_oid", unique = true))
 )
 public class ValinnanvaiheMigrationDTO {
     @Id

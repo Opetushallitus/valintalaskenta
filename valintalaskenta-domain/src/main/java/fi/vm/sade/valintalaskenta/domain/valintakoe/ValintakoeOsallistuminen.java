@@ -9,7 +9,7 @@ import java.util.List;
 
 @Entity("ValintakoeOsallistuminen")
 @Indexes({
-        @Index(name = "idx_haku", value = "hakuOid")
+        @Index(fields = {@Field("hakuOid")}, options = @IndexOptions(name = "idx_haku"))
 })
 public class ValintakoeOsallistuminen {
     @Id

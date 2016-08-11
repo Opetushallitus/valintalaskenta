@@ -2,14 +2,7 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Index;
-import org.mongodb.morphia.annotations.Indexed;
-import org.mongodb.morphia.annotations.Indexes;
-import org.mongodb.morphia.annotations.PostLoad;
-import org.mongodb.morphia.annotations.PrePersist;
-import org.mongodb.morphia.annotations.Reference;
+import org.mongodb.morphia.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +15,8 @@ import java.util.Set;
 
 @Entity(value = "Valinnanvaihe", noClassnameStored = true)
 @Indexes(
-    @Index(name = "idx_hakuoid_valinnanvaihe_oid", value = "hakuOid, valinnanvaiheOid", unique = true)
+        @Index(fields = {@Field("hakuOid"), @Field("valinnanvaiheOid")},
+                options = @IndexOptions(name = "idx_hakuoid_valinnanvaihe_oid", unique = true))
 )
 public class Valinnanvaihe {
     private static final Logger LOGGER = LoggerFactory.getLogger(Valinnanvaihe.class);
