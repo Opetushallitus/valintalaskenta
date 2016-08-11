@@ -34,7 +34,6 @@
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
-            <scope>provided</scope>
         </dependency>
 
     </dependencies>
