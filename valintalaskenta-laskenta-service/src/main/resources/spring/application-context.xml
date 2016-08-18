@@ -84,12 +84,9 @@
         </jaxrs-client:providers>
     </jaxrs-client:client>
 
-    <!-- Swagger API listing resource -->
-    <bean id="swaggerResourceJSON" class="io.swagger.jaxrs.listing.SwaggerSerializers"/>
-
     <!-- Swagger writers -->
-    <bean id="resourceWriter" class="io.swagger.jaxrs.listing.ApiListingResource" scope="singleton"/>
-    <bean id="apiWriter" class="io.swagger.jaxrs.listing.AcceptHeaderApiListingResource" scope="singleton"/>
+    <bean id="swaggerResource" class="io.swagger.jaxrs.listing.ApiListingResource" />
+    <bean id="swaggerWriter" class="io.swagger.jaxrs.listing.SwaggerSerializers" />
 
     <!-- Swagger configuration -->
     <bean id="swaggerConfig" class="io.swagger.jaxrs.config.BeanConfig">
@@ -123,11 +120,14 @@
             <ref bean="valintatietoResourceImpl"/>
             <ref bean="valintalaskentaResourceImpl"/>
             <ref bean="sessionResourceImpl"/>
-            <ref bean="swaggerResourceJSON"/>
+
+            <ref bean="swaggerResource"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <ref bean="jsonProvider" />
             <ref bean="cors-filter" />
+
+            <ref bean="swaggerWriter" />
         </jaxrs:providers>
     </jaxrs:server>
 
