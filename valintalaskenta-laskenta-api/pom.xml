@@ -21,8 +21,8 @@
 	            <scope>provided</scope>
 	        </dependency>
         <dependency>
-            <groupId>com.wordnik</groupId>
-            <artifactId>swagger-jersey2-jaxrs_2.11</artifactId>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-jersey2-jaxrs</artifactId>
             <scope>provided</scope>
             <version>${swagger.version}</version>
         </dependency>
@@ -45,8 +45,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
         </plugins>

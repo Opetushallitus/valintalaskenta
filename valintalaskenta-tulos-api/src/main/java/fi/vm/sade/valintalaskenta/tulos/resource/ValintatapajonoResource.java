@@ -4,9 +4,9 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;

@@ -1,7 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
-import com.wordnik.swagger.annotations.ApiModel;
-import com.wordnik.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(value = "SyotettyArvoDTO", description = "Laskennassa käytetty syötettävä arvo")
 public class SyotettyArvoDTO {

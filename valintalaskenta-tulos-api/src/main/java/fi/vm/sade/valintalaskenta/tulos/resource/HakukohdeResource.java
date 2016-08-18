@@ -9,9 +9,9 @@ import javax.ws.rs.core.Response;
 import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 

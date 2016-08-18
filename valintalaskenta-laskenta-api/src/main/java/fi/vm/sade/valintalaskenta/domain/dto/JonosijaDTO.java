@@ -7,8 +7,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 
-import com.wordnik.swagger.annotations.ApiModel;
-import com.wordnik.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 

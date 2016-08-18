@@ -125,10 +125,10 @@ public class JonosijaComparatorTest {
             System.out.println("After sort: " + j.getHakemusOid());
         }
 
-        junit.framework.Assert.assertEquals(a.get(0).getHakemusOid(), sija0.getHakemusOid());
-        junit.framework.Assert.assertEquals(a.get(1).getHakemusOid(), sija3.getHakemusOid());
-        junit.framework.Assert.assertEquals(a.get(2).getHakemusOid(), sija4.getHakemusOid());
-        junit.framework.Assert.assertEquals(a.get(5).getHakemusOid(), sija5.getHakemusOid());
+        org.junit.Assert.assertEquals(a.get(0).getHakemusOid(), sija0.getHakemusOid());
+        org.junit.Assert.assertEquals(a.get(1).getHakemusOid(), sija3.getHakemusOid());
+        org.junit.Assert.assertEquals(a.get(2).getHakemusOid(), sija4.getHakemusOid());
+        org.junit.Assert.assertEquals(a.get(5).getHakemusOid(), sija5.getHakemusOid());
 
     }
 

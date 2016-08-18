@@ -1,7 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain.dto.valintakoe;
 
-import com.wordnik.swagger.annotations.ApiModel;
-import com.wordnik.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(value = "ValintakoeDTO", description = "Valintakoe")
 public class ValintakoeDTO {

@@ -1,7 +1,5 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
-
 import java.util.Optional;
 
 public class AvainArvoDTO {

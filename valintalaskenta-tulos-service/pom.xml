@@ -60,8 +60,8 @@
 
         <!-- Jersey, REST, Json -->
         <dependency>
-            <groupId>com.wordnik</groupId>
-            <artifactId>swagger-jersey2-jaxrs_2.11</artifactId>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-jersey2-jaxrs</artifactId>
             <version>${swagger.version}</version>
         </dependency>
         <!-- CXF -->

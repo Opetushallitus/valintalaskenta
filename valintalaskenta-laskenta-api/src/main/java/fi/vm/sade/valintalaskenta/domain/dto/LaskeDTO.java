@@ -2,13 +2,10 @@ package fi.vm.sade.valintalaskenta.domain.dto;
 
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetHakijaryhmaDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
 
 public class LaskeDTO {
     private final String uuid; // <- Käynnistetyn laskennan tunniste, referenssi logeihin

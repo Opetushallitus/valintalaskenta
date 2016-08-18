@@ -1,6 +1,6 @@
 package fi.vm.sade.valintalaskenta.domain.dto.valintatieto;
 
-import com.wordnik.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiModelProperty;
 import fi.vm.sade.valintalaskenta.domain.dto.HakijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
