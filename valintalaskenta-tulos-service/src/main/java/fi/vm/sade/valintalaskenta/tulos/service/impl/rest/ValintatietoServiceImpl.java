@@ -1,7 +1,10 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl.rest;
 
 
+import fi.vm.sade.service.valintaperusteet.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.*;
+import fi.vm.sade.valintalaskenta.domain.dto.AvainArvoDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
@@ -100,7 +103,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 
                 for (ValinnanvaiheDTO valinnanvaiheDTO : v.getValinnanvaihe()) {
                     ht.getValinnanvaihe().add(
-                            createValinnanvaiheTyyppi(valinnanvaiheDTO));
+                            createValinnanvaiheTyyppi(valinnanvaiheDTO, Optional.empty()));
                 }
             }
             return hakuDTO;
@@ -113,7 +116,10 @@ public class ValintatietoServiceImpl implements ValintatietoService {
     }
 
     @Override
-    public HakuDTO haeValintatiedotJonoille(String hakuoid, Map<String, List<String>> jonot) {
+    public HakuDTO haeValintatiedotJonoille(
+            String hakuoid,
+            Map<String, List<String>> jonot,
+            Optional<Map<String, List<fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO>>> valintaperusteet) {
         try {
             List<HakukohdeDTO> kohteet = new ArrayList<>();
             jonot.keySet().parallelStream().forEach(oid -> {
@@ -134,8 +140,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 
                     for (ValinnanvaiheDTO valinnanvaiheDTO : v.getValinnanvaihe()) {
                         if (valinnanvaiheDTO != null) {
-                            ht.getValinnanvaihe().add(
-                                    createValinnanvaiheTyyppi(valinnanvaiheDTO));
+                            ht.getValinnanvaihe().add(createValinnanvaiheTyyppi(valinnanvaiheDTO, valintaperusteet.map(m -> m.get(v.getOid()))));
                         }
                     }
                 }
@@ -148,18 +153,24 @@ public class ValintatietoServiceImpl implements ValintatietoService {
         }
     }
 
-    private ValintatietoValinnanvaiheDTO createValinnanvaiheTyyppi(ValinnanvaiheDTO valinnanvaihe) {
+    private ValintatietoValinnanvaiheDTO createValinnanvaiheTyyppi(
+            ValinnanvaiheDTO valinnanvaihe,
+            Optional<List<fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO>> valintaperusteet) {
         ValintatietoValinnanvaiheDTO v = new ValintatietoValinnanvaiheDTO();
         v.setValinnanvaihe(valinnanvaihe.getJarjestysnumero());
         v.setValinnanvaiheoid(valinnanvaihe.getValinnanvaiheoid());
         v.setHakuOid(valinnanvaihe.getHakuOid());
         for (ValintatapajonoDTO vt : valinnanvaihe.getValintatapajonot()) {
-            v.getValintatapajonot().add(createValintatapajonoTyyppi(vt));
+            Optional<fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO> perusteet =
+                    valintaperusteet.flatMap(l -> l.stream().filter(vtj -> vtj.getOid().equals(vt.getOid())).findAny());
+            v.getValintatapajonot().add(createValintatapajonoTyyppi(vt, perusteet));
         }
         return v;
     }
 
-    private ValintatietoValintatapajonoDTO createValintatapajonoTyyppi(ValintatapajonoDTO vt) {
+    private ValintatietoValintatapajonoDTO createValintatapajonoTyyppi(
+            ValintatapajonoDTO vt,
+            Optional<fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO> valintaperusteet) {
         ValintatietoValintatapajonoDTO dto = new ValintatietoValintatapajonoDTO();
         dto.setValintatapajonooid(vt.getValintatapajonooid());
         dto.setAloituspaikat(vt.getAloituspaikat());
@@ -172,9 +183,14 @@ public class ValintatietoServiceImpl implements ValintatietoService {
         dto.setKaikkiEhdonTayttavatHyvaksytaan(vt.getKaikkiEhdonTayttavatHyvaksytaan());
         dto.setKaytetaanValintalaskentaa(vt.getKaytetaanValintalaskentaa());
         dto.setPoissaOlevaTaytto(vt.getPoissaOlevaTaytto());
-        if (vt.getTasasijasaanto() != null) {
-            dto.setTasasijasaanto(vt.getTasasijasaanto());
-        }
+        dto.setTasasijasaanto(vt.getTasasijasaanto());
+        valintaperusteet.ifPresent(perusteet -> {
+            dto.setTayttojono(perusteet.getTayttojono());
+            dto.setVarasijat(perusteet.getVarasijat());
+            dto.setVarasijaTayttoPaivat(perusteet.getVarasijaTayttoPaivat());
+            dto.setVarasijojaKaytetaanAlkaen(perusteet.getVarasijojaKaytetaanAlkaen());
+            dto.setVarasijojaTaytetaanAsti(perusteet.getVarasijojaTaytetaanAsti());
+        });
 
         for (JonosijaDTO jonosija : vt.getJonosijat()) {
             HakijaDTO ht = new HakijaDTO();
