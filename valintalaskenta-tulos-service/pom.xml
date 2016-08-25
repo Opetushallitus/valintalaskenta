@@ -282,7 +282,11 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>fi.vm.sade.java-utils</groupId>
+            <artifactId>opintopolku-cas-servlet-filter</artifactId>
+        </dependency>
+        <dependency>
+        <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
         </dependency>
         <dependency>

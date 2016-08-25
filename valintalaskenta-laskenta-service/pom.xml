@@ -12,9 +12,9 @@
 
 	<dependencies>
 		<dependency>
-      <groupId>fi.vm.sade.generic</groupId>
-      <artifactId>generic-common</artifactId>
-  	</dependency>
+      <groupId>fi.vm.sade.java-utils</groupId>
+      <artifactId>opintopolku-cas-servlet-filter</artifactId>
+	  </dependency>
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
