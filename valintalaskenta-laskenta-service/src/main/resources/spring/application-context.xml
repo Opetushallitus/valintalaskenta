@@ -84,12 +84,8 @@
         </jaxrs-client:providers>
     </jaxrs-client:client>
 
-    <!-- Swagger writers -->
-    <bean id="swaggerResource" class="io.swagger.jaxrs.listing.ApiListingResource" />
-    <bean id="swaggerWriter" class="io.swagger.jaxrs.listing.SwaggerSerializers" />
-
-    <!-- Swagger configuration -->
-    <bean id="swaggerConfig" class="io.swagger.jaxrs.config.BeanConfig">
+    <!-- CXF Swagger2Feature -->
+    <bean id="swagger2Feature" class="org.apache.cxf.jaxrs.swagger.Swagger2Feature">
         <property name="resourcePackage" value="fi.vm.sade.valintalaskenta.tulos.resource.impl"/>
         <property name="version" value="1.0"/>
         <property name="basePath" value="${valintalaskenta-laskenta-service.swagger.basepath}"/>
@@ -120,16 +116,14 @@
             <ref bean="valintatietoResourceImpl"/>
             <ref bean="valintalaskentaResourceImpl"/>
             <ref bean="sessionResourceImpl"/>
-
-            <ref bean="swaggerResource"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <ref bean="jsonProvider" />
             <ref bean="cors-filter" />
-
-            <ref bean="swaggerWriter" />
         </jaxrs:providers>
+        <jaxrs:features>
+            <ref bean="swagger2Feature" />
+        </jaxrs:features>
     </jaxrs:server>
-
 
 </beans>

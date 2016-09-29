@@ -58,14 +58,7 @@
         </dependency>
 
 
-        <!-- Jersey, REST, Json -->
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-jersey2-jaxrs</artifactId>
-            <version>${swagger.version}</version>
-        </dependency>
         <!-- CXF -->
-
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-rs-client</artifactId>
@@ -113,8 +106,15 @@
             <artifactId>cxf-rt-frontend-jaxrs</artifactId>
             <version>${cxf.version}</version>
         </dependency>
-
-
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-service-description-swagger</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-jaxrs</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-core-asl</artifactId>
