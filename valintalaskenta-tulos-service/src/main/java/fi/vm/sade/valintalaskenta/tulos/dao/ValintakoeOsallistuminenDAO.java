@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.tulos.dao;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 
+import java.util.Date;
 import java.util.List;
 
 public interface ValintakoeOsallistuminenDAO {
@@ -13,4 +14,6 @@ public interface ValintakoeOsallistuminenDAO {
     List<ValintakoeOsallistuminen> findByHakutoiveet(List<String> hakukohdeOids);
 
     List<ValintakoeOsallistuminen> findByHakuAndOsallistuminen(String hakuOid, Osallistuminen osallistuminen);
+
+    List<ValintakoeOsallistuminen> findAmmatillisenKielikoeOsallistumiset(Date since);
 }

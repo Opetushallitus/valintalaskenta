@@ -1,16 +1,19 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Repository;
-
-import org.mongodb.morphia.Datastore;
+import com.mongodb.BasicDBObject;
 
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.tulos.dao.ValintakoeOsallistuminenDAO;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Repository;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 @Repository
 public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminenDAO {
@@ -41,5 +44,18 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
                 .equal(hakuOid)
                 .field("hakutoiveet.valinnanVaiheet.valintakokeet.osallistuminenTulos.osallistuminen")
                 .equal(osallistuminen).asList();
+    }
+
+    @Override
+    public List<ValintakoeOsallistuminen> findAmmatillisenKielikoeOsallistumiset(Date since) {
+        Query<ValintakoeOsallistuminen> findQuery = datastore.find(ValintakoeOsallistuminen.class)
+            .filter("createdAt >=", since)
+            .filter("hakutoiveet.valinnanVaiheet.valintakokeet",
+                new BasicDBObject("$elemMatch",
+                    new BasicDBObject("$and", new BasicDBObject[] {
+                        new BasicDBObject("valintakoeTunniste", new BasicDBObject("$in", Arrays.asList("kielikoe_fi", "kielikoe_sv"))),
+                        new BasicDBObject("osallistuminenTulos.osallistuminen", Osallistuminen.OSALLISTUU.name())
+                    })));
+        return findQuery.asList();
     }
 }

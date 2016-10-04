@@ -1,11 +1,23 @@
 package fi.vm.sade.valintalaskenta.tulos.dao;
 
+import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import com.github.npathai.hamcrestopt.OptionalMatchers;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
+import org.hamcrest.Matchers;
+import org.joda.time.LocalDate;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,9 +27,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
-
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
-import static org.junit.Assert.assertEquals;
+import java.util.Optional;
 
 /**
  * User: wuoti
@@ -65,4 +75,31 @@ public class ValintakoeOsallistuminenDAOTest {
         assertEquals(koe.getOsallistuminenTulos().getOsallistuminen(), osallistuminen);
     }
 
+    @Test
+    @UsingDataSet(locations = "ammatillisenKielikoeValintakoeOsallistuminen.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void testFindAmmatillisenKielikoeOsallistumiset() {
+        List<ValintakoeOsallistuminen> osallistumiset =
+                valintakoeOsallistuminenDAO.findAmmatillisenKielikoeOsallistumiset(new LocalDate(2010, 1, 1).toDate());
+        assertEquals(1, osallistumiset.size());
+        ValintakoeOsallistuminen vko = osallistumiset.get(0);
+
+        ValintakoeOsallistuminenDTO dto = modelMapper.map(vko, ValintakoeOsallistuminenDTO.class);
+
+        assertEquals("Timo-Testi", dto.getEtunimi());
+        assertEquals("Rantalaiho-Testi", dto.getSukunimi());
+        assertEquals("1.2.246.562.11.00000003337", dto.getHakemusOid());
+        assertThat(vko.getHakutoiveet(), hasSize(4));
+
+        Optional<Valintakoe> kielikoeOpt = vko.getHakutoiveet().stream().flatMap(h ->
+            h.getValinnanVaiheet().get(0).getValintakokeet().stream()
+                .filter(koe -> "kielikoe_fi".equals(koe.getValintakoeTunniste()))).findFirst();
+        assertThat(kielikoeOpt, OptionalMatchers.isPresent());
+        Valintakoe kielikoe = kielikoeOpt.get();
+
+        assertEquals("kielikoe_fi", kielikoe.getValintakoeTunniste());
+        assertEquals(Osallistuminen.EI_OSALLISTU, kielikoe.getOsallistuminenTulos().getOsallistuminen());
+        assertEquals(true, kielikoe.getOsallistuminenTulos().getLaskentaTulos());
+
+        assertThat(valintakoeOsallistuminenDAO.findAmmatillisenKielikoeOsallistumiset(new LocalDate(2020, 1, 1).toDate()), hasSize(0));
+    }
 }
