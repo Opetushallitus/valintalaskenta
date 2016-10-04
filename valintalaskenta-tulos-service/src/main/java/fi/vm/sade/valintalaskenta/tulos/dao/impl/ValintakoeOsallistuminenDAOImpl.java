@@ -49,6 +49,7 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
     @Override
     public List<ValintakoeOsallistuminen> findAmmatillisenKielikoeOsallistumiset(Date since) {
         Query<ValintakoeOsallistuminen> findQuery = datastore.find(ValintakoeOsallistuminen.class)
+            .disableValidation()
             .filter("createdAt >=", since)
             .filter("hakutoiveet.valinnanVaiheet.valintakokeet",
                 new BasicDBObject("$elemMatch",
