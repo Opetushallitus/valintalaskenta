@@ -1,0 +1,155 @@
+{
+  "ValintakoeOsallistuminen": [
+    {
+      "hakuOid": "1.2.246.562.29.14662042044",
+      "hakemusOid": "1.2.246.562.11.00000003337",
+      "hakijaOid": "1.2.246.562.24.44793874981",
+      "etunimi": "Timo-Testi",
+      "sukunimi": "Rantalaiho-Testi",
+      "createdAt": { "$date" : "2013-02-07T09:09:09.212Z"},
+      "hakutoiveet": [
+        {
+          "hakukohdeOid": "1.2.246.562.20.91575634703",
+          "laskettavaHakukohdeOid": "1.2.246.562.20.91575634703",
+          "valinnanVaiheet": [
+            {
+              "valinnanVaiheOid": "14745464375024594804669496277870",
+              "valinnanVaiheJarjestysluku": 2,
+              "laskettavaJarjestysluku": 2,
+              "valintakokeet": [
+                {
+                  "valintakoeOid": "14745464385211779229458756173163",
+                  "valintakoeTunniste": "1_2_246_562_20_91575634703_paasykoe",
+                  "nimi": "Pääsy- ja soveltuvuuskoe",
+                  "aktiivinen": true,
+                  "osallistuminenTulos": {
+                    "osallistuminen": "OSALLISTUU",
+                    "laskentaTila": "HYVAKSYTTAVISSA",
+                    "laskentaTulos": true
+                  },
+                  "lahetetaankoKoekutsut": true,
+                  "kutsunKohde": "YLIN_TOIVE"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "hakukohdeOid": "1.2.246.562.20.87225291688",
+          "valinnanVaiheet": [
+            {
+              "valinnanVaiheOid": "14745465364086864783553212732748",
+              "valinnanVaiheJarjestysluku": 0,
+              "laskettavaJarjestysluku": 0,
+              "valintakokeet": [
+                {
+                  "valintakoeOid": "14745465365392466114243281757036",
+                  "valintakoeTunniste": "kielikoe_fi",
+                  "nimi": "Kielikoe",
+                  "aktiivinen": true,
+                  "osallistuminenTulos": {
+                    "osallistuminen": "EI_OSALLISTU",
+                    "laskentaTila": "HYVAKSYTTAVISSA",
+                    "laskentaTulos": true
+                  },
+                  "lahetetaankoKoekutsut": true,
+                  "kutsunKohde": "YLIN_TOIVE"
+                },
+                {
+                  "valintakoeOid": "1474546536533-8020745913829417718",
+                  "valintakoeTunniste": "1_2_246_562_20_87225291688_urheilija_lisapiste",
+                  "nimi": "Urheilijalisäpiste",
+                  "aktiivinen": true,
+                  "osallistuminenTulos": {
+                    "osallistuminen": "EI_OSALLISTU",
+                    "laskentaTila": "HYVAKSYTTAVISSA",
+                    "laskentaTulos": false
+                  },
+                  "lahetetaankoKoekutsut": false,
+                  "kutsunKohde": "YLIN_TOIVE"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "hakukohdeOid": "1.2.246.562.20.28325359306",
+          "valinnanVaiheet": [
+            {
+              "valinnanVaiheOid": "1474546799965-4127011121457284870",
+              "valinnanVaiheJarjestysluku": 0,
+              "laskettavaJarjestysluku": 0,
+              "valintakokeet": [
+                {
+                  "valintakoeOid": "14745468001839066974576862850770",
+                  "valintakoeTunniste": "kielikoe_fi",
+                  "nimi": "Kielikoe",
+                  "aktiivinen": true,
+                  "osallistuminenTulos": {
+                    "osallistuminen": "EI_OSALLISTU",
+                    "laskentaTila": "HYVAKSYTTAVISSA",
+                    "laskentaTulos": true
+                  },
+                  "lahetetaankoKoekutsut": true,
+                  "kutsunKohde": "YLIN_TOIVE"
+                },
+                {
+                  "valintakoeOid": "1474546800189-6487443585601164971",
+                  "valintakoeTunniste": "1_2_246_562_20_28325359306_urheilija_lisapiste",
+                  "nimi": "Urheilijalisäpiste",
+                  "aktiivinen": true,
+                  "osallistuminenTulos": {
+                    "osallistuminen": "EI_OSALLISTU",
+                    "laskentaTila": "HYVAKSYTTAVISSA",
+                    "laskentaTulos": false
+                  },
+                  "lahetetaankoKoekutsut": false,
+                  "kutsunKohde": "YLIN_TOIVE"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "hakukohdeOid": "1.2.246.562.20.83855523359",
+          "laskettavaHakukohdeOid": "1.2.246.562.20.83855523359",
+          "valinnanVaiheet": [
+            {
+              "valinnanVaiheOid": "1474546239306-1262790400051735517",
+              "valinnanVaiheJarjestysluku": 0,
+              "laskettavaJarjestysluku": 0,
+              "valintakokeet": [
+                {
+                  "valintakoeOid": "1474546239367-7270269963577955909",
+                  "valintakoeTunniste": "kielikoe_fi",
+                  "nimi": "Kielikoe",
+                  "aktiivinen": true,
+                  "osallistuminenTulos": {
+                    "osallistuminen": "OSALLISTUU",
+                    "laskentaTila": "HYVAKSYTTAVISSA",
+                    "laskentaTulos": true
+                  },
+                  "lahetetaankoKoekutsut": true,
+                  "kutsunKohde": "YLIN_TOIVE"
+                },
+                {
+                  "valintakoeOid": "1474546239364-3306973343760194343",
+                  "valintakoeTunniste": "1_2_246_562_20_83855523359_urheilija_lisapiste",
+                  "nimi": "Urheilijalisäpiste",
+                  "aktiivinen": true,
+                  "osallistuminenTulos": {
+                    "osallistuminen": "EI_OSALLISTU",
+                    "laskentaTila": "HYVAKSYTTAVISSA",
+                    "laskentaTulos": false
+                  },
+                  "lahetetaankoKoekutsut": false,
+                  "kutsunKohde": "YLIN_TOIVE"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
