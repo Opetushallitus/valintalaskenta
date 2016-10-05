@@ -11,20 +11,27 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanva
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.ValintatietoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import java.util.Arrays;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ_UPDATE_CRUD;
 
 @Controller
 @Path("valintalaskentakoostepalvelu")
@@ -106,6 +113,18 @@ public class ValintalaskentakoostepalveluResourceImpl {
             LOGGER.error("Valintatapajonon pisteitä ei saatu päivitettyä hakukohteelle " + hakukohdeoid, e);
             throw e;
         }
+    }
+
+    @GET
+    @Path("valintakoe/ammatillisenkielikoeosallistumiset/{since}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Hakee kaikki osallistumiset ammatillisen koulutuksen kielikokeisiin", response = ValintakoeOsallistuminenDTO.class)
+    public List<ValintakoeOsallistuminenDTO> haeAmmatillisenKielikokeenOsallistumiset(
+            @ApiParam(value = "Mista lahtien kirjatut tulokset haetaan, muodossa yyyy-MM-dd", required = true)
+            @PathParam("since")
+            String since) throws ParseException {
+        Date sinceDate = new SimpleDateFormat("yyyy-MM-dd").parse(since);
+        return tulosService.haeAmmatillisenKielikokeeseenOsallistumiset(sinceDate);
     }
 }
 

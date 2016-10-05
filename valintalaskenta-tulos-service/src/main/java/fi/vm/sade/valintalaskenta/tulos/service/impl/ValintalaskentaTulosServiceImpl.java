@@ -401,6 +401,12 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
+    public List<ValintakoeOsallistuminenDTO> haeAmmatillisenKielikokeeseenOsallistumiset(Date since) {
+        List<ValintakoeOsallistuminen> osallistumiset = valintakoeOsallistuminenDAO.findAmmatillisenKielikoeOsallistumiset(since);
+        return valintatulosConverter.convertValintakoeOsallistuminen(osallistumiset);
+    }
+
+    @Override
     public List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakutoive(String hakukohdeOid) {
         return valintakoeOsallistuminenDAO.findByHakutoive(hakukohdeOid);
     }
