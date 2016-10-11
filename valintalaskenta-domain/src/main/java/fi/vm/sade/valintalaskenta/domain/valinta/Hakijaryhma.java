@@ -36,6 +36,8 @@ public class Hakijaryhma {
 
     private boolean kaytetaanRyhmaanKuuluvia;
 
+    private String hakijaryhmatyyppikoodiUri;
+
     private String valintatapajonoOid;
 
     private List<ObjectId> jonosijaIdt;
@@ -167,5 +169,13 @@ public class Hakijaryhma {
 
     public void setJonosijat(List<Jonosija> jonosijat) {
         this.jonosijat = jonosijat;
+    }
+
+    public String getHakijaryhmatyyppikoodiUri() {
+        return hakijaryhmatyyppikoodiUri;
+    }
+
+    public void setHakijaryhmatyyppikoodiUri(String hakijaryhmatyyppikoodiUri) {
+        this.hakijaryhmatyyppikoodiUri = hakijaryhmatyyppikoodiUri;
     }
 }
