@@ -25,7 +25,6 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoeosallist
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.ValintakoeosallistumislaskinImpl;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,14 +47,10 @@ public class ValintakoeosallistumislaskinTest {
 
     @Before
     public void setUpt() {
-        valintakoeosallistumislaskin = new ValintakoeosallistumislaskinImpl();
-
         laskentaServiceMock = mock(LaskentaService.class);
         laskentadomainkonvertteriWrapperMock = mock(LaskentadomainkonvertteriWrapper.class);
 
-        ReflectionTestUtils.setField(valintakoeosallistumislaskin, "laskentaService", laskentaServiceMock);
-        ReflectionTestUtils.setField(valintakoeosallistumislaskin, "laskentadomainkonvertteriWrapper",
-                laskentadomainkonvertteriWrapperMock);
+        valintakoeosallistumislaskin = new ValintakoeosallistumislaskinImpl(laskentaServiceMock, laskentadomainkonvertteriWrapperMock);
     }
 
     private void valmisteleStubit(final Hakukohde hakukohde, Tila tila, boolean tulos) {

@@ -24,38 +24,20 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoeosallist
  * User: wuoti Date: 6.5.2013 Time: 9.02
  */
 @Service
-public class ValintakoeosallistumislaskinImpl implements
-		Valintakoeosallistumislaskin {
+public class ValintakoeosallistumislaskinImpl implements Valintakoeosallistumislaskin {
 
-	@Autowired
-	private LaskentaService laskentaService;
+	private final LaskentaService laskentaService;
+	private final LaskentadomainkonvertteriWrapper laskentadomainkonvertteriWrapper;
 
-	@Autowired
-	private LaskentadomainkonvertteriWrapper laskentadomainkonvertteriWrapper;
+    @Autowired
+    public ValintakoeosallistumislaskinImpl(LaskentaService laskentaService, LaskentadomainkonvertteriWrapper laskentadomainkonvertteriWrapper) {
+        this.laskentaService = laskentaService;
+        this.laskentadomainkonvertteriWrapper = laskentadomainkonvertteriWrapper;
+    }
 
 
     private OsallistuminenTulos muodostaTulos(Laskentatulos tulos) {
-        // Jos tulosta ei ole saatu laskettua (ts. sitä ei ole) tai jos
-        // tuloksen tila on hylätty, voidaan
-        // olettaa, että henkilön pitää osallistua valintakokeeseen
-        Osallistuminen osallistuminen = null;
-        if (Tila.Tilatyyppi.VIRHE.equals(tulos.getTila().getTilatyyppi())) {
-            // Palautetaan virhe, jos laskenta palautti virheen
-            osallistuminen = Osallistuminen.VIRHE;
-        } else if (tulos.getTulos() == null
-                || Tila.Tilatyyppi.HYLATTY.equals(tulos.getTila()
-                .getTilatyyppi())) {
-            osallistuminen = Osallistuminen.OSALLISTUU;
-        } else {
-            if(tulos.getTulos() instanceof Boolean) {
-                osallistuminen = (Boolean)tulos.getTulos() ? Osallistuminen.OSALLISTUU
-                        : Osallistuminen.EI_OSALLISTU;
-            } else {
-                osallistuminen = tulos.getTulos() == null ? Osallistuminen.OSALLISTUU
-                        : Osallistuminen.EI_OSALLISTU;
-            }
-
-        }
+        Osallistuminen osallistuminen = resolveOsallistuminen(tulos);
 
         OsallistuminenTulos osallistuminenTulos = new OsallistuminenTulos();
         osallistuminenTulos.setOsallistuminen(osallistuminen);
@@ -84,6 +66,36 @@ public class ValintakoeosallistumislaskinImpl implements
         osallistuminenTulos.setTekninenKuvaus(tekninen);
         return osallistuminenTulos;
     }
+
+    private Osallistuminen resolveOsallistuminen(Laskentatulos tulos) {
+        // Jos tulosta ei ole saatu laskettua (ts. sitä ei ole) tai jos
+        // tuloksen tila on hylätty, voidaan
+        // olettaa, että henkilön pitää osallistua valintakokeeseen
+        if (Tila.Tilatyyppi.VIRHE.equals(tulos.getTila().getTilatyyppi())) {
+            // Palautetaan virhe, jos laskenta palautti virheen
+            return Osallistuminen.VIRHE;
+        } else if (tulos.getTulos() == null
+                || Tila.Tilatyyppi.HYLATTY.equals(tulos.getTila().getTilatyyppi())) {
+            return Osallistuminen.OSALLISTUU;
+        } else {
+            if (tulos.getTulos() instanceof Boolean) {
+                if ((Boolean) tulos.getTulos()) {
+                    return Osallistuminen.OSALLISTUU;
+                }
+                else {
+                    return Osallistuminen.EI_OSALLISTU;
+                }
+            } else {
+                if (tulos.getTulos() == null) {
+                    return Osallistuminen.OSALLISTUU;
+                }
+                else {
+                    return Osallistuminen.EI_OSALLISTU;
+                }
+            }
+        }
+    }
+
     @Override
     public OsallistuminenTulos laskeOsallistuminenYhdelleHakukohteelle(Hakukohde hakukohde, Hakemus hakemus, Funktiokutsu kaava) {
         switch (kaava.getFunktionimi().getTyyppi()) {
