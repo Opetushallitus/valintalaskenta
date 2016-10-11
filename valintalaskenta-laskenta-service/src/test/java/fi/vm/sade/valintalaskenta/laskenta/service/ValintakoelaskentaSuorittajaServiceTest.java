@@ -41,6 +41,7 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.Hakukohd
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -252,35 +253,16 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         osallistuu2.setOsallistuminen(Osallistuminen.OSALLISTUU);
 
         when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(
-            argThat(new BaseMatcher<Hakukohde>() {
-                @Override
-                public boolean matches(Object o) {
-                    return o != null && ((Hakukohde) o).hakukohdeOid().equals(hakukohdeOid1);
-                }
-
-                @Override
-                public void describeTo(Description description) {
-                }
-            }), Matchers.any(), Matchers.any()))
+            argThat(hasOid(hakukohdeOid1)), Matchers.any(), Matchers.any()))
             .thenReturn(osallistuu1);
 
         when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(
-            argThat(new BaseMatcher<Hakukohde>() {
-                @Override
-                public boolean matches(Object o) {
-                    return o != null && ((Hakukohde) o).hakukohdeOid().equals(hakukohdeOid2);
-                }
-
-                @Override
-                public void describeTo(Description description) {
-                }
-            }), Matchers.any(), Matchers.any()))
+            argThat(hasOid(hakukohdeOid2)), Matchers.any(), Matchers.any()))
             .thenReturn(osallistuu2);
 
         when(valintakoeOsallistuminenDAOMock.readByHakuOidAndHakemusOid(anyString(), anyString())).thenReturn(null);
 
-        ArgumentCaptor<ValintakoeOsallistuminen> captor = ArgumentCaptor
-            .forClass(ValintakoeOsallistuminen.class);
+        ArgumentCaptor<ValintakoeOsallistuminen> captor = ArgumentCaptor.forClass(ValintakoeOsallistuminen.class);
         List<ValintaperusteetDTO> valintaperusteet = new ArrayList<>();
         valintaperusteet.add(valintaperusteet1);
         valintaperusteet.add(valintaperusteet2);
@@ -363,29 +345,11 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         osallistuu2.setOsallistuminen(Osallistuminen.OSALLISTUU);
 
         when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(
-            argThat(new BaseMatcher<Hakukohde>() {
-                @Override
-                public boolean matches(Object o) {
-                    return o != null && ((Hakukohde) o).hakukohdeOid().equals(hakukohdeOid1);
-                }
-
-                @Override
-                public void describeTo(Description description) {
-                }
-            }), Matchers.any(), Matchers.any()))
+            argThat(hasOid(hakukohdeOid1)), Matchers.any(), Matchers.any()))
             .thenReturn(osallistuu1);
 
         when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(
-            argThat(new BaseMatcher<Hakukohde>() {
-                @Override
-                public boolean matches(Object o) {
-                    return o != null && ((Hakukohde) o).hakukohdeOid().equals(hakukohdeOid2);
-                }
-
-                @Override
-                public void describeTo(Description description) {
-                }
-            }), Matchers.any(), Matchers.any()))
+            argThat(hasOid(hakukohdeOid2)), Matchers.any(), Matchers.any()))
             .thenReturn(osallistuu2);
 
         when(valintakoeOsallistuminenDAOMock.readByHakuOidAndHakemusOid(anyString(), anyString())).thenReturn(null);
@@ -450,29 +414,11 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         osallistuu2.setOsallistuminen(Osallistuminen.OSALLISTUU);
 
         when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(
-            argThat(new BaseMatcher<Hakukohde>() {
-                @Override
-                public boolean matches(Object o) {
-                    return o != null && ((Hakukohde) o).hakukohdeOid().equals(hakukohdeOid1);
-                }
-
-                @Override
-                public void describeTo(Description description) {
-                }
-            }), Matchers.any(), Matchers.any()))
+            argThat(hasOid(hakukohdeOid1)), Matchers.any(), Matchers.any()))
             .thenReturn(osallistuu1);
 
         when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(
-            argThat(new BaseMatcher<Hakukohde>() {
-                @Override
-                public boolean matches(Object o) {
-                    return o != null && ((Hakukohde) o).hakukohdeOid().equals(hakukohdeOid2);
-                }
-
-                @Override
-                public void describeTo(Description description) {
-                }
-            }), Matchers.any(), Matchers.any()))
+            argThat(hasOid(hakukohdeOid2)), Matchers.any(), Matchers.any()))
             .thenReturn(osallistuu2);
 
         when(valintakoeOsallistuminenDAOMock.readByHakuOidAndHakemusOid(anyString(), anyString())).thenReturn(null);
@@ -634,5 +580,19 @@ public class ValintakoelaskentaSuorittajaServiceTest {
             assertEquals(hakukohdeOid3, kokeet.get(2).getHakukohdeOid());
             assertEquals(Osallistuminen.EI_OSALLISTU, kokeet.get(2).getOsallistuminenTulos().getOsallistuminen());
         }
+    }
+
+    private Matcher<Hakukohde> hasOid(final String hakukohdeOid) {
+        return new BaseMatcher<Hakukohde>() {
+            @Override
+            public boolean matches(Object o) {
+                return o != null && ((Hakukohde) o).hakukohdeOid().equals(hakukohdeOid);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("has oid " + hakukohdeOid);
+            }
+        };
     }
 }
