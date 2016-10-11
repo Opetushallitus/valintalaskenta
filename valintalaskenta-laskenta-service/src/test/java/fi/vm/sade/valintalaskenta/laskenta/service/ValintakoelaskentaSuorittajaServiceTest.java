@@ -1,6 +1,9 @@
 package fi.vm.sade.valintalaskenta.laskenta.service;
 
-import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.*;
+import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakemus;
+import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakukohdeDTO;
+import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakukohdeValintakoeData;
+import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteetJaValintakoeValinnanvaihe;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -10,33 +13,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import fi.vm.sade.service.valintaperusteet.dto.HakukohteenValintaperusteDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
 import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
-import fi.vm.sade.valintalaskenta.laskenta.resource.ValintakoelaskennanKumulatiivisetTulokset;
-import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.HakemusDTOToHakemusConverter;
-import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
@@ -47,12 +30,28 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
+import fi.vm.sade.valintalaskenta.laskenta.resource.ValintakoelaskennanKumulatiivisetTulokset;
+import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.HakemusDTOToHakemusConverter;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinnanvaiheKasittelija;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.TilaJaSelite;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoeosallistumislaskin;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.ValintakoelaskentaSuorittajaServiceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.HakukohdeValintakoeData;
+import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User: wuoti Date: 3.5.2013 Time: 12.00
@@ -70,6 +69,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     private ValintalaskentaModelMapper modelMapperMock;
 
     private HakemusDTOToHakemusConverter hakemusConverterMock;
+
 	private ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset = new ValintakoelaskennanKumulatiivisetTulokset();
 
 	@Before
@@ -91,11 +91,9 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 	@Test
 	public void testMustache() {
 		final String hakukohdeOid1 = "hakukohdeOid1";
-
 		final String hakukohdeOid2 = "hakukohdeOid2";
 
-		final HakemusDTO hakemus = luoHakemus("hakuOid", "hakemusOid", "hakijaOid",
-				hakukohdeOid1, hakukohdeOid2);
+		final HakemusDTO hakemus = luoHakemus("hakuOid", "hakemusOid", "hakijaOid", hakukohdeOid1, hakukohdeOid2);
 
 		final String hakuOid = "hakuOid";
 		final String valintakoetunniste = "{{hakukohde.koetunniste}}";
@@ -124,7 +122,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		ArgumentCaptor<ValintakoeOsallistuminen> captor = ArgumentCaptor
 				.forClass(ValintakoeOsallistuminen.class);
  		valintakoelaskentaSuorittajaService.laske(hakemus,
-                Arrays.asList(valintaperusteet1), uuid, kumulatiivisetTulokset);
+                Collections.singletonList(valintaperusteet1), uuid, kumulatiivisetTulokset);
 		verify(valintakoeOsallistuminenDAOMock, times(1)).createOrUpdate(
 				captor.capture());
 
@@ -138,11 +136,9 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 	@Test
 	public void testMustacheFail() {
 		final String hakukohdeOid1 = "hakukohdeOid1";
-
 		final String hakukohdeOid2 = "hakukohdeOid2";
 
-		final HakemusDTO hakemus = luoHakemus("hakuOid", "hakemusOid", "hakijaOid",
-				hakukohdeOid1, hakukohdeOid2);
+		final HakemusDTO hakemus = luoHakemus("hakuOid", "hakemusOid", "hakijaOid", hakukohdeOid1, hakukohdeOid2);
 
 		final String hakuOid = "hakuOid";
 		final String valintakoetunniste = "{{hakukohde.koetunnistea}}";
@@ -169,7 +165,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 				osallistuminenTulos);
 
 		valintakoelaskentaSuorittajaService.laske(hakemus,
-                Arrays.asList(valintaperusteet1), uuid, kumulatiivisetTulokset);
+                Collections.singletonList(valintaperusteet1), uuid, kumulatiivisetTulokset);
 		verify(valintakoeOsallistuminenDAOMock, times(0)).createOrUpdate(
 				any(ValintakoeOsallistuminen.class));
 
@@ -182,11 +178,9 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 	@Test
 	public void testEdellistaVaihettaEiLoydy() {
 		final String hakukohdeOid1 = "hakukohdeOid1";
-
 		final String hakukohdeOid2 = "hakukohdeOid2";
 
-		final HakemusDTO hakemus = luoHakemus("hakuOid","hakemusOid", "hakijaOid",
-				hakukohdeOid1, hakukohdeOid2);
+		final HakemusDTO hakemus = luoHakemus("hakuOid","hakemusOid", "hakijaOid", hakukohdeOid1, hakukohdeOid2);
 
 		final String hakuOid = "hakuOid";
 		final String valintakoetunniste = "{{hakukohde.movember}}";
@@ -213,7 +207,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 				osallistuminenTulos);
 
 		valintakoelaskentaSuorittajaService.laske(hakemus,
-                Arrays.asList(valintaperusteet1), uuid, kumulatiivisetTulokset);
+                Collections.singletonList(valintaperusteet1), uuid, kumulatiivisetTulokset);
 		verify(valintakoeOsallistuminenDAOMock, times(0)).createOrUpdate(
 				any(ValintakoeOsallistuminen.class));
 
@@ -223,8 +217,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 	public void testViimeisinValinnanvaihe() {
 		final String hakukohdeOid1 = "hakukohdeOid1";
 		final String hakukohdeOid2 = "hakukohdeOid2";
-		final HakemusDTO hakemus = luoHakemus("hakuOid", "hakemusOid", "hakijaOid",
-				hakukohdeOid1, hakukohdeOid2);
+		final HakemusDTO hakemus = luoHakemus("hakuOid", "hakemusOid", "hakijaOid", hakukohdeOid1, hakukohdeOid2);
 
 		final String hakuOid = "hakuOid";
 		final String valintakoetunniste = "valintakoetunniste";
@@ -245,12 +238,12 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 		when(
 				valinnanvaiheDAOMock.haeEdeltavaValinnanvaihe(
-						Matchers.<String> any(), Matchers.eq(hakukohdeOid1),
+						Matchers.any(), Matchers.eq(hakukohdeOid1),
 						Matchers.eq(valinnanVaiheJarjestysluku1))).thenReturn(
 				null);
 		when(
 				valinnanvaiheDAOMock.haeEdeltavaValinnanvaihe(
-						Matchers.<String> any(), Matchers.eq(hakukohdeOid2),
+						Matchers.any(), Matchers.eq(hakukohdeOid2),
 						Matchers.eq(valinnanVaiheJarjestysluku2))).thenReturn(
 				null);
 
@@ -269,19 +262,19 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		Valinnanvaihe viimeisin2 = new Valinnanvaihe();
 		when(
 				valinnanvaiheDAOMock.haeViimeisinValinnanvaihe(
-						Matchers.<String> any(), Matchers.eq(hakukohdeOid1),
+						Matchers.any(), Matchers.eq(hakukohdeOid1),
 						Matchers.eq(valinnanVaiheJarjestysluku1))).thenReturn(
 				viimeisin1);
 		when(
 				valinnanvaiheDAOMock.haeViimeisinValinnanvaihe(
-						Matchers.<String> any(), Matchers.eq(hakukohdeOid2),
+						Matchers.any(), Matchers.eq(hakukohdeOid2),
 						Matchers.eq(valinnanVaiheJarjestysluku2))).thenReturn(
 				viimeisin2);
 
-		final Map<String, String> hyvaksyttavissaSelite = new HashMap<String, String>();
+		final Map<String, String> hyvaksyttavissaSelite = new HashMap<>();
 		hyvaksyttavissaSelite.put("FI", "Testi Selite Hyvaksyttavissa");
 
-		final Map<String, String> virheSelite = new HashMap<String, String>();
+		final Map<String, String> virheSelite = new HashMap<>();
 		virheSelite.put("FI", "Testi Selite Virhe");
 
 		final TilaJaSelite ts0 = new TilaJaSelite(
@@ -293,12 +286,12 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		when(
 				edellinenValinnanvaiheKasittelijaMock
 						.tilaEdellisenValinnanvaiheenMukaan(
-								Matchers.<String> any(), Matchers.<Tila> any(),
+								Matchers.any(), Matchers.any(),
 								Matchers.eq(viimeisin1))).thenReturn(ts0);
 		when(
 				edellinenValinnanvaiheKasittelijaMock
 						.tilaEdellisenValinnanvaiheenMukaan(
-								Matchers.<String> any(), Matchers.<Tila> any(),
+								Matchers.any(), Matchers.any(),
 								Matchers.eq(viimeisin2))).thenReturn(ts1);
 
 		final OsallistuminenTulos osallistuu1 = new OsallistuminenTulos();
@@ -323,8 +316,8 @@ public class ValintakoelaskentaSuorittajaServiceTest {
                                     public void describeTo(
                                             Description description) {
                                     }
-                                }), Matchers.<Hakemus>any(), Matchers
-                                .<Funktiokutsu>any()))
+                                }), Matchers.any(), Matchers
+                                .any()))
 				.thenReturn(osallistuu1);
 
 		when(
@@ -344,8 +337,8 @@ public class ValintakoelaskentaSuorittajaServiceTest {
                                     public void describeTo(
                                             Description description) {
                                     }
-                                }), Matchers.<Hakemus>any(), Matchers
-                                .<Funktiokutsu>any()))
+                                }), Matchers.any(), Matchers
+                                .any()))
 				.thenReturn(osallistuu2);
 
 		when(
@@ -354,7 +347,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 		ArgumentCaptor<ValintakoeOsallistuminen> captor = ArgumentCaptor
 				.forClass(ValintakoeOsallistuminen.class);
-		List<ValintaperusteetDTO> valintaperusteet = new ArrayList<ValintaperusteetDTO>();
+		List<ValintaperusteetDTO> valintaperusteet = new ArrayList<>();
 		valintaperusteet.add(valintaperusteet1);
 		valintaperusteet.add(valintaperusteet2);
 
@@ -365,12 +358,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		ValintakoeOsallistuminen osallistuminen = captor.getValue();
 
 		List<Hakutoive> hakutoiveet = osallistuminen.getHakutoiveet();
-		Collections.sort(hakutoiveet, new Comparator<Hakutoive>() {
-			@Override
-			public int compare(Hakutoive o1, Hakutoive o2) {
-				return o1.getHakukohdeOid().compareTo(o2.getHakukohdeOid());
-			}
-		});
+		Collections.sort(hakutoiveet, (o1, o2) -> o1.getHakukohdeOid().compareTo(o2.getHakukohdeOid()));
 		{
 			Hakutoive hakutoive1 = hakutoiveet.get(0);
 
@@ -425,10 +413,10 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 		Valinnanvaihe v1 = new Valinnanvaihe();
 
-		final Map<String, String> hyvaksyttavissaSelite = new HashMap<String, String>();
+		final Map<String, String> hyvaksyttavissaSelite = new HashMap<>();
 		hyvaksyttavissaSelite.put("FI", "Testi Selite Hyvaksyttavissa");
 
-		final Map<String, String> virheSelite = new HashMap<String, String>();
+		final Map<String, String> virheSelite = new HashMap<>();
 		virheSelite.put("FI", "Testi Selite Virhe");
 
 		final TilaJaSelite ts0 = new TilaJaSelite(
@@ -439,24 +427,24 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 		when(
 				valinnanvaiheDAOMock.haeEdeltavaValinnanvaihe(
-						Matchers.<String> any(), Matchers.eq(hakukohdeOid1),
+						Matchers.any(), Matchers.eq(hakukohdeOid1),
 						Matchers.eq(valinnanVaiheJarjestysluku1))).thenReturn(
 				v0);
 		when(
 				valinnanvaiheDAOMock.haeEdeltavaValinnanvaihe(
-						Matchers.<String> any(), Matchers.eq(hakukohdeOid2),
+						Matchers.any(), Matchers.eq(hakukohdeOid2),
 						Matchers.eq(valinnanVaiheJarjestysluku2))).thenReturn(
 				v1);
 
 		when(
 				edellinenValinnanvaiheKasittelijaMock
 						.tilaEdellisenValinnanvaiheenMukaan(
-								Matchers.<String> any(), Matchers.<Tila> any(),
+								Matchers.any(), Matchers.any(),
 								Matchers.eq(v0))).thenReturn(ts0);
 		when(
 				edellinenValinnanvaiheKasittelijaMock
 						.tilaEdellisenValinnanvaiheenMukaan(
-								Matchers.<String> any(), Matchers.<Tila> any(),
+								Matchers.any(), Matchers.any(),
 								Matchers.eq(v1))).thenReturn(ts1);
 
 		final OsallistuminenTulos osallistuu1 = new OsallistuminenTulos();
@@ -481,8 +469,8 @@ public class ValintakoelaskentaSuorittajaServiceTest {
                                     public void describeTo(
                                             Description description) {
                                     }
-                                }), Matchers.<Hakemus>any(), Matchers
-                                .<Funktiokutsu>any()))
+                                }), Matchers.any(), Matchers
+                                .any()))
 				.thenReturn(osallistuu1);
 
 		when(
@@ -502,8 +490,8 @@ public class ValintakoelaskentaSuorittajaServiceTest {
                                     public void describeTo(
                                             Description description) {
                                     }
-                                }), Matchers.<Hakemus>any(), Matchers
-                                .<Funktiokutsu>any()))
+                                }), Matchers.any(), Matchers
+                                .any()))
 				.thenReturn(osallistuu2);
 
 		when(
@@ -512,7 +500,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 		ArgumentCaptor<ValintakoeOsallistuminen> captor = ArgumentCaptor
 				.forClass(ValintakoeOsallistuminen.class);
-		List<ValintaperusteetDTO> valintaperusteet = new ArrayList<ValintaperusteetDTO>();
+		List<ValintaperusteetDTO> valintaperusteet = new ArrayList<>();
 		valintaperusteet.add(valintaperusteet1);
 		valintaperusteet.add(valintaperusteet2);
 
@@ -523,12 +511,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		ValintakoeOsallistuminen osallistuminen = captor.getValue();
 
 		List<Hakutoive> hakutoiveet = osallistuminen.getHakutoiveet();
-		Collections.sort(hakutoiveet, new Comparator<Hakutoive>() {
-			@Override
-			public int compare(Hakutoive o1, Hakutoive o2) {
-				return o1.getHakukohdeOid().compareTo(o2.getHakukohdeOid());
-			}
-		});
+		Collections.sort(hakutoiveet, (o1, o2) -> o1.getHakukohdeOid().compareTo(o2.getHakukohdeOid()));
 		{
 			Hakutoive hakutoive1 = hakutoiveet.get(0);
 
@@ -602,8 +585,8 @@ public class ValintakoelaskentaSuorittajaServiceTest {
                                     public void describeTo(
                                             Description description) {
                                     }
-                                }), Matchers.<Hakemus>any(), Matchers
-                                .<Funktiokutsu>any()))
+                                }), Matchers.any(), Matchers
+                                .any()))
 				.thenReturn(osallistuu1);
 
 		when(
@@ -623,8 +606,8 @@ public class ValintakoelaskentaSuorittajaServiceTest {
                                     public void describeTo(
                                             Description description) {
                                     }
-                                }), Matchers.<Hakemus>any(), Matchers
-                                .<Funktiokutsu>any()))
+                                }), Matchers.any(), Matchers
+                                .any()))
 				.thenReturn(osallistuu2);
 
 		when(
@@ -633,7 +616,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 		ArgumentCaptor<ValintakoeOsallistuminen> captor = ArgumentCaptor
 				.forClass(ValintakoeOsallistuminen.class);
-		List<ValintaperusteetDTO> valintaperusteet = new ArrayList<ValintaperusteetDTO>();
+		List<ValintaperusteetDTO> valintaperusteet = new ArrayList<>();
 		valintaperusteet.add(valintaperusteet1);
 		valintaperusteet.add(valintaperusteet2);
 
@@ -649,12 +632,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		assertEquals(2, osallistuminen.getHakutoiveet().size());
 
 		List<Hakutoive> hakutoiveet = osallistuminen.getHakutoiveet();
-		Collections.sort(hakutoiveet, new Comparator<Hakutoive>() {
-			@Override
-			public int compare(Hakutoive o1, Hakutoive o2) {
-				return o1.getHakukohdeOid().compareTo(o2.getHakukohdeOid());
-			}
-		});
+		Collections.sort(hakutoiveet, (o1, o2) -> o1.getHakukohdeOid().compareTo(o2.getHakukohdeOid()));
 		{
 			Hakutoive hakutoive1 = hakutoiveet.get(0);
 			assertEquals(hakutoive1.getHakukohdeOid(), hakukohdeOid1);
@@ -694,7 +672,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 	@Test
 	public void testAsetaOsallistumisetKokeisiin() {
-		Map<String, HakukohdeDTO> hakuToiveetByOid = new HashMap<String, HakukohdeDTO>();
+		Map<String, HakukohdeDTO> hakuToiveetByOid = new HashMap<>();
 
 		final String hakukohdeOid1 = "hakukohdeOid1";
 		final String hakukohdeOid2 = "hakukohdeOid2";
@@ -710,7 +688,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		final String valintakoetunniste = "valintakoetunniste";
 
 		{
-			List<HakukohdeValintakoeData> kokeet = new ArrayList<HakukohdeValintakoeData>();
+			List<HakukohdeValintakoeData> kokeet = new ArrayList<>();
 			kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid1,
 					Osallistuminen.OSALLISTUU, valintakoetunniste));
 			kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid2,
@@ -738,7 +716,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		}
 
 		{
-			List<HakukohdeValintakoeData> kokeet = new ArrayList<HakukohdeValintakoeData>();
+			List<HakukohdeValintakoeData> kokeet = new ArrayList<>();
 			kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid1,
 					Osallistuminen.EI_OSALLISTU, valintakoetunniste));
 			kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid2,
@@ -765,7 +743,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		}
 
 		{
-			List<HakukohdeValintakoeData> kokeet = new ArrayList<HakukohdeValintakoeData>();
+			List<HakukohdeValintakoeData> kokeet = new ArrayList<>();
 			kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid1,
 					Osallistuminen.EI_OSALLISTU, valintakoetunniste));
 			kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid2,
@@ -792,7 +770,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		}
 
 		{
-			List<HakukohdeValintakoeData> kokeet = new ArrayList<HakukohdeValintakoeData>();
+			List<HakukohdeValintakoeData> kokeet = new ArrayList<>();
 			kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid1,
 					Osallistuminen.EI_OSALLISTU, valintakoetunniste));
 			kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid2,
@@ -819,7 +797,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		}
 
 		{
-			List<HakukohdeValintakoeData> kokeet = new ArrayList<HakukohdeValintakoeData>();
+			List<HakukohdeValintakoeData> kokeet = new ArrayList<>();
 			kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid1,
 					Osallistuminen.OSALLISTUU, valintakoetunniste));
 			kokeet.add(luoHakukohdeValintakoeData(hakukohdeOid2,
