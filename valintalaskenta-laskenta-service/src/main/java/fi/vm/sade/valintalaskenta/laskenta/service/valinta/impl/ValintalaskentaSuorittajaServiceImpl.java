@@ -209,6 +209,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             syotettyArvo.setLaskennallinenArvo(a.getLaskennallinenArvo());
             syotettyArvo.setOsallistuminen(a.getOsallistuminen().name());
             syotettyArvo.setTunniste(a.getTunniste());
+            syotettyArvo.setTyypinKoodiUri(a.getTyypinKoodiUri());
+            syotettyArvo.setTilastoidaan(a.isTilastoidaan());
             jonosija.getSyotetytArvot().add(syotettyArvo);
         }
         for (FunktioTulos a : js.getFunktioTulokset().values()) {
