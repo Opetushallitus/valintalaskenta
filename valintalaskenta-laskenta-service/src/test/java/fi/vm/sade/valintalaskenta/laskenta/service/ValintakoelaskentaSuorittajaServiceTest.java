@@ -74,8 +74,6 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
 	@Before
 	public void setUp() {
-		valintakoelaskentaSuorittajaService = new ValintakoelaskentaSuorittajaServiceImpl();
-
 		valintakoeOsallistuminenDAOMock = mock(ValintakoeOsallistuminenDAO.class);
 		valintakoeosallistumislaskinMock = mock(Valintakoeosallistumislaskin.class);
 
@@ -85,25 +83,9 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         modelMapperMock = mock(ValintalaskentaModelMapper.class);
         hakemusConverterMock = mock(HakemusDTOToHakemusConverter.class);
 
-		ReflectionTestUtils.setField(valintakoelaskentaSuorittajaService,
-				"valintakoeOsallistuminenDAO", valintakoeOsallistuminenDAOMock);
-		ReflectionTestUtils.setField(valintakoelaskentaSuorittajaService,
-				"valintakoeosallistumislaskin",
-				valintakoeosallistumislaskinMock);
-
-		ReflectionTestUtils.setField(valintakoelaskentaSuorittajaService,
-				"valinnanvaiheDAO", valinnanvaiheDAOMock);
-		ReflectionTestUtils.setField(valintakoelaskentaSuorittajaService,
-				"edellinenValinnanvaiheKasittelija",
-				edellinenValinnanvaiheKasittelijaMock);
-
-        ReflectionTestUtils.setField(valintakoelaskentaSuorittajaService,
-                "modelMapper",
-                modelMapperMock);
-
-        ReflectionTestUtils.setField(valintakoelaskentaSuorittajaService,
-                "hakemusConverter",
-                hakemusConverterMock);
+        valintakoelaskentaSuorittajaService = new ValintakoelaskentaSuorittajaServiceImpl(modelMapperMock,
+            hakemusConverterMock, edellinenValinnanvaiheKasittelijaMock, valintakoeOsallistuminenDAOMock,
+            valintakoeosallistumislaskinMock, valinnanvaiheDAOMock);
 	}
 
 	@Test

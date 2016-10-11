@@ -50,23 +50,25 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
     private static final Logger LOG = LoggerFactory.getLogger(ValintakoelaskentaSuorittajaServiceImpl.class);
     public static final String VALINNANVAIHE_HAKIJAN_VALINTA = "valinnanVaiheHakijanValinta";
 
-    @Autowired
-    private HakemusDTOToHakemusConverter hakemusConverter;
+    private final HakemusDTOToHakemusConverter hakemusConverter;
+    private final ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
+    private final Valintakoeosallistumislaskin valintakoeosallistumislaskin;
+    private final ValinnanvaiheDAO valinnanvaiheDAO;
+    private final EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija;
+    private final ValintalaskentaModelMapper modelMapper;
 
     @Autowired
-    private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
-
-    @Autowired
-    private Valintakoeosallistumislaskin valintakoeosallistumislaskin;
-
-    @Autowired
-    private ValinnanvaiheDAO valinnanvaiheDAO;
-
-    @Autowired
-    private EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija;
-
-    @Autowired
-    private ValintalaskentaModelMapper modelMapper;
+    public ValintakoelaskentaSuorittajaServiceImpl(ValintalaskentaModelMapper modelMapper, HakemusDTOToHakemusConverter hakemusConverter,
+                                                   EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija,
+                                                   ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO,
+                                                   Valintakoeosallistumislaskin valintakoeosallistumislaskin, ValinnanvaiheDAO valinnanvaiheDAO) {
+        this.modelMapper = modelMapper;
+        this.hakemusConverter = hakemusConverter;
+        this.edellinenValinnanvaiheKasittelija = edellinenValinnanvaiheKasittelija;
+        this.valintakoeOsallistuminenDAO = valintakoeOsallistuminenDAO;
+        this.valintakoeosallistumislaskin = valintakoeosallistumislaskin;
+        this.valinnanvaiheDAO = valinnanvaiheDAO;
+    }
 
     private String haeTunniste(String mustache, Map<String, String> hakukohteenValintaperusteet) {
         final Matcher m = pattern.matcher(mustache);
