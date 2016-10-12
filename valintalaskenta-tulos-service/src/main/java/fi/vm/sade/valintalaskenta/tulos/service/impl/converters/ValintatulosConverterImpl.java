@@ -249,6 +249,8 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
         dto.setLaskennallinenArvo(sa.getLaskennallinenArvo());
         dto.setOsallistuminen(sa.getOsallistuminen());
         dto.setTunniste(sa.getTunniste());
+        dto.setTyypinKoodiUri(sa.getTyypinKoodiUri());
+        dto.setTilastoidaan(sa.isTilastoidaan());
         return dto;
     }
 

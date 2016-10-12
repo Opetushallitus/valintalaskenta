@@ -18,6 +18,12 @@ public class SyotettyArvoDTO {
     @ApiModelProperty(value = "Arvon osallistumistieto", required = true)
     private String osallistuminen;
 
+    @ApiModelProperty(value = "Arvon tyypin koodisto uri", required = true)
+    private String tyypinKoodiUri;
+
+    @ApiModelProperty(value = "Tilastoidaanko tieto vai", required = true)
+    private boolean tilastoidaan;
+
     public String getTunniste() {
         return tunniste;
     }
@@ -48,5 +54,21 @@ public class SyotettyArvoDTO {
 
     public void setOsallistuminen(String osallistuminen) {
         this.osallistuminen = osallistuminen;
+    }
+
+    public String getTyypinKoodiUri() {
+        return tyypinKoodiUri;
+    }
+
+    public void setTyypinKoodiUri(String tyypinKoodiUri) {
+        this.tyypinKoodiUri = tyypinKoodiUri;
+    }
+
+    public boolean isTilastoidaan() {
+        return tilastoidaan;
+    }
+
+    public void setTilastoidaan(boolean tilastoidaan) {
+        this.tilastoidaan = tilastoidaan;
     }
 }
