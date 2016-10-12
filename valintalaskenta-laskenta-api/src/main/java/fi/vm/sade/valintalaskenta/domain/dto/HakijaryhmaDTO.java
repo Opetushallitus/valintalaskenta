@@ -25,6 +25,8 @@ public class HakijaryhmaDTO {
 
     private boolean kaytetaanRyhmaanKuuluvia;
 
+    private String hakijaryhmatyyppikoodiUri;
+
     private String valintatapajonoOid;
 
     private List<JonosijaDTO> jonosijat = new ArrayList<JonosijaDTO>();
@@ -124,5 +126,13 @@ public class HakijaryhmaDTO {
 
     public void setJonosijat(List<JonosijaDTO> jonosijat) {
         this.jonosijat = jonosijat;
+    }
+
+    public String getHakijaryhmatyyppikoodiUri() {
+        return hakijaryhmatyyppikoodiUri;
+    }
+
+    public void setHakijaryhmatyyppikoodiUri(String hakijaryhmatyyppikoodiUri) {
+        this.hakijaryhmatyyppikoodiUri = hakijaryhmatyyppikoodiUri;
     }
 }
