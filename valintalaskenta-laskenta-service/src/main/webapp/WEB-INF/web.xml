@@ -9,6 +9,16 @@
         <param-value>classpath:spring/application-context.xml</param-value>
     </context-param>
 
+    <filter>
+        <filter-name>CAS Single Sign Out Filter</filter-name>
+        <filter-class>fi.vm.sade.java_utils.security.OpintopolkuSingleSignOutFilter</filter-class>
+        <async-supported>true</async-supported>
+    </filter>
+    <filter-mapping>
+        <filter-name>CAS Single Sign Out Filter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
