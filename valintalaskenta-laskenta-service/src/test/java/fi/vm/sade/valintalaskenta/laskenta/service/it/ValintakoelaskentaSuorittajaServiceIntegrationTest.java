@@ -1,11 +1,26 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.it;
 
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
+import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
+import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA;
+import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.OSALLISTUU;
+import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakemus;
+import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe;
+import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteetJaValintakoeValinnanvaihe;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+
 import fi.vm.sade.service.valintaperusteet.dto.FunktiokutsuDTO;
 import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
@@ -14,7 +29,12 @@ import fi.vm.sade.service.valintaperusteet.dto.model.Koekutsu;
 import fi.vm.sade.valintalaskenta.domain.dto.AvainArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintakoelaskennanKumulatiivisetTulokset;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinnanvaiheKasittelija;
@@ -34,14 +54,14 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
-
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
-import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakemus;
-import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe;
-import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteetJaValintakoeValinnanvaihe;
-import static org.junit.Assert.*;
 
 /**
  * User: wuoti
@@ -131,8 +151,8 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid, kumulatiivisetTulokset);
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         assertNotNull(osallistuminen);
-        assertEquals(osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen(), Osallistuminen.OSALLISTUU);
-        assertEquals(osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(1).getOsallistuminenTulos().getOsallistuminen(), Osallistuminen.OSALLISTUU);
+        assertEquals(osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen(), OSALLISTUU);
+        assertEquals(osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(1).getOsallistuminenTulos().getOsallistuminen(), OSALLISTUU);
     }
 
     @Test
@@ -159,7 +179,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid, kumulatiivisetTulokset);
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         assertNotNull(osallistuminen);
-        assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen());
+        assertEquals(OSALLISTUU, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen());
         assertEquals(ValintakoelaskentaSuorittajaServiceImpl.VALINNANVAIHE_HAKIJAN_VALINTA, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValinnanVaiheOid());
         assertEquals(new Integer(100), osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValinnanVaiheJarjestysluku());
         assertEquals(1, osallistuminen.getHakutoiveet().size());
@@ -233,11 +253,11 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         final Optional<Valintakoe> valintakoetunniste1 = hakutoive1.get().getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste1")).findFirst();
         assertTrue(valintakoetunniste1.isPresent());
-        assertEquals(Osallistuminen.OSALLISTUU, valintakoetunniste1.get().getOsallistuminenTulos().getOsallistuminen());
+        assertEquals(OSALLISTUU, valintakoetunniste1.get().getOsallistuminenTulos().getOsallistuminen());
 
         final Optional<Valintakoe> valintakoetunniste2 = hakutoive1.get().getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste2")).findFirst();
         assertTrue(valintakoetunniste2.isPresent());
-        assertEquals(Osallistuminen.OSALLISTUU, valintakoetunniste2.get().getOsallistuminenTulos().getOsallistuminen());
+        assertEquals(OSALLISTUU, valintakoetunniste2.get().getOsallistuminenTulos().getOsallistuminen());
 
         Optional<Hakutoive> hakutoive2 = osallistuminen.getHakutoiveet().stream().filter(h -> h.getHakukohdeOid().equals("hakukohdeOid3")).findFirst();
         assertTrue(hakutoive2.isPresent());
@@ -247,7 +267,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         final Optional<Valintakoe> valintakoetunniste3 = hakutoive2.get().getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste3")).findFirst();
         assertTrue(valintakoetunniste3.isPresent());
-        assertEquals(Osallistuminen.OSALLISTUU, valintakoetunniste3.get().getOsallistuminenTulos().getOsallistuminen());
+        assertEquals(OSALLISTUU, valintakoetunniste3.get().getOsallistuminenTulos().getOsallistuminen());
 
         final Optional<Valintakoe> valintakoetunniste2b = hakutoive2.get().getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste2")).findFirst();
         assertTrue(valintakoetunniste2b.isPresent());
@@ -333,11 +353,11 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         final Optional<Valintakoe> valintakoetunniste1 = hakutoive1.get().getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste1")).findFirst();
         assertTrue(valintakoetunniste1.isPresent());
-        assertEquals(Osallistuminen.OSALLISTUU, valintakoetunniste1.get().getOsallistuminenTulos().getOsallistuminen());
+        assertEquals(OSALLISTUU, valintakoetunniste1.get().getOsallistuminenTulos().getOsallistuminen());
 
         final Optional<Valintakoe> valintakoetunniste3 = hakutoive1.get().getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste3")).findFirst();
         assertTrue(valintakoetunniste3.isPresent());
-        assertEquals(Osallistuminen.OSALLISTUU, valintakoetunniste3.get().getOsallistuminenTulos().getOsallistuminen());
+        assertEquals(OSALLISTUU, valintakoetunniste3.get().getOsallistuminenTulos().getOsallistuminen());
 
         Optional<Hakutoive> hakutoive2 = osallistuminen.getHakutoiveet().stream().filter(h -> h.getHakukohdeOid().equals("hakukohdeOid3")).findFirst();
         assertTrue(hakutoive2.isPresent());
@@ -347,7 +367,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         final Optional<Valintakoe> valintakoetunniste2 = hakutoive2.get().getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste2")).findFirst();
         assertTrue(valintakoetunniste2.isPresent());
-        assertEquals(Osallistuminen.OSALLISTUU, valintakoetunniste2.get().getOsallistuminenTulos().getOsallistuminen());
+        assertEquals(OSALLISTUU, valintakoetunniste2.get().getOsallistuminenTulos().getOsallistuminen());
     }
 
     @Test
@@ -422,11 +442,11 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         final Optional<Valintakoe> valintakoetunniste2 = hakutoive1.getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste2")).findFirst();
         assertTrue(valintakoetunniste2.isPresent());
-        assertEquals(Osallistuminen.OSALLISTUU, valintakoetunniste2.get().getOsallistuminenTulos().getOsallistuminen());
+        assertEquals(OSALLISTUU, valintakoetunniste2.get().getOsallistuminenTulos().getOsallistuminen());
 
         final Optional<Valintakoe> valintakoetunniste3 = hakutoive1.getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste1")).findFirst();
         assertTrue(valintakoetunniste3.isPresent());
-        assertEquals(Osallistuminen.OSALLISTUU, valintakoetunniste3.get().getOsallistuminenTulos().getOsallistuminen());
+        assertEquals(OSALLISTUU, valintakoetunniste3.get().getOsallistuminenTulos().getOsallistuminen());
     }
 
     @Test
@@ -499,7 +519,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         final Optional<Valintakoe> valintakoetunniste2 = hakutoive1.getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste2")).findFirst();
         assertTrue(valintakoetunniste2.isPresent());
-        assertEquals(Osallistuminen.OSALLISTUU, valintakoetunniste2.get().getOsallistuminenTulos().getOsallistuminen());
+        assertEquals(OSALLISTUU, valintakoetunniste2.get().getOsallistuminenTulos().getOsallistuminen());
 
         Hakutoive hakutoive2 = osallistuminen.getHakutoiveet().get(1);
         assertEquals(1, hakutoive2.getValinnanVaiheet().size());
@@ -507,7 +527,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         final Optional<Valintakoe> valintakoetunniste1 = hakutoive2.getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste1")).findFirst();
         assertTrue(valintakoetunniste1.isPresent());
-        assertEquals(Osallistuminen.OSALLISTUU, valintakoetunniste1.get().getOsallistuminenTulos().getOsallistuminen());
+        assertEquals(OSALLISTUU, valintakoetunniste1.get().getOsallistuminenTulos().getOsallistuminen());
     }
 
     @Test
@@ -593,7 +613,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         assertEquals(Osallistuminen.EI_OSALLISTU, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen());
 
         assertEquals(hakukohdeOid2, osallistuminen.getHakutoiveet().get(1).getHakukohdeOid());
-        assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen());
+        assertEquals(OSALLISTUU, osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen());
 
     }
 
@@ -609,10 +629,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
             IOException {
 
 
-        LaskeDTO dto = new Gson().fromJson(IOUtils
-                .toString(new ClassPathResource("laskeDTO.json")
-                        .getInputStream()), new TypeToken<LaskeDTO>() {
-        }.getType());
+        LaskeDTO dto = readJson("laskeDTO.json", new TypeToken<LaskeDTO>() {});
 
         valintakoelaskentaSuorittajaService.laske(dto.getHakemus().get(0), dto.getValintaperuste(), uuid, kumulatiivisetTulokset);
 
@@ -628,9 +645,36 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().sort((k1, k2) -> k1.getValintakoeTunniste().compareTo(k2.getValintakoeTunniste()));
         osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().sort((k1, k2) -> k1.getValintakoeTunniste().compareTo(k2.getValintakoeTunniste()));
 
-        assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().get(1).getOsallistuminenTulos().getOsallistuminen());
+        assertEquals(OSALLISTUU, osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().get(1).getOsallistuminenTulos().getOsallistuminen());
         assertEquals(Osallistuminen.EI_OSALLISTU, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(1).getOsallistuminenTulos().getOsallistuminen());
 
+    }
+
+    @Test
+    @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
+    public void kielikokeeseenKutsutaanJosSuoritustaTaiTodennettuaKielitaitoaEiLoydy() throws JsonSyntaxException, IOException {
+        LaskeDTO laskeDTOIlmanKielikoetulosta = readJson("laskeDTOIlmanKielikoetulosta.json", new TypeToken<LaskeDTO>() {});
+
+        valintakoelaskentaSuorittajaService.laske(laskeDTOIlmanKielikoetulosta.getHakemus().get(0), laskeDTOIlmanKielikoetulosta.getValintaperuste(), uuid);
+
+        ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid("1.2.246.562.5.2013080813081926341927", "1.2.246.562.11.00000304421");
+
+        assertEquals(1, osallistuminen.getHakutoiveet().size());
+
+        Hakutoive osallistumisenHakutoiveJohonOnKielikoe = osallistuminen.getHakutoiveet().get(0);
+        ValintakoeValinnanvaihe kielikokeenPakollisuusVaihe = osallistumisenHakutoiveJohonOnKielikoe.getValinnanVaiheet().get(0);
+        assertEquals(1, kielikokeenPakollisuusVaihe.getValintakokeet().size());
+
+        Valintakoe kielikoetulos = kielikokeenPakollisuusVaihe.getValintakokeet().get(0);
+        OsallistuminenTulos kielikoetulosOsallistuminenTulos = kielikoetulos.getOsallistuminenTulos();
+
+        assertThat(kielikoetulosOsallistuminenTulos, having(on(OsallistuminenTulos.class).getOsallistuminen(), equalTo(OSALLISTUU)));
+        assertThat(kielikoetulosOsallistuminenTulos, having(on(OsallistuminenTulos.class).getLaskentaTulos(), equalTo(true)));
+        assertThat(kielikoetulosOsallistuminenTulos, having(on(OsallistuminenTulos.class).getLaskentaTila(), equalTo(HYVAKSYTTAVISSA.name())));
+    }
+
+    private <T> T readJson(String pathInClasspath, TypeToken<T> typeToken) throws IOException {
+        return new Gson().fromJson(IOUtils.toString(new ClassPathResource(pathInClasspath).getInputStream()), typeToken.getType());
     }
 
     @Test
