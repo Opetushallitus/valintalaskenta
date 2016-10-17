@@ -4,6 +4,7 @@ import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA;
+import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.EI_OSALLISTU;
 import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.OSALLISTUU;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakemus;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe;
@@ -673,6 +674,58 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         assertThat(kielikoetulosOsallistuminenTulos, having(on(OsallistuminenTulos.class).getLaskentaTila(), equalTo(HYVAKSYTTAVISSA.name())));
     }
 
+    @Test
+    @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
+    public void kielikokeeseenKutsutaanJosOsallistuminenLoytyyKyseiseltaHakemukselta() throws JsonSyntaxException, IOException {
+        LaskeDTO laskeDTOIlmanKielikoetulosta = readJson("laskeDTOIlmanKielikoetulosta.json", new TypeToken<LaskeDTO>() {});
+        HakemusDTO hakemus = laskeDTOIlmanKielikoetulosta.getHakemus().get(0);
+        setValueOnCombinedHakemusData(hakemus, "kielikoe_fi", "true");
+        setValueOnCombinedHakemusData(hakemus, "kielikoe_fi-OSALLISTUMINEN", "OSALLISTUI");
+
+        valintakoelaskentaSuorittajaService.laske(hakemus, laskeDTOIlmanKielikoetulosta.getValintaperuste(), uuid);
+
+        ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid("1.2.246.562.5.2013080813081926341927", "1.2.246.562.11.00000304421");
+
+        assertEquals(1, osallistuminen.getHakutoiveet().size());
+
+        Hakutoive osallistumisenHakutoiveJohonOnKielikoe = osallistuminen.getHakutoiveet().get(0);
+        ValintakoeValinnanvaihe kielikokeenPakollisuusVaihe = osallistumisenHakutoiveJohonOnKielikoe.getValinnanVaiheet().get(0);
+        assertEquals(1, kielikokeenPakollisuusVaihe.getValintakokeet().size());
+
+        Valintakoe kielikoetulos = kielikokeenPakollisuusVaihe.getValintakokeet().get(0);
+        OsallistuminenTulos kielikoetulosOsallistuminenTulos = kielikoetulos.getOsallistuminenTulos();
+
+        assertThat(kielikoetulosOsallistuminenTulos, having(on(OsallistuminenTulos.class).getOsallistuminen(), equalTo(OSALLISTUU)));
+        assertThat(kielikoetulosOsallistuminenTulos, having(on(OsallistuminenTulos.class).getLaskentaTulos(), equalTo(true)));
+        assertThat(kielikoetulosOsallistuminenTulos, having(on(OsallistuminenTulos.class).getLaskentaTila(), equalTo(HYVAKSYTTAVISSA.name())));
+    }
+
+    @Test
+    @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
+    public void kielikokeeseenEiKutsutaJosSuoritusLoytyyEriHakemukselta() throws JsonSyntaxException, IOException {
+        LaskeDTO laskeDTOIlmanKielikoetulosta = readJson("laskeDTOIlmanKielikoetulosta.json", new TypeToken<LaskeDTO>() {});
+        HakemusDTO hakemus = laskeDTOIlmanKielikoetulosta.getHakemus().get(0);
+        setValueOnCombinedHakemusData(hakemus, "kielikoe_fi", "true");
+        setValueOnCombinedHakemusData(hakemus, "kielikoe_fi-OSALLISTUMINEN", "MERKITSEMATTA");
+
+        valintakoelaskentaSuorittajaService.laske(hakemus, laskeDTOIlmanKielikoetulosta.getValintaperuste(), uuid);
+
+        ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid("1.2.246.562.5.2013080813081926341927", "1.2.246.562.11.00000304421");
+
+        assertEquals(1, osallistuminen.getHakutoiveet().size());
+
+        Hakutoive osallistumisenHakutoiveJohonOnKielikoe = osallistuminen.getHakutoiveet().get(0);
+        ValintakoeValinnanvaihe kielikokeenPakollisuusVaihe = osallistumisenHakutoiveJohonOnKielikoe.getValinnanVaiheet().get(0);
+        assertEquals(1, kielikokeenPakollisuusVaihe.getValintakokeet().size());
+
+        Valintakoe kielikoetulos = kielikokeenPakollisuusVaihe.getValintakokeet().get(0);
+        OsallistuminenTulos kielikoetulosOsallistuminenTulos = kielikoetulos.getOsallistuminenTulos();
+
+        assertThat(kielikoetulosOsallistuminenTulos, having(on(OsallistuminenTulos.class).getOsallistuminen(), equalTo(EI_OSALLISTU)));
+        assertThat(kielikoetulosOsallistuminenTulos, having(on(OsallistuminenTulos.class).getLaskentaTulos(), equalTo(false)));
+        assertThat(kielikoetulosOsallistuminenTulos, having(on(OsallistuminenTulos.class).getLaskentaTila(), equalTo(HYVAKSYTTAVISSA.name())));
+    }
+
     private <T> T readJson(String pathInClasspath, TypeToken<T> typeToken) throws IOException {
         return new Gson().fromJson(IOUtils.toString(new ClassPathResource(pathInClasspath).getInputStream()), typeToken.getType());
     }
@@ -720,4 +773,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
     }
 
+    private void setValueOnCombinedHakemusData(HakemusDTO hakemus, String avain, String arvo) {
+        hakemus.getAvaimet().stream().filter(a -> a.getAvain().equals(avain)).forEach(a -> a.setArvo(arvo));
+    }
 }
