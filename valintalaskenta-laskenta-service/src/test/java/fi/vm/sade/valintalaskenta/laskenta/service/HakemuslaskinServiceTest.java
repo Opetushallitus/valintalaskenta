@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
-import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -65,7 +64,8 @@ public class HakemuslaskinServiceTest {
     @Test
     public void test() {
         final String[] hakukohteet = {"hakukohdeOid1", "hakukohdeOid2", "hakukohdeOid3"};
-        final Hakukohde laskettavaHakukohde = new Hakukohde(hakukohteet[0], new HashMap<>());
+        final boolean korkeakouluhaku = false;
+        final Hakukohde laskettavaHakukohde = new Hakukohde(hakukohteet[0], new HashMap<>(), korkeakouluhaku);
         final String hakemusOid = "hakemusOid1";
         final String hakijaOid = "hakijaOid1";
         final boolean harkinnanvaraisuus = false;

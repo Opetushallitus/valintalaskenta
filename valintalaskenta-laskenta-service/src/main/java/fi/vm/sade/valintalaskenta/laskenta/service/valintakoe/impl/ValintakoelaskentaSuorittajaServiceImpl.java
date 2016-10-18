@@ -86,7 +86,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
     }
 
     @Override
-    public void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet, String uuid, ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset) {
+    public void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet, String uuid, ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset, boolean korkeakouluhaku) {
         LOG.info("(Uuid={}) Laskentaan valintakoeosallistumiset hakemukselle {}", uuid, hakemus.getHakemusoid());
         if (valintaperusteet.size() == 0) {
             return;
@@ -113,7 +113,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                             continue;
                         }
                         Valinnanvaihe viimeisinValinnanVaihe = getViimeisinValinnanvaihe(vp, vaihe, edellinenVaihe);
-                        OsallistuminenTulos osallistuminen = getOsallistuminenTulos(hakemus, vp, hakukohteenValintaperusteet, koe, viimeisinValinnanVaihe);
+                        OsallistuminenTulos osallistuminen = getOsallistuminenTulos(hakemus, vp, hakukohteenValintaperusteet, koe, viimeisinValinnanVaihe, korkeakouluhaku);
                         HakukohdeValintakoeData data = getHakukohdeValintakoeData(hakemus, uuid, vp, vaihe, koe, tunniste);
                         data.setOsallistuminenTulos(osallistuminen);
                         valintakoeData.get(tunniste).add(data);
@@ -258,7 +258,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         return viimeisinValinnanVaihe;
     }
 
-    private OsallistuminenTulos getOsallistuminenTulos(HakemusDTO hakemus, ValintaperusteetDTO vp, Map<String, String> hakukohteenValintaperusteet, ValintakoeDTO koe, Valinnanvaihe viimeisinValinnanVaihe) {
+    private OsallistuminenTulos getOsallistuminenTulos(HakemusDTO hakemus, ValintaperusteetDTO vp, Map<String, String> hakukohteenValintaperusteet, ValintakoeDTO koe, Valinnanvaihe viimeisinValinnanVaihe, boolean korkeakouluhaku) {
         OsallistuminenTulos osallistuminen = new OsallistuminenTulos();
         Hakemus hak = hakemusConverter.convert(hakemus);
         Funktiokutsu fuk = modelMapper.map(koe.getFunktiokutsu(), Funktiokutsu.class);
@@ -268,7 +268,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                 if (koe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA)) {
                     osallistuminen = createOsallistuminen(tilaJaSelite, Osallistuminen.OSALLISTUU);
                 } else {
-                    osallistuminen = getOsallistuminenTulos(new Hakukohde(vp.getHakukohdeOid(), hakukohteenValintaperusteet), hak, fuk);
+                    osallistuminen = getOsallistuminenTulos(new Hakukohde(vp.getHakukohdeOid(), hakukohteenValintaperusteet, korkeakouluhaku), hak, fuk);
                 }
             } else {
                 osallistuminen = createOsallistuminen(tilaJaSelite, Osallistuminen.EI_OSALLISTU);
@@ -277,7 +277,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
             if (koe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA)) {
                 osallistuminen.setOsallistuminen(Osallistuminen.OSALLISTUU);
             } else {
-                osallistuminen = getOsallistuminenTulos(new Hakukohde(vp.getHakukohdeOid(), hakukohteenValintaperusteet), hak, fuk);
+                osallistuminen = getOsallistuminenTulos(new Hakukohde(vp.getHakukohdeOid(), hakukohteenValintaperusteet, korkeakouluhaku), hak, fuk);
             }
         }
         return osallistuminen;

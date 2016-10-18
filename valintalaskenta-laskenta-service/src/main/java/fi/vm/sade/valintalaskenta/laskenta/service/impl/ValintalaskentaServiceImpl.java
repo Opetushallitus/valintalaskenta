@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.laskenta.service.impl;
 import static fi.vm.sade.sijoittelu.tulos.dto.HakemuksenTila.PERUUNTUNUT;
 import static fi.vm.sade.sijoittelu.tulos.dto.HakemuksenTila.VARALLA;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetHakijaryhmaDTO;
@@ -42,7 +43,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 
     @Override
     public String laske(List<HakemusDTO> hakemus, List<ValintaperusteetDTO> valintaperuste, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
-                        String hakukohdeOid, String uuid) throws RuntimeException {
+                        String hakukohdeOid, String uuid, boolean korkeakouluhaku) throws RuntimeException {
         if (hakemus == null) {
             LOG.error("Hakemukset tuli nullina hakukohteelle {}", hakukohdeOid);
         }
@@ -53,7 +54,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
             throw new RuntimeException("Hakemukset == null? " + (hakemus == null) + ", valintaperusteet == null? " + (valintaperuste == null) + " hakukohteelle " + hakukohdeOid);
         }
         try {
-            valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste, hakijaryhmat, hakukohdeOid, uuid);
+            valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste, hakijaryhmat, hakukohdeOid, uuid, korkeakouluhaku);
             return "Onnistui!";
         } catch (Exception e) {
             LOG.error("Valintalaskennassa tapahtui virhe hakukohteelle " + hakukohdeOid, e);
@@ -62,9 +63,9 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     }
 
     @Override
-    public String valintakokeet(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperuste, String uuid, ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset) throws RuntimeException {
+    public String valintakokeet(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperuste, String uuid, ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset, boolean korkeakouluhaku) throws RuntimeException {
         try {
-            valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste, uuid, kumulatiivisetTulokset);
+            valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste, uuid, kumulatiivisetTulokset, korkeakouluhaku);
             return "Onnistui!";
         } catch (Exception e) {
             LOG.error("Valintakoevaihe epäonnistui", e);
@@ -74,16 +75,16 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 
     @Override
     public String laskeKaikki(List<HakemusDTO> hakemus, List<ValintaperusteetDTO> valintaperuste, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
-                              String hakukohdeOid, String uuid) throws RuntimeException {
+                              String hakukohdeOid, String uuid, boolean korkeakouluhaku) throws RuntimeException {
         valintaperuste.sort((o1, o2) -> o1.getValinnanVaihe().getValinnanVaiheJarjestysluku() - o2.getValinnanVaihe().getValinnanVaiheJarjestysluku());
 
         ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset = new ValintakoelaskennanKumulatiivisetTulokset();
         valintaperuste.stream().forEachOrdered(peruste -> {
             if (peruste.getValinnanVaihe().getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
                 LOG.info("Suoritetaan valinnanvaiheen {} valintakoelaskenta {} hakemukselle", peruste.getValinnanVaihe().getValinnanVaiheOid(), hakemus.size());
-                hakemus.forEach(h -> valintakokeet(h, asList(peruste), uuid, kumulatiivisetTulokset));
+                hakemus.forEach(h -> valintakokeet(h, singletonList(peruste), uuid, kumulatiivisetTulokset, korkeakouluhaku));
             } else {
-                laske(hakemus, asList(peruste), hakijaryhmat, hakukohdeOid, uuid);
+                laske(hakemus, singletonList(peruste), hakijaryhmat, hakukohdeOid, uuid, korkeakouluhaku);
             }
         });
         return "Onnistui!";

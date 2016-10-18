@@ -14,6 +14,7 @@ public class LaskeDTO {
     private final List<HakemusDTO> hakemus;
     private final List<ValintaperusteetDTO> valintaperuste;
     private final List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat;
+    private final boolean korkeakouluhaku;
 
     public LaskeDTO() {
         this.uuid = null;
@@ -21,27 +22,30 @@ public class LaskeDTO {
         this.valintaperuste = Collections.emptyList();
         this.hakukohdeOid = StringUtils.EMPTY;
         this.hakijaryhmat = Collections.emptyList();
+        this.korkeakouluhaku = false;
         this.erillishaku = false;
     }
 
-    public LaskeDTO(String uuid, boolean erillishaku, String hakukohdeOid,
-            List<HakemusDTO> hakemus, List<ValintaperusteetDTO> valintaperuste) {
+    public LaskeDTO(String uuid, boolean korkeakouluhaku, boolean erillishaku, String hakukohdeOid,
+                    List<HakemusDTO> hakemus, List<ValintaperusteetDTO> valintaperuste) {
         this.uuid = uuid;
         this.hakukohdeOid = hakukohdeOid;
         this.hakemus = hakemus != null ? hakemus : Collections.<HakemusDTO>emptyList();
         this.valintaperuste = valintaperuste != null ? valintaperuste : Collections.<ValintaperusteetDTO>emptyList();
         this.hakijaryhmat = Collections.emptyList();
+        this.korkeakouluhaku = korkeakouluhaku;
         this.erillishaku = erillishaku;
     }
 
-    public LaskeDTO(String uuid, boolean erillishaku, String hakukohdeOid,
-            List<HakemusDTO> hakemus, List<ValintaperusteetDTO> valintaperuste,
-            List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat) {
+    public LaskeDTO(String uuid, boolean korkeakouluhaku, boolean erillishaku, String hakukohdeOid,
+                    List<HakemusDTO> hakemus, List<ValintaperusteetDTO> valintaperuste,
+                    List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat) {
         this.uuid = uuid;
         this.hakukohdeOid = hakukohdeOid;
         this.hakemus = hakemus != null ? hakemus : Collections.<HakemusDTO>emptyList();
         this.valintaperuste = valintaperuste != null ? valintaperuste : Collections.<ValintaperusteetDTO>emptyList();
         this.hakijaryhmat = hakijaryhmat != null ? hakijaryhmat : Collections.<ValintaperusteetHakijaryhmaDTO>emptyList();
+        this.korkeakouluhaku = korkeakouluhaku;
         this.erillishaku = erillishaku;
     }
 
@@ -69,4 +73,7 @@ public class LaskeDTO {
         return erillishaku;
     }
 
+    public boolean isKorkeakouluhaku() {
+        return korkeakouluhaku;
+    }
 }

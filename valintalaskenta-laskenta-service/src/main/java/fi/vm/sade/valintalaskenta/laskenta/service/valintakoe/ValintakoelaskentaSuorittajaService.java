@@ -7,5 +7,5 @@ import fi.vm.sade.valintalaskenta.laskenta.resource.ValintakoelaskennanKumulatii
 import java.util.List;
 
 public interface ValintakoelaskentaSuorittajaService {
-    void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet, String uuid, ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset);
+    void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet, String uuid, ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset, boolean korkeakouluhaku);
 }

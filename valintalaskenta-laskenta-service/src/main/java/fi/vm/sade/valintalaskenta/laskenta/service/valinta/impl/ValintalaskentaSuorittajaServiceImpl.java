@@ -62,7 +62,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     private EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija;
 
     @Override
-    public void suoritaLaskenta(List<HakemusDTO> kaikkiHakemukset, List<ValintaperusteetDTO> valintaperusteet, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat, String hakukohdeOid, String uuid) {
+    public void suoritaLaskenta(List<HakemusDTO> kaikkiHakemukset, List<ValintaperusteetDTO> valintaperusteet, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat, String hakukohdeOid, String uuid, boolean korkeakouluhaku) {
         Map<String, Hakemukset> hakemuksetHakukohteittain = jarjestaHakemuksetHakukohteittain(kaikkiHakemukset);
         jarjestaValinnanVaiheenJarjestysluvunMukaan(valintaperusteet);
 
@@ -98,13 +98,13 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
             ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
 
-            laskeValintatapajonot(hakukohdeOid, uuid, hakemukset, laskentahakemukset, hakukohteenValintaperusteet, vaihe, jarjestysnumero, edellinenVaihe, viimeisinVaihe, valinnanvaihe, edellinenOsallistuminen);
+            laskeValintatapajonot(hakukohdeOid, uuid, hakemukset, laskentahakemukset, hakukohteenValintaperusteet, vaihe, jarjestysnumero, edellinenVaihe, viimeisinVaihe, valinnanvaihe, edellinenOsallistuminen, korkeakouluhaku);
             valinnanvaiheDAO.saveOrUpdate(valinnanvaihe);
         }
 
         poistaHaamuryhmat(hakijaryhmat, valintaperusteet.get(0).getHakukohdeOid());
         LOG.info("(Uuid={}) Hakijaryhmien määrä {} hakukohteessa {}", uuid, hakijaryhmat.size(), hakukohdeOid);
-        laskeHakijaryhmat(valintaperusteet, hakijaryhmat, hakukohdeOid, uuid, hakemuksetHakukohteittain);
+        laskeHakijaryhmat(valintaperusteet, hakijaryhmat, hakukohdeOid, uuid, hakemuksetHakukohteittain, korkeakouluhaku);
     }
 
     private boolean emptyHakemuksetOrValinnanVaiheTyyppiValintakoe(ValintaperusteetDTO vp, List<HakemusWrapper> hakemukset) {
@@ -138,7 +138,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         return viimeisinVaihe;
     }
 
-    private void laskeHakijaryhmat(List<ValintaperusteetDTO> valintaperusteet, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat, String hakukohdeOid, String uuid, Map<String, Hakemukset> hakemuksetHakukohteittain) {
+    private void laskeHakijaryhmat(List<ValintaperusteetDTO> valintaperusteet, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat, String hakukohdeOid, String uuid, Map<String, Hakemukset> hakemuksetHakukohteittain, boolean korkeakouluhaku) {
         if (!hakijaryhmat.isEmpty()) {
             hakijaryhmat.parallelStream().forEach(h -> {
                 if (!hakemuksetHakukohteittain.containsKey(hakukohdeOid)) {
@@ -175,7 +175,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                     LOG.debug("hakemus {}", new Object[]{hw.getHakemusDTO().getHakemusoid()});
                     if (lukuarvofunktio.isPresent()) {
                         hakemuslaskinService.suoritaHakijaryhmaLaskentaHakemukselle(
-                                new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet),
+                                new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet, korkeakouluhaku),
                                 hw,
                                 laskentahakemukset,
                                 lukuarvofunktio.get(),
@@ -183,7 +183,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                         );
                     } else {
                         hakemuslaskinService.suoritaHakijaryhmaLaskentaHakemukselle(
-                                new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet),
+                                new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet, korkeakouluhaku),
                                 hw,
                                 laskentahakemukset,
                                 totuusarvofunktio.get(),
@@ -225,7 +225,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         return jonosija;
     }
 
-    private void laskeValintatapajonot(String hakukohdeOid, String uuid, List<HakemusWrapper> hakemukset, List<Hakemus> laskentahakemukset, Map<String, String> hakukohteenValintaperusteet, ValintaperusteetValinnanVaiheDTO vaihe, int jarjestysnumero, Valinnanvaihe edellinenVaihe, Valinnanvaihe viimeisinVaihe, Valinnanvaihe valinnanvaihe, ValintakoeOsallistuminen edellinenOsallistuminen) {
+    private void laskeValintatapajonot(String hakukohdeOid, String uuid, List<HakemusWrapper> hakemukset, List<Hakemus> laskentahakemukset, Map<String, String> hakukohteenValintaperusteet, ValintaperusteetValinnanVaiheDTO vaihe, int jarjestysnumero, Valinnanvaihe edellinenVaihe, Valinnanvaihe viimeisinVaihe, Valinnanvaihe valinnanvaihe, ValintakoeOsallistuminen edellinenOsallistuminen, boolean korkeakouluhaku) {
         for (ValintatapajonoJarjestyskriteereillaDTO j : vaihe.getValintatapajono()) {
             if (j.getKaytetaanValintalaskentaa() == null || j.getKaytetaanValintalaskentaa()) {
                 Valintatapajono jono = createValintatapajono(j);
@@ -250,7 +250,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
                         if (lukuarvofunktio.isPresent()) {
                             hakemuslaskinService.suoritaLaskentaHakemukselle(
-                                    new Hakukohde(hakukohdeOid,hakukohteenValintaperusteet),
+                                    new Hakukohde(hakukohdeOid,hakukohteenValintaperusteet, korkeakouluhaku),
                                     hw,
                                     laskentahakemukset,
                                     lukuarvofunktio.get(),
@@ -261,7 +261,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                             );
                         } else {
                             hakemuslaskinService.suoritaLaskentaHakemukselle(
-                                    new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet),
+                                    new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet, korkeakouluhaku),
                                     hw,
                                     laskentahakemukset,
                                     totuusarvofunktio.get(),

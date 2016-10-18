@@ -39,6 +39,8 @@ public class ValintakoeosallistumislaskinTest {
     private LaskentaService laskentaServiceMock;
     private LaskentadomainkonvertteriWrapper laskentadomainkonvertteriWrapperMock;
 
+    private final boolean korkeakouluhaku = false;
+
     private Map<String, String> suomenkielinenMap(String teksti) {
         Map<String, String> vastaus = new HashMap<>();
         vastaus.put("FI", teksti);
@@ -79,7 +81,7 @@ public class ValintakoeosallistumislaskinTest {
     @Test
     public void testTilaHyvaksyttavissaTrue() {
         final String hakukohdeOid = "hakukohdeOid1";
-        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>());
+        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>(), korkeakouluhaku);
 
         valmisteleStubit(hakukohde, new Hyvaksyttavissatila(), true);
 
@@ -91,7 +93,7 @@ public class ValintakoeosallistumislaskinTest {
     @Test
     public void testTilaHyvaksyttavissaFalse() {
         final String hakukohdeOid = "hakukohdeOid1";
-        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>());
+        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>(), korkeakouluhaku);
 
         valmisteleStubit(hakukohde, new Hyvaksyttavissatila(), false);
         OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
@@ -102,7 +104,7 @@ public class ValintakoeosallistumislaskinTest {
     @Test
     public void testTilaHylattyFalse() {
         final String hakukohdeOid = "hakukohdeOid1";
-        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>());
+        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>(), korkeakouluhaku);
 
         valmisteleStubit(hakukohde, new Hylattytila(suomenkielinenMap("kuvaus"), new PakollinenValintaperusteHylkays("")), false);
         OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
@@ -113,7 +115,7 @@ public class ValintakoeosallistumislaskinTest {
     @Test
     public void testTilaHylattyTrue() {
         final String hakukohdeOid = "hakukohdeOid1";
-        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>());
+        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>(), korkeakouluhaku);
 
         valmisteleStubit(hakukohde, new Hylattytila(suomenkielinenMap("kuvaus"), new PakollinenValintaperusteHylkays("")), true);
         OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
@@ -124,7 +126,7 @@ public class ValintakoeosallistumislaskinTest {
     @Test
     public void testTilaVirheTrue() {
         final String hakukohdeOid = "hakukohdeOid1";
-        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>());
+        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>(), korkeakouluhaku);
 
         valmisteleStubit(hakukohde, new Virhetila(suomenkielinenMap("kuvaus"), new ArvokonvertointiVirhe("")), true);
         OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
@@ -135,7 +137,7 @@ public class ValintakoeosallistumislaskinTest {
     @Test
     public void testTilaVirheFalse() {
         final String hakukohdeOid = "hakukohdeOid1";
-        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>());
+        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>(), korkeakouluhaku);
 
         valmisteleStubit(hakukohde, new Virhetila(suomenkielinenMap("kuvaus"), new ArvokonvertointiVirhe("")), false);
         OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(

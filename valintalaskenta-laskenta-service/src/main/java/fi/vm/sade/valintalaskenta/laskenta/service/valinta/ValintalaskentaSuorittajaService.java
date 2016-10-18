@@ -12,5 +12,5 @@ public interface ValintalaskentaSuorittajaService {
                          List<ValintaperusteetDTO> valintaperusteet,
                          List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
                          String hakukohdeOid,
-                         String uuid);
+                         String uuid, boolean korkeakouluhaku);
 }

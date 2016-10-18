@@ -70,6 +70,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     private ValintalaskentaModelMapper modelMapperMock;
 
     private HakemusDTOToHakemusConverter hakemusConverterMock;
+    private boolean korkeakouluhaku = false;
 
     private ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset = new ValintakoelaskennanKumulatiivisetTulokset();
 
@@ -118,7 +119,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
             .thenReturn(osallistuminenTulos);
 
         ArgumentCaptor<ValintakoeOsallistuminen> captor = ArgumentCaptor.forClass(ValintakoeOsallistuminen.class);
-        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(valintaperusteet1), uuid, kumulatiivisetTulokset);
+        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(valintaperusteet1), uuid, kumulatiivisetTulokset, korkeakouluhaku);
         verify(valintakoeOsallistuminenDAOMock, times(1)).createOrUpdate(captor.capture());
 
         ValintakoeOsallistuminen osallistuminen = captor.getValue();
@@ -155,7 +156,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
             any(Hakukohde.class), any(Hakemus.class), any(Funktiokutsu.class)))
             .thenReturn(osallistuminenTulos);
 
-        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(valintaperusteet1), uuid, kumulatiivisetTulokset);
+        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(valintaperusteet1), uuid, kumulatiivisetTulokset, korkeakouluhaku);
         verify(valintakoeOsallistuminenDAOMock, times(0)).createOrUpdate(any(ValintakoeOsallistuminen.class));
 
         verify(valintakoeosallistumislaskinMock, times(0)).laskeOsallistuminenYhdelleHakukohteelle(any(Hakukohde.class),
@@ -189,7 +190,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(any(Hakukohde.class), any(Hakemus.class), any(Funktiokutsu.class)))
             .thenReturn(osallistuminenTulos);
 
-        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(valintaperusteet1), uuid, kumulatiivisetTulokset);
+        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(valintaperusteet1), uuid, kumulatiivisetTulokset, korkeakouluhaku);
         verify(valintakoeOsallistuminenDAOMock, times(0)).createOrUpdate(any(ValintakoeOsallistuminen.class));
     }
 
@@ -267,7 +268,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         valintaperusteet.add(valintaperusteet1);
         valintaperusteet.add(valintaperusteet2);
 
-        valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid, kumulatiivisetTulokset);
+        valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid, kumulatiivisetTulokset, korkeakouluhaku);
         verify(valintakoeOsallistuminenDAOMock, times(1)).createOrUpdate(captor.capture());
 
         ValintakoeOsallistuminen osallistuminen = captor.getValue();
@@ -359,7 +360,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         valintaperusteet.add(valintaperusteet1);
         valintaperusteet.add(valintaperusteet2);
 
-        valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid, kumulatiivisetTulokset);
+        valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid, kumulatiivisetTulokset, korkeakouluhaku);
         verify(valintakoeOsallistuminenDAOMock, times(1)).createOrUpdate(captor.capture());
 
         ValintakoeOsallistuminen osallistuminen = captor.getValue();
@@ -428,7 +429,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         valintaperusteet.add(valintaperusteet1);
         valintaperusteet.add(valintaperusteet2);
 
-        valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid, kumulatiivisetTulokset);
+        valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid, kumulatiivisetTulokset, korkeakouluhaku);
         verify(valintakoeOsallistuminenDAOMock, times(1)).createOrUpdate(captor.capture());
 
         ValintakoeOsallistuminen osallistuminen = captor.getValue();
