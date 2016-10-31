@@ -24,6 +24,10 @@
             <artifactId>mockito-all</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.baev</groupId>
+            <artifactId>hamcrest-optional</artifactId>
+        </dependency>
         <!-- Internal -->
         <dependency>
             <groupId>fi.vm.sade.valintaperusteet</groupId>
