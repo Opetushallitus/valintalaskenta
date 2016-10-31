@@ -4,6 +4,7 @@ import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA;
+import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.EI_OSALLISTU;
 import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.OSALLISTUU;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
@@ -19,14 +20,23 @@ import fi.vm.sade.service.valintaperusteet.dto.FunktiokutsuDTO;
 import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
 import fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
+import fi.vm.sade.valintalaskenta.domain.resource.ValintalaskentaResource;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
+import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
+import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource;
+import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource;
+import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
+import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
+import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
 import org.apache.commons.io.IOUtils;
+import org.hamcrest.Matchers;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -46,16 +56,14 @@ import java.io.IOException;
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners(listeners = {DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class})
-public class ValintakoelaskentaSuorittajaServiceIntegrationBug870Test {
-    private final String uuid = null;
+public class ValintalaskentaResourceIntegrationBug870Test {
     @Rule
     public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
 
     @Autowired
     private ApplicationContext applicationContextThatNeedsToBeAutowiredToBeIntialised;
 
-    @Autowired
-    private ValintakoelaskentaSuorittajaService valintakoelaskentaSuorittajaService;
+    private ValintalaskentaResourceImpl valintalaskentaResource;
 
     @Autowired
     private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
@@ -84,12 +92,27 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationBug870Test {
         }
     }
 
+    @Autowired
+    private ValintalaskentaService valintalaskentaService;
+    @Autowired
+    private ValisijoitteluKasittelija valisijoitteluKasittelija;
+
+    private ValiSijoitteluResource valisijoitteluResource = null;
+    private ErillisSijoitteluResource erillisSijoitteluResource = null;
+    private ValintaperusteetValintatapajonoResource valintatapajonoResource = null;
+
+    @Before
+    public void initResource() {
+        valintalaskentaResource = new ValintalaskentaResourceImpl(valintalaskentaService, valisijoitteluKasittelija,
+            valisijoitteluResource, erillisSijoitteluResource, valintatapajonoResource);
+    }
+
     @Test
     @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
     public void kielikokeeseenKutsutaanJosSuoritustaTaiTodennettuaKielitaitoaEiLoydyKunValintakoevaiheitaOnYksi() throws JsonSyntaxException, IOException {
         LaskeDTO laskeDtoYhdenKoekutsunKanssa = readJson("laskeDTOYhdenKoekutsuVaiheenKanssa.json", new TypeToken<LaskeDTO>() {});
 
-        valintakoelaskentaSuorittajaService.laske(laskeDtoYhdenKoekutsunKanssa.getHakemus().get(0), laskeDtoYhdenKoekutsunKanssa.getValintaperuste(), uuid);
+        valintalaskentaResource.laskeKaikki(laskeDtoYhdenKoekutsunKanssa);
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid("1.2.246.562.29.14662042044", "1.2.246.562.11.00000003337");
 
@@ -110,11 +133,11 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationBug870Test {
 
     @Test
     @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
-    @Ignore // TODO fix BUG-870
+    @Ignore
     public void kielikokeeseenKutsutaanJosSuoritustaTaiTodennettuaKielitaitoaEiLoydyVaikkaValintakoevaiheitaOlisiUseampia() throws JsonSyntaxException, IOException {
         LaskeDTO laskeDtoUseammanKoekutsunKanssa = readJson("laskeDTOUseammanKoekutsuVaiheenKanssa.json", new TypeToken<LaskeDTO>() {});
 
-        valintakoelaskentaSuorittajaService.laske(laskeDtoUseammanKoekutsunKanssa.getHakemus().get(0), laskeDtoUseammanKoekutsunKanssa.getValintaperuste(), uuid);
+        valintalaskentaResource.laskeKaikki(laskeDtoUseammanKoekutsunKanssa);
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid("1.2.246.562.29.14662042044", "1.2.246.562.11.00000003337");
 
@@ -122,7 +145,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationBug870Test {
 
         Hakutoive osallistumisenHakutoiveJohonOnKielikoe = osallistuminen.getHakutoiveet().get(0);
         ValintakoeValinnanvaihe kielikokeenPakollisuusVaihe = osallistumisenHakutoiveJohonOnKielikoe.getValinnanVaiheet().get(0);
-        assertEquals(2, kielikokeenPakollisuusVaihe.getValintakokeet().size());
+        assertThat(kielikokeenPakollisuusVaihe.getValintakokeet(), Matchers.hasSize(2));
 
         Valintakoe kielikoetulos = kielikokeenPakollisuusVaihe.getValintakokeet().get(0);
         OsallistuminenTulos kielikoetulosOsallistuminenTulos = kielikoetulos.getOsallistuminenTulos();
@@ -132,8 +155,8 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationBug870Test {
         assertThat(kielikoetulosOsallistuminenTulos, having(on(OsallistuminenTulos.class).getLaskentaTila(), equalTo(HYVAKSYTTAVISSA.name())));
 
         OsallistuminenTulos toisenKokeenOsallistuminenTulos = kielikokeenPakollisuusVaihe.getValintakokeet().get(1).getOsallistuminenTulos();
-        assertThat(toisenKokeenOsallistuminenTulos, having(on(OsallistuminenTulos.class).getOsallistuminen(), equalTo(OSALLISTUU)));
-        assertThat(toisenKokeenOsallistuminenTulos, having(on(OsallistuminenTulos.class).getLaskentaTulos(), equalTo(true)));
+        assertThat(toisenKokeenOsallistuminenTulos, having(on(OsallistuminenTulos.class).getOsallistuminen(), equalTo(EI_OSALLISTU)));
+        assertThat(toisenKokeenOsallistuminenTulos, having(on(OsallistuminenTulos.class).getLaskentaTulos(), equalTo(false)));
         assertThat(toisenKokeenOsallistuminenTulos, having(on(OsallistuminenTulos.class).getLaskentaTila(), equalTo(HYVAKSYTTAVISSA.name())));
     }
 

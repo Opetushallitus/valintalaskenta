@@ -279,10 +279,6 @@
           "arvo": "NOT_CHECKED"
         },
         {
-          "avain": "kielikoe_fi-OSALLISTUMINEN",
-          "arvo": "OSALLISTUI"
-        },
-        {
           "avain": "preference1-Koulutus-educationDegree",
           "arvo": "koulutusasteoph2002_32"
         },
@@ -577,10 +573,6 @@
         {
           "avain": "PK_TE",
           "arvo": "10"
-        },
-        {
-          "avain": "kielikoe_fi",
-          "arvo": "false"
         },
         {
           "avain": "preference4-Koulutus-id-lang",

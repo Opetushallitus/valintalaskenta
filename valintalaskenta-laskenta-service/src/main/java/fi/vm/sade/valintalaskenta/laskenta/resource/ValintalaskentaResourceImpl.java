@@ -32,21 +32,23 @@ import javax.ws.rs.Produces;
 @Path("valintalaskenta")
 public class ValintalaskentaResourceImpl {
     private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaResourceImpl.class);
-    @Autowired
-    private ValintalaskentaService valintalaskentaService;
+
+    private final ValintalaskentaService valintalaskentaService;
+    private final ValisijoitteluKasittelija valisijoitteluKasittelija;
+    private final ValiSijoitteluResource valiSijoitteluResource;
+    private final ErillisSijoitteluResource erillisSijoitteluResource;
+    private final ValintaperusteetValintatapajonoResource valintatapajonoResource;
 
     @Autowired
-    private ValisijoitteluKasittelija valisijoitteluKasittelija;
-
-    @Autowired
-    private ValiSijoitteluResource valiSijoitteluResource;
-
-    @Autowired
-    private ErillisSijoitteluResource erillisSijoitteluResource;
-
-    @Autowired
-    private ValintaperusteetValintatapajonoResource valintatapajonoResource;
-
+    public ValintalaskentaResourceImpl(ValintalaskentaService valintalaskentaService, ValisijoitteluKasittelija valisijoitteluKasittelija,
+                                       ValiSijoitteluResource valiSijoitteluResource, ErillisSijoitteluResource erillisSijoitteluResource,
+                                       ValintaperusteetValintatapajonoResource valintatapajonoResource) {
+        this.valintalaskentaService = valintalaskentaService;
+        this.valisijoitteluKasittelija = valisijoitteluKasittelija;
+        this.valiSijoitteluResource = valiSijoitteluResource;
+        this.erillisSijoitteluResource = erillisSijoitteluResource;
+        this.valintatapajonoResource = valintatapajonoResource;
+    }
 
     @Path("laske")
     @Consumes("application/json")
