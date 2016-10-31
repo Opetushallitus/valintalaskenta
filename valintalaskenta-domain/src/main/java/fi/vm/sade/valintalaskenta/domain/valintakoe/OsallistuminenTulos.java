@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.mongodb.morphia.annotations.Embedded;
 
 import java.util.Map;
@@ -50,5 +51,10 @@ public class OsallistuminenTulos {
 
     public void setTekninenKuvaus(String tekninenKuvaus) {
         this.tekninenKuvaus = tekninenKuvaus;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }
