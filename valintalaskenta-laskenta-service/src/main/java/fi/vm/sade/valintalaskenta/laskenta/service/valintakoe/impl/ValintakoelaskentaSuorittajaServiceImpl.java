@@ -18,6 +18,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.HakemusDTOToHakemusConverter;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,8 +89,10 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
             return;
         }
         final Map<String, HakukohdeDTO> hakutoiveetByOid = luoHakutoiveMap(hakemus.getHakukohteet());
+        LOG.debug(String.format("Hakijan %s hakemukselle hakutoiveetByOid.size() == %d", hakemus.getHakijaOid(), hakutoiveetByOid.size()));
         Map<String, List<HakukohdeValintakoeData>> valintakoeData = new HashMap<>();
         poistaVanhatOsallistumiset(hakemus, valintaperusteet);
+        LOG.debug(String.format("Hakijan %s hakemukselle valintaperusteet.size() == %d", hakemus.getHakijaOid(), valintaperusteet.size()));
         for (ValintaperusteetDTO vp : valintaperusteet) {
             Map<String, String> hakukohteenValintaperusteet = muodostaHakukohteenValintaperusteetMap(vp.getHakukohteenValintaperuste());
             if (hakutoiveetByOid.containsKey(vp.getHakukohdeOid()) && !vp.getValinnanVaihe().getValintakoe().isEmpty()) {
@@ -119,8 +122,11 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         for (Map.Entry<String, List<HakukohdeValintakoeData>> entry : valintakoeData.entrySet()) {
             List<HakukohdeValintakoeData> kokeet = entry.getValue();
             List<HakukohdeValintakoeData> olemassaOlevat = new ArrayList<>();
+            LOG.debug(String.format("Käsitellään %d koetta", kokeet.size()));
             for (HakukohdeValintakoeData c : kokeet) {
-                osallistumisetByHaku.putIfAbsent(c.getHakuOid(), luoValintakoeOsallistuminen(c, hakemus, hakutoiveetByOid));
+                ValintakoeOsallistuminen valintakoeOsallistuminen = luoValintakoeOsallistuminen(c, hakemus, hakutoiveetByOid);
+                LOG.debug(String.format("\tvalintakoeOsallistuminen == %s", ToStringBuilder.reflectionToString(valintakoeOsallistuminen)));
+                osallistumisetByHaku.putIfAbsent(c.getHakuOid(), valintakoeOsallistuminen);
                 olemassaOlevat.add(c);
                 addValintaKokeetByMatchingTunnisteAndDifferentValintakoeOid(osallistumisetByHaku, olemassaOlevat, c);
             }
@@ -131,8 +137,30 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
             }
         }
         for (ValintakoeOsallistuminen osallistuminen : osallistumisetByHaku.values()) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(String.format("Tallennetaan %s (hakutoiveet: %s)", ToStringBuilder.reflectionToString(osallistuminen),
+                    osallistuminen.getHakutoiveet().stream().map(ToStringBuilder::reflectionToString).collect(Collectors.toList())));
+                debugLogitaKoetiedot(osallistuminen);
+            }
             valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen);
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Tallentamisen jälkeen:");
+                ValintakoeOsallistuminen tallennettuOsallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakemus.getHakuoid(), hakemus.getHakemusoid());
+                debugLogitaKoetiedot(tallennettuOsallistuminen);
         }
+        }
+    }
+
+    private void debugLogitaKoetiedot(ValintakoeOsallistuminen osallistuminen) {
+        osallistuminen.getHakutoiveet().forEach(hakutoive -> {
+            LOG.debug(String.format("\thakutoive %s : ", hakutoive.getHakukohdeOid()));
+            hakutoive.getValinnanVaiheet().forEach(valintakoeValinnanvaihe -> {
+                LOG.debug(String.format("\t\tvalinnanvaihe %s : ", valintakoeValinnanvaihe.getValinnanVaiheOid()));
+                valintakoeValinnanvaihe.getValintakokeet().forEach(valintakoe ->
+                    LOG.debug(String.format("\t\t\tvalintakoe %s : %s", valintakoe.getValintakoeTunniste(), ToStringBuilder.reflectionToString(valintakoe))));
+            });
+        });
     }
 
     private void addValintaKokeetByMatchingTunnisteAndDifferentValintakoeOid(Map<String, ValintakoeOsallistuminen> osallistumisetByHaku, List<HakukohdeValintakoeData> olemassaOlevat, HakukohdeValintakoeData c) {
@@ -272,6 +300,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                             }
                         });
                     }
+                    LOG.debug(String.format("poistaVanhatOsallistumiset: hakemukselle %s tallennetaan osallistumiset %s (%d hakutoivetta)",
+                        hakemus.getHakemusoid(), ToStringBuilder.reflectionToString(kaikkiOsallistumiset), kaikkiOsallistumiset.getHakutoiveet().size()));
                     valintakoeOsallistuminenDAO.createOrUpdate(kaikkiOsallistumiset);
                 }
             }
