@@ -24,6 +24,7 @@ import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
 import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
+import fi.vm.sade.valintalaskenta.laskenta.resource.ValintakoelaskennanKumulatiivisetTulokset;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.HakemusDTOToHakemusConverter;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import org.hamcrest.BaseMatcher;
@@ -69,6 +70,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     private ValintalaskentaModelMapper modelMapperMock;
 
     private HakemusDTOToHakemusConverter hakemusConverterMock;
+	private ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset = new ValintakoelaskennanKumulatiivisetTulokset();
 
 	@Before
 	public void setUp() {
@@ -140,7 +142,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		ArgumentCaptor<ValintakoeOsallistuminen> captor = ArgumentCaptor
 				.forClass(ValintakoeOsallistuminen.class);
  		valintakoelaskentaSuorittajaService.laske(hakemus,
-                Arrays.asList(valintaperusteet1), uuid);
+                Arrays.asList(valintaperusteet1), uuid, kumulatiivisetTulokset);
 		verify(valintakoeOsallistuminenDAOMock, times(1)).createOrUpdate(
 				captor.capture());
 
@@ -185,7 +187,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 				osallistuminenTulos);
 
 		valintakoelaskentaSuorittajaService.laske(hakemus,
-                Arrays.asList(valintaperusteet1), uuid);
+                Arrays.asList(valintaperusteet1), uuid, kumulatiivisetTulokset);
 		verify(valintakoeOsallistuminenDAOMock, times(0)).createOrUpdate(
 				any(ValintakoeOsallistuminen.class));
 
@@ -229,7 +231,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 				osallistuminenTulos);
 
 		valintakoelaskentaSuorittajaService.laske(hakemus,
-                Arrays.asList(valintaperusteet1), uuid);
+                Arrays.asList(valintaperusteet1), uuid, kumulatiivisetTulokset);
 		verify(valintakoeOsallistuminenDAOMock, times(0)).createOrUpdate(
 				any(ValintakoeOsallistuminen.class));
 
@@ -374,7 +376,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		valintaperusteet.add(valintaperusteet1);
 		valintaperusteet.add(valintaperusteet2);
 
-		valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid);
+		valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid, kumulatiivisetTulokset);
 		verify(valintakoeOsallistuminenDAOMock, times(1)).createOrUpdate(
 				captor.capture());
 
@@ -532,7 +534,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		valintaperusteet.add(valintaperusteet1);
 		valintaperusteet.add(valintaperusteet2);
 
-		valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid);
+		valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid, kumulatiivisetTulokset);
 		verify(valintakoeOsallistuminenDAOMock, times(1)).createOrUpdate(
 				captor.capture());
 
@@ -653,7 +655,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 		valintaperusteet.add(valintaperusteet1);
 		valintaperusteet.add(valintaperusteet2);
 
-		valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid);
+		valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid, kumulatiivisetTulokset);
 		verify(valintakoeOsallistuminenDAOMock, times(1)).createOrUpdate(
 				captor.capture());
 

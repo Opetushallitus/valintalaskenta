@@ -101,7 +101,7 @@ public class ValintalaskentaResourceImpl {
     public String valintakokeet(LaskeDTO laskeDTO) {
         try {
             LOG.info("(Uuid={}) Suoritetaan valintakoelaskenta {} hakemukselle hakukohteessa {}", laskeDTO.getUuid(), laskeDTO.getHakemus().size(), laskeDTO.getHakukohdeOid());
-            laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste(), laskeDTO.getUuid()));
+            laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste(), laskeDTO.getUuid(), new ValintakoelaskennanKumulatiivisetTulokset()));
             LOG.info("(Uuid={}) Valintakoelaskenta suoritettu {} hakemukselle hakukohteessa {}", laskeDTO.getUuid(), laskeDTO.getHakemus().size(), laskeDTO.getHakukohdeOid());
             return "Onnistui";
         } catch (Exception e) {
@@ -145,12 +145,13 @@ public class ValintalaskentaResourceImpl {
                     map.put(v.getValinnanVaihe().getValinnanVaiheJarjestysluku(), dtos);
                 });
 
+                ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset = new ValintakoelaskennanKumulatiivisetTulokset();
                 map.keySet().stream().forEachOrdered(key -> {
                     map.get(key).forEach(dto -> {
                         ValintaperusteetValinnanVaiheDTO valinnanVaihe = dto.getValintaperuste().get(0).getValinnanVaihe();
                         if (valinnanVaihe.getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
                             LOG.info("(Uuid={}) Suoritetaan valintakoelaskenta {} hakemukselle", laskeDTO.getUuid(), laskeDTO.getHakemus().size());
-                            laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, dto.getValintaperuste(), laskeDTO.getUuid()));
+                            laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, dto.getValintaperuste(), laskeDTO.getUuid(), kumulatiivisetTulokset));
                         } else {
                             ValintaperusteetDTO valintaperusteetDTO = dto.getValintaperuste().get(0);
                             boolean erillisHaku = isErillisHaku(laskeDTO, valintaperusteetDTO);
@@ -208,6 +209,7 @@ public class ValintalaskentaResourceImpl {
                 });
             });
             final int valinnanVaiheidenMaara = laskettavatHakukohteetVaiheittain.size();
+            ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset = new ValintakoelaskennanKumulatiivisetTulokset();
             laskettavatHakukohteetVaiheittain.keySet().stream().forEachOrdered(vaiheenJarjestysNumero -> {
 
                 List<LaskeDTO> laskePerValinnanvaihe = laskettavatHakukohteetVaiheittain.get(vaiheenJarjestysNumero);
@@ -226,7 +228,7 @@ public class ValintalaskentaResourceImpl {
                                     i+1,
                                     hakukohteidenMaaraValinnanVaiheessa,
                                     laskeDTO.getHakemus().size());
-                            laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste(), laskeDTO.getUuid()));
+                            laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste(), laskeDTO.getUuid(), kumulatiivisetTulokset));
                         } else {
                             ValintaperusteetDTO valintaperusteetDTO = valintaPerusteet;
                             boolean erillisHaku = isErillisHaku(laskeDTO, valintaperusteetDTO);

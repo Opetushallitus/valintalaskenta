@@ -16,6 +16,7 @@ import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
 import fi.vm.sade.valintalaskenta.domain.dto.AvainArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
+import fi.vm.sade.valintalaskenta.laskenta.resource.ValintakoelaskennanKumulatiivisetTulokset;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.HakemusDTOToHakemusConverter;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -83,7 +84,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
     }
 
     @Override
-    public void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet, String uuid) {
+    public void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet, String uuid, ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset) {
         LOG.info("(Uuid={}) Laskentaan valintakoeosallistumiset hakemukselle {}", uuid, hakemus.getHakemusoid());
         if (valintaperusteet.size() == 0) {
             return;
@@ -142,17 +143,26 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                     osallistuminen.getHakutoiveet().stream().map(ToStringBuilder::reflectionToString).collect(Collectors.toList())));
                 debugLogitaKoetiedot(osallistuminen);
             }
-            valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen);
-
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Tallentamisen jälkeen:");
-                ValintakoeOsallistuminen tallennettuOsallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakemus.getHakuoid(), hakemus.getHakemusoid());
-                debugLogitaKoetiedot(tallennettuOsallistuminen);
+            kumulatiivisetTulokset.add(osallistuminen);
         }
+
+        ValintakoeOsallistuminen osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset = kumulatiivisetTulokset.get(hakemus.getHakemusoid());
+        if (osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset != null) {
+            valintakoeOsallistuminenDAO.createOrUpdate(osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset);
+        }
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Tallentamisen jälkeen:");
+            ValintakoeOsallistuminen tallennettuOsallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakemus.getHakuoid(), hakemus.getHakemusoid());
+            debugLogitaKoetiedot(tallennettuOsallistuminen);
         }
     }
 
     private void debugLogitaKoetiedot(ValintakoeOsallistuminen osallistuminen) {
+        if (osallistuminen == null) {
+            LOG.debug("osallistuminen == null");
+            return;
+        }
         osallistuminen.getHakutoiveet().forEach(hakutoive -> {
             LOG.debug(String.format("\thakutoive %s : ", hakutoive.getHakukohdeOid()));
             hakutoive.getValinnanVaiheet().forEach(valintakoeValinnanvaihe -> {

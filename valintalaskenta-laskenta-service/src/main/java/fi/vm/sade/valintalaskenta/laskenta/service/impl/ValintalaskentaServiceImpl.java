@@ -1,14 +1,17 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.impl;
 
+import static fi.vm.sade.sijoittelu.tulos.dto.HakemuksenTila.PERUUNTUNUT;
+import static fi.vm.sade.sijoittelu.tulos.dto.HakemuksenTila.VARALLA;
+import static java.util.Arrays.asList;
+
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetHakijaryhmaDTO;
 import fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi;
-import fi.vm.sade.sijoittelu.tulos.dto.HakemuksenTila;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
+import fi.vm.sade.valintalaskenta.laskenta.resource.ValintakoelaskennanKumulatiivisetTulokset;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.ValintalaskentaSuorittajaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
@@ -16,16 +19,13 @@ import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static fi.vm.sade.sijoittelu.tulos.dto.HakemuksenTila.PERUUNTUNUT;
-import static fi.vm.sade.sijoittelu.tulos.dto.HakemuksenTila.VARALLA;
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.CRUD;
-import static java.util.Arrays.asList;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class ValintalaskentaServiceImpl implements ValintalaskentaService {
@@ -62,9 +62,9 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     }
 
     @Override
-    public String valintakokeet(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperuste, String uuid) throws RuntimeException {
+    public String valintakokeet(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperuste, String uuid, ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset) throws RuntimeException {
         try {
-            valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste, uuid);
+            valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste, uuid, kumulatiivisetTulokset);
             return "Onnistui!";
         } catch (Exception e) {
             LOG.error("Valintakoevaihe epäonnistui", e);
@@ -77,10 +77,11 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                               String hakukohdeOid, String uuid) throws RuntimeException {
         valintaperuste.sort((o1, o2) -> o1.getValinnanVaihe().getValinnanVaiheJarjestysluku() - o2.getValinnanVaihe().getValinnanVaiheJarjestysluku());
 
+        ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset = new ValintakoelaskennanKumulatiivisetTulokset();
         valintaperuste.stream().forEachOrdered(peruste -> {
             if (peruste.getValinnanVaihe().getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
-                LOG.info("Suoritetaan valintakoelaskenta {} hakemukselle", hakemus.size());
-                hakemus.forEach(h -> valintakokeet(h, asList(peruste), uuid));
+                LOG.info("Suoritetaan valinnanvaiheen {} valintakoelaskenta {} hakemukselle", peruste.getValinnanVaihe().getValinnanVaiheOid(), hakemus.size());
+                hakemus.forEach(h -> valintakokeet(h, asList(peruste), uuid, kumulatiivisetTulokset));
             } else {
                 laske(hakemus, asList(peruste), hakijaryhmat, hakukohdeOid, uuid);
             }

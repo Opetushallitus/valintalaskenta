@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.laskenta.service;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetHakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
+import fi.vm.sade.valintalaskenta.laskenta.resource.ValintakoelaskennanKumulatiivisetTulokset;
 
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,8 @@ public interface ValintalaskentaService {
 
     String valintakokeet(HakemusDTO hakemus,
                          List<ValintaperusteetDTO> valintaperuste,
-                         String uuid)
+                         String uuid,
+                         ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset)
                         throws RuntimeException;
 
     String laskeKaikki(List<HakemusDTO> hakemus,

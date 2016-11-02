@@ -7,6 +7,7 @@ import static fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulokse
 import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.EI_OSALLISTU;
 import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.OSALLISTUU;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import com.google.common.reflect.TypeToken;
@@ -20,7 +21,6 @@ import fi.vm.sade.service.valintaperusteet.dto.FunktiokutsuDTO;
 import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
 import fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
-import fi.vm.sade.valintalaskenta.domain.resource.ValintalaskentaResource;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
@@ -33,11 +33,9 @@ import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResou
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
-import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -130,10 +128,8 @@ public class ValintalaskentaResourceIntegrationBug870Test {
         assertThat(kielikoetulosOsallistuminenTulos, having(on(OsallistuminenTulos.class).getLaskentaTila(), equalTo(HYVAKSYTTAVISSA.name())));
     }
 
-
     @Test
     @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
-    @Ignore
     public void kielikokeeseenKutsutaanJosSuoritustaTaiTodennettuaKielitaitoaEiLoydyVaikkaValintakoevaiheitaOlisiUseampia() throws JsonSyntaxException, IOException {
         LaskeDTO laskeDtoUseammanKoekutsunKanssa = readJson("laskeDTOUseammanKoekutsuVaiheenKanssa.json", new TypeToken<LaskeDTO>() {});
 
@@ -148,8 +144,8 @@ public class ValintalaskentaResourceIntegrationBug870Test {
         assertThat(kielikokeenPakollisuusVaihe.getValintakokeet(), Matchers.hasSize(2));
 
         Valintakoe kielikoetulos = kielikokeenPakollisuusVaihe.getValintakokeet().get(0);
+        assertThat(kielikoetulos, having(on(Valintakoe.class).getValintakoeTunniste(), equalTo("kielikoe_fi")));
         OsallistuminenTulos kielikoetulosOsallistuminenTulos = kielikoetulos.getOsallistuminenTulos();
-
         assertThat(kielikoetulosOsallistuminenTulos, having(on(OsallistuminenTulos.class).getOsallistuminen(), equalTo(OSALLISTUU)));
         assertThat(kielikoetulosOsallistuminenTulos, having(on(OsallistuminenTulos.class).getLaskentaTulos(), equalTo(true)));
         assertThat(kielikoetulosOsallistuminenTulos, having(on(OsallistuminenTulos.class).getLaskentaTila(), equalTo(HYVAKSYTTAVISSA.name())));
@@ -158,6 +154,15 @@ public class ValintalaskentaResourceIntegrationBug870Test {
         assertThat(toisenKokeenOsallistuminenTulos, having(on(OsallistuminenTulos.class).getOsallistuminen(), equalTo(EI_OSALLISTU)));
         assertThat(toisenKokeenOsallistuminenTulos, having(on(OsallistuminenTulos.class).getLaskentaTulos(), equalTo(false)));
         assertThat(toisenKokeenOsallistuminenTulos, having(on(OsallistuminenTulos.class).getLaskentaTila(), equalTo(HYVAKSYTTAVISSA.name())));
+
+        ValintakoeValinnanvaihe paasykoeVaihe = osallistumisenHakutoiveJohonOnKielikoe.getValinnanVaiheet().get(1);
+        assertThat(paasykoeVaihe.getValintakokeet(), Matchers.hasSize(1));
+        Valintakoe paasykoeTulos = paasykoeVaihe.getValintakokeet().get(0);
+        assertThat(paasykoeTulos, having(on(Valintakoe.class).getValintakoeTunniste(), equalTo("1_2_246_562_20_83855523359_paasykoe")));
+        OsallistuminenTulos paasykoeOsallistuminenTulos = paasykoeTulos.getOsallistuminenTulos();
+        assertThat(paasykoeOsallistuminenTulos, having(on(OsallistuminenTulos.class).getOsallistuminen(), equalTo(EI_OSALLISTU)));
+        assertThat(paasykoeOsallistuminenTulos, having(on(OsallistuminenTulos.class).getKuvaus(), hasValue("Hylätty kielikoetulos tai ei osallistunut")));
+
     }
 
     private <T> T readJson(String pathInClasspath, TypeToken<T> typeToken) throws IOException {
