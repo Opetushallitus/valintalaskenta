@@ -93,8 +93,7 @@ public class ValintalaskentakoostepalveluResourceImpl {
     @ApiOperation(value = "Hakee hakukohteen valinnan vaiheiden tulokset", response = ValinnanvaiheDTO.class)
     public List<ValintatietoValinnanvaiheDTO> hakukohde(
             @ApiParam(value = "Hakukohteen OID", required = true)
-            @PathParam("hakukohdeoid") String hakukohdeoid
-    ) {
+            @PathParam("hakukohdeoid") String hakukohdeoid) {
         return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
     }
 
@@ -125,6 +124,15 @@ public class ValintalaskentakoostepalveluResourceImpl {
             String since) throws ParseException {
         Date sinceDate = new SimpleDateFormat("yyyy-MM-dd").parse(since);
         return tulosService.haeAmmatillisenKielikokeeseenOsallistumiset(sinceDate);
+    }
+
+    @GET
+    @Path("valintakoe/hakemus/{hakemusOid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Hakee hakemuksen valintakoeosallistumistiedot", response = ValintakoeOsallistuminenDTO.class)
+    public ValintakoeOsallistuminenDTO haeHakemuksenValintakoeosallistumistiedot(
+        @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid) {
+        return modelMapper.map(tulosService.haeValintakoeOsallistumiset(hakemusOid), ValintakoeOsallistuminenDTO.class);
     }
 }
 
