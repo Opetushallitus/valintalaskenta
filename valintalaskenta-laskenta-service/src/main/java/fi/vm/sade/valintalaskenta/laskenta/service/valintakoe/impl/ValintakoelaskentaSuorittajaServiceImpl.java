@@ -126,7 +126,9 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
             LOG.debug(String.format("Käsitellään %d koetta", kokeet.size()));
             for (HakukohdeValintakoeData c : kokeet) {
                 ValintakoeOsallistuminen valintakoeOsallistuminen = luoValintakoeOsallistuminen(c, hakemus, hakutoiveetByOid);
-                LOG.debug(String.format("\tvalintakoeOsallistuminen == %s", ToStringBuilder.reflectionToString(valintakoeOsallistuminen)));
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(String.format("\tvalintakoeOsallistuminen == %s", ToStringBuilder.reflectionToString(valintakoeOsallistuminen)));
+                }
                 osallistumisetByHaku.putIfAbsent(c.getHakuOid(), valintakoeOsallistuminen);
                 olemassaOlevat.add(c);
                 addValintaKokeetByMatchingTunnisteAndDifferentValintakoeOid(osallistumisetByHaku, olemassaOlevat, c);
