@@ -54,7 +54,7 @@ import java.io.IOException;
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners(listeners = {DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class})
-public class ValintalaskentaResourceIntegrationBug870Test {
+public class ValintalaskentaResourceIntegrationTest {
     @Rule
     public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
 
