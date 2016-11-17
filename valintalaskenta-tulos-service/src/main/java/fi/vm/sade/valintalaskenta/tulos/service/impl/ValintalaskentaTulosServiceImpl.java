@@ -481,8 +481,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                 .stream()
                 .filter(j -> j.getValintatapajonoOid().equals(
                         valintatapajonoOid))
-                .map(j -> j.getValmisSijoiteltavaksi())
-                .allMatch(b -> b);
+                .allMatch(Valintatapajono::getValmisSijoiteltavaksi);
     }
 
     /**
