@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,6 +59,15 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
     @Value("${root.organisaatio.oid}")
     private String rootOrgOid;
+
+    public Map<String, List<String>> haeJonotSijoittelussa(String hakuOid) {
+        final Function<Valinnanvaihe, List<String>> valinnanvaiheToJonoOIDs = vv -> vv.getValintatapajonot().stream()
+                .filter(Valintatapajono::isSiirretaanSijoitteluun)
+                .map(Valintatapajono::getValintatapajonoOid)
+                .collect(Collectors.toList());
+        return valinnanvaiheDAO.readByHakuOid(hakuOid).stream()
+                .collect(Collectors.toMap(Valinnanvaihe::getHakukohdeOid, valinnanvaiheToJonoOIDs));
+    }
 
     public HakemusDTO haeTuloksetHakemukselle(final String hakuOid, final String hakemusOid) {
         List<Valinnanvaihe> valinnanVaiheet = valinnanvaiheDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);

@@ -21,6 +21,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ_UPDATE_CRUD;
 
@@ -37,6 +38,18 @@ public class ValintalaskentakoostepalveluResourceImpl {
     private ValintalaskentaModelMapper modelMapper;
     @Autowired
     private ValintatietoService valintatietoService;
+
+    /**
+     * @param hakuOid
+     * @return HAKUKOHDE OID -> LIST[VALINTATAPAJONO OID]
+     */
+    @GET
+    @Path("jonotsijoittelussa/{hakuOid}")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public Map<String, List<String>> jonotSijoittelussa(@PathParam("hakuOid") String hakuOid) {
+        return tulosService.haeJonotSijoittelussa(hakuOid);
+    }
 
     @POST
     @Path("valintatieto/hakukohde/{hakukohdeOid}")
