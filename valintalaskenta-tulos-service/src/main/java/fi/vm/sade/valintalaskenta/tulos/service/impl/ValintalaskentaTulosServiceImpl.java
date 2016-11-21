@@ -28,6 +28,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosService {
@@ -66,7 +67,9 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                 .map(Valintatapajono::getValintatapajonoOid)
                 .collect(Collectors.toList());
         return valinnanvaiheDAO.readByHakuOid(hakuOid).stream()
-                .collect(Collectors.toMap(Valinnanvaihe::getHakukohdeOid, valinnanvaiheToJonoOIDs));
+                .collect(Collectors.toMap(Valinnanvaihe::getHakukohdeOid, valinnanvaiheToJonoOIDs, (a,b) ->
+                        Stream.of(a.stream(),b.stream()).flatMap(Function.identity()).collect(Collectors.toList())
+                ));
     }
 
     public HakemusDTO haeTuloksetHakemukselle(final String hakuOid, final String hakemusOid) {
