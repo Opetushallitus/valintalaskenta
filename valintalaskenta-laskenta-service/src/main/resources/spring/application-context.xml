@@ -17,6 +17,7 @@
 	<mvc:annotation-driven />
 	<context:annotation-config />
 
+    <bean id="LaskentaAudit" class="fi.vm.sade.valintalaskenta.tulos.LaskentaAudit"/>
 
 	<context:property-placeholder
 		location="classpath:valintalaskenta-laskenta-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/valinta.properties, file:///${user.home:''}/oph-configuration/valintalaskenta-laskenta-service.properties, file:///${user.home:''}/oph-configuration/override.properties"
