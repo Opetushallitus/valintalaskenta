@@ -15,7 +15,7 @@ import java.util.function.Function;
 
 public interface ValintalaskentaTulosService {
 
-    Map<String, List<String>> haeJonotSijoittelussa(String hakuOid);
+    List<JonoDto> haeJonotSijoittelussa(String hakuOid);
 
     HakemusDTO haeTuloksetHakemukselle(String hakuoid, String hakemusoid);
 

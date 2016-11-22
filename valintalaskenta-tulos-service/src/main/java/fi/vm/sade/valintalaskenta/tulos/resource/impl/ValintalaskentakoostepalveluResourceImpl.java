@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
+import fi.vm.sade.valintalaskenta.domain.dto.JonoDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -47,7 +48,7 @@ public class ValintalaskentakoostepalveluResourceImpl {
     @Path("jonotsijoittelussa/{hakuOid}")
     @Consumes("application/json")
     @Produces("application/json")
-    public Map<String, List<String>> jonotSijoittelussa(@PathParam("hakuOid") String hakuOid) {
+    public List<JonoDto> jonotSijoittelussa(@PathParam("hakuOid") String hakuOid) {
         return tulosService.haeJonotSijoittelussa(hakuOid);
     }
 

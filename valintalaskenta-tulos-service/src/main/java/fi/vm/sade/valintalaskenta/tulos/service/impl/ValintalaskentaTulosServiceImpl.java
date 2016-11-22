@@ -61,15 +61,11 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     @Value("${root.organisaatio.oid}")
     private String rootOrgOid;
 
-    public Map<String, List<String>> haeJonotSijoittelussa(String hakuOid) {
-        final Function<Valinnanvaihe, List<String>> valinnanvaiheToJonoOIDs = vv -> vv.getValintatapajonot().stream()
-                .filter(Valintatapajono::isSiirretaanSijoitteluun)
-                .map(Valintatapajono::getValintatapajonoOid)
-                .collect(Collectors.toList());
+    public List<JonoDto> haeJonotSijoittelussa(String hakuOid) {
+        final Function<Valinnanvaihe, Stream<JonoDto>> valinnanvaiheToJonoDtos = vv -> vv.getValintatapajonot().stream()
+                .map(jono -> new JonoDto(vv.getHakukohdeOid(), jono.getValintatapajonoOid(), jono.getValmisSijoiteltavaksi(), jono.isSiirretaanSijoitteluun()));
         return valinnanvaiheDAO.readByHakuOid(hakuOid).stream()
-                .collect(Collectors.toMap(Valinnanvaihe::getHakukohdeOid, valinnanvaiheToJonoOIDs, (a,b) ->
-                        Stream.of(a.stream(),b.stream()).flatMap(Function.identity()).collect(Collectors.toList())
-                ));
+                .flatMap(valinnanvaiheToJonoDtos).collect(Collectors.toList());
     }
 
     public HakemusDTO haeTuloksetHakemukselle(final String hakuOid, final String hakemusOid) {
