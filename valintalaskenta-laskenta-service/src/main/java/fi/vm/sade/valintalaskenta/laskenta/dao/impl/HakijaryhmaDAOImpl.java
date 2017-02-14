@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.util.Comparator.comparing;
+
 @Repository("hakijaryhmaDAO")
 public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(HakijaryhmaDAOImpl.class);
@@ -100,6 +102,9 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
     }
 
     private List<Hakijaryhma> migrateMany(List<HakijaryhmaMigrationDTO> ryhmat) {
-        return ryhmat.stream().map(this::migrateOne).collect(Collectors.toList());
+        return ryhmat.stream()
+                .map(this::migrateOne)
+                .sorted(comparing(Hakijaryhma::getPrioriteetti))
+                .collect(Collectors.toList());
     }
 }

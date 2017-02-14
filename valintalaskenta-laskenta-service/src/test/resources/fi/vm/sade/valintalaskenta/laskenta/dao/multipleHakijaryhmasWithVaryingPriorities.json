@@ -1,0 +1,70 @@
+{
+  "Jonosija": [
+    {
+      "_id": {
+        "$oid": "541bef0ae4b0e1d22689e608"
+      },
+      "etunimi": "Etunimi",
+      "hakemusOid": "oid1",
+      "hakijaOid": "hakijaoid",
+      "hakutoiveprioriteetti": 1,
+      "harkinnanvarainen": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "arvo": "50",
+          "nimi": "Testikriteeri",
+          "prioriteetti": 0,
+          "tila": "HYVAKSYTTAVISSA"
+        }
+      ],
+      "sukunimi": ""
+    }
+  ],
+  "Hakijaryhma": [
+    {
+      "schemaVersion": 2,
+      "hakijaryhmaOid": "lowestPriorityOid",
+      "hakukohdeOid": "1.2.246.562.20.18895322503",
+      "jonosijaIdt": [
+        {
+          "$oid": "541bef0ae4b0e1d22689e608"
+        }
+      ],
+      "kaytaKaikki": false,
+      "kaytetaanRyhmaanKuuluvia": true,
+      "kiintio": 2,
+      "kuvaus": "Loput",
+      "nimi": "Loput",
+      "prioriteetti": 2,
+      "tarkkaKiintio": false
+    },
+    {
+      "hakijaryhmaOid": "middlePriorityOid",
+      "hakukohdeOid": "1.2.246.562.20.18895322503",
+      "kaytaKaikki": false,
+      "kaytetaanRyhmaanKuuluvia": true,
+      "kiintio": 0,
+      "kuvaus": "Tyhja kiinti\u00f6",
+      "nimi": "Tyhja kiinti\u00f6",
+      "prioriteetti": 1,
+      "tarkkaKiintio": false
+    },
+    {
+      "schemaVersion": 2,
+      "hakijaryhmaOid": "highestPriorityOid",
+      "hakukohdeOid": "1.2.246.562.20.18895322503",
+      "jonosijaIdt": [
+        {
+          "$oid": "541bef0ae4b0e1d22689e608"
+        }
+      ],
+      "kaytaKaikki": false,
+      "kaytetaanRyhmaanKuuluvia": true,
+      "kiintio": 2,
+      "kuvaus": "Ensikertalaisten kiinti\u00f6",
+      "nimi": "Ensikertalaisten kiinti\u00f6",
+      "prioriteetti": 0,
+      "tarkkaKiintio": false
+    }
+  ]
+}

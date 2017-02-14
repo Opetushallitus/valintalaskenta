@@ -6,7 +6,6 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.tulos.dao.HakijaryhmaDAO;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,8 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.Comparator.comparing;
 
 @Repository
 public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
@@ -30,7 +31,10 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
         List<HakijaryhmaMigrationDTO> ryhmat = datastore.createQuery(HakijaryhmaMigrationDTO.class)
                 .field("hakukohdeOid").equal(hakukohdeoid)
                 .asList();
-        List<Hakijaryhma> migratedRyhmat = ryhmat.stream().map(this::migrate).collect(Collectors.toList());
+        List<Hakijaryhma> migratedRyhmat = ryhmat.stream()
+                .map(this::migrate)
+                .sorted(comparing(Hakijaryhma::getPrioriteetti))
+                .collect(Collectors.toList());
         return migratedRyhmat;
     }
 

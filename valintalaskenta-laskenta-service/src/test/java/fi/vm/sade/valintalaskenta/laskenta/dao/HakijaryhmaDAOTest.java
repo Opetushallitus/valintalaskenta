@@ -19,12 +19,15 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
-import static org.junit.Assert.*;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 
 @ContextConfiguration(locations = "classpath:application-context-test.xml")
@@ -87,11 +90,27 @@ public class HakijaryhmaDAOTest {
     @Test
     public void testSavingAndLoadingNewHakijaryhma() {
         Hakijaryhma hakijaryhma = new Hakijaryhma();
-        hakijaryhma.setJonosijat(Arrays.asList(new Jonosija(), new Jonosija()));
+        hakijaryhma.setJonosijat(asList(new Jonosija(), new Jonosija()));
         hakijaryhma.setHakijaryhmaOid("uusiHakijaryhmaOid");
         hakijaryhmaDAO.create(hakijaryhma);
         Hakijaryhma savedHakijaryhma = hakijaryhmaDAO.haeHakijaryhma("uusiHakijaryhmaOid").get();
         assertThat(savedHakijaryhma.getJonosijat(), Matchers.hasSize(2));
         assertThat(savedHakijaryhma.getJonosijaIdt(), Matchers.hasSize(2));
+    }
+
+    @Test
+    @UsingDataSet(locations = "multipleHakijaryhmasWithVaryingPriorities.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void allCallsSortHakijaryhmaEntitiesInPriorityAscendingOrder() throws Exception {
+        List<Hakijaryhma> fetched = hakijaryhmaDAO.haeHakijaryhmat("1.2.246.562.20.18895322503");
+        assertEquals(3, fetched.size());
+
+        List<Hakijaryhma> sorted = new ArrayList<>(fetched);
+        sorted.sort(Comparator.comparing(Hakijaryhma::getPrioriteetti));
+
+        assertEquals("Hakijaryhma entries are not sorted based on priority!", sorted, fetched);
+
+        assertEquals("lowest numeric priority should come first meaning it is the most important",
+                     asList("highestPriorityOid", "middlePriorityOid", "lowestPriorityOid"),
+                     sorted.stream().map(Hakijaryhma::getHakijaryhmaOid).collect(toList()));
     }
 }
