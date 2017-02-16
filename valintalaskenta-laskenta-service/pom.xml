@@ -100,7 +100,7 @@
         <dependency>
             <groupId>fi.vm.sade.sijoittelu</groupId>
             <artifactId>sijoittelu-tulos-api</artifactId>
-            <version>5.1-SNAPSHOT</version>
+            <version>5.2-OK_112-SNAPSHOT</version>
         </dependency>
 
         <!-- SADE -->
