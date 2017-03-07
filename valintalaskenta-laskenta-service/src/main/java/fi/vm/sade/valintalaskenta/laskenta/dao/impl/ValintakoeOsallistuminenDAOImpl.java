@@ -72,26 +72,28 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
     // Olemassaolevat laskennat (kevat 2015) vaatii tämän, uudet laskennat eivät.
     private Iterator<ValintakoeOsallistuminen> lasketutValintakoeOsallistumiset(String hakuOid, String hakukohdeOid, int jarjestysnumero) {
         final Query<ValintakoeOsallistuminen> query = morphiaDS.createQuery(ValintakoeOsallistuminen.class);
+        query.field("hakuOid").equal(hakuOid).field("hakutoiveet.hakukohdeOid").equal(hakukohdeOid).field("hakutoiveet.valinnanVaiheet.valinnanVaiheJarjestysluku").equal(jarjestysnumero - 1);
         return morphiaDS.<ValintakoeOsallistuminen, ValintakoeOsallistuminen>createAggregation(ValintakoeOsallistuminen.class)
-                    .match(query.field("hakuOid").equal(hakuOid))
+                    .match(query)
                     .project(Projection.projection("_id").suppress(), Projection.projection("hakutoiveet"), Projection.projection("hakuOid"))
                     .unwind("hakutoiveet")
-                    .match(query.field("hakutoiveet.hakukohdeOid").equal(hakukohdeOid))
+                    .match(query)
                     .unwind("hakutoiveet.valinnanVaiheet")
-                    .match(query.field("hakutoiveet.valinnanVaiheet.valinnanVaiheJarjestysluku").equal(jarjestysnumero - 1))
+                    .match(query)
                     .limit(1)
                     .aggregate(ValintakoeOsallistuminen.class);
     }
 
     private Iterator<ValintakoeOsallistuminen> hakijanValintaValintakoeOsallistumiset(String hakuOid, String hakukohdeOid, int jarjestysnumero) {
         final Query<ValintakoeOsallistuminen> query = morphiaDS.createQuery(ValintakoeOsallistuminen.class);
+        query.field("hakuOid").equal(hakuOid).field("hakutoiveet.laskettavaHakukohdeOid").equal(hakukohdeOid).field("hakutoiveet.valinnanVaiheet.laskettavaJarjestysluku").equal(jarjestysnumero - 1);
         return morphiaDS.<ValintakoeOsallistuminen, ValintakoeOsallistuminen>createAggregation(ValintakoeOsallistuminen.class)
-                .match(query.field("hakuOid").equal(hakuOid))
+                .match(query)
                 .project(Projection.projection("_id").suppress(), Projection.projection("hakutoiveet"), Projection.projection("hakuOid"))
                 .unwind("hakutoiveet")
-                .match(query.field("hakutoiveet.laskettavaHakukohdeOid").equal(hakukohdeOid))
+                .match(query)
                 .unwind("hakutoiveet.valinnanVaiheet")
-                .match(query.field("hakutoiveet.valinnanVaiheet.laskettavaJarjestysluku").equal(jarjestysnumero - 1))
+                .match(query)
                 .limit(1)
                 .aggregate(ValintakoeOsallistuminen.class);
     }
