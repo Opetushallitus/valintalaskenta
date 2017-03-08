@@ -7,7 +7,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 import java.util.ArrayList;
 import java.util.List;
 
-@ApiModel(value = "ValintatapajonoDTO", description = "Valintatapajono")
+@ApiModel(value = "valintalaskenta.domain.dto.ValintatapajonoDTO", description = "Valintatapajono")
 public class ValintatapajonoDTO {
 
     @ApiModelProperty(value = "OID", required = true)

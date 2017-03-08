@@ -3,7 +3,7 @@ package fi.vm.sade.valintalaskenta.domain.dto.valintakoe;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-@ApiModel(value = "ValintakoeDTO", description = "Valintakoe")
+@ApiModel(value = "valintalaskenta.domain.dto.valintakoe.ValintakoeDTO", description = "Valintakoe")
 public class ValintakoeDTO {
 
     @ApiModelProperty(value = "OID", required = true)

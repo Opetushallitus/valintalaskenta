@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@ApiModel(value = "HakemusDTO", description = "Yhden hakemuksen tiedot")
+@ApiModel(value = "valintalaskenta.domain.dto.HakemusDTO", description = "Yhden hakemuksen tiedot")
 public class HakemusDTO {
 
     @ApiModelProperty(value = "Haku OID", required = true)
