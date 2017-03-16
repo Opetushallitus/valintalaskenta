@@ -12,7 +12,7 @@ import java.util.List;
  * Date: 29.8.2013
  * Time: 8.28
  */
-@ApiModel(value ="ValintakoeOsallistuminenDTO", description = "Valintakoeosallistuminen")
+@ApiModel(value ="valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO", description = "Valintakoeosallistuminen")
 public class ValintakoeOsallistuminenDTO {
 
     @ApiModelProperty(value="Haku OID", required = true)

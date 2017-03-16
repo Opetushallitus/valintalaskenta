@@ -1,7 +1,9 @@
 package fi.vm.sade.valintalaskenta.domain.dto.valintatieto;
 
 import fi.vm.sade.valintalaskenta.domain.dto.OsallistuminenDTO;
+import io.swagger.annotations.ApiModel;
 
+@ApiModel(value ="valintalaskenta.domain.dto.valintatieto.ValintakoeOsallistuminenDTO", description = "Valintakoeosallistuminen")
 public class ValintakoeOsallistuminenDTO {
     private OsallistuminenDTO osallistuminen;
     private String valintakoeOid;

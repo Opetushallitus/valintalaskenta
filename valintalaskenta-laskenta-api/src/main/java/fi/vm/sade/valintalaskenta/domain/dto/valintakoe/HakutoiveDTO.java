@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
 
-@ApiModel(value="HakutoiveDTO", description = "Hakutoive")
+@ApiModel(value="valintalaskenta.domain.dto.valintakoe.HakutoiveDTO", description = "Hakutoive")
 public class HakutoiveDTO {
 
     @ApiModelProperty(value="Hakutoiveen OID", required = true)

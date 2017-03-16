@@ -7,7 +7,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanva
 import java.util.ArrayList;
 import java.util.List;
 
-@ApiModel(value = "Hakukohde", description = "Hakukohde")
+@ApiModel(value = "valintalaskenta.domain.dto.Hakukohde", description = "Hakukohde")
 public class HakukohdeDTO {
     @ApiModelProperty(value = "Haku OID", required = true)
     private String hakuoid;
