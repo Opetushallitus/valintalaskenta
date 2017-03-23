@@ -54,6 +54,7 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
 
     @Override
     public ValintakoeOsallistuminen haeEdeltavaValinnanvaihe(String hakuOid, String hakukohdeOid, int jarjestysnumero) {
+        if(jarjestysnumero == 0) return null;
         ValintakoeOsallistuminen edellinen = null;
         final Iterator<ValintakoeOsallistuminen> lasketutEdellisenVaiheenOsallistumiset =
                 lasketutValintakoeOsallistumiset(hakuOid, hakukohdeOid, jarjestysnumero);
