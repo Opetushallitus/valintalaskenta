@@ -371,31 +371,18 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(data.getHakuOid(), hakemus.getHakemusoid());
         if (osallistuminen == null) {
             osallistuminen = new ValintakoeOsallistuminen();
-        } else {
-            List<Hakutoive> toiveet = osallistuminen.getHakutoiveet()
-                    .stream()
-                    .map(t -> {
-                        if (hakutoiveetByOid.containsKey(t.getHakukohdeOid())) {
-                            return t;
-                        } else {
-                            t.setValinnanVaiheet(getHakijanValintaVaiheet(t));
-                            return t;
-                        }
-                    })
-                    .filter(t -> !t.getHakukohdeOid().equals(data.getLaskettavaHakukohdeOid()))
-                    .collect(Collectors.toList());
-            final Optional<Hakutoive> hakutoive = osallistuminen.getHakutoiveet().stream()
-                    .filter(t -> t.getHakukohdeOid().equals(data.getLaskettavaHakukohdeOid()))
-                    .map(h -> {
-                        h.setValinnanVaiheet(getHakijanValintaVaiheet(h));
-                        return h;
-                    }).findFirst();
-            if (hakutoive.isPresent() && hakutoive.get().getValinnanVaiheet().size() > 0) {
-                toiveet.add(hakutoive.get());
-            }
-            osallistuminen.getHakutoiveet().clear();
-            osallistuminen.setHakutoiveet(toiveet);
         }
+        for (Hakutoive h : osallistuminen.getHakutoiveet()) {
+            String oid = h.getHakukohdeOid();
+            if (!hakutoiveetByOid.containsKey(oid) || oid.equals(data.getLaskettavaHakukohdeOid())) {
+                h.setValinnanVaiheet(getHakijanValintaVaiheet(h));
+            }
+        }
+        osallistuminen.setHakutoiveet(
+                osallistuminen.getHakutoiveet().stream()
+                        .filter(h -> !h.getValinnanVaiheet().isEmpty())
+                        .collect(Collectors.toList())
+        );
         osallistuminen.setHakuOid(data.getHakuOid());
         osallistuminen.setHakemusOid(hakemus.getHakemusoid());
         osallistuminen.setHakijaOid(hakemus.getHakijaOid());
