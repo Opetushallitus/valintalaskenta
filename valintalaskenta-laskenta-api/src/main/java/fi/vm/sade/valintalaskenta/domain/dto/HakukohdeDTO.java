@@ -21,6 +21,9 @@ public class HakukohdeDTO {
     @ApiModelProperty(value = "Valinnan vaiheet", required = true)
     private List<ValintatietoValinnanvaiheDTO> valinnanvaihe = new ArrayList<ValintatietoValinnanvaiheDTO>();
 
+    @ApiModelProperty(value = "Hakukohderyhmäoidit", required = true)
+    private List<String> hakukohdeRyhmatOids = new ArrayList<>();
+
     @ApiModelProperty(value = "Prioriteetti", required = true)
     private int prioriteetti;
 
@@ -92,5 +95,13 @@ public class HakukohdeDTO {
 
     public void setKaikkiJonotSijoiteltu(boolean kaikkiJonotSijoiteltu) {
         this.kaikkiJonotSijoiteltu = kaikkiJonotSijoiteltu;
+    }
+
+    public List<String> getHakukohdeRyhmatOids() {
+        return hakukohdeRyhmatOids;
+    }
+
+    public void setHakukohdeRyhmatOids(List<String> hakukohdeRyhmatOids) {
+        this.hakukohdeRyhmatOids = hakukohdeRyhmatOids;
     }
 }
