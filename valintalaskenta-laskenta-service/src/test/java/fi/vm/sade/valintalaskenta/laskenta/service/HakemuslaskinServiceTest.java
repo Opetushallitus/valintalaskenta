@@ -14,18 +14,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import fi.vm.sade.service.valintaperusteet.laskenta.api.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import fi.vm.sade.service.valintaperusteet.laskenta.Lukuarvofunktio;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.FunktioTulos;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.Laskentatulos;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.SyotettyArvo;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hyvaksyttavissatila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
@@ -77,7 +72,7 @@ public class HakemuslaskinServiceTest {
         hakemus.setHakutoiveprioriteetti(hakutoiveprioriteetti);
         hakemus.setHakemusDTO(TestDataUtil.luoHakemus("hakuOid", hakemusOid, hakijaOid, hakukohteet));
         hakemus.setHarkinnanvaraisuus(harkinnanvaraisuus);
-        hakemus.setLaskentahakemus(new Hakemus(hakemusOid, new HashMap<Integer, String>(), new HashMap<String, String>(), new HashMap<>()));
+        hakemus.setLaskentahakemus(new Hakemus(hakemusOid, new HashMap<> (), new HashMap<String, String>(), new HashMap<>()));
 
         final Map<String, String> edellinenValinnanvaiheTilaSelite = new HashMap<String, String>();
         edellinenValinnanvaiheTilaSelite.put("FI", "selite");
