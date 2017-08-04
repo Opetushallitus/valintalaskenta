@@ -1,11 +1,9 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
-import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.valinta.ValinnanvaiheMigrationDTO;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
-import fi.vm.sade.valintalaskenta.domain.valinta.ValintatapajonoMigrationDTO;
+import com.google.common.collect.ImmutableList;
+import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Key;
@@ -15,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -76,6 +71,25 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         return migrate(datastore.createQuery(ValinnanvaiheMigrationDTO.class)
                 .field("hakuOid").equal(hakuoid)
                 .asList());
+    }
+
+    @Override
+    public List<ValintatapajonoMigrationDTO> valintatapajonotJotkaEivatKaytaLaskentaa() {
+        return datastore.createQuery(ValintatapajonoMigrationDTO.class)
+                .field("kaytetaanValintalaskentaa").notEqual(true)
+                .retrievedFields(true, "_id")
+                .asList();
+    }
+
+    @Override
+    public List<Pair<String, String>> hakuOidHakukohdeOidPairsForJonos(List<ValintatapajonoMigrationDTO> validValintatapajonos) {
+        return datastore.createQuery(ValinnanvaiheMigrationDTO.class)
+                .field("valintatapajonot").in(validValintatapajonos)
+                .retrievedFields(true, "hakukohdeOid", "hakuOid")
+                .asList().stream()
+                .map(vv -> Pair.of(vv.getHakuOid(), vv.getHakukohdeOid()))
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     @Override

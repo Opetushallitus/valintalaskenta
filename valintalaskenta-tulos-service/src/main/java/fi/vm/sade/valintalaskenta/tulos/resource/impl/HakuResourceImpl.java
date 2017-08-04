@@ -10,11 +10,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import fi.vm.sade.valintalaskenta.domain.dto.MinimalJonoDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Component;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,7 +28,7 @@ import org.springframework.stereotype.Controller;
 @Controller
 @Path("haku")
 @PreAuthorize("isAuthenticated()")
-@Api(value = "/haku", description = "Resurssi haun valintalaskennan virhetilanteiden hakemiseen")
+@Api(value = "/haku", description = "Resurssi haun valintalaskennan virhetilanteiden ja hakukohtaisten tietojen hakemiseen")
 public class HakuResourceImpl implements HakuResource {
     protected static final Logger LOGGER = LoggerFactory.getLogger(HakuResourceImpl.class);
 
@@ -51,5 +51,18 @@ public class HakuResourceImpl implements HakuResource {
     public List<ValintakoeOsallistuminenDTO> valintakoevirheet(
             @PathParam("hakuOid") String hakuOid) {
         return tulosService.haeValintakoevirheetHaulle(hakuOid);
+    }
+
+    /**
+     * ODW needs to load hakukohde valinnanvaihees but calling the api separatedly for each hakukohde is too slow.
+     * Added an API which returns only minimal information for haku and contains a list of valintatulos from those
+     * valinnanvaihe, which are siirretty sijoitteluun.
+     */
+    @GET
+    @Path("/ilmanvalintalaskentaasijoitteluun")
+    @Produces(MediaType.APPLICATION_JSON)
+    @PreAuthorize(READ_UPDATE_CRUD)
+    public List<MinimalJonoDTO> jonotSijoitteluun() {
+        return tulosService.haeSijoittelunKayttamatJonotIlmanValintalaskentaa();
     }
 }

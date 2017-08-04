@@ -149,4 +149,20 @@ public class ValintalaskentaTulosServiceTest {
         }
 
     }
+
+
+    @Test
+    @UsingDataSet(locations = "testHaeTuloksetHakemukselle.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void testHaeTuloksetHaulle() {
+        List<MinimalJonoDTO> list = valintalaskentaTulosService.haeSijoittelunKayttamatJonotIlmanValintalaskentaa();
+        list.forEach(d -> {
+            assertEquals("hakuOid1", d.getHakuOid());
+            assertEquals("hakukohdeOid1", d.getHakukohdeOid());
+            assertEquals("valintatapajonoOid1", d.getValintatapajonoOid());
+            assertEquals(false, d.isKaytetaanValintalaskentaa());
+            assertEquals(true, d.isSiirretaanSijoitteluun());
+            assertEquals(2, d.getHakemusCount());
+        });
+        assertEquals(1, list.size());
+    }
 }

@@ -9,7 +9,6 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -20,6 +19,8 @@ public interface ValintalaskentaTulosService {
     HakemusDTO haeTuloksetHakemukselle(String hakuoid, String hakemusoid);
 
     List<ValintatietoValinnanvaiheDTO> haeValinnanvaiheetHakukohteelle(String hakukohdeoid);
+
+    List<MinimalJonoDTO> haeSijoittelunKayttamatJonotIlmanValintalaskentaa();
 
     Optional<HakukohdeDTO> haeValinnanvaiheetHakukohteelleJaJonolle(String hakukohdeoid, List<String> valintatapajonot);
 

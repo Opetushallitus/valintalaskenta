@@ -234,6 +234,25 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         return valintatietoValinnanVaihes;
     }
 
+
+    /**
+     * ODW requires list of valintatapajonos, which don't use laskenta but use sijoittelu (meaning officers have to
+     * manually input the grades).
+     */
+    @Override
+    public List<MinimalJonoDTO> haeSijoittelunKayttamatJonotIlmanValintalaskentaa() {
+        List<ValintatapajonoMigrationDTO> validValintatapajonos = valinnanvaiheDAO.valintatapajonotJotkaEivatKaytaLaskentaa();
+        return valinnanvaiheDAO.hakuOidHakukohdeOidPairsForJonos(validValintatapajonos).stream()
+                .flatMap(hakuHakukohdePair -> minimalJonoListForHakukohde(hakuHakukohdePair.getLeft(), hakuHakukohdePair.getRight()))
+                .collect(Collectors.toList());
+    }
+
+    private Stream<MinimalJonoDTO> minimalJonoListForHakukohde(String haku, String hakukohde) {
+        return haeValinnanvaiheetHakukohteelle(hakukohde).stream()
+                .flatMap(vv -> vv.getValintatapajonot().stream())
+                .map(vtj -> new MinimalJonoDTO(haku, hakukohde, vtj.getOid(), vtj.getJonosijat().size(), vtj.getKaytetaanValintalaskentaa(), vtj.isSiirretaanSijoitteluun()));
+    }
+
     @Override
     public Optional<HakukohdeDTO> haeValinnanvaiheetHakukohteelleJaJonolle(String hakukohdeoid, List<String> valintatapajonot) {
         List<Valinnanvaihe> a = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeoid);

@@ -42,6 +42,9 @@
             "schemaVersion": 2,
             "valintatapajonoOid" : "valintatapajonoOid1",
             "prioriteetti" : 0,
+            "siirretaanSijoitteluun": true,
+            "valmisSijoiteltavaksi": true,
+            "kaytetaanValintalaskentaa" : false,
             "jonosijaIdt" : [
                 {"$oid": "52139e20ec975d4bfcb01260"},
                 {"$oid": "52139e20ec975d4bfcb01261"}
