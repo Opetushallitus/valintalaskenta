@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
+import com.google.common.base.Preconditions;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.slf4j.Logger;
@@ -11,31 +12,34 @@ import java.util.List;
 public class MinimalJonoDTO {
     private static final Logger LOGGER = LoggerFactory.getLogger(MinimalJonoDTO.class);
 
-    @ApiModelProperty(value = "Haku OID", required = true)
+    @ApiModelProperty(value = "Haku OID")
     private String hakuOid;
 
-    @ApiModelProperty(value = "Hakukohde OID", required = true)
+    @ApiModelProperty(value = "Hakukohde OID")
     private String hakukohdeOid;
 
-    @ApiModelProperty(value = "Valintatapajono OID", required = true)
+    @ApiModelProperty(value = "Valintatapajono OID")
     private String valintatapajonoOid;
 
-    @ApiModelProperty(value = "Hakemusten määrä jonossa", required = true)
+    @ApiModelProperty(value = "Hakemusten määrä jonossa")
     private int hakemusCount;
 
-    @ApiModelProperty(value = "Jono käyttää valintalaskentaa", required = true)
-    private final Boolean kaytetaanValintalaskentaa;
+    @ApiModelProperty(value = "Jono käyttää valintalaskentaa")
+    private final boolean kaytetaanValintalaskentaa;
 
-    @ApiModelProperty(value = "Jono on siirretty sijoitteluun", required = true)
-    private final Boolean siirretaanSijoitteluun;
+    @ApiModelProperty(value = "Jono on siirretty sijoitteluun")
+    private final boolean siirretaanSijoitteluun;
 
 
     public MinimalJonoDTO(String hakuOid, String hakukohdeOid, String valintatapajonoOid, List<JonosijaDTO> jonosijaDTOS, Boolean kaytetaanValintalaskentaa, Boolean siirretaanSijoitteluun) {
+        Preconditions.checkNotNull(hakuOid);
+        Preconditions.checkNotNull(hakukohdeOid);
+        Preconditions.checkNotNull(valintatapajonoOid);
         this.hakuOid = hakuOid;
         this.hakukohdeOid = hakukohdeOid;
         this.valintatapajonoOid = valintatapajonoOid;
-        this.kaytetaanValintalaskentaa = kaytetaanValintalaskentaa;
-        this.siirretaanSijoitteluun = siirretaanSijoitteluun;
+        this.kaytetaanValintalaskentaa = Boolean.TRUE.equals(kaytetaanValintalaskentaa);
+        this.siirretaanSijoitteluun = Boolean.TRUE.equals(siirretaanSijoitteluun);
 
         if(jonosijaDTOS == null){
             LOGGER.warn("Valintatapajono {} had null jonosijas.", valintatapajonoOid);
