@@ -250,7 +250,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     private Stream<MinimalJonoDTO> minimalJonoListForHakukohde(String haku, String hakukohde) {
         return haeValinnanvaiheetHakukohteelle(hakukohde).stream()
                 .flatMap(vv -> vv.getValintatapajonot().stream())
-                .map(vtj -> new MinimalJonoDTO(haku, hakukohde, vtj.getOid(), vtj.getJonosijat().size(), vtj.getKaytetaanValintalaskentaa(), vtj.isSiirretaanSijoitteluun()));
+                .filter(Objects::nonNull)
+                .map(vtj -> new MinimalJonoDTO(haku, hakukohde, vtj.getOid(), vtj.getJonosijat(), vtj.getKaytetaanValintalaskentaa(), vtj.isSiirretaanSijoitteluun()));
     }
 
     @Override
