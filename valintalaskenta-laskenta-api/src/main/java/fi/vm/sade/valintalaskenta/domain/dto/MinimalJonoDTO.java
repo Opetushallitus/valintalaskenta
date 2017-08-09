@@ -24,13 +24,13 @@ public class MinimalJonoDTO {
     private int hakemusCount;
 
     @ApiModelProperty(value = "Jono käyttää valintalaskentaa", required = true)
-    private final boolean kaytetaanValintalaskentaa;
+    private final Boolean kaytetaanValintalaskentaa;
 
     @ApiModelProperty(value = "Jono on siirretty sijoitteluun", required = true)
-    private final boolean siirretaanSijoitteluun;
+    private final Boolean siirretaanSijoitteluun;
 
 
-    public MinimalJonoDTO(String hakuOid, String hakukohdeOid, String valintatapajonoOid, List<JonosijaDTO> jonosijaDTOS, boolean kaytetaanValintalaskentaa, boolean siirretaanSijoitteluun) {
+    public MinimalJonoDTO(String hakuOid, String hakukohdeOid, String valintatapajonoOid, List<JonosijaDTO> jonosijaDTOS, Boolean kaytetaanValintalaskentaa, Boolean siirretaanSijoitteluun) {
         this.hakuOid = hakuOid;
         this.hakukohdeOid = hakukohdeOid;
         this.valintatapajonoOid = valintatapajonoOid;
