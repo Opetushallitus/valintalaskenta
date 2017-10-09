@@ -10,6 +10,7 @@ import fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi;
 import fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO;
 import fi.vm.sade.sijoittelu.tulos.dto.HakukohdeDTO;
 import fi.vm.sade.sijoittelu.tulos.dto.ValisijoitteluDTO;
+import fi.vm.sade.valintalaskenta.domain.HakukohteenLaskennanTila;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource;
@@ -39,7 +40,7 @@ public class ValintalaskentaResourceImpl {
     private final ErillisSijoitteluResource erillisSijoitteluResource;
     private final ValintaperusteetValintatapajonoResource valintatapajonoResource;
 
-    private static volatile ConcurrentHashMap<String, KohteenLaskennanTila> hakukohteetLaskettavina;
+    private static volatile ConcurrentHashMap<String, String> hakukohteetLaskettavina;
 
     @Autowired
     public ValintalaskentaResourceImpl(ValintalaskentaService valintalaskentaService, ValisijoitteluKasittelija valisijoitteluKasittelija,
@@ -61,7 +62,7 @@ public class ValintalaskentaResourceImpl {
     public String laske(LaskeDTO laskeDTO) throws Exception {
 
         String status = pidaKirjaaMeneillaanOlevista(laskeDTO);
-        if(!status.equals("Uusi!")) {
+        if(!status.equals(HakukohteenLaskennanTila.UUSI)) {
             return status;
         } else {
             //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran (samalle ooid+haukohdeoid-tunnisteelle) vaikka pyyntöjä tulisi useita
@@ -69,7 +70,7 @@ public class ValintalaskentaResourceImpl {
                 Runnable kaynnistaLaskenta = () -> toteutaLaskenta(laskeDTO);
                 Thread laskenta = new Thread(kaynnistaLaskenta);
                 laskenta.start();
-                return "Uusi!";
+                return HakukohteenLaskennanTila.UUSI;
             } catch (Exception e) {
                 LOG.error("Virhe laskennan suorituksessa, ", e);
                 throw e;
@@ -84,7 +85,7 @@ public class ValintalaskentaResourceImpl {
     public String valintakokeet(LaskeDTO laskeDTO) throws Exception {
 
         String status = pidaKirjaaMeneillaanOlevista(laskeDTO);
-        if(!status.equals("Uusi!")) {
+        if(!status.equals(HakukohteenLaskennanTila.UUSI)) {
             return status;
         } else {
             //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran (samalle ooid+haukohdeoid-tunnisteelle) vaikka pyyntöjä tulisi useita
@@ -92,7 +93,7 @@ public class ValintalaskentaResourceImpl {
                 Runnable kaynnistaLaskenta = () -> toteutaValintakoeLaskenta(laskeDTO);
                 Thread laskenta = new Thread(kaynnistaLaskenta);
                 laskenta.start();
-                return "Uusi!";
+                return HakukohteenLaskennanTila.UUSI;
             } catch (Exception e) {
                 LOG.error("Virhe laskennan suorituksessa, ", e);
                 throw e;
@@ -107,7 +108,7 @@ public class ValintalaskentaResourceImpl {
     public String laskeKaikki(final LaskeDTO laskeDTO) throws Exception {
 
         String status = pidaKirjaaMeneillaanOlevista(laskeDTO);
-        if(!status.equals("Uusi!")) {
+        if(!status.equals(HakukohteenLaskennanTila.UUSI)) {
             return status;
         } else {
             //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran (samalle ooid+haukohdeoid-tunnisteelle) vaikka pyyntöjä tulisi useita
@@ -115,7 +116,7 @@ public class ValintalaskentaResourceImpl {
                 Runnable kaynnistaLaskenta = () -> toteutaLaskeKaikki(laskeDTO);
                 Thread laskenta = new Thread(kaynnistaLaskenta);
                 laskenta.start();
-                return "Uusi!";
+                return HakukohteenLaskennanTila.UUSI;
             } catch (Exception e) {
                 LOG.error("Virhe laskennan suorituksessa, ", e);
                 throw e;
@@ -133,10 +134,10 @@ public class ValintalaskentaResourceImpl {
         if(!lista.isEmpty()) {
             laskeDTO = lista.get(0);
         } else {
-            return "Virhe!";
+            return HakukohteenLaskennanTila.VIRHE;
         }
         String status = pidaKirjaaMeneillaanOlevista(laskeDTO);
-        if(!status.equals("Uusi!")) {
+        if(!status.equals(HakukohteenLaskennanTila.UUSI)) {
             return status;
         } else {
             //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran (samalle ooid+haukohdeoid-tunnisteelle) vaikka pyyntöjä tulisi useita
@@ -144,7 +145,7 @@ public class ValintalaskentaResourceImpl {
                 Runnable kaynnistaLaskenta = () -> toteutaLaskeJaSijoittele(lista);
                 Thread laskenta = new Thread(kaynnistaLaskenta);
                 laskenta.start();
-                return "Uusi!";
+                return HakukohteenLaskennanTila.UUSI;
             } catch (Exception e) {
                 LOG.error("Virhe laskennan suorituksessa, ", e);
                 throw e;
@@ -173,13 +174,13 @@ public class ValintalaskentaResourceImpl {
 
         // Muodostetaan Map hakemuksittain sijoittelun tuloksista
         sijoitellut.parallelStream().forEach(hakukohde ->
-                        hakukohde.getValintatapajonot().parallelStream().forEach(valintatapajono ->
-                                        valintatapajono.getHakemukset().parallelStream().forEach(hakemus ->
-                                                        hakemusHashMap.put(
-                                                                hakukohde.getOid() + valintatapajono.getOid()
-                                                                        + hakemus.getHakemusOid(), hakemus)
-                                        )
-                        )
+            hakukohde.getValintatapajonot().parallelStream().forEach(valintatapajono ->
+                valintatapajono.getHakemukset().parallelStream().forEach(hakemus ->
+                hakemusHashMap.put(
+                hakukohde.getOid() + valintatapajono.getOid()
+                + hakemus.getHakemusOid(), hakemus)
+                )
+            )
         );
 
         valintalaskentaService.applyValisijoittelu(valisijoiteltavatJonot, hakemusHashMap);
@@ -214,31 +215,27 @@ public class ValintalaskentaResourceImpl {
         valintalaskentaService.applyErillissijoittelu(jonot, ajo);
     }
 
-    private enum KohteenLaskennanTila {
-        UUSI, KESKEN, VALMIS, VIRHE
-    }
-
     private String pidaKirjaaMeneillaanOlevista(LaskeDTO laskeDTO) {
         String key = laskeDTO.getUuid()+laskeDTO.getHakukohdeOid();
         if (!hakukohteetLaskettavina.containsKey(key)) {
             LOG.info("Luodaan uusi laskettava hakukohde. {} {}", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid());
-            hakukohteetLaskettavina.put(key, KohteenLaskennanTila.KESKEN);
-            return "Uusi!";
-        } else if (hakukohteetLaskettavina.get(key) == KohteenLaskennanTila.VALMIS) {
+            hakukohteetLaskettavina.put(key, HakukohteenLaskennanTila.KESKEN);
+            return HakukohteenLaskennanTila.UUSI;
+        } else if (hakukohteetLaskettavina.get(key).equals(HakukohteenLaskennanTila.VALMIS)) {
             LOG.info("Kohteen laskenta on valmistunut. {} {}", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid());
             //hakukohteetLaskettavina.remove(key); //!! Joissain tilanteissa käynnistetään tarpeettomasti uusi laskenta
-            return "Valmis!";
-        } else if (hakukohteetLaskettavina.get(key) == KohteenLaskennanTila.VIRHE) {
+            return HakukohteenLaskennanTila.VALMIS;
+        } else if (hakukohteetLaskettavina.get(key).equals(HakukohteenLaskennanTila.VIRHE)) {
             LOG.info("Kohteen laskennassa on tapahtunut virhe. {} {}", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid());
-            return "Virhe!";
+            return HakukohteenLaskennanTila.VIRHE;
         } else {
             LOG.info("Hakukohteen laskenta on edelleen kesken. {} {}", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid());
-            return "Kesken!";
+            return HakukohteenLaskennanTila.KESKEN;
         }
     }
 
-    private void paivitaKohteenLaskennanTila(LaskeDTO laskeDTO, KohteenLaskennanTila tila) {
-        if(tila.equals(KohteenLaskennanTila.VALMIS)) {
+    private void paivitaKohteenLaskennanTila(LaskeDTO laskeDTO, String tila) {
+        if(tila.equals(HakukohteenLaskennanTila.VALMIS)) {
             LOG.info("Ollaan valmiita, merkataan kohteen laskennan tila valmiiksi. {} {}", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid());
         }
         String key = laskeDTO.getUuid()+laskeDTO.getHakukohdeOid();
@@ -276,14 +273,14 @@ public class ValintalaskentaResourceImpl {
             }
         } catch (Exception e) {
             LOG.error("Valintalaskenta epaonnistui! uuid=" + laskeDTO.getUuid(), e);
-            paivitaKohteenLaskennanTila(laskeDTO, KohteenLaskennanTila.VIRHE);
+            paivitaKohteenLaskennanTila(laskeDTO, HakukohteenLaskennanTila.VIRHE);
         }
         if (!valisijoiteltavatJonot.valinnanvaiheet.isEmpty()) {
             valisijoitteleKopiot(laskeDTO, valisijoiteltavatJonot.jonot);
         }
 
         LOG.info("(Uuid={}) Laskenta suoritettu hakukohteessa {}", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid());
-        paivitaKohteenLaskennanTila(laskeDTO, KohteenLaskennanTila.VALMIS);
+        paivitaKohteenLaskennanTila(laskeDTO, HakukohteenLaskennanTila.VALMIS);
     }
 
     private void toteutaValintakoeLaskenta(LaskeDTO laskeDTO) {
@@ -291,10 +288,10 @@ public class ValintalaskentaResourceImpl {
             LOG.info("(Uuid={}) Suoritetaan valintakoelaskenta {} hakemukselle hakukohteessa {}", laskeDTO.getUuid(), laskeDTO.getHakemus().size(), laskeDTO.getHakukohdeOid());
             laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste(), laskeDTO.getUuid(), new ValintakoelaskennanKumulatiivisetTulokset(), laskeDTO.isKorkeakouluhaku()));
             LOG.info("(Uuid={}) Valintakoelaskenta suoritettu {} hakemukselle hakukohteessa {}", laskeDTO.getUuid(), laskeDTO.getHakemus().size(), laskeDTO.getHakukohdeOid());
-            paivitaKohteenLaskennanTila(laskeDTO, KohteenLaskennanTila.VALMIS);
+            paivitaKohteenLaskennanTila(laskeDTO, HakukohteenLaskennanTila.VALMIS);
         } catch (Exception e) {
             LOG.error("Valintakoelaskenta epaonnistui! uuid=" + laskeDTO.getUuid(), e);
-            paivitaKohteenLaskennanTila(laskeDTO, KohteenLaskennanTila.VIRHE);
+            paivitaKohteenLaskennanTila(laskeDTO, HakukohteenLaskennanTila.VIRHE);
         }
     }
 
@@ -360,16 +357,14 @@ public class ValintalaskentaResourceImpl {
             }
         } catch (Exception e) {
             LOG.error("Valintalaskenta ja valintakoelaskenta epaonnistui! uuid=" + laskeDTO.getUuid(), e);
-            paivitaKohteenLaskennanTila(laskeDTO, KohteenLaskennanTila.VIRHE);
+            paivitaKohteenLaskennanTila(laskeDTO, HakukohteenLaskennanTila.VIRHE);
         }
 
         LOG.info("(Uuid={}) Laskenta suoritettu hakukohteessa {}", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid());
-        paivitaKohteenLaskennanTila(laskeDTO, KohteenLaskennanTila.VALMIS);
+        paivitaKohteenLaskennanTila(laskeDTO, HakukohteenLaskennanTila.VALMIS);
     }
 
     private void toteutaLaskeJaSijoittele(List<LaskeDTO> lista) {
-        //lista.forEach(laskeDTO ->
-            //LOG.info("Toteutetaan laskentaJaSijoittelu, uuid: {} ", laskeDTO.getUuid()));
 
         ValisijoitteluKasittelija.ValisijoiteltavatJonot valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(lista);
         if (valisijoiteltavatJonot.valinnanvaiheet.isEmpty()) {
@@ -451,7 +446,7 @@ public class ValintalaskentaResourceImpl {
                                 hakukohteidenMaaraValinnanVaiheessa,
                                 laskeDTO.getHakukohdeOid());
                     } catch (Throwable t) {
-                        paivitaKohteenLaskennanTila(lista.get(0), KohteenLaskennanTila.VIRHE);
+                        paivitaKohteenLaskennanTila(lista.get(0), HakukohteenLaskennanTila.VIRHE);
                         LOG.error("(Uuid={}, {}={}/{}, hakukohde={}/{}) virhe hakukohteelle {}",
                                 laskeDTO.getUuid(),
                                 valinnanVaihe.getValinnanVaiheTyyppi(),
@@ -468,7 +463,7 @@ public class ValintalaskentaResourceImpl {
 
             });
         }
-        paivitaKohteenLaskennanTila(lista.get(0), KohteenLaskennanTila.VALMIS);
+        paivitaKohteenLaskennanTila(lista.get(0), HakukohteenLaskennanTila.VALMIS);
     }
 
     private void setSijoittelunKayttamanKentat(ValintaperusteetDTO v) {
