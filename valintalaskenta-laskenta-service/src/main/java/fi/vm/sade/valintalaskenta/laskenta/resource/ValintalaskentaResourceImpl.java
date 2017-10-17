@@ -2,6 +2,8 @@ package fi.vm.sade.valintalaskenta.laskenta.resource;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
@@ -36,6 +38,7 @@ public class ValintalaskentaResourceImpl {
     private final ValiSijoitteluResource valiSijoitteluResource;
     private final ErillisSijoitteluResource erillisSijoitteluResource;
     private final ValintaperusteetValintatapajonoResource valintatapajonoResource;
+    private final ExecutorService executorService;
 
     private static volatile ConcurrentHashMap<String, String> hakukohteetLaskettavina;
 
@@ -50,6 +53,7 @@ public class ValintalaskentaResourceImpl {
         this.valintatapajonoResource = valintatapajonoResource;
 
         this.hakukohteetLaskettavina = new ConcurrentHashMap<>();
+        this.executorService = Executors.newWorkStealingPool();
     }
 
     @Path("status/{uuid}/hakukohde/{hakukohdeOid}")
@@ -71,9 +75,7 @@ public class ValintalaskentaResourceImpl {
         } else {
             //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran (samalle ooid+haukohdeoid-tunnisteelle) vaikka pyyntöjä tulisi useita
             try {
-                Runnable kaynnistaLaskenta = () -> toteutaLaskenta(laskeDTO);
-                Thread laskenta = new Thread(kaynnistaLaskenta);
-                laskenta.start();
+                executorService.submit(() -> toteutaLaskenta(laskeDTO));
                 return HakukohteenLaskennanTila.UUSI;
             } catch (Exception e) {
                 LOG.error("Virhe laskennan suorituksessa, ", e);
@@ -94,9 +96,7 @@ public class ValintalaskentaResourceImpl {
         } else {
             //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran (samalle ooid+haukohdeoid-tunnisteelle) vaikka pyyntöjä tulisi useita
             try {
-                Runnable kaynnistaLaskenta = () -> toteutaValintakoeLaskenta(laskeDTO);
-                Thread laskenta = new Thread(kaynnistaLaskenta);
-                laskenta.start();
+                executorService.submit(() -> toteutaValintakoeLaskenta(laskeDTO));
                 return HakukohteenLaskennanTila.UUSI;
             } catch (Exception e) {
                 LOG.error("Virhe laskennan suorituksessa, ", e);
@@ -117,9 +117,7 @@ public class ValintalaskentaResourceImpl {
         } else {
             //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran (samalle ooid+haukohdeoid-tunnisteelle) vaikka pyyntöjä tulisi useita
             try {
-                Runnable kaynnistaLaskenta = () -> toteutaLaskeKaikki(laskeDTO);
-                Thread laskenta = new Thread(kaynnistaLaskenta);
-                laskenta.start();
+                executorService.submit(() -> toteutaLaskeKaikki(laskeDTO));
                 return HakukohteenLaskennanTila.UUSI;
             } catch (Exception e) {
                 LOG.error("Virhe laskennan suorituksessa, ", e);
@@ -146,9 +144,7 @@ public class ValintalaskentaResourceImpl {
         } else {
             //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran (samalle ooid+haukohdeoid-tunnisteelle) vaikka pyyntöjä tulisi useita
             try {
-                Runnable kaynnistaLaskenta = () -> toteutaLaskeJaSijoittele(lista);
-                Thread laskenta = new Thread(kaynnistaLaskenta);
-                laskenta.start();
+                executorService.submit(() -> toteutaLaskeJaSijoittele(lista));
                 return HakukohteenLaskennanTila.UUSI;
             } catch (Exception e) {
                 LOG.error("Virhe laskennan suorituksessa, ", e);
