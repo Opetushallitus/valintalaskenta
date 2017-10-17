@@ -280,6 +280,8 @@ public class ValintalaskentaResourceImpl {
             if (erillisHaku) {
                 erillisSijoittele(laskeDTO, valintaperusteetDTO);
             }
+            LOG.info("(Uuid={}) Laskenta suoritettu hakukohteessa {}", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid());
+            paivitaKohteenLaskennanTila(laskeDTO, HakukohteenLaskennanTila.VALMIS);
         } catch (Exception e) {
             LOG.error("Valintalaskenta epaonnistui! uuid=" + laskeDTO.getUuid(), e);
             paivitaKohteenLaskennanTila(laskeDTO, HakukohteenLaskennanTila.VIRHE);
@@ -287,9 +289,6 @@ public class ValintalaskentaResourceImpl {
         if (!valisijoiteltavatJonot.valinnanvaiheet.isEmpty()) {
             valisijoitteleKopiot(laskeDTO, valisijoiteltavatJonot.jonot);
         }
-
-        LOG.info("(Uuid={}) Laskenta suoritettu hakukohteessa {}", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid());
-        paivitaKohteenLaskennanTila(laskeDTO, HakukohteenLaskennanTila.VALMIS);
     }
 
     private void toteutaValintakoeLaskenta(LaskeDTO laskeDTO) {
@@ -364,13 +363,12 @@ public class ValintalaskentaResourceImpl {
                     }
                 });
             }
+            LOG.info("(Uuid={}) Laskenta suoritettu hakukohteessa {}", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid());
+            paivitaKohteenLaskennanTila(laskeDTO, HakukohteenLaskennanTila.VALMIS);
         } catch (Exception e) {
             LOG.error("Valintalaskenta ja valintakoelaskenta epaonnistui! uuid=" + laskeDTO.getUuid(), e);
             paivitaKohteenLaskennanTila(laskeDTO, HakukohteenLaskennanTila.VIRHE);
         }
-
-        LOG.info("(Uuid={}) Laskenta suoritettu hakukohteessa {}", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid());
-        paivitaKohteenLaskennanTila(laskeDTO, HakukohteenLaskennanTila.VALMIS);
     }
 
     private void toteutaLaskeJaSijoittele(List<LaskeDTO> lista) {
