@@ -24,10 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 
 @Controller
 @Path("valintalaskenta")
@@ -53,6 +50,13 @@ public class ValintalaskentaResourceImpl {
         this.valintatapajonoResource = valintatapajonoResource;
 
         this.hakukohteetLaskettavina = new ConcurrentHashMap<>();
+    }
+
+    @Path("status/{uuid}/hakukohde/{hakukohdeOid}")
+    @Produces("text/plain")
+    @GET
+    public String status(@PathParam("uuid") String uuid,@PathParam("hakukohdeOid") String hakukohdeOid) throws Exception {
+        return pidaKirjaaMeneillaanOlevista(uuid, hakukohdeOid, false);
     }
 
     @Path("laske")
@@ -216,20 +220,29 @@ public class ValintalaskentaResourceImpl {
     }
 
     private String pidaKirjaaMeneillaanOlevista(LaskeDTO laskeDTO) {
-        String key = laskeDTO.getUuid()+laskeDTO.getHakukohdeOid();
+        return pidaKirjaaMeneillaanOlevista(laskeDTO.getUuid(), laskeDTO.getHakukohdeOid(), true);
+    }
+
+    private String pidaKirjaaMeneillaanOlevista(String uuid, String hakukohdeOid, boolean luoJosPuuttuu) {
+        String key = uuid+hakukohdeOid;
         if (!hakukohteetLaskettavina.containsKey(key)) {
-            LOG.info("Luodaan uusi laskettava hakukohde. {} {}", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid());
-            hakukohteetLaskettavina.put(key, HakukohteenLaskennanTila.KESKEN);
-            return HakukohteenLaskennanTila.UUSI;
+            if(luoJosPuuttuu) {
+                LOG.info("Luodaan uusi laskettava hakukohde. {} {}", uuid, hakukohdeOid);
+                hakukohteetLaskettavina.put(key, HakukohteenLaskennanTila.KESKEN);
+                return HakukohteenLaskennanTila.UUSI;
+            } else {
+                LOG.info("Haettiin statusta laskennalle uuid ={}, hakukohde={}, mutta laskentaa ei ole olemassa. Onko palvelin käynnistetty välissä uudelleen?", uuid, hakukohdeOid);
+                return HakukohteenLaskennanTila.VIRHE;
+            }
         } else if (hakukohteetLaskettavina.get(key).equals(HakukohteenLaskennanTila.VALMIS)) {
-            LOG.info("Kohteen laskenta on valmistunut. {} {}", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid());
+            LOG.info("Kohteen laskenta on valmistunut. {} {}", uuid, hakukohdeOid);
             //hakukohteetLaskettavina.remove(key); //!! Joissain tilanteissa käynnistetään tarpeettomasti uusi laskenta
             return HakukohteenLaskennanTila.VALMIS;
         } else if (hakukohteetLaskettavina.get(key).equals(HakukohteenLaskennanTila.VIRHE)) {
-            LOG.info("Kohteen laskennassa on tapahtunut virhe. {} {}", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid());
+            LOG.info("Kohteen laskennassa on tapahtunut virhe. {} {}", uuid, hakukohdeOid);
             return HakukohteenLaskennanTila.VIRHE;
         } else {
-            LOG.info("Hakukohteen laskenta on edelleen kesken. {} {}", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid());
+            LOG.info("Hakukohteen laskenta on edelleen kesken. {} {}", uuid, hakukohdeOid);
             return HakukohteenLaskennanTila.KESKEN;
         }
     }
