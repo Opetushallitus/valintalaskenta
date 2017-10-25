@@ -123,14 +123,14 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
     public void suoritaLaskentaHakemukselle(Hakukohde hakukohde,
                                             HakemusWrapper laskettavaHakemus,
                                             List<Hakemus> kaikkiHakemukset,
-                                            Totuusarvofunktio lukuarvofunktio,
+                                            Totuusarvofunktio totuusarvofunktio,
                                             int jkPrioriteetti,
                                             Valinnanvaihe edellinenVaihe,
                                             Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan,
                                             String jkNimi, int jarjestysnumero,
                                             ValintakoeOsallistuminen edellinenOsallistuminen) {
         Laskentatulos<Boolean> tulos = laskentaService.suoritaValintalaskenta(hakukohde,
-                laskettavaHakemus.getLaskentahakemus(), kaikkiHakemukset, lukuarvofunktio);
+                laskettavaHakemus.getLaskentahakemus(), kaikkiHakemukset, totuusarvofunktio);
         muodostaTulos(laskettavaHakemus, jkPrioriteetti, tulos, edellinenVaihe, jonosijatHakemusOidinMukaan, jkNimi, jarjestysnumero, edellinenOsallistuminen);
     }
 
