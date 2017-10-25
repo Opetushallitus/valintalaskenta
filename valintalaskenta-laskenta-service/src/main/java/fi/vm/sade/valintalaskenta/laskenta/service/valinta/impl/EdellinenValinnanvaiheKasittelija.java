@@ -28,14 +28,14 @@ import java.util.stream.Collectors;
 
 @Component
 public class EdellinenValinnanvaiheKasittelija {
+    @Autowired
+    MuokattuJonosijaDAO muokattuJonosijaDAO;
+
     /**
      * Määrittää, onko hakemus hyväksyttävissä edellisen valinnan vaiheen mukaan.
      * Hakemus on hyväksyttävissä, jos se on ollut hyväksyttävissä ainakin yhdessä edellisen valinnan vaiheen
      * valintatapajonossa.
      */
-    @Autowired
-    MuokattuJonosijaDAO muokattuJonosijaDAO;
-
     public TilaJaSelite hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(final String hakemusOid,
                                                                              Valinnanvaihe edellinenValinnanvaihe) {
         // Jos edellisessä valinnan vaiheessa ei ole yhtään valintatapajonoa, voidaan olettaa, että hakemus
