@@ -2,28 +2,37 @@ package fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hylattytila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Virhetila;
-import fi.vm.sade.valintalaskenta.domain.valinta.*;
+import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
+import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
+import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
 public class EdellinenValinnanvaiheKasittelija {
-
     /**
      * Määrittää, onko hakemus hyväksyttävissä edellisen valinnan vaiheen mukaan.
      * Hakemus on hyväksyttävissä, jos se on ollut hyväksyttävissä ainakin yhdessä edellisen valinnan vaiheen
      * valintatapajonossa.
      */
-
     @Autowired
     MuokattuJonosijaDAO muokattuJonosijaDAO;
 
@@ -79,7 +88,7 @@ public class EdellinenValinnanvaiheKasittelija {
         });
 
         if (filtteroidutTilat.isEmpty()) {
-            Map<String,String> hylkaysSelitteet = tilat.get(tilat.size()-1).getSelite();
+            Map<String, String> hylkaysSelitteet = tilat.get(tilat.size() - 1).getSelite();
             String tekninenSelite = "Hakemus ei ole hyväksyttävissä yhdessäkään edellisen valinnan vaiheen valintatapajonossa";
             return new TilaJaSelite(JarjestyskriteerituloksenTila.HYLATTY, hylkaysSelitteet, tekninenSelite);
         } else {
@@ -146,25 +155,24 @@ public class EdellinenValinnanvaiheKasittelija {
      */
     public TilaJaSelite tilaEdellisenValinnanvaiheenMukaan(String hakemusOid, Tila laskettuTila, Valinnanvaihe edellinenValinnanvaihe) {
         return tilaEdellisenValinnanvaiheenTilanMukaan(laskettuTila,
-                hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, edellinenValinnanvaihe));
+            hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, edellinenValinnanvaihe));
     }
 
     public boolean koeOsallistuminenToisessaKohteessa(String hakukohdeOid, ValintakoeOsallistuminen hakijanOsallistumiset) {
         List<String> kohteenValintakokeet = hakijanOsallistumiset.getHakutoiveet()
-                .stream()
-                .filter(h -> h.getHakukohdeOid().equals(hakukohdeOid))
-                .flatMap(h->h.getValinnanVaiheet().stream())
-                .flatMap(v->v.getValintakokeet().stream())
-                .map(k->k.getValintakoeTunniste())
-                .collect(Collectors.toList());
+            .stream()
+            .filter(h -> h.getHakukohdeOid().equals(hakukohdeOid))
+            .flatMap(h -> h.getValinnanVaiheet().stream())
+            .flatMap(v -> v.getValintakokeet().stream())
+            .map(k -> k.getValintakoeTunniste())
+            .collect(Collectors.toList());
 
         return hakijanOsallistumiset.getHakutoiveet()
-                .stream()
-                .filter(h -> !h.getHakukohdeOid().equals(hakukohdeOid))
-                .flatMap(h->h.getValinnanVaiheet().stream())
-                .flatMap(v->v.getValintakokeet().stream())
-                .anyMatch(k -> kohteenValintakokeet.contains(k.getValintakoeTunniste())
-                        && k.getOsallistuminenTulos().getOsallistuminen().equals(Osallistuminen.OSALLISTUU));
+            .stream()
+            .filter(h -> !h.getHakukohdeOid().equals(hakukohdeOid))
+            .flatMap(h -> h.getValinnanVaiheet().stream())
+            .flatMap(v -> v.getValintakokeet().stream())
+            .anyMatch(k -> kohteenValintakokeet.contains(k.getValintakoeTunniste())
+                && k.getOsallistuminenTulos().getOsallistuminen().equals(Osallistuminen.OSALLISTUU));
     }
-
 }
