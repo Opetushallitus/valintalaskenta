@@ -1,5 +1,10 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl;
 
+import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.HYLATTY;
+import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA;
+import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.MAARITTELEMATON;
+import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.VIRHE;
+import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.OSALLISTUU;
 import com.google.common.collect.Collections2;
 
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hylattytila;
@@ -41,7 +46,7 @@ public class EdellinenValinnanvaiheKasittelija {
         // Jos edellisessä valinnan vaiheessa ei ole yhtään valintatapajonoa, voidaan olettaa, että hakemus
         // on hyväksyttävissä
         if (edellinenValinnanvaihe == null || edellinenValinnanvaihe.getValintatapajonot().isEmpty()) {
-            return new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, new HashMap<>());
+            return new TilaJaSelite(HYVAKSYTTAVISSA, new HashMap<>());
         }
 
         List<TilaJaSelite> tilat = new ArrayList<>();
@@ -52,14 +57,10 @@ public class EdellinenValinnanvaiheKasittelija {
             if (jonosija == null) {
                 // Jos hakemus ei ole ollut mukana edellisessä valinnan vaiheessa, hakemus ei voi tulla
                 // hyväksyttäväksi tässä valinnan vaiheessa.
-                return new TilaJaSelite(
-                    JarjestyskriteerituloksenTila.VIRHE,
-                    suomenkielinenMap("Hakemus ei ole ollut mukana laskennassa edellisessä valinnan vaiheessa"));
+                return new TilaJaSelite(VIRHE, suomenkielinenMap("Hakemus ei ole ollut mukana laskennassa edellisessä valinnan vaiheessa"));
             } else if (jonosija.getJarjestyskriteeritulokset().isEmpty()) {
                 // Mitä tehdään, jos hakemukselle ei ole laskentatulosta? Kai se on hyväksyttävissä
-                tilaJonossa = new TilaJaSelite(
-                    JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA,
-                    suomenkielinenMap("Hakemukselle ei ole laskentatulosta jonossa"));
+                tilaJonossa = new TilaJaSelite(HYVAKSYTTAVISSA, suomenkielinenMap("Hakemukselle ei ole laskentatulosta jonossa"));
             } else {
                 Jarjestyskriteeritulos tulos = jonosija.getJarjestyskriteeritulokset().get(0);
 
@@ -81,14 +82,14 @@ public class EdellinenValinnanvaiheKasittelija {
         // Filtteroidaan kaikki HYVAKSYTTAVISSA-tilat. Jos yksikin tällainen löytyy, hakemus on
         // hyväksyttävissä myös tässä valinnan vaiheessa.
         Collection<TilaJaSelite> filtteroidutTilat = Collections2.filter(tilat, edellinenValinnanvaiheTila ->
-            JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA.equals(edellinenValinnanvaiheTila.getTila()));
+            HYVAKSYTTAVISSA.equals(edellinenValinnanvaiheTila.getTila()));
 
         if (filtteroidutTilat.isEmpty()) {
             Map<String, String> hylkaysSelitteet = tilat.get(tilat.size() - 1).getSelite();
             String tekninenSelite = "Hakemus ei ole hyväksyttävissä yhdessäkään edellisen valinnan vaiheen valintatapajonossa";
-            return new TilaJaSelite(JarjestyskriteerituloksenTila.HYLATTY, hylkaysSelitteet, tekninenSelite);
+            return new TilaJaSelite(HYLATTY, hylkaysSelitteet, tekninenSelite);
         } else {
-            return new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, new HashMap<>());
+            return new TilaJaSelite(HYVAKSYTTAVISSA, new HashMap<>());
         }
     }
 
@@ -112,24 +113,22 @@ public class EdellinenValinnanvaiheKasittelija {
 
         // Jos edellinen vaiheen mukaan hakija ei ole hyväksyttävissä, asetetaan tilaksi hylätty.
         // Jos taas edellisen vaiheen mukaan hakija on hyväksyttävissä, käytetään laskettua tilaa.
-        if (!JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA.equals(edellisenVaiheentila.getTila())) {
+        if (!HYVAKSYTTAVISSA.equals(edellisenVaiheentila.getTila())) {
             palautettavaTila = new TilaJaSelite(edellisenVaiheentila.getTila(), edellisenVaiheentila.getSelite());
         } else if (Tila.Tilatyyppi.HYLATTY.equals(laskettuTila.getTilatyyppi())) {
-            JarjestyskriteerituloksenTila tila = JarjestyskriteerituloksenTila.HYLATTY;
             if (laskettuTila instanceof Hylattytila) {
-                palautettavaTila = new TilaJaSelite(tila, ((Hylattytila) laskettuTila).getKuvaus(), ((Hylattytila) laskettuTila).getTekninenKuvaus());
+                palautettavaTila = new TilaJaSelite(HYLATTY, ((Hylattytila) laskettuTila).getKuvaus(), ((Hylattytila) laskettuTila).getTekninenKuvaus());
             }
         } else if (Tila.Tilatyyppi.VIRHE.equals(laskettuTila.getTilatyyppi())) {
-            JarjestyskriteerituloksenTila tila = JarjestyskriteerituloksenTila.VIRHE;
             if (laskettuTila instanceof Virhetila) {
-                palautettavaTila = new TilaJaSelite(tila, ((Virhetila) laskettuTila).getKuvaus());
+                palautettavaTila = new TilaJaSelite(VIRHE, ((Virhetila) laskettuTila).getKuvaus());
             }
         } else if (Tila.Tilatyyppi.HYVAKSYTTAVISSA.equals(laskettuTila.getTilatyyppi())) {
-            palautettavaTila = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, new HashMap<>());
+            palautettavaTila = new TilaJaSelite(HYVAKSYTTAVISSA, new HashMap<>());
         } else {
 
             // Jos jostakin syystä tilaa ei pystytä selvittämään, palautetaan määrittelemätön-tila
-            palautettavaTila = new TilaJaSelite(JarjestyskriteerituloksenTila.MAARITTELEMATON, new HashMap<>());
+            palautettavaTila = new TilaJaSelite(MAARITTELEMATON, new HashMap<>());
         }
 
         return palautettavaTila;
@@ -164,6 +163,6 @@ public class EdellinenValinnanvaiheKasittelija {
             .flatMap(h -> h.getValinnanVaiheet().stream())
             .flatMap(v -> v.getValintakokeet().stream())
             .anyMatch(k -> kohteenValintakokeet.contains(k.getValintakoeTunniste())
-                && k.getOsallistuminenTulos().getOsallistuminen().equals(Osallistuminen.OSALLISTUU));
+                && k.getOsallistuminenTulos().getOsallistuminen().equals(OSALLISTUU));
     }
 }
