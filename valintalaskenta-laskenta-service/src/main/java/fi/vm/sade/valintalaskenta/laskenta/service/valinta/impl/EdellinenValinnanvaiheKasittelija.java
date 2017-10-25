@@ -99,7 +99,7 @@ public class EdellinenValinnanvaiheKasittelija {
     }
 
     private Map<String, String> suomenkielinenMap(String teksti) {
-        Map<String, String> vastaus = new HashMap<String, String>();
+        Map<String, String> vastaus = new HashMap<>();
         vastaus.put("FI", teksti);
         return vastaus;
     }
