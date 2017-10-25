@@ -1,6 +1,5 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hylattytila;
@@ -13,6 +12,7 @@ import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,11 +44,11 @@ public class EdellinenValinnanvaiheKasittelija {
             return new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, new HashMap<>());
         }
 
-        List<TilaJaSelite> tilat = new ArrayList<TilaJaSelite>();
+        List<TilaJaSelite> tilat = new ArrayList<>();
         for (final Valintatapajono jono : edellinenValinnanvaihe.getValintatapajonot()) {
             Jonosija jonosija = getJonosijaForHakemus(hakemusOid, jono.getJonosijat());
 
-            TilaJaSelite tilaJonossa = null;
+            TilaJaSelite tilaJonossa;
             if (jonosija == null) {
                 // Jos hakemus ei ole ollut mukana edellisessä valinnan vaiheessa, hakemus ei voi tulla
                 // hyväksyttäväksi tässä valinnan vaiheessa.
@@ -80,29 +80,20 @@ public class EdellinenValinnanvaiheKasittelija {
 
         // Filtteroidaan kaikki HYVAKSYTTAVISSA-tilat. Jos yksikin tällainen löytyy, hakemus on
         // hyväksyttävissä myös tässä valinnan vaiheessa.
-        Collection<TilaJaSelite> filtteroidutTilat = Collections2.filter(tilat, new Predicate<TilaJaSelite>() {
-            @Override
-            public boolean apply(TilaJaSelite edellinenValinnanvaiheTila) {
-                return JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA.equals(edellinenValinnanvaiheTila.getTila());
-            }
-        });
+        Collection<TilaJaSelite> filtteroidutTilat = Collections2.filter(tilat, edellinenValinnanvaiheTila ->
+            JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA.equals(edellinenValinnanvaiheTila.getTila()));
 
         if (filtteroidutTilat.isEmpty()) {
             Map<String, String> hylkaysSelitteet = tilat.get(tilat.size() - 1).getSelite();
             String tekninenSelite = "Hakemus ei ole hyväksyttävissä yhdessäkään edellisen valinnan vaiheen valintatapajonossa";
             return new TilaJaSelite(JarjestyskriteerituloksenTila.HYLATTY, hylkaysSelitteet, tekninenSelite);
         } else {
-            return new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, new HashMap<String, String>());
+            return new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, new HashMap<>());
         }
     }
 
     private Jonosija getJonosijaForHakemus(final String hakemusOid, final List<Jonosija> jonosijat) {
-        Collection<Jonosija> filtteroidutJonosijat = Collections2.filter(jonosijat, new Predicate<Jonosija>() {
-            @Override
-            public boolean apply(Jonosija jonosija) {
-                return jonosija.getHakemusOid().equals(hakemusOid);
-            }
-        });
+        Collection<Jonosija> filtteroidutJonosijat = Collections2.filter(jonosijat, jonosija -> jonosija.getHakemusOid().equals(hakemusOid));
         return filtteroidutJonosijat.isEmpty() ? null : filtteroidutJonosijat.iterator().next();
     }
 
@@ -164,7 +155,7 @@ public class EdellinenValinnanvaiheKasittelija {
             .filter(h -> h.getHakukohdeOid().equals(hakukohdeOid))
             .flatMap(h -> h.getValinnanVaiheet().stream())
             .flatMap(v -> v.getValintakokeet().stream())
-            .map(k -> k.getValintakoeTunniste())
+            .map(Valintakoe::getValintakoeTunniste)
             .collect(Collectors.toList());
 
         return hakijanOsallistumiset.getHakutoiveet()
