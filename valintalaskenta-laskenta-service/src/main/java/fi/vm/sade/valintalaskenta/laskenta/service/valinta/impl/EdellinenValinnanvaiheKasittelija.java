@@ -10,13 +10,11 @@ import com.google.common.collect.Collections2;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hylattytila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Virhetila;
-import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
@@ -33,8 +31,12 @@ import java.util.stream.Collectors;
 
 @Component
 public class EdellinenValinnanvaiheKasittelija {
+    private final MuokattuJonosijaDAO muokattuJonosijaDAO;
+
     @Autowired
-    MuokattuJonosijaDAO muokattuJonosijaDAO;
+    public EdellinenValinnanvaiheKasittelija(MuokattuJonosijaDAO muokattuJonosijaDAO) {
+        this.muokattuJonosijaDAO = muokattuJonosijaDAO;
+    }
 
     /**
      * Määrittää, onko hakemus hyväksyttävissä edellisen valinnan vaiheen mukaan.

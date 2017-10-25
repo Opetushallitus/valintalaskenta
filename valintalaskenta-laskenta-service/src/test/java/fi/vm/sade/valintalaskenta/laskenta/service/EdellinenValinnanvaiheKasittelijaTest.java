@@ -1,27 +1,30 @@
 package fi.vm.sade.valintalaskenta.laskenta.service;
 
-import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.*;
-import fi.vm.sade.valintalaskenta.domain.valinta.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+
+import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.ArvokonvertointiVirhe;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Arvokonvertterihylkays;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hylattytila;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hyvaksyttavissatila;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Virhetila;
+import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
+import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinnanvaiheKasittelija;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.TilaJaSelite;
 import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.*;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User: wuoti
@@ -29,26 +32,12 @@ import static org.junit.Assert.assertNull;
  * Time: 14.44
  */
 public class EdellinenValinnanvaiheKasittelijaTest {
-
-    private EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija;
-
-    MuokattuJonosijaDAO muokattuJonosijaDAOMock;
+    private final EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija = new EdellinenValinnanvaiheKasittelija(mock(MuokattuJonosijaDAO.class));
 
     private Map<String, String> suomenkielinenMap(String teksti) {
         Map<String, String> vastaus = new HashMap<String, String>();
         vastaus.put("FI", teksti);
         return vastaus;
-    }
-
-    @Before
-    public void setUp() {
-        edellinenValinnanvaiheKasittelija = new EdellinenValinnanvaiheKasittelija();
-
-        muokattuJonosijaDAOMock = mock(MuokattuJonosijaDAO.class);
-
-        ReflectionTestUtils.setField(edellinenValinnanvaiheKasittelija,
-                "muokattuJonosijaDAO",
-                muokattuJonosijaDAOMock);
     }
 
     @Test
