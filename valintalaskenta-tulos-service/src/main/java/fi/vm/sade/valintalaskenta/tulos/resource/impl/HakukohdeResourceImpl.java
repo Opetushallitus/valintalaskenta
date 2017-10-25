@@ -5,6 +5,14 @@ import static fi.vm.sade.valintalaskenta.tulos.LaskentaAudit.AUDIT;
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ_UPDATE_CRUD;
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.ROLE_VALINTOJENTOTEUTTAMINEN_TULOSTENTUONTI;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import fi.vm.sade.auditlog.valintaperusteet.ValintaperusteetOperation;
 import fi.vm.sade.authentication.business.service.Authorizer;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
@@ -13,6 +21,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
+import fi.vm.sade.generic.AuditLog;
 import fi.vm.sade.valintalaskenta.tulos.resource.HakukohdeResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import io.swagger.annotations.Api;
@@ -114,6 +123,8 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
                 .forEach(
                         v -> {
                             v.getHakija().forEach(h -> {
+                                //AuditLog.log(ValintaperusteetOperation.VALINNANVAIHE_TUONTI_KAYTTOLIITTYMA, ValintaResource);
+                                /*
                                 AUDIT.log(builder()
                                         .id(LaskentaAudit.username())
                                         .hakemusOid(h.getHakemusOid())
@@ -122,7 +133,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
                                         .valintatapajonoOid(v.getOid())
                                         .add("jonosija", h.getJonosija())
                                         .setOperaatio(ValintaperusteetOperation.VALINNANVAIHE_TUONTI_KAYTTOLIITTYMA)
-                                        .build());
+                                        .build());*/
                             });
                         }
                 );
