@@ -26,23 +26,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * User: wuoti
- * Date: 4.9.2013
- * Time: 14.44
- */
 public class EdellinenValinnanvaiheKasittelijaTest {
     private final EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija = new EdellinenValinnanvaiheKasittelija(mock(MuokattuJonosijaDAO.class));
 
     private Map<String, String> suomenkielinenMap(String teksti) {
-        Map<String, String> vastaus = new HashMap<String, String>();
+        Map<String, String> vastaus = new HashMap<>();
         vastaus.put("FI", teksti);
         return vastaus;
     }
 
     @Test
     public void testEiValintatapajonoja() {
-
         Valinnanvaihe vaihe = new Valinnanvaihe();
 
         TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan("hakesmusOid", vaihe);
@@ -95,7 +89,7 @@ public class EdellinenValinnanvaiheKasittelijaTest {
         jono3.getJonosijat().add(luoJonosija(hakemusOid, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA));
 
         Valinnanvaihe vaihe = new Valinnanvaihe();
-        vaihe.getValintatapajonot().addAll(Arrays.asList(new Valintatapajono[]{jono1, jono2, jono3}));
+        vaihe.getValintatapajonot().addAll(Arrays.asList(jono1, jono2, jono3));
 
         TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, vaihe);
         assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, tila.getTila());
@@ -118,7 +112,7 @@ public class EdellinenValinnanvaiheKasittelijaTest {
         jono3.getJonosijat().add(luoJonosija(hakemusOid, JarjestyskriteerituloksenTila.MAARITTELEMATON));
 
         Valinnanvaihe vaihe = new Valinnanvaihe();
-        vaihe.getValintatapajonot().addAll(Arrays.asList(new Valintatapajono[]{jono1, jono2, jono3}));
+        vaihe.getValintatapajonot().addAll(Arrays.asList(jono1, jono2, jono3));
 
         TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, vaihe);
         assertEquals(JarjestyskriteerituloksenTila.HYLATTY, tila.getTila());
