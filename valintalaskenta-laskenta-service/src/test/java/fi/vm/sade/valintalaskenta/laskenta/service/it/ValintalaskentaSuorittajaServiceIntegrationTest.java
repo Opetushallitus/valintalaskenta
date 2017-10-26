@@ -73,9 +73,6 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
     private ValinnanvaiheDAO valinnanvaiheDAO;
 
     @Autowired
-    private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
-
-    @Autowired
     private JarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAO;
 
     private static ValintaperusteetFunktiokutsuDTO sata;
