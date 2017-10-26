@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.mongodb.morphia.annotations.Converters;
 import org.mongodb.morphia.annotations.Embedded;
 import fi.vm.sade.valintalaskenta.domain.converter.BigDecimalConverter;
@@ -80,5 +81,10 @@ public class Jarjestyskriteeritulos {
 
     public void setTekninenKuvaus(String tekninenKuvaus) {
         this.tekninenKuvaus = tekninenKuvaus;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }
