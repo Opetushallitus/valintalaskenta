@@ -262,11 +262,11 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         assertEquals(1, hakutoive1.get().getValinnanVaiheet().get(0).getValintakokeet().size());
         assertEquals(1, hakutoive1.get().getValinnanVaiheet().get(1).getValintakokeet().size());
 
-        final Optional<Valintakoe> valintakoetunniste1 = hakutoive1.get().getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste1")).findFirst();
+        final Optional<Valintakoe> valintakoetunniste1 = hakutoive1.get().getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(koeWithTunniste("valintakoetunniste1")).findFirst();
         assertTrue(valintakoetunniste1.isPresent());
         assertEquals(OSALLISTUU, valintakoetunniste1.get().getOsallistuminenTulos().getOsallistuminen());
 
-        final Optional<Valintakoe> valintakoetunniste2 = hakutoive1.get().getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste2")).findFirst();
+        final Optional<Valintakoe> valintakoetunniste2 = hakutoive1.get().getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(koeWithTunniste("valintakoetunniste2")).findFirst();
         assertTrue(valintakoetunniste2.isPresent());
         assertEquals(OSALLISTUU, valintakoetunniste2.get().getOsallistuminenTulos().getOsallistuminen());
 
@@ -276,11 +276,11 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         assertEquals(1, hakutoive2.get().getValinnanVaiheet().size());
         assertEquals(2, hakutoive2.get().getValinnanVaiheet().get(0).getValintakokeet().size());
 
-        final Optional<Valintakoe> valintakoetunniste3 = hakutoive2.get().getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste3")).findFirst();
+        final Optional<Valintakoe> valintakoetunniste3 = hakutoive2.get().getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(koeWithTunniste("valintakoetunniste3")).findFirst();
         assertTrue(valintakoetunniste3.isPresent());
         assertEquals(OSALLISTUU, valintakoetunniste3.get().getOsallistuminenTulos().getOsallistuminen());
 
-        final Optional<Valintakoe> valintakoetunniste2b = hakutoive2.get().getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste2")).findFirst();
+        final Optional<Valintakoe> valintakoetunniste2b = hakutoive2.get().getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(koeWithTunniste("valintakoetunniste2")).findFirst();
         assertTrue(valintakoetunniste2b.isPresent());
         assertEquals(Osallistuminen.EI_OSALLISTU, valintakoetunniste2b.get().getOsallistuminenTulos().getOsallistuminen());
     }
@@ -362,11 +362,11 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         assertEquals(1, hakutoive1.get().getValinnanVaiheet().get(0).getValintakokeet().size());
         assertEquals(1, hakutoive1.get().getValinnanVaiheet().get(1).getValintakokeet().size());
 
-        final Optional<Valintakoe> valintakoetunniste1 = hakutoive1.get().getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste1")).findFirst();
+        final Optional<Valintakoe> valintakoetunniste1 = hakutoive1.get().getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(koeWithTunniste("valintakoetunniste1")).findFirst();
         assertTrue(valintakoetunniste1.isPresent());
         assertEquals(OSALLISTUU, valintakoetunniste1.get().getOsallistuminenTulos().getOsallistuminen());
 
-        final Optional<Valintakoe> valintakoetunniste3 = hakutoive1.get().getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste3")).findFirst();
+        final Optional<Valintakoe> valintakoetunniste3 = hakutoive1.get().getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(koeWithTunniste("valintakoetunniste3")).findFirst();
         assertTrue(valintakoetunniste3.isPresent());
         assertEquals(OSALLISTUU, valintakoetunniste3.get().getOsallistuminenTulos().getOsallistuminen());
 
@@ -376,7 +376,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         assertEquals(1, hakutoive2.get().getValinnanVaiheet().size());
         assertEquals(1, hakutoive2.get().getValinnanVaiheet().get(0).getValintakokeet().size());
 
-        final Optional<Valintakoe> valintakoetunniste2 = hakutoive2.get().getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste2")).findFirst();
+        final Optional<Valintakoe> valintakoetunniste2 = hakutoive2.get().getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(koeWithTunniste("valintakoetunniste2")).findFirst();
         assertTrue(valintakoetunniste2.isPresent());
         assertEquals(OSALLISTUU, valintakoetunniste2.get().getOsallistuminenTulos().getOsallistuminen());
     }
@@ -451,11 +451,11 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         assertEquals(2, hakutoive1.getValinnanVaiheet().get(0).getValintakokeet().size());
 
-        final Optional<Valintakoe> valintakoetunniste2 = hakutoive1.getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste2")).findFirst();
+        final Optional<Valintakoe> valintakoetunniste2 = hakutoive1.getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(koeWithTunniste("valintakoetunniste2")).findFirst();
         assertTrue(valintakoetunniste2.isPresent());
         assertEquals(OSALLISTUU, valintakoetunniste2.get().getOsallistuminenTulos().getOsallistuminen());
 
-        final Optional<Valintakoe> valintakoetunniste3 = hakutoive1.getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste1")).findFirst();
+        final Optional<Valintakoe> valintakoetunniste3 = hakutoive1.getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(koeWithTunniste("valintakoetunniste1")).findFirst();
         assertTrue(valintakoetunniste3.isPresent());
         assertEquals(OSALLISTUU, valintakoetunniste3.get().getOsallistuminenTulos().getOsallistuminen());
     }
@@ -528,7 +528,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         assertEquals(1, hakutoive1.getValinnanVaiheet().size());
         assertEquals(1, hakutoive1.getValinnanVaiheet().get(0).getValintakokeet().size());
 
-        final Optional<Valintakoe> valintakoetunniste2 = hakutoive1.getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste2")).findFirst();
+        final Optional<Valintakoe> valintakoetunniste2 = hakutoive1.getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(koeWithTunniste("valintakoetunniste2")).findFirst();
         assertTrue(valintakoetunniste2.isPresent());
         assertEquals(OSALLISTUU, valintakoetunniste2.get().getOsallistuminenTulos().getOsallistuminen());
 
@@ -536,7 +536,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         assertEquals(1, hakutoive2.getValinnanVaiheet().size());
         assertEquals(1, hakutoive2.getValinnanVaiheet().get(0).getValintakokeet().size());
 
-        final Optional<Valintakoe> valintakoetunniste1 = hakutoive2.getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(k -> k.getValintakoeTunniste().equals("valintakoetunniste1")).findFirst();
+        final Optional<Valintakoe> valintakoetunniste1 = hakutoive2.getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(koeWithTunniste("valintakoetunniste1")).findFirst();
         assertTrue(valintakoetunniste1.isPresent());
         assertEquals(OSALLISTUU, valintakoetunniste1.get().getOsallistuminenTulos().getOsallistuminen());
     }
@@ -750,12 +750,12 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         assertNotNull(osallistuminen);
-        boolean voidaanHyvaksya = edellinenValinnanvaiheKasittelija.koeOsallistuminenToisessaKohteessa(hakukohdeOid,osallistuminen);
+        boolean voidaanHyvaksya = edellinenValinnanvaiheKasittelija.kuhunkinKohteenKokeeseenOsallistutaanToisessaKohteessa(hakukohdeOid,osallistuminen);
         assertTrue(voidaanHyvaksya);
 
         osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid2);
         assertNotNull(osallistuminen);
-        voidaanHyvaksya = edellinenValinnanvaiheKasittelija.koeOsallistuminenToisessaKohteessa(hakukohdeOid,osallistuminen);
+        voidaanHyvaksya = edellinenValinnanvaiheKasittelija.kuhunkinKohteenKokeeseenOsallistutaanToisessaKohteessa(hakukohdeOid,osallistuminen);
         assertTrue(!voidaanHyvaksya);
 
         // Kopio koodia että nähdään mitä tapahtuu
