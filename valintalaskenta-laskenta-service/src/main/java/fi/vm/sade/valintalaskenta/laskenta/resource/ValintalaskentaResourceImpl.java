@@ -1,9 +1,12 @@
 package fi.vm.sade.valintalaskenta.laskenta.resource;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
@@ -75,7 +78,7 @@ public class ValintalaskentaResourceImpl {
         } else {
             //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran (samalle ooid+haukohdeoid-tunnisteelle) vaikka pyyntöjä tulisi useita
             try {
-                executorService.submit(() -> toteutaLaskenta(laskeDTO));
+                executorService.submit(timeRunnable.apply(laskeDTO.getUuid(),() -> toteutaLaskenta(laskeDTO)));
                 return HakukohteenLaskennanTila.UUSI;
             } catch (Exception e) {
                 LOG.error("Virhe laskennan suorituksessa, ", e);
@@ -96,7 +99,7 @@ public class ValintalaskentaResourceImpl {
         } else {
             //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran (samalle ooid+haukohdeoid-tunnisteelle) vaikka pyyntöjä tulisi useita
             try {
-                executorService.submit(() -> toteutaValintakoeLaskenta(laskeDTO));
+                executorService.submit(timeRunnable.apply(laskeDTO.getUuid(),() -> toteutaValintakoeLaskenta(laskeDTO)));
                 return HakukohteenLaskennanTila.UUSI;
             } catch (Exception e) {
                 LOG.error("Virhe laskennan suorituksessa, ", e);
@@ -117,7 +120,7 @@ public class ValintalaskentaResourceImpl {
         } else {
             //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran (samalle ooid+haukohdeoid-tunnisteelle) vaikka pyyntöjä tulisi useita
             try {
-                executorService.submit(() -> toteutaLaskeKaikki(laskeDTO));
+                executorService.submit(timeRunnable.apply(laskeDTO.getUuid(),() -> toteutaLaskeKaikki(laskeDTO)));
                 return HakukohteenLaskennanTila.UUSI;
             } catch (Exception e) {
                 LOG.error("Virhe laskennan suorituksessa, ", e);
@@ -144,7 +147,7 @@ public class ValintalaskentaResourceImpl {
         } else {
             //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran (samalle ooid+haukohdeoid-tunnisteelle) vaikka pyyntöjä tulisi useita
             try {
-                executorService.submit(() -> toteutaLaskeJaSijoittele(lista));
+                executorService.submit(timeRunnable.apply(laskeDTO.getUuid(),() -> toteutaLaskeJaSijoittele(lista)));
                 return HakukohteenLaskennanTila.UUSI;
             } catch (Exception e) {
                 LOG.error("Virhe laskennan suorituksessa, ", e);
@@ -478,5 +481,19 @@ public class ValintalaskentaResourceImpl {
             j.setSiirretaanSijoitteluun(true);
             j.setValmisSijoiteltavaksi(true);
         });
+    }
+    private BiFunction<String, Runnable, Runnable> timeRunnable = (uuid, r) -> {
+        return () -> {
+            long start = System.currentTimeMillis();
+            try {
+                r.run();
+            } finally {
+                long end = System.currentTimeMillis();
+                LOG.info("(Uuid={}) (Kesto {}s) Laskenta valmis!", uuid, millisToString(end - start));
+            }
+        };
+    };
+    private static String millisToString(long millis) {
+        return new BigDecimal(millis).divide(new BigDecimal(1000), 2, BigDecimal.ROUND_HALF_UP).toPlainString();
     }
 }
