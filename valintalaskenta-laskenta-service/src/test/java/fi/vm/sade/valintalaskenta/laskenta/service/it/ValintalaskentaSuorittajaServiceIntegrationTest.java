@@ -1,7 +1,9 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.it;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
+import static com.lordofthejars.nosqlunit.core.LoadStrategyEnum.CLEAN_INSERT;
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
+import static fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi.LUKUARVO;
 import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.HYLATTY;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakemus;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoJarjestyskriteeri;
@@ -52,11 +54,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * User: wuoti
- * Date: 5.9.2013
- * Time: 12.17
- */
 @ContextConfiguration(locations = "classpath:application-context-test.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners(listeners = {DependencyInjectionTestExecutionListener.class,
@@ -94,7 +91,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
 
     static {
         sata = new ValintaperusteetFunktiokutsuDTO();
-        sata.setFunktionimi(Funktionimi.LUKUARVO);
+        sata.setFunktionimi(LUKUARVO);
         sata.setTallennaTulos(true);
         sata.setTulosTunniste("sata");
         {
@@ -105,7 +102,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         }
 
         kaksisataa = new ValintaperusteetFunktiokutsuDTO();
-        kaksisataa.setFunktionimi(Funktionimi.LUKUARVO);
+        kaksisataa.setFunktionimi(LUKUARVO);
         kaksisataa.setTallennaTulos(true);
         kaksisataa.setTulosTunniste("kaksisataa");
         {
@@ -116,7 +113,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         }
 
         kolmesataa = new ValintaperusteetFunktiokutsuDTO();
-        kolmesataa.setFunktionimi(Funktionimi.LUKUARVO);
+        kolmesataa.setFunktionimi(LUKUARVO);
         {
             SyoteparametriDTO param = new SyoteparametriDTO();
             param.setAvain("luku");
@@ -125,7 +122,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         }
 
         neljasataa = new ValintaperusteetFunktiokutsuDTO();
-        neljasataa.setFunktionimi(Funktionimi.LUKUARVO);
+        neljasataa.setFunktionimi(LUKUARVO);
         {
             SyoteparametriDTO param = new SyoteparametriDTO();
             param.setAvain("luku");
@@ -134,7 +131,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         }
 
         viisisataa = new ValintaperusteetFunktiokutsuDTO();
-        viisisataa.setFunktionimi(Funktionimi.LUKUARVO);
+        viisisataa.setFunktionimi(LUKUARVO);
         {
             SyoteparametriDTO param = new SyoteparametriDTO();
             param.setAvain("luku");
@@ -143,7 +140,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         }
 
         kuusisataa = new ValintaperusteetFunktiokutsuDTO();
-        kuusisataa.setFunktionimi(Funktionimi.LUKUARVO);
+        kuusisataa.setFunktionimi(LUKUARVO);
         kuusisataa.setTallennaTulos(true);
         kuusisataa.setTulosTunniste("kuusisataa");
         {
@@ -154,7 +151,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         }
 
         seitsemansataa = new ValintaperusteetFunktiokutsuDTO();
-        seitsemansataa.setFunktionimi(Funktionimi.LUKUARVO);
+        seitsemansataa.setFunktionimi(LUKUARVO);
         {
             SyoteparametriDTO param = new SyoteparametriDTO();
             param.setAvain("luku");
@@ -163,7 +160,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         }
 
         kahdeksansataa = new ValintaperusteetFunktiokutsuDTO();
-        kahdeksansataa.setFunktionimi(Funktionimi.LUKUARVO);
+        kahdeksansataa.setFunktionimi(LUKUARVO);
         {
             SyoteparametriDTO param = new SyoteparametriDTO();
             param.setAvain("luku");
@@ -235,12 +232,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
             assertEquals(valinnanvaiheOid1, valinnanvaihe1.getValinnanvaiheOid());
             assertEquals(2, valinnanvaihe1.getValintatapajonot().size());
 
-            Comparator<Jonosija> jonosijaComparator = new Comparator<Jonosija>() {
-                @Override
-                public int compare(Jonosija o1, Jonosija o2) {
-                    return o1.getHakemusOid().compareTo(o2.getHakemusOid());
-                }
-            };
+            Comparator<Jonosija> jonosijaComparator = Comparator.comparing(Jonosija::getHakemusOid);
 
             {
                 Valintatapajono jono = valinnanvaihe1.getValintatapajonot().get(0);
@@ -365,12 +357,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
             assertEquals(valinnanvaiheOid2, valinnanvaihe2.getValinnanvaiheOid());
             assertEquals(1, valinnanvaihe2.getValintatapajonot().size());
 
-            Comparator<Jonosija> jonosijaComparator = new Comparator<Jonosija>() {
-                @Override
-                public int compare(Jonosija o1, Jonosija o2) {
-                    return o1.getHakemusOid().compareTo(o2.getHakemusOid());
-                }
-            };
+            Comparator<Jonosija> jonosijaComparator = Comparator.comparing(Jonosija::getHakemusOid);
 
             {
                 Valintatapajono jono = valinnanvaihe2.getValintatapajonot().get(0);
@@ -429,12 +416,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
             assertEquals(valinnanvaiheOid3, valinnanvaihe3.getValinnanvaiheOid());
             assertEquals(2, valinnanvaihe3.getValintatapajonot().size());
 
-            Comparator<Jonosija> jonosijaComparator = new Comparator<Jonosija>() {
-                @Override
-                public int compare(Jonosija o1, Jonosija o2) {
-                    return o1.getHakemusOid().compareTo(o2.getHakemusOid());
-                }
-            };
+            Comparator<Jonosija> jonosijaComparator = Comparator.comparing(Jonosija::getHakemusOid);
 
             {
                 Valintatapajono jono = valinnanvaihe3.getValintatapajonot().get(0);
@@ -551,12 +533,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
             assertEquals(valinnanvaiheOid4, valinnanvaihe4.getValinnanvaiheOid());
             assertEquals(1, valinnanvaihe4.getValintatapajonot().size());
 
-            Comparator<Jonosija> jonosijaComparator = new Comparator<Jonosija>() {
-                @Override
-                public int compare(Jonosija o1, Jonosija o2) {
-                    return o1.getHakemusOid().compareTo(o2.getHakemusOid());
-                }
-            };
+            Comparator<Jonosija> jonosijaComparator = Comparator.comparing(Jonosija::getHakemusOid);
 
             {
                 Valintatapajono jono = valinnanvaihe4.getValintatapajonot().get(0);
@@ -604,7 +581,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
     }
 
     @Test
-    @UsingDataSet(locations = "testViimeisinValinnanVaihe.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @UsingDataSet(locations = "testViimeisinValinnanVaihe.json", loadStrategy = CLEAN_INSERT)
     public void testViimeisinValinnanVaihe() {
         final String hakemusOid = "1.2.246.562.11.00000072753";
         final String hakukohdeOid = "1.2.246.562.5.91937845484";
@@ -614,8 +591,8 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
 
         ValintaperusteetDTO vv3 = luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 2);
         (vv3.getValinnanVaihe()).getValintatapajono().add(luoValintatapajono(valintatapajonoOid, 0, 10, luoJarjestyskriteeri(sata, 1)));
-        valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid)),
-                Arrays.asList(vv3), new ArrayList<>(), hakukohdeOid, uuid, korkeakouluhaku);
+        valintalaskentaSuorittajaService.suoritaLaskenta(Collections.singletonList(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid)),
+            Collections.singletonList(vv3), new ArrayList<>(), hakukohdeOid, uuid, korkeakouluhaku);
 
         Valinnanvaihe vaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanVaiheOid);
         assertNotNull(vaihe);
@@ -635,7 +612,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
     }
 
     @Test
-    @UsingDataSet(locations = "testViimeisinValinnanVaihe.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @UsingDataSet(locations = "testViimeisinValinnanVaihe.json", loadStrategy = CLEAN_INSERT)
     public void testPoistaHylatyt() {
         final String hakemusOid = "1.2.246.562.11.00000072753"; // Hylätty edellisessä vaiheessa
         final String hakemusOid2 = "1.2.246.562.11.00000072672";
@@ -648,7 +625,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         (vv3.getValinnanVaihe()).getValintatapajono().add(luoValintatapajono(valintatapajonoOid, 0, 10, luoJarjestyskriteeri(sata, 1)));
         (vv3.getValinnanVaihe()).getValintatapajono().get(0).setPoistetaankoHylatyt(true);
         valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid), luoHakemus(hakuOid, hakemusOid2,hakemusOid, hakukohdeOid)),
-                Arrays.asList(vv3), new ArrayList<>(), hakukohdeOid, uuid, korkeakouluhaku);
+            Collections.singletonList(vv3), new ArrayList<>(), hakukohdeOid, uuid, korkeakouluhaku);
 
         Valinnanvaihe vaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanVaiheOid);
         assertNotNull(vaihe);
@@ -668,7 +645,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
     }
 
     @Test
-    @UsingDataSet(locations = "voidaanHyvaksya.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @UsingDataSet(locations = "voidaanHyvaksya.json", loadStrategy = CLEAN_INSERT)
     public void testValisijoitteluHylkaysHyvaksytty() {
 
         final String valinnanVaiheOid = "vv3";
@@ -681,7 +658,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         ValintaperusteetDTO vv3 = luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 3);
         (vv3.getValinnanVaihe()).getValintatapajono().add(luoValintatapajono(valintatapajonoOid, 0, 10, luoJarjestyskriteeri(sata, 1)));
         valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid), luoHakemus(hakuOid, hakemusOid2, hakemusOid, hakukohdeOid)),
-                Arrays.asList(vv3), new ArrayList<>(), hakukohdeOid, uuid, korkeakouluhaku);
+            Collections.singletonList(vv3), new ArrayList<>(), hakukohdeOid, uuid, korkeakouluhaku);
 
         Valinnanvaihe vaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanVaiheOid);
         assertNotNull(vaihe);
@@ -692,7 +669,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
     }
 
     @Test
-    @UsingDataSet(locations = "toisessaKohteessaKoeJohonEiOsallistuta.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @UsingDataSet(locations = "toisessaKohteessaKoeJohonEiOsallistuta.json", loadStrategy = CLEAN_INSERT)
     public void valisijoittelussaKutsutaanHakutoiveenKokeeseenVaikkaToiseltaToiveeltaLoytyisiOsallistuminenEriKokeeseen() {
         final String valinnanVaiheOid = "vv4";
         final String valintatapajonoOid = "jono2";

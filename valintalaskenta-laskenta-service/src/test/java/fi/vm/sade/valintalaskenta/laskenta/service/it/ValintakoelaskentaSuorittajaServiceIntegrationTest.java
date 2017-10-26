@@ -2,10 +2,13 @@ package fi.vm.sade.valintalaskenta.laskenta.service.it;
 
 import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
+import static com.lordofthejars.nosqlunit.core.LoadStrategyEnum.CLEAN_INSERT;
+import static com.lordofthejars.nosqlunit.core.LoadStrategyEnum.DELETE_ALL;
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA;
 import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.EI_OSALLISTU;
 import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.OSALLISTUU;
+import static fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.ValintakoelaskentaSuorittajaServiceImpl.VALINNANVAIHE_HAKIJAN_VALINTA;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakemus;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteetJaValintakoeValinnanvaihe;
@@ -23,7 +26,6 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 
 import co.unruly.matchers.StreamMatchers;
@@ -45,7 +47,6 @@ import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintakoelaskennanKumulatiivisetTulokset;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinnanvaiheKasittelija;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
-import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.ValintakoelaskentaSuorittajaServiceImpl;
 import org.apache.commons.io.IOUtils;
 import org.junit.Rule;
 import org.junit.Test;
@@ -72,11 +73,6 @@ import java.util.TreeMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-/**
- * User: wuoti
- * Date: 6.5.2013
- * Time: 12.54
- */
 @ContextConfiguration(locations = "classpath:application-context-test.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners(listeners = {DependencyInjectionTestExecutionListener.class,
@@ -127,7 +123,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     private ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset = new ValintakoelaskennanKumulatiivisetTulokset();
 
     @Test
-    @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
+    @UsingDataSet(loadStrategy = DELETE_ALL)
     public void test() {
         final String hakukohdeOid1 = "hakukohdeOid1";
         final String hakukohdeOid2 = "hakukohdeOid2";
@@ -148,12 +144,12 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         final String valinnanVaiheOid2 = "valinnanVaiheOid2";
         final int valinnanVaiheJarjestysluku2 = 1;
 
-        Map<String, FunktiokutsuDTO> kokeet2 = new HashMap<String, FunktiokutsuDTO>();
+        Map<String, FunktiokutsuDTO> kokeet2 = new HashMap<>();
         kokeet2.put(valintakoetunniste, totuusarvoFalse);
 
         ValintaperusteetDTO valintaperusteet2 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid2, valinnanVaiheOid2, valinnanVaiheJarjestysluku2, kokeet2, Koekutsu.YLIN_TOIVE, "kutsunKohdeAvain");
 
-        List<ValintaperusteetDTO> valintaperusteet = new ArrayList<ValintaperusteetDTO>();
+        List<ValintaperusteetDTO> valintaperusteet = new ArrayList<>();
         valintaperusteet.add(valintaperusteet1);
         valintaperusteet.add(valintaperusteet2);
 
@@ -166,7 +162,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     }
 
     @Test
-    @UsingDataSet(locations = "testVanhaTulos.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @UsingDataSet(locations = "testVanhaTulos.json", loadStrategy = CLEAN_INSERT)
     public void testKoekutsuHakijanValinta() {
         final String hakukohdeOid1 = "hakukohdeOid1";
         final String hakukohdeOid2 = "hakukohdeOid2";
@@ -183,7 +179,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         ValintaperusteetDTO valintaperusteet1 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, valinnanVaiheOid1, valinnanVaiheJarjestysluku1, kokeet1, Koekutsu.HAKIJAN_VALINTA, "hakukohdeKutsunKohde2");
 
-        List<ValintaperusteetDTO> valintaperusteet = new ArrayList<ValintaperusteetDTO>();
+        List<ValintaperusteetDTO> valintaperusteet = new ArrayList<>();
         valintaperusteet.add(valintaperusteet1);
 
         valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid, kumulatiivisetTulokset, korkeakouluhaku);
@@ -191,13 +187,13 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         assertNotNull(osallistuminen);
         assertEquals(OSALLISTUU, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen());
-        assertEquals(ValintakoelaskentaSuorittajaServiceImpl.VALINNANVAIHE_HAKIJAN_VALINTA, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValinnanVaiheOid());
+        assertEquals(VALINNANVAIHE_HAKIJAN_VALINTA, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValinnanVaiheOid());
         assertEquals(new Integer(100), osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValinnanVaiheJarjestysluku());
         assertEquals(1, osallistuminen.getHakutoiveet().size());
     }
 
     @Test
-    @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
+    @UsingDataSet(loadStrategy = DELETE_ALL)
     public void test1() {
         final String hakukohdeOid1 = "hakukohdeOid1";
         final String hakukohdeOid2 = "hakukohdeOid2";
@@ -282,11 +278,11 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         final Optional<Valintakoe> valintakoetunniste2b = hakutoive2.get().getValinnanVaiheet().stream().flatMap(v -> v.getValintakokeet().stream()).filter(koeWithTunniste("valintakoetunniste2")).findFirst();
         assertTrue(valintakoetunniste2b.isPresent());
-        assertEquals(Osallistuminen.EI_OSALLISTU, valintakoetunniste2b.get().getOsallistuminenTulos().getOsallistuminen());
+        assertEquals(EI_OSALLISTU, valintakoetunniste2b.get().getOsallistuminenTulos().getOsallistuminen());
     }
 
     @Test
-    @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
+    @UsingDataSet(loadStrategy = DELETE_ALL)
     public void test2() {
         final String hakukohdeOid1 = "hakukohdeOid1";
         final String hakukohdeOid2 = "hakukohdeOid2";
@@ -382,7 +378,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     }
 
     @Test
-    @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
+    @UsingDataSet(loadStrategy = DELETE_ALL)
     public void test3() {
         final String hakukohdeOid1 = "hakukohdeOid1";
         final String hakukohdeOid2 = "hakukohdeOid2";
@@ -461,7 +457,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     }
 
     @Test
-    @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
+    @UsingDataSet(loadStrategy = DELETE_ALL)
     public void test4() {
         final String hakukohdeOid1 = "hakukohdeOid1";
         final String hakukohdeOid2 = "hakukohdeOid2";
@@ -542,7 +538,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     }
 
     @Test
-    @UsingDataSet(locations = "testEsivalinnassaHylatty.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @UsingDataSet(locations = "testEsivalinnassaHylatty.json", loadStrategy = CLEAN_INSERT)
     public void testEiKoekutsujaAikaisemminHylatyilleHakijanValinnoille() {
         final String hakemusOid = "1.2.246.562.11.00000072753";
         final String hakukohdeOid = "1.2.246.562.5.91937845484";
@@ -569,7 +565,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     }
 
     @Test
-    @UsingDataSet(locations = "testViimeisinValinnanVaihe.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @UsingDataSet(locations = "testViimeisinValinnanVaihe.json", loadStrategy = CLEAN_INSERT)
     public void testViimeisinValinnanVaihe() {
         final String hakemusOid = "1.2.246.562.11.00000072753";
         final String hakukohdeOid = "1.2.246.562.5.91937845484";
@@ -595,11 +591,11 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         Valintakoe koe = vv.getValintakokeet().get(0);
         assertEquals(valintakoetunniste, koe.getValintakoeTunniste());
-        assertEquals(Osallistuminen.EI_OSALLISTU, koe.getOsallistuminenTulos().getOsallistuminen());
+        assertEquals(EI_OSALLISTU, koe.getOsallistuminenTulos().getOsallistuminen());
     }
 
     @Test
-    @UsingDataSet(locations = "testViimeisinValinnanVaiheEkaHylatty.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @UsingDataSet(locations = "testViimeisinValinnanVaiheEkaHylatty.json", loadStrategy = CLEAN_INSERT)
     public void testViimeisinValinnanVaiheEnsimmainenHakutoiveHylatty() {
         // Testa
         final String hakemusOid = "1.2.246.562.11.00000072753";
@@ -621,7 +617,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         assertNotNull(osallistuminen);
 
         assertEquals(hakukohdeOid1, osallistuminen.getHakutoiveet().get(0).getHakukohdeOid());
-        assertEquals(Osallistuminen.EI_OSALLISTU, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen());
+        assertEquals(EI_OSALLISTU, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen());
 
         assertEquals(hakukohdeOid2, osallistuminen.getHakutoiveet().get(1).getHakukohdeOid());
         assertEquals(OSALLISTUU, osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen());
@@ -635,7 +631,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     }
 
     @Test
-    @UsingDataSet(locations = "osallistuminen.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @UsingDataSet(locations = "osallistuminen.json", loadStrategy = CLEAN_INSERT)
     public void testOlemassaolevatKokoeet() throws JsonSyntaxException,
             IOException {
 
@@ -648,21 +644,21 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         assertTrue(osallistuminen.getHakutoiveet().size() == 2);
 
-        osallistuminen.getHakutoiveet().sort((h1, h2) -> h1.getHakukohdeOid().compareTo(h2.getHakukohdeOid()));
+        osallistuminen.getHakutoiveet().sort(Comparator.comparing(Hakutoive::getHakukohdeOid));
 
         assertTrue(osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().size() == 3);
         assertTrue(osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().size() == 3);
 
-        osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().sort((k1, k2) -> k1.getValintakoeTunniste().compareTo(k2.getValintakoeTunniste()));
-        osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().sort((k1, k2) -> k1.getValintakoeTunniste().compareTo(k2.getValintakoeTunniste()));
+        osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().sort(Comparator.comparing(Valintakoe::getValintakoeTunniste));
+        osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().sort(Comparator.comparing(Valintakoe::getValintakoeTunniste));
 
         assertEquals(OSALLISTUU, osallistuminen.getHakutoiveet().get(1).getValinnanVaiheet().get(0).getValintakokeet().get(1).getOsallistuminenTulos().getOsallistuminen());
-        assertEquals(Osallistuminen.EI_OSALLISTU, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(1).getOsallistuminenTulos().getOsallistuminen());
+        assertEquals(EI_OSALLISTU, osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(1).getOsallistuminenTulos().getOsallistuminen());
 
     }
 
     @Test
-    @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
+    @UsingDataSet(loadStrategy = DELETE_ALL)
     public void kielikokeeseenKutsutaanJosSuoritustaTaiTodennettuaKielitaitoaEiLoydy() throws JsonSyntaxException, IOException {
         LaskeDTO laskeDTOIlmanKielikoetulosta = readJson("laskeDTOIlmanKielikoetulosta.json", new TypeToken<LaskeDTO>() {});
 
@@ -685,7 +681,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     }
 
     @Test
-    @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
+    @UsingDataSet(loadStrategy = DELETE_ALL)
     public void kielikokeeseenKutsutaanJosOsallistuminenLoytyyKyseiseltaHakemukselta() throws JsonSyntaxException, IOException {
         LaskeDTO laskeDTOIlmanKielikoetulosta = readJson("laskeDTOIlmanKielikoetulosta.json", new TypeToken<LaskeDTO>() {});
         HakemusDTO hakemus = laskeDTOIlmanKielikoetulosta.getHakemus().get(0);
@@ -711,7 +707,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     }
 
     @Test
-    @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
+    @UsingDataSet(loadStrategy = DELETE_ALL)
     public void kielikokeeseenEiKutsutaJosSuoritusLoytyyEriHakemukselta() throws JsonSyntaxException, IOException {
         LaskeDTO laskeDTOIlmanKielikoetulosta = readJson("laskeDTOIlmanKielikoetulosta.json", new TypeToken<LaskeDTO>() {});
         HakemusDTO hakemus = laskeDTOIlmanKielikoetulosta.getHakemus().get(0);
@@ -741,7 +737,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     }
 
     @Test
-    @UsingDataSet(locations = "voidaanHyvaksya.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @UsingDataSet(locations = "voidaanHyvaksya.json", loadStrategy = CLEAN_INSERT)
     public void testMukanaKokeessaToisessaKohteessa() {
         final String hakemusOid = "1.2.246.562.11.00001212279";
         final String hakukohdeOid = "1.2.246.562.20.66128426039";
@@ -784,7 +780,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     }
 
     @Test
-    @UsingDataSet(locations = "toisessaKohteessaKoeJohonEiOsallistuta.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @UsingDataSet(locations = "toisessaKohteessaKoeJohonEiOsallistuta.json", loadStrategy = CLEAN_INSERT)
     public void testMukanaYhdessaMutteiKaikissaKokeissaToisessaKohteessa() {
         final String hakemusOid = "1.2.246.562.11.00001212279";
         final String hakukohdeOid = "1.2.246.562.20.66128426039";
