@@ -4,7 +4,7 @@ import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static com.lordofthejars.nosqlunit.core.LoadStrategyEnum.CLEAN_INSERT;
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi.LUKUARVO;
-import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.HYLATTY;
+import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakemus;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoJarjestyskriteeri;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoTavallinenValinnanvaihe;
@@ -16,14 +16,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 
 import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetFunktiokutsuDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetValinnanVaiheDTO;
-import fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
@@ -33,7 +31,6 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
-import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.ValintalaskentaSuorittajaService;
 import org.junit.Rule;
 import org.junit.Test;
@@ -667,7 +664,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
 
     @Test
     @UsingDataSet(locations = "toisessaKohteessaKoeJohonEiOsallistuta.json", loadStrategy = CLEAN_INSERT)
-    public void valisijoittelussaKutsutaanHakutoiveenKokeeseenVaikkaToiseltaToiveeltaLoytyisiOsallistuminenEriKokeeseen() {
+    public void valisijoittelussaVoiTullaHyvaksytyksiVaikkaToiseltaKohteeltaEiLoytyisiKutsujaKaikkiinKohteenKokeisiin() {
         final String valinnanVaiheOid = "vv4";
         final String valintatapajonoOid = "jono2";
         final String hakemusOid = "1.2.246.562.11.00001212279";
@@ -690,6 +687,6 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
 
         List<Jarjestyskriteeritulos> jarjestyskriteeritulokset = hakemuksenTulos.get().getJarjestyskriteeritulokset();
         assertThat(jarjestyskriteeritulokset, hasSize(1));
-        assertEquals(HYLATTY, jarjestyskriteeritulokset.get(0).getTila());
+        assertEquals(HYVAKSYTTAVISSA, jarjestyskriteeritulokset.get(0).getTila());
     }
 }

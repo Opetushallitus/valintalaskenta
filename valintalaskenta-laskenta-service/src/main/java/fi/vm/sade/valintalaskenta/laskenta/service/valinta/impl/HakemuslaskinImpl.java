@@ -245,7 +245,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                 if (edellinenOsallistuminen != null) {
                     ValintakoeOsallistuminen hakijanOsallistumiset = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakemus.getHakuoid(), hakemus.getHakemusoid());
                     if(hakijanOsallistumiset != null) {
-                        voidaanHyvaksya = edellinenValinnanvaiheKasittelija.kuhunkinKohteenKokeeseenOsallistutaanToisessaKohteessa(edellinenVaihe.getHakukohdeOid(), hakijanOsallistumiset);
+                        voidaanHyvaksya = edellinenValinnanvaiheKasittelija.koeOsallistuminenToisessaKohteessa(edellinenVaihe.getHakukohdeOid(), hakijanOsallistumiset);
                     }
                 }
             }

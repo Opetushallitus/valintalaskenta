@@ -17,7 +17,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -746,12 +745,12 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         assertNotNull(osallistuminen);
-        boolean voidaanHyvaksya = edellinenValinnanvaiheKasittelija.kuhunkinKohteenKokeeseenOsallistutaanToisessaKohteessa(hakukohdeOid,osallistuminen);
+        boolean voidaanHyvaksya = edellinenValinnanvaiheKasittelija.koeOsallistuminenToisessaKohteessa(hakukohdeOid,osallistuminen);
         assertTrue(voidaanHyvaksya);
 
         osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid2);
         assertNotNull(osallistuminen);
-        voidaanHyvaksya = edellinenValinnanvaiheKasittelija.kuhunkinKohteenKokeeseenOsallistutaanToisessaKohteessa(hakukohdeOid,osallistuminen);
+        voidaanHyvaksya = edellinenValinnanvaiheKasittelija.koeOsallistuminenToisessaKohteessa(hakukohdeOid,osallistuminen);
         assertTrue(!voidaanHyvaksya);
 
         // Kopio koodia että nähdään mitä tapahtuu
@@ -827,7 +826,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         assertThat(muidenkohteidenKokeetJoihinOsallistutaan.stream().map(Valintakoe::getValintakoeTunniste),
             not(StreamMatchers.contains("KOHTEEN_SPESIFI_KOE_BUG-1564")));
 
-        assertFalse(edellinenValinnanvaiheKasittelija.kuhunkinKohteenKokeeseenOsallistutaanToisessaKohteessa(hakukohdeOid, osallistuminen));
+        assertTrue(edellinenValinnanvaiheKasittelija.koeOsallistuminenToisessaKohteessa(hakukohdeOid, osallistuminen));
     }
 
     private Predicate<Valintakoe> koeWithTunniste(String tunniste) {
