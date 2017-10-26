@@ -9,8 +9,12 @@ import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.OSALLI
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakemus;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteetJaValintakoeValinnanVaihe;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteetJaValintakoeValinnanvaihe;
+import static java.util.stream.Collectors.groupingBy;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -22,6 +26,7 @@ import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 
+import co.unruly.matchers.StreamMatchers;
 import fi.vm.sade.service.valintaperusteet.dto.FunktiokutsuDTO;
 import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
@@ -58,11 +63,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -774,6 +781,61 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         assertTrue(kokeidenTunnisteet.contains("SOTEKOE_KYAMK_ENSIHOITO"));
         assertTrue(kokeidenTunnisteet.contains("kielikoe_amk_fi"));
 
+    }
+
+    @Test
+    @UsingDataSet(locations = "toisessaKohteessaKoeJohonEiOsallistuta.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void testMukanaYhdessaMutteiKaikissaKokeissaToisessaKohteessa() {
+        final String hakemusOid = "1.2.246.562.11.00001212279";
+        final String hakukohdeOid = "1.2.246.562.20.66128426039";
+        final String hakuOid = "1.2.246.562.29.173465377510";
+
+        ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
+        assertNotNull(osallistuminen);
+
+        List<Valintakoe> kohteenValintakokeet = osallistuminen.getHakutoiveet()
+            .stream()
+            .filter(h -> h.getHakukohdeOid().equals(hakukohdeOid))
+            .flatMap(h -> h.getValinnanVaiheet().stream())
+            .flatMap(v -> v.getValintakokeet().stream())
+            .sorted(Comparator.comparing(Valintakoe::getValintakoeTunniste))
+            .collect(Collectors.toList());
+
+        assertThat(kohteenValintakokeet, hasSize(3));
+        assertThat(kohteenValintakokeet.stream().map(Valintakoe::getValintakoeTunniste),
+            StreamMatchers.contains("KOHTEEN_SPESIFI_KOE_BUG-1564", "SOTE1_kaikkiosiot", "SOTEKOE_VK_RYHMA1"));
+
+        Map<Osallistuminen, List<Valintakoe>> kohteenKokeetOsallistumisenMukaan =
+            kohteenValintakokeet.stream().collect(groupingBy(k -> k.getOsallistuminenTulos().getOsallistuminen()));
+        assertThat(kohteenKokeetOsallistumisenMukaan.get(OSALLISTUU), hasSize(1));
+        assertThat(kohteenKokeetOsallistumisenMukaan.get(OSALLISTUU)
+            .stream()
+            .map(Valintakoe::getValintakoeTunniste), StreamMatchers.contains("KOHTEEN_SPESIFI_KOE_BUG-1564"));
+        assertThat(kohteenKokeetOsallistumisenMukaan.get(EI_OSALLISTU), hasSize(2));
+        assertThat(kohteenKokeetOsallistumisenMukaan.get(EI_OSALLISTU)
+            .stream()
+            .map(Valintakoe::getValintakoeTunniste), StreamMatchers.contains("SOTE1_kaikkiosiot", "SOTEKOE_VK_RYHMA1"));
+
+        List<Valintakoe> muidenkohteidenKokeetJoihinOsallistutaan = osallistuminen.getHakutoiveet()
+            .stream()
+            .filter(h -> !h.getHakukohdeOid().equals(hakukohdeOid))
+            .flatMap(h -> h.getValinnanVaiheet().stream())
+            .flatMap(v -> v.getValintakokeet().stream())
+            .filter(k -> OSALLISTUU.equals(k.getOsallistuminenTulos().getOsallistuminen()))
+            .sorted(Comparator.comparing(Valintakoe::getValintakoeTunniste))
+            .collect(Collectors.toList());
+
+        assertThat(muidenkohteidenKokeetJoihinOsallistutaan, hasSize(2));
+        assertThat(muidenkohteidenKokeetJoihinOsallistutaan.stream().map(Valintakoe::getValintakoeTunniste),
+            StreamMatchers.contains("SOTE1_kaikkiosiot", "SOTEKOE_VK_RYHMA1"));
+        assertThat(muidenkohteidenKokeetJoihinOsallistutaan.stream().map(Valintakoe::getValintakoeTunniste),
+            not(StreamMatchers.contains("KOHTEEN_SPESIFI_KOE_BUG-1564")));
+
+        assertFalse(edellinenValinnanvaiheKasittelija.kuhunkinKohteenKokeeseenOsallistutaanToisessaKohteessa(hakukohdeOid, osallistuminen));
+    }
+
+    private Predicate<Valintakoe> koeWithTunniste(String tunniste) {
+        return k -> k.getValintakoeTunniste().equals(tunniste);
     }
 
     private void setValueOnCombinedHakemusData(HakemusDTO hakemus, String avain, String arvo) {

@@ -1,12 +1,34 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.it;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
+import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
+import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.HYLATTY;
+import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakemus;
+import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoJarjestyskriteeri;
+import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoTavallinenValinnanvaihe;
+import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteet;
+import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteetJaTavallinenValinnanvaihe;
+import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintatapajono;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
-import fi.vm.sade.service.valintaperusteet.dto.*;
+
+import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
+import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
+import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetFunktiokutsuDTO;
+import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetValinnanVaiheDTO;
 import fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
-import fi.vm.sade.valintalaskenta.domain.valinta.*;
+import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
+import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
+import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
@@ -27,11 +49,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
-import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * User: wuoti
@@ -670,5 +689,33 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, vaihe.getValintatapajonot().get(0).getJonosijat().stream().filter(j -> j.getHakemusOid().equals(hakemusOid)).findFirst().get().getJarjestyskriteeritulokset().get(0).getTila());
         assertEquals(JarjestyskriteerituloksenTila.HYLATTY, vaihe.getValintatapajonot().get(0).getJonosijat().stream().filter(j -> j.getHakemusOid().equals(hakemusOid2)).findFirst().get().getJarjestyskriteeritulokset().get(0).getTila());
         assertEquals("Pisteesi eivät riittäneet valintakoekutsuun", vaihe.getValintatapajonot().get(0).getJonosijat().stream().filter(j -> j.getHakemusOid().equals(hakemusOid2)).findFirst().get().getJarjestyskriteeritulokset().get(0).getKuvaus().get("FI"));
+    }
+
+    @Test
+    @UsingDataSet(locations = "toisessaKohteessaKoeJohonEiOsallistuta.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void valisijoittelussaKutsutaanHakutoiveenKokeeseenVaikkaToiseltaToiveeltaLoytyisiOsallistuminenEriKokeeseen() {
+        final String valinnanVaiheOid = "vv4";
+        final String valintatapajonoOid = "jono2";
+        final String hakemusOid = "1.2.246.562.11.00001212279";
+        final String hakukohdeOid = "1.2.246.562.20.66128426039";
+        final String hakuOid = "1.2.246.562.29.173465377510";
+
+        ValintaperusteetDTO vv3 = luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 3);
+        (vv3.getValinnanVaihe()).getValintatapajono().add(luoValintatapajono(valintatapajonoOid, 0, 10, luoJarjestyskriteeri(sata, 1)));
+        valintalaskentaSuorittajaService.suoritaLaskenta(Collections.singletonList(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid)),
+            Collections.singletonList(vv3), new ArrayList<>(), hakukohdeOid, uuid, korkeakouluhaku);
+
+        Valinnanvaihe vaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanVaiheOid);
+        assertNotNull(vaihe);
+
+        Optional<Valintatapajono> jononTulos = vaihe.getValintatapajonot().stream().filter(j -> valintatapajonoOid.equals(j.getValintatapajonoOid())).findFirst();
+        assertThat(jononTulos, isPresent());
+
+        Optional<Jonosija> hakemuksenTulos = jononTulos.get().getJonosijat().stream().filter(s -> hakemusOid.equals(s.getHakemusOid())).findFirst();
+        assertThat(hakemuksenTulos, isPresent());
+
+        List<Jarjestyskriteeritulos> jarjestyskriteeritulokset = hakemuksenTulos.get().getJarjestyskriteeritulokset();
+        assertThat(jarjestyskriteeritulokset, hasSize(1));
+        assertEquals(HYLATTY, jarjestyskriteeritulokset.get(0).getTila());
     }
 }

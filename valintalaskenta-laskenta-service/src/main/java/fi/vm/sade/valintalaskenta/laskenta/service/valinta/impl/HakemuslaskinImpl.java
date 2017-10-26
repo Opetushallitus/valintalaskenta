@@ -10,7 +10,11 @@ import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hylattytila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Virhetila;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
-import fi.vm.sade.valintalaskenta.domain.valinta.*;
+import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
+import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
+import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
@@ -241,7 +245,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                 if (edellinenOsallistuminen != null) {
                     ValintakoeOsallistuminen hakijanOsallistumiset = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakemus.getHakuoid(), hakemus.getHakemusoid());
                     if(hakijanOsallistumiset != null) {
-                        voidaanHyvaksya = edellinenValinnanvaiheKasittelija.koeOsallistuminenToisessaKohteessa(edellinenVaihe.getHakukohdeOid(), hakijanOsallistumiset);
+                        voidaanHyvaksya = edellinenValinnanvaiheKasittelija.kuhunkinKohteenKokeeseenOsallistutaanToisessaKohteessa(edellinenVaihe.getHakukohdeOid(), hakijanOsallistumiset);
                     }
                 }
             }

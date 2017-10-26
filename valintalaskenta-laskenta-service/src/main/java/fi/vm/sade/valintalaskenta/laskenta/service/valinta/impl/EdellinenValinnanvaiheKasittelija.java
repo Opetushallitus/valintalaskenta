@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -150,8 +151,8 @@ public class EdellinenValinnanvaiheKasittelija {
             hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, edellinenValinnanvaihe));
     }
 
-    public boolean koeOsallistuminenToisessaKohteessa(String hakukohdeOid, ValintakoeOsallistuminen hakijanOsallistumiset) {
-        List<String> kohteenValintakokeet = hakijanOsallistumiset.getHakutoiveet()
+    public boolean kuhunkinKohteenKokeeseenOsallistutaanToisessaKohteessa(String hakukohdeOid, ValintakoeOsallistuminen hakijanOsallistumiset) {
+        List<String> tamanKohteenValintakokeidenTunnisteet = hakijanOsallistumiset.getHakutoiveet()
             .stream()
             .filter(h -> h.getHakukohdeOid().equals(hakukohdeOid))
             .flatMap(h -> h.getValinnanVaiheet().stream())
@@ -159,12 +160,16 @@ public class EdellinenValinnanvaiheKasittelija {
             .map(Valintakoe::getValintakoeTunniste)
             .collect(Collectors.toList());
 
-        return hakijanOsallistumiset.getHakutoiveet()
+        Set<String> tunnisteetMuidenKohteidenKokeistaJoihinHakijaOsallistuu = hakijanOsallistumiset.getHakutoiveet()
             .stream()
             .filter(h -> !h.getHakukohdeOid().equals(hakukohdeOid))
             .flatMap(h -> h.getValinnanVaiheet().stream())
             .flatMap(v -> v.getValintakokeet().stream())
-            .anyMatch(k -> kohteenValintakokeet.contains(k.getValintakoeTunniste())
-                && k.getOsallistuminenTulos().getOsallistuminen().equals(OSALLISTUU));
+            .filter(k -> k.getOsallistuminenTulos().getOsallistuminen().equals(OSALLISTUU))
+            .map(Valintakoe::getValintakoeTunniste).collect(Collectors.toSet());
+
+        return tamanKohteenValintakokeidenTunnisteet
+            .stream()
+            .allMatch(tunnisteetMuidenKohteidenKokeistaJoihinHakijaOsallistuu::contains);
     }
 }

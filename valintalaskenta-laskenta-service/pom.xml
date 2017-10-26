@@ -169,6 +169,14 @@
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-core</artifactId>
 		</dependency>
+		<dependency>
+      <groupId>com.github.baev</groupId>
+      <artifactId>hamcrest-optional</artifactId>
+	  </dependency>
+		<dependency>
+      <groupId>co.unruly</groupId>
+      <artifactId>java-8-matchers</artifactId>
+	  </dependency>
 
 
 		<dependency>
