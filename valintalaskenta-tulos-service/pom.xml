@@ -293,6 +293,11 @@
             <version>1.0.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>fi.vm.sade.sharedutils</groupId>
+            <artifactId>Sharedutils</artifactId>
+            <version>4.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

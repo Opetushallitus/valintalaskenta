@@ -1,8 +1,5 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;
@@ -12,12 +9,16 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.resource.ValintatapajonoResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
@@ -86,10 +87,10 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
     @Path("{valintatapajonoOid}/valmissijoiteltavaksi")
     @ApiOperation(value = "Lisää/Poistaa valintatapajonon sijoittelusta", response = ValintatapajonoDTO.class)
     public Response muokkaaSijotteluStatusta(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
-                                             @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status) {
+                                             @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status, @Context HttpServletRequest request) {
         Optional<Valintatapajono> dto = tulosService.muokkaaValintatapajonoa(valintatapajonoOid,
                 jono -> {
-                    fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO jonoDto = valintaperusteetResource.updateAutomaattinenSijoitteluunSiirto(valintatapajonoOid, status);
+                    fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO jonoDto = valintaperusteetResource.updateAutomaattinenSijoitteluunSiirto(valintatapajonoOid, status, request);
                     jono.setAloituspaikat(jonoDto.getAloituspaikat());
                     jono.setEiVarasijatayttoa(jonoDto.getEiVarasijatayttoa());
                     //jono.setJonosijat(jonoDto.get);

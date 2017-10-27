@@ -6,6 +6,7 @@ import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetHakijaryhmaDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO;
 import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +46,7 @@ public class ValintaperusteetResourceImpl implements ValintaperusteetResource {
     }
 
     @Override
-    public ValintatapajonoDTO updateAutomaattinenSijoitteluunSiirto(String oid, Boolean arvo) {
+    public ValintatapajonoDTO updateAutomaattinenSijoitteluunSiirto(String oid, Boolean arvo, HttpServletRequest request) {
         return new ValintatapajonoDTO();
     }
 }
