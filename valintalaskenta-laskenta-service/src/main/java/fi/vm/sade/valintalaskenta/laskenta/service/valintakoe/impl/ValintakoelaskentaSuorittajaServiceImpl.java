@@ -210,7 +210,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
             // tarkistetaaan löytyykö edellistä valintakoevaihetta vai heitetäänö virhe
             ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku());
             if (edellinenOsallistuminen == null) {
-                LOG.warn(String.format("(Uuid=%s) Valinnanvaiheen järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt", uuid));
+                LOG.warn(String.format("(Uuid=%s) Valinnanvaiheen %s järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt", uuid, vaihe.getValinnanVaiheOid()));
                 return true;
             }
         }
