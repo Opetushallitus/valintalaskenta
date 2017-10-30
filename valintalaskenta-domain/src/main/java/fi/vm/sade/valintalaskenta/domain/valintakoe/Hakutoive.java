@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Indexed;
 
@@ -39,5 +40,10 @@ public class Hakutoive {
 
     public void setLaskettavaHakukohdeOid(String laskettavaHakukohdeOid) {
         this.laskettavaHakukohdeOid = laskettavaHakukohdeOid;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }
