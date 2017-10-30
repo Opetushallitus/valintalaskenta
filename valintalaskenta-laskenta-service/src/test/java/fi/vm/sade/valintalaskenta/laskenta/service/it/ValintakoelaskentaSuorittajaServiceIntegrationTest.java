@@ -837,7 +837,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
     @Test
     @UsingDataSet(locations = "bug1564.json", loadStrategy = CLEAN_INSERT)
-    @Ignore("Not sure if this can test anything meaningful...")
     public void bug1564KutsuttavaKohdekohtaiseenKokeeseen() throws IOException {
         final String hakemusOid = "1.2.246.562.11.00009176948";
         final String hakukohdeOidJossaOmaKoe = "1.2.246.562.20.80972757381";
