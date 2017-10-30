@@ -16,7 +16,7 @@ public class Hakutoive {
     private String laskettavaHakukohdeOid;
 
     @Embedded
-    private List<ValintakoeValinnanvaihe> valinnanVaiheet = new ArrayList<ValintakoeValinnanvaihe>();
+    private List<ValintakoeValinnanvaihe> valinnanVaiheet = new ArrayList<>();
 
     public String getHakukohdeOid() {
         return hakukohdeOid;
