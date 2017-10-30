@@ -1,32 +1,17 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl;
 
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import fi.vm.sade.service.valintaperusteet.dto.HakukohteenValintaperusteDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintakoeDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetValinnanVaiheDTO;
 import fi.vm.sade.service.valintaperusteet.dto.model.Koekutsu;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hyvaksyttavissatila;
 import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
 import fi.vm.sade.valintalaskenta.domain.dto.AvainArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
-import fi.vm.sade.valintalaskenta.laskenta.resource.ValintakoelaskennanKumulatiivisetTulokset;
-import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.HakemusDTOToHakemusConverter;
-import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hyvaksyttavissatila;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
@@ -37,11 +22,30 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
+import fi.vm.sade.valintalaskenta.laskenta.resource.ValintakoelaskennanKumulatiivisetTulokset;
+import fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion.HakemusDTOToHakemusConverter;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinnanvaiheKasittelija;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.TilaJaSelite;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoeosallistumislaskin;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.HakukohdeValintakoeData;
+import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ValintakoelaskentaSuorittajaServiceImpl implements ValintakoelaskentaSuorittajaService {
@@ -94,6 +98,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         final Map<String, HakukohdeDTO> hakutoiveetByOid = luoHakutoiveMap(hakemus.getHakukohteet());
         LOG.debug(String.format("Hakijan %s hakemukselle hakutoiveetByOid.size() == %d", hakemus.getHakijaOid(), hakutoiveetByOid.size()));
         Map<String, List<HakukohdeValintakoeData>> valintakoeData = new HashMap<>();
+        String hakuOid = valintaperusteet.get(0).getHakuOid();
+        ValintakoeOsallistuminen vanhatOsallistumiset = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemus.getHakemusoid());
         poistaVanhatOsallistumiset(hakemus, valintaperusteet);
         LOG.debug(String.format("Hakijan %s hakemukselle valintaperusteet.size() == %d", hakemus.getHakijaOid(), valintaperusteet.size()));
         for (ValintaperusteetDTO vp : valintaperusteet) {
@@ -113,7 +119,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                             continue;
                         }
                         Valinnanvaihe viimeisinValinnanVaihe = getViimeisinValinnanvaihe(vp, vaihe, edellinenVaihe);
-                        OsallistuminenTulos osallistuminen = getOsallistuminenTulos(hakemus, vp, hakukohteenValintaperusteet, koe, viimeisinValinnanVaihe, korkeakouluhaku);
+                        OsallistuminenTulos osallistuminen = getOsallistuminenTulos(hakemus, vp, hakukohteenValintaperusteet, koe, viimeisinValinnanVaihe, korkeakouluhaku, vanhatOsallistumiset);
                         HakukohdeValintakoeData data = getHakukohdeValintakoeData(hakemus, uuid, vp, vaihe, koe, tunniste);
                         data.setOsallistuminenTulos(osallistuminen);
                         valintakoeData.get(tunniste).add(data);
@@ -258,12 +264,12 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         return viimeisinValinnanVaihe;
     }
 
-    private OsallistuminenTulos getOsallistuminenTulos(HakemusDTO hakemus, ValintaperusteetDTO vp, Map<String, String> hakukohteenValintaperusteet, ValintakoeDTO koe, Valinnanvaihe viimeisinValinnanVaihe, boolean korkeakouluhaku) {
+    private OsallistuminenTulos getOsallistuminenTulos(HakemusDTO hakemus, ValintaperusteetDTO vp, Map<String, String> hakukohteenValintaperusteet, ValintakoeDTO koe, Valinnanvaihe viimeisinValinnanVaihe, boolean korkeakouluhaku, ValintakoeOsallistuminen vanhatOsallistumiset) {
         OsallistuminenTulos osallistuminen = new OsallistuminenTulos();
         Hakemus hak = hakemusConverter.convert(hakemus);
         Funktiokutsu fuk = modelMapper.map(koe.getFunktiokutsu(), Funktiokutsu.class);
         if (viimeisinValinnanVaihe != null) {
-            TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(), new Hyvaksyttavissatila(), viimeisinValinnanVaihe);
+            TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(), new Hyvaksyttavissatila(), viimeisinValinnanVaihe, vp, vanhatOsallistumiset);
             if (tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)) {
                 if (koe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA)) {
                     osallistuminen = createOsallistuminen(tilaJaSelite, Osallistuminen.OSALLISTUU);

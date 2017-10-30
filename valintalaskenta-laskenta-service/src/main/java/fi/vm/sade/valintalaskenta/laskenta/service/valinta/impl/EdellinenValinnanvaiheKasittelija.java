@@ -6,7 +6,11 @@ import static fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulokse
 import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.VIRHE;
 import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.OSALLISTUU;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Sets;
 
+import fi.vm.sade.service.valintaperusteet.dto.ValintakoeCreateDTO;
+import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
+import fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hylattytila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Virhetila;
@@ -27,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -44,7 +49,7 @@ public class EdellinenValinnanvaiheKasittelija {
      * valintatapajonossa.
      */
     public TilaJaSelite hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(final String hakemusOid,
-                                                                             Valinnanvaihe edellinenValinnanvaihe) {
+                                                                             Valinnanvaihe edellinenValinnanvaihe, ValintaperusteetDTO valintaperusteetDTO, ValintakoeOsallistuminen vanhatOsallistumiset) {
         // Jos edellisessä valinnan vaiheessa ei ole yhtään valintatapajonoa, voidaan olettaa, että hakemus
         // on hyväksyttävissä
         if (edellinenValinnanvaihe == null || edellinenValinnanvaihe.getValintatapajonot().isEmpty()) {
@@ -57,6 +62,17 @@ public class EdellinenValinnanvaiheKasittelija {
 
             TilaJaSelite tilaJonossa;
             if (jonosija == null) {
+                // Hakemuksen pitäisi osallistua hakukohdekohtaiseen valintakokeeseen vaikka se olisi
+                // hylätty edellisessä vaiheessa.
+                if (valintaperusteetDTO != null && vanhatOsallistumiset != null && ValinnanVaiheTyyppi.VALINTAKOE.equals(valintaperusteetDTO.getValinnanVaihe().getValinnanVaiheTyyppi())) {
+                    Sets.SetView<String> talleKohteelleSpesifienKokeidenTunnisteet = paatteleKoetunnisteetJotkaOnVainTallaHakukohteella(valintaperusteetDTO, vanhatOsallistumiset);
+                    if (!talleKohteelleSpesifienKokeidenTunnisteet.isEmpty()) {
+                        return new TilaJaSelite(HYVAKSYTTAVISSA,
+                            suomenkielinenMap("Hakemuksella on kohteeseen seuraavat kokeet, joihin ei osallistuta muissa kohteissa: " +
+                                talleKohteelleSpesifienKokeidenTunnisteet));
+                    }
+                }
+
                 // Jos hakemus ei ole ollut mukana edellisessä valinnan vaiheessa, hakemus ei voi tulla
                 // hyväksyttäväksi tässä valinnan vaiheessa.
                 return new TilaJaSelite(VIRHE, suomenkielinenMap("Hakemus ei ole ollut mukana laskennassa edellisessä valinnan vaiheessa"));
@@ -93,6 +109,20 @@ public class EdellinenValinnanvaiheKasittelija {
         } else {
             return new TilaJaSelite(HYVAKSYTTAVISSA, new HashMap<>());
         }
+    }
+
+    private Sets.SetView<String> paatteleKoetunnisteetJotkaOnVainTallaHakukohteella(ValintaperusteetDTO valintaperusteetDTO, ValintakoeOsallistuminen vanhatOsallistumiset) {
+        Set<String> tamanVaiheenKoetunnisteet = valintaperusteetDTO.getValinnanVaihe().getValintakoe()
+            .stream()
+            .map(ValintakoeCreateDTO::getTunniste).collect(Collectors.toSet());
+        Set<String> muidenkohteidenKoetunnisteet = vanhatOsallistumiset.getHakutoiveet()
+            .stream()
+            .filter(ht -> !ht.getHakukohdeOid().equals(valintaperusteetDTO.getHakukohdeOid()))
+            .flatMap(ht -> ht.getValinnanVaiheet().stream())
+            .flatMap(vv -> vv.getValintakokeet().stream())
+            .map(Valintakoe::getValintakoeTunniste)
+            .collect(Collectors.toSet());
+        return Sets.difference(tamanVaiheenKoetunnisteet, muidenkohteidenKoetunnisteet);
     }
 
     private Jonosija getJonosijaForHakemus(final String hakemusOid, final List<Jonosija> jonosijat) {
@@ -143,11 +173,12 @@ public class EdellinenValinnanvaiheKasittelija {
      * @param hakemusOid             hakemus OID
      * @param laskettuTila           järjestyskriteerille laskennasta saatu tila
      * @param edellinenValinnanvaihe edellinen valinnan vaihe
-     * @return järjestyskriteerin tila
+     * @param valintaperusteetDTO
+     *@param vanhatOsallistumiset  @return järjestyskriteerin tila
      */
-    public TilaJaSelite tilaEdellisenValinnanvaiheenMukaan(String hakemusOid, Tila laskettuTila, Valinnanvaihe edellinenValinnanvaihe) {
+    public TilaJaSelite tilaEdellisenValinnanvaiheenMukaan(String hakemusOid, Tila laskettuTila, Valinnanvaihe edellinenValinnanvaihe, ValintaperusteetDTO valintaperusteetDTO, ValintakoeOsallistuminen vanhatOsallistumiset) {
         return tilaEdellisenValinnanvaiheenTilanMukaan(laskettuTila,
-            hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, edellinenValinnanvaihe));
+            hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, edellinenValinnanvaihe, valintaperusteetDTO, vanhatOsallistumiset));
     }
 
     public boolean koeOsallistuminenToisessaKohteessa(String hakukohdeOid, ValintakoeOsallistuminen hakijanOsallistumiset) {

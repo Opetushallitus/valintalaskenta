@@ -15,6 +15,7 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinnanvaiheKasittelija;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.TilaJaSelite;
 import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
@@ -39,7 +40,7 @@ public class EdellinenValinnanvaiheKasittelijaTest {
     public void testEiValintatapajonoja() {
         Valinnanvaihe vaihe = new Valinnanvaihe();
 
-        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan("hakesmusOid", vaihe);
+        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan("hakesmusOid", vaihe, null, new ValintakoeOsallistuminen());
         assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, tila.getTila());
     }
 
@@ -59,7 +60,7 @@ public class EdellinenValinnanvaiheKasittelijaTest {
         vaihe.getValintatapajonot().add(jono);
 
         final String hakemusOid = "hakemusOid1";
-        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, vaihe);
+        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, vaihe, null, new ValintakoeOsallistuminen());
         assertEquals(JarjestyskriteerituloksenTila.VIRHE, tila.getTila());
     }
 
@@ -91,7 +92,7 @@ public class EdellinenValinnanvaiheKasittelijaTest {
         Valinnanvaihe vaihe = new Valinnanvaihe();
         vaihe.getValintatapajonot().addAll(Arrays.asList(jono1, jono2, jono3));
 
-        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, vaihe);
+        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, vaihe, null, new ValintakoeOsallistuminen());
         assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, tila.getTila());
     }
 
@@ -114,13 +115,13 @@ public class EdellinenValinnanvaiheKasittelijaTest {
         Valinnanvaihe vaihe = new Valinnanvaihe();
         vaihe.getValintatapajonot().addAll(Arrays.asList(jono1, jono2, jono3));
 
-        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, vaihe);
+        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, vaihe, null, new ValintakoeOsallistuminen());
         assertEquals(JarjestyskriteerituloksenTila.HYLATTY, tila.getTila());
     }
 
     @Test
     public void testEdellinenVaiheNull() {
-        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan("hakemusOid", null);
+        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan("hakemusOid", null, null, new ValintakoeOsallistuminen());
         assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, tila.getTila());
     }
 
@@ -200,7 +201,7 @@ public class EdellinenValinnanvaiheKasittelijaTest {
     public void test() {
         Valinnanvaihe edellinenVaihe = new Valinnanvaihe();
         final String hakemusOid = "hakemusOid1";
-        TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemusOid, new Hyvaksyttavissatila(), edellinenVaihe);
+        TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemusOid, new Hyvaksyttavissatila(), edellinenVaihe, null, new ValintakoeOsallistuminen());
         assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, tilaJaSelite.getTila());
         assertTrue(tilaJaSelite.getSelite().isEmpty());
     }

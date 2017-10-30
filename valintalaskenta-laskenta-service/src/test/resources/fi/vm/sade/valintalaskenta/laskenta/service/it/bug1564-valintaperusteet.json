@@ -1,0 +1,490 @@
+[
+  {
+    "hakukohdeOid": "1.2.246.562.20.80972757381",
+    "hakuOid": "1.2.246.562.29.59856749474",
+    "tarjoajaOid": "1.2.246.562.10.93928993141",
+    "viimeinenValinnanvaihe": 4,
+    "valinnanVaihe": {
+      "nimi": "SOTELI-esivalintakoe",
+      "aktiivinen": true,
+      "valinnanVaiheTyyppi": "TAVALLINEN",
+      "valinnanVaiheJarjestysluku": 0,
+      "valinnanVaiheOid": "14871442164221548191326643098842",
+      "valintatapajono": [
+        {
+          "aloituspaikat": 0,
+          "kuvaus": "Esivalintakokeen pisteiden siirtyminen",
+          "nimi": "SOTELI-esivalintakoe",
+          "oid": "14871444832487908883297846034003",
+          "prioriteetti": 0,
+          "siirretaanSijoitteluun": false,
+          "tasasijasaanto": "YLITAYTTO",
+          "eiVarasijatayttoa": false,
+          "poissaOlevaTaytto": false,
+          "kaikkiEhdonTayttavatHyvaksytaan": false,
+          "kaytetaanValintalaskentaa": true,
+          "valmisSijoiteltavaksi": false,
+          "valisijoittelu": false,
+          "poistetaankoHylatyt": false
+        }
+      ],
+      "valintakoe": []
+    }
+  },
+  {
+    "hakukohdeOid": "1.2.246.562.20.80972757381",
+    "hakuOid": "1.2.246.562.29.59856749474",
+    "tarjoajaOid": "1.2.246.562.10.93928993141",
+    "viimeinenValinnanvaihe": 4,
+    "valinnanVaihe": {
+      "nimi": "Hakukelpoisuuden käsittelyvaihe",
+      "kuvaus": null,
+      "aktiivinen": true,
+      "valinnanVaiheTyyppi": "TAVALLINEN",
+      "oid": null,
+      "inheritance": null,
+      "hasValisijoittelu": null,
+      "valinnanVaiheJarjestysluku": 1,
+      "valinnanVaiheOid": "1484911921792-7809619609223215701",
+      "valintatapajono": [
+        {
+          "aloituspaikat": 0,
+          "kuvaus": null,
+          "tyyppi": null,
+          "nimi": "Ei-hakukelpoiset",
+          "oid": "14849119218354391149179791382165",
+          "prioriteetti": 0,
+          "siirretaanSijoitteluun": false,
+          "tasasijasaanto": "YLITAYTTO",
+          "eiVarasijatayttoa": false,
+          "poissaOlevaTaytto": false,
+          "kaikkiEhdonTayttavatHyvaksytaan": false,
+          "kaytetaanValintalaskentaa": true,
+          "valmisSijoiteltavaksi": false,
+          "valisijoittelu": false,
+          "poistetaankoHylatyt": false
+        }
+      ],
+      "valintakoe": []
+    }
+  },
+  {
+    "hakukohdeOid": "1.2.246.562.20.80972757381",
+    "hakuOid": "1.2.246.562.29.59856749474",
+    "tarjoajaOid": "1.2.246.562.10.93928993141",
+    "viimeinenValinnanvaihe": 4,
+    "valinnanVaihe": {
+      "nimi": "Esivalintavaihe",
+      "kuvaus": null,
+      "aktiivinen": true,
+      "valinnanVaiheTyyppi": "TAVALLINEN",
+      "oid": null,
+      "inheritance": null,
+      "hasValisijoittelu": null,
+      "valinnanVaiheJarjestysluku": 2,
+      "valinnanVaiheOid": "14871452953096650794917745386331",
+      "valintatapajono": [
+        {
+          "aloituspaikat": 80,
+          "kuvaus": "Välisijoittelu esivalintakokeen pisteiden perusteella",
+          "tyyppi": null,
+          "nimi": "Esivalintakoe",
+          "oid": "14871453921611384534693174737784",
+          "prioriteetti": 0,
+          "siirretaanSijoitteluun": false,
+          "tasasijasaanto": "YLITAYTTO",
+          "eiVarasijatayttoa": false,
+          "poissaOlevaTaytto": false,
+          "kaikkiEhdonTayttavatHyvaksytaan": false,
+          "kaytetaanValintalaskentaa": true,
+          "valmisSijoiteltavaksi": false,
+          "valisijoittelu": true,
+          "poistetaankoHylatyt": false
+        }
+      ],
+      "valintakoe": []
+    }
+  },
+  {
+    "hakukohdeOid": "1.2.246.562.20.80972757381",
+    "hakuOid": "1.2.246.562.29.59856749474",
+    "tarjoajaOid": "1.2.246.562.10.93928993141",
+    "viimeinenValinnanvaihe": 4,
+    "valinnanVaihe": {
+      "nimi": "Koekutsuvaihe",
+      "kuvaus": null,
+      "aktiivinen": true,
+      "valinnanVaiheTyyppi": "VALINTAKOE",
+      "oid": null,
+      "inheritance": null,
+      "hasValisijoittelu": null,
+      "valinnanVaiheJarjestysluku": 3,
+      "valinnanVaiheOid": "1487145984413-3270085155034319189",
+      "valintatapajono": [],
+      "valintakoe": [
+        {
+          "tunniste": "Sote3_valintakoe",
+          "laskentakaavaId": null,
+          "nimi": "Sosiaali- ja terveysalan valintakoe 3",
+          "kuvaus": "Sosiaali- ja terveysalan valintakoe, min 30 p, max 70 p",
+          "aktiivinen": true,
+          "lahetetaankoKoekutsut": true,
+          "kutsutaankoKaikki": false,
+          "kutsuttavienMaara": null,
+          "kutsunKohde": "YLIN_TOIVE",
+          "kutsunKohdeAvain": null,
+          "oid": "1487149754070-3964977762478531067",
+          "selvitettyTunniste": null,
+          "funktiokutsu": {
+            "funktionimi": "TOTUUSARVO",
+            "tulosTunniste": null,
+            "tulosTekstiFi": null,
+            "tulosTekstiSv": null,
+            "tulosTekstiEn": null,
+            "tallennaTulos": false,
+            "arvokonvertteriparametrit": [],
+            "arvovalikonvertteriparametrit": [],
+            "syoteparametrit": [
+              {
+                "avain": "totuusarvo",
+                "arvo": "true"
+              }
+            ],
+            "funktioargumentit": [],
+            "valintaperusteviitteet": [],
+            "validointivirheet": []
+          },
+          "peritty": true
+        },
+        {
+          "tunniste": "Sote3_pakollinen_osio",
+          "laskentakaavaId": null,
+          "nimi": "Valintakokeen pakollinen osio",
+          "kuvaus": "Valintakokeen pakollinen osio",
+          "aktiivinen": true,
+          "lahetetaankoKoekutsut": false,
+          "kutsutaankoKaikki": false,
+          "kutsuttavienMaara": null,
+          "kutsunKohde": "YLIN_TOIVE",
+          "kutsunKohdeAvain": null,
+          "oid": "14871498130576597675266044650381",
+          "selvitettyTunniste": null,
+          "funktiokutsu": {
+            "funktionimi": "TOTUUSARVO",
+            "tulosTunniste": null,
+            "tulosTekstiFi": null,
+            "tulosTekstiSv": null,
+            "tulosTekstiEn": null,
+            "tallennaTulos": false,
+            "arvokonvertteriparametrit": [],
+            "arvovalikonvertteriparametrit": [],
+            "syoteparametrit": [
+              {
+                "avain": "totuusarvo",
+                "arvo": "true"
+              }
+            ],
+            "funktioargumentit": [],
+            "valintaperusteviitteet": [],
+            "validointivirheet": []
+          },
+          "peritty": true
+        },
+        {
+          "tunniste": "amk_kielikoe_2017_suomi",
+          "laskentakaavaId": 172834595,
+          "nimi": "Suomen kielen koe",
+          "kuvaus": null,
+          "aktiivinen": true,
+          "lahetetaankoKoekutsut": true,
+          "kutsutaankoKaikki": false,
+          "kutsuttavienMaara": null,
+          "kutsunKohde": "YLIN_TOIVE",
+          "kutsunKohdeAvain": null,
+          "oid": "1493382886034-2971045755694607439",
+          "selvitettyTunniste": null,
+          "funktiokutsu": {
+            "funktionimi": "NIMETTYTOTUUSARVO",
+            "tulosTunniste": null,
+            "tulosTekstiFi": null,
+            "tulosTekstiSv": null,
+            "tulosTekstiEn": null,
+            "tallennaTulos": false,
+            "arvokonvertteriparametrit": [],
+            "arvovalikonvertteriparametrit": [],
+            "syoteparametrit": [
+              {
+                "avain": "nimi",
+                "arvo": "Suomen kielen koe"
+              }
+            ],
+            "funktioargumentit": [
+              {
+                "lapsi": {
+                  "funktionimi": "EI",
+                  "arvokonvertteriparametrit": [],
+                  "arvovalikonvertteriparametrit": [],
+                  "syoteparametrit": [],
+                  "funktioargumentit": [
+                    {
+                      "lapsi": {
+                        "funktionimi": "TAI",
+                        "arvokonvertteriparametrit": [],
+                        "arvovalikonvertteriparametrit": [],
+                        "syoteparametrit": [],
+                        "funktioargumentit": [
+                          {
+                            "lapsi": {
+                              "funktionimi": "HAEMERKKIJONOJAVERTAAYHTASUURUUS",
+                              "arvokonvertteriparametrit": [],
+                              "arvovalikonvertteriparametrit": [],
+                              "syoteparametrit": [
+                                {
+                                  "avain": "oletusarvo",
+                                  "arvo": "false"
+                                },
+                                {
+                                  "avain": "vertailtava",
+                                  "arvo": "FI"
+                                }
+                              ],
+                              "funktioargumentit": [],
+                              "valintaperusteviitteet": [
+                                {
+                                  "tunniste": "aidinkieli",
+                                  "kuvaus": "Äidinkieli hakemukselta",
+                                  "lahde": "HAETTAVA_ARVO",
+                                  "onPakollinen": false,
+                                  "epasuoraViittaus": false,
+                                  "indeksi": 2,
+                                  "vaatiiOsallistumisen": true,
+                                  "syotettavissaKaikille": true,
+                                  "kuvaukset": {
+                                    "tekstit": []
+                                  },
+                                  "syotettavanarvontyyppi": null,
+                                  "tilastoidaan": false
+                                }
+                              ],
+                              "validointivirheet": [],
+                              "onLuonnos": null,
+                              "nimi": null,
+                              "kuvaus": null,
+                              "tyyppi": "TOTUUSARVOFUNKTIO",
+                              "id": 172839424,
+                              "lapsityyppi": "funktiokutsu",
+                              "tulosTunniste": null,
+                              "tulosTekstiFi": null,
+                              "tulosTekstiSv": null,
+                              "tulosTekstiEn": null,
+                              "tallennaTulos": false
+                            },
+                            "indeksi": 1
+                          },
+                          {
+                            "lapsi": {
+                              "funktionimi": "HAEMERKKIJONOJAVERTAAYHTASUURUUS",
+                              "arvokonvertteriparametrit": [],
+                              "arvovalikonvertteriparametrit": [],
+                              "syoteparametrit": [
+                                {
+                                  "avain": "vertailtava",
+                                  "arvo": "FI"
+                                },
+                                {
+                                  "avain": "oletusarvo",
+                                  "arvo": "false"
+                                }
+                              ],
+                              "funktioargumentit": [],
+                              "valintaperusteviitteet": [
+                                {
+                                  "tunniste": "koulusivistyskieli",
+                                  "kuvaus": "Koulusivistyskieli hakemukselta",
+                                  "lahde": "HAETTAVA_ARVO",
+                                  "onPakollinen": false,
+                                  "epasuoraViittaus": false,
+                                  "indeksi": 2,
+                                  "vaatiiOsallistumisen": true,
+                                  "syotettavissaKaikille": true,
+                                  "kuvaukset": {
+                                    "tekstit": []
+                                  },
+                                  "syotettavanarvontyyppi": null,
+                                  "tilastoidaan": false
+                                }
+                              ],
+                              "validointivirheet": [],
+                              "onLuonnos": null,
+                              "nimi": null,
+                              "kuvaus": null,
+                              "tyyppi": "TOTUUSARVOFUNKTIO",
+                              "id": 172839429,
+                              "lapsityyppi": "funktiokutsu",
+                              "tulosTunniste": null,
+                              "tulosTekstiFi": null,
+                              "tulosTekstiSv": null,
+                              "tulosTekstiEn": null,
+                              "tallennaTulos": false
+                            },
+                            "indeksi": 2
+                          },
+                          {
+                            "lapsi": {
+                              "funktionimi": "HAETOTUUSARVO",
+                              "arvokonvertteriparametrit": [],
+                              "arvovalikonvertteriparametrit": [],
+                              "syoteparametrit": [
+                                {
+                                  "avain": "oletusarvo",
+                                  "arvo": "false"
+                                }
+                              ],
+                              "funktioargumentit": [],
+                              "valintaperusteviitteet": [
+                                {
+                                  "tunniste": "amk_kielikoe_2017_suomi",
+                                  "kuvaus": "Kielikokeen tulos",
+                                  "lahde": "SYOTETTAVA_ARVO",
+                                  "onPakollinen": false,
+                                  "epasuoraViittaus": false,
+                                  "indeksi": 2,
+                                  "vaatiiOsallistumisen": true,
+                                  "syotettavissaKaikille": false,
+                                  "kuvaukset": {
+                                    "tekstit": []
+                                  },
+                                  "syotettavanarvontyyppi": null,
+                                  "tilastoidaan": false
+                                }
+                              ],
+                              "validointivirheet": [],
+                              "onLuonnos": null,
+                              "nimi": null,
+                              "kuvaus": null,
+                              "tyyppi": "TOTUUSARVOFUNKTIO",
+                              "id": 172839434,
+                              "lapsityyppi": "funktiokutsu",
+                              "tulosTunniste": null,
+                              "tulosTekstiFi": null,
+                              "tulosTekstiSv": null,
+                              "tulosTekstiEn": null,
+                              "tallennaTulos": false
+                            },
+                            "indeksi": 3
+                          }
+                        ],
+                        "valintaperusteviitteet": [],
+                        "validointivirheet": [],
+                        "onLuonnos": null,
+                        "nimi": null,
+                        "kuvaus": null,
+                        "tyyppi": "TOTUUSARVOFUNKTIO",
+                        "id": 172839437,
+                        "lapsityyppi": "funktiokutsu",
+                        "tulosTunniste": null,
+                        "tulosTekstiFi": null,
+                        "tulosTekstiSv": null,
+                        "tulosTekstiEn": null,
+                        "tallennaTulos": false
+                      },
+                      "indeksi": 1
+                    }
+                  ],
+                  "valintaperusteviitteet": [],
+                  "validointivirheet": [],
+                  "onLuonnos": null,
+                  "nimi": null,
+                  "kuvaus": null,
+                  "tyyppi": "TOTUUSARVOFUNKTIO",
+                  "id": 172839441,
+                  "lapsityyppi": "funktiokutsu",
+                  "tulosTunniste": null,
+                  "tulosTekstiFi": null,
+                  "tulosTekstiSv": null,
+                  "tulosTekstiEn": null,
+                  "tallennaTulos": false
+                },
+                "indeksi": 1
+              }
+            ],
+            "valintaperusteviitteet": [],
+            "validointivirheet": []
+          },
+          "peritty": false
+        },
+        {
+          "tunniste": "mikon-testikoe-BUG-1564",
+          "laskentakaavaId": null,
+          "nimi": "Mikon testikoe",
+          "kuvaus": null,
+          "aktiivinen": true,
+          "lahetetaankoKoekutsut": true,
+          "kutsutaankoKaikki": false,
+          "kutsuttavienMaara": null,
+          "kutsunKohde": "YLIN_TOIVE",
+          "kutsunKohdeAvain": null,
+          "oid": "1509013338643-5030121444454148645",
+          "selvitettyTunniste": null,
+          "funktiokutsu": {
+            "funktionimi": "TOTUUSARVO",
+            "tulosTunniste": null,
+            "tulosTekstiFi": null,
+            "tulosTekstiSv": null,
+            "tulosTekstiEn": null,
+            "tallennaTulos": false,
+            "arvokonvertteriparametrit": [],
+            "arvovalikonvertteriparametrit": [],
+            "syoteparametrit": [
+              {
+                "avain": "totuusarvo",
+                "arvo": "true"
+              }
+            ],
+            "funktioargumentit": [],
+            "valintaperusteviitteet": [],
+            "validointivirheet": []
+          },
+          "peritty": false
+        }
+      ]
+    }
+  },
+  {
+    "hakukohdeOid": "1.2.246.562.20.80972757381",
+    "hakuOid": "1.2.246.562.29.59856749474",
+    "tarjoajaOid": "1.2.246.562.10.93928993141",
+    "viimeinenValinnanvaihe": 4,
+    "valinnanVaihe": {
+      "nimi": "Varsinainen valinta",
+      "kuvaus": null,
+      "aktiivinen": true,
+      "valinnanVaiheTyyppi": "TAVALLINEN",
+      "oid": null,
+      "inheritance": null,
+      "hasValisijoittelu": null,
+      "valinnanVaiheJarjestysluku": 4,
+      "valinnanVaiheOid": "14849119217734762038413134473578",
+      "valintatapajono": [
+        {
+          "aloituspaikat": 23,
+          "kuvaus": "Valintakokeen pisteet",
+          "tyyppi": "valintatapajono_kp",
+          "nimi": "Koepisteet",
+          "oid": "14871499108842038936225826786200",
+          "prioriteetti": 1,
+          "siirretaanSijoitteluun": true,
+          "tasasijasaanto": "ARVONTA",
+          "eiVarasijatayttoa": false,
+          "poissaOlevaTaytto": true,
+          "kaikkiEhdonTayttavatHyvaksytaan": false,
+          "kaytetaanValintalaskentaa": true,
+          "valmisSijoiteltavaksi": true,
+          "valisijoittelu": false,
+          "poistetaankoHylatyt": false
+        }
+      ],
+      "valintakoe": []
+    }
+  }
+]

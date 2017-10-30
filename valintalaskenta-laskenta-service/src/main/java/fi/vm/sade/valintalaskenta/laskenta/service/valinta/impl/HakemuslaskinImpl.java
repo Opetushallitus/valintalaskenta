@@ -147,7 +147,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                                             ValintakoeOsallistuminen edellinenOsallistuminen) {
         HakemusDTO hakemus = laskettavaHakemus.getHakemusDTO();
         TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(),
-                        tulos.getTila(), edellinenVaihe);
+                        tulos.getTila(), edellinenVaihe, null, edellinenOsallistuminen); // TODO can we get the real valintaperusteet here? Or do with less data?
         Tila.Tilatyyppi uusinTila = tulos.getTila().getTilatyyppi();
         boolean voidaanHyvaksya = isVoidaanHyvaksyaVaikkaHylattyValisijoittelussa(edellinenVaihe, jarjestysnumero, hakemus, tilaJaSelite, edellinenOsallistuminen);
 
@@ -189,7 +189,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                  }
             }
         }
-        TilaJaSelite edellinenTila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(), edellinenVaihe);
+        TilaJaSelite edellinenTila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(), edellinenVaihe, null, edellinenOsallistuminen); // TODO can we get the real valintaperusteet here? Or do with less data?
 
         BigDecimal arvo = getTulos(tulos, tilaJaSelite, edellinenTila);
         Jarjestyskriteeritulos jktulos = muodostaJarjestysKriteeritulos(tilaJaSelite, jkPrioriteetti, jkNimi, arvo);

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import org.junit.Before;
@@ -94,7 +95,7 @@ public class HakemuslaskinServiceTest {
         when(
                 edellinenValinnanvaiheKasittelijaMock
                         .tilaEdellisenValinnanvaiheenMukaan(eq(hakemusOid),
-                                eq(laskettuTila), any(Valinnanvaihe.class)))
+                                eq(laskettuTila), any(Valinnanvaihe.class), any(ValintaperusteetDTO.class), any(ValintakoeOsallistuminen.class)))
                 .thenReturn(tilaEdellisenVaiheenMukaan);
 
         hakemuslaskinService.suoritaLaskentaHakemukselle(laskettavaHakukohde,
