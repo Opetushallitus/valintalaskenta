@@ -1,0 +1,161 @@
+package fi.vm.sade.valintalaskenta.laskenta.service.it;
+
+import static com.lordofthejars.nosqlunit.core.LoadStrategyEnum.CLEAN_INSERT;
+import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializer;
+import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+import com.mongodb.MongoClientURI;
+
+import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
+import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
+import org.apache.commons.lang.StringUtils;
+import org.bson.types.ObjectId;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mongodb.morphia.annotations.Entity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.inject.Named;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * A little utility for dumping valintalaskentadb contents to a form that can be easily used for test fixtures.
+ * Add valintalaskentadb URL to run configuration VM parameters, e.g.
+ *
+ *      <code>-ea -Xmx7G -DVIRKAILIJAMONGO_URL=mongodb://oph:PASSWORD@qa-mongodb1.oph.ware.fi,qa-mongodb2.oph.ware.fi,qa-mongodb3.oph.ware.fi:27017</code>
+ */
+@ContextConfiguration(locations = ValintalaskentaDbDumper.SPRING_CONFIG_XML)
+@RunWith(SpringJUnit4ClassRunner.class)
+@UsingDataSet
+public class ValintalaskentaDbDumper {
+    private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaDbDumper.class);
+    protected static final String SPRING_CONFIG_XML = "classpath:fi/vm/sade/valintalaskenta/laskenta/service/it/test-valintalaskentadb-access.xml";
+
+    private final Gson gson;
+
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    @Autowired
+    @Named("mongoUri2")
+    private MongoClientURI mongoClientURI;
+
+    @Autowired
+    private ValinnanvaiheDAO valinnanvaiheDAO;
+
+    @Rule
+    public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
+
+    private static final String MONGO_SYSTEM_PROPERTY_NAME = "VIRKAILIJAMONGO_URL";
+    private static String originalMongoSystemProperty;
+
+    /**
+     * The real method used for dumping the data
+     */
+    public static void main(String... args) {
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(SPRING_CONFIG_XML);
+        ValintalaskentaDbDumper dumper = (ValintalaskentaDbDumper) context.getBean("valintalaskentaDbDumper");
+        final String hakuOid = "1.2.246.562.29.59856749474";
+        final String hakukohdeOid = "1.2.246.562.20.80972757381";
+        final String hakemusOid = "1.2.246.562.11.00009176948";
+        dumper.dumpData(hakuOid, hakukohdeOid, hakemusOid);
+    }
+
+    public ValintalaskentaDbDumper() {
+        GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(ObjectId.class,
+            (JsonSerializer<ObjectId>) (src, typeOfSrc, context) -> {
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.add("$oid", new JsonPrimitive(src.toHexString()));
+                return jsonObject;
+            });
+        gson = gsonBuilder.create();
+    }
+
+    @BeforeClass
+    public static void setMongoSystemPropertyForAccessingTestValintaLaskentaDb() {
+        String propertyBefore = System.getProperty(MONGO_SYSTEM_PROPERTY_NAME);
+        if (StringUtils.isNotBlank(propertyBefore)) {
+            originalMongoSystemProperty = propertyBefore;
+        }
+        System.setProperty(MONGO_SYSTEM_PROPERTY_NAME, "mongodb://localhost");
+    }
+
+    @AfterClass
+    public static void clearMongoSystemProperty() {
+        if (originalMongoSystemProperty == null) {
+            System.clearProperty(MONGO_SYSTEM_PROPERTY_NAME);
+        } else {
+            System.setProperty(MONGO_SYSTEM_PROPERTY_NAME, originalMongoSystemProperty);
+        }
+    }
+
+
+    @Test
+    @UsingDataSet(locations = "voidaanHyvaksya.json", loadStrategy = CLEAN_INSERT)
+    public void smokeTest() {
+        LOG.info("Using valintalaskentadb from " + mongoClientURI.getHosts());
+    }
+
+    public void dumpData(String hakuOid, String hakukohdeOid, String hakemusOid) {
+        List<Valinnanvaihe> valinnanvaihes = new LinkedList<>();
+        for (int jarjestysNumero = 0; jarjestysNumero < 10; jarjestysNumero++) {
+            valinnanvaihes.addAll(valinnanvaiheDAO.haeValinnanvaiheetJarjestysnumerolla(hakuOid, hakukohdeOid, jarjestysNumero));
+        }
+        cleanUpForPrinting(valinnanvaihes, hakemusOid);
+
+        List<Valintatapajono> jonot = valinnanvaihes.stream().flatMap(vv -> vv.getValintatapajonot().stream()).collect(Collectors.toList());
+        List<Jonosija> jonosijat = jonot.stream().flatMap(j -> j.getJonosijat().stream()).collect(Collectors.toList());
+
+        jonot.forEach(j -> j.getJonosijat().clear());
+        valinnanvaihes.forEach(vv -> vv.getValintatapajonot().clear());
+
+
+        System.out.println("\"" + collectionName(Jonosija.class) + "\": " + gson.toJson(jonosijat));
+        System.out.println("\"" + collectionName(Valintatapajono.class) + "\": " + gson.toJson(jonot));
+        System.out.println("\"" + collectionName(Valinnanvaihe.class) + "\": " + gson.toJson(valinnanvaihes));
+    }
+
+    private String collectionName(Class<?> clazz) {
+        return clazz.getAnnotation(Entity.class).value();
+    }
+
+    private void cleanUpForPrinting(List<Valinnanvaihe> valinnanvaihes, String hakemusOid) {
+        valinnanvaihes.forEach(vaihe -> {
+            vaihe.setCreatedAt(null);
+            vaihe.getValintatapajonot().forEach(jono -> {
+                List<Jonosija> sailytettavatJonosijat = new LinkedList<>();
+                List<ObjectId> sailytettavatJonosijaIdt = new LinkedList<>();
+                jono.getJonosijat().forEach(jonosija -> {
+                    if (jonosija.getHakemusOid().equals(hakemusOid)) {
+                        sailytettavatJonosijat.add(jonosija);
+                    }
+                });
+                jono.getJonosijaIdt().forEach(id -> {
+                    if (sailytettavatJonosijat.stream().anyMatch(sailytettava -> sailytettava.getId().equals(id))) {
+                        sailytettavatJonosijaIdt.add(id);
+                    }
+                });
+                jono.setJonosijat(sailytettavatJonosijat);
+                jono.setJonosijaIdt(sailytettavatJonosijaIdt);
+            });
+        });
+    }
+}

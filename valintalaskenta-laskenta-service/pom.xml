@@ -166,6 +166,18 @@
 			<artifactId>mockito-core</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.kubek2k.mockito.spring</groupId>
+			<artifactId>springockito</artifactId>
+			<version>1.0.0</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.mockito</groupId>
+					<artifactId>mockito-all</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-core</artifactId>
 		</dependency>
