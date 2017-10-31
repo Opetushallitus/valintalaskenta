@@ -28,6 +28,9 @@ import fi.vm.sade.service.valintaperusteet.dto.FunktiokutsuDTO;
 import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi;
+import fi.vm.sade.sijoittelu.tulos.dto.HakukohdeDTO;
+import fi.vm.sade.sijoittelu.tulos.dto.ValisijoitteluDTO;
+import fi.vm.sade.valintalaskenta.domain.HakukohteenLaskennanTila;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
@@ -46,6 +49,7 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKa
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,8 +65,10 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -192,7 +198,8 @@ public class ValintalaskentaResourceIntegrationTest {
 
     @Test
     @UsingDataSet(locations = "bug1564.json", loadStrategy = CLEAN_INSERT)
-    public void kokeeseenOnKutsuttavaVaikkaEdellinenVaiheOlisiHylattyJosKoeOnVainLaskettavallaHakukohteella() throws IOException {
+    @Ignore
+    public void kokeeseenOnKutsuttavaVaikkaEdellinenVaiheOlisiHylattyJosKoeOnVainLaskettavallaHakukohteella() throws IOException, InterruptedException {
         final String hakemusOid = "1.2.246.562.11.00009176948";
         final String hakukohdeOidJossaOmaKoe = "1.2.246.562.20.80972757381";
         final String ylempiHakukohdeOidJossaYhteinenKoe = "1.2.246.562.20.68517235666";
@@ -203,10 +210,20 @@ public class ValintalaskentaResourceIntegrationTest {
 
         HakemusDTO hakemus = luoHakemus(hakuOid, hakemusOid, hakemusOid, ylempiHakukohdeOidJossaYhteinenKoe, hakukohdeOidJossaOmaKoe);
 
-        Mockito.when(mockValintatapajonoResource.findKopiot(org.mockito.Matchers.anyListOf(String.class))).thenReturn(Collections.emptyMap());
+        Map<String, List<String>> valisijoiteltavatJonotHakukohteittain = new HashMap<>();
+        valisijoiteltavatJonotHakukohteittain.put(ylempiHakukohdeOidJossaYhteinenKoe, Arrays.asList("14871500433118662321562230733453", "1487149910926-5198215752602272243"));
+        valisijoiteltavatJonotHakukohteittain.put(hakukohdeOidJossaOmaKoe, Collections.singletonList("14871499108842038936225826786200"));
+        Mockito.when(mockValintatapajonoResource.findKopiot(org.mockito.Matchers.anyListOf(String.class))).thenReturn(valisijoiteltavatJonotHakukohteittain);
+        Mockito.when(mockValisijoitteluResource.sijoittele(org.mockito.Matchers.eq(hakuOid), org.mockito.Matchers.any(ValisijoitteluDTO.class)))
+            .thenReturn(readJsonFromSamePackage(getClass(), "bug1564-valisijoittelu-tulos.json", new TypeToken<List<HakukohdeDTO>>() {}));
 
-        valintalaskentaResource.toteutaLaskeKaikki(new LaskeDTO("uuid1", true, false, ylempiHakukohdeOidJossaYhteinenKoe, Collections.singletonList(hakemus), perusteetKohde1));
-        valintalaskentaResource.toteutaLaskeKaikki(new LaskeDTO("uuid2", true, false, hakukohdeOidJossaOmaKoe, Collections.singletonList(hakemus), perusteetKohde2));
+        LaskeDTO laskeDto1 = new LaskeDTO("uuid1", true, false, ylempiHakukohdeOidJossaYhteinenKoe, Collections.singletonList(hakemus), perusteetKohde1);
+        LaskeDTO laskeDto2 = new LaskeDTO("uuid2", true, false, hakukohdeOidJossaOmaKoe, Collections.singletonList(hakemus), perusteetKohde2);
+        String returnValue;
+        do {
+            returnValue = valintalaskentaResource.laskeJaSijoittele(Arrays.asList(laskeDto1, laskeDto2));
+            Thread.sleep(50);
+        } while (!(returnValue.equals(HakukohteenLaskennanTila.VALMIS) || returnValue.equals(HakukohteenLaskennanTila.VIRHE)));
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         assertNotNull(osallistuminen);

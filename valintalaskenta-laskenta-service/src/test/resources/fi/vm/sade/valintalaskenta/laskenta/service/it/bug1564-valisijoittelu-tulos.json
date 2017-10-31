@@ -1,0 +1,182 @@
+[
+  {
+    "sijoitteluajoId": 1509458178416,
+    "oid": "1.2.246.562.20.80972757381",
+    "tila": null,
+    "tarjoajaOid": "1.2.246.562.10.93928993141",
+    "valintatapajonot": [
+      {
+        "tasasijasaanto": "YLITAYTTO",
+        "tila": null,
+        "oid": "14871499108842038936225826786200",
+        "nimi": "Koepisteet",
+        "prioriteetti": 1,
+        "aloituspaikat": 23,
+        "alkuperaisetAloituspaikat": 23,
+        "alinHyvaksyttyPistemaara": null,
+        "eiVarasijatayttoa": false,
+        "kaikkiEhdonTayttavatHyvaksytaan": false,
+        "poissaOlevaTaytto": false,
+        "valintaesitysHyvaksytty": null,
+        "hakemukset": [
+          {
+            "hakijaOid": "1.2.246.562.24.11352589310",
+            "hakemusOid": "1.2.246.562.11.00009176948",
+            "pisteet": 37,
+            "paasyJaSoveltuvuusKokeenTulos": null,
+            "etunimi": "Sulevi Testi",
+            "sukunimi": "Hellman-Testi",
+            "prioriteetti": 6,
+            "jonosija": 90,
+            "tasasijaJonosija": 1,
+            "tila": "PERUUNTUNUT",
+            "tilanKuvaukset": {
+              "SV": "Urvalsprovets obligatoriska del underkänd",
+              "FI": "Valintakokeen pakollinen osio on hylätty",
+              "EN": "Compulsory exam section has been failed"
+            },
+            "tilaHistoria": [],
+            "hyvaksyttyHarkinnanvaraisesti": false,
+            "varasijanNumero": null,
+            "sijoitteluajoId": 1509458178416,
+            "hakukohdeOid": "1.2.246.562.20.80972757381",
+            "tarjoajaOid": "1.2.246.562.10.93928993141",
+            "valintatapajonoOid": "14871499108842038936225826786200",
+            "hakuOid": null,
+            "onkoMuuttunutViimeSijoittelussa": false,
+            "hyvaksyttyHakijaryhmista": [],
+            "siirtynytToisestaValintatapajonosta": false,
+            "pistetiedot": [
+              {
+                "tunniste": "Sote3_pakollinen_osio",
+                "arvo": "0",
+                "laskennallinenArvo": "0",
+                "osallistuminen": "OSALLISTUI",
+                "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+                "tilastoidaan": false
+              },
+              {
+                "tunniste": "Sote3_valintakoe",
+                "arvo": "37",
+                "laskennallinenArvo": "37",
+                "osallistuminen": "OSALLISTUI",
+                "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
+                "tilastoidaan": false
+              },
+              {
+                "tunniste": "amk_kielikoe_2017_suomi",
+                "arvo": null,
+                "laskennallinenArvo": "false",
+                "osallistuminen": "MERKITSEMATTA",
+                "tyypinKoodiUri": null,
+                "tilastoidaan": false
+              }
+            ],
+            "todellinenJonosija": 90
+          }
+        ],
+        "hakeneet": 234,
+        "hyvaksytty": null,
+        "varalla": null,
+        "varasijat": 0,
+        "varasijaTayttoPaivat": 0,
+        "varasijojaKaytetaanAlkaen": null,
+        "varasijojaTaytetaanAsti": null,
+        "tayttojono": null
+      }
+    ],
+    "hakijaryhmat": [],
+    "kaikkiJonotSijoiteltu": true,
+    "ensikertalaisuusHakijaryhmanAlimmatHyvaksytytPisteet": null
+  },
+  {
+    "sijoitteluajoId": 1509458178416,
+    "oid": "1.2.246.562.20.68517235666",
+    "tila": null,
+    "tarjoajaOid": "1.2.246.562.10.83122281013",
+    "valintatapajonot": [
+      {
+        "tasasijasaanto": "YLITAYTTO",
+        "tila": null,
+        "oid": "14871500433118662321562230733453",
+        "nimi": "Yhteispisteet",
+        "prioriteetti": 0,
+        "aloituspaikat": 16,
+        "alkuperaisetAloituspaikat": 16,
+        "alinHyvaksyttyPistemaara": null,
+        "eiVarasijatayttoa": false,
+        "kaikkiEhdonTayttavatHyvaksytaan": false,
+        "poissaOlevaTaytto": false,
+        "valintaesitysHyvaksytty": null,
+        "hakemukset": [
+          {
+            "hakijaOid": "1.2.246.562.24.11352589310",
+            "hakemusOid": "1.2.246.562.11.00009176948",
+            "pisteet": 62,
+            "paasyJaSoveltuvuusKokeenTulos": null,
+            "etunimi": "Sulevi Testi",
+            "sukunimi": "Hellman-Testi",
+            "prioriteetti": 1,
+            "jonosija": 135,
+            "tasasijaJonosija": 1,
+            "tila": "HYLATTY",
+            "tilanKuvaukset": {
+              "FI": "Valintakokeen pakollinen osio on hylätty",
+              "SV": "Urvalsprovets obligatoriska del underkänd",
+              "EN": "Compulsory exam section has been failed"
+            },
+            "tilaHistoria": [],
+            "hyvaksyttyHarkinnanvaraisesti": false,
+            "varasijanNumero": null,
+            "sijoitteluajoId": 1509458178416,
+            "hakukohdeOid": "1.2.246.562.20.68517235666",
+            "tarjoajaOid": "1.2.246.562.10.83122281013",
+            "valintatapajonoOid": "14871500433118662321562230733453",
+            "hakuOid": null,
+            "onkoMuuttunutViimeSijoittelussa": false,
+            "hyvaksyttyHakijaryhmista": [],
+            "siirtynytToisestaValintatapajonosta": false,
+            "pistetiedot": [
+              {
+                "tunniste": "Sote3_pakollinen_osio",
+                "arvo": "0",
+                "laskennallinenArvo": "0",
+                "osallistuminen": "OSALLISTUI",
+                "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+                "tilastoidaan": false
+              },
+              {
+                "tunniste": "Sote3_valintakoe",
+                "arvo": "37",
+                "laskennallinenArvo": "37",
+                "osallistuminen": "OSALLISTUI",
+                "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
+                "tilastoidaan": false
+              },
+              {
+                "tunniste": "bf10c57a-c395-ad61-7f81-b807245f798a",
+                "arvo": null,
+                "laskennallinenArvo": null,
+                "osallistuminen": "EI_VAADITA",
+                "tyypinKoodiUri": null,
+                "tilastoidaan": false
+              }
+            ],
+            "todellinenJonosija": 135
+          }
+        ],
+        "hakeneet": 598,
+        "hyvaksytty": null,
+        "varalla": null,
+        "varasijat": 0,
+        "varasijaTayttoPaivat": 0,
+        "varasijojaKaytetaanAlkaen": null,
+        "varasijojaTaytetaanAsti": null,
+        "tayttojono": null
+      }
+    ],
+    "hakijaryhmat": [],
+    "kaikkiJonotSijoiteltu": true,
+    "ensikertalaisuusHakijaryhmanAlimmatHyvaksytytPisteet": null
+  }
+]
