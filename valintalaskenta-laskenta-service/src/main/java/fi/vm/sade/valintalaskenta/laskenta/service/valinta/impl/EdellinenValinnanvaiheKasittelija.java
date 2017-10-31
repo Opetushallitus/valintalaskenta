@@ -58,21 +58,21 @@ public class EdellinenValinnanvaiheKasittelija {
 
         List<TilaJaSelite> tilat = new ArrayList<>();
         for (final Valintatapajono jono : edellinenValinnanvaihe.getValintatapajonot()) {
+            // Hakemuksen pitäisi osallistua hakukohdekohtaiseen valintakokeeseen vaikka se olisi
+            // välisijoittelussa hylätty edellisessä vaiheessa.
+            if (edellinenValinnanvaihe.hylattyValisijoittelussa(hakemusOid) && valintaperusteetDTO != null && vanhatOsallistumiset != null && ValinnanVaiheTyyppi.VALINTAKOE.equals(valintaperusteetDTO.getValinnanVaihe().getValinnanVaiheTyyppi())) {
+                Sets.SetView<String> talleKohteelleSpesifienKokeidenTunnisteet = paatteleKoetunnisteetJotkaOnVainTallaHakukohteella(valintaperusteetDTO, vanhatOsallistumiset);
+                if (!talleKohteelleSpesifienKokeidenTunnisteet.isEmpty()) {
+                    return new TilaJaSelite(HYVAKSYTTAVISSA,
+                        suomenkielinenMap("Hakemuksella on kohteeseen seuraavat kokeet, joihin ei osallistuta muissa kohteissa: " +
+                            talleKohteelleSpesifienKokeidenTunnisteet));
+                }
+            }
+
             Jonosija jonosija = getJonosijaForHakemus(hakemusOid, jono.getJonosijat());
 
             TilaJaSelite tilaJonossa;
             if (jonosija == null) {
-                // Hakemuksen pitäisi osallistua hakukohdekohtaiseen valintakokeeseen vaikka se olisi
-                // hylätty edellisessä vaiheessa.
-                if (valintaperusteetDTO != null && vanhatOsallistumiset != null && ValinnanVaiheTyyppi.VALINTAKOE.equals(valintaperusteetDTO.getValinnanVaihe().getValinnanVaiheTyyppi())) {
-                    Sets.SetView<String> talleKohteelleSpesifienKokeidenTunnisteet = paatteleKoetunnisteetJotkaOnVainTallaHakukohteella(valintaperusteetDTO, vanhatOsallistumiset);
-                    if (!talleKohteelleSpesifienKokeidenTunnisteet.isEmpty()) {
-                        return new TilaJaSelite(HYVAKSYTTAVISSA,
-                            suomenkielinenMap("Hakemuksella on kohteeseen seuraavat kokeet, joihin ei osallistuta muissa kohteissa: " +
-                                talleKohteelleSpesifienKokeidenTunnisteet));
-                    }
-                }
-
                 // Jos hakemus ei ole ollut mukana edellisessä valinnan vaiheessa, hakemus ei voi tulla
                 // hyväksyttäväksi tässä valinnan vaiheessa.
                 return new TilaJaSelite(VIRHE, suomenkielinenMap("Hakemus ei ole ollut mukana laskennassa edellisessä valinnan vaiheessa"));
