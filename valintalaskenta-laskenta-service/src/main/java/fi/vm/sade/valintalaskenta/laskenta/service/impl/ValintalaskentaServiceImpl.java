@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +77,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     @Override
     public String laskeKaikki(List<HakemusDTO> hakemus, List<ValintaperusteetDTO> valintaperuste, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
                               String hakukohdeOid, String uuid, boolean korkeakouluhaku) throws RuntimeException {
-        valintaperuste.sort((o1, o2) -> o1.getValinnanVaihe().getValinnanVaiheJarjestysluku() - o2.getValinnanVaihe().getValinnanVaiheJarjestysluku());
+        valintaperuste.sort(Comparator.comparingInt(o -> o.getValinnanVaihe().getValinnanVaiheJarjestysluku()));
 
         ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset = new ValintakoelaskennanKumulatiivisetTulokset();
         valintaperuste.stream().forEachOrdered(peruste -> {
@@ -107,7 +108,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                                         fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO hakemusDTO = hakemusHashMap.get(hakukohdeOid + jono.getValintatapajonoOid() + jonosija.getHakemusOid());
 
                                         if(jonosija.isHylattyValisijoittelussa() && hakemusDTO.getTila().isHyvaksytty()) {
-                                            Collections.sort(jonosija.getJarjestyskriteeritulokset(), (jk1, jk2) -> jk1.getPrioriteetti() - jk2.getPrioriteetti());
+                                            Collections.sort(jonosija.getJarjestyskriteeritulokset(), Comparator.comparingInt(Jarjestyskriteeritulos::getPrioriteetti));
                                             Jarjestyskriteeritulos jarjestyskriteeritulos = jonosija.getJarjestyskriteeritulokset().get(0);
                                             jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA);
                                             jonosija.setHylattyValisijoittelussa(false);
@@ -115,7 +116,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                                         }
                                         
                                         if (hakemusDTO != null && asList(VARALLA, PERUUNTUNUT).contains(hakemusDTO.getTila())) {
-                                            Collections.sort(jonosija.getJarjestyskriteeritulokset(), (jk1, jk2) -> jk1.getPrioriteetti() - jk2.getPrioriteetti());
+                                            Collections.sort(jonosija.getJarjestyskriteeritulokset(), Comparator.comparingInt(Jarjestyskriteeritulos::getPrioriteetti));
                                             Jarjestyskriteeritulos jarjestyskriteeritulos = jonosija.getJarjestyskriteeritulokset().get(0);
                                             jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.HYLATTY);
                                             jonosija.setHylattyValisijoittelussa(true);
