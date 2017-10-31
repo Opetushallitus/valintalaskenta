@@ -32,9 +32,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Named;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -81,13 +84,12 @@ public class ValintalaskentaDbDumper {
     }
 
     public ValintalaskentaDbDumper() {
-        GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(ObjectId.class,
-            (JsonSerializer<ObjectId>) (src, typeOfSrc, context) -> {
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.add("$oid", new JsonPrimitive(src.toHexString()));
-                return jsonObject;
-            });
-        gson = gsonBuilder.create();
+        JsonSerializer<ObjectId> objectIdJsonSerializer = (src, typeOfSrc, context) -> {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.add("$oid", new JsonPrimitive(src.toHexString()));
+            return jsonObject;
+        };
+        gson = new GsonBuilder().registerTypeAdapter(ObjectId.class, objectIdJsonSerializer).create();
     }
 
     @BeforeClass
@@ -128,8 +130,6 @@ public class ValintalaskentaDbDumper {
         List<Jonosija> jonosijat = jonot.stream().flatMap(j -> j.getJonosijat().stream()).collect(Collectors.toList());
 
         jonot.forEach(j -> j.getJonosijat().clear());
-        valinnanvaihes.forEach(vv -> vv.getValintatapajonot().clear());
-
 
         System.out.println("\"" + collectionName(Jonosija.class) + "\": " + gson.toJson(jonosijat));
         System.out.println("\"" + collectionName(Valintatapajono.class) + "\": " + gson.toJson(jonot));
@@ -143,12 +143,14 @@ public class ValintalaskentaDbDumper {
     private void cleanUpForPrinting(List<Valinnanvaihe> valinnanvaihes, List<String> hakemusOids) {
         valinnanvaihes.forEach(vaihe -> {
             vaihe.setCreatedAt(null);
+            Set<Valintatapajono> sailytettavatJonot = new HashSet<>();
             vaihe.getValintatapajonot().forEach(jono -> {
                 List<Jonosija> sailytettavatJonosijat = new LinkedList<>();
                 List<ObjectId> sailytettavatJonosijaIdt = new LinkedList<>();
                 jono.getJonosijat().forEach(jonosija -> {
                     if (hakemusOids.contains(jonosija.getHakemusOid())) {
                         sailytettavatJonosijat.add(jonosija);
+                        sailytettavatJonot.add(jono);
                     }
                 });
                 jono.getJonosijaIdt().forEach(id -> {
@@ -159,6 +161,7 @@ public class ValintalaskentaDbDumper {
                 jono.setJonosijat(sailytettavatJonosijat);
                 jono.setJonosijaIdt(sailytettavatJonosijaIdt);
             });
+            vaihe.setValintatapajonot(new ArrayList<>(sailytettavatJonot));
         });
     }
 
