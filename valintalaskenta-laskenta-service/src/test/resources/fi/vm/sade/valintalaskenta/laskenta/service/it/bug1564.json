@@ -1,22 +1,24 @@
 {
   "Jonosija": [
     {
-      "_id": {
-        "$oid": "59df4a19b930a3c641ea64aa"
+      "id": {
+        "$oid": "59f73921b930a3db80cb83df"
       },
       "hakemusOid": "1.2.246.562.11.00009176948",
       "hakijaOid": "1.2.246.562.24.11352589310",
       "etunimi": "Sulevi Testi",
       "sukunimi": "Hellman-Testi",
-      "hakutoiveprioriteetti": 1,
+      "hakutoiveprioriteetti": 6,
       "harkinnanvarainen": false,
       "hylattyValisijoittelussa": false,
       "jarjestyskriteeritulokset": [
         {
           "prioriteetti": 0,
-          "arvo": "68.1",
+          "arvo": 68.1,
           "tila": "HYVAKSYTTAVISSA",
-          "historia": "59df4a19b930a3c641ea62ef"
+          "historia": {
+            "$oid": "59f73920b930a3db80cb8336"
+          }
         }
       ],
       "syotetytArvot": [
@@ -28,85 +30,85 @@
           "tyypinKoodiUri": "syotettavanarvontyypit_muu",
           "tilastoidaan": false
         }
-      ]
+      ],
+      "funktioTulokset": []
     },
     {
-      "_id": {
-        "$oid": "59df4aa3b930a3c641ed036a"
+      "id": {
+        "$oid": "59f739fab930a3db80cb8b30"
       },
       "hakemusOid": "1.2.246.562.11.00009176948",
       "hakijaOid": "1.2.246.562.24.11352589310",
       "etunimi": "Sulevi Testi",
       "sukunimi": "Hellman-Testi",
-      "hakutoiveprioriteetti": 1,
+      "hakutoiveprioriteetti": 6,
       "harkinnanvarainen": false,
       "hylattyValisijoittelussa": false,
       "jarjestyskriteeritulokset": [
         {
           "prioriteetti": 0,
-          "arvo": "",
           "tila": "HYVAKSYTTAVISSA",
-          "historia": "59df4aa3b930a3c641ed01af"
-        }
-      ]
-    },
-    {
-      "_id": {
-        "$oid": "59df4c23b930a3c641efa22a"
-      },
-      "hakemusOid": "1.2.246.562.11.00009176948",
-      "hakijaOid": "1.2.246.562.24.11352589310",
-      "etunimi": "Sulevi Testi",
-      "sukunimi": "Hellman-Testi",
-      "hakutoiveprioriteetti": 1,
-      "harkinnanvarainen": false,
-      "hylattyValisijoittelussa": false,
-      "jarjestyskriteeritulokset": [
-        {
-          "prioriteetti": 0,
-          "arvo": "68.1",
-          "tila": "HYVAKSYTTAVISSA",
-          "historia": "59df4c22b930a3c641efa06f"
+          "historia": {
+            "$oid": "59f739f9b930a3db80cb8a87"
+          }
         }
       ],
-      "syotetytArvot": [
-        {
-          "tunniste": "sotelikoe2017k",
-          "arvo": "68.1",
-          "laskennallinenArvo": "68.1",
-          "osallistuminen": "OSALLISTUI",
-          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
-          "tilastoidaan": false
-        }
-      ]
+      "syotetytArvot": [],
+      "funktioTulokset": []
     },
     {
-      "_id": {
-        "$oid": "59df5647b930a3c641f33a9b"
+      "id": {
+        "$oid": "59df4ad1b930a3c641eda309"
       },
       "hakemusOid": "1.2.246.562.11.00009176948",
       "hakijaOid": "1.2.246.562.24.11352589310",
       "etunimi": "Sulevi Testi",
       "sukunimi": "Hellman-Testi",
-      "hakutoiveprioriteetti": 1,
+      "hakutoiveprioriteetti": 6,
       "harkinnanvarainen": false,
-      "hylattyValisijoittelussa": false,
+      "hylattyValisijoittelussa": true,
       "jarjestyskriteeritulokset": [
         {
           "prioriteetti": 0,
-          "arvo": "62",
+          "arvo": 68.1,
           "tila": "HYLATTY",
           "kuvaus": {
-            "FI": "Valintakokeen pakollinen osio on hylätty",
-            "EN": "Compulsory exam section has been failed",
-            "SV": "Urvalsprovets obligatoriska del underkänd"
+            "FI": "Hyväksyttiin korkeammalle hakutoiveelle",
+            "SV": "Godkänd till ett högre ansökningsönskemål",
+            "EN": "Accepted to a higher preference"
           },
-          "tekninenKuvaus": "Arvokonvertterin konvertoi metodissa suoritettu hylkays.",
-          "historia": "59df5636b930a3c641f32d32"
-        },
+          "historia": {
+            "$oid": "59df4ad1b930a3c641eda260"
+          }
+        }
+      ],
+      "syotetytArvot": [
         {
-          "prioriteetti": 1,
-          "arvo": "37",
+          "tunniste": "sotelikoe2017k",
+          "arvo": "68.1",
+          "laskennallinenArvo": "68.1",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "id": {
+        "$oid": "59df54c4b930a3c641f04523"
+      },
+      "hakemusOid": "1.2.246.562.11.00009176948",
+      "hakijaOid": "1.2.246.562.24.11352589310",
+      "etunimi": "Sulevi Testi",
+      "sukunimi": "Hellman-Testi",
+      "hakutoiveprioriteetti": 6,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "arvo": 37,
           "tila": "HYLATTY",
           "kuvaus": {
             "SV": "Urvalsprovets obligatoriska del underkänd",
@@ -114,19 +116,17 @@
             "EN": "Compulsory exam section has been failed"
           },
           "tekninenKuvaus": "Arvokonvertterin konvertoi metodissa suoritettu hylkays.",
-          "historia": "59df5639b930a3c641f32f88"
+          "historia": {
+            "$oid": "59df54c3b930a3c641f04390"
+          }
         },
         {
           "prioriteetti": 2,
-          "arvo": "25",
+          "arvo": 1,
           "tila": "HYVAKSYTTAVISSA",
-          "historia": "59df563bb930a3c641f331de"
-        },
-        {
-          "prioriteetti": 3,
-          "arvo": "6",
-          "tila": "HYVAKSYTTAVISSA",
-          "historia": "59df5642b930a3c641f33434"
+          "historia": {
+            "$oid": "59df54c4b930a3c641f0447a"
+          }
         }
       ],
       "syotetytArvot": [
@@ -147,136 +147,73 @@
           "tilastoidaan": false
         },
         {
-          "tunniste": "bf10c57a-c395-ad61-7f81-b807245f798a",
-          "osallistuminen": "EI_VAADITA",
+          "tunniste": "amk_kielikoe_2017_suomi",
+          "laskennallinenArvo": "false",
+          "osallistuminen": "MERKITSEMATTA",
           "tilastoidaan": false
-        }
-      ]
-    },
-    {
-      "_id": {
-        "$oid": "59df5647b930a3c641f33cf2"
-      },
-      "hakemusOid": "1.2.246.562.11.00009176948",
-      "hakijaOid": "1.2.246.562.24.11352589310",
-      "etunimi": "Sulevi Testi",
-      "sukunimi": "Hellman-Testi",
-      "hakutoiveprioriteetti": 1,
-      "harkinnanvarainen": false,
-      "hylattyValisijoittelussa": false,
-      "jarjestyskriteeritulokset": [
-        {
-          "prioriteetti": 0,
-          "arvo": "37",
-          "tila": "HYLATTY",
-          "kuvaus": {
-            "FI": "Valintakokeen pakollinen osio on hylätty",
-            "SV": "Urvalsprovets obligatoriska del underkänd",
-            "EN": "Compulsory exam section has been failed"
-          },
-          "tekninenKuvaus": "Arvokonvertterin konvertoi metodissa suoritettu hylkays.",
-          "historia": "59df5644b930a3c641f3368a"
-        },
-        {
-          "prioriteetti": 1,
-          "arvo": "6",
-          "tila": "HYVAKSYTTAVISSA",
-          "historia": "59df5646b930a3c641f338e0"
         }
       ],
-      "syotetytArvot": [
-        {
-          "tunniste": "Sote3_pakollinen_osio",
-          "arvo": "0",
-          "laskennallinenArvo": "0",
-          "osallistuminen": "OSALLISTUI",
-          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
-          "tilastoidaan": false
-        },
-        {
-          "tunniste": "Sote3_valintakoe",
-          "arvo": "37",
-          "laskennallinenArvo": "37",
-          "osallistuminen": "OSALLISTUI",
-          "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
-          "tilastoidaan": false
-        }
-      ]
+      "funktioTulokset": []
     }
   ],
   "Valinnanvaihe": [
     {
-      "_id": {
-        "$oid": "59df26bdb930a3967e7a4aa9"
+      "id": {
+        "$oid": "59baad30b930a352b01e3972"
+      },
+      "jarjestysnumero": 0,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.80972757381",
+      "valinnanvaiheOid": "14871442164221548191326643098842",
+      "tarjoajaOid": "1.2.246.562.10.93928993141",
+      "nimi": "SOTELI-esivalintakoe",
+      "valintatapajonot": []
+    },
+    {
+      "id": {
+        "$oid": "59baad34b930a352b01e4181"
       },
       "jarjestysnumero": 1,
       "hakuOid": "1.2.246.562.29.59856749474",
-      "hakukohdeOid": "1.2.246.562.20.68517235666",
-      "valinnanvaiheOid": "1483515529860-319195982171180380",
-      "tarjoajaOid": "1.2.246.562.10.83122281013",
+      "hakukohdeOid": "1.2.246.562.20.80972757381",
+      "valinnanvaiheOid": "1484911921792-7809619609223215701",
+      "tarjoajaOid": "1.2.246.562.10.93928993141",
       "nimi": "Hakukelpoisuuden käsittelyvaihe",
-      "valintatapajonot": [
-        {
-          "$ref": "Valintatapajono",
-          "$id": {
-            "$oid": "59df4aa4b930a3c641ed05bd"
-          }
-        }
-      ]
+      "valintatapajonot": []
     },
     {
-      "_id": {
-        "$oid": "59df27f4b930a3967e7ce97a"
+      "id": {
+        "$oid": "59baad36b930a352b01e49b2"
       },
       "jarjestysnumero": 2,
       "hakuOid": "1.2.246.562.29.59856749474",
-      "hakukohdeOid": "1.2.246.562.20.68517235666",
-      "valinnanvaiheOid": "1487145297191-8966170527898136429",
-      "tarjoajaOid": "1.2.246.562.10.83122281013",
+      "hakukohdeOid": "1.2.246.562.20.80972757381",
+      "valinnanvaiheOid": "14871452953096650794917745386331",
+      "tarjoajaOid": "1.2.246.562.10.93928993141",
       "nimi": "Esivalintavaihe",
-      "valintatapajonot": [
-        {
-          "$ref": "Valintatapajono",
-          "$id": {
-            "$oid": "59df4c24b930a3c641efa47d"
-          }
-        }
-      ]
+      "valintatapajonot": []
     },
     {
-      "_id": {
-        "$oid": "59df3229b930a3967e808e20"
+      "id": {
+        "$oid": "59baad4fb930a352b01e5720"
       },
       "jarjestysnumero": 4,
       "hakuOid": "1.2.246.562.29.59856749474",
-      "hakukohdeOid": "1.2.246.562.20.68517235666",
-      "valinnanvaiheOid": "14835155298422673008063308278448",
-      "tarjoajaOid": "1.2.246.562.10.83122281013",
+      "hakukohdeOid": "1.2.246.562.20.80972757381",
+      "valinnanvaiheOid": "14849119217734762038413134473578",
+      "tarjoajaOid": "1.2.246.562.10.93928993141",
       "nimi": "Varsinainen valinta",
-      "valintatapajonot": [
-        {
-          "$ref": "Valintatapajono",
-          "$id": {
-            "$oid": "59df5647b930a3c641f33cee"
-          }
-        },
-        {
-          "$ref": "Valintatapajono",
-          "$id": {
-            "$oid": "59df5648b930a3c641f33f45"
-          }
-        }
-      ]
+      "valintatapajonot": []
     }
   ],
   "ValintakoeOsallistuminen": [],
   "Valintatapajono": [
     {
-      "_id": {
-        "$oid": "59df4a19b930a3c641ea66fd"
+      "id": {
+        "$oid": "59f73921b930a3db80cb84c7"
       },
       "schemaVersion": 2,
-      "valintatapajonoOid": "1487144482771-5032042978750825027",
+      "valintatapajonoOid": "14871444832487908883297846034003",
       "nimi": "SOTELI-esivalintakoe",
       "prioriteetti": 0,
       "aloituspaikat": 0,
@@ -288,16 +225,17 @@
       "valmisSijoiteltavaksi": false,
       "jonosijaIdt": [
         {
-          "$oid": "59df4a19b930a3c641ea64aa"
+          "$oid": "59f73921b930a3db80cb83df"
         }
-      ]
+      ],
+      "jonosijat": []
     },
     {
-      "_id": {
-        "$oid": "59df4aa4b930a3c641ed05bd"
+      "id": {
+        "$oid": "59f739fab930a3db80cb8c18"
       },
       "schemaVersion": 2,
-      "valintatapajonoOid": "14835155298981853295837255931709",
+      "valintatapajonoOid": "14849119218354391149179791382165",
       "nimi": "Ei-hakukelpoiset",
       "prioriteetti": 0,
       "aloituspaikat": 0,
@@ -309,19 +247,20 @@
       "valmisSijoiteltavaksi": false,
       "jonosijaIdt": [
         {
-          "$oid": "59df4aa3b930a3c641ed036a"
+          "$oid": "59f739fab930a3db80cb8b30"
         }
-      ]
+      ],
+      "jonosijat": []
     },
     {
-      "_id": {
-        "$oid": "59df4c24b930a3c641efa47d"
+      "id": {
+        "$oid": "59df4ad1b930a3c641eda3f1"
       },
       "schemaVersion": 2,
-      "valintatapajonoOid": "1487145391342-2388937780306276163",
+      "valintatapajonoOid": "14871453921611384534693174737784",
       "nimi": "Esivalintakoe",
       "prioriteetti": 0,
-      "aloituspaikat": 100,
+      "aloituspaikat": 80,
       "siirretaanSijoitteluun": false,
       "tasasijasaanto": "YLITAYTTO",
       "eiVarasijatayttoa": false,
@@ -330,40 +269,20 @@
       "valmisSijoiteltavaksi": false,
       "jonosijaIdt": [
         {
-          "$oid": "59df4c23b930a3c641efa22a"
+          "$oid": "59df4ad1b930a3c641eda309"
         }
-      ]
+      ],
+      "jonosijat": []
     },
     {
-      "_id": {
-        "$oid": "59df5647b930a3c641f33cee"
+      "id": {
+        "$oid": "59df54c4b930a3c641f0460b"
       },
       "schemaVersion": 2,
-      "valintatapajonoOid": "14871500433118662321562230733453",
-      "nimi": "Yhteispisteet",
-      "prioriteetti": 0,
-      "aloituspaikat": 16,
-      "siirretaanSijoitteluun": true,
-      "tasasijasaanto": "ARVONTA",
-      "eiVarasijatayttoa": false,
-      "kaikkiEhdonTayttavatHyvaksytaan": false,
-      "kaytetaanValintalaskentaa": true,
-      "valmisSijoiteltavaksi": true,
-      "jonosijaIdt": [
-        {
-          "$oid": "59df5647b930a3c641f33a9b"
-        }
-      ]
-    },
-    {
-      "_id": {
-        "$oid": "59df5648b930a3c641f33f45"
-      },
-      "schemaVersion": 2,
-      "valintatapajonoOid": "1487149910926-5198215752602272243",
+      "valintatapajonoOid": "14871499108842038936225826786200",
       "nimi": "Koepisteet",
       "prioriteetti": 1,
-      "aloituspaikat": 4,
+      "aloituspaikat": 23,
       "siirretaanSijoitteluun": true,
       "tasasijasaanto": "ARVONTA",
       "eiVarasijatayttoa": false,
@@ -372,9 +291,10 @@
       "valmisSijoiteltavaksi": true,
       "jonosijaIdt": [
         {
-          "$oid": "59df5647b930a3c641f33cf2"
+          "$oid": "59df54c4b930a3c641f04523"
         }
-      ]
+      ],
+      "jonosijat": []
     }
   ]
 }
