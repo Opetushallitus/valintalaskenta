@@ -236,12 +236,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         boolean voidaanHyvaksya = false;
         final boolean hakijaHylatty = tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY) && edellinenVaihe != null && edellinenVaihe.getJarjestysnumero() != jarjestysnumero - 1;
         if (hakijaHylatty) {
-            boolean hylattyValisijoittelussa = edellinenVaihe.getValintatapajonot()
-                    .stream()
-                    .flatMap(j -> j.getJonosijat().stream())
-                    .filter(j -> j.getHakemusOid().equals(hakemus.getHakemusoid()))
-                    .anyMatch(j -> j.isHylattyValisijoittelussa());
-            if (hylattyValisijoittelussa) {
+            if (edellinenVaihe.hylattyValisijoittelussa(hakemus.getHakemusoid())) {
                 if (edellinenOsallistuminen != null) {
                     ValintakoeOsallistuminen hakijanOsallistumiset = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakemus.getHakuoid(), hakemus.getHakemusoid());
                     if(hakijanOsallistumiset != null) {

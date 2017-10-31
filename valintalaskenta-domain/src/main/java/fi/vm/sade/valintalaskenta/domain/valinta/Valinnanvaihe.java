@@ -122,6 +122,14 @@ public class Valinnanvaihe {
         this.nimi = nimi;
     }
 
+    public boolean hylattyValisijoittelussa(String hakemusoid) {
+        return getValintatapajonot()
+                        .stream()
+                        .flatMap(j -> j.getJonosijat().stream())
+                        .filter(j -> j.getHakemusOid().equals(hakemusoid))
+                        .anyMatch(j -> j.isHylattyValisijoittelussa());
+    }
+
     public void reportDuplicateValintatapajonoOids() {
         Set<String> uniqueJonoOids = new HashSet<>();
         for (Valintatapajono valintatapajono : valintatapajonot) {
