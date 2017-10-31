@@ -48,7 +48,6 @@ import fi.vm.sade.valintalaskenta.laskenta.resource.ValintakoelaskennanKumulatii
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinnanvaiheKasittelija;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
 import org.apache.commons.io.IOUtils;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -847,8 +846,8 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         ArrayList<ValintaperusteetDTO>  perusteetKohde2 = readJsonFromSamePackage(getClass(), "bug1564-valintaperusteet.json", new TypeToken<ArrayList<ValintaperusteetDTO>>() {});
 
         HakemusDTO hakemus = luoHakemus(hakuOid, hakemusOid, hakemusOid, ylempiHakukohdeOidJossaYhteinenKoe, hakukohdeOidJossaOmaKoe);
-        valintakoelaskentaSuorittajaService.laske(hakemus, perusteetKohde1, uuid, kumulatiivisetTulokset, korkeakouluhaku);
-        valintakoelaskentaSuorittajaService.laske(hakemus, perusteetKohde2, uuid, kumulatiivisetTulokset, korkeakouluhaku);
+        valintakoelaskentaSuorittajaService.laske(hakemus, perusteetKohde1, uuid, new ValintakoelaskennanKumulatiivisetTulokset(), korkeakouluhaku);
+        valintakoelaskentaSuorittajaService.laske(hakemus, perusteetKohde2, uuid, new ValintakoelaskennanKumulatiivisetTulokset(), korkeakouluhaku);
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
 
