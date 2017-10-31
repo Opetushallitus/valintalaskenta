@@ -32,6 +32,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Named;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -73,10 +74,10 @@ public class ValintalaskentaDbDumper {
     public static void main(String... args) {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(SPRING_CONFIG_XML);
         ValintalaskentaDbDumper dumper = (ValintalaskentaDbDumper) context.getBean("valintalaskentaDbDumper");
-        final String hakuOid = "1.2.246.562.29.59856749474";
-        final String hakukohdeOid = "1.2.246.562.20.80972757381";
-        final String hakemusOid = "1.2.246.562.11.00009176948";
-        dumper.dumpData(hakuOid, hakukohdeOid, hakemusOid);
+        OidsToDump oidsToDump = OidsToDump.withHakuOid("1.2.246.562.29.59856749474")
+            .withHakukohdeOids("1.2.246.562.20.68517235666", "1.2.246.562.20.80972757381")
+            .withHakemusOids("1.2.246.562.11.00009176948").build();
+        dumper.dumpData(oidsToDump);
     }
 
     public ValintalaskentaDbDumper() {
@@ -114,12 +115,14 @@ public class ValintalaskentaDbDumper {
         LOG.info("Using valintalaskentadb from " + mongoClientURI.getHosts());
     }
 
-    public void dumpData(String hakuOid, String hakukohdeOid, String hakemusOid) {
+    public void dumpData(OidsToDump oidsToDump) {
         List<Valinnanvaihe> valinnanvaihes = new LinkedList<>();
         for (int jarjestysNumero = 0; jarjestysNumero < 10; jarjestysNumero++) {
-            valinnanvaihes.addAll(valinnanvaiheDAO.haeValinnanvaiheetJarjestysnumerolla(hakuOid, hakukohdeOid, jarjestysNumero));
+            for (String hakukohdeOid : oidsToDump.hakukohdeOids) {
+                valinnanvaihes.addAll(valinnanvaiheDAO.haeValinnanvaiheetJarjestysnumerolla(oidsToDump.hakuOid, hakukohdeOid, jarjestysNumero));
+            }
         }
-        cleanUpForPrinting(valinnanvaihes, hakemusOid);
+        cleanUpForPrinting(valinnanvaihes, oidsToDump.hakemusOids);
 
         List<Valintatapajono> jonot = valinnanvaihes.stream().flatMap(vv -> vv.getValintatapajonot().stream()).collect(Collectors.toList());
         List<Jonosija> jonosijat = jonot.stream().flatMap(j -> j.getJonosijat().stream()).collect(Collectors.toList());
@@ -137,14 +140,14 @@ public class ValintalaskentaDbDumper {
         return clazz.getAnnotation(Entity.class).value();
     }
 
-    private void cleanUpForPrinting(List<Valinnanvaihe> valinnanvaihes, String hakemusOid) {
+    private void cleanUpForPrinting(List<Valinnanvaihe> valinnanvaihes, List<String> hakemusOids) {
         valinnanvaihes.forEach(vaihe -> {
             vaihe.setCreatedAt(null);
             vaihe.getValintatapajonot().forEach(jono -> {
                 List<Jonosija> sailytettavatJonosijat = new LinkedList<>();
                 List<ObjectId> sailytettavatJonosijaIdt = new LinkedList<>();
                 jono.getJonosijat().forEach(jonosija -> {
-                    if (jonosija.getHakemusOid().equals(hakemusOid)) {
+                    if (hakemusOids.contains(jonosija.getHakemusOid())) {
                         sailytettavatJonosijat.add(jonosija);
                     }
                 });
@@ -157,5 +160,45 @@ public class ValintalaskentaDbDumper {
                 jono.setJonosijaIdt(sailytettavatJonosijaIdt);
             });
         });
+    }
+
+    public static class OidsToDump {
+        public final String hakuOid;
+        public final List<String> hakukohdeOids;
+        public final List<String> hakemusOids;
+
+        public OidsToDump(String hakuOid, List<String> hakukohdeOids, List<String> hakemusOids) {
+            this.hakuOid = hakuOid;
+            this.hakukohdeOids = hakukohdeOids;
+            this.hakemusOids = hakemusOids;
+        }
+
+        public static OidsToDump.Builder withHakuOid(String hakuOid) {
+            return new OidsToDump.Builder(hakuOid);
+        }
+
+        public static class Builder {
+            private final String hakuOid;
+            private String[] hakukohdeOids;
+            private String[] hakemusOids;
+
+            public Builder(String hakuOid) {
+                this.hakuOid = hakuOid;
+            }
+
+            public Builder withHakukohdeOids(String... hakukohdeOids) {
+                this.hakukohdeOids = hakukohdeOids;
+                return this;
+            }
+
+            public Builder withHakemusOids(String... hakemusOids) {
+                this.hakemusOids = hakemusOids;
+                return this;
+            }
+
+            public OidsToDump build() {
+                return new OidsToDump(hakuOid, Arrays.asList(hakukohdeOids), Arrays.asList(hakemusOids));
+            }
+        }
     }
 }
