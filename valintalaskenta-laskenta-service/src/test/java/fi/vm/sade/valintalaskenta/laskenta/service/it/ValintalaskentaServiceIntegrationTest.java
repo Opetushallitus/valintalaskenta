@@ -105,7 +105,7 @@ public class ValintalaskentaServiceIntegrationTest {
         assertThat(ylemmanKohteenKokeetOsallistumisenMukaan.keySet(), hasItem(OSALLISTUU));
         assertThat(ylemmanKohteenKokeetOsallistumisenMukaan.get(OSALLISTUU).stream()
             .map(Valintakoe::getValintakoeTunniste), StreamMatchers.contains("Sote3_pakollinen_osio", "Sote3_valintakoe"));
-        
+
         List<Valintakoe> kohteenJossaOmaKoeValintakokeet = osallistuminen.getHakutoiveet()
             .stream()
             .filter(h -> h.getHakukohdeOid().equals(hakukohdeOidJossaOmaKoe))
