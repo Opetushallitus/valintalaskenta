@@ -2,12 +2,22 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.*;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Field;
+import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Index;
+import org.mongodb.morphia.annotations.IndexOptions;
+import org.mongodb.morphia.annotations.Indexed;
+import org.mongodb.morphia.annotations.Indexes;
+import org.mongodb.morphia.annotations.PostLoad;
+import org.mongodb.morphia.annotations.PrePersist;
+import org.mongodb.morphia.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +52,7 @@ public class Valinnanvaihe {
     private String nimi;
 
     @Reference
-    private List<Valintatapajono> valintatapajonot = new ArrayList<Valintatapajono>();
+    private List<Valintatapajono> valintatapajonot = new ArrayList<>();
 
     @PrePersist
     private void prePersist() {
@@ -51,7 +61,7 @@ public class Valinnanvaihe {
 
     @PostLoad
     private void jarjestaValintatapajonot() {
-        Collections.sort(valintatapajonot, (o1, o2) -> o1.getPrioriteetti() - o2.getPrioriteetti());
+        Collections.sort(valintatapajonot, Comparator.comparingInt(Valintatapajono::getPrioriteetti));
     }
 
     public void setId(ObjectId id) {
@@ -127,7 +137,7 @@ public class Valinnanvaihe {
                         .stream()
                         .flatMap(j -> j.getJonosijat().stream())
                         .filter(j -> j.getHakemusOid().equals(hakemusoid))
-                        .anyMatch(j -> j.isHylattyValisijoittelussa());
+                        .anyMatch(Jonosija::isHylattyValisijoittelussa);
     }
 
     public void reportDuplicateValintatapajonoOids() {
