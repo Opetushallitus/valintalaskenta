@@ -888,14 +888,14 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         Map<Osallistuminen, List<Valintakoe>> kohteenJossaOmaKoeKokeetOsallistumisenMukaan =
             kohteenJossaOmaKoeValintakokeet.stream().collect(groupingBy(k -> k.getOsallistuminenTulos().getOsallistuminen()));
-        assertThat(kohteenJossaOmaKoeKokeetOsallistumisenMukaan.get(OSALLISTUU), hasSize(1));
+        assertThat(kohteenJossaOmaKoeKokeetOsallistumisenMukaan.get(OSALLISTUU), hasSize(2));
         assertThat(kohteenJossaOmaKoeKokeetOsallistumisenMukaan.get(OSALLISTUU)
             .stream()
-            .map(Valintakoe::getValintakoeTunniste), StreamMatchers.contains("KOHTEEN_SPESIFI_KOE_BUG-1564"));
+            .map(Valintakoe::getValintakoeTunniste), StreamMatchers.contains("amk_kielikoe_2017_suomi", "mikon-testikoe-BUG-1564"));
         assertThat(kohteenJossaOmaKoeKokeetOsallistumisenMukaan.get(EI_OSALLISTU), hasSize(2));
         assertThat(kohteenJossaOmaKoeKokeetOsallistumisenMukaan.get(EI_OSALLISTU)
             .stream()
-            .map(Valintakoe::getValintakoeTunniste), StreamMatchers.contains("SOTE1_kaikkiosiot", "SOTEKOE_VK_RYHMA1"));
+            .map(Valintakoe::getValintakoeTunniste), StreamMatchers.contains("Sote3_pakollinen_osio", "Sote3_valintakoe"));
     }
 
     private Predicate<Valintakoe> koeWithTunniste(String tunniste) {
