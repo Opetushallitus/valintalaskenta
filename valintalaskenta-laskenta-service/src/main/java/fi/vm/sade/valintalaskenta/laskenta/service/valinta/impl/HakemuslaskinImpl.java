@@ -190,7 +190,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                  }
             }
         }
-        TilaJaSelite edellinenTila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(), edellinenVaihe, null, edellinenOsallistuminen); // TODO can we get the real valintaperusteet here? Or do with less data?
+        TilaJaSelite edellinenTila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(), edellinenVaihe, Optional.empty(), edellinenOsallistuminen); // TODO can we get the real valintaperusteet here? Or do with less data?
 
         BigDecimal arvo = getTulos(tulos, tilaJaSelite, edellinenTila);
         Jarjestyskriteeritulos jktulos = muodostaJarjestysKriteeritulos(tilaJaSelite, jkPrioriteetti, jkNimi, arvo);

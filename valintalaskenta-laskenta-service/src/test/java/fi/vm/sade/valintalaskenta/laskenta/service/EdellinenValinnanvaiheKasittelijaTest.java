@@ -41,7 +41,7 @@ public class EdellinenValinnanvaiheKasittelijaTest {
     public void testEiValintatapajonoja() {
         Valinnanvaihe vaihe = new Valinnanvaihe();
 
-        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan("hakesmusOid", vaihe, null, new ValintakoeOsallistuminen());
+        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan("hakesmusOid", vaihe, Optional.empty(), new ValintakoeOsallistuminen());
         assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, tila.getTila());
     }
 
@@ -61,7 +61,7 @@ public class EdellinenValinnanvaiheKasittelijaTest {
         vaihe.getValintatapajonot().add(jono);
 
         final String hakemusOid = "hakemusOid1";
-        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, vaihe, null, new ValintakoeOsallistuminen());
+        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, vaihe, Optional.empty(), new ValintakoeOsallistuminen());
         assertEquals(JarjestyskriteerituloksenTila.VIRHE, tila.getTila());
     }
 
@@ -93,7 +93,7 @@ public class EdellinenValinnanvaiheKasittelijaTest {
         Valinnanvaihe vaihe = new Valinnanvaihe();
         vaihe.getValintatapajonot().addAll(Arrays.asList(jono1, jono2, jono3));
 
-        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, vaihe, null, new ValintakoeOsallistuminen());
+        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, vaihe, Optional.empty(), new ValintakoeOsallistuminen());
         assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, tila.getTila());
     }
 
@@ -116,13 +116,13 @@ public class EdellinenValinnanvaiheKasittelijaTest {
         Valinnanvaihe vaihe = new Valinnanvaihe();
         vaihe.getValintatapajonot().addAll(Arrays.asList(jono1, jono2, jono3));
 
-        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, vaihe, null, new ValintakoeOsallistuminen());
+        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, vaihe, Optional.empty(), new ValintakoeOsallistuminen());
         assertEquals(JarjestyskriteerituloksenTila.HYLATTY, tila.getTila());
     }
 
     @Test
     public void testEdellinenVaiheNull() {
-        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan("hakemusOid", null, null, new ValintakoeOsallistuminen());
+        TilaJaSelite tila = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan("hakemusOid", null, Optional.empty(), new ValintakoeOsallistuminen());
         assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, tila.getTila());
     }
 
