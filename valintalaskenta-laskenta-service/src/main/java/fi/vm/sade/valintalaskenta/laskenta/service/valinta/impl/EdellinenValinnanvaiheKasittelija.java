@@ -49,7 +49,7 @@ public class EdellinenValinnanvaiheKasittelija {
      * valintatapajonossa.
      */
     public TilaJaSelite hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(final String hakemusOid,
-                                                                             Valinnanvaihe edellinenValinnanvaihe, ValintaperusteetDTO valintaperusteetDTO, ValintakoeOsallistuminen vanhatOsallistumiset) {
+                                                                             Valinnanvaihe edellinenValinnanvaihe, Optional<ValintaperusteetDTO> valintaperusteetDTO, ValintakoeOsallistuminen vanhatOsallistumiset) {
         // Jos edellisessä valinnan vaiheessa ei ole yhtään valintatapajonoa, voidaan olettaa, että hakemus
         // on hyväksyttävissä
         if (edellinenValinnanvaihe == null || edellinenValinnanvaihe.getValintatapajonot().isEmpty()) {
@@ -60,8 +60,8 @@ public class EdellinenValinnanvaiheKasittelija {
         for (final Valintatapajono jono : edellinenValinnanvaihe.getValintatapajonot()) {
             // Hakemuksen pitäisi osallistua hakukohdekohtaiseen valintakokeeseen vaikka se olisi
             // välisijoittelussa hylätty edellisessä vaiheessa.
-            if (edellinenValinnanvaihe.hylattyValisijoittelussa(hakemusOid) && valintaperusteetDTO != null && vanhatOsallistumiset != null && ValinnanVaiheTyyppi.VALINTAKOE.equals(valintaperusteetDTO.getValinnanVaihe().getValinnanVaiheTyyppi())) {
-                Sets.SetView<String> talleKohteelleSpesifienKokeidenTunnisteet = paatteleKoetunnisteetJotkaOnVainTallaHakukohteella(valintaperusteetDTO, vanhatOsallistumiset);
+            if (edellinenValinnanvaihe.hylattyValisijoittelussa(hakemusOid) && valintaperusteetDTO.isPresent() && vanhatOsallistumiset != null && ValinnanVaiheTyyppi.VALINTAKOE.equals(valintaperusteetDTO.get().getValinnanVaihe().getValinnanVaiheTyyppi())) {
+                Sets.SetView<String> talleKohteelleSpesifienKokeidenTunnisteet = paatteleKoetunnisteetJotkaOnVainTallaHakukohteella(valintaperusteetDTO.get(), vanhatOsallistumiset);
                 if (!talleKohteelleSpesifienKokeidenTunnisteet.isEmpty()) {
                     return new TilaJaSelite(HYVAKSYTTAVISSA,
                         suomenkielinenMap("Hakemuksella on kohteeseen seuraavat kokeet, joihin ei osallistuta muissa kohteissa: " +
@@ -169,14 +169,13 @@ public class EdellinenValinnanvaiheKasittelija {
     /**
      * Laskee järjestyskriteerin tilan varsinaisen lasketun tilan sekä sen mukaan, onko hakemus hyväksyttävissä
      * edellisen valinnan vaiheen tilan mukaan
-     *
-     * @param hakemusOid             hakemus OID
+     *  @param hakemusOid             hakemus OID
      * @param laskettuTila           järjestyskriteerille laskennasta saatu tila
      * @param edellinenValinnanvaihe edellinen valinnan vaihe
-     * @param valintaperusteetDTO
-     *@param vanhatOsallistumiset  @return järjestyskriteerin tila
+     * @param valintaperusteetDTO  laskettavan hakukohteen valintaperusteet, jos tiedossa
+     * @param vanhatOsallistumiset  @return järjestyskriteerin tila
      */
-    public TilaJaSelite tilaEdellisenValinnanvaiheenMukaan(String hakemusOid, Tila laskettuTila, Valinnanvaihe edellinenValinnanvaihe, ValintaperusteetDTO valintaperusteetDTO, ValintakoeOsallistuminen vanhatOsallistumiset) {
+    public TilaJaSelite tilaEdellisenValinnanvaiheenMukaan(String hakemusOid, Tila laskettuTila, Valinnanvaihe edellinenValinnanvaihe, Optional<ValintaperusteetDTO> valintaperusteetDTO, ValintakoeOsallistuminen vanhatOsallistumiset) {
         return tilaEdellisenValinnanvaiheenTilanMukaan(laskettuTila,
             hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, edellinenValinnanvaihe, valintaperusteetDTO, vanhatOsallistumiset));
     }

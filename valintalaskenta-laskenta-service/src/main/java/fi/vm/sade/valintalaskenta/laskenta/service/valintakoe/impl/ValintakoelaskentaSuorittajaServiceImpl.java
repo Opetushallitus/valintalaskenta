@@ -269,7 +269,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         Hakemus hak = hakemusConverter.convert(hakemus);
         Funktiokutsu fuk = modelMapper.map(koe.getFunktiokutsu(), Funktiokutsu.class);
         if (viimeisinValinnanVaihe != null) {
-            TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(), new Hyvaksyttavissatila(), viimeisinValinnanVaihe, vp, vanhatOsallistumiset);
+            TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(), new Hyvaksyttavissatila(), viimeisinValinnanVaihe, Optional.of(vp), vanhatOsallistumiset);
             if (tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)) {
                 if (koe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA)) {
                     osallistuminen = createOsallistuminen(tilaJaSelite, Osallistuminen.OSALLISTUU);

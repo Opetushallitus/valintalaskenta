@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class EdellinenValinnanvaiheKasittelijaTest {
     private final EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija = new EdellinenValinnanvaiheKasittelija(mock(MuokattuJonosijaDAO.class));
@@ -201,7 +202,7 @@ public class EdellinenValinnanvaiheKasittelijaTest {
     public void test() {
         Valinnanvaihe edellinenVaihe = new Valinnanvaihe();
         final String hakemusOid = "hakemusOid1";
-        TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemusOid, new Hyvaksyttavissatila(), edellinenVaihe, null, new ValintakoeOsallistuminen());
+        TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemusOid, new Hyvaksyttavissatila(), edellinenVaihe, Optional.empty(), new ValintakoeOsallistuminen());
         assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, tilaJaSelite.getTila());
         assertTrue(tilaJaSelite.getSelite().isEmpty());
     }

@@ -9,19 +9,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.*;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.test.util.ReflectionTestUtils;
-
 import fi.vm.sade.service.valintaperusteet.laskenta.Lukuarvofunktio;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.FunktioTulos;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.Laskentatulos;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.SyotettyArvo;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hyvaksyttavissatila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
@@ -29,6 +23,7 @@ import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.HakemuslaskinService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinnanvaiheKasittelija;
@@ -37,6 +32,14 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.HakemuslaskinImp
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.JonosijaJaSyotetytArvot;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.TilaJaSelite;
 import fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HakemuslaskinServiceTest {
     private HakemuslaskinService hakemuslaskinService;
@@ -95,7 +98,7 @@ public class HakemuslaskinServiceTest {
         when(
                 edellinenValinnanvaiheKasittelijaMock
                         .tilaEdellisenValinnanvaiheenMukaan(eq(hakemusOid),
-                                eq(laskettuTila), any(Valinnanvaihe.class), any(ValintaperusteetDTO.class), any(ValintakoeOsallistuminen.class)))
+                                eq(laskettuTila), any(Valinnanvaihe.class), any(), any(ValintakoeOsallistuminen.class)))
                 .thenReturn(tilaEdellisenVaiheenMukaan);
 
         hakemuslaskinService.suoritaLaskentaHakemukselle(laskettavaHakukohde,

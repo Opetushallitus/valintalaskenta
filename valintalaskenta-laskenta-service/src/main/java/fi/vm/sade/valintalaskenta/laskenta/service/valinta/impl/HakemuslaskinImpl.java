@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class HakemuslaskinImpl implements HakemuslaskinService {
@@ -147,7 +148,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
                                             ValintakoeOsallistuminen edellinenOsallistuminen) {
         HakemusDTO hakemus = laskettavaHakemus.getHakemusDTO();
         TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(hakemus.getHakemusoid(),
-                        tulos.getTila(), edellinenVaihe, null, edellinenOsallistuminen); // TODO can we get the real valintaperusteet here? Or do with less data?
+                        tulos.getTila(), edellinenVaihe, Optional.empty(), edellinenOsallistuminen); // TODO can we get the real valintaperusteet here? Or do with less data?
         Tila.Tilatyyppi uusinTila = tulos.getTila().getTilatyyppi();
         boolean voidaanHyvaksya = isVoidaanHyvaksyaVaikkaHylattyValisijoittelussa(edellinenVaihe, jarjestysnumero, hakemus, tilaJaSelite, edellinenOsallistuminen);
 
