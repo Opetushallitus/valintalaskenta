@@ -2,6 +2,11 @@ package fi.vm.sade.valintalaskenta.laskenta.service.it;
 
 import static com.lordofthejars.nosqlunit.core.LoadStrategyEnum.CLEAN_INSERT;
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -17,7 +22,9 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
+import org.hamcrest.Matchers;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -72,7 +79,7 @@ public class ValintalaskentaDbDumper {
     private ValinnanvaiheDAO valinnanvaiheDAO;
 
     @Rule
-    public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
+    public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("valintalaskentadb");
 
     private static final String MONGO_SYSTEM_PROPERTY_NAME = "VIRKAILIJAMONGO_URL";
     private static String originalMongoSystemProperty;
@@ -120,6 +127,16 @@ public class ValintalaskentaDbDumper {
     @UsingDataSet(locations = "voidaanHyvaksya.json", loadStrategy = CLEAN_INSERT)
     public void smokeTest() {
         LOG.info("Using valintalaskentadb from " + mongoClientURI.getHosts());
+        OidsToDump oidsInVoidaanHyvaksyaJson = OidsToDump.withHakuOid("1.2.246.562.29.173465377510")
+            .withHakukohdeOids("1.2.246.562.20.51939036631", "1.2.246.562.20.64586301414", "1.2.246.562.20.66128426039",
+                "1.2.246.562.20.66128426039", "1.2.246.562.20.68163578682", "1.2.246.562.20.68508673735",
+                "1.2.246.562.20.70883151881", "1.2.246.562.20.73318431647", "1.2.246.562.20.75182408387",
+                "1.2.246.562.20.90332205401", "1.2.246.562.20.92384321318", "1.2.246.562.20.93258129167")
+            .withHakemusOids("1.2.246.562.11.00001212279", "1.2.246.562.11.00001223556").build();
+        Map<String, List<?>> valintalaskentaResults = dumpData(oidsInVoidaanHyvaksyaJson);
+        assertThat(valintalaskentaResults.get(collectionName(Jonosija.class)), hasSize(greaterThan(2)));
+        String json = dumpToJson(oidsInVoidaanHyvaksyaJson);
+        assertThat(json, not(isEmptyOrNullString()));
     }
 
     private String dumpToJson(OidsToDump oidsToDump) {
