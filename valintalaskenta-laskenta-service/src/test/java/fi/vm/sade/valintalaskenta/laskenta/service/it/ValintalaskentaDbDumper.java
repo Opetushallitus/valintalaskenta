@@ -34,9 +34,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -84,7 +86,7 @@ public class ValintalaskentaDbDumper {
         OidsToDump oidsToDump = OidsToDump.withHakuOid("1.2.246.562.29.59856749474")
             .withHakukohdeOids("1.2.246.562.20.68517235666", "1.2.246.562.20.80972757381")
             .withHakemusOids("1.2.246.562.11.00009176948").build();
-        dumper.dumpData(oidsToDump);
+        System.out.println(dumper.dumpToJson(oidsToDump));
     }
 
     public ValintalaskentaDbDumper() {
@@ -114,14 +116,17 @@ public class ValintalaskentaDbDumper {
         }
     }
 
-
     @Test
     @UsingDataSet(locations = "voidaanHyvaksya.json", loadStrategy = CLEAN_INSERT)
     public void smokeTest() {
         LOG.info("Using valintalaskentadb from " + mongoClientURI.getHosts());
     }
 
-    public void dumpData(OidsToDump oidsToDump) {
+    private String dumpToJson(OidsToDump oidsToDump) {
+        return gson.toJson(dumpData(oidsToDump));
+    }
+
+    public Map<String, List<?>> dumpData(OidsToDump oidsToDump) {
         List<Valinnanvaihe> valinnanvaihes = new LinkedList<>();
         for (int jarjestysNumero = 0; jarjestysNumero < 10; jarjestysNumero++) {
             for (String hakukohdeOid : oidsToDump.hakukohdeOids) {
@@ -135,9 +140,11 @@ public class ValintalaskentaDbDumper {
 
         jonot.forEach(j -> j.getJonosijat().clear());
 
-        System.out.println("\"" + collectionName(Jonosija.class) + "\": " + gson.toJson(jonosijat));
-        System.out.println("\"" + collectionName(Valintatapajono.class) + "\": " + gson.toJson(jonot));
-        System.out.println("\"" + collectionName(Valinnanvaihe.class) + "\": " + gson.toJson(valinnanvaihes));
+        Map<String, List<?>> results = new HashMap<>();
+        results.put(collectionName(Jonosija.class), jonosijat);
+        results.put(collectionName(Valintatapajono.class), jonot);
+        results.put(collectionName(Valinnanvaihe.class), valinnanvaihes);
+        return results;
     }
 
     private String collectionName(Class<?> clazz) {
