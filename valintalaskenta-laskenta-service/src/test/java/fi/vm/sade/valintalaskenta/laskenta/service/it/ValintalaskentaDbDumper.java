@@ -45,6 +45,10 @@ import java.util.stream.Collectors;
  * Add valintalaskentadb URL to run configuration VM parameters, e.g.
  *
  *      <code>-ea -Xmx7G -DVIRKAILIJAMONGO_URL=mongodb://oph:PASSWORD@qa-mongodb1.oph.ware.fi,qa-mongodb2.oph.ware.fi,qa-mongodb3.oph.ware.fi:27017</code>
+ *
+ * Note that the JSONs produced still need some manual fixing. At least
+ *   * "id" fields of entities need to be changed to "_id"
+ *   * Valintatapajono sub-entities in Valinnanvaihe entities need to be changed to references (see existing fixtures for details)
  */
 @ContextConfiguration(locations = ValintalaskentaDbDumper.SPRING_CONFIG_XML)
 @RunWith(SpringJUnit4ClassRunner.class)
