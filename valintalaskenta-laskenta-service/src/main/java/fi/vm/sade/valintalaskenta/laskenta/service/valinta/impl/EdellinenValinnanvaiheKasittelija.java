@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl;
 
+import static fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi.VALINTAKOE;
 import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.HYLATTY;
 import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA;
 import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.MAARITTELEMATON;
@@ -60,7 +61,10 @@ public class EdellinenValinnanvaiheKasittelija {
         for (final Valintatapajono jono : edellinenValinnanvaihe.getValintatapajonot()) {
             // Hakemuksen pitäisi osallistua hakukohdekohtaiseen valintakokeeseen vaikka se olisi
             // välisijoittelussa hylätty edellisessä vaiheessa.
-            if (edellinenValinnanvaihe.hylattyValisijoittelussa(hakemusOid) && valintaperusteetDTO.isPresent() && vanhatOsallistumiset != null && ValinnanVaiheTyyppi.VALINTAKOE.equals(valintaperusteetDTO.get().getValinnanVaihe().getValinnanVaiheTyyppi())) {
+            if (edellinenValinnanvaihe.hylattyValisijoittelussa(hakemusOid) &&
+                valintaperusteetDTO.isPresent() &&
+                vanhatOsallistumiset != null &&
+                VALINTAKOE.equals(valintaperusteetDTO.get().getValinnanVaihe().getValinnanVaiheTyyppi())) {
                 Sets.SetView<String> talleKohteelleSpesifienKokeidenTunnisteet = paatteleKoetunnisteetJotkaOnVainTallaHakukohteella(valintaperusteetDTO.get(), vanhatOsallistumiset);
                 if (!talleKohteelleSpesifienKokeidenTunnisteet.isEmpty()) {
                     return new TilaJaSelite(HYVAKSYTTAVISSA,
