@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
 import fi.vm.sade.service.valintaperusteet.dto.model.Koekutsu;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.mongodb.morphia.annotations.Embedded;
 
 @Embedded
@@ -85,5 +86,10 @@ public class Valintakoe {
 
 	public void setKutsunKohdeAvain(String kutsunKohdeAvain) {
 		this.kutsunKohdeAvain = kutsunKohdeAvain;
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 }

@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.mongodb.morphia.annotations.*;
 import org.bson.types.ObjectId;
 
@@ -97,5 +98,10 @@ public class ValintakoeOsallistuminen {
 
     public void setEtunimi(String etunimi) {
         this.etunimi = etunimi;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }

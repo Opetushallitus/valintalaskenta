@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.mongodb.morphia.annotations.Embedded;
 
 import java.util.ArrayList;
@@ -44,5 +45,10 @@ public class ValintakoeValinnanvaihe {
 
     public void setLaskettavaJarjestysluku(Integer laskettavaJarjestysluku) {
         this.laskettavaJarjestysluku = laskettavaJarjestysluku;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }
