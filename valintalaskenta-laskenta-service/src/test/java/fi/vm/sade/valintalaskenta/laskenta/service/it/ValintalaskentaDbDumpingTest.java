@@ -22,9 +22,7 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
-import org.hamcrest.Matchers;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -59,11 +57,11 @@ import java.util.stream.Collectors;
  *   * "id" fields of entities need to be changed to "_id"
  *   * Valintatapajono sub-entities in Valinnanvaihe entities need to be changed to references (see existing fixtures for details)
  */
-@ContextConfiguration(locations = ValintalaskentaDbDumper.SPRING_CONFIG_XML)
+@ContextConfiguration(locations = ValintalaskentaDbDumpingTest.SPRING_CONFIG_XML)
 @RunWith(SpringJUnit4ClassRunner.class)
 @UsingDataSet
-public class ValintalaskentaDbDumper {
-    private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaDbDumper.class);
+public class ValintalaskentaDbDumpingTest {
+    private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaDbDumpingTest.class);
     protected static final String SPRING_CONFIG_XML = "classpath:fi/vm/sade/valintalaskenta/laskenta/service/it/test-valintalaskentadb-access.xml";
 
     private final Gson gson;
@@ -89,14 +87,14 @@ public class ValintalaskentaDbDumper {
      */
     public static void main(String... args) {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(SPRING_CONFIG_XML);
-        ValintalaskentaDbDumper dumper = (ValintalaskentaDbDumper) context.getBean("valintalaskentaDbDumper");
+        ValintalaskentaDbDumpingTest dumper = (ValintalaskentaDbDumpingTest) context.getBean("valintalaskentaDbDumper");
         OidsToDump oidsToDump = OidsToDump.withHakuOid("1.2.246.562.29.59856749474")
             .withHakukohdeOids("1.2.246.562.20.68517235666", "1.2.246.562.20.80972757381")
             .withHakemusOids("1.2.246.562.11.00009176948").build();
         System.out.println(dumper.dumpToJson(oidsToDump));
     }
 
-    public ValintalaskentaDbDumper() {
+    public ValintalaskentaDbDumpingTest() {
         JsonSerializer<ObjectId> objectIdJsonSerializer = (src, typeOfSrc, context) -> {
             JsonObject jsonObject = new JsonObject();
             jsonObject.add("$oid", new JsonPrimitive(src.toHexString()));
