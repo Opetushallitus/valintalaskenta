@@ -3,12 +3,13 @@ package fi.vm.sade.valintalaskenta.laskenta.service.it;
 import static com.lordofthejars.nosqlunit.core.LoadStrategyEnum.CLEAN_INSERT;
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
@@ -39,12 +40,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -53,9 +53,7 @@ import java.util.stream.Collectors;
  *
  *      <code>-ea -Xmx7G -DVIRKAILIJAMONGO_URL=mongodb://oph:PASSWORD@qa-mongodb1.oph.ware.fi,qa-mongodb2.oph.ware.fi,qa-mongodb3.oph.ware.fi:27017</code>
  *
- * Note that the JSONs produced still need some manual fixing. At least
- *   * "id" fields of entities need to be changed to "_id"
- *   * Valintatapajono sub-entities in Valinnanvaihe entities need to be changed to references (see existing fixtures for details)
+ * Note that the JSONs produced might still need some manual fixing.
  */
 @ContextConfiguration(locations = ValintalaskentaDbDumpingTest.SPRING_CONFIG_XML)
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -131,17 +129,18 @@ public class ValintalaskentaDbDumpingTest {
                 "1.2.246.562.20.70883151881", "1.2.246.562.20.73318431647", "1.2.246.562.20.75182408387",
                 "1.2.246.562.20.90332205401", "1.2.246.562.20.92384321318", "1.2.246.562.20.93258129167")
             .withHakemusOids("1.2.246.562.11.00001212279", "1.2.246.562.11.00001223556").build();
-        Map<String, List<?>> valintalaskentaResults = dumpData(oidsInVoidaanHyvaksyaJson);
-        assertThat(valintalaskentaResults.get(collectionName(Jonosija.class)), hasSize(greaterThan(2)));
+        DumpContents valintalaskentaResults = dumpData(oidsInVoidaanHyvaksyaJson);
+        assertThat(valintalaskentaResults.jonosijat.size(), greaterThan(2));
         String json = dumpToJson(oidsInVoidaanHyvaksyaJson);
         assertThat(json, not(isEmptyOrNullString()));
     }
 
     private String dumpToJson(OidsToDump oidsToDump) {
-        return gson.toJson(dumpData(oidsToDump));
+        DumpContents dumpContents = dumpData(oidsToDump);
+        return gson.toJson(dumpContents.toJson()).replaceAll("\"id\":", "\"_id\":");
     }
 
-    public Map<String, List<?>> dumpData(OidsToDump oidsToDump) {
+    public DumpContents dumpData(OidsToDump oidsToDump) {
         List<Valinnanvaihe> valinnanvaihes = new LinkedList<>();
         for (int jarjestysNumero = 0; jarjestysNumero < 10; jarjestysNumero++) {
             for (String hakukohdeOid : oidsToDump.hakukohdeOids) {
@@ -155,11 +154,7 @@ public class ValintalaskentaDbDumpingTest {
 
         jonot.forEach(j -> j.getJonosijat().clear());
 
-        Map<String, List<?>> results = new HashMap<>();
-        results.put(collectionName(Jonosija.class), jonosijat);
-        results.put(collectionName(Valintatapajono.class), jonot);
-        results.put(collectionName(Valinnanvaihe.class), valinnanvaihes);
-        return results;
+        return new DumpContents(gson, valinnanvaihes, jonot, jonosijat);
     }
 
     private String collectionName(Class<?> clazz) {
@@ -189,6 +184,44 @@ public class ValintalaskentaDbDumpingTest {
             });
             vaihe.setValintatapajonot(new ArrayList<>(sailytettavatJonot));
         });
+    }
+
+    public class DumpContents {
+        private final JsonArray valinnanvaiheet;
+        private final JsonArray valintatapajonot;
+        private final JsonArray jonosijat;
+
+        public DumpContents(Gson gson, List<Valinnanvaihe> valinnanvaiheet, List<Valintatapajono> valintatapajonot, List<Jonosija> jonosijat) {
+            this.valintatapajonot = (JsonArray) gson.toJsonTree(valintatapajonot);
+            this.jonosijat = (JsonArray) gson.toJsonTree(jonosijat);
+            JsonArray valinnanvaiheJson = (JsonArray) gson.toJsonTree(valinnanvaiheet);
+            valinnanvaiheJson.forEach(replaceValintatapajonoSubElementsWithDbRefs());
+            this.valinnanvaiheet = valinnanvaiheJson;
+        }
+
+        public JsonElement toJson() {
+            JsonObject byCollectionName = new JsonObject();
+            byCollectionName.add(collectionName(Valinnanvaihe.class), valinnanvaiheet);
+            byCollectionName.add(collectionName(Valintatapajono.class), valintatapajonot);
+            byCollectionName.add(collectionName(Jonosija.class), jonosijat);
+            return byCollectionName;
+        }
+
+        private Consumer<JsonElement> replaceValintatapajonoSubElementsWithDbRefs() {
+            return vaiheElement -> {
+                JsonObject vaiheObject = vaiheElement.getAsJsonObject();
+                JsonArray vaiheenJonot = vaiheObject.get("valintatapajonot").getAsJsonArray();
+                JsonArray jonotPelkkienRefienKanssa = new JsonArray();
+                vaiheenJonot.forEach(jonoElement -> {
+                    JsonObject jonoRefEelement = new JsonObject();
+                    jonoRefEelement.add("$ref", new JsonPrimitive(collectionName(Valintatapajono.class)));
+                    jonoRefEelement.add("$id", jonoElement.getAsJsonObject().get("id"));
+                    jonotPelkkienRefienKanssa.add(jonoRefEelement);
+                });
+                vaiheObject.remove("valintatapajonot");
+                vaiheObject.add("valintatapajonot", jonotPelkkienRefienKanssa);
+            };
+        }
     }
 
     public static class OidsToDump {
