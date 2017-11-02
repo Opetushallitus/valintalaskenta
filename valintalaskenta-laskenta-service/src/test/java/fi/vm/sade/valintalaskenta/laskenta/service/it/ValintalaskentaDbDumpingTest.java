@@ -87,8 +87,16 @@ public class ValintalaskentaDbDumpingTest {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(SPRING_CONFIG_XML);
         ValintalaskentaDbDumpingTest dumper = (ValintalaskentaDbDumpingTest) context.getBean("valintalaskentaDbDumper");
         OidsToDump oidsToDump = OidsToDump.withHakuOid("1.2.246.562.29.59856749474")
-            .withHakukohdeOids("1.2.246.562.20.68517235666", "1.2.246.562.20.80972757381")
-            .withHakemusOids("1.2.246.562.11.00009176948").build();
+            .withHakukohdeOids("1.2.246.562.20.29592509383",
+                "1.2.246.562.20.38970489639",
+                "1.2.246.562.20.68517235666",
+                "1.2.246.562.20.70074466049",
+                "1.2.246.562.20.72034194232",
+                "1.2.246.562.20.74774856426",
+                "1.2.246.562.20.80972757381",
+                "1.2.246.562.20.83571262399",
+                "1.2.246.562.20.982230627410")
+            .withHakemusOids("1.2.246.562.11.00009176948", "1.2.246.562.11.00009584734").build();
         System.out.println(dumper.dumpToJson(oidsToDump));
     }
 

@@ -1,5 +1,1682 @@
 {
+  "Valinnanvaihe": [
+    {
+      "_id": {
+        "$oid": "59ba8ed8b930a352b0fb0d2c"
+      },
+      "jarjestysnumero": 0,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.29592509383",
+      "valinnanvaiheOid": "1487069368564-4136519656099811611",
+      "tarjoajaOid": "1.2.246.562.10.12565036949",
+      "nimi": "Hakukelpoisuuden käsittelyvaihe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59ba8ed8b930a352b0fb0d2b"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df2601b930a3967e7774a7"
+      },
+      "jarjestysnumero": 0,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.38970489639",
+      "valinnanvaiheOid": "1487144217262-8396984563179323547",
+      "tarjoajaOid": "1.2.246.562.10.14661553223",
+      "nimi": "SOTELI-esivalintakoe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df4a11b930a3c641ea2fe5"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df2608b930a3967e77abc7"
+      },
+      "jarjestysnumero": 0,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.68517235666",
+      "valinnanvaiheOid": "1487144217579-7111638127584928902",
+      "tarjoajaOid": "1.2.246.562.10.83122281013",
+      "nimi": "SOTELI-esivalintakoe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df4a19b930a3c641ea66fd"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df25eab930a3967e771e70"
+      },
+      "jarjestysnumero": 0,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.70074466049",
+      "valinnanvaiheOid": "14871442168744606785970238152439",
+      "tarjoajaOid": "1.2.246.562.10.2014043013262365921278",
+      "nimi": "SOTELI-esivalintakoe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df49fdb930a3c641e9d9b6"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df261ab930a3967e77e349"
+      },
+      "jarjestysnumero": 0,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.72034194232",
+      "valinnanvaiheOid": "1487144216812-7088956565453959057",
+      "tarjoajaOid": "1.2.246.562.10.21989237215",
+      "nimi": "SOTELI-esivalintakoe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df4a25b930a3c641ea9e78"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df259db930a3967e767178"
+      },
+      "jarjestysnumero": 0,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.74774856426",
+      "valinnanvaiheOid": "1487144217646-3108510064276546977",
+      "tarjoajaOid": "1.2.246.562.10.45852282313",
+      "nimi": "SOTELI-esivalintakoe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df49e0b930a3c641e92cc8"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59baad30b930a352b01e3972"
+      },
+      "jarjestysnumero": 0,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.80972757381",
+      "valinnanvaiheOid": "14871442164221548191326643098842",
+      "tarjoajaOid": "1.2.246.562.10.93928993141",
+      "nimi": "SOTELI-esivalintakoe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59f73921b930a3db80cb84c7"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59ba8eedb930a352b0fb314c"
+      },
+      "jarjestysnumero": 0,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.83571262399",
+      "valinnanvaiheOid": "1487144216224-1578108369941159808",
+      "tarjoajaOid": "1.2.246.562.10.37594068878",
+      "nimi": "SOTELI-esivalintakoe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df4a01b930a3c641e9edbb"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df2569b930a3967e75c694"
+      },
+      "jarjestysnumero": 0,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.982230627410",
+      "valinnanvaiheOid": "1487144217391-2760786180057766968",
+      "tarjoajaOid": "1.2.246.562.10.86412320003",
+      "nimi": "SOTELI-esivalintakoe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df49bcb930a3c641e881f4"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df26b4b930a3967e7a138f"
+      },
+      "jarjestysnumero": 1,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.38970489639",
+      "valinnanvaiheOid": "1482302946494275529153954357561",
+      "tarjoajaOid": "1.2.246.562.10.14661553223",
+      "nimi": "Hakukelpoisuuden käsittelyvaihe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df4a9ab930a3c641eccea5"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df26bdb930a3967e7a4aa9"
+      },
+      "jarjestysnumero": 1,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.68517235666",
+      "valinnanvaiheOid": "1483515529860-319195982171180380",
+      "tarjoajaOid": "1.2.246.562.10.83122281013",
+      "nimi": "Hakukelpoisuuden käsittelyvaihe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df4aa4b930a3c641ed05bd"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df269eb930a3967e79bd5e"
+      },
+      "jarjestysnumero": 1,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.70074466049",
+      "valinnanvaiheOid": "14839510567404905799370286071947",
+      "tarjoajaOid": "1.2.246.562.10.2014043013262365921278",
+      "nimi": "Hakukelpoisuuden käsittelyvaihe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df4a82b930a3c641ec7876"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df26cbb930a3967e7a8226"
+      },
+      "jarjestysnumero": 1,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.72034194232",
+      "valinnanvaiheOid": "1483516799932-6904053946816895327",
+      "tarjoajaOid": "1.2.246.562.10.21989237215",
+      "nimi": "Hakukelpoisuuden käsittelyvaihe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df4aafb930a3c641ed3d38"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df2660b930a3967e79106e"
+      },
+      "jarjestysnumero": 1,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.74774856426",
+      "valinnanvaiheOid": "14822358391101389538692085868558",
+      "tarjoajaOid": "1.2.246.562.10.45852282313",
+      "nimi": "Hakukelpoisuuden käsittelyvaihe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df4a64b930a3c641ebcb88"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59baad34b930a352b01e4181"
+      },
+      "jarjestysnumero": 1,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.80972757381",
+      "valinnanvaiheOid": "1484911921792-7809619609223215701",
+      "tarjoajaOid": "1.2.246.562.10.93928993141",
+      "nimi": "Hakukelpoisuuden käsittelyvaihe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59f739fab930a3db80cb8c18"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59ba8ef6b930a352b0fb505b"
+      },
+      "jarjestysnumero": 1,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.83571262399",
+      "valinnanvaiheOid": "1485864737457-7138817675844871861",
+      "tarjoajaOid": "1.2.246.562.10.37594068878",
+      "nimi": "Hakukelpoisuuden käsittelyvaihe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df4a87b930a3c641ec8c7b"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df263fb930a3967e786596"
+      },
+      "jarjestysnumero": 1,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.982230627410",
+      "valinnanvaiheOid": "1483442975862-8532083115484976790",
+      "tarjoajaOid": "1.2.246.562.10.86412320003",
+      "nimi": "Hakukelpoisuuden käsittelyvaihe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df4a3db930a3c641eb20b4"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59ba9278b930a352b0ff4556"
+      },
+      "jarjestysnumero": 2,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.29592509383",
+      "valinnanvaiheOid": "1487069368526-2441936067232197161",
+      "tarjoajaOid": "1.2.246.562.10.12565036949",
+      "nimi": "Varsinainen valinta",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59ba9278b930a352b0ff4552"
+          }
+        },
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59ba9275b930a352b0ff3cb7"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df27d6b930a3967e7cb260"
+      },
+      "jarjestysnumero": 2,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.38970489639",
+      "valinnanvaiheOid": "1487145296710-7894911294521036830",
+      "tarjoajaOid": "1.2.246.562.10.14661553223",
+      "nimi": "Esivalintavaihe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df4bfab930a3c641ef6d65"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df27f4b930a3967e7ce97a"
+      },
+      "jarjestysnumero": 2,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.68517235666",
+      "valinnanvaiheOid": "1487145297191-8966170527898136429",
+      "tarjoajaOid": "1.2.246.562.10.83122281013",
+      "nimi": "Esivalintavaihe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df4c24b930a3c641efa47d"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df27a1b930a3967e7c5c2f"
+      },
+      "jarjestysnumero": 2,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.70074466049",
+      "valinnanvaiheOid": "14871452960031715776738041794611",
+      "tarjoajaOid": "1.2.246.562.10.2014043013262365921278",
+      "nimi": "Esivalintavaihe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df4bbbb930a3c641ef1736"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df2829b930a3967e7d20f7"
+      },
+      "jarjestysnumero": 2,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.72034194232",
+      "valinnanvaiheOid": "1487145295881536517686888132421",
+      "tarjoajaOid": "1.2.246.562.10.21989237215",
+      "nimi": "Esivalintavaihe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df4c5eb930a3c641efdbf8"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df2753b930a3967e7baf3f"
+      },
+      "jarjestysnumero": 2,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.74774856426",
+      "valinnanvaiheOid": "1487145297302427158792192698663",
+      "tarjoajaOid": "1.2.246.562.10.45852282313",
+      "nimi": "Esivalintavaihe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df4b5fb930a3c641ee6a48"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59baad36b930a352b01e49b2"
+      },
+      "jarjestysnumero": 2,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.80972757381",
+      "valinnanvaiheOid": "14871452953096650794917745386331",
+      "tarjoajaOid": "1.2.246.562.10.93928993141",
+      "nimi": "Esivalintavaihe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df4ad1b930a3c641eda3f1"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59ba8f00b930a352b0fb6f7a"
+      },
+      "jarjestysnumero": 2,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.83571262399",
+      "valinnanvaiheOid": "14871452950284165783811629373235",
+      "tarjoajaOid": "1.2.246.562.10.37594068878",
+      "nimi": "Esivalintavaihe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df4bceb930a3c641ef2b3b"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df2706b930a3967e7b0467"
+      },
+      "jarjestysnumero": 2,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.982230627410",
+      "valinnanvaiheOid": "1487145296885-6643734072765377542",
+      "tarjoajaOid": "1.2.246.562.10.86412320003",
+      "nimi": "Esivalintavaihe",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df4b01b930a3c641edbf74"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df3208b930a3967e803ce8"
+      },
+      "jarjestysnumero": 4,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.38970489639",
+      "valinnanvaiheOid": "1482302946477-9047707469428193245",
+      "tarjoajaOid": "1.2.246.562.10.14661553223",
+      "nimi": "Varsinainen valinta",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df5620b930a3c641f2e857"
+          }
+        },
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df5620b930a3c641f2ee0f"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df3229b930a3967e808e20"
+      },
+      "jarjestysnumero": 4,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.68517235666",
+      "valinnanvaiheOid": "14835155298422673008063308278448",
+      "tarjoajaOid": "1.2.246.562.10.83122281013",
+      "nimi": "Varsinainen valinta",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df5647b930a3c641f33cee"
+          }
+        },
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df5648b930a3c641f33f45"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df31b2b930a3967e7fa9af"
+      },
+      "jarjestysnumero": 4,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.70074466049",
+      "valinnanvaiheOid": "1483951056712-3208041520406820470",
+      "tarjoajaOid": "1.2.246.562.10.2014043013262365921278",
+      "nimi": "Varsinainen valinta",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df55cdb930a3c641f25ad8"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df3268b930a3967e80f539"
+      },
+      "jarjestysnumero": 4,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.72034194232",
+      "valinnanvaiheOid": "14835167999006813836396572957062",
+      "tarjoajaOid": "1.2.246.562.10.21989237215",
+      "nimi": "Varsinainen valinta",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df5688b930a3c641f3a65c"
+          }
+        },
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df5687b930a3c641f3a1bf"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df3158b930a3967e7eceaf"
+      },
+      "jarjestysnumero": 4,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.74774856426",
+      "valinnanvaiheOid": "1482235839090-6274420149584853025",
+      "tarjoajaOid": "1.2.246.562.10.45852282313",
+      "nimi": "Varsinainen valinta",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df5577b930a3c641f17759"
+          }
+        },
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df5578b930a3c641f17ff0"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59baad4fb930a352b01e5720"
+      },
+      "jarjestysnumero": 4,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.80972757381",
+      "valinnanvaiheOid": "14849119217734762038413134473578",
+      "tarjoajaOid": "1.2.246.562.10.93928993141",
+      "nimi": "Varsinainen valinta",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df54c4b930a3c641f0460b"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59ba8f8fb930a352b0fc08e5"
+      },
+      "jarjestysnumero": 4,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.83571262399",
+      "valinnanvaiheOid": "14858647374385530772652563870162",
+      "tarjoajaOid": "1.2.246.562.10.37594068878",
+      "nimi": "Varsinainen valinta",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df55e5b930a3c641f285f8"
+          }
+        },
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df55e4b930a3c641f280d4"
+          }
+        },
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df55e5b930a3c641f28366"
+          }
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df30c3b930a3967e7db5fc"
+      },
+      "jarjestysnumero": 4,
+      "hakuOid": "1.2.246.562.29.59856749474",
+      "hakukohdeOid": "1.2.246.562.20.982230627410",
+      "valinnanvaiheOid": "14834429758404162281021326561454",
+      "tarjoajaOid": "1.2.246.562.10.86412320003",
+      "nimi": "Varsinainen valinta",
+      "valintatapajonot": [
+        {
+          "$ref": "Valintatapajono",
+          "$id": {
+            "$oid": "59df54d0b930a3c641f06741"
+          }
+        }
+      ]
+    }
+  ],
+  "Valintatapajono": [
+    {
+      "_id": {
+        "$oid": "59ba8ed8b930a352b0fb0d2b"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1487069368610484407761307895655",
+      "nimi": "Ei-hakukelpoiset",
+      "prioriteetti": 0,
+      "aloituspaikat": 0,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59ba8ed7b930a352b0fb0810"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4a11b930a3c641ea2fe5"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1487144483046-3852280554091175446",
+      "nimi": "SOTELI-esivalintakoe",
+      "prioriteetti": 0,
+      "aloituspaikat": 0,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df4a11b930a3c641ea2de4"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4a19b930a3c641ea66fd"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1487144482771-5032042978750825027",
+      "nimi": "SOTELI-esivalintakoe",
+      "prioriteetti": 0,
+      "aloituspaikat": 0,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df4a19b930a3c641ea64aa"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df49fdb930a3c641e9d9b6"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1487144483597-3515668545815215960",
+      "nimi": "SOTELI-esivalintakoe",
+      "prioriteetti": 0,
+      "aloituspaikat": 0,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df49fdb930a3c641e9d73b"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4a25b930a3c641ea9e78"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1487144483664-8540340897069973326",
+      "nimi": "SOTELI-esivalintakoe",
+      "prioriteetti": 0,
+      "aloituspaikat": 0,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df4a24b930a3c641ea99de"
+        },
+        {
+          "$oid": "59df4a25b930a3c641ea9ce5"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df49e0b930a3c641e92cc8"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1487144482717-5120557459672126561",
+      "nimi": "SOTELI-esivalintakoe",
+      "prioriteetti": 0,
+      "aloituspaikat": 0,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df49dfb930a3c641e926f9"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59f73921b930a3db80cb84c7"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "14871444832487908883297846034003",
+      "nimi": "SOTELI-esivalintakoe",
+      "prioriteetti": 0,
+      "aloituspaikat": 0,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59f73921b930a3db80cb83df"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4a01b930a3c641e9edbb"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1487144482547-3425022341437502116",
+      "nimi": "SOTELI-esivalintakoe",
+      "prioriteetti": 0,
+      "aloituspaikat": 0,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df4a00b930a3c641e9eb2b"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df49bcb930a3c641e881f4"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1487144483148-6099804953741471044",
+      "nimi": "SOTELI-esivalintakoe",
+      "prioriteetti": 0,
+      "aloituspaikat": 0,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df49bbb930a3c641e87e08"
+        },
+        {
+          "$oid": "59df49bcb930a3c641e880a0"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4a9ab930a3c641eccea5"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "14823029465291751518780953309097",
+      "nimi": "Ei-hakukelpoiset",
+      "prioriteetti": 0,
+      "aloituspaikat": 0,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df4a9ab930a3c641eccca4"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4aa4b930a3c641ed05bd"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "14835155298981853295837255931709",
+      "nimi": "Ei-hakukelpoiset",
+      "prioriteetti": 0,
+      "aloituspaikat": 0,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df4aa3b930a3c641ed036a"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4a82b930a3c641ec7876"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "14839510567902739204671504586939",
+      "nimi": "Ei-hakukelpoiset",
+      "prioriteetti": 0,
+      "aloituspaikat": 0,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df4a82b930a3c641ec75fb"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4aafb930a3c641ed3d38"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "14835167999811432532441968837284",
+      "nimi": "Ei-hakukelpoiset",
+      "prioriteetti": 0,
+      "aloituspaikat": 0,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df4aafb930a3c641ed389e"
+        },
+        {
+          "$oid": "59df4aafb930a3c641ed3ba5"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4a64b930a3c641ebcb88"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "14822358391508069934158049947642",
+      "nimi": "Ei-hakukelpoiset",
+      "prioriteetti": 0,
+      "aloituspaikat": 0,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df4a64b930a3c641ebc5b9"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59f739fab930a3db80cb8c18"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "14849119218354391149179791382165",
+      "nimi": "Ei-hakukelpoiset",
+      "prioriteetti": 0,
+      "aloituspaikat": 0,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59f739fab930a3db80cb8b30"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4a87b930a3c641ec8c7b"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "14858647374997941809285403787152",
+      "nimi": "Ei-hakukelpoiset",
+      "prioriteetti": 0,
+      "aloituspaikat": 0,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df4a87b930a3c641ec89eb"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4a3db930a3c641eb20b4"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1483442975904-6927413882384020056",
+      "nimi": "Ei-hakukelpoiset",
+      "prioriteetti": 0,
+      "aloituspaikat": 0,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df4a3cb930a3c641eb1cc8"
+        },
+        {
+          "$oid": "59df4a3db930a3c641eb1f60"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59ba9278b930a352b0ff4552"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1487069368858-4562924379315520553",
+      "nimi": "Koepisteet",
+      "prioriteetti": 2,
+      "aloituspaikat": 56,
+      "siirretaanSijoitteluun": true,
+      "tasasijasaanto": "ARVONTA",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": true,
+      "jonosijaIdt": [
+        {
+          "$oid": "59ba9276b930a352b0ff3f8b"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59ba9275b930a352b0ff3cb7"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1487069368871-1146428503046527979",
+      "nimi": "Yhteispisteet",
+      "prioriteetti": 1,
+      "aloituspaikat": 84,
+      "siirretaanSijoitteluun": true,
+      "tasasijasaanto": "ARVONTA",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": true,
+      "jonosijaIdt": [
+        {
+          "$oid": "59ba9273b930a352b0ff36e3"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4bfab930a3c641ef6d65"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1487145391182927988230115076764",
+      "nimi": "Esivalintakoe",
+      "prioriteetti": 0,
+      "aloituspaikat": 50,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df4bfab930a3c641ef6b64"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4c24b930a3c641efa47d"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1487145391342-2388937780306276163",
+      "nimi": "Esivalintakoe",
+      "prioriteetti": 0,
+      "aloituspaikat": 100,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df4c23b930a3c641efa22a"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4bbbb930a3c641ef1736"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "14871453917134632939733150929454",
+      "nimi": "Esivalintakoe",
+      "prioriteetti": 0,
+      "aloituspaikat": 90,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df4bbab930a3c641ef14bb"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4c5eb930a3c641efdbf8"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1487145391561556816398052698684",
+      "nimi": "Esivalintakoe",
+      "prioriteetti": 0,
+      "aloituspaikat": 50,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df4c5eb930a3c641efd75e"
+        },
+        {
+          "$oid": "59df4c5eb930a3c641efda65"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4b5fb930a3c641ee6a48"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1487145390945-4813526246724297550",
+      "nimi": "Esivalintakoe",
+      "prioriteetti": 0,
+      "aloituspaikat": 108,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df4b5fb930a3c641ee6479"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4ad1b930a3c641eda3f1"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "14871453921611384534693174737784",
+      "nimi": "Esivalintakoe",
+      "prioriteetti": 0,
+      "aloituspaikat": 80,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df4ad1b930a3c641eda309"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4bceb930a3c641ef2b3b"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1487145391901-8921646298026025144",
+      "nimi": "Esivalintakoe",
+      "prioriteetti": 0,
+      "aloituspaikat": 60,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df4bceb930a3c641ef28ab"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4b01b930a3c641edbf74"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1487145391290-316013270232074455",
+      "nimi": "Esivalintakoe",
+      "prioriteetti": 0,
+      "aloituspaikat": 160,
+      "siirretaanSijoitteluun": false,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": false,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df4b00b930a3c641edbb88"
+        },
+        {
+          "$oid": "59df4b01b930a3c641edbe20"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df5620b930a3c641f2e857"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1487150043195-1362437634950798863",
+      "nimi": "Yhteispisteet",
+      "prioriteetti": 0,
+      "aloituspaikat": 10,
+      "siirretaanSijoitteluun": true,
+      "tasasijasaanto": "ARVONTA",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": true,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df561fb930a3c641f2e656"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df5620b930a3c641f2ee0f"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1487149910839-4862200906728237076",
+      "nimi": "Koepisteet",
+      "prioriteetti": 1,
+      "aloituspaikat": 10,
+      "siirretaanSijoitteluun": true,
+      "tasasijasaanto": "ARVONTA",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": true,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df5620b930a3c641f2ec0e"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df5647b930a3c641f33cee"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "14871500433118662321562230733453",
+      "nimi": "Yhteispisteet",
+      "prioriteetti": 0,
+      "aloituspaikat": 16,
+      "siirretaanSijoitteluun": true,
+      "tasasijasaanto": "ARVONTA",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": true,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df5647b930a3c641f33a9b"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df5648b930a3c641f33f45"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1487149910926-5198215752602272243",
+      "nimi": "Koepisteet",
+      "prioriteetti": 1,
+      "aloituspaikat": 4,
+      "siirretaanSijoitteluun": true,
+      "tasasijasaanto": "ARVONTA",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": true,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df5647b930a3c641f33cf2"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df55cdb930a3c641f25ad8"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1487149910968-7311586768024649146",
+      "nimi": "Koepisteet",
+      "prioriteetti": 1,
+      "aloituspaikat": 33,
+      "siirretaanSijoitteluun": true,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": true,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": true,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df55ccb930a3c641f2585d"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df5688b930a3c641f3a65c"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1487149911784-2562495737369675257",
+      "nimi": "Koepisteet",
+      "prioriteetti": 1,
+      "aloituspaikat": 8,
+      "siirretaanSijoitteluun": true,
+      "tasasijasaanto": "ARVONTA",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": true,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df5687b930a3c641f3a1c2"
+        },
+        {
+          "$oid": "59df5687b930a3c641f3a4c9"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df5687b930a3c641f3a1bf"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "14871500445556789890186992638126",
+      "nimi": "Yhteispisteet",
+      "prioriteetti": 0,
+      "aloituspaikat": 12,
+      "siirretaanSijoitteluun": true,
+      "tasasijasaanto": "ARVONTA",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": true,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df5687b930a3c641f39d25"
+        },
+        {
+          "$oid": "59df5687b930a3c641f3a02c"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df5577b930a3c641f17759"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "14871500441804334190669675206947",
+      "nimi": "Yhteispisteet",
+      "prioriteetti": 0,
+      "aloituspaikat": 25,
+      "siirretaanSijoitteluun": true,
+      "tasasijasaanto": "ARVONTA",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": true,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df5577b930a3c641f1718a"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df5578b930a3c641f17ff0"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "14871499115035207001306410729513",
+      "nimi": "Koepisteet",
+      "prioriteetti": 1,
+      "aloituspaikat": 11,
+      "siirretaanSijoitteluun": true,
+      "tasasijasaanto": "ARVONTA",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": true,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df5578b930a3c641f17a21"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df54c4b930a3c641f0460b"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "14871499108842038936225826786200",
+      "nimi": "Koepisteet",
+      "prioriteetti": 1,
+      "aloituspaikat": 23,
+      "siirretaanSijoitteluun": true,
+      "tasasijasaanto": "ARVONTA",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": true,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df54c4b930a3c641f04523"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df55e5b930a3c641f285f8"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "14912142683868843508987286202490",
+      "nimi": "Koepisteet",
+      "prioriteetti": 2,
+      "aloituspaikat": 7,
+      "siirretaanSijoitteluun": true,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": true,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df55e5b930a3c641f28368"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df55e4b930a3c641f280d4"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "14871500436203815615709475291907",
+      "nimi": "Ensikertalaiset Yhteispisteet",
+      "prioriteetti": 0,
+      "aloituspaikat": 8,
+      "siirretaanSijoitteluun": true,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": true,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": true,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df55e4b930a3c641f27e44"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df55e5b930a3c641f28366"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "1487149911154-4651816206664320728",
+      "nimi": "Ensikertalaiset Koepisteet",
+      "prioriteetti": 1,
+      "aloituspaikat": 6,
+      "siirretaanSijoitteluun": true,
+      "tasasijasaanto": "YLITAYTTO",
+      "eiVarasijatayttoa": false,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": true,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df55e4b930a3c641f280d6"
+        }
+      ],
+      "jonosijat": []
+    },
+    {
+      "_id": {
+        "$oid": "59df54d0b930a3c641f06741"
+      },
+      "schemaVersion": 2,
+      "valintatapajonoOid": "14871499116806560206202356915132",
+      "nimi": "Koepisteet",
+      "prioriteetti": 1,
+      "aloituspaikat": 40,
+      "siirretaanSijoitteluun": true,
+      "tasasijasaanto": "ARVONTA",
+      "eiVarasijatayttoa": true,
+      "kaikkiEhdonTayttavatHyvaksytaan": false,
+      "kaytetaanValintalaskentaa": true,
+      "valmisSijoiteltavaksi": true,
+      "jonosijaIdt": [
+        {
+          "$oid": "59df54d0b930a3c641f06355"
+        },
+        {
+          "$oid": "59df54d0b930a3c641f065ed"
+        }
+      ],
+      "jonosijat": []
+    }
+  ],
   "Jonosija": [
+    {
+      "_id": {
+        "$oid": "59ba8ed7b930a352b0fb0810"
+      },
+      "hakemusOid": "1.2.246.562.11.00009584734",
+      "hakijaOid": "1.2.246.562.24.83267967136",
+      "etunimi": "Ninna Testi",
+      "sukunimi": "Keränen-Testi",
+      "hakutoiveprioriteetti": 5,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59ba8ed3b930a352b0fb00f6"
+          }
+        }
+      ],
+      "syotetytArvot": [],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4a11b930a3c641ea2de4"
+      },
+      "hakemusOid": "1.2.246.562.11.00009584734",
+      "hakijaOid": "1.2.246.562.24.83267967136",
+      "etunimi": "Ritva-Liisa Testi",
+      "sukunimi": "Happonen-Testi",
+      "hakutoiveprioriteetti": 2,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "arvo": 35.9,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df4a10b930a3c641ea276e"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "sotelikoe2017k",
+          "arvo": "35.9",
+          "laskennallinenArvo": "35.9",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
     {
       "_id": {
         "$oid": "59df4a19b930a3c641ea64aa"
@@ -26,6 +1703,138 @@
           "tunniste": "sotelikoe2017k",
           "arvo": "68.1",
           "laskennallinenArvo": "68.1",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df49fdb930a3c641e9d73b"
+      },
+      "hakemusOid": "1.2.246.562.11.00009176948",
+      "hakijaOid": "1.2.246.562.24.11352589310",
+      "etunimi": "Sulevi Testi",
+      "sukunimi": "Hellman-Testi",
+      "hakutoiveprioriteetti": 5,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "arvo": 68.1,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df49fcb930a3c641e9d56b"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "sotelikoe2017k",
+          "arvo": "68.1",
+          "laskennallinenArvo": "68.1",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4a24b930a3c641ea99de"
+      },
+      "hakemusOid": "1.2.246.562.11.00009176948",
+      "hakijaOid": "1.2.246.562.24.11352589310",
+      "etunimi": "Sulevi Testi",
+      "sukunimi": "Hellman-Testi",
+      "hakutoiveprioriteetti": 4,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "arvo": 68.1,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df4a23b930a3c641ea9682"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "sotelikoe2017k",
+          "arvo": "68.1",
+          "laskennallinenArvo": "68.1",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4a25b930a3c641ea9ce5"
+      },
+      "hakemusOid": "1.2.246.562.11.00009584734",
+      "hakijaOid": "1.2.246.562.24.83267967136",
+      "etunimi": "Ritva-Liisa Testi",
+      "sukunimi": "Happonen-Testi",
+      "hakutoiveprioriteetti": 1,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "arvo": 35.9,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df4a24b930a3c641ea97df"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "sotelikoe2017k",
+          "arvo": "35.9",
+          "laskennallinenArvo": "35.9",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df49dfb930a3c641e926f9"
+      },
+      "hakemusOid": "1.2.246.562.11.00009584734",
+      "hakijaOid": "1.2.246.562.24.83267967136",
+      "etunimi": "Ritva-Liisa Testi",
+      "sukunimi": "Happonen-Testi",
+      "hakutoiveprioriteetti": 3,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "arvo": 35.9,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df49ddb930a3c641e92014"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "sotelikoe2017k",
+          "arvo": "35.9",
+          "laskennallinenArvo": "35.9",
           "osallistuminen": "OSALLISTUI",
           "tyypinKoodiUri": "syotettavanarvontyypit_muu",
           "tilastoidaan": false
@@ -68,6 +1877,128 @@
     },
     {
       "_id": {
+        "$oid": "59df4a00b930a3c641e9eb2b"
+      },
+      "hakemusOid": "1.2.246.562.11.00009176948",
+      "hakijaOid": "1.2.246.562.24.11352589310",
+      "etunimi": "Sulevi Testi",
+      "sukunimi": "Hellman-Testi",
+      "hakutoiveprioriteetti": 3,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "arvo": 68.1,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df4a00b930a3c641e9e94f"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "sotelikoe2017k",
+          "arvo": "68.1",
+          "laskennallinenArvo": "68.1",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df49bbb930a3c641e87e08"
+      },
+      "hakemusOid": "1.2.246.562.11.00009176948",
+      "hakijaOid": "1.2.246.562.24.11352589310",
+      "etunimi": "Sulevi Testi",
+      "sukunimi": "Hellman-Testi",
+      "hakutoiveprioriteetti": 2,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "arvo": 68.1,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df49bab930a3c641e87b27"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "sotelikoe2017k",
+          "arvo": "68.1",
+          "laskennallinenArvo": "68.1",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df49bcb930a3c641e880a0"
+      },
+      "hakemusOid": "1.2.246.562.11.00009584734",
+      "hakijaOid": "1.2.246.562.24.83267967136",
+      "etunimi": "Ritva-Liisa Testi",
+      "sukunimi": "Happonen-Testi",
+      "hakutoiveprioriteetti": 4,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "arvo": 35.9,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df49bab930a3c641e87c44"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "sotelikoe2017k",
+          "arvo": "35.9",
+          "laskennallinenArvo": "35.9",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4a9ab930a3c641eccca4"
+      },
+      "hakemusOid": "1.2.246.562.11.00009584734",
+      "hakijaOid": "1.2.246.562.24.83267967136",
+      "etunimi": "Ritva-Liisa Testi",
+      "sukunimi": "Happonen-Testi",
+      "hakutoiveprioriteetti": 2,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df4a98b930a3c641ecc62e"
+          }
+        }
+      ],
+      "syotetytArvot": [],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
         "$oid": "59df4aa3b930a3c641ed036a"
       },
       "hakemusOid": "1.2.246.562.11.00009176948",
@@ -83,6 +2014,98 @@
           "tila": "HYVAKSYTTAVISSA",
           "historia": {
             "$oid": "59df4aa3b930a3c641ed01af"
+          }
+        }
+      ],
+      "syotetytArvot": [],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4a82b930a3c641ec75fb"
+      },
+      "hakemusOid": "1.2.246.562.11.00009176948",
+      "hakijaOid": "1.2.246.562.24.11352589310",
+      "etunimi": "Sulevi Testi",
+      "sukunimi": "Hellman-Testi",
+      "hakutoiveprioriteetti": 5,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df4a81b930a3c641ec742b"
+          }
+        }
+      ],
+      "syotetytArvot": [],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4aafb930a3c641ed389e"
+      },
+      "hakemusOid": "1.2.246.562.11.00009176948",
+      "hakijaOid": "1.2.246.562.24.11352589310",
+      "etunimi": "Sulevi Testi",
+      "sukunimi": "Hellman-Testi",
+      "hakutoiveprioriteetti": 4,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df4aadb930a3c641ed3542"
+          }
+        }
+      ],
+      "syotetytArvot": [],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4aafb930a3c641ed3ba5"
+      },
+      "hakemusOid": "1.2.246.562.11.00009584734",
+      "hakijaOid": "1.2.246.562.24.83267967136",
+      "etunimi": "Ritva-Liisa Testi",
+      "sukunimi": "Happonen-Testi",
+      "hakutoiveprioriteetti": 1,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df4aaeb930a3c641ed369f"
+          }
+        }
+      ],
+      "syotetytArvot": [],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4a64b930a3c641ebc5b9"
+      },
+      "hakemusOid": "1.2.246.562.11.00009584734",
+      "hakijaOid": "1.2.246.562.24.83267967136",
+      "etunimi": "Ritva-Liisa Testi",
+      "sukunimi": "Happonen-Testi",
+      "hakutoiveprioriteetti": 3,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df4a61b930a3c641ebbed4"
           }
         }
       ],
@@ -114,6 +2137,299 @@
     },
     {
       "_id": {
+        "$oid": "59df4a87b930a3c641ec89eb"
+      },
+      "hakemusOid": "1.2.246.562.11.00009176948",
+      "hakijaOid": "1.2.246.562.24.11352589310",
+      "etunimi": "Sulevi Testi",
+      "sukunimi": "Hellman-Testi",
+      "hakutoiveprioriteetti": 3,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df4a86b930a3c641ec880f"
+          }
+        }
+      ],
+      "syotetytArvot": [],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4a3cb930a3c641eb1cc8"
+      },
+      "hakemusOid": "1.2.246.562.11.00009176948",
+      "hakijaOid": "1.2.246.562.24.11352589310",
+      "etunimi": "Sulevi Testi",
+      "sukunimi": "Hellman-Testi",
+      "hakutoiveprioriteetti": 2,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df4a3ab930a3c641eb19e7"
+          }
+        }
+      ],
+      "syotetytArvot": [],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4a3db930a3c641eb1f60"
+      },
+      "hakemusOid": "1.2.246.562.11.00009584734",
+      "hakijaOid": "1.2.246.562.24.83267967136",
+      "etunimi": "Ritva-Liisa Testi",
+      "sukunimi": "Happonen-Testi",
+      "hakutoiveprioriteetti": 4,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df4a3bb930a3c641eb1b04"
+          }
+        }
+      ],
+      "syotetytArvot": [],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59ba9276b930a352b0ff3f8b"
+      },
+      "hakemusOid": "1.2.246.562.11.00009584734",
+      "hakijaOid": "1.2.246.562.24.83267967136",
+      "etunimi": "Ninna Testi",
+      "sukunimi": "Keränen-Testi",
+      "hakutoiveprioriteetti": 5,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "tila": "VIRHE",
+          "kuvaus": {
+            "FI": "Pakollisen syötettävän kentän arvo on merkitsemättä (tunniste Liiketalous_paiva_kirjoitelma_haastattelu)"
+          },
+          "nimi": "Liiketalous valintakoe 2017 + suomen kielen koe",
+          "historia": {
+            "$oid": "59ba925eb930a352b0ff1f3d"
+          }
+        },
+        {
+          "prioriteetti": 2,
+          "arvo": 2,
+          "tila": "HYVAKSYTTAVISSA",
+          "nimi": "Hakutoivejärjestys tasapistetilanteessa 2017",
+          "historia": {
+            "$oid": "59ba926bb930a352b0ff2bdf"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "Liiketalous_paiva_monivalinta",
+          "osallistuminen": "MERKITSEMATTA",
+          "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
+          "tilastoidaan": true
+        },
+        {
+          "tunniste": "Liiketalous_paiva_kirjoitelma_haastattelu",
+          "osallistuminen": "MERKITSEMATTA",
+          "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
+          "tilastoidaan": true
+        },
+        {
+          "tunniste": "Liiketalous_paiva_matloog",
+          "osallistuminen": "MERKITSEMATTA",
+          "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
+          "tilastoidaan": true
+        },
+        {
+          "tunniste": "amk_kielikoe_2017_suomi",
+          "laskennallinenArvo": "false",
+          "osallistuminen": "MERKITSEMATTA",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": [
+        {
+          "tunniste": "Liiketalous_paiva_monivalinta",
+          "arvo": "",
+          "nimiFi": "",
+          "nimiSv": "",
+          "nimiEn": ""
+        },
+        {
+          "tunniste": "Liiketalous_paiva_kirjoitelma_haastattelu",
+          "arvo": "",
+          "nimiFi": "",
+          "nimiSv": "",
+          "nimiEn": ""
+        },
+        {
+          "tunniste": "Liiketalous_paiva_matloog",
+          "arvo": "",
+          "nimiFi": "",
+          "nimiSv": "",
+          "nimiEn": ""
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59ba9273b930a352b0ff36e3"
+      },
+      "hakemusOid": "1.2.246.562.11.00009584734",
+      "hakijaOid": "1.2.246.562.24.83267967136",
+      "etunimi": "Ninna Testi",
+      "sukunimi": "Keränen-Testi",
+      "hakutoiveprioriteetti": 5,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "arvo": 51,
+          "tila": "VIRHE",
+          "kuvaus": {
+            "FI": "Pakollisen syötettävän kentän arvo on merkitsemättä (tunniste Liiketalous_paiva_kirjoitelma_haastattelu)"
+          },
+          "nimi": "Liiketalous_paiva_yhteispisteet_2B_hylkaa_muut_kuin_ylioppilaat",
+          "historia": {
+            "$oid": "59ba91feb930a352b0fe96ee"
+          }
+        },
+        {
+          "prioriteetti": 1,
+          "tila": "VIRHE",
+          "kuvaus": {
+            "FI": "Pakollisen syötettävän kentän arvo on merkitsemättä (tunniste Liiketalous_paiva_kirjoitelma_haastattelu)"
+          },
+          "nimi": "Liiketalous_paiva_koepisteet",
+          "historia": {
+            "$oid": "59ba921bb930a352b0febc64"
+          }
+        },
+        {
+          "prioriteetti": 2,
+          "arvo": 51,
+          "tila": "HYVAKSYTTAVISSA",
+          "nimi": "Kouluarvosanat, YO arvosanat 2B/3B",
+          "historia": {
+            "$oid": "59ba9235b930a352b0fef604"
+          }
+        },
+        {
+          "prioriteetti": 3,
+          "arvo": 2,
+          "tila": "HYVAKSYTTAVISSA",
+          "nimi": "Hakutoivejärjestys tasapistetilanteessa 2017",
+          "historia": {
+            "$oid": "59ba924fb930a352b0ff0668"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "Liiketalous_paiva_monivalinta",
+          "osallistuminen": "MERKITSEMATTA",
+          "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
+          "tilastoidaan": true
+        },
+        {
+          "tunniste": "Liiketalous_paiva_kirjoitelma_haastattelu",
+          "osallistuminen": "MERKITSEMATTA",
+          "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
+          "tilastoidaan": true
+        },
+        {
+          "tunniste": "Liiketalous_paiva_matloog",
+          "osallistuminen": "MERKITSEMATTA",
+          "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
+          "tilastoidaan": true
+        },
+        {
+          "tunniste": "fdcd7d38-f19c-8f95-62cf-2040ac6d244f",
+          "osallistuminen": "EI_VAADITA",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": [
+        {
+          "tunniste": "Liiketalous_paiva_monivalinta",
+          "arvo": "",
+          "nimiFi": "",
+          "nimiSv": "",
+          "nimiEn": ""
+        },
+        {
+          "tunniste": "Liiketalous_paiva_kirjoitelma_haastattelu",
+          "arvo": "",
+          "nimiFi": "",
+          "nimiSv": "",
+          "nimiEn": ""
+        },
+        {
+          "tunniste": "Liiketalous_paiva_matloog",
+          "arvo": "",
+          "nimiFi": "",
+          "nimiSv": "",
+          "nimiEn": ""
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "59df4bfab930a3c641ef6b64"
+      },
+      "hakemusOid": "1.2.246.562.11.00009584734",
+      "hakijaOid": "1.2.246.562.24.83267967136",
+      "etunimi": "Ritva-Liisa Testi",
+      "sukunimi": "Happonen-Testi",
+      "hakutoiveprioriteetti": 2,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": true,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "arvo": 35.9,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df4bf8b930a3c641ef64ee"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "sotelikoe2017k",
+          "arvo": "35.9",
+          "laskennallinenArvo": "35.9",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
         "$oid": "59df4c23b930a3c641efa22a"
       },
       "hakemusOid": "1.2.246.562.11.00009176948",
@@ -138,6 +2454,158 @@
           "tunniste": "sotelikoe2017k",
           "arvo": "68.1",
           "laskennallinenArvo": "68.1",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4bbab930a3c641ef14bb"
+      },
+      "hakemusOid": "1.2.246.562.11.00009176948",
+      "hakijaOid": "1.2.246.562.24.11352589310",
+      "etunimi": "Sulevi Testi",
+      "sukunimi": "Hellman-Testi",
+      "hakutoiveprioriteetti": 5,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": true,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "arvo": 68.1,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Hyväksyttiin korkeammalle hakutoiveelle",
+            "SV": "Godkänd till ett högre ansökningsönskemål",
+            "EN": "Accepted to a higher preference"
+          },
+          "historia": {
+            "$oid": "59df4bbab930a3c641ef12eb"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "sotelikoe2017k",
+          "arvo": "68.1",
+          "laskennallinenArvo": "68.1",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4c5eb930a3c641efd75e"
+      },
+      "hakemusOid": "1.2.246.562.11.00009176948",
+      "hakijaOid": "1.2.246.562.24.11352589310",
+      "etunimi": "Sulevi Testi",
+      "sukunimi": "Hellman-Testi",
+      "hakutoiveprioriteetti": 4,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": true,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "arvo": 68.1,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Hyväksyttiin korkeammalle hakutoiveelle",
+            "SV": "Godkänd till ett högre ansökningsönskemål",
+            "EN": "Accepted to a higher preference"
+          },
+          "historia": {
+            "$oid": "59df4c5cb930a3c641efd402"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "sotelikoe2017k",
+          "arvo": "68.1",
+          "laskennallinenArvo": "68.1",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4c5eb930a3c641efda65"
+      },
+      "hakemusOid": "1.2.246.562.11.00009584734",
+      "hakijaOid": "1.2.246.562.24.83267967136",
+      "etunimi": "Ritva-Liisa Testi",
+      "sukunimi": "Happonen-Testi",
+      "hakutoiveprioriteetti": 1,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": true,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "arvo": 35.9,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df4c5cb930a3c641efd55f"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "sotelikoe2017k",
+          "arvo": "35.9",
+          "laskennallinenArvo": "35.9",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4b5fb930a3c641ee6479"
+      },
+      "hakemusOid": "1.2.246.562.11.00009584734",
+      "hakijaOid": "1.2.246.562.24.83267967136",
+      "etunimi": "Ritva-Liisa Testi",
+      "sukunimi": "Happonen-Testi",
+      "hakutoiveprioriteetti": 3,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": true,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "arvo": 35.9,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df4b5cb930a3c641ee5d94"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "sotelikoe2017k",
+          "arvo": "35.9",
+          "laskennallinenArvo": "35.9",
           "osallistuminen": "OSALLISTUI",
           "tyypinKoodiUri": "syotettavanarvontyypit_muu",
           "tilastoidaan": false
@@ -178,6 +2646,255 @@
           "laskennallinenArvo": "68.1",
           "osallistuminen": "OSALLISTUI",
           "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4bceb930a3c641ef28ab"
+      },
+      "hakemusOid": "1.2.246.562.11.00009176948",
+      "hakijaOid": "1.2.246.562.24.11352589310",
+      "etunimi": "Sulevi Testi",
+      "sukunimi": "Hellman-Testi",
+      "hakutoiveprioriteetti": 3,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": true,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "arvo": 68.1,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Hyväksyttiin korkeammalle hakutoiveelle",
+            "SV": "Godkänd till ett högre ansökningsönskemål",
+            "EN": "Accepted to a higher preference"
+          },
+          "historia": {
+            "$oid": "59df4bcdb930a3c641ef26cf"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "sotelikoe2017k",
+          "arvo": "68.1",
+          "laskennallinenArvo": "68.1",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4b00b930a3c641edbb88"
+      },
+      "hakemusOid": "1.2.246.562.11.00009176948",
+      "hakijaOid": "1.2.246.562.24.11352589310",
+      "etunimi": "Sulevi Testi",
+      "sukunimi": "Hellman-Testi",
+      "hakutoiveprioriteetti": 2,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": true,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "arvo": 68.1,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Hyväksyttiin korkeammalle hakutoiveelle",
+            "SV": "Godkänd till ett högre ansökningsönskemål",
+            "EN": "Accepted to a higher preference"
+          },
+          "historia": {
+            "$oid": "59df4affb930a3c641edb8a7"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "sotelikoe2017k",
+          "arvo": "68.1",
+          "laskennallinenArvo": "68.1",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df4b01b930a3c641edbe20"
+      },
+      "hakemusOid": "1.2.246.562.11.00009584734",
+      "hakijaOid": "1.2.246.562.24.83267967136",
+      "etunimi": "Ritva-Liisa Testi",
+      "sukunimi": "Happonen-Testi",
+      "hakutoiveprioriteetti": 4,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": true,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "arvo": 35.9,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df4b00b930a3c641edb9c4"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "sotelikoe2017k",
+          "arvo": "35.9",
+          "laskennallinenArvo": "35.9",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df561fb930a3c641f2e656"
+      },
+      "hakemusOid": "1.2.246.562.11.00009584734",
+      "hakijaOid": "1.2.246.562.24.83267967136",
+      "etunimi": "Ritva-Liisa Testi",
+      "sukunimi": "Happonen-Testi",
+      "hakutoiveprioriteetti": 2,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df55fdb930a3c641f2c34d"
+          }
+        },
+        {
+          "prioriteetti": 1,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df5605b930a3c641f2c904"
+          }
+        },
+        {
+          "prioriteetti": 2,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df560bb930a3c641f2cebb"
+          }
+        },
+        {
+          "prioriteetti": 3,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df5612b930a3c641f2d472"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "Sote3_pakollinen_osio",
+          "osallistuminen": "EI_VAADITA",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        },
+        {
+          "tunniste": "Sote3_valintakoe",
+          "osallistuminen": "MERKITSEMATTA",
+          "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
+          "tilastoidaan": false
+        },
+        {
+          "tunniste": "bf10c57a-c395-ad61-7f81-b807245f798a",
+          "osallistuminen": "EI_VAADITA",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df5620b930a3c641f2ec0e"
+      },
+      "hakemusOid": "1.2.246.562.11.00009584734",
+      "hakijaOid": "1.2.246.562.24.83267967136",
+      "etunimi": "Ritva-Liisa Testi",
+      "sukunimi": "Happonen-Testi",
+      "hakutoiveprioriteetti": 2,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df5617b930a3c641f2da29"
+          }
+        },
+        {
+          "prioriteetti": 1,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df561db930a3c641f2dfe0"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "Sote3_pakollinen_osio",
+          "osallistuminen": "EI_VAADITA",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        },
+        {
+          "tunniste": "Sote3_valintakoe",
+          "osallistuminen": "MERKITSEMATTA",
+          "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
           "tilastoidaan": false
         }
       ],
@@ -322,6 +3039,468 @@
     },
     {
       "_id": {
+        "$oid": "59df55ccb930a3c641f2585d"
+      },
+      "hakemusOid": "1.2.246.562.11.00009176948",
+      "hakijaOid": "1.2.246.562.24.11352589310",
+      "etunimi": "Sulevi Testi",
+      "sukunimi": "Hellman-Testi",
+      "hakutoiveprioriteetti": 5,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "arvo": 37,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Valintakokeen pakollinen osio on hylätty",
+            "SV": "Urvalsprovets obligatoriska del underkänd",
+            "EN": "Compulsory exam section has been failed"
+          },
+          "tekninenKuvaus": "Arvokonvertterin konvertoi metodissa suoritettu hylkays.",
+          "historia": {
+            "$oid": "59df55c9b930a3c641f25412"
+          }
+        },
+        {
+          "prioriteetti": 1,
+          "arvo": 2,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df55cbb930a3c641f2568d"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "Sote3_pakollinen_osio",
+          "arvo": "0",
+          "laskennallinenArvo": "0",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        },
+        {
+          "tunniste": "Sote3_valintakoe",
+          "arvo": "37",
+          "laskennallinenArvo": "37",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df5687b930a3c641f3a1c2"
+      },
+      "hakemusOid": "1.2.246.562.11.00009176948",
+      "hakijaOid": "1.2.246.562.24.11352589310",
+      "etunimi": "Sulevi Testi",
+      "sukunimi": "Hellman-Testi",
+      "hakutoiveprioriteetti": 4,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "arvo": 37,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "SV": "Urvalsprovets obligatoriska del underkänd",
+            "FI": "Valintakokeen pakollinen osio on hylätty",
+            "EN": "Compulsory exam section has been failed"
+          },
+          "tekninenKuvaus": "Arvokonvertterin konvertoi metodissa suoritettu hylkays.",
+          "historia": {
+            "$oid": "59df5680b930a3c641f3952d"
+          }
+        },
+        {
+          "prioriteetti": 1,
+          "arvo": 3,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df5684b930a3c641f399c9"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "Sote3_pakollinen_osio",
+          "arvo": "0",
+          "laskennallinenArvo": "0",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        },
+        {
+          "tunniste": "Sote3_valintakoe",
+          "arvo": "37",
+          "laskennallinenArvo": "37",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df5687b930a3c641f3a4c9"
+      },
+      "hakemusOid": "1.2.246.562.11.00009584734",
+      "hakijaOid": "1.2.246.562.24.83267967136",
+      "etunimi": "Ritva-Liisa Testi",
+      "sukunimi": "Happonen-Testi",
+      "hakutoiveprioriteetti": 1,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df5681b930a3c641f3968a"
+          }
+        },
+        {
+          "prioriteetti": 1,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df5685b930a3c641f39b26"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "Sote3_pakollinen_osio",
+          "osallistuminen": "EI_VAADITA",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        },
+        {
+          "tunniste": "Sote3_valintakoe",
+          "osallistuminen": "MERKITSEMATTA",
+          "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df5687b930a3c641f39d25"
+      },
+      "hakemusOid": "1.2.246.562.11.00009176948",
+      "hakijaOid": "1.2.246.562.24.11352589310",
+      "etunimi": "Sulevi Testi",
+      "sukunimi": "Hellman-Testi",
+      "hakutoiveprioriteetti": 4,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "arvo": 62,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Valintakokeen pakollinen osio on hylätty",
+            "SV": "Urvalsprovets obligatoriska del underkänd",
+            "EN": "Compulsory exam section has been failed"
+          },
+          "tekninenKuvaus": "Arvokonvertterin konvertoi metodissa suoritettu hylkays.",
+          "historia": {
+            "$oid": "59df566bb930a3c641f382bd"
+          }
+        },
+        {
+          "prioriteetti": 1,
+          "arvo": 37,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Valintakokeen pakollinen osio on hylätty",
+            "SV": "Urvalsprovets obligatoriska del underkänd",
+            "EN": "Compulsory exam section has been failed"
+          },
+          "tekninenKuvaus": "Arvokonvertterin konvertoi metodissa suoritettu hylkays.",
+          "historia": {
+            "$oid": "59df5671b930a3c641f38759"
+          }
+        },
+        {
+          "prioriteetti": 2,
+          "arvo": 25,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df5677b930a3c641f38bf5"
+          }
+        },
+        {
+          "prioriteetti": 3,
+          "arvo": 3,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df567db930a3c641f39091"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "Sote3_pakollinen_osio",
+          "arvo": "0",
+          "laskennallinenArvo": "0",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        },
+        {
+          "tunniste": "Sote3_valintakoe",
+          "arvo": "37",
+          "laskennallinenArvo": "37",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
+          "tilastoidaan": false
+        },
+        {
+          "tunniste": "bf10c57a-c395-ad61-7f81-b807245f798a",
+          "osallistuminen": "EI_VAADITA",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df5687b930a3c641f3a02c"
+      },
+      "hakemusOid": "1.2.246.562.11.00009584734",
+      "hakijaOid": "1.2.246.562.24.83267967136",
+      "etunimi": "Ritva-Liisa Testi",
+      "sukunimi": "Happonen-Testi",
+      "hakutoiveprioriteetti": 1,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df566db930a3c641f3841a"
+          }
+        },
+        {
+          "prioriteetti": 1,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df5672b930a3c641f388b6"
+          }
+        },
+        {
+          "prioriteetti": 2,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df5679b930a3c641f38d52"
+          }
+        },
+        {
+          "prioriteetti": 3,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df567eb930a3c641f391ee"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "Sote3_pakollinen_osio",
+          "osallistuminen": "EI_VAADITA",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        },
+        {
+          "tunniste": "Sote3_valintakoe",
+          "osallistuminen": "MERKITSEMATTA",
+          "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
+          "tilastoidaan": false
+        },
+        {
+          "tunniste": "bf10c57a-c395-ad61-7f81-b807245f798a",
+          "osallistuminen": "EI_VAADITA",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df5577b930a3c641f1718a"
+      },
+      "hakemusOid": "1.2.246.562.11.00009584734",
+      "hakijaOid": "1.2.246.562.24.83267967136",
+      "etunimi": "Ritva-Liisa Testi",
+      "sukunimi": "Happonen-Testi",
+      "hakutoiveprioriteetti": 3,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df553fb930a3c641f13fb7"
+          }
+        },
+        {
+          "prioriteetti": 1,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df554ab930a3c641f1484d"
+          }
+        },
+        {
+          "prioriteetti": 2,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df5554b930a3c641f150e3"
+          }
+        },
+        {
+          "prioriteetti": 3,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df555fb930a3c641f15979"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "Sote3_pakollinen_osio",
+          "osallistuminen": "EI_VAADITA",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        },
+        {
+          "tunniste": "Sote3_valintakoe",
+          "osallistuminen": "MERKITSEMATTA",
+          "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
+          "tilastoidaan": false
+        },
+        {
+          "tunniste": "bf10c57a-c395-ad61-7f81-b807245f798a",
+          "osallistuminen": "EI_VAADITA",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
+        "$oid": "59df5578b930a3c641f17a21"
+      },
+      "hakemusOid": "1.2.246.562.11.00009584734",
+      "hakijaOid": "1.2.246.562.24.83267967136",
+      "etunimi": "Ritva-Liisa Testi",
+      "sukunimi": "Happonen-Testi",
+      "hakutoiveprioriteetti": 3,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
+        {
+          "prioriteetti": 0,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df556bb930a3c641f1620f"
+          }
+        },
+        {
+          "prioriteetti": 1,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df5573b930a3c641f16aa5"
+          }
+        }
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "Sote3_pakollinen_osio",
+          "osallistuminen": "EI_VAADITA",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        },
+        {
+          "tunniste": "Sote3_valintakoe",
+          "osallistuminen": "MERKITSEMATTA",
+          "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
+    },
+    {
+      "_id": {
         "$oid": "59df54c4b930a3c641f04523"
       },
       "hakemusOid": "1.2.246.562.11.00009176948",
@@ -380,367 +3559,306 @@
         }
       ],
       "funktioTulokset": []
-    }
-  ],
-  "Valinnanvaihe": [
-    {
-      "_id": {
-        "$oid": "59df2608b930a3967e77abc7"
-      },
-      "jarjestysnumero": 0,
-      "hakuOid": "1.2.246.562.29.59856749474",
-      "hakukohdeOid": "1.2.246.562.20.68517235666",
-      "valinnanvaiheOid": "1487144217579-7111638127584928902",
-      "tarjoajaOid": "1.2.246.562.10.83122281013",
-      "nimi": "SOTELI-esivalintakoe",
-      "valintatapajonot": [
-        {
-          "$ref": "Valintatapajono",
-          "$id": {
-            "$oid": "59df4a19b930a3c641ea66fd"
-          }
-        }
-      ]
     },
     {
       "_id": {
-        "$oid": "59baad30b930a352b01e3972"
+        "$oid": "59df55e5b930a3c641f28368"
       },
-      "jarjestysnumero": 0,
-      "hakuOid": "1.2.246.562.29.59856749474",
-      "hakukohdeOid": "1.2.246.562.20.80972757381",
-      "valinnanvaiheOid": "14871442164221548191326643098842",
-      "tarjoajaOid": "1.2.246.562.10.93928993141",
-      "nimi": "SOTELI-esivalintakoe",
-      "valintatapajonot": [
+      "hakemusOid": "1.2.246.562.11.00009176948",
+      "hakijaOid": "1.2.246.562.24.11352589310",
+      "etunimi": "Sulevi Testi",
+      "sukunimi": "Hellman-Testi",
+      "hakutoiveprioriteetti": 3,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
         {
-          "$ref": "Valintatapajono",
-          "$id": {
-            "$oid": "59f73921b930a3db80cb84c7"
-          }
-        }
-      ]
-    },
-    {
-      "_id": {
-        "$oid": "59df26bdb930a3967e7a4aa9"
-      },
-      "jarjestysnumero": 1,
-      "hakuOid": "1.2.246.562.29.59856749474",
-      "hakukohdeOid": "1.2.246.562.20.68517235666",
-      "valinnanvaiheOid": "1483515529860-319195982171180380",
-      "tarjoajaOid": "1.2.246.562.10.83122281013",
-      "nimi": "Hakukelpoisuuden käsittelyvaihe",
-      "valintatapajonot": [
-        {
-          "$ref": "Valintatapajono",
-          "$id": {
-            "$oid": "59df4aa4b930a3c641ed05bd"
-          }
-        }
-      ]
-    },
-    {
-      "_id": {
-        "$oid": "59baad34b930a352b01e4181"
-      },
-      "jarjestysnumero": 1,
-      "hakuOid": "1.2.246.562.29.59856749474",
-      "hakukohdeOid": "1.2.246.562.20.80972757381",
-      "valinnanvaiheOid": "1484911921792-7809619609223215701",
-      "tarjoajaOid": "1.2.246.562.10.93928993141",
-      "nimi": "Hakukelpoisuuden käsittelyvaihe",
-      "valintatapajonot": [
-        {
-          "$ref": "Valintatapajono",
-          "$id": {
-            "$oid": "59f739fab930a3db80cb8c18"
-          }
-        }
-      ]
-    },
-    {
-      "_id": {
-        "$oid": "59df27f4b930a3967e7ce97a"
-      },
-      "jarjestysnumero": 2,
-      "hakuOid": "1.2.246.562.29.59856749474",
-      "hakukohdeOid": "1.2.246.562.20.68517235666",
-      "valinnanvaiheOid": "1487145297191-8966170527898136429",
-      "tarjoajaOid": "1.2.246.562.10.83122281013",
-      "nimi": "Esivalintavaihe",
-      "valintatapajonot": [
-        {
-          "$ref": "Valintatapajono",
-          "$id": {
-            "$oid": "59df4c24b930a3c641efa47d"
-          }
-        }
-      ]
-    },
-    {
-      "_id": {
-        "$oid": "59baad36b930a352b01e49b2"
-      },
-      "jarjestysnumero": 2,
-      "hakuOid": "1.2.246.562.29.59856749474",
-      "hakukohdeOid": "1.2.246.562.20.80972757381",
-      "valinnanvaiheOid": "14871452953096650794917745386331",
-      "tarjoajaOid": "1.2.246.562.10.93928993141",
-      "nimi": "Esivalintavaihe",
-      "valintatapajonot": [
-        {
-          "$ref": "Valintatapajono",
-          "$id": {
-            "$oid": "59df4ad1b930a3c641eda3f1"
-          }
-        }
-      ]
-    },
-    {
-      "_id": {
-        "$oid": "59df3229b930a3967e808e20"
-      },
-      "jarjestysnumero": 4,
-      "hakuOid": "1.2.246.562.29.59856749474",
-      "hakukohdeOid": "1.2.246.562.20.68517235666",
-      "valinnanvaiheOid": "14835155298422673008063308278448",
-      "tarjoajaOid": "1.2.246.562.10.83122281013",
-      "nimi": "Varsinainen valinta",
-      "valintatapajonot": [
-        {
-          "$ref": "Valintatapajono",
-          "$id": {
-            "$oid": "59df5648b930a3c641f33f45"
+          "prioriteetti": 0,
+          "arvo": 37,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "SV": "Urvalsprovets obligatoriska del underkänd",
+            "FI": "Valintakokeen pakollinen osio on hylätty",
+            "EN": "Compulsory exam section has been failed"
+          },
+          "tekninenKuvaus": "Arvokonvertterin konvertoi metodissa suoritettu hylkays.",
+          "historia": {
+            "$oid": "59df55e0b930a3c641f279d7"
           }
         },
         {
-          "$ref": "Valintatapajono",
-          "$id": {
-            "$oid": "59df5647b930a3c641f33cee"
+          "prioriteetti": 1,
+          "arvo": 4,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df55e2b930a3c641f27c68"
           }
         }
-      ]
+      ],
+      "syotetytArvot": [
+        {
+          "tunniste": "Sote3_pakollinen_osio",
+          "arvo": "0",
+          "laskennallinenArvo": "0",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        },
+        {
+          "tunniste": "Sote3_valintakoe",
+          "arvo": "37",
+          "laskennallinenArvo": "37",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
     },
     {
       "_id": {
-        "$oid": "59baad4fb930a352b01e5720"
+        "$oid": "59df55e4b930a3c641f27e44"
       },
-      "jarjestysnumero": 4,
-      "hakuOid": "1.2.246.562.29.59856749474",
-      "hakukohdeOid": "1.2.246.562.20.80972757381",
-      "valinnanvaiheOid": "14849119217734762038413134473578",
-      "tarjoajaOid": "1.2.246.562.10.93928993141",
-      "nimi": "Varsinainen valinta",
-      "valintatapajonot": [
+      "hakemusOid": "1.2.246.562.11.00009176948",
+      "hakijaOid": "1.2.246.562.24.11352589310",
+      "etunimi": "Sulevi Testi",
+      "sukunimi": "Hellman-Testi",
+      "hakutoiveprioriteetti": 3,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
         {
-          "$ref": "Valintatapajono",
-          "$id": {
-            "$oid": "59df54c4b930a3c641f0460b"
+          "prioriteetti": 0,
+          "arvo": 62,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "SV": "Urvalsprovets obligatoriska del underkänd",
+            "FI": "Valintakokeen pakollinen osio on hylätty",
+            "EN": "Compulsory exam section has been failed"
+          },
+          "tekninenKuvaus": "Arvokonvertterin konvertoi metodissa suoritettu hylkays.",
+          "historia": {
+            "$oid": "59df55d2b930a3c641f26a71"
+          }
+        },
+        {
+          "prioriteetti": 1,
+          "arvo": 37,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Valintakokeen pakollinen osio on hylätty",
+            "SV": "Urvalsprovets obligatoriska del underkänd",
+            "EN": "Compulsory exam section has been failed"
+          },
+          "tekninenKuvaus": "Arvokonvertterin konvertoi metodissa suoritettu hylkays.",
+          "historia": {
+            "$oid": "59df55d5b930a3c641f26d02"
+          }
+        },
+        {
+          "prioriteetti": 2,
+          "arvo": 25,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df55d8b930a3c641f26f93"
+          }
+        },
+        {
+          "prioriteetti": 3,
+          "arvo": 4,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df55dbb930a3c641f27224"
           }
         }
-      ]
-    }
-  ],
-  "ValintakoeOsallistuminen": [],
-  "Valintatapajono": [
-    {
-      "_id": {
-        "$oid": "59df4a19b930a3c641ea66fd"
-      },
-      "schemaVersion": 2,
-      "valintatapajonoOid": "1487144482771-5032042978750825027",
-      "nimi": "SOTELI-esivalintakoe",
-      "prioriteetti": 0,
-      "aloituspaikat": 0,
-      "siirretaanSijoitteluun": false,
-      "tasasijasaanto": "YLITAYTTO",
-      "eiVarasijatayttoa": false,
-      "kaikkiEhdonTayttavatHyvaksytaan": false,
-      "kaytetaanValintalaskentaa": true,
-      "valmisSijoiteltavaksi": false,
-      "jonosijaIdt": [
+      ],
+      "syotetytArvot": [
         {
-          "$oid": "59df4a19b930a3c641ea64aa"
+          "tunniste": "Sote3_pakollinen_osio",
+          "arvo": "0",
+          "laskennallinenArvo": "0",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        },
+        {
+          "tunniste": "Sote3_valintakoe",
+          "arvo": "37",
+          "laskennallinenArvo": "37",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
+          "tilastoidaan": false
+        },
+        {
+          "tunniste": "bf10c57a-c395-ad61-7f81-b807245f798a",
+          "osallistuminen": "EI_VAADITA",
+          "tilastoidaan": false
         }
       ],
-      "jonosijat": []
+      "funktioTulokset": []
     },
     {
       "_id": {
-        "$oid": "59f73921b930a3db80cb84c7"
+        "$oid": "59df55e4b930a3c641f280d6"
       },
-      "schemaVersion": 2,
-      "valintatapajonoOid": "14871444832487908883297846034003",
-      "nimi": "SOTELI-esivalintakoe",
-      "prioriteetti": 0,
-      "aloituspaikat": 0,
-      "siirretaanSijoitteluun": false,
-      "tasasijasaanto": "YLITAYTTO",
-      "eiVarasijatayttoa": false,
-      "kaikkiEhdonTayttavatHyvaksytaan": false,
-      "kaytetaanValintalaskentaa": true,
-      "valmisSijoiteltavaksi": false,
-      "jonosijaIdt": [
+      "hakemusOid": "1.2.246.562.11.00009176948",
+      "hakijaOid": "1.2.246.562.24.11352589310",
+      "etunimi": "Sulevi Testi",
+      "sukunimi": "Hellman-Testi",
+      "hakutoiveprioriteetti": 3,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
         {
-          "$oid": "59f73921b930a3db80cb83df"
+          "prioriteetti": 0,
+          "arvo": 37,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "SV": "Urvalsprovets obligatoriska del underkänd",
+            "FI": "Valintakokeen pakollinen osio on hylätty",
+            "EN": "Compulsory exam section has been failed"
+          },
+          "tekninenKuvaus": "Arvokonvertterin konvertoi metodissa suoritettu hylkays.",
+          "historia": {
+            "$oid": "59df55ddb930a3c641f274b5"
+          }
+        },
+        {
+          "prioriteetti": 1,
+          "arvo": 4,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df55deb930a3c641f27746"
+          }
         }
       ],
-      "jonosijat": []
+      "syotetytArvot": [
+        {
+          "tunniste": "Sote3_pakollinen_osio",
+          "arvo": "0",
+          "laskennallinenArvo": "0",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        },
+        {
+          "tunniste": "Sote3_valintakoe",
+          "arvo": "37",
+          "laskennallinenArvo": "37",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
     },
     {
       "_id": {
-        "$oid": "59df4aa4b930a3c641ed05bd"
+        "$oid": "59df54d0b930a3c641f06355"
       },
-      "schemaVersion": 2,
-      "valintatapajonoOid": "14835155298981853295837255931709",
-      "nimi": "Ei-hakukelpoiset",
-      "prioriteetti": 0,
-      "aloituspaikat": 0,
-      "siirretaanSijoitteluun": false,
-      "tasasijasaanto": "YLITAYTTO",
-      "eiVarasijatayttoa": false,
-      "kaikkiEhdonTayttavatHyvaksytaan": false,
-      "kaytetaanValintalaskentaa": true,
-      "valmisSijoiteltavaksi": false,
-      "jonosijaIdt": [
+      "hakemusOid": "1.2.246.562.11.00009176948",
+      "hakijaOid": "1.2.246.562.24.11352589310",
+      "etunimi": "Sulevi Testi",
+      "sukunimi": "Hellman-Testi",
+      "hakutoiveprioriteetti": 2,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
         {
-          "$oid": "59df4aa3b930a3c641ed036a"
+          "prioriteetti": 0,
+          "arvo": 37,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "SV": "Urvalsprovets obligatoriska del underkänd",
+            "FI": "Valintakokeen pakollinen osio on hylätty",
+            "EN": "Compulsory exam section has been failed"
+          },
+          "tekninenKuvaus": "Arvokonvertterin konvertoi metodissa suoritettu hylkays.",
+          "historia": {
+            "$oid": "59df54cbb930a3c641f05c86"
+          }
+        },
+        {
+          "prioriteetti": 1,
+          "arvo": 5,
+          "tila": "HYVAKSYTTAVISSA",
+          "historia": {
+            "$oid": "59df54ceb930a3c641f06074"
+          }
         }
       ],
-      "jonosijat": []
+      "syotetytArvot": [
+        {
+          "tunniste": "Sote3_pakollinen_osio",
+          "arvo": "0",
+          "laskennallinenArvo": "0",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        },
+        {
+          "tunniste": "Sote3_valintakoe",
+          "arvo": "37",
+          "laskennallinenArvo": "37",
+          "osallistuminen": "OSALLISTUI",
+          "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
+          "tilastoidaan": false
+        }
+      ],
+      "funktioTulokset": []
     },
     {
       "_id": {
-        "$oid": "59f739fab930a3db80cb8c18"
+        "$oid": "59df54d0b930a3c641f065ed"
       },
-      "schemaVersion": 2,
-      "valintatapajonoOid": "14849119218354391149179791382165",
-      "nimi": "Ei-hakukelpoiset",
-      "prioriteetti": 0,
-      "aloituspaikat": 0,
-      "siirretaanSijoitteluun": false,
-      "tasasijasaanto": "YLITAYTTO",
-      "eiVarasijatayttoa": false,
-      "kaikkiEhdonTayttavatHyvaksytaan": false,
-      "kaytetaanValintalaskentaa": true,
-      "valmisSijoiteltavaksi": false,
-      "jonosijaIdt": [
+      "hakemusOid": "1.2.246.562.11.00009584734",
+      "hakijaOid": "1.2.246.562.24.83267967136",
+      "etunimi": "Ritva-Liisa Testi",
+      "sukunimi": "Happonen-Testi",
+      "hakutoiveprioriteetti": 4,
+      "harkinnanvarainen": false,
+      "hylattyValisijoittelussa": false,
+      "jarjestyskriteeritulokset": [
         {
-          "$oid": "59f739fab930a3db80cb8b30"
+          "prioriteetti": 0,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df54ccb930a3c641f05da3"
+          }
+        },
+        {
+          "prioriteetti": 1,
+          "tila": "HYLATTY",
+          "kuvaus": {
+            "FI": "Pisteesi eivät riittäneet valintakoekutsuun",
+            "SV": "Dina poäng räckte inte till för en kallelse till urvalsprov",
+            "EN": "You did not score high enough for an invitation to the entrance examination"
+          },
+          "historia": {
+            "$oid": "59df54cfb930a3c641f06191"
+          }
         }
       ],
-      "jonosijat": []
-    },
-    {
-      "_id": {
-        "$oid": "59df4c24b930a3c641efa47d"
-      },
-      "schemaVersion": 2,
-      "valintatapajonoOid": "1487145391342-2388937780306276163",
-      "nimi": "Esivalintakoe",
-      "prioriteetti": 0,
-      "aloituspaikat": 100,
-      "siirretaanSijoitteluun": false,
-      "tasasijasaanto": "YLITAYTTO",
-      "eiVarasijatayttoa": false,
-      "kaikkiEhdonTayttavatHyvaksytaan": false,
-      "kaytetaanValintalaskentaa": true,
-      "valmisSijoiteltavaksi": false,
-      "jonosijaIdt": [
+      "syotetytArvot": [
         {
-          "$oid": "59df4c23b930a3c641efa22a"
+          "tunniste": "Sote3_pakollinen_osio",
+          "osallistuminen": "EI_VAADITA",
+          "tyypinKoodiUri": "syotettavanarvontyypit_muu",
+          "tilastoidaan": false
+        },
+        {
+          "tunniste": "Sote3_valintakoe",
+          "osallistuminen": "MERKITSEMATTA",
+          "tyypinKoodiUri": "syotettavanarvontyypit_valintakoe",
+          "tilastoidaan": false
         }
       ],
-      "jonosijat": []
-    },
-    {
-      "_id": {
-        "$oid": "59df4ad1b930a3c641eda3f1"
-      },
-      "schemaVersion": 2,
-      "valintatapajonoOid": "14871453921611384534693174737784",
-      "nimi": "Esivalintakoe",
-      "prioriteetti": 0,
-      "aloituspaikat": 80,
-      "siirretaanSijoitteluun": false,
-      "tasasijasaanto": "YLITAYTTO",
-      "eiVarasijatayttoa": false,
-      "kaikkiEhdonTayttavatHyvaksytaan": false,
-      "kaytetaanValintalaskentaa": true,
-      "valmisSijoiteltavaksi": false,
-      "jonosijaIdt": [
-        {
-          "$oid": "59df4ad1b930a3c641eda309"
-        }
-      ],
-      "jonosijat": []
-    },
-    {
-      "_id": {
-        "$oid": "59df5647b930a3c641f33cee"
-      },
-      "schemaVersion": 2,
-      "valintatapajonoOid": "14871500433118662321562230733453",
-      "nimi": "Yhteispisteet",
-      "prioriteetti": 0,
-      "aloituspaikat": 16,
-      "siirretaanSijoitteluun": true,
-      "tasasijasaanto": "ARVONTA",
-      "eiVarasijatayttoa": false,
-      "kaikkiEhdonTayttavatHyvaksytaan": false,
-      "kaytetaanValintalaskentaa": true,
-      "valmisSijoiteltavaksi": true,
-      "jonosijaIdt": [
-        {
-          "$oid": "59df5647b930a3c641f33a9b"
-        }
-      ],
-      "jonosijat": []
-    },
-    {
-      "_id": {
-        "$oid": "59df5648b930a3c641f33f45"
-      },
-      "schemaVersion": 2,
-      "valintatapajonoOid": "1487149910926-5198215752602272243",
-      "nimi": "Koepisteet",
-      "prioriteetti": 1,
-      "aloituspaikat": 4,
-      "siirretaanSijoitteluun": true,
-      "tasasijasaanto": "ARVONTA",
-      "eiVarasijatayttoa": false,
-      "kaikkiEhdonTayttavatHyvaksytaan": false,
-      "kaytetaanValintalaskentaa": true,
-      "valmisSijoiteltavaksi": true,
-      "jonosijaIdt": [
-        {
-          "$oid": "59df5647b930a3c641f33cf2"
-        }
-      ],
-      "jonosijat": []
-    },
-    {
-      "_id": {
-        "$oid": "59df54c4b930a3c641f0460b"
-      },
-      "schemaVersion": 2,
-      "valintatapajonoOid": "14871499108842038936225826786200",
-      "nimi": "Koepisteet",
-      "prioriteetti": 1,
-      "aloituspaikat": 23,
-      "siirretaanSijoitteluun": true,
-      "tasasijasaanto": "ARVONTA",
-      "eiVarasijatayttoa": false,
-      "kaikkiEhdonTayttavatHyvaksytaan": false,
-      "kaytetaanValintalaskentaa": true,
-      "valmisSijoiteltavaksi": true,
-      "jonosijaIdt": [
-        {
-          "$oid": "59df54c4b930a3c641f04523"
-        }
-      ],
-      "jonosijat": []
+      "funktioTulokset": []
     }
   ]
 }
