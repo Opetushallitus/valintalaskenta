@@ -13,7 +13,7 @@ public class ValintakoeValinnanvaihe {
     private Integer laskettavaJarjestysluku;
 
     @Embedded
-    private List<Valintakoe> valintakokeet = new ArrayList<Valintakoe>();
+    private List<Valintakoe> valintakokeet = new ArrayList<>();
 
     public String getValinnanVaiheOid() {
         return valinnanVaiheOid;
