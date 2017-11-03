@@ -83,8 +83,10 @@ public class ValintalaskentaServiceIntegrationTest {
         HakemusDTO hakemusJotaEiKuuluKutsua = luoHakemus(hakuOid, hakemusOidJotaEiKuuluKutsua, hakemusOidJotaEiKuuluKutsua, ylempiHakukohdeOidJossaYhteinenKoe, hakukohdeOidJossaOmaKoe);
         valintalaskentaService.valintakokeet(kutsuttavaHakemus, perusteetKohde1, "uuid1", new ValintakoelaskennanKumulatiivisetTulokset(), true);
         valintalaskentaService.valintakokeet(kutsuttavaHakemus, perusteetKohde2, "uuid2", new ValintakoelaskennanKumulatiivisetTulokset(), true);
+        valintalaskentaService.valintakokeet(kutsuttavaHakemus, perusteetKohde2, "uuid2", new ValintakoelaskennanKumulatiivisetTulokset(), true);  // again, to get previous results in place...
         valintalaskentaService.valintakokeet(hakemusJotaEiKuuluKutsua, perusteetKohde1, "uuid1", new ValintakoelaskennanKumulatiivisetTulokset(), true);
         valintalaskentaService.valintakokeet(hakemusJotaEiKuuluKutsua, perusteetKohde2, "uuid2", new ValintakoelaskennanKumulatiivisetTulokset(), true);
+        valintalaskentaService.valintakokeet(hakemusJotaEiKuuluKutsua, perusteetKohde2, "uuid2", new ValintakoelaskennanKumulatiivisetTulokset(), true);  // again, to get previous results in place...
 
         ValintakoeOsallistuminen kutsuttavaOsallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOidJokaKuuluuKutsua);
 

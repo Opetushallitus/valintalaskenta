@@ -848,6 +848,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         HakemusDTO hakemus = luoHakemus(hakuOid, hakemusOid, hakemusOid, ylempiHakukohdeOidJossaYhteinenKoe, hakukohdeOidJossaOmaKoe);
         valintakoelaskentaSuorittajaService.laske(hakemus, perusteetKohde1, uuid, new ValintakoelaskennanKumulatiivisetTulokset(), korkeakouluhaku);
         valintakoelaskentaSuorittajaService.laske(hakemus, perusteetKohde2, uuid, new ValintakoelaskennanKumulatiivisetTulokset(), korkeakouluhaku);
+        valintakoelaskentaSuorittajaService.laske(hakemus, perusteetKohde2, uuid, new ValintakoelaskennanKumulatiivisetTulokset(), korkeakouluhaku); // again, to get previous results in place...
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
 
