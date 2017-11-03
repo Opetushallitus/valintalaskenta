@@ -198,7 +198,8 @@ public class ValintalaskentaResourceIntegrationTest {
 
     @Test
     @UsingDataSet(locations = "bug1564.json", loadStrategy = CLEAN_INSERT)
-    @Ignore
+    @Ignore("Valitettavasti tämä testi ei suostu menemään läpi. " +
+        "Hakukohteen 1.2.246.562.20.80972757381 edellisen vaiheen jonoista ei löydy tuloksia EdellinenValinnanVaiheKasittelija :ssa.")
     public void kokeeseenOnKutsuttavaVaikkaEdellinenVaiheOlisiHylattyJosKoeOnVainLaskettavallaHakukohteella() throws IOException, InterruptedException {
         final String hakemusOid = "1.2.246.562.11.00009176948";
         final String hakukohdeOidJossaOmaKoe = "1.2.246.562.20.80972757381";
