@@ -83,7 +83,6 @@ public class EdellinenValinnanvaiheKasittelija {
                 valintaperusteetDTO.isPresent() &&
                 vanhatOsallistumiset != null &&
                 valintaperusteetDTO.get().getValinnanVaihe() != null &&
-                notImmediatelyPreviousVaihe(edellinenValinnanvaihe, valintaperusteetDTO.get()) &&
                 VALINTAKOE.equals(valintaperusteetDTO.get().getValinnanVaihe().getValinnanVaiheTyyppi())) {
                 Sets.SetView<String> talleKohteelleSpesifienKokeidenTunnisteet = paatteleKoetunnisteetJotkaOnVainTallaHakukohteella(valintaperusteetDTO.get(), vanhatOsallistumiset);
                 if (!talleKohteelleSpesifienKokeidenTunnisteet.isEmpty()) {
@@ -133,10 +132,6 @@ public class EdellinenValinnanvaiheKasittelija {
         } else {
             return new TilaJaSelite(HYVAKSYTTAVISSA, new HashMap<>());
         }
-    }
-
-    private static boolean notImmediatelyPreviousVaihe(Valinnanvaihe edellinenValinnanvaihe, ValintaperusteetDTO valintaperusteetDTO) {
-        return valintaperusteetDTO.getValinnanVaihe().getValinnanVaiheJarjestysluku() != edellinenValinnanvaihe.getJarjestysnumero() - 1;
     }
 
     private Sets.SetView<String> paatteleKoetunnisteetJotkaOnVainTallaHakukohteella(ValintaperusteetDTO valintaperusteetDTO, ValintakoeOsallistuminen vanhatOsallistumiset) {
