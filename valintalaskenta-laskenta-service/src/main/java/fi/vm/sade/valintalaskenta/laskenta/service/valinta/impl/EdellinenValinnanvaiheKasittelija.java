@@ -69,6 +69,7 @@ public class EdellinenValinnanvaiheKasittelija {
                 valintaperusteetDTO.isPresent() &&
                 vanhatOsallistumiset != null &&
                 valintaperusteetDTO.get().getValinnanVaihe() != null &&
+                koeOsallistuminenToisessaKohteessa(valintaperusteetDTO.get().getHakukohdeOid(), vanhatOsallistumiset) &&
                 VALINTAKOE.equals(valintaperusteetDTO.get().getValinnanVaihe().getValinnanVaiheTyyppi()) &&
                 LOG.isDebugEnabled()) {
                     LOG.debug("hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan? *****");
