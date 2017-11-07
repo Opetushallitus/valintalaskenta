@@ -229,7 +229,7 @@ public class ValintalaskentaResourceImpl {
                 hakukohteetLaskettavina.put(pollKey, HakukohteenLaskennanTila.KESKEN);
                 return HakukohteenLaskennanTila.UUSI;
             } else {
-                LOG.info("Haettiin statusta laskennalle {}, mutta laskentaa ei ole olemassa. Onko palvelin käynnistetty välissä uudelleen?", pollKey);
+                LOG.error("Haettiin statusta laskennalle {}, mutta laskentaa ei ole olemassa. Onko palvelin käynnistetty välissä uudelleen?", pollKey);
                 return HakukohteenLaskennanTila.VIRHE;
             }
         } else if (hakukohteetLaskettavina.get(pollKey).equals(HakukohteenLaskennanTila.VALMIS)) {
@@ -237,7 +237,7 @@ public class ValintalaskentaResourceImpl {
             //hakukohteetLaskettavina.remove(key); //!! Joissain tilanteissa käynnistetään tarpeettomasti uusi laskenta
             return HakukohteenLaskennanTila.VALMIS;
         } else if (hakukohteetLaskettavina.get(pollKey).equals(HakukohteenLaskennanTila.VIRHE)) {
-            LOG.info("Kohteen laskennassa on tapahtunut virhe. {}", pollKey);
+            LOG.error("Kohteen laskennassa on tapahtunut virhe. {}", pollKey);
             return HakukohteenLaskennanTila.VIRHE;
         } else {
             LOG.info("Hakukohteen laskenta on edelleen kesken. {}", pollKey);

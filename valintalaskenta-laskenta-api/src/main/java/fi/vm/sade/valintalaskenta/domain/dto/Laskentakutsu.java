@@ -4,8 +4,8 @@ import java.util.List;
 
 public class Laskentakutsu {
     private final boolean isValintaryhmalaskenta;
-    private final LaskeDTO laskeDTO;
-    private final List<LaskeDTO> laskeDTOs;
+    private final LaskeDTO laskeDTO; //Tavalliset laskennat
+    private final List<LaskeDTO> laskeDTOs; //Valintaryhmälaskennat
     private final String uuid;
     private final String pollKey;
 
@@ -24,8 +24,6 @@ public class Laskentakutsu {
         this.laskeDTOs = laskeDTOs;
         this.uuid = laskeDTOs.iterator().next().getUuid();
         this.pollKey = uuid+"valintaryhmalaskenta";
-
-
     }
 
     public boolean isValintaryhmalaskenta() {
