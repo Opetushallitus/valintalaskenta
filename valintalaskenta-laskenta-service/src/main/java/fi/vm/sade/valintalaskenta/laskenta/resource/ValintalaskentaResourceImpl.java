@@ -139,6 +139,7 @@ public class ValintalaskentaResourceImpl {
         if(!lista.isEmpty()) {
             laskeDTO = lista.get(0);
         } else {
+            LOG.error("Laskejasijoittele-rajapinta sai syötteeksi tyhjän listan, joten laskentaa ei voida toteuttaa. lopetetaan.");
             return HakukohteenLaskennanTila.VIRHE;
         }
         String status = pidaKirjaaMeneillaanOlevista(laskeDTO);
