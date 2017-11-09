@@ -242,9 +242,9 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         final TilaJaSelite ts0 = new TilaJaSelite(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, hyvaksyttavissaSelite);
         final TilaJaSelite ts1 = new TilaJaSelite(JarjestyskriteerituloksenTila.VIRHE, virheSelite);
 
-        when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(Matchers.any(), Matchers.any(), Matchers.eq(viimeisin1), any(), any(ValintakoeOsallistuminen.class)))
+        when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(Matchers.any(), Matchers.any(), Matchers.eq(viimeisin1), any(), any()))
             .thenReturn(ts0);
-        when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(Matchers.any(), Matchers.any(), Matchers.eq(viimeisin2), any(), any(ValintakoeOsallistuminen.class)))
+        when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(Matchers.any(), Matchers.any(), Matchers.eq(viimeisin2), any(), any()))
             .thenReturn(ts1);
 
         final OsallistuminenTulos osallistuu1 = new OsallistuminenTulos();
@@ -334,9 +334,9 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         when(valinnanvaiheDAOMock.haeEdeltavaValinnanvaihe(Matchers.any(), Matchers.eq(hakukohdeOid2), Matchers.eq(valinnanVaiheJarjestysluku2)))
             .thenReturn(v1);
 
-        when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(Matchers.any(), Matchers.any(), Matchers.eq(v0), any(), any(ValintakoeOsallistuminen.class)))
+        when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(Matchers.any(), Matchers.any(), Matchers.eq(v0), any(), any()))
             .thenReturn(ts0);
-        when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(Matchers.any(), Matchers.any(),Matchers.eq(v1), any(), any(ValintakoeOsallistuminen.class)))
+        when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(Matchers.any(), Matchers.any(),Matchers.eq(v1), any(), any()))
             .thenReturn(ts1);
 
         final OsallistuminenTulos osallistuu1 = new OsallistuminenTulos();

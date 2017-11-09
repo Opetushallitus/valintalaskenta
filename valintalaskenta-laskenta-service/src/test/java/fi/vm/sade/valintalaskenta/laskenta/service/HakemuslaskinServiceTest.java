@@ -98,7 +98,7 @@ public class HakemuslaskinServiceTest {
         when(
                 edellinenValinnanvaiheKasittelijaMock
                         .tilaEdellisenValinnanvaiheenMukaan(eq(hakemusOid),
-                                eq(laskettuTila), any(Valinnanvaihe.class), any(), any(ValintakoeOsallistuminen.class)))
+                                eq(laskettuTila), any(Valinnanvaihe.class)))
                 .thenReturn(tilaEdellisenVaiheenMukaan);
 
         hakemuslaskinService.suoritaLaskentaHakemukselle(laskettavaHakukohde,

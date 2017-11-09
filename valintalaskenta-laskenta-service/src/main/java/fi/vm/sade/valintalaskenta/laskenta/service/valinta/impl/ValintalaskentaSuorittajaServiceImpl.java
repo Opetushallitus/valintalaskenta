@@ -298,7 +298,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                     List<Jonosija> filteroity = jono.getJonosijat().stream()
                             .filter(sija -> {
                                 boolean tila = !sija.getJarjestyskriteeritulokset().get(0).getTila().equals(JarjestyskriteerituloksenTila.HYLATTY);
-                                TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(sija.getHakemusOid(), edellinenVaihe, Optional.empty(), edellinenOsallistuminen); // TODO can we get the real valintaperusteet here? Or do with less data?
+                                TilaJaSelite tilaJaSelite = edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(sija.getHakemusOid(), edellinenVaihe);
                                 return tila || tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY);
                             })
                             .collect(Collectors.toList());

@@ -53,9 +53,14 @@ public class EdellinenValinnanvaiheKasittelija {
      * valintatapajonossa.
      */
     public TilaJaSelite hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(final String hakemusOid,
-                                                                             Valinnanvaihe edellinenValinnanvaihe,
-                                                                             Optional<ValintaperusteetDTO> valintaperusteetDTO,
-                                                                             ValintakoeOsallistuminen vanhatOsallistumiset) {
+                                                                             Valinnanvaihe edellinenValinnanvaihe) {
+        return hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, edellinenValinnanvaihe, Optional.empty(), Optional.empty());
+    }
+
+    private TilaJaSelite hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(final String hakemusOid,
+                                                                              Valinnanvaihe edellinenValinnanvaihe,
+                                                                              Optional<ValintaperusteetDTO> valintaperusteetDTO,
+                                                                              Optional<ValintakoeOsallistuminen> vanhatOsallistumiset) {
         // Jos edellisessä valinnan vaiheessa ei ole yhtään valintatapajonoa, voidaan olettaa, että hakemus
         // on hyväksyttävissä
         if (edellinenValinnanvaihe == null || edellinenValinnanvaihe.getValintatapajonot().isEmpty()) {
@@ -180,9 +185,17 @@ public class EdellinenValinnanvaiheKasittelija {
                                                            Tila laskettuTila,
                                                            Valinnanvaihe edellinenValinnanvaihe,
                                                            Optional<ValintaperusteetDTO> valintaperusteetDTO,
-                                                           ValintakoeOsallistuminen vanhatOsallistumiset) {
+                                                           Optional<ValintakoeOsallistuminen> vanhatOsallistumiset) {
         return tilaEdellisenValinnanvaiheenTilanMukaan(laskettuTila,
             hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, edellinenValinnanvaihe, valintaperusteetDTO, vanhatOsallistumiset));
+    }
+
+
+    public TilaJaSelite tilaEdellisenValinnanvaiheenMukaan(String hakemusOid,
+                                                           Tila laskettuTila,
+                                                           Valinnanvaihe edellinenValinnanvaihe) {
+        return tilaEdellisenValinnanvaiheenTilanMukaan(laskettuTila,
+            hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, edellinenValinnanvaihe));
     }
 
     public boolean koeOsallistuminenToisessaKohteessa(String hakukohdeOid, ValintakoeOsallistuminen hakijanOsallistumiset) {
@@ -206,14 +219,14 @@ public class EdellinenValinnanvaiheKasittelija {
     private Optional<TilaJaSelite> kutsuttavaKohdekohtaiseenKokeeseenVaikkaHylattyValisijoittelussa(String hakemusOid,
                                                                                                     Valinnanvaihe edellinenValinnanvaihe,
                                                                                                     Optional<ValintaperusteetDTO> valintaperusteetDTO,
-                                                                                                    ValintakoeOsallistuminen vanhatOsallistumiset) {
+                                                                                                    Optional<ValintakoeOsallistuminen> vanhatOsallistumiset) {
         if (edellinenValinnanvaihe.hylattyValisijoittelussa(hakemusOid) &&
             valintaperusteetDTO.isPresent() &&
-            vanhatOsallistumiset != null &&
+            vanhatOsallistumiset.isPresent() &&
             valintaperusteetDTO.get().getValinnanVaihe() != null &&
-            koeOsallistuminenToisessaKohteessa(valintaperusteetDTO.get().getHakukohdeOid(), vanhatOsallistumiset) &&
+            koeOsallistuminenToisessaKohteessa(valintaperusteetDTO.get().getHakukohdeOid(), vanhatOsallistumiset.get()) &&
             VALINTAKOE.equals(valintaperusteetDTO.get().getValinnanVaihe().getValinnanVaiheTyyppi())) {
-            Sets.SetView<String> talleKohteelleSpesifienKokeidenTunnisteet = paatteleKoetunnisteetJotkaOnVainTallaHakukohteella(valintaperusteetDTO.get(), vanhatOsallistumiset);
+            Sets.SetView<String> talleKohteelleSpesifienKokeidenTunnisteet = paatteleKoetunnisteetJotkaOnVainTallaHakukohteella(valintaperusteetDTO.get(), vanhatOsallistumiset.get());
             if (LOG.isDebugEnabled()) {
                 LOG.debug("talleKohteelleSpesifienKokeidenTunnisteet == " + talleKohteelleSpesifienKokeidenTunnisteet);
             }
