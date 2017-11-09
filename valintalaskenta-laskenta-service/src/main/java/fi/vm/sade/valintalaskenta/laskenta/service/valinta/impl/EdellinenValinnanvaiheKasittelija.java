@@ -62,7 +62,7 @@ public class EdellinenValinnanvaiheKasittelija {
             return new TilaJaSelite(HYVAKSYTTAVISSA, new HashMap<>());
         }
 
-        Optional<TilaJaSelite> hyvaksyttavaKohdekohtaiseenKokeenVuoksi = onkoHyvaksyttavissaKohdekohtaiseenValintakokeeseenKutsumiseksiVaikkaHylattyvalisijoittelussa(
+        Optional<TilaJaSelite> hyvaksyttavaKohdekohtaiseenKokeenVuoksi = kutsuttavaKohdekohtaiseenKokeeseenVaikkaHylattyValisijoittelussa(
             hakemusOid, edellinenValinnanvaihe, valintaperusteetDTO, vanhatOsallistumiset);
         if (hyvaksyttavaKohdekohtaiseenKokeenVuoksi.isPresent()) {
             return hyvaksyttavaKohdekohtaiseenKokeenVuoksi.get();
@@ -203,10 +203,10 @@ public class EdellinenValinnanvaiheKasittelija {
                 && k.getOsallistuminenTulos().getOsallistuminen().equals(OSALLISTUU));
     }
 
-    private Optional<TilaJaSelite> onkoHyvaksyttavissaKohdekohtaiseenValintakokeeseenKutsumiseksiVaikkaHylattyvalisijoittelussa(String hakemusOid,
-                                                                                                                                Valinnanvaihe edellinenValinnanvaihe,
-                                                                                                                                Optional<ValintaperusteetDTO> valintaperusteetDTO,
-                                                                                                                                ValintakoeOsallistuminen vanhatOsallistumiset) {
+    private Optional<TilaJaSelite> kutsuttavaKohdekohtaiseenKokeeseenVaikkaHylattyValisijoittelussa(String hakemusOid,
+                                                                                                    Valinnanvaihe edellinenValinnanvaihe,
+                                                                                                    Optional<ValintaperusteetDTO> valintaperusteetDTO,
+                                                                                                    ValintakoeOsallistuminen vanhatOsallistumiset) {
         if (edellinenValinnanvaihe.hylattyValisijoittelussa(hakemusOid) &&
             valintaperusteetDTO.isPresent() &&
             vanhatOsallistumiset != null &&
