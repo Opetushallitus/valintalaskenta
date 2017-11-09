@@ -10,12 +10,10 @@ import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 import fi.vm.sade.service.valintaperusteet.laskenta.Lukuarvofunktio;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.FunktioTulos;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Laskentatulos;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.SyotettyArvo;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hyvaksyttavissatila;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
@@ -70,15 +68,15 @@ public class HakemuslaskinServiceTest {
         final boolean harkinnanvaraisuus = false;
         final int hakutoiveprioriteetti = 1;
 
-        Map<String, JonosijaJaSyotetytArvot> jonosijat = new HashMap<String, JonosijaJaSyotetytArvot>();
+        Map<String, JonosijaJaSyotetytArvot> jonosijat = new HashMap<>();
 
         HakemusWrapper hakemus = new HakemusWrapper();
         hakemus.setHakutoiveprioriteetti(hakutoiveprioriteetti);
         hakemus.setHakemusDTO(TestDataUtil.luoHakemus("hakuOid", hakemusOid, hakijaOid, hakukohteet));
         hakemus.setHarkinnanvaraisuus(harkinnanvaraisuus);
-        hakemus.setLaskentahakemus(new Hakemus(hakemusOid, new HashMap<> (), new HashMap<String, String>(), new HashMap<>()));
+        hakemus.setLaskentahakemus(new Hakemus(hakemusOid, new HashMap<> (), new HashMap<>(), new HashMap<>()));
 
-        final Map<String, String> edellinenValinnanvaiheTilaSelite = new HashMap<String, String>();
+        final Map<String, String> edellinenValinnanvaiheTilaSelite = new HashMap<>();
         edellinenValinnanvaiheTilaSelite.put("FI", "selite");
         TilaJaSelite tilaEdellisenVaiheenMukaan = new TilaJaSelite(
                 JarjestyskriteerituloksenTila.HYLATTY,
@@ -86,10 +84,10 @@ public class HakemuslaskinServiceTest {
 
         final Tila laskettuTila = new Hyvaksyttavissatila();
         final BigDecimal jarjestyskriteeriarvo = new BigDecimal("100.0");
-        Laskentatulos<BigDecimal> tulos = new Laskentatulos<BigDecimal>(
-                laskettuTila, jarjestyskriteeriarvo, "",
-                new HashMap<String, SyotettyArvo>(),
-                new HashMap<String, FunktioTulos>());
+        Laskentatulos<BigDecimal> tulos = new Laskentatulos<>(
+            laskettuTila, jarjestyskriteeriarvo, "",
+            new HashMap<>(),
+            new HashMap<>());
         when(
                 laskentaServiceMock.suoritaValintalaskenta(
                         eq(laskettavaHakukohde), any(Hakemus.class),
@@ -102,7 +100,7 @@ public class HakemuslaskinServiceTest {
                 .thenReturn(tilaEdellisenVaiheenMukaan);
 
         hakemuslaskinService.suoritaLaskentaHakemukselle(laskettavaHakukohde,
-                hakemus, new ArrayList<Hakemus>(), mock(Lukuarvofunktio.class),
+                hakemus, new ArrayList<>(), mock(Lukuarvofunktio.class),
                 1, new Valinnanvaihe(), jonosijat, "jkNimi", 1, new ValintakoeOsallistuminen());
 
         verify(jarjestyskriteerihistoriaDAOMock, times(1)).create(any(Jarjestyskriteerihistoria.class));
