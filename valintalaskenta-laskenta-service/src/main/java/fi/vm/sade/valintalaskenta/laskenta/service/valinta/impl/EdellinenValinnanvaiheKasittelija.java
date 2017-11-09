@@ -60,24 +60,14 @@ public class EdellinenValinnanvaiheKasittelija {
             return new TilaJaSelite(HYVAKSYTTAVISSA, new HashMap<>());
         }
 
+        Optional<TilaJaSelite> hyvaksyttavaKohdekohtaiseenKokeenVuoksi = onkoHyvaksyttavissaKohdekohtaiseenValintakokeeseenKutsumiseksiVaikkaHylattyvalisijoittelussa(
+            hakemusOid, edellinenValinnanvaihe, valintaperusteetDTO, vanhatOsallistumiset);
+        if (hyvaksyttavaKohdekohtaiseenKokeenVuoksi.isPresent()) {
+            return hyvaksyttavaKohdekohtaiseenKokeenVuoksi.get();
+        }
+
         List<TilaJaSelite> tilat = new ArrayList<>();
         for (final Valintatapajono jono : edellinenValinnanvaihe.getValintatapajonot()) {
-            // Hakemuksen pitäisi osallistua hakukohdekohtaiseen valintakokeeseen vaikka se olisi
-            // välisijoittelussa hylätty edellisessä vaiheessa.
-            if (edellinenValinnanvaihe.hylattyValisijoittelussa(hakemusOid) &&
-                valintaperusteetDTO.isPresent() &&
-                vanhatOsallistumiset != null &&
-                valintaperusteetDTO.get().getValinnanVaihe() != null &&
-                koeOsallistuminenToisessaKohteessa(valintaperusteetDTO.get().getHakukohdeOid(), vanhatOsallistumiset) &&
-                VALINTAKOE.equals(valintaperusteetDTO.get().getValinnanVaihe().getValinnanVaiheTyyppi())) {
-                Sets.SetView<String> talleKohteelleSpesifienKokeidenTunnisteet = paatteleKoetunnisteetJotkaOnVainTallaHakukohteella(valintaperusteetDTO.get(), vanhatOsallistumiset);
-                if (!talleKohteelleSpesifienKokeidenTunnisteet.isEmpty()) {
-                    return new TilaJaSelite(HYVAKSYTTAVISSA,
-                        suomenkielinenMap("Hakemuksella on kohteeseen seuraavat kokeet, joihin ei osallistuta muissa kohteissa: " +
-                            talleKohteelleSpesifienKokeidenTunnisteet));
-                }
-            }
-
             Jonosija jonosija = getJonosijaForHakemus(hakemusOid, jono.getJonosijat());
 
             TilaJaSelite tilaJonossa;
@@ -205,5 +195,25 @@ public class EdellinenValinnanvaiheKasittelija {
             .flatMap(v -> v.getValintakokeet().stream())
             .anyMatch(k -> kohteenValintakokeet.contains(k.getValintakoeTunniste())
                 && k.getOsallistuminenTulos().getOsallistuminen().equals(OSALLISTUU));
+    }
+
+    private Optional<TilaJaSelite> onkoHyvaksyttavissaKohdekohtaiseenValintakokeeseenKutsumiseksiVaikkaHylattyvalisijoittelussa(String hakemusOid,
+                                                                                                                                Valinnanvaihe edellinenValinnanvaihe,
+                                                                                                                                Optional<ValintaperusteetDTO> valintaperusteetDTO,
+                                                                                                                                ValintakoeOsallistuminen vanhatOsallistumiset) {
+        if (edellinenValinnanvaihe.hylattyValisijoittelussa(hakemusOid) &&
+            valintaperusteetDTO.isPresent() &&
+            vanhatOsallistumiset != null &&
+            valintaperusteetDTO.get().getValinnanVaihe() != null &&
+            koeOsallistuminenToisessaKohteessa(valintaperusteetDTO.get().getHakukohdeOid(), vanhatOsallistumiset) &&
+            VALINTAKOE.equals(valintaperusteetDTO.get().getValinnanVaihe().getValinnanVaiheTyyppi())) {
+            Sets.SetView<String> talleKohteelleSpesifienKokeidenTunnisteet = paatteleKoetunnisteetJotkaOnVainTallaHakukohteella(valintaperusteetDTO.get(), vanhatOsallistumiset);
+            if (!talleKohteelleSpesifienKokeidenTunnisteet.isEmpty()) {
+                return Optional.of(new TilaJaSelite(HYVAKSYTTAVISSA,
+                    suomenkielinenMap("Hakemuksella on kohteeseen seuraavat kokeet, joihin ei osallistuta muissa kohteissa: " +
+                        talleKohteelleSpesifienKokeidenTunnisteet)));
+            }
+        }
+        return Optional.empty();
     }
 }
