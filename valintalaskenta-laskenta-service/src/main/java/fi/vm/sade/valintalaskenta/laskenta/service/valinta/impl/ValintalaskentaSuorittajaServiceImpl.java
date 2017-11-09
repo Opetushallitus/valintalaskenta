@@ -41,7 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -325,7 +325,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     }
 
     private void jarjestaValinnanVaiheenJarjestysluvunMukaan(List<ValintaperusteetDTO> valintaperusteet) {
-        Collections.sort(valintaperusteet, (o1, o2) -> o1.getValinnanVaihe().getValinnanVaiheJarjestysluku() - o2.getValinnanVaihe().getValinnanVaiheJarjestysluku());
+        valintaperusteet.sort(Comparator.comparingInt(o -> o.getValinnanVaihe().getValinnanVaiheJarjestysluku()));
     }
 
     private Map<String, String> muodostaHakukohteenValintaperusteetMap(List<HakukohteenValintaperusteDTO> hakukohteenValintaperuste) {
@@ -412,7 +412,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     }
 
     private Hakijaryhma haeTaiLuoHakijaryhma(ValintaperusteetHakijaryhmaDTO dto) {
-        Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma(dto.getOid()).map(h -> h).orElse(new Hakijaryhma());
+        Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma(dto.getOid()).orElse(new Hakijaryhma());
         hakijaryhma.setHakijaryhmaOid(dto.getOid());
         hakijaryhma.setHakukohdeOid(dto.getHakukohdeOid());
         hakijaryhma.setKaytaKaikki(dto.isKaytaKaikki());
