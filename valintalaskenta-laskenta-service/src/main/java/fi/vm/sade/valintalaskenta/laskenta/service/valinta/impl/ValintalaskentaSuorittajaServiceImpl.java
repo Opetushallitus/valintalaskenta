@@ -52,29 +52,33 @@ import java.util.stream.Collectors;
 public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuorittajaService {
     private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaSuorittajaServiceImpl.class);
 
-    @Autowired
-    private HakemusDTOToHakemusConverter hakemusConverter;
+    private final HakemusDTOToHakemusConverter hakemusConverter;
+    private final ValinnanvaiheDAO valinnanvaiheDAO;
+    private final HakijaryhmaDAO hakijaryhmaDAO;
+    private final JarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAO;
+    private final HakemuslaskinService hakemuslaskinService;
+    private final ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
+    private final ValintalaskentaModelMapper modelMapper;
+    private final EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija;
 
     @Autowired
-    private ValinnanvaiheDAO valinnanvaiheDAO;
-
-    @Autowired
-    private HakijaryhmaDAO hakijaryhmaDAO;
-
-    @Autowired
-    private JarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAO;
-
-    @Autowired
-    private HakemuslaskinService hakemuslaskinService;
-
-    @Autowired
-    private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
-
-    @Autowired
-    private ValintalaskentaModelMapper modelMapper;
-
-    @Autowired
-    private EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija;
+    public ValintalaskentaSuorittajaServiceImpl(HakemusDTOToHakemusConverter hakemusConverter,
+                                                ValinnanvaiheDAO valinnanvaiheDAO,
+                                                HakijaryhmaDAO hakijaryhmaDAO,
+                                                JarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAO,
+                                                HakemuslaskinService hakemuslaskinService,
+                                                ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO,
+                                                ValintalaskentaModelMapper modelMapper,
+                                                EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija) {
+        this.hakemusConverter = hakemusConverter;
+        this.valinnanvaiheDAO = valinnanvaiheDAO;
+        this.hakijaryhmaDAO = hakijaryhmaDAO;
+        this.jarjestyskriteerihistoriaDAO = jarjestyskriteerihistoriaDAO;
+        this.hakemuslaskinService = hakemuslaskinService;
+        this.valintakoeOsallistuminenDAO = valintakoeOsallistuminenDAO;
+        this.modelMapper = modelMapper;
+        this.edellinenValinnanvaiheKasittelija = edellinenValinnanvaiheKasittelija;
+    }
 
     @Override
     public void suoritaLaskenta(List<HakemusDTO> kaikkiHakemukset, List<ValintaperusteetDTO> valintaperusteet, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat, String hakukohdeOid, String uuid, boolean korkeakouluhaku) {
