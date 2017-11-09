@@ -22,7 +22,6 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,21 +64,6 @@ public class EdellinenValinnanvaiheKasittelija {
         for (final Valintatapajono jono : edellinenValinnanvaihe.getValintatapajonot()) {
             // Hakemuksen pitäisi osallistua hakukohdekohtaiseen valintakokeeseen vaikka se olisi
             // välisijoittelussa hylätty edellisessä vaiheessa.
-            if (edellinenValinnanvaihe.hylattyValisijoittelussa(hakemusOid) &&
-                valintaperusteetDTO.isPresent() &&
-                vanhatOsallistumiset != null &&
-                valintaperusteetDTO.get().getValinnanVaihe() != null &&
-                koeOsallistuminenToisessaKohteessa(valintaperusteetDTO.get().getHakukohdeOid(), vanhatOsallistumiset) &&
-                VALINTAKOE.equals(valintaperusteetDTO.get().getValinnanVaihe().getValinnanVaiheTyyppi()) &&
-                LOG.isDebugEnabled()) {
-                    LOG.debug("hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan? *****");
-                    LOG.debug("hakemusOid = " + hakemusOid);
-                    LOG.debug("edellinenValinnanvaihe = " + ToStringBuilder.reflectionToString(edellinenValinnanvaihe));
-                    LOG.debug("valintaperusteetDTO.get().getValinnanVaihe() == " + ToStringBuilder.reflectionToString(valintaperusteetDTO.get().getValinnanVaihe()));
-                    LOG.debug("valintaperusteetDTO.get().getValinnanVaihe().getValinnanVaiheJarjestysluku() = " + valintaperusteetDTO.get().getValinnanVaihe().getValinnanVaiheJarjestysluku());
-                    LOG.debug("edellinenValinnanvaihe.getJarjestysnumero() = " + edellinenValinnanvaihe.getJarjestysnumero());
-                    LOG.debug("/ ***** hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan");
-            }
             if (edellinenValinnanvaihe.hylattyValisijoittelussa(hakemusOid) &&
                 valintaperusteetDTO.isPresent() &&
                 vanhatOsallistumiset != null &&
