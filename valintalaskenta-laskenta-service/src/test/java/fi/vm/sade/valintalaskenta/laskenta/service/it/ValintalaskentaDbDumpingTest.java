@@ -16,6 +16,7 @@ import com.google.gson.JsonSerializer;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import com.mongodb.MongoClientURI;
+import com.mongodb.ServerAddress;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
@@ -74,8 +75,9 @@ public class ValintalaskentaDbDumpingTest {
     @Autowired
     private ValinnanvaiheDAO valinnanvaiheDAO;
 
+    private static MongoDbRule mongoDbRuleHolder = newMongoDbRule().defaultSpringMongoDb("valintalaskentadb");
     @Rule
-    public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("valintalaskentadb");
+    public MongoDbRule mongoDbRule = mongoDbRuleHolder;
 
     private static final String MONGO_SYSTEM_PROPERTY_NAME = "VIRKAILIJAMONGO_URL";
     private static String originalMongoSystemProperty;
@@ -115,7 +117,9 @@ public class ValintalaskentaDbDumpingTest {
         if (StringUtils.isNotBlank(propertyBefore)) {
             originalMongoSystemProperty = propertyBefore;
         }
-        System.setProperty(MONGO_SYSTEM_PROPERTY_NAME, "mongodb://localhost");
+        ServerAddress embeddedMongoAddress = mongoDbRuleHolder.getDatabaseOperation().connectionManager().getAddress();
+        LOG.info("Using embeddedMongoAddress=" + embeddedMongoAddress);
+        System.setProperty(MONGO_SYSTEM_PROPERTY_NAME, "mongodb://" + embeddedMongoAddress.getHost() + ":" + embeddedMongoAddress.getPort());
     }
 
     @AfterClass
