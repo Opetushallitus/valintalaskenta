@@ -214,6 +214,9 @@ public class EdellinenValinnanvaiheKasittelija {
             koeOsallistuminenToisessaKohteessa(valintaperusteetDTO.get().getHakukohdeOid(), vanhatOsallistumiset) &&
             VALINTAKOE.equals(valintaperusteetDTO.get().getValinnanVaihe().getValinnanVaiheTyyppi())) {
             Sets.SetView<String> talleKohteelleSpesifienKokeidenTunnisteet = paatteleKoetunnisteetJotkaOnVainTallaHakukohteella(valintaperusteetDTO.get(), vanhatOsallistumiset);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("talleKohteelleSpesifienKokeidenTunnisteet == " + talleKohteelleSpesifienKokeidenTunnisteet);
+            }
             if (!talleKohteelleSpesifienKokeidenTunnisteet.isEmpty()) {
                 return Optional.of(new TilaJaSelite(HYVAKSYTTAVISSA,
                     suomenkielinenMap("Hakemuksella on kohteeseen seuraavat kokeet, joihin ei osallistuta muissa kohteissa: " +
