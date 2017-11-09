@@ -53,7 +53,9 @@ public class EdellinenValinnanvaiheKasittelija {
      * valintatapajonossa.
      */
     public TilaJaSelite hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(final String hakemusOid,
-                                                                             Valinnanvaihe edellinenValinnanvaihe, Optional<ValintaperusteetDTO> valintaperusteetDTO, ValintakoeOsallistuminen vanhatOsallistumiset) {
+                                                                             Valinnanvaihe edellinenValinnanvaihe,
+                                                                             Optional<ValintaperusteetDTO> valintaperusteetDTO,
+                                                                             ValintakoeOsallistuminen vanhatOsallistumiset) {
         // Jos edellisessä valinnan vaiheessa ei ole yhtään valintatapajonoa, voidaan olettaa, että hakemus
         // on hyväksyttävissä
         if (edellinenValinnanvaihe == null || edellinenValinnanvaihe.getValintatapajonot().isEmpty()) {
@@ -174,7 +176,11 @@ public class EdellinenValinnanvaiheKasittelija {
      * @param valintaperusteetDTO  laskettavan hakukohteen valintaperusteet, jos tiedossa
      * @param vanhatOsallistumiset  @return järjestyskriteerin tila
      */
-    public TilaJaSelite tilaEdellisenValinnanvaiheenMukaan(String hakemusOid, Tila laskettuTila, Valinnanvaihe edellinenValinnanvaihe, Optional<ValintaperusteetDTO> valintaperusteetDTO, ValintakoeOsallistuminen vanhatOsallistumiset) {
+    public TilaJaSelite tilaEdellisenValinnanvaiheenMukaan(String hakemusOid,
+                                                           Tila laskettuTila,
+                                                           Valinnanvaihe edellinenValinnanvaihe,
+                                                           Optional<ValintaperusteetDTO> valintaperusteetDTO,
+                                                           ValintakoeOsallistuminen vanhatOsallistumiset) {
         return tilaEdellisenValinnanvaiheenTilanMukaan(laskettuTila,
             hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(hakemusOid, edellinenValinnanvaihe, valintaperusteetDTO, vanhatOsallistumiset));
     }
