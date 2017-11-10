@@ -53,7 +53,7 @@ public class ValintalaskentaResourceImpl {
         this.erillisSijoitteluResource = erillisSijoitteluResource;
         this.valintatapajonoResource = valintatapajonoResource;
 
-        this.hakukohteetLaskettavina = new ConcurrentHashMap<>();
+        hakukohteetLaskettavina = new ConcurrentHashMap<>();
         this.executorService = Executors.newWorkStealingPool();
     }
 
@@ -61,7 +61,12 @@ public class ValintalaskentaResourceImpl {
     @Produces("text/plain")
     @GET
     public String status(@PathParam("key") String pollKey) throws Exception {
-        return pidaKirjaaMeneillaanOlevista(pollKey, false);
+        try {
+            return pidaKirjaaMeneillaanOlevista(pollKey, false);
+        } catch (Exception e) {
+            LOG.error("Odottamaton virhe : pidaKirjaaMeneillaanOlevista", e);
+            throw e;
+        }
     }
 
     @Path("laske")
@@ -69,20 +74,25 @@ public class ValintalaskentaResourceImpl {
     @Produces("text/plain")
     @POST
     public String laske(Laskentakutsu laskentakutsu) throws Exception {
-        String pollKey = laskentakutsu.getPollKey();
+        try {
+            String pollKey = laskentakutsu.getPollKey();
 
-        String status = pidaKirjaaMeneillaanOlevista(pollKey);
-        if(!status.equals(HakukohteenLaskennanTila.UUSI)) {
-            return status;
-        } else {
-            //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran samalle tunnisteelle vaikka pyyntöjä tulisi useita
-            try {
-                executorService.submit(timeRunnable.apply(laskentakutsu.getUuid(),() -> toteutaLaskenta(laskentakutsu)));
-                return HakukohteenLaskennanTila.UUSI;
-            } catch (Exception e) {
-                LOG.error("Virhe laskennan suorituksessa, ", e);
-                throw e;
+            String status = pidaKirjaaMeneillaanOlevista(pollKey);
+            if(!status.equals(HakukohteenLaskennanTila.UUSI)) {
+                return status;
+            } else {
+                //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran samalle tunnisteelle vaikka pyyntöjä tulisi useita
+                try {
+                    executorService.submit(timeRunnable.apply(laskentakutsu.getUuid(),() -> toteutaLaskenta(laskentakutsu)));
+                    return HakukohteenLaskennanTila.UUSI;
+                } catch (Exception e) {
+                    LOG.error("Virhe laskennan suorituksessa, ", e);
+                    throw e;
+                }
             }
+        } catch (Exception e) {
+            LOG.error("Odottamaton virhe : laske(Laskentakutsu laskentakutsu)", e);
+            throw e;
         }
     }
 
@@ -91,20 +101,25 @@ public class ValintalaskentaResourceImpl {
     @Produces("text/plain")
     @POST
     public String valintakokeet(Laskentakutsu laskentakutsu) throws Exception {
-        String pollKey = laskentakutsu.getPollKey();
+        try {
+            String pollKey = laskentakutsu.getPollKey();
 
-        String status = pidaKirjaaMeneillaanOlevista(pollKey);
-        if(!status.equals(HakukohteenLaskennanTila.UUSI)) {
-            return status;
-        } else {
-            //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran samalle tunnisteelle vaikka pyyntöjä tulisi useita
-            try {
-                executorService.submit(timeRunnable.apply(laskentakutsu.getUuid(),() -> toteutaValintakoeLaskenta(laskentakutsu)));
-                return HakukohteenLaskennanTila.UUSI;
-            } catch (Exception e) {
-                LOG.error("Virhe laskennan suorituksessa, ", e);
-                throw e;
+            String status = pidaKirjaaMeneillaanOlevista(pollKey);
+            if(!status.equals(HakukohteenLaskennanTila.UUSI)) {
+                return status;
+            } else {
+                //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran samalle tunnisteelle vaikka pyyntöjä tulisi useita
+                try {
+                    executorService.submit(timeRunnable.apply(laskentakutsu.getUuid(),() -> toteutaValintakoeLaskenta(laskentakutsu)));
+                    return HakukohteenLaskennanTila.UUSI;
+                } catch (Exception e) {
+                    LOG.error("Virhe laskennan suorituksessa, ", e);
+                    throw e;
+                }
             }
+        } catch (Exception e) {
+            LOG.error("Odottamaton virhe: valintakokeet(Laskentakutsu laskentakutsu)", e);
+            throw e;
         }
     }
 
@@ -113,20 +128,25 @@ public class ValintalaskentaResourceImpl {
     @Produces("text/plain")
     @POST
     public String laskeKaikki(Laskentakutsu laskentakutsu) throws Exception {
-        String pollKey = laskentakutsu.getPollKey();
+        try {
+            String pollKey = laskentakutsu.getPollKey();
 
-        String status = pidaKirjaaMeneillaanOlevista(pollKey);
-        if(!status.equals(HakukohteenLaskennanTila.UUSI)) {
-            return status;
-        } else {
-            //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran samalle tunnisteelle vaikka pyyntöjä tulisi useita
-            try {
-                executorService.submit(timeRunnable.apply(laskentakutsu.getUuid(),() -> toteutaLaskeKaikki(laskentakutsu)));
-                return HakukohteenLaskennanTila.UUSI;
-            } catch (Exception e) {
-                LOG.error("Virhe laskennan suorituksessa, ", e);
-                throw e;
+            String status = pidaKirjaaMeneillaanOlevista(pollKey);
+            if(!status.equals(HakukohteenLaskennanTila.UUSI)) {
+                return status;
+            } else {
+                //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran samalle tunnisteelle vaikka pyyntöjä tulisi useita
+                try {
+                    executorService.submit(timeRunnable.apply(laskentakutsu.getUuid(),() -> toteutaLaskeKaikki(laskentakutsu)));
+                    return HakukohteenLaskennanTila.UUSI;
+                } catch (Exception e) {
+                    LOG.error("Virhe laskennan suorituksessa, ", e);
+                    throw e;
+                }
             }
+        } catch (Exception e) {
+            LOG.error("Odottamaton virhe: laskeKaikki(Laskentakutsu laskentakutsu)", e);
+            throw e;
         }
     }
 
@@ -135,24 +155,29 @@ public class ValintalaskentaResourceImpl {
     @Produces("text/plain")
     @POST
     public String laskeJaSijoittele(Laskentakutsu laskentakutsu) {
-        List<LaskeDTO> lista = laskentakutsu.getLaskeDTOs();
-        String pollKey = laskentakutsu.getPollKey();
-        if(lista == null || lista.isEmpty()) {
-            LOG.error("Laskejasijoittele-rajapinta sai syötteeksi tyhjän listan, joten laskentaa ei voida toteuttaa. lopetetaan.");
-            return HakukohteenLaskennanTila.VIRHE;
-        }
-        String status = pidaKirjaaMeneillaanOlevista(pollKey);
-        if(!status.equals(HakukohteenLaskennanTila.UUSI)) {
-            return status;
-        } else {
-            //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran samalle tunnisteelle vaikka pyyntöjä tulisi useita
-            try {
-                executorService.submit(timeRunnable.apply(laskentakutsu.getUuid(),() -> toteutaLaskeJaSijoittele(laskentakutsu)));
-                return HakukohteenLaskennanTila.UUSI;
-            } catch (Exception e) {
-                LOG.error("Virhe laskennan suorituksessa, ", e);
-                throw e;
+        try {
+            List<LaskeDTO> lista = laskentakutsu.getLaskeDTOs();
+            String pollKey = laskentakutsu.getPollKey();
+            if(lista == null || lista.isEmpty()) {
+                LOG.error("Laskejasijoittele-rajapinta sai syötteeksi tyhjän listan, joten laskentaa ei voida toteuttaa. lopetetaan.");
+                return HakukohteenLaskennanTila.VIRHE;
             }
+            String status = pidaKirjaaMeneillaanOlevista(pollKey);
+            if(!status.equals(HakukohteenLaskennanTila.UUSI)) {
+                return status;
+            } else {
+                //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran samalle tunnisteelle vaikka pyyntöjä tulisi useita
+                try {
+                    executorService.submit(timeRunnable.apply(laskentakutsu.getUuid(),() -> toteutaLaskeJaSijoittele(laskentakutsu)));
+                    return HakukohteenLaskennanTila.UUSI;
+                } catch (Exception e) {
+                    LOG.error("Virhe laskennan suorituksessa, ", e);
+                    throw e;
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Odottamaton virhe: laskeJaSijoittele(Laskentakutsu laskentakutsu) ", e);
+            throw e;
         }
     }
 
