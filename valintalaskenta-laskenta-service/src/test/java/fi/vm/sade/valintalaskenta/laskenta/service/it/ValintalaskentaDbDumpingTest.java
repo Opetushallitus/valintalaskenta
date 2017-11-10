@@ -15,35 +15,37 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
-import com.mongodb.ServerAddress;
 
+import de.flapdoodle.embed.mongo.tests.MongodForTestsFactory;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mongodb.morphia.annotations.Entity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Service;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.inject.Named;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -60,7 +62,6 @@ import java.util.stream.Collectors;
 @RunWith(SpringJUnit4ClassRunner.class)
 @UsingDataSet
 public class ValintalaskentaDbDumpingTest {
-    private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaDbDumpingTest.class);
     protected static final String SPRING_CONFIG_XML = "classpath:fi/vm/sade/valintalaskenta/laskenta/service/it/test-valintalaskentadb-access.xml";
 
     private final Gson gson;
@@ -69,18 +70,12 @@ public class ValintalaskentaDbDumpingTest {
     private ApplicationContext applicationContext;
 
     @Autowired
-    @Named("mongoUri2")
-    private MongoClientURI mongoClientURI;
-
-    @Autowired
     private ValinnanvaiheDAO valinnanvaiheDAO;
 
-    private static MongoDbRule mongoDbRuleHolder = newMongoDbRule().defaultSpringMongoDb("valintalaskentadb");
     @Rule
-    public MongoDbRule mongoDbRule = mongoDbRuleHolder;
+    public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("valintalaskentadb");
 
     private static final String MONGO_SYSTEM_PROPERTY_NAME = "VIRKAILIJAMONGO_URL";
-    private static String originalMongoSystemProperty;
 
     /**
      * The real method used for dumping the data
@@ -111,30 +106,9 @@ public class ValintalaskentaDbDumpingTest {
         gson = new GsonBuilder().registerTypeAdapter(ObjectId.class, objectIdJsonSerializer).create();
     }
 
-    @BeforeClass
-    public static void setMongoSystemPropertyForAccessingTestValintaLaskentaDb() {
-        String propertyBefore = System.getProperty(MONGO_SYSTEM_PROPERTY_NAME);
-        if (StringUtils.isNotBlank(propertyBefore)) {
-            originalMongoSystemProperty = propertyBefore;
-        }
-        ServerAddress embeddedMongoAddress = mongoDbRuleHolder.getDatabaseOperation().connectionManager().getAddress();
-        LOG.info("Using embeddedMongoAddress=" + embeddedMongoAddress);
-        System.setProperty(MONGO_SYSTEM_PROPERTY_NAME, "mongodb://" + embeddedMongoAddress.getHost() + ":" + embeddedMongoAddress.getPort());
-    }
-
-    @AfterClass
-    public static void clearMongoSystemProperty() {
-        if (originalMongoSystemProperty == null) {
-            System.clearProperty(MONGO_SYSTEM_PROPERTY_NAME);
-        } else {
-            System.setProperty(MONGO_SYSTEM_PROPERTY_NAME, originalMongoSystemProperty);
-        }
-    }
-
     @Test
     @UsingDataSet(locations = "voidaanHyvaksya.json", loadStrategy = CLEAN_INSERT)
     public void smokeTest() {
-        LOG.info("Using valintalaskentadb from " + mongoClientURI.getHosts());
         OidsToDump oidsInVoidaanHyvaksyaJson = OidsToDump.withHakuOid("1.2.246.562.29.173465377510")
             .withHakukohdeOids("1.2.246.562.20.51939036631", "1.2.246.562.20.64586301414", "1.2.246.562.20.66128426039",
                 "1.2.246.562.20.66128426039", "1.2.246.562.20.68163578682", "1.2.246.562.20.68508673735",
@@ -196,6 +170,30 @@ public class ValintalaskentaDbDumpingTest {
             });
             vaihe.setValintatapajonot(new ArrayList<>(sailytettavatJonot));
         });
+    }
+
+    @Service
+    public static class SwitchingMongoFactory implements ApplicationContextAware {
+        private ApplicationContext applicationContext;
+        private Optional<MongodForTestsFactory> embeddedMongoFactory;
+
+        public Mongo newMongo() throws UnknownHostException {
+            if (StringUtils.isNotBlank(System.getProperty(MONGO_SYSTEM_PROPERTY_NAME))) {
+                embeddedMongoFactory = Optional.empty();
+                return new MongoClient(new MongoClientURI(System.getProperty(MONGO_SYSTEM_PROPERTY_NAME)));
+            }
+            embeddedMongoFactory = Optional.of(applicationContext.getBean(MongodForTestsFactory.class));
+            return embeddedMongoFactory.get().newMongo();
+        }
+
+        private void shutdown() {
+            embeddedMongoFactory.ifPresent(MongodForTestsFactory::shutdown);
+        }
+
+        @Override
+        public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+            this.applicationContext = applicationContext;
+        }
     }
 
     public class DumpContents {
