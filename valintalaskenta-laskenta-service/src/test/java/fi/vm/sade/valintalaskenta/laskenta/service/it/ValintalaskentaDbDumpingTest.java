@@ -72,6 +72,10 @@ public class ValintalaskentaDbDumpingTest {
     @Autowired
     private ValinnanvaiheDAO valinnanvaiheDAO;
 
+    /**
+     * For some reason, the presence of this rule creates "INFO  at org.mongodb.driver.cluster(SLF4JLogger.java:76) Exception in monitor thread while connecting to server localhost:27017"
+     * If it bothers you, you can remove the rule when running the main method.
+     */
     @Rule
     public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("valintalaskentadb");
 
