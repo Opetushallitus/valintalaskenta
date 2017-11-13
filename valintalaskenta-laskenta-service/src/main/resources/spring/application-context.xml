@@ -103,6 +103,7 @@
 
     <bean id="jaxrsConfig" class="fi.vm.sade.valintalaskenta.laskenta.resource.JaxrsConfiguration" />
     <bean id="cors-filter" class="fi.vm.sade.valintalaskenta.laskenta.resource.filter.CorsResponseFilter"/>
+    <bean id="cxfExceptionLogger" class="fi.vm.sade.valinta.http.CxfExceptionLogger"/>
 
     <jaxrs:server id="valintalaskennanResurssit">
         <jaxrs:serviceBeans>
@@ -121,6 +122,7 @@
         <jaxrs:providers>
             <ref bean="jsonProvider" />
             <ref bean="cors-filter" />
+            <ref bean="cxfExceptionLogger" />
         </jaxrs:providers>
         <jaxrs:features>
             <ref bean="swagger2Feature" />

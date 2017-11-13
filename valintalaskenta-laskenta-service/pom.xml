@@ -97,6 +97,11 @@
 			<artifactId>valintalaskenta-tulos-service</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>fi.vm.sade.valintaperusteet</groupId>
+			<artifactId>http</artifactId>
+			<version>${project.version}</version>
+		</dependency>
         <dependency>
             <groupId>fi.vm.sade.sijoittelu</groupId>
             <artifactId>sijoittelu-tulos-api</artifactId>
