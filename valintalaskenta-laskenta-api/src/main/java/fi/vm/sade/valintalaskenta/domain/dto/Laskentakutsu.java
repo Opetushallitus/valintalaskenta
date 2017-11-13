@@ -3,11 +3,17 @@ package fi.vm.sade.valintalaskenta.domain.dto;
 import java.util.List;
 
 public class Laskentakutsu {
-    private final boolean isValintaryhmalaskenta;
-    private final LaskeDTO laskeDTO; //Tavalliset laskennat
-    private final List<LaskeDTO> laskeDTOs; //Valintaryhmälaskennat
-    private final String uuid;
-    private final String pollKey;
+    private boolean isValintaryhmalaskenta;
+    private LaskeDTO laskeDTO; //Tavalliset laskennat
+    private List<LaskeDTO> laskeDTOs; //Valintaryhmälaskennat
+    private String uuid;
+    private String pollKey;
+
+    /**
+     * Empty constructor needed for Jackson deserialization
+     */
+    public Laskentakutsu() {
+    }
 
     public Laskentakutsu(LaskeDTO laskeDTO) {
         this.isValintaryhmalaskenta = false;
