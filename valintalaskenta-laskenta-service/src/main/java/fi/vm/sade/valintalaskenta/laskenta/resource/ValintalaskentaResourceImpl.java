@@ -542,6 +542,10 @@ public class ValintalaskentaResourceImpl {
         long start = System.currentTimeMillis();
         try {
             r.run();
+        } catch (Throwable t) {
+            long end = System.currentTimeMillis();
+            LOG.error(String.format("(Uuid=%s) (Kesto %ss) Odottamaton virhe.", uuid, millisToString(end -start)), t);
+            throw t;
         } finally {
             long end = System.currentTimeMillis();
             LOG.info(String.format("(Uuid=%s) (Kesto %ss) Laskenta valmis!", uuid, millisToString(end - start)));
