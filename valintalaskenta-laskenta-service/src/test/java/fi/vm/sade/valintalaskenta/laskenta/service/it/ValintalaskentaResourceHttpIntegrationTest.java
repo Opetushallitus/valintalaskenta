@@ -61,7 +61,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
             anyListOf(ValintaperusteetHakijaryhmaDTO.class), Matchers.eq(hakukohdeOid), any(String.class), anyBoolean()))
             .thenThrow(new RuntimeException(getClass().getSimpleName() + "-failure"));
 
-        Laskentakutsu laskentakutsu = createLaskentakutsu("failintUuid");
+        Laskentakutsu laskentakutsu = createLaskentakutsu("failingUuid");
         assertEquals(HakukohteenLaskennanTila.UUSI, createHttpClient("/valintalaskenta/laskekaikki").post(laskentakutsu, String.class));
 
         assertEquals(HakukohteenLaskennanTila.VIRHE, readStatusOf(laskentakutsu));
