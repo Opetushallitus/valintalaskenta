@@ -32,6 +32,8 @@ import java.util.Collections;
 public class ValintalaskentaResourceHttpIntegrationTest {
     private final String hakukohdeOid = "hakukohdeOid";
     private ApplicationContext applicationContext;
+    private boolean mayFinish;
+    private boolean finished;
 
     @Before
     public void setUp() {
@@ -63,6 +65,37 @@ public class ValintalaskentaResourceHttpIntegrationTest {
         assertEquals(HakukohteenLaskennanTila.UUSI, createHttpClient("/valintalaskenta/laskekaikki").post(laskentakutsu, String.class));
 
         assertEquals(HakukohteenLaskennanTila.VIRHE, readStatusOf(laskentakutsu));
+    }
+
+
+    @Test
+    public void unfinishedLaskentaIsWaitedFor() throws Exception {
+        when(getBean(ValintalaskentaService.class).laskeKaikki(anyListOf(HakemusDTO.class), anyListOf(ValintaperusteetDTO.class),
+            anyListOf(ValintaperusteetHakijaryhmaDTO.class), Matchers.eq(hakukohdeOid), any(String.class), anyBoolean()))
+            .thenAnswer(invocation -> {
+                waitWhileMayFinishIsNotSet();
+                return "Onnistui vähän myöhemmin!";
+            });
+
+        Laskentakutsu laskentakutsu = createLaskentakutsu("failingUuid");
+        assertEquals(HakukohteenLaskennanTila.UUSI, createHttpClient("/valintalaskenta/laskekaikki").post(laskentakutsu, String.class));
+
+        assertEquals(HakukohteenLaskennanTila.KESKEN, readStatusOf(laskentakutsu));
+        mayFinish = true;
+        waitWhileNotFinished();
+        assertEquals(HakukohteenLaskennanTila.VALMIS, readStatusOf(laskentakutsu));
+    }
+
+    private void waitWhileMayFinishIsNotSet() throws InterruptedException {
+        while (!mayFinish) {
+            Thread.sleep(10);
+        }
+        finished = true;
+    }
+    private void waitWhileNotFinished() throws InterruptedException {
+        while (!finished) {
+            Thread.sleep(10);
+        }
     }
 
     private Laskentakutsu createLaskentakutsu(String uuid) {
