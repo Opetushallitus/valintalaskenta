@@ -46,9 +46,9 @@ public class ValintalaskentaResourceHttpIntegrationTest {
         when(getBean(ValintalaskentaService.class).laskeKaikki(anyListOf(HakemusDTO.class), anyListOf(ValintaperusteetDTO.class),
             anyListOf(ValintaperusteetHakijaryhmaDTO.class), Matchers.eq(hakukohdeOid), any(String.class), anyBoolean())).thenReturn("Onnistui!");
 
-        LaskeDTO laskeDto = new LaskeDTO("successfulUuid" + System.currentTimeMillis(), false, false, "hakukohdeOid", Collections.emptyList(), Collections.emptyList());
-        Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDto);
-        assertEquals(HakukohteenLaskennanTila.UUSI, createHttpClient("/valintalaskenta/laskekaikki").post(laskentakutsu, String.class));
+        Laskentakutsu laskentakutsu = createLaskentakutsu("successfulUuid");
+        assertEquals(HakukohteenLaskennanTila.UUSI,
+            createHttpClient("/valintalaskenta/laskekaikki").post(laskentakutsu, String.class));
 
         assertEquals(HakukohteenLaskennanTila.VALMIS, readStatusOf(laskentakutsu));
     }
@@ -61,11 +61,14 @@ public class ValintalaskentaResourceHttpIntegrationTest {
             anyListOf(ValintaperusteetHakijaryhmaDTO.class), Matchers.eq(hakukohdeOid), any(String.class), anyBoolean()))
             .thenThrow(new RuntimeException(getClass().getSimpleName() + "-failure"));
 
-        LaskeDTO laskeDto = new LaskeDTO("failingUuid" + System.currentTimeMillis(), false, false, hakukohdeOid, Collections.emptyList(), Collections.emptyList());
-        Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDto);
+        Laskentakutsu laskentakutsu = createLaskentakutsu("failintUuid");
         assertEquals(HakukohteenLaskennanTila.UUSI, createHttpClient("/valintalaskenta/laskekaikki").post(laskentakutsu, String.class));
 
         assertEquals(HakukohteenLaskennanTila.VIRHE, readStatusOf(laskentakutsu));
+    }
+
+    private Laskentakutsu createLaskentakutsu(String uuid) {
+        return new Laskentakutsu(new LaskeDTO(uuid + System.currentTimeMillis(), false, false, "hakukohdeOid", Collections.emptyList(), Collections.emptyList()));
     }
 
     private String readStatusOf(Laskentakutsu laskentakutsu) {
