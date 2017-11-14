@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.laskenta.resource;
 
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetValinnanVaiheDTO;
+import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoJarjestyskriteereillaDTO;
 import fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi;
 import fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO;
 import fi.vm.sade.sijoittelu.tulos.dto.HakukohdeDTO;
@@ -28,7 +29,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -192,7 +193,7 @@ public class ValintalaskentaResourceImpl {
     }
 
     private void erillisSijoittele(LaskeDTO laskeDTO, ValintaperusteetDTO valintaperusteetDTO) {
-        List<String> jonot = valintaperusteetDTO.getValinnanVaihe().getValintatapajono().stream().map(j -> j.getOid()).collect(Collectors.toList());
+        List<String> jonot = valintaperusteetDTO.getValinnanVaihe().getValintatapajono().stream().map(ValintatapajonoJarjestyskriteereillaDTO::getOid).collect(Collectors.toList());
         Map<String, List<String>> kohteet = new HashMap<>();
         kohteet.put(valintaperusteetDTO.getHakukohdeOid(), jonot);
         erillissijoitteleJonot(laskeDTO, kohteet);
@@ -306,7 +307,7 @@ public class ValintalaskentaResourceImpl {
         String pollkey = laskentakutsu.getPollKey();
 
         LOG.info(String.format("(Uuid=%s) Aloitetaan laskenta hakukohteessa %s", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid()));
-        ValisijoitteluKasittelija.ValisijoiteltavatJonot valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Arrays.asList(laskeDTO));
+        ValisijoitteluKasittelija.ValisijoiteltavatJonot valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Collections.singletonList(laskeDTO));
         if (!valisijoiteltavatJonot.valinnanvaiheet.isEmpty()) {
             valisijoiteltavatJonot = new ValisijoitteluKasittelija.ValisijoiteltavatJonot(valisijoiteltavatJonot.valinnanvaiheet, haeKopiotValintaperusteista(valisijoiteltavatJonot.jonot.get(laskeDTO.getHakukohdeOid())));
         }
@@ -356,7 +357,7 @@ public class ValintalaskentaResourceImpl {
         String pollkey = laskentakutsu.getPollKey();
 
         LOG.info(String.format("(Uuid=%s) Aloitetaan laskenta hakukohteessa %s", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid()));
-        ValisijoitteluKasittelija.ValisijoiteltavatJonot valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Arrays.asList(laskeDTO));
+        ValisijoitteluKasittelija.ValisijoiteltavatJonot valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Collections.singletonList(laskeDTO));
         try {
             if (valisijoiteltavatJonot.valinnanvaiheet.isEmpty()) {
                 if (laskeDTO.isErillishaku()) {
@@ -373,15 +374,13 @@ public class ValintalaskentaResourceImpl {
                 if (laskeDTO.isErillishaku()) {
                     laskeDTO.getValintaperuste().stream()
                         .filter(v -> v.getValinnanVaihe().getValinnanVaiheJarjestysluku() == v.getViimeinenValinnanvaihe())
-                        .forEach(v -> {
-                            erillisSijoittele(laskeDTO, v);
-                        });
+                        .forEach(v -> erillisSijoittele(laskeDTO, v));
                 }
             } else {
                 Map<Integer, List<LaskeDTO>> map = new TreeMap<>();
                 laskeDTO.getValintaperuste().forEach(v -> {
                     List<LaskeDTO> dtos = map.getOrDefault(v.getValinnanVaihe().getValinnanVaiheJarjestysluku(), new ArrayList<>());
-                    dtos.add(new LaskeDTO(laskeDTO.getUuid(), laskeDTO.isKorkeakouluhaku(), laskeDTO.isErillishaku(), laskeDTO.getHakukohdeOid(), laskeDTO.getHakemus(), Arrays.asList(v), laskeDTO.getHakijaryhmat()));
+                    dtos.add(new LaskeDTO(laskeDTO.getUuid(), laskeDTO.isKorkeakouluhaku(), laskeDTO.isErillishaku(), laskeDTO.getHakukohdeOid(), laskeDTO.getHakemus(), Collections.singletonList(v), laskeDTO.getHakijaryhmat()));
                     map.put(v.getValinnanVaihe().getValinnanVaiheJarjestysluku(), dtos);
                 });
 
@@ -434,13 +433,12 @@ public class ValintalaskentaResourceImpl {
                     laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid(), laskeDTO.getUuid(), laskeDTO.isKorkeakouluhaku()));
             } else {
                 Map<Integer, List<LaskeDTO>> laskettavatHakukohteetVaiheittain = new TreeMap<>();
-                lista.forEach(laskeDTO -> {
+                lista.forEach(laskeDTO ->
                     laskeDTO.getValintaperuste().forEach(v -> {
                         List<LaskeDTO> dtos = laskettavatHakukohteetVaiheittain.getOrDefault(v.getValinnanVaihe().getValinnanVaiheJarjestysluku(), new ArrayList<>());
-                        dtos.add(new LaskeDTO(laskeDTO.getUuid(), laskeDTO.isKorkeakouluhaku(), laskeDTO.isErillishaku(), laskeDTO.getHakukohdeOid(), laskeDTO.getHakemus(), Arrays.asList(v), laskeDTO.getHakijaryhmat()));
+                        dtos.add(new LaskeDTO(laskeDTO.getUuid(), laskeDTO.isKorkeakouluhaku(), laskeDTO.isErillishaku(), laskeDTO.getHakukohdeOid(), laskeDTO.getHakemus(), Collections.singletonList(v), laskeDTO.getHakijaryhmat()));
                         laskettavatHakukohteetVaiheittain.put(v.getValinnanVaihe().getValinnanVaiheJarjestysluku(), dtos);
-                    });
-                });
+                    }));
                 final int valinnanVaiheidenMaara = laskettavatHakukohteetVaiheittain.size();
                 ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset = new ValintakoelaskennanKumulatiivisetTulokset();
                 laskettavatHakukohteetVaiheittain.keySet().stream().forEachOrdered(vaiheenJarjestysNumero -> {
@@ -539,16 +537,14 @@ public class ValintalaskentaResourceImpl {
         });
     }
 
-    private BiFunction<String, Runnable, Runnable> timeRunnable = (uuid, r) -> {
-        return () -> {
-            long start = System.currentTimeMillis();
-            try {
-                r.run();
-            } finally {
-                long end = System.currentTimeMillis();
-                LOG.info(String.format("(Uuid=%s) (Kesto %ss) Laskenta valmis!", uuid, millisToString(end - start)));
-            }
-        };
+    private BiFunction<String, Runnable, Runnable> timeRunnable = (uuid, r) -> () -> {
+        long start = System.currentTimeMillis();
+        try {
+            r.run();
+        } finally {
+            long end = System.currentTimeMillis();
+            LOG.info(String.format("(Uuid=%s) (Kesto %ss) Laskenta valmis!", uuid, millisToString(end - start)));
+        }
     };
 
     private static String millisToString(long millis) {
