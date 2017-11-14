@@ -51,7 +51,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
         assertEquals(HakukohteenLaskennanTila.UUSI,
             createHttpClient("/valintalaskenta/laskekaikki").post(laskentakutsu, String.class));
 
-        assertEquals(HakukohteenLaskennanTila.VALMIS, readStatusOf(laskentakutsu));
+        assertEquals(HakukohteenLaskennanTila.VALMIS, waitForEventualStatus(laskentakutsu, HakukohteenLaskennanTila.VALMIS));
     }
 
     @Test
@@ -64,7 +64,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
         Laskentakutsu laskentakutsu = createLaskentakutsu("failingUuid");
         assertEquals(HakukohteenLaskennanTila.UUSI, createHttpClient("/valintalaskenta/laskekaikki").post(laskentakutsu, String.class));
 
-        assertEquals(HakukohteenLaskennanTila.VIRHE, readStatusOf(laskentakutsu));
+        assertEquals(HakukohteenLaskennanTila.VIRHE, waitForEventualStatus(laskentakutsu, HakukohteenLaskennanTila.VIRHE));
     }
 
     @Test
@@ -80,10 +80,10 @@ public class ValintalaskentaResourceHttpIntegrationTest {
         Laskentakutsu laskentakutsu = createLaskentakutsu("slowUuid");
         assertEquals(HakukohteenLaskennanTila.UUSI, createHttpClient("/valintalaskenta/laskekaikki").post(laskentakutsu, String.class));
 
-        assertEquals(HakukohteenLaskennanTila.KESKEN, readStatusOf(laskentakutsu));
+        assertEquals(HakukohteenLaskennanTila.KESKEN, waitForEventualStatus(laskentakutsu, HakukohteenLaskennanTila.KESKEN));
         mayFinish = true;
         waitWhileNotFinished();
-        assertEquals(HakukohteenLaskennanTila.VALMIS, readStatusOf(laskentakutsu));
+        assertEquals(HakukohteenLaskennanTila.VALMIS, waitForEventualStatus(laskentakutsu, HakukohteenLaskennanTila.VALMIS));
     }
 
     @Test
@@ -92,7 +92,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
             .thenThrow(new RuntimeException(ValisijoitteluKasittelija.class.getSimpleName() + " call failing in " + getClass().getSimpleName()));
         Laskentakutsu laskentakutsu = createLaskentakutsu("crashingUuid");
         assertEquals(HakukohteenLaskennanTila.UUSI, createHttpClient("/valintalaskenta/laskekaikki").post(laskentakutsu, String.class));
-        assertEquals(HakukohteenLaskennanTila.VIRHE, readStatusOf(laskentakutsu));
+        assertEquals(HakukohteenLaskennanTila.VIRHE, waitForEventualStatus(laskentakutsu, HakukohteenLaskennanTila.VIRHE));
     }
 
     private void waitWhileMayFinishIsNotSet() throws InterruptedException {
@@ -116,7 +116,18 @@ public class ValintalaskentaResourceHttpIntegrationTest {
         return new Laskentakutsu(new LaskeDTO(uuid + System.currentTimeMillis(), false, false, "hakukohdeOid", Collections.emptyList(), Collections.emptyList()));
     }
 
-    private String readStatusOf(Laskentakutsu laskentakutsu) {
+    private String waitForEventualStatus(Laskentakutsu laskentakutsu, String expectedStatus) throws InterruptedException {
+        int maxMillisToWait = 200;
+        long startTime = System.currentTimeMillis();
+        String statusFromServer;
+        do {
+            statusFromServer = fetchStatus(laskentakutsu);
+            Thread.sleep(5);
+        } while (!expectedStatus.equals(statusFromServer) && System.currentTimeMillis() < startTime + maxMillisToWait);
+        return statusFromServer;
+    }
+
+    private String fetchStatus(Laskentakutsu laskentakutsu) {
         return createHttpClient("/valintalaskenta/status/" + laskentakutsu.getPollKey()).get(String.class);
     }
 
