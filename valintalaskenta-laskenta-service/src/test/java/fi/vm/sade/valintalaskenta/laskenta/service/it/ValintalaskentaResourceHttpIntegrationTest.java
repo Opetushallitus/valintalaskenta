@@ -34,15 +34,17 @@ public class ValintalaskentaResourceHttpIntegrationTest {
     private ApplicationContext applicationContext;
 
     @Before
-    public void startServer() {
+    public void setUp() {
         ValintaLaskentaLaskentaJetty.startShared();
         applicationContext = ValintaLaskentaLaskentaJetty.ApplicationContextGetter.applicationContext;
+        when(getBean(ValisijoitteluKasittelija.class).valisijoiteltavatJonot(anyListOf(LaskeDTO.class)))
+            .thenReturn(new ValisijoiteltavatJonot(Collections.emptySet(), Collections.emptyMap()));
+        when(getBean(ValisijoitteluKasittelija.class).valisijoiteltavatJonot(anyListOf(LaskeDTO.class)))
+            .thenReturn(new ValisijoiteltavatJonot(Collections.emptySet(), Collections.emptyMap()));
     }
 
     @Test
     public void successfulLaskentaBecomesReady() throws Exception {
-        when(getBean(ValisijoitteluKasittelija.class).valisijoiteltavatJonot(anyListOf(LaskeDTO.class)))
-            .thenReturn(new ValisijoiteltavatJonot(Collections.emptySet(), Collections.emptyMap()));
         when(getBean(ValintalaskentaService.class).laskeKaikki(anyListOf(HakemusDTO.class), anyListOf(ValintaperusteetDTO.class),
             anyListOf(ValintaperusteetHakijaryhmaDTO.class), Matchers.eq(hakukohdeOid), any(String.class), anyBoolean())).thenReturn("Onnistui!");
 
@@ -55,8 +57,6 @@ public class ValintalaskentaResourceHttpIntegrationTest {
 
     @Test
     public void failingLaskentaIsRecognised() throws Exception {
-        when(getBean(ValisijoitteluKasittelija.class).valisijoiteltavatJonot(anyListOf(LaskeDTO.class)))
-            .thenReturn(new ValisijoiteltavatJonot(Collections.emptySet(), Collections.emptyMap()));
         when(getBean(ValintalaskentaService.class).laskeKaikki(anyListOf(HakemusDTO.class), anyListOf(ValintaperusteetDTO.class),
             anyListOf(ValintaperusteetHakijaryhmaDTO.class), Matchers.eq(hakukohdeOid), any(String.class), anyBoolean()))
             .thenThrow(new RuntimeException(getClass().getSimpleName() + "-failure"));
