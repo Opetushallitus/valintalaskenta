@@ -272,7 +272,7 @@ public class ValintalaskentaResourceImpl {
 
     private void paivitaKohteenLaskennanTila(String pollKey, String tila) {
         if (hakukohteetLaskettavina.containsKey(pollKey)) {
-            if (hakukohteetLaskettavina.get(pollKey).equals(HakukohteenLaskennanTila.KESKEN)) {
+            if (!hakukohteetLaskettavina.get(pollKey).equals(HakukohteenLaskennanTila.KESKEN)) {
                 LOG.error("Yritettiin päivittää sellaisen laskennan tilaa, joka ei ollut tilassa KESKEN. Ei päivitetty. pollKey: {}, tila nyt: ", pollKey, tila);
                 return;
             }

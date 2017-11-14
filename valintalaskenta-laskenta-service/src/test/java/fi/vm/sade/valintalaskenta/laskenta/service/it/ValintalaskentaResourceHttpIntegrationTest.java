@@ -45,7 +45,6 @@ public class ValintalaskentaResourceHttpIntegrationTest {
     }
 
     @Test
-    @Ignore
     public void successfulLaskentaBecomesReady() throws Exception {
         when(getBean(ValisijoitteluKasittelija.class).valisijoiteltavatJonot(anyListOf(LaskeDTO.class)))
             .thenReturn(new ValisijoiteltavatJonot(Collections.emptySet(), Collections.emptyMap()));
