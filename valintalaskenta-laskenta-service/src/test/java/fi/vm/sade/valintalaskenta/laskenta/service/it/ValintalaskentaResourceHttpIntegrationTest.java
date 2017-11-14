@@ -39,12 +39,11 @@ public class ValintalaskentaResourceHttpIntegrationTest {
     public void setUp() {
         ValintaLaskentaLaskentaJetty.startShared();
         applicationContext = ValintaLaskentaLaskentaJetty.ApplicationContextGetter.applicationContext;
-        when(getBean(ValisijoitteluKasittelija.class).valisijoiteltavatJonot(anyListOf(LaskeDTO.class)))
-            .thenReturn(new ValisijoiteltavatJonot(Collections.emptySet(), Collections.emptyMap()));
     }
 
     @Test
     public void successfulLaskentaBecomesReady() throws Exception {
+        mockValisijoiteltavatJonotCall();
         when(getBean(ValintalaskentaService.class).laskeKaikki(anyListOf(HakemusDTO.class), anyListOf(ValintaperusteetDTO.class),
             anyListOf(ValintaperusteetHakijaryhmaDTO.class), Matchers.eq(hakukohdeOid), any(String.class), anyBoolean())).thenReturn("Onnistui!");
 
@@ -57,6 +56,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
 
     @Test
     public void failingLaskentaIsRecognised() throws Exception {
+        mockValisijoiteltavatJonotCall();
         when(getBean(ValintalaskentaService.class).laskeKaikki(anyListOf(HakemusDTO.class), anyListOf(ValintaperusteetDTO.class),
             anyListOf(ValintaperusteetHakijaryhmaDTO.class), Matchers.eq(hakukohdeOid), any(String.class), anyBoolean()))
             .thenThrow(new RuntimeException(getClass().getSimpleName() + "-failure"));
@@ -67,9 +67,9 @@ public class ValintalaskentaResourceHttpIntegrationTest {
         assertEquals(HakukohteenLaskennanTila.VIRHE, readStatusOf(laskentakutsu));
     }
 
-
     @Test
     public void unfinishedLaskentaIsWaitedFor() throws Exception {
+        mockValisijoiteltavatJonotCall();
         when(getBean(ValintalaskentaService.class).laskeKaikki(anyListOf(HakemusDTO.class), anyListOf(ValintaperusteetDTO.class),
             anyListOf(ValintaperusteetHakijaryhmaDTO.class), Matchers.eq(hakukohdeOid), any(String.class), anyBoolean()))
             .thenAnswer(invocation -> {
@@ -77,13 +77,22 @@ public class ValintalaskentaResourceHttpIntegrationTest {
                 return "Onnistui vähän myöhemmin!";
             });
 
-        Laskentakutsu laskentakutsu = createLaskentakutsu("failingUuid");
+        Laskentakutsu laskentakutsu = createLaskentakutsu("slowUuid");
         assertEquals(HakukohteenLaskennanTila.UUSI, createHttpClient("/valintalaskenta/laskekaikki").post(laskentakutsu, String.class));
 
         assertEquals(HakukohteenLaskennanTila.KESKEN, readStatusOf(laskentakutsu));
         mayFinish = true;
         waitWhileNotFinished();
         assertEquals(HakukohteenLaskennanTila.VALMIS, readStatusOf(laskentakutsu));
+    }
+
+    @Test
+    public void crashingLaskenta() throws InterruptedException {
+        when(getBean(ValisijoitteluKasittelija.class).valisijoiteltavatJonot(anyListOf(LaskeDTO.class)))
+            .thenThrow(new RuntimeException(ValisijoitteluKasittelija.class.getSimpleName() + " call failing in " + getClass().getSimpleName()));
+        Laskentakutsu laskentakutsu = createLaskentakutsu("crashingUuid");
+        assertEquals(HakukohteenLaskennanTila.UUSI, createHttpClient("/valintalaskenta/laskekaikki").post(laskentakutsu, String.class));
+        assertEquals(HakukohteenLaskennanTila.VIRHE, readStatusOf(laskentakutsu));
     }
 
     private void waitWhileMayFinishIsNotSet() throws InterruptedException {
@@ -96,6 +105,11 @@ public class ValintalaskentaResourceHttpIntegrationTest {
         while (!finished) {
             Thread.sleep(10);
         }
+    }
+
+    private void mockValisijoiteltavatJonotCall() {
+        when(getBean(ValisijoitteluKasittelija.class).valisijoiteltavatJonot(anyListOf(LaskeDTO.class)))
+            .thenReturn(new ValisijoiteltavatJonot(Collections.emptySet(), Collections.emptyMap()));
     }
 
     private Laskentakutsu createLaskentakutsu(String uuid) {

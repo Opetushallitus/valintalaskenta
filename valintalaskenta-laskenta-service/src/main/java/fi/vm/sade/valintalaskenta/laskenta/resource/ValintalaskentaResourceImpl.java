@@ -307,12 +307,12 @@ public class ValintalaskentaResourceImpl {
         LaskeDTO laskeDTO = laskentakutsu.getLaskeDTO();
         String pollkey = laskentakutsu.getPollKey();
 
-        LOG.info(String.format("(Uuid=%s) Aloitetaan laskenta hakukohteessa %s", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid()));
-        ValisijoitteluKasittelija.ValisijoiteltavatJonot valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Collections.singletonList(laskeDTO));
-        if (!valisijoiteltavatJonot.valinnanvaiheet.isEmpty()) {
-            valisijoiteltavatJonot = new ValisijoitteluKasittelija.ValisijoiteltavatJonot(valisijoiteltavatJonot.valinnanvaiheet, haeKopiotValintaperusteista(valisijoiteltavatJonot.jonot.get(laskeDTO.getHakukohdeOid())));
-        }
+        LOG.info(String.format("(Uuid=%s) Aloitetaan laskenta X hakukohteessa %s", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid()));
         try {
+            ValisijoitteluKasittelija.ValisijoiteltavatJonot valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Collections.singletonList(laskeDTO));
+            if (!valisijoiteltavatJonot.valinnanvaiheet.isEmpty()) {
+                valisijoiteltavatJonot = new ValisijoitteluKasittelija.ValisijoiteltavatJonot(valisijoiteltavatJonot.valinnanvaiheet, haeKopiotValintaperusteista(valisijoiteltavatJonot.jonot.get(laskeDTO.getHakukohdeOid())));
+            }
             ValintaperusteetDTO valintaperusteetDTO = laskeDTO.getValintaperuste().get(0);
             boolean erillisHaku = isErillisHaku(laskeDTO, valintaperusteetDTO);
 
@@ -328,13 +328,13 @@ public class ValintalaskentaResourceImpl {
                 erillisSijoittele(laskeDTO, valintaperusteetDTO);
             }
             LOG.info(String.format("(Uuid=%s) Laskenta suoritettu hakukohteessa %s", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid()));
+            if (!valisijoiteltavatJonot.valinnanvaiheet.isEmpty()) {
+                valisijoitteleKopiot(laskeDTO, valisijoiteltavatJonot.jonot);
+            }
             paivitaKohteenLaskennanTila(pollkey, HakukohteenLaskennanTila.VALMIS);
         } catch (Exception e) {
             LOG.error(String.format("Valintalaskenta epaonnistui! uuid=%s", laskeDTO.getUuid()), e);
             paivitaKohteenLaskennanTila(pollkey, HakukohteenLaskennanTila.VIRHE);
-        }
-        if (!valisijoiteltavatJonot.valinnanvaiheet.isEmpty()) {
-            valisijoitteleKopiot(laskeDTO, valisijoiteltavatJonot.jonot);
         }
     }
 
@@ -358,8 +358,8 @@ public class ValintalaskentaResourceImpl {
         String pollkey = laskentakutsu.getPollKey();
 
         LOG.info(String.format("(Uuid=%s) Aloitetaan laskenta hakukohteessa %s", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid()));
-        ValisijoitteluKasittelija.ValisijoiteltavatJonot valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Collections.singletonList(laskeDTO));
         try {
+            ValisijoitteluKasittelija.ValisijoiteltavatJonot valisijoiteltavatJonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Collections.singletonList(laskeDTO));
             if (valisijoiteltavatJonot.valinnanvaiheet.isEmpty()) {
                 if (laskeDTO.isErillishaku()) {
                     laskeDTO.getValintaperuste().forEach(v -> {
