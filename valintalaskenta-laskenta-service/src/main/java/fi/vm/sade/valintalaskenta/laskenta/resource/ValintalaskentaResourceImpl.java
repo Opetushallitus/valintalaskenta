@@ -281,18 +281,19 @@ public class ValintalaskentaResourceImpl {
         }
     }
 
+    //Tilaa päivitetään vain, jos se on tällä hetkellä KESKEN.
     private void paivitaKohteenLaskennanTila(String pollKey, String tila) {
         if (hakukohteetLaskettavina.containsKey(pollKey)) {
-            if (!hakukohteetLaskettavina.get(pollKey).equals(HakukohteenLaskennanTila.KESKEN)) {
-                LOG.error(String.format("Yritettiin päivittää sellaisen laskennan tilaa, joka ei ollut tilassa KESKEN. Ei päivitetty. pollKey: %s, tila nyt: %s", pollKey, tila));
-                return;
+            if (hakukohteetLaskettavina.get(pollKey).equals(HakukohteenLaskennanTila.KESKEN)) {
+                if (tila.equals(HakukohteenLaskennanTila.VALMIS)) {
+                    LOG.info("Ollaan valmiita, merkataan kohteen laskennan tila valmiiksi. {} {}", pollKey);
+                }
+                hakukohteetLaskettavina.replace(pollKey, tila);
+            } else {
+                LOG.error("(Pollkey: {}) Yritettiin päivittää sellaisen laskennan tilaa, joka ei ollut tilassa KESKEN. Ei päivitetty. tila nyt: {} ", pollKey, hakukohteetLaskettavina.get(pollKey));
             }
-        }
-        if (tila.equals(HakukohteenLaskennanTila.VALMIS)) {
-            LOG.info(String.format("Ollaan valmiita, merkataan kohteen laskennan tila valmiiksi. %s", pollKey));
-        }
-        if (hakukohteetLaskettavina.containsKey(pollKey)) {
-            hakukohteetLaskettavina.replace(pollKey, tila);
+        } else {
+            LOG.error("(Pollkey: {}) Yritettiin päivittää sellaisen laskennan tilaa, jota ei vaikuta olevan olemassa.", pollKey);
         }
     }
 
