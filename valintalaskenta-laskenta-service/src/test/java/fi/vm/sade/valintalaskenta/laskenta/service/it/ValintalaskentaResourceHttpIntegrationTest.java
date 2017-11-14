@@ -39,8 +39,6 @@ public class ValintalaskentaResourceHttpIntegrationTest {
         applicationContext = ValintaLaskentaLaskentaJetty.ApplicationContextGetter.applicationContext;
         when(getBean(ValisijoitteluKasittelija.class).valisijoiteltavatJonot(anyListOf(LaskeDTO.class)))
             .thenReturn(new ValisijoiteltavatJonot(Collections.emptySet(), Collections.emptyMap()));
-        when(getBean(ValisijoitteluKasittelija.class).valisijoiteltavatJonot(anyListOf(LaskeDTO.class)))
-            .thenReturn(new ValisijoiteltavatJonot(Collections.emptySet(), Collections.emptyMap()));
     }
 
     @Test
