@@ -26,8 +26,10 @@ public class ValintakoelaskennanKumulatiivisetTulokset {
             if (aiemminLaskettuOsallistuminen == null) {
                 return osallistuminenLaskennasta;
             }
-            LOG.info(String.format("Yhdistetään hakemuksen %s valintakoeosallistumiset %s ja %s",
-                osallistuminenLaskennasta.getHakemusOid(), getKokeetAsStrings(aiemminLaskettuOsallistuminen), getKokeetAsStrings(osallistuminenLaskennasta)));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(String.format("Yhdistetään hakemuksen %s valintakoeosallistumiset %s ja %s",
+                    osallistuminenLaskennasta.getHakemusOid(), getKokeetAsStrings(aiemminLaskettuOsallistuminen), getKokeetAsStrings(osallistuminenLaskennasta)));
+            }
             return yhdista(osallistuminenLaskennasta, aiemminLaskettuOsallistuminen);
         });
     }
@@ -78,8 +80,10 @@ public class ValintakoelaskennanKumulatiivisetTulokset {
         Optional<Valintakoe> existingValintakoe = existingValinnanvaihe.getValintakokeet().stream()
             .filter(koe -> koe.getValintakoeOid().equals(laskettuValintakoe.getValintakoeOid())).findFirst();
         if (existingValintakoe.isPresent()) {
-            LOG.warn(String.format("Kirjoitetaan valintakokeen %s yli tiedoilla %s",
-                ToStringBuilder.reflectionToString(existingValintakoe.get()), ToStringBuilder.reflectionToString(laskettuValintakoe)));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(String.format("Kirjoitetaan valintakokeen %s yli tiedoilla %s",
+                    ToStringBuilder.reflectionToString(existingValintakoe.get()), ToStringBuilder.reflectionToString(laskettuValintakoe)));
+            }
             BeanUtils.copyProperties(laskettuValintakoe, existingValintakoe.get());
         } else {
             existingValinnanvaihe.getValintakokeet().add(laskettuValintakoe);
