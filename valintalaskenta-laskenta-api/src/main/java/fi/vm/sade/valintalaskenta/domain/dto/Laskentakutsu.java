@@ -29,7 +29,7 @@ public class Laskentakutsu {
         this.laskeDTO = null;
         this.laskeDTOs = laskeDTOs;
         this.uuid = laskeDTOs.iterator().next().getUuid();
-        this.pollKey = uuid+"/valintaryhmalaskenta";
+        this.pollKey = uuid+"-valintaryhmalaskenta";
     }
 
     public boolean isValintaryhmalaskenta() {
