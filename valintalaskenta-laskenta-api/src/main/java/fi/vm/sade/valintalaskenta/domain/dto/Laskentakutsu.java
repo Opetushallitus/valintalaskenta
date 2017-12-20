@@ -20,7 +20,7 @@ public class Laskentakutsu {
         this.laskeDTO = laskeDTO;
         this.laskeDTOs = null;
         this.uuid = laskeDTO.getUuid();
-        this.pollKey = String.format("%s-%s", uuid, laskeDTO.getHakukohdeOid());
+        this.pollKey = String.format("%s_%s", uuid, laskeDTO.getHakukohdeOid());
     }
 
     //Tulkitaan laskentakutsu valintaryhmälaskennaksi aina, jos parametri on lista laskeDTO-arvoja
@@ -29,7 +29,7 @@ public class Laskentakutsu {
         this.laskeDTO = null;
         this.laskeDTOs = laskeDTOs;
         this.uuid = laskeDTOs.iterator().next().getUuid();
-        this.pollKey = uuid+"-valintaryhmalaskenta";
+        this.pollKey = uuid+"_valintaryhmalaskenta";
     }
 
     public boolean isValintaryhmalaskenta() {
