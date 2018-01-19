@@ -182,7 +182,6 @@ public class ValintatietoServiceImpl implements ValintatietoService {
         dto.setEiVarasijatayttoa(vt.getEiVarasijatayttoa());
         dto.setKaikkiEhdonTayttavatHyvaksytaan(vt.getKaikkiEhdonTayttavatHyvaksytaan());
         dto.setKaytetaanValintalaskentaa(vt.getKaytetaanValintalaskentaa());
-        dto.setPoissaOlevaTaytto(vt.getPoissaOlevaTaytto());
         dto.setTasasijasaanto(vt.getTasasijasaanto());
         valintaperusteet.ifPresent(perusteet -> {
             dto.setTayttojono(perusteet.getTayttojono());
@@ -190,6 +189,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             dto.setVarasijaTayttoPaivat(perusteet.getVarasijaTayttoPaivat());
             dto.setVarasijojaKaytetaanAlkaen(perusteet.getVarasijojaKaytetaanAlkaen());
             dto.setVarasijojaTaytetaanAsti(perusteet.getVarasijojaTaytetaanAsti());
+            dto.setPoissaOlevaTaytto(perusteet.getPoissaOlevaTaytto());
         });
 
         for (JonosijaDTO jonosija : vt.getJonosijat()) {
