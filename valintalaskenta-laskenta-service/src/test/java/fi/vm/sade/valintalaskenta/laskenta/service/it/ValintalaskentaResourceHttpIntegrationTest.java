@@ -136,6 +136,10 @@ public class ValintalaskentaResourceHttpIntegrationTest {
     }
 
     private WebClient createHttpClient(String path) {
-        return new HttpResourceBuilder().address(ValintaLaskentaLaskentaJetty.rootUrl + path).build().getWebClient().type(APPLICATION_JSON_TYPE);
+        return new HttpResourceBuilder()
+            .address(ValintaLaskentaLaskentaJetty.rootUrl + path)
+            .buildExposingWebClientDangerously()
+            .getWebClient()
+            .type(APPLICATION_JSON_TYPE);
     }
 }
