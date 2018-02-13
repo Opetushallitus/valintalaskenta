@@ -37,8 +37,8 @@
 
     <http:conduit name="*.http-conduit">
         <!-- AllowChunking="false" Nginx fails without this -->
-        <http:client Connection="Keep-Alive" ConnectionTimeout="0"
-                     ReceiveTimeout="0" AllowChunking="false" />
+        <http:client Connection="Keep-Alive" ConnectionTimeout="${valintalaskenta-laskenta-service.global.http.connectionTimeoutMillis:59999}"
+                     ReceiveTimeout="${valintalaskenta-laskenta-service.global.http.receiveTimeoutMillis:1799999}" AllowChunking="false" />
     </http:conduit>
 
     <bean id="jacksonMapper" class="org.codehaus.jackson.map.ObjectMapper" />
