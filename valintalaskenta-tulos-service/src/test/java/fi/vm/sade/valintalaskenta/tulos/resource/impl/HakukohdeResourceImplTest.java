@@ -18,6 +18,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.Logger;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 import javax.ws.rs.core.Response;
 import java.util.Collections;
@@ -53,15 +55,18 @@ public class HakukohdeResourceImplTest {
     }
 
     @Test
-    public void whenValinnanvaiheIsFoundFromValintaperusteet202IsReturned() {
-        Response response = hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi);
+    public void whenValinnanvaiheIsFoundFromValintaperusteet200IsReturned() {
+        ValinnanvaiheDTO valinnanVaihe = new ValinnanvaiheDTO();
+        valinnanVaihe.setValinnanvaiheoid("valinnanVaiheFoundId");
+        Response response = hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanVaihe, new MockHttpServletRequest());
         assertEquals(202, response.getStatus());
     }
 
     @Test
     public void whenValinnanvaiheIsNotFoundFromValintaperusteet500IsReturned() {
-        valinnanvaiheFromUi.setValinnanvaiheoid("valinnanVaiheNotFoundId");
-        Response response = hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi);
+        ValinnanvaiheDTO valinnanVaihe = new ValinnanvaiheDTO();
+        valinnanVaihe.setValinnanvaiheoid("valinnanVaiheNotFoundId");
+        Response response = hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanVaihe, new MockHttpServletRequest());
         assertEquals(500, response.getStatus());
     }
 

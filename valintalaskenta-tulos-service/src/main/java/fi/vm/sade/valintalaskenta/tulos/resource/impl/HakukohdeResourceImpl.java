@@ -3,26 +3,23 @@ package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ_UPDATE_CRUD;
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.ROLE_VALINTOJENTOTEUTTAMINEN_TULOSTENTUONTI;
 
-import static fi.vm.sade.auditlog.valintaperusteet.LogMessage.builder;
-import static fi.vm.sade.valintalaskenta.tulos.LaskentaAudit.AUDIT;
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ_UPDATE_CRUD;
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.ROLE_VALINTOJENTOTEUTTAMINEN_TULOSTENTUONTI;
-
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import fi.vm.sade.auditlog.valintaperusteet.ValintaperusteetOperation;
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.authentication.business.service.Authorizer;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource;
+import fi.vm.sade.sharedutils.AuditLog;
+import fi.vm.sade.sharedutils.ValintaResource;
+import fi.vm.sade.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.resource.HakukohdeResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import io.swagger.annotations.Api;
@@ -34,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -41,12 +39,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
-import java.util.Optional;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @Path("hakukohde")
@@ -87,9 +86,10 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
     @PreAuthorize(READ_UPDATE_CRUD)
     @ApiOperation(value = "Lisää tuloksia valinnanvaiheelle", response = ValinnanvaiheDTO.class)
     public Response lisaaTuloksia(
-            @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid,
-            @ApiParam(value = "Tarjoaja OID", required = true) @QueryParam("tarjoajaOid") String tarjoajaOid,
-            @ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe) {
+        @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid,
+        @ApiParam(value = "Tarjoaja OID", required = true) @QueryParam("tarjoajaOid") String tarjoajaOid,
+        @ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe,
+        @Context HttpServletRequest request) {
         try {
             authorizer.checkOrganisationAccess(tarjoajaOid, ROLE_VALINTOJENTOTEUTTAMINEN_TULOSTENTUONTI);
 
@@ -114,27 +114,31 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
             LOGGER.error("Valintatapajonon pisteitä ei saatu päivitettyä hakukohteelle " + hakukohdeoid,e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
+        User user = AuditLog.getUser(request);
         ValinnanvaiheDTO valinnanvaihe = tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid);
-        auditLog(hakukohdeoid, vaihe);
+        auditLog(hakukohdeoid, vaihe, user);
         return Response.status(Response.Status.ACCEPTED).entity(valinnanvaihe).build();
     }
 
-    private void auditLog(String hakukohdeoid, ValinnanvaiheDTO vaihe) {
+    private void auditLog(String hakukohdeoid, ValinnanvaiheDTO vaihe, User user) {
         vaihe.getValintatapajonot()
                 .forEach(
                         v -> {
                             v.getHakija().forEach(h -> {
-                                //AuditLog.log(ValintaperusteetOperation.VALINNANVAIHE_TUONTI_KAYTTOLIITTYMA, ValintaResource);
-                                /*
-                                AUDIT.log(builder()
-                                        .id(LaskentaAudit.username())
-                                        .hakemusOid(h.getHakemusOid())
-                                        .valinnanvaiheOid(vaihe.getValinnanvaiheoid())
-                                        .hakukohdeOid(hakukohdeoid)
-                                        .valintatapajonoOid(v.getOid())
-                                        .add("jonosija", h.getJonosija())
-                                        .setOperaatio(ValintaperusteetOperation.VALINNANVAIHE_TUONTI_KAYTTOLIITTYMA)
-                                        .build());*/
+                                Map<String,String> additionalAuditFields = new HashMap<>();
+                                additionalAuditFields.put("hakemusOid", h.getHakemusOid());
+                                additionalAuditFields.put("hakijaOid", h.getOid());
+                                additionalAuditFields.put("jonosija", Integer.toString(h.getJonosija()));
+                                additionalAuditFields.put("valintatapajonoOid", v.getValintatapajonooid());
+                                additionalAuditFields.put("hakukohdeOid", hakukohdeoid);
+                                AuditLog.log(LaskentaAudit.AUDIT,
+                                    user,
+                                    ValintaperusteetOperation.VALINNANVAIHE_TUONTI_KAYTTOLIITTYMA,
+                                    ValintaResource.VALINNANVAIHE,
+                                    vaihe.getValinnanvaiheoid(),
+                                    vaihe,
+                                    null,
+                                    additionalAuditFields);
                             });
                         }
                 );
