@@ -295,7 +295,7 @@
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.sharedutils</groupId>
-            <artifactId>Sharedutils</artifactId>
+            <artifactId>sharedutils</artifactId>
             <version>4.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
