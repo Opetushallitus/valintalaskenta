@@ -296,7 +296,6 @@
         <dependency>
             <groupId>fi.vm.sade.valintaperusteet</groupId>
             <artifactId>sharedutils</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
