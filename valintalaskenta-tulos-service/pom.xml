@@ -297,6 +297,12 @@
             <groupId>fi.vm.sade.valintaperusteet</groupId>
             <artifactId>sharedutils</artifactId>
         </dependency>
+        <dependency>
+            <groupId>fi.vm.sade.valintaperusteet</groupId>
+            <artifactId>sharedutils</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
