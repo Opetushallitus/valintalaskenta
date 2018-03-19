@@ -8,7 +8,7 @@ import fi.vm.sade.authentication.business.service.Authorizer;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetValinnanVaiheDTO;
 import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource;
-import fi.vm.sade.sharedutils.RequestTester;
+import fi.vm.sade.sharedutils.FakeAuthenticationInitialiser;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValintatapajonoDTO;
@@ -19,7 +19,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.slf4j.Logger;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import javax.ws.rs.core.Response;
@@ -53,7 +52,7 @@ public class HakukohdeResourceImplTest {
         valintaperusteet.setValinnanVaihe(valinnanVaihe);
 
         when(valintaperusteetResource.haeValintaperusteet("hakukohdeoid", null)).thenReturn(Lists.newArrayList(valintaperusteet));
-        RequestTester.fakeAuthentication();
+        FakeAuthenticationInitialiser.fakeAuthentication();
     }
 
     @Test
