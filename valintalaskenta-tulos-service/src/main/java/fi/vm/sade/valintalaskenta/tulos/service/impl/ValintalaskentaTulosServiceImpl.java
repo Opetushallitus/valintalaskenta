@@ -1,15 +1,44 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl;
 
 import com.google.common.collect.Collections2;
-import fi.vm.sade.valintalaskenta.domain.dto.*;
+
+import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteeritulosDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.JonoDto;
+import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.MinimalJonoDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.HakutoiveDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValintatapajonoDTO;
-import fi.vm.sade.valintalaskenta.domain.valinta.*;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
-import fi.vm.sade.valintalaskenta.tulos.dao.*;
+import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
+import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvarainenHyvaksyminen;
+import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvaraisuusTila;
+import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
+import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
+import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
+import fi.vm.sade.valintalaskenta.domain.valinta.LogEntry;
+import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.valinta.ValintatapajonoMigrationDTO;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
+import fi.vm.sade.valintalaskenta.tulos.dao.HakijaryhmaDAO;
+import fi.vm.sade.valintalaskenta.tulos.dao.HarkinnanvarainenHyvaksyminenDAO;
+import fi.vm.sade.valintalaskenta.tulos.dao.JarjestyskriteerihistoriaDAO;
+import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
+import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
+import fi.vm.sade.valintalaskenta.tulos.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.service.AuthorizationUtil;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
@@ -24,7 +53,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -418,12 +455,6 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                 .stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ValintakoeOsallistuminenDTO> haeAmmatillisenKielikokeeseenOsallistumiset(Date since) {
-        List<ValintakoeOsallistuminen> osallistumiset = valintakoeOsallistuminenDAO.findAmmatillisenKielikoeOsallistumiset(since);
-        return valintatulosConverter.convertValintakoeOsallistuminen(osallistumiset);
     }
 
     @Override
