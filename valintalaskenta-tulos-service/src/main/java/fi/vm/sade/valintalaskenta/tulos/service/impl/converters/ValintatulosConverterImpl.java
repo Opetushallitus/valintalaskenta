@@ -241,6 +241,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
         dto.setNimiFi(ft.getNimiFi());
         dto.setNimiSv(ft.getNimiSv());
         dto.setNimiEn(ft.getNimiEn());
+        dto.setOmaopintopolku(ft.isOmaopintopolku());
         return dto;
     }
 

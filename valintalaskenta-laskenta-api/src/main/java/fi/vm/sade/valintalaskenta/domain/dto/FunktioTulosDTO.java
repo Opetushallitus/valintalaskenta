@@ -20,6 +20,9 @@ public class FunktioTulosDTO {
     @ApiModelProperty(value = "Englanninkielinen nimi", required = false)
     private String nimiEn;
 
+    @ApiModelProperty(value = "Näytetäänkö Omassa Opintopolussa", required = false)
+    private boolean omaopintopolku;
+
     public FunktioTulosDTO() {}
 
     public FunktioTulosDTO(String tunniste, String arvo) {
@@ -65,5 +68,13 @@ public class FunktioTulosDTO {
 
     public void setNimiEn(String nimiEn) {
         this.nimiEn = nimiEn;
+    }
+
+    public boolean isOmaopintopolku() {
+        return omaopintopolku;
+    }
+
+    public void setOmaopintopolku(boolean omaopintopolku) {
+        this.omaopintopolku = omaopintopolku;
     }
 }

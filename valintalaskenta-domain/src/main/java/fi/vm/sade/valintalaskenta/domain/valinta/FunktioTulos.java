@@ -9,6 +9,7 @@ public class FunktioTulos {
     private String nimiFi;
     private String nimiSv;
     private String nimiEn;
+    private boolean omaopintopolku;
 
     public String getTunniste() {
         return tunniste;
@@ -48,5 +49,13 @@ public class FunktioTulos {
 
     public void setNimiEn(String nimiEn) {
         this.nimiEn = nimiEn;
+    }
+
+    public boolean isOmaopintopolku() {
+        return omaopintopolku;
+    }
+
+    public void setOmaopintopolku(boolean omaopintopolku) {
+        this.omaopintopolku = omaopintopolku;
     }
 }

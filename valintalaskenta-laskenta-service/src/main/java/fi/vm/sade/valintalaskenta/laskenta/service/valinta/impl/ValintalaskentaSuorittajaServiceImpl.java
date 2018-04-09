@@ -239,6 +239,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             funktioTulos.setNimiFi(a.getNimiFi());
             funktioTulos.setNimiSv(a.getNimiSv());
             funktioTulos.setNimiEn(a.getNimiEn());
+            funktioTulos.setOmaopintopolku(a.isOmaopintopolku());
             jonosija.getFunktioTulokset().add(funktioTulos);
         }
         return jonosija;
