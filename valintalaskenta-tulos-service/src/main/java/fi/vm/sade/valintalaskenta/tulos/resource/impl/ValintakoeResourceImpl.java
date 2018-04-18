@@ -31,12 +31,14 @@ import org.springframework.stereotype.Controller;
 @PreAuthorize("isAuthenticated()")
 @Api(value = "/valintakoe", description = "Resurssi valintakoeosallistumistulosten hakemiseen")
 public class ValintakoeResourceImpl implements ValintakoeResource {
+    private final ValintalaskentaTulosService tulosService;
+    private final ValintalaskentaModelMapper modelMapper;
 
     @Autowired
-    private ValintalaskentaTulosService tulosService;
-
-    @Autowired
-    private ValintalaskentaModelMapper modelMapper;
+    public ValintakoeResourceImpl(ValintalaskentaTulosService tulosService, ValintalaskentaModelMapper modelMapper) {
+        this.tulosService = tulosService;
+        this.modelMapper = modelMapper;
+    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
