@@ -22,7 +22,7 @@ public class ValintatapajonoDTO {
     @ApiModelProperty(value = "Aloituspaikat", required = true)
     private int aloituspaikat;
 
-    @ApiModelProperty(value = "Siirretäänkö jono sijoitteluun", required = true)
+    @ApiModelProperty(value = "Valintaperusteissa ylläpidettävä tieto siitä, onko jono tarkoitus joskus sijoitella vai ei", required = true)
     private boolean siirretaanSijoitteluun;
 
     @ApiModelProperty(value = "Tasasijasääntö", required = true)
@@ -40,7 +40,7 @@ public class ValintatapajonoDTO {
     @ApiModelProperty(value = "Käytetäänkö valintalaskentaa", required = true)
     private Boolean kaytetaanValintalaskentaa = true;
 
-    @ApiModelProperty(value = "Onko valintatapajono valmis sijoiteltavaksi", required = false)
+    @ApiModelProperty(value = "Valintalaskennan tuloksissa ylläpidettävä tieto siitä, otetaanko jono mukaan sijoitteluajoon", required = false)
     private Boolean valmisSijoiteltavaksi = true;
 
     @ApiModelProperty(value = "Jonosijat", required = true)
