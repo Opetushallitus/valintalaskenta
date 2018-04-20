@@ -26,6 +26,9 @@ public class Valintatapajono {
 
     private int aloituspaikat;
 
+    /**
+     * Valintaperusteissa ylläpidettävä tieto siitä, onko tätä jonoa ylipäätään tarkoitus sijoitella.
+     */
     private boolean siirretaanSijoitteluun;
 
     private Tasasijasaanto tasasijasaanto;
@@ -38,6 +41,9 @@ public class Valintatapajono {
 
     private Boolean poissaOlevaTaytto;
 
+    /**
+     * Valintalaskennan tuloksissa ylläpidettävä tieto siitä, otetaanko jono mukaan seuraavaan sijoitteluajoon vai ei.
+     */
     private Boolean valmisSijoiteltavaksi = true;
 
     private Boolean kaytetaanKokonaispisteita;
