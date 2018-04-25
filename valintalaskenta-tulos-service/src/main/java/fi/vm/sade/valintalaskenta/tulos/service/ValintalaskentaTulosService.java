@@ -49,8 +49,6 @@ public interface ValintalaskentaTulosService {
 
     ValintakoeOsallistuminen haeValintakoeOsallistumiset(String hakemusOid);
 
-    List<ValintakoeOsallistuminen> haeValintakoeOsallistumiset(Collection<String> hakemusOid);
-
     List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakutoive(String hakukohdeOid);
 
     List<Jarjestyskriteerihistoria> haeJonosijaHistoria(String valintatapajonoOid, String hakemusOid);
