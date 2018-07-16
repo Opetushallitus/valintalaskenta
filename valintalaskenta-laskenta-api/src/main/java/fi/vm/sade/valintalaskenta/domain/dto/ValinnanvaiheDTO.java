@@ -1,9 +1,9 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValintatapajonoDTO;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -100,5 +100,25 @@ public class ValinnanvaiheDTO {
 
     public void setHakuOid(String hakuOid) {
         this.hakuOid = hakuOid;
+    }
+
+    public boolean empty() {
+        if (valintatapajonot == null || valintatapajonot.isEmpty()) {
+            return true;
+        }
+        return valintatapajonot.get(0).empty();
+    }
+
+    @Override
+    public String toString() {
+        return "ValinnanvaiheDTO{" +
+            "jarjestysnumero=" + jarjestysnumero +
+            ", valinnanvaiheoid='" + valinnanvaiheoid + '\'' +
+            ", hakuOid='" + hakuOid + '\'' +
+            ", nimi='" + nimi + '\'' +
+            ", createdAt=" + createdAt +
+            ", valintatapajonot=" + valintatapajonot +
+            ", valintakokeet=" + valintakokeet +
+            '}';
     }
 }

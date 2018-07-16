@@ -1,11 +1,16 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 import com.google.common.collect.Lists;
+
 import fi.vm.sade.authentication.business.service.Authorizer;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetValinnanVaiheDTO;
 import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource;
+import fi.vm.sade.valintalaskenta.domain.dto.HakijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValintatapajonoDTO;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,13 +18,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.slf4j.Logger;
 
 import javax.ws.rs.core.Response;
-
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import java.util.Collections;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HakukohdeResourceImplTest {
@@ -34,9 +35,14 @@ public class HakukohdeResourceImplTest {
 
     @InjectMocks
     HakukohdeResourceImpl hakukohdeResource = new HakukohdeResourceImpl();
+    private final ValinnanvaiheDTO valinnanvaiheFromUi = new ValinnanvaiheDTO();
 
     @Before
     public void setup() {
+        valinnanvaiheFromUi.setValintatapajonot(Collections.singletonList(new ValintatietoValintatapajonoDTO()));
+        valinnanvaiheFromUi.getValintatapajonot().get(0).setHakija(Collections.singletonList(new HakijaDTO()));
+        valinnanvaiheFromUi.setValinnanvaiheoid("valinnanVaiheFoundId");
+
         ValintaperusteetValinnanVaiheDTO valinnanVaihe = new ValintaperusteetValinnanVaiheDTO();
         valinnanVaihe.setValinnanVaiheOid("valinnanVaiheFoundId");
 
@@ -47,18 +53,30 @@ public class HakukohdeResourceImplTest {
     }
 
     @Test
-    public void whenValinnanvaiheIsFoundFromValintaperusteet200IsReturned() {
-        ValinnanvaiheDTO valinnanVaihe = new ValinnanvaiheDTO();
-        valinnanVaihe.setValinnanvaiheoid("valinnanVaiheFoundId");
-        Response response = hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanVaihe);
+    public void whenValinnanvaiheIsFoundFromValintaperusteet202IsReturned() {
+        Response response = hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi);
         assertEquals(202, response.getStatus());
     }
 
     @Test
     public void whenValinnanvaiheIsNotFoundFromValintaperusteet500IsReturned() {
-        ValinnanvaiheDTO valinnanVaihe = new ValinnanvaiheDTO();
-        valinnanVaihe.setValinnanvaiheoid("valinnanVaiheNotFoundId");
-        Response response = hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanVaihe);
+        valinnanvaiheFromUi.setValinnanvaiheoid("valinnanVaiheNotFoundId");
+        Response response = hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi);
         assertEquals(500, response.getStatus());
+    }
+
+    @Test
+    public void emptyInputIsNotAllowed() {
+        valinnanvaiheFromUi.setValintatapajonot(null);
+        assertEquals(400, hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi).getStatus());
+
+        valinnanvaiheFromUi.setValintatapajonot(Collections.emptyList());
+        assertEquals(400, hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi).getStatus());
+
+        valinnanvaiheFromUi.setValintatapajonot(Collections.singletonList(new ValintatietoValintatapajonoDTO()));
+        assertEquals(400, hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi).getStatus());
+
+        valinnanvaiheFromUi.getValintatapajonot().get(0).setHakija(Collections.singletonList(new HakijaDTO()));
+        assertEquals(202, hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi).getStatus());
     }
 }

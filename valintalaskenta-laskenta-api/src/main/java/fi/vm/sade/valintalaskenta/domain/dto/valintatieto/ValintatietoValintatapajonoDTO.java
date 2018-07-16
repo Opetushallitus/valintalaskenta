@@ -1,10 +1,10 @@
 package fi.vm.sade.valintalaskenta.domain.dto.valintatieto;
 
-import io.swagger.annotations.ApiModelProperty;
 import fi.vm.sade.valintalaskenta.domain.dto.HakijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -102,5 +102,22 @@ public class ValintatietoValintatapajonoDTO extends ValintatapajonoDTO {
 
     public void setSijoitteluajoId(Long sijoitteluajoId) {
         this.sijoitteluajoId = sijoitteluajoId;
+    }
+
+    public boolean empty() {
+        return hakija == null || hakija.isEmpty();
+    }
+
+    @Override
+    public String toString() {
+        return "ValintatietoValintatapajonoDTO{" +
+            "hakija=" + hakija +
+            ", varasijat=" + varasijat +
+            ", varasijaTayttoPaivat=" + varasijaTayttoPaivat +
+            ", varasijojaKaytetaanAlkaen=" + varasijojaKaytetaanAlkaen +
+            ", varasijojaTaytetaanAsti=" + varasijojaTaytetaanAsti +
+            ", tayttojono='" + tayttojono + '\'' +
+            ", sijoitteluajoId=" + sijoitteluajoId +
+            '}';
     }
 }

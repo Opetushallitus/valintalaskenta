@@ -1,39 +1,42 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
+import static fi.vm.sade.auditlog.valintaperusteet.LogMessage.builder;
+import static fi.vm.sade.valintalaskenta.tulos.LaskentaAudit.AUDIT;
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ_UPDATE_CRUD;
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.ROLE_VALINTOJENTOTEUTTAMINEN_TULOSTENTUONTI;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import fi.vm.sade.auditlog.valintaperusteet.ValintaperusteetOperation;
 import fi.vm.sade.authentication.business.service.Authorizer;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource;
 import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
+import fi.vm.sade.valintalaskenta.tulos.resource.HakukohdeResource;
+import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
-import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
-import fi.vm.sade.valintalaskenta.tulos.resource.HakukohdeResource;
-import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.springframework.stereotype.Controller;
 
-import static fi.vm.sade.valintalaskenta.tulos.LaskentaAudit.AUDIT;
-import static fi.vm.sade.auditlog.valintaperusteet.LogMessage.builder;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @Path("hakukohde")
@@ -75,6 +78,13 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
             authorizer.checkOrganisationAccess(tarjoajaOid, ROLE_VALINTOJENTOTEUTTAMINEN_TULOSTENTUONTI);
 
             List<ValintaperusteetDTO> valintaperusteet = valintaperusteetResource.haeValintaperusteet(hakukohdeoid, null);
+            if (vaihe.empty()) {
+                Map<String,String> message = new HashMap<>();
+                LOGGER.warn(String.format("Saatiin tyhjä data käyttöliittymältä; ei tallenneta. " +
+                    "tarjoajaOid = %s, hakukohdeOid = %s , syöte: %s", tarjoajaOid, hakukohdeoid, vaihe));
+                message.put("error", "Saatiin tyhjä data käyttöliittymältä; ei tallenneta.");
+                return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
+            }
 
             Optional<ValintaperusteetDTO> valinnanVaiheValintaperusteissa = valintaperusteet.stream()
                     .filter(valintaperuste -> valintaperuste.getValinnanVaihe().getValinnanVaiheOid().equals(vaihe.getValinnanvaiheoid()))
