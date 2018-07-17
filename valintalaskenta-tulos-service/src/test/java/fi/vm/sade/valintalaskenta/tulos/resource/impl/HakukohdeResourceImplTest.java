@@ -8,7 +8,7 @@ import fi.vm.sade.authentication.business.service.Authorizer;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetValinnanVaiheDTO;
 import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource;
-import fi.vm.sade.valintalaskenta.domain.dto.HakijaDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValintatapajonoDTO;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
@@ -40,7 +40,7 @@ public class HakukohdeResourceImplTest {
     @Before
     public void setup() {
         valinnanvaiheFromUi.setValintatapajonot(Collections.singletonList(new ValintatietoValintatapajonoDTO()));
-        valinnanvaiheFromUi.getValintatapajonot().get(0).setHakija(Collections.singletonList(new HakijaDTO()));
+        valinnanvaiheFromUi.getValintatapajonot().get(0).setJonosijat(Collections.singletonList(new JonosijaDTO()));
         valinnanvaiheFromUi.setValinnanvaiheoid("valinnanVaiheFoundId");
 
         ValintaperusteetValinnanVaiheDTO valinnanVaihe = new ValintaperusteetValinnanVaiheDTO();
@@ -76,7 +76,7 @@ public class HakukohdeResourceImplTest {
         valinnanvaiheFromUi.setValintatapajonot(Collections.singletonList(new ValintatietoValintatapajonoDTO()));
         assertEquals(400, hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi).getStatus());
 
-        valinnanvaiheFromUi.getValintatapajonot().get(0).setHakija(Collections.singletonList(new HakijaDTO()));
+        valinnanvaiheFromUi.getValintatapajonot().get(0).setJonosijat(Collections.singletonList(new JonosijaDTO()));
         assertEquals(202, hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi).getStatus());
     }
 }

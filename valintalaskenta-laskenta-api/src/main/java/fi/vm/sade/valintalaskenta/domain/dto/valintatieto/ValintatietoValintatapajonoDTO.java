@@ -105,13 +105,17 @@ public class ValintatietoValintatapajonoDTO extends ValintatapajonoDTO {
     }
 
     public boolean empty() {
-        return hakija == null || hakija.isEmpty();
+        return getJonosijat() == null || getJonosijat().isEmpty();
     }
 
     @Override
     public String toString() {
         return "ValintatietoValintatapajonoDTO{" +
-            "hakija=" + hakija +
+            "oid=" + getOid() +
+            ", valintatapajonoOid=" + getValintatapajonooid() +
+            ", nimi=" + getNimi() +
+            ", jonosijat=" + getJonosijat() +
+            ", hakija=" + hakija +
             ", varasijat=" + varasijat +
             ", varasijaTayttoPaivat=" + varasijaTayttoPaivat +
             ", varasijojaKaytetaanAlkaen=" + varasijojaKaytetaanAlkaen +
