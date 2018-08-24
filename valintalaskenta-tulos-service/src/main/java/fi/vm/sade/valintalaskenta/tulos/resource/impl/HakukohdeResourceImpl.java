@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ_UPDATE_CRUD;
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.ROLE_VALINTOJENTOTEUTTAMINEN_TULOSTENTUONTI;
 
+import fi.vm.sade.auditlog.Changes;
 import java.util.List;
 import java.util.Optional;
 
@@ -136,8 +137,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
                                     ValintaperusteetOperation.VALINNANVAIHE_TUONTI_KAYTTOLIITTYMA,
                                     ValintaResource.VALINNANVAIHE,
                                     vaihe.getValinnanvaiheoid(),
-                                    vaihe,
-                                    null,
+                                    Changes.addedDto(vaihe),
                                     additionalAuditFields);
                             });
                         }
