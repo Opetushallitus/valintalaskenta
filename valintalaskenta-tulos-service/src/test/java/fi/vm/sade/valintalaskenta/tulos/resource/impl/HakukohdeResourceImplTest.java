@@ -74,15 +74,15 @@ public class HakukohdeResourceImplTest {
     @Test
     public void emptyInputIsNotAllowed() {
         valinnanvaiheFromUi.setValintatapajonot(null);
-        assertEquals(400, hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi).getStatus());
+        assertEquals(400, hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi, new MockHttpServletRequest()).getStatus());
 
         valinnanvaiheFromUi.setValintatapajonot(Collections.emptyList());
-        assertEquals(400, hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi).getStatus());
+        assertEquals(400, hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi, new MockHttpServletRequest()).getStatus());
 
         valinnanvaiheFromUi.setValintatapajonot(Collections.singletonList(new ValintatietoValintatapajonoDTO()));
-        assertEquals(400, hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi).getStatus());
+        assertEquals(400, hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi, new MockHttpServletRequest()).getStatus());
 
         valinnanvaiheFromUi.getValintatapajonot().get(0).setJonosijat(Collections.singletonList(new JonosijaDTO()));
-        assertEquals(202, hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi).getStatus());
+        assertEquals(202, hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi, new MockHttpServletRequest()).getStatus());
     }
 }
