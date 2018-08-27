@@ -57,17 +57,15 @@ public class HakukohdeResourceImplTest {
 
     @Test
     public void whenValinnanvaiheIsFoundFromValintaperusteet200IsReturned() {
-        ValinnanvaiheDTO valinnanVaihe = new ValinnanvaiheDTO();
-        valinnanVaihe.setValinnanvaiheoid("valinnanVaiheFoundId");
-        Response response = hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanVaihe, new MockHttpServletRequest());
+        valinnanvaiheFromUi.setValinnanvaiheoid("valinnanVaiheFoundId");
+        Response response = hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi, new MockHttpServletRequest());
         assertEquals(202, response.getStatus());
     }
 
     @Test
     public void whenValinnanvaiheIsNotFoundFromValintaperusteet500IsReturned() {
-        ValinnanvaiheDTO valinnanVaihe = new ValinnanvaiheDTO();
-        valinnanVaihe.setValinnanvaiheoid("valinnanVaiheNotFoundId");
-        Response response = hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanVaihe, new MockHttpServletRequest());
+        valinnanvaiheFromUi.setValinnanvaiheoid("valinnanVaiheNotFoundId");
+        Response response = hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi, new MockHttpServletRequest());
         assertEquals(500, response.getStatus());
     }
 
