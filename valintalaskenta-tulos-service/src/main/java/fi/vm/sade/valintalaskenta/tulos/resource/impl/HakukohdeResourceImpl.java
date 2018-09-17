@@ -61,7 +61,13 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
     @ApiOperation(value = "Hakee hakukohteen valinnan vaiheiden tulokset", response = ValinnanvaiheDTO.class)
     public List<ValintatietoValinnanvaiheDTO> hakukohde(
             @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid) {
-        return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
+        try {
+            return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
+        } catch (Exception e) {
+            LOGGER.error("Valintalaskennan tulosten haku hakukohteelle {} epäonnistui!", hakukohdeoid, e);
+            throw e;
+        }
+
     }
 
     @POST
@@ -127,6 +133,11 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Hakee hakukohteen hakijaryhmien tulokset", response = HakijaryhmaDTO.class)
     public List<HakijaryhmaDTO> hakijaryhmat(@ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid) {
-        return tulosService.haeHakijaryhmatHakukohteelle(hakukohdeoid);
+        try {
+            return tulosService.haeHakijaryhmatHakukohteelle(hakukohdeoid);
+        } catch (Exception e) {
+            LOGGER.error("Hakijaryhmien tulosten haku hakukohteelle {} epäonnistui!", hakukohdeoid, e);
+            throw e;
+        }
     }
 }
