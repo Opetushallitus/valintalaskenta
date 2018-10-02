@@ -1,9 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 import com.google.common.collect.Lists;
-
 import fi.vm.sade.authentication.business.service.Authorizer;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetValinnanVaiheDTO;
@@ -18,11 +15,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.mock.web.MockHttpServletRequest;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HakukohdeResourceImplTest {
@@ -57,8 +60,12 @@ public class HakukohdeResourceImplTest {
 
     @Test
     public void whenValinnanvaiheIsFoundFromValintaperusteet200IsReturned() {
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        HttpSession session = Mockito.mock(HttpSession.class);
+        Mockito.when(request.getSession(false)).thenReturn(session);
+
         valinnanvaiheFromUi.setValinnanvaiheoid("valinnanVaiheFoundId");
-        Response response = hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi, new MockHttpServletRequest());
+        Response response = hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi, request);
         assertEquals(202, response.getStatus());
     }
 
@@ -71,16 +78,19 @@ public class HakukohdeResourceImplTest {
 
     @Test
     public void emptyInputIsNotAllowed() {
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        HttpSession session = Mockito.mock(HttpSession.class);
+        Mockito.when(request.getSession(false)).thenReturn(session);
         valinnanvaiheFromUi.setValintatapajonot(null);
-        assertEquals(400, hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi, new MockHttpServletRequest()).getStatus());
+        assertEquals(400, hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi, request).getStatus());
 
         valinnanvaiheFromUi.setValintatapajonot(Collections.emptyList());
-        assertEquals(400, hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi, new MockHttpServletRequest()).getStatus());
+        assertEquals(400, hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi, request).getStatus());
 
         valinnanvaiheFromUi.setValintatapajonot(Collections.singletonList(new ValintatietoValintatapajonoDTO()));
-        assertEquals(400, hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi, new MockHttpServletRequest()).getStatus());
+        assertEquals(400, hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi, request).getStatus());
 
         valinnanvaiheFromUi.getValintatapajonot().get(0).setJonosijat(Collections.singletonList(new JonosijaDTO()));
-        assertEquals(202, hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi, new MockHttpServletRequest()).getStatus());
+        assertEquals(202, hakukohdeResource.lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi, request).getStatus());
     }
 }
