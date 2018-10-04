@@ -31,5 +31,5 @@
     <mockito:mock id="authorizer" class="fi.vm.sade.authentication.business.service.Authorizer" />
 
     <bean id="modelMapper" class="fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper"/>
-    <bean id="valintaPerusteetResource" class="fi.vm.sade.valintalaskenta.tulos.context.ValintaperusteetResourceImpl"/>
+    <bean id="valintaPerusteetResourceV2" class="fi.vm.sade.valintalaskenta.tulos.context.ValintaperusteetResourceV2Impl"/>
 </beans>

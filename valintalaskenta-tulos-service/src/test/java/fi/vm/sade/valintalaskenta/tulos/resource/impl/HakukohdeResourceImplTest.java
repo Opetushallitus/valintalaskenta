@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import fi.vm.sade.authentication.business.service.Authorizer;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetValinnanVaiheDTO;
-import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource;
+import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResourceV2;
 import fi.vm.sade.sharedutils.FakeAuthenticationInitialiser;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
@@ -36,7 +36,7 @@ public class HakukohdeResourceImplTest {
     private Authorizer authorizer;
 
     @Mock
-    private ValintaperusteetResource valintaperusteetResource;
+    private ValintaperusteetResourceV2 valintaperusteetResourceV2;
 
     @InjectMocks
     HakukohdeResourceImpl hakukohdeResource = new HakukohdeResourceImpl();
@@ -54,7 +54,7 @@ public class HakukohdeResourceImplTest {
         ValintaperusteetDTO valintaperusteet = new ValintaperusteetDTO();
         valintaperusteet.setValinnanVaihe(valinnanVaihe);
 
-        when(valintaperusteetResource.haeValintaperusteet("hakukohdeoid", null)).thenReturn(Lists.newArrayList(valintaperusteet));
+        when(valintaperusteetResourceV2.haeValintaperusteet("hakukohdeoid", null)).thenReturn(Lists.newArrayList(valintaperusteet));
         FakeAuthenticationInitialiser.fakeAuthentication();
     }
 

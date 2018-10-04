@@ -1,19 +1,10 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ_UPDATE_CRUD;
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.ROLE_VALINTOJENTOTEUTTAMINEN_TULOSTENTUONTI;
-
 import fi.vm.sade.auditlog.Changes;
-import java.util.List;
-import java.util.Optional;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import fi.vm.sade.auditlog.User;
 import fi.vm.sade.authentication.business.service.Authorizer;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
-import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource;
+import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResourceV2;
 import fi.vm.sade.sharedutils.AuditLog;
 import fi.vm.sade.sharedutils.ValintaResource;
 import fi.vm.sade.sharedutils.ValintaperusteetOperation;
@@ -33,13 +24,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -47,6 +32,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ_UPDATE_CRUD;
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.ROLE_VALINTOJENTOTEUTTAMINEN_TULOSTENTUONTI;
 
 @Controller
 @Path("hakukohde")
@@ -62,7 +50,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
     private Authorizer authorizer;
 
     @Autowired
-    private ValintaperusteetResource valintaperusteetResource;
+    private ValintaperusteetResourceV2 valintaperusteetResourceV2;
 
     @GET
     @Path("{hakukohdeoid}/valinnanvaihe")
@@ -94,7 +82,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
         try {
             authorizer.checkOrganisationAccess(tarjoajaOid, ROLE_VALINTOJENTOTEUTTAMINEN_TULOSTENTUONTI);
 
-            List<ValintaperusteetDTO> valintaperusteet = valintaperusteetResource.haeValintaperusteet(hakukohdeoid, null);
+            List<ValintaperusteetDTO> valintaperusteet = valintaperusteetResourceV2.haeValintaperusteet(hakukohdeoid, null);
             if (vaihe.empty()) {
                 Map<String,String> message = new HashMap<>();
                 LOGGER.warn(String.format("Saatiin tyhjä data käyttöliittymältä; ei tallenneta. " +

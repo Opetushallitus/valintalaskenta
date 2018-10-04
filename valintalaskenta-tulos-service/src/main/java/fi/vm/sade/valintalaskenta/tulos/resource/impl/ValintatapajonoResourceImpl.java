@@ -1,6 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
-import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource;
+import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResourceV2;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
@@ -39,7 +39,7 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
     private ValintalaskentaModelMapper modelMapper;
 
     @Autowired
-    private ValintaperusteetResource valintaperusteetResource;
+    private ValintaperusteetResourceV2 valintaperusteetResourceV2;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -90,7 +90,7 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
                                              @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status, @Context HttpServletRequest request) {
         Optional<Valintatapajono> dto = tulosService.muokkaaValintatapajonoa(valintatapajonoOid,
                 jono -> {
-                    fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO jonoDto = valintaperusteetResource.updateAutomaattinenSijoitteluunSiirto(valintatapajonoOid, status, request);
+                    fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO jonoDto = valintaperusteetResourceV2.updateAutomaattinenSijoitteluunSiirto(valintatapajonoOid, status, request);
                     jono.setAloituspaikat(jonoDto.getAloituspaikat());
                     jono.setEiVarasijatayttoa(jonoDto.getEiVarasijatayttoa());
                     //jono.setJonosijat(jonoDto.get);

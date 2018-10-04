@@ -32,13 +32,10 @@
     <bean id="organisationHierarchyAuthorizer" class="fi.vm.sade.security.OrganisationHierarchyAuthorizer"/>
     <bean id="authorizer" class="fi.vm.sade.security.ThreadLocalAuthorizer"/>
 
-
     <bean id="modelMapper" class="fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper"/>
 
-
-
     <jaxrs-client:client id="ValintaperusteetClient"
-                         serviceClass="fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource"
+                         serviceClass="fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResourceV2"
                          address="${valintalaskentakoostepalvelu.valintaperusteet.ilb.url}"
                          inheritHeaders="true">
         <jaxrs-client:providers>

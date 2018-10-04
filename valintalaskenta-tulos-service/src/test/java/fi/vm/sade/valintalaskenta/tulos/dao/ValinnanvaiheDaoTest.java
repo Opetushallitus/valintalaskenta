@@ -3,7 +3,6 @@ package fi.vm.sade.valintalaskenta.tulos.dao;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
-import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,11 +12,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.List;
-
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -39,7 +35,7 @@ public class ValinnanvaiheDaoTest {
 
     @Test
     @UsingDataSet(locations = "valinnanvaiheJono.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-    public void testHaeTuloksetValinattapajonolle() {
+    public void testHaeTuloksetValinnantapajonolle() {
         {
             Valinnanvaihe vaihe = valinnanvaiheDAO.findByValintatapajonoOid("jono1");
 
