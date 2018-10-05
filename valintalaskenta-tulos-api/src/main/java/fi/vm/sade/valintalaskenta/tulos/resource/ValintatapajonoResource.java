@@ -2,7 +2,7 @@ package fi.vm.sade.valintalaskenta.tulos.resource;
 
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
+import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -41,10 +41,11 @@ public interface ValintatapajonoResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{valintatapajonoOid}/valmissijoiteltavaksi")
-    @ApiOperation(value = "Lisää/Poistaa valintatapajonon sijoittelusta", response = ValintatapajonoDTO.class)
+    @ApiOperation(value = "Tallentaa/muokkaa valintatapajonoa", response = ValintatapajonoDTO.class)
     public Response muokkaaSijotteluStatusta(
             @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
-            @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status, @Context HttpServletRequest request);
+            @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status,
+            @ApiParam(value = "Valintatapajono", required = true) ValintatapajonoDTO valintapajono, @Context HttpServletRequest request);
 
     @GET
     @Path("/{valintatapajonoOid}/valmissijoiteltavaksi")

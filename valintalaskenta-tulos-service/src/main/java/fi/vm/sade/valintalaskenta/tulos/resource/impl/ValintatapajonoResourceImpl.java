@@ -3,7 +3,7 @@ package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResourceV2;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
+import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
@@ -85,12 +85,14 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{valintatapajonoOid}/valmissijoiteltavaksi")
-    @ApiOperation(value = "Lisää/Poistaa valintatapajonon sijoittelusta", response = ValintatapajonoDTO.class)
+    @ApiOperation(value = "Tallentaa/muokkaa valintatapajonoa", response = ValintatapajonoDTO.class)
     public Response muokkaaSijotteluStatusta(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
-                                             @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status, @Context HttpServletRequest request) {
+                                             @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status,
+                                             @ApiParam(value = "Valintatapajono", required = true) ValintatapajonoDTO valintapajono, @Context HttpServletRequest request) {
         Optional<Valintatapajono> dto = tulosService.muokkaaValintatapajonoa(valintatapajonoOid,
                 jono -> {
-                    fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO jonoDto = valintaperusteetResourceV2.updateAutomaattinenSijoitteluunSiirto(valintatapajonoOid, status, request);
+                    //fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO jonoDto = valintaperusteetResourceV2.updateAutomaattinenSijoitteluunSiirto(valintatapajonoOid, status, request);
+                    fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO jonoDto = valintapajono;
                     jono.setAloituspaikat(jonoDto.getAloituspaikat());
                     jono.setEiVarasijatayttoa(jonoDto.getEiVarasijatayttoa());
                     //jono.setJonosijat(jonoDto.get);
