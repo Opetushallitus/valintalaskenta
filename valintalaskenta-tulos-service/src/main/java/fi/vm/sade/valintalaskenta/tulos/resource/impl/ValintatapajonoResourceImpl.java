@@ -88,20 +88,20 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
     @ApiOperation(value = "Tallentaa/muokkaa valintatapajonoa", response = ValintatapajonoDTO.class)
     public Response muokkaaSijotteluStatusta(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
                                              @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status,
-                                             @ApiParam(value = "Valintatapajono", required = true) ValintatapajonoDTO valintapajono, @Context HttpServletRequest request) {
+                                             @ApiParam(value = "Valintatapajono", required = true) ValintatapajonoDTO valintatapajono, @Context HttpServletRequest request) {
         Optional<Valintatapajono> dto = tulosService.muokkaaValintatapajonoa(valintatapajonoOid,
                 jono -> {
                     //fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO jonoDto = valintaperusteetResourceV2.updateAutomaattinenSijoitteluunSiirto(valintatapajonoOid, status, request);
-                    fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO jonoDto = valintapajono;
-                    jono.setAloituspaikat(jonoDto.getAloituspaikat());
-                    jono.setEiVarasijatayttoa(jonoDto.getEiVarasijatayttoa());
+                    //fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO jonoDto = valintatapajono;
+                    jono.setAloituspaikat(valintatapajono.getAloituspaikat());
+                    jono.setEiVarasijatayttoa(valintatapajono.getEiVarasijatayttoa());
                     //jono.setJonosijat(jonoDto.get);
-                    jono.setKaikkiEhdonTayttavatHyvaksytaan(jonoDto.getKaikkiEhdonTayttavatHyvaksytaan());
-                    jono.setKaytetaanValintalaskentaa(jonoDto.getKaytetaanValintalaskentaa());
-                    jono.setNimi(jonoDto.getNimi());
-                    jono.setPoissaOlevaTaytto(jonoDto.getPoissaOlevaTaytto());
-                    jono.setPrioriteetti(jonoDto.getPrioriteetti());
-                    jono.setSiirretaanSijoitteluun(jonoDto.getSiirretaanSijoitteluun());
+                    jono.setKaikkiEhdonTayttavatHyvaksytaan(valintatapajono.getKaikkiEhdonTayttavatHyvaksytaan());
+                    jono.setKaytetaanValintalaskentaa(valintatapajono.getKaytetaanValintalaskentaa());
+                    jono.setNimi(valintatapajono.getNimi());
+                    jono.setPoissaOlevaTaytto(valintatapajono.getPoissaOlevaTaytto());
+                    jono.setPrioriteetti(valintatapajono.getPrioriteetti());
+                    jono.setSiirretaanSijoitteluun(valintatapajono.getSiirretaanSijoitteluun());
                     //jono.setSijoitteluajoId(jonoDto.getS);
                     //jono.setTasasijasaanto(jonoDto.get);
                     //jono.setValintatapajonoOid();
