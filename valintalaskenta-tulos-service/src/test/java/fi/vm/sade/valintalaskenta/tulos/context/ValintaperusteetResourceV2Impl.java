@@ -51,10 +51,9 @@ public class ValintaperusteetResourceV2Impl implements ValintaperusteetResourceV
     }
 
     @Override
-    @Path("/{valintatapajonoOid}/automaattinenSiirto")
-    public ValintatapajonoDTO updateAutomaattinenSijoitteluunSiirto(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
-                                                                    @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status,
-                                                                    @Context HttpServletRequest request) {
+    @Path("/{oid}/automaattinenSiirto")
+    public ValintatapajonoDTO updateAutomaattinenSijoitteluunSiirto(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("oid") String valintatapajonoOid,
+        @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status, @Context HttpServletRequest request) {
         return new ValintatapajonoDTO();
     }
 }
