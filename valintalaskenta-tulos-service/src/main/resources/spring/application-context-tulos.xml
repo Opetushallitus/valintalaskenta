@@ -35,6 +35,16 @@
     <bean id="modelMapper" class="fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper"/>
 
     <jaxrs-client:client id="ValintaperusteetClient"
+                         serviceClass="fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource"
+                         address="${valintalaskentakoostepalvelu.valintaperusteet.ilb.url}"
+                         inheritHeaders="true">
+        <jaxrs-client:providers>
+            <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
+            <bean class="fi.vm.sade.valintalaskenta.tulos.ObjectMapperProvider" />
+        </jaxrs-client:providers>
+    </jaxrs-client:client>
+
+    <jaxrs-client:client id="ValintaperusteetV2Client"
                          serviceClass="fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResourceV2"
                          address="${valintalaskentakoostepalvelu.valintaperusteet.ilb.url}"
                          inheritHeaders="true">
