@@ -92,7 +92,6 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
         Optional<Valintatapajono> dto = tulosService.muokkaaValintatapajonoa(valintatapajonoOid,
                 jono -> {
                     //fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO jonoDto = valintaperusteetResourceV2.updateAutomaattinenSijoitteluunSiirto(valintatapajonoOid, status, request);
-                    //fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO jonoDto = valintatapajono;
                     jono.setAloituspaikat(valintatapajono.getAloituspaikat());
                     jono.setEiVarasijatayttoa(valintatapajono.getEiVarasijatayttoa());
                     //jono.setJonosijat(jonoDto.get);
