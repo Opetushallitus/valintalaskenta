@@ -2,8 +2,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>fi.vm.sade.valintaperusteet</groupId>
-        <artifactId>valintalaskentabuild</artifactId>
-        <version>5.1-SNAPSHOT</version>
+        <artifactId>valintalaskenta</artifactId>
+        <version>5.2-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
     <artifactId>valintalaskenta-tulos-service</artifactId>
@@ -48,7 +48,7 @@
         <dependency>
             <groupId>fi.vm.sade.valintaperusteet</groupId>
             <artifactId>valintaperusteet-laskenta</artifactId>
-            <version>${project.version}</version>
+            <version>5.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.valintaperusteet</groupId>
@@ -58,7 +58,7 @@
         <dependency>
             <groupId>fi.vm.sade.valintaperusteet</groupId>
             <artifactId>valintaperusteet-api</artifactId>
-            <version>${project.version}</version>
+            <version>5.1-SNAPSHOT</version>
         </dependency>
 
 
@@ -309,8 +309,6 @@
     </dependencies>
 
     <build>
-        <finalName>valintalaskenta-laskenta-service</finalName>
-
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -322,22 +320,6 @@
         </resources>
 
         <plugins>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <webResources>
-                        <resource>
-                            <filtering>true</filtering>
-                            <directory>src/main/webapp</directory>
-                            <includes>
-                                <include>**/*.*</include>
-                            </includes>
-                        </resource>
-                    </webResources>
-                </configuration>
-            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

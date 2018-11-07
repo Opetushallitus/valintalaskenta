@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>fi.vm.sade.valintaperusteet</groupId>
@@ -10,10 +11,10 @@
 
     <modules>
         <module>valintalaskenta-domain</module>
-        <module>valintalaskenta-laskenta-api</module>
         <module>valintalaskenta-tulos-api</module>
-        <module>valintalaskenta-laskenta-service</module>
         <module>valintalaskenta-tulos-service</module>
+        <module>valintalaskenta-laskenta-api</module>
+        <module>valintalaskenta-laskenta-service</module>
     </modules>
 
     <properties>
@@ -22,6 +23,7 @@
         <httpcomponents.core.version>4.4.4</httpcomponents.core.version>
         <httpcomponents.version>4.5.2</httpcomponents.version>
         <jackson.version>1.9.13</jackson.version>
+        <modelmapper.version>2.1.0</modelmapper.version>
         <spring.asm.version>3.1.4.RELEASE</spring.asm.version>
         <spring.security.version>4.1.2.RELEASE</spring.security.version>
         <spring.version>4.3.2.RELEASE</spring.version>
@@ -37,6 +39,116 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>fi.vm.sade.valintaperusteet</groupId>
+                <artifactId>sharedutils</artifactId>
+                <version>5.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>fi.vm.sade.valintaperusteet</groupId>
+                <artifactId>sharedutils</artifactId>
+                <version>5.1-SNAPSHOT</version>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.lordofthejars</groupId>
+                <artifactId>nosqlunit-mongodb</artifactId>
+                <version>0.7.6</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>20.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-rs-service-description-swagger</artifactId>
+                <version>3.2.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+                <version>3.2.4</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-frontend-jaxws</artifactId>
+                <version>3.2.4</version>
+                <scope>compile</scope>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>jaxb-impl</artifactId>
+                        <groupId>com.sun.xml.bind</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-transports-http</artifactId>
+                <version>3.2.4</version>
+                <scope>compile</scope>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>spring-web</artifactId>
+                        <groupId>org.springframework</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>spring-beans</artifactId>
+                        <groupId>org.springframework</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-rs-client</artifactId>
+                <version>3.2.4</version>
+                <scope>compile</scope>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>spring-web</artifactId>
+                        <groupId>org.springframework</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>spring-beans</artifactId>
+                        <groupId>org.springframework</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>2.7</version>
+            </dependency>
+            <dependency>
+                <groupId>fi.vm.sade</groupId>
+                <artifactId>auditlogger</artifactId>
+                <version>8.3.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.5</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-core-asl</artifactId>
+                <version>1.9.13</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.4</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache-core</artifactId>
+                <version>2.5.0</version>
+                <scope>compile</scope>
+            </dependency>
             <dependency>
                 <groupId>org.mongodb.morphia</groupId>
                 <artifactId>morphia</artifactId>
@@ -97,11 +209,6 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.mongodb</groupId>
-                <artifactId>mongo-java-driver</artifactId>
-                <version>3.4.2</version>
-            </dependency>
-            <dependency>
                 <groupId>javax.validation</groupId>
                 <artifactId>validation-api</artifactId>
                 <version>1.0.0.GA</version>
@@ -142,11 +249,6 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-orm</artifactId>
                 <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mongodb.morphia</groupId>
-                <artifactId>morphia</artifactId>
-                <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>cglib</groupId>
@@ -337,6 +439,19 @@
         </repository>
     </repositories>
 
+    <distributionManagement>
+        <repository>
+            <id>oph-sade-artifactory</id>
+            <name>oph-sade-artifactory-releases</name>
+            <url>https://artifactory.opintopolku.fi/artifactory/oph-sade-release-local</url>
+        </repository>
+        <snapshotRepository>
+            <id>oph-sade-artifactory</id>
+            <name>oph-sade-artifactory-snapshots</name>
+            <url>https://artifactory.opintopolku.fi/artifactory/oph-sade-snapshot-local</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <build>
         <resources>
             <resource>
@@ -395,18 +510,6 @@ buildTtime=${maven.build.timestamp}
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <webResources>
-                        <resource>
-                            <directory>src/main/resources</directory>
-                            <targetPath>WEB-INF/classes</targetPath>
-                        </resource>
-                    </webResources>
                 </configuration>
             </plugin>
             <plugin>

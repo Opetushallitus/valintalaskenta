@@ -1,0 +1,52 @@
+sudo: required
+
+language: java
+
+jdk:
+- oraclejdk8
+
+services:
+- docker
+
+cache:
+  directories:
+  - $HOME/.m2
+
+env:
+  global:
+  # ARTIFACTORY_USERNAME
+  - secure: "pU19/fpPo86NAyVI5JMg5OLcbjKno6dhTyVeVOeqqak9YwbsaTh4GpaNMwVJtjbzbhj9dtP0nffS1bJgKrtN81pPwZw3KNAwMPKWnZHxfj+hD4gdiJJ+ReeDyQm67AClI/AQSo/+ZEYzd3+b6aiegYA2RrLGcSECtLV3tULzNdzX4NAbqTKaHtYf+ycYdw6Ul/584DtPVyxLYFcVhG7un4vbj4XUE4POkFtqQKBs3tvY+ReXpPg9UD9ZPtUqxSGz4uhzMK/l0D3ZyaeqjlKgcVX3JmR8TfE39dQ1dydRkTsJzVkJfO/zY4D1qPAjg3VlqyFPuPEXRo06ZqWvES2TzX/MIZDEulbiIAd0A/UnS7JSr1h5evCafu2QWb1GzdEH+eDYWNjNPMQObt+dBLS+nmFZetc8sZQS6fkr+9sjdQktnuj99rMjQSfQeqO+nesuMHg8ukxklL04ovSI6rLn6Aj2RRoQSFdEbx1OB2MZ4gAnumwrE9t1tayf78Fg6ZXYiWfIOgNviA5r5xfTR2GrJ+PQjvzeRKDDqsb/dav+s4Sl3VG5IbsiLSTcVK3MImKcF5KF60CksxNrjdySPlBSejwDHNt6wwFwI9l0YzWij7dLzDwS6Vhpob1aT3JUzH0MveWouii2YB38q4a5QdRDI6fHuZtOgXRMTr7AXwI15rc="
+  # ARTIFACTORY_PASSWORD
+  - secure: "rUBbUTq924fRupu4KObuzEje4x3kZZOQ1sDedaz+MTI5da+HZM5+lFLY1RHLC0fHnpfKsZ6VuP2YdPeuWtzkO0ZLikGSlADAGq3puVVJm8iNFFHR9XzY02E+BNYXQ9BhffEAWqHisEoAYdteaVMnKRCQknqRT+1DptLHjnOJP6XgcM7LRXYgZklVRmKnDdBRWvswVY1NVjc4AZIcxf9mQYMyFsOTiFg6ATe518Q75nP6TOywGYyx1QGb7cjtFF3GMWAh+wS36xc+YYVtFWLeG39zW3NnFyJ+BrgSzi2O1qHiP4UfXydK7+q+Ci/0hb4E9Z/4GFchBuDEM4Y2KgFDfWMM/bkXx2tv4a3WFtKI+zHhn9NZ2r57JjkSl7jVJiQg7zyTdG8EshpEMmj28xJls+TN4O1YAaEROCqYbJPvgtPolhKezB/9RcAbb/Q0d/hp3+Q7vU8H7qdbkyfCdZOBJvD3Be3Q+6ekVBS7mAhBV+L+SJPOPG61rAKc1v3Nrfdr1uihXOTUMHVY/t6Ky8HFRvCIxDsRLgbCGwN9hDSJGY5oDs75DA23Us72WVAmzGRaFekaqEbQcCIbLOjCcZynrH3p4jNDdBFYF5a3TU0UXZcJLLqrv5SEB1A/1Q3WYLcVv9QcXLilO+QOjUWSxsQlN7Ncam1aSSqDwARGHokUS5k="
+  # AWS_ACCESS_KEY_ID
+  - secure: "SuP22aHrlJ/M27EEYVJO6LjzgTL5PgYhyALYhBgTC30XLuM4OPGLYXoHNMubbTbWwp0dwTLNFqaY2AKGB0+0KdLfhNXgDhYeBitl4wEE5e8sIGygRlvrHZ+2HD8s/rWqHb2nKNIdCE2IJZk0WiaL4kEYqQH4WuKi5yF4gA0fAMyR7aONvDcurty+6W+NPVpa1g1BqbRCB0STyBzxchM3aJW6k8kzdCXmCI6rNdxETOHgk7DKsnJcuzPEeUgNT+FeSqEkggVH9fa02Ped5DLNc0FOh22Cl+TYGrkNKSo09iZ6vtc1+tCwxlMhOEXoSV3E3ZkW9ZApIsDRHvpsRA0VtwgYj2tlo25bPk656PIdfsUzj3ZP2Cpr/gNGgmMH360ANkHB+2i9ZtfpcY5YsbRHlH+tB/yIVrCeLs9cMV2E566egy9rEOA2caO7hJm9J2DWhxMQ4C71tivADUW9ScVFuo/dJxociRdsttt8YR3NOQi16Xjf8k8Bjkpl4YLxVfri+Y/0ArspuJPszLzzhQRWcvLuZfdeSUNbJ2A4y+470ePDaVrI4TvvDkNYfFIMbREKiTPA1JqgP8Z26KODrHHqJvbvFA0g+xQeIWtQd/GBqvQqcRbF3cgLMrBQgwBuXgG8X5TDk4YxoUkCiepS6bDrQiOYzGxWBZM5bUw7dxBT8Ns="
+  # AWS_SECRET_ACCESS_KEY
+  - secure: "VD5cxdgSn3Dkez173JWARwsFjJg7TKByNPtJvQTfekn32qG4Ib/IAjOi/oRyZnd9BLWDB02zB5MqVC3cT7F9mrA9Ytf0C3u6RT1/iW9UR7/POze39FxwP9fytSVotqf0Agx0Z8buB3+KURq5J0jPV8resBdmcZ5wnTf9pPgjCiaNVi/C7AdYlaSO7zCvfnOMG/r/HOq174l0Z31gxPa+AbRxskKhhP5BizSPyLV+E/6mmqDxr1KIIuMnChoeuIm5TOj9KVEqFY03rYacPyOxJFVwIfZun8RndrbxKPtt9TqktQ/sbu1Zh/JuVvEoC8vxVvNBlqgwH8dTLMyq9nuYPXxqlfGyLc5QE+GdrZ66v3ahjul6rE7MPkdBOOfrDm9oOdKXwPwtqZ5J2n5kU6Z68tb3BFFoCnmlm9hb4at7K1OUxvQQCwJHGB57+tJJDVSFZe2I0uT0p9tYYrTaKc8WgFczddjC0IvPP+YUP7wGPhVUJKVVl8P9F+0jcl6WsRuaYGowsaVziONsEHIvxau41ZPPrKdtDDDTXY2ZhfDD+hVjEkjfwCVY297mKnR6LdbzfPHu5viAlsnURn6kwDGaO0MXDlUoviJ9qoVS7Mq2TtYwGP7eZ6dLDNnKoih/gMPBaXEiJDLO6mJfZAMvPNLdYZhTaAodpzOvVrHN4JNVNiU="
+
+install:
+- git clone https://github.com/Opetushallitus/ci-tools.git
+- source ci-tools/common/setup-tools.sh
+- sudo sh -c "printf '\n%s penaali.hard.ware.fi\n' $(dig +short artifactory.opintopolku.fi|head -n1) >> /etc/hosts"
+- export ARTIFACT_NAME="valintalaskenta"
+
+script:
+- mvn clean install -B -Dbranch=${TRAVIS_BRANCH} -Drevision=${TRAVIS_COMMIT} -DbuildNumber=${TRAVIS_BUILD_NUMBER}
+
+- mv valintalaskenta-laskenta-service/target/valintalaskenta-laskenta-service.war $DOCKER_BUILD_DIR/artifact/valintalaskenta-laskenta-service.war
+- cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
+
+- export BASE_IMAGE="baseimage-war:master"
+- ./ci-tools/common/pull-image.sh
+- ./ci-tools/build/build-war.sh $ARTIFACT_NAME
+
+deploy:
+- provider: script
+  script: mvn deploy -pl valintalaskenta-laskenta-api,valintalaskenta-tulos-api -DskipTests --settings ci-tools/common/maven-settings.xml
+  skip_cleanup: true
+  on:
+#    all_branches: true
+    branch: master
+- provider: script
+  script: ./ci-tools/build/upload-image.sh $ARTIFACT_NAME
+  on:
+    all_branches: true
