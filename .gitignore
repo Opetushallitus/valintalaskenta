@@ -1,0 +1,19 @@
+*.class
+# Required for gradle-wrapper.jar
+#*.jar
+*.war
+*.ear
+*.iml
+node_modules
+node
+npm-debug.log
+.classpath
+.project
+.settings/
+target
+.gitignore
+.idea
+bower_components
+.DS_Store
+.~lock*
+.java-version

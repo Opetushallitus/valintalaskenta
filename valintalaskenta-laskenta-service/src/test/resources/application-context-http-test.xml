@@ -54,6 +54,6 @@
     </jaxrs:providers>
 
   </jaxrs:server>
-  <bean id="cxfExceptionLogger" class="fi.vm.sade.valinta.http.CxfExceptionLogger"/>
+  <bean id="cxfExceptionLogger" class="fi.vm.sade.valinta.sharedutils.http.CxfExceptionLogger"/>
 
 </beans>
