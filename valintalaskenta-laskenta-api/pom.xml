@@ -1,25 +1,26 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>fi.vm.sade.valintaperusteet</groupId>
-    <artifactId>valintalaskentabuild</artifactId>
-    <version>5.1-SNAPSHOT</version>
-	<relativePath>..</relativePath>
-  </parent>
-  <artifactId>valintalaskenta-laskenta-api</artifactId>
-  <name>Valintalaskenta :: Laskenta :: API</name>
-	<!--<packaging>jar</packaging>-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>fi.vm.sade.valintaperusteet</groupId>
+        <artifactId>valintalaskenta</artifactId>
+        <version>5.2-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
+    <artifactId>valintalaskenta-laskenta-api</artifactId>
+    <name>Valintalaskenta :: Laskenta :: API</name>
+    <!--<packaging>jar</packaging>-->
 
-	<dependencies>
-		 <dependency>
-	            <groupId>javax.validation</groupId>
-	            <artifactId>validation-api</artifactId>
-	        </dependency>
-	        <dependency>
-	            <groupId>org.codehaus.jackson</groupId>
-	            <artifactId>jackson-mapper-asl</artifactId>
-	            <scope>provided</scope>
-	        </dependency>
+    <dependencies>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-jaxrs</artifactId>
@@ -29,7 +30,7 @@
         <dependency>
             <groupId>fi.vm.sade.valintaperusteet</groupId>
             <artifactId>valintaperusteet-api</artifactId>
-            <version>${project.version}</version>
+            <version>5.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>javax</groupId>
@@ -37,7 +38,7 @@
         </dependency>
 
     </dependencies>
-    	<build>
+    <build>
         <plugins>
             <plugin>
                 <inherited>true</inherited>
