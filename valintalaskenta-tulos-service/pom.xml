@@ -309,7 +309,7 @@
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}</finalName>
+        <finalName>valintalaskenta-laskenta-service</finalName>
 
         <resources>
             <resource>

@@ -1,0 +1,255 @@
+#
+# TÄHÄN TIEDOSTOON EI SAA TALLENTAA YMPÄRISTÖKOHTAISIA ARVOJA MUUTOIN KUIN MUUTTUJINA!!!
+#
+# Tämä tiedosto toimii pohjana oph-configuration/common.properties tiedostolle,
+# joka asettaa tomcatin ympäristökohtaiset arvot.
+#
+
+# Aseta vähintään nämä ympäristökohtaiset arvot
+activemq.brokerurl={{activemq_brokerurl}}
+activemq.jmxurl={{activemq_jmxurl}}
+auth.mode={{auth_mode}}
+env.loglevel={{env_loglevel}}
+host.cas={{host_cas}}
+host.ilb={{host_ilb}}
+host.alb={{host_alb}}
+host.ldap={{host_ldap}}
+host.virkailija={{host_virkailija}}
+kela.ftp.username={{kela_ftp_username}}
+kela.ftp.password={{kela_ftp_password}}
+kela.ftp.parameters={{kela_ftp_parameters}}
+kela.ftp.host={{kela_ftp_host}}
+kela.ftp.port={{kela_ftp_port}}
+kela.ftp.protocol={{kela_ftp_protocol}}
+kela.ftp.path={{kela_ftp_path}}
+ldap.manager.password={{ldap_manager_password}}
+ldap.manager-password={{ldap_manager_password}}
+ldap.manager.userdn={{ldap_manager_userdn}}
+mongodb.virkailija.uri=mongodb://{{mongodb_virkailija_auth}}@{{mongodb_virkailija_host}}:{{mongodb_virkailija_port}}
+server.name={{ansible_hostname}}
+valintalaskentakoostepalvelu.app.username.to.haku={{valintalaskentakoostepalvelu_app_username_to_haku}}
+valintalaskentakoostepalvelu.app.password.to.haku={{valintalaskentakoostepalvelu_app_password_to_haku}}
+valintalaskentakoostepalvelu.app.username.to.ataru={{valintalaskentakoostepalvelu_app_username_to_ataru}}
+valintalaskentakoostepalvelu.app.password.to.ataru={{valintalaskentakoostepalvelu_app_password_to_ataru}}
+valintalaskentakoostepalvelu.app.username.to.koodisto={{valintalaskentakoostepalvelu_app_username_to_koodisto}}
+valintalaskentakoostepalvelu.app.password.to.koodisto={{valintalaskentakoostepalvelu_app_password_to_koodisto}}
+valintalaskentakoostepalvelu.app.username.to.organisaatio={{valintalaskentakoostepalvelu_app_username_to_organisaatio}}
+valintalaskentakoostepalvelu.app.password.to.organisaatio={{valintalaskentakoostepalvelu_app_password_to_organisaatio}}
+valintalaskentakoostepalvelu.app.username.to.sijoittelu={{valintalaskentakoostepalvelu_app_username_to_sijoittelu}}
+valintalaskentakoostepalvelu.app.password.to.sijoittelu={{valintalaskentakoostepalvelu_app_password_to_sijoittelu}}
+valintalaskentakoostepalvelu.app.username.to.tarjonta={{valintalaskentakoostepalvelu_app_username_to_tarjonta}}
+valintalaskentakoostepalvelu.app.password.to.tarjonta={{valintalaskentakoostepalvelu_app_password_to_tarjonta}}
+valintalaskentakoostepalvelu.app.username.to.valintaperusteet={{valintalaskentakoostepalvelu_app_username_to_valintaperusteet}}
+valintalaskentakoostepalvelu.app.password.to.valintaperusteet={{valintalaskentakoostepalvelu_app_password_to_valintaperusteet}}
+valintalaskentakoostepalvelu.app.username.to.valintatieto={{valintalaskentakoostepalvelu_app_username_to_valintatieto}}
+valintalaskentakoostepalvelu.app.password.to.valintatieto={{valintalaskentakoostepalvelu_app_password_to_valintatieto}}
+valintalaskentakoostepalvelu.app.username.to.viestintapalvelu={{valintalaskentakoostepalvelu_app_username_to_viestintapalvelu}}
+valintalaskentakoostepalvelu.app.password.to.viestintapalvelu={{valintalaskentakoostepalvelu_app_password_to_viestintapalvelu}}
+valintalaskentakoostepalvelu.app.username.to.suoritusrekisteri={{valintalaskentakoostepalvelu_app_username_to_haku}}
+valintalaskentakoostepalvelu.app.password.to.suoritusrekisteri={{valintalaskentakoostepalvelu_app_password_to_haku}}
+
+# Oletusarvoja
+activemq.queue.name.log.error=Sade.Log_Error
+activemq.queue.name.log=Sade.Log
+activemq.queue.name.mail=Sade.Email
+activeMq.queueName.organisaatio=fi.vm.sade.organisaatio.service
+activeMq.queueNameHaku=fi.vm.sade.tarjonta.haku.service
+activeMq.queueNameTarjontaAdmin=fi.vm.sade.tarjonta.admin.service
+activeMq.queueNameTarjontaPublic=fi.vm.sade.tarjonta.public.service
+activeMq.targetDestination.learningopportunityprovider.public=fi.vm.sade.learningopportunityprovider.public.service
+activeMq.targetDestination.organisaatio=fi.vm.sade.organisaatio.service
+activeMq.targetDestinationAdmin.tarjonta=fi.vm.sade.tarjonta.admin.service
+activeMq.targetDestinationPublic.tarjonta=fi.vm.sade.tarjonta.public.service
+cas.callback.dokumenttipalvelu-service=http://{{ cluster_valinta_host | default("${server.name}") }}:{{ cluster_valinta_port | default("8309") }}/dokumenttipalvelu-service
+cas.callback.seuranta-service=http://{{ cluster_valinta_host | default("${server.name}") }}:{{ cluster_valinta_port | default("8309") }}/seuranta-service
+cas.callback.sijoittelu-service=http://{{ cluster_sijoittelu_service_host | default("${server.name}") }}:{{ cluster_sijoittelu_service_port | default("8309") }}/sijoittelu-service
+cas.callback.valintalaskentakoostepalvelu=http://{{ cluster_valinta_host | default("${server.name}") }}:{{ cluster_valinta_port | default("8309") }}/valintalaskentakoostepalvelu
+cas.callback.valintalaskenta-service=http://{{ cluster_valinta_host | default("${server.name}") }}:{{ cluster_valinta_port | default("8309") }}/valintalaskenta-laskenta-service
+cas.callback.valintalaskenta-ui=http://{{ cluster_valinta_ui_host | default("${server.name}") }}:{{ cluster_valinta_ui_port | default("8309") }}/valintalaskenta-ui
+cas.callback.valintaperusteet-service=http://{{ cluster_valintaperusteet_service_host | default("${server.name}") }}:{{ cluster_valintaperusteet_service_port | default("8309") }}/valintaperusteet-service
+cas.callback.valintaperusteet-ui=http://{{ cluster_valinta_ui_host | default("${server.name}") }}:{{ cluster_valinta_ui_port | default("8309") }}/valintaperusteet-ui
+cas.callback.valintarekisteri=http://{{ cluster_valintarekisteri_host | default("${server.name}") }}:{{ cluster_valintarekisteri_port | default("8309") }}/valintarekisteri
+cas.callback.authentication-service=http://{{ cluster_authentication_host | default("${server.name}") }}:{{ cluster_authentication_port | default("8304") }}/authentication-service
+cas.group-role-attribute=cn
+cas.group-search-base=ou\=groups
+cas.group-search-filter=(uniqueMember\={0})
+cas.sendRenew=false
+cas.user-search-base=ou\=people
+cas.user-search-filter=(|(mail\={0})(uid\={0}))
+cas.service.dokumenttipalvelu=https://${host.virkailija}/dokumenttipalvelu-service
+cas.service.seuranta=https://${host.virkailija}/seuranta-service
+cas.service.haku-service=https://${host.virkailija}/haku-app
+cas.service.ataru=https://${host.virkailija}/lomake-editori
+cas.service.koodisto-service=https://${host.virkailija}/koodisto-service
+cas.service.organisaatio-service=https://${host.virkailija}/organisaatio-service
+cas.service.ryhmasahkoposti-service=https://${host.virkailija}/ryhmasahkoposti-service
+cas.service.sijoittelu-service=https://${host.virkailija}/sijoittelu-service
+cas.service.valintalaskentakoostepalvelu=https://${host.virkailija}/valintalaskentakoostepalvelu
+cas.service.valintalaskenta-service=https://${host.virkailija}/valintalaskenta-laskenta-service
+cas.service.valintalaskenta-ui=https://${host.virkailija}/valintalaskenta-ui
+cas.service.valintaperusteet-service=https://${host.virkailija}/valintaperusteet-service
+cas.service.valintaperusteet-ui=https://${host.virkailija}/valintaperusteet-ui
+cas.service.valintarekisteri=https://${host.virkailija}/valintarekisteri
+cas.service.viestintapalvelu=https://${host.virkailija}/viestintapalvelu
+cas.service.suoritusrekisteri=https://${host.virkailija}/suoritusrekisteri
+cas.service.authentication-service=https://${host.virkailija}/authentication-service
+cas.service.oppijanumerorekisteri-service=https://${host.virkailija}/oppijanumerorekisteri-service
+dokumenttipalvelu.mongodb.dbname=dokumenttidb
+dokumenttipalvelu.mongodb.uri= {{ mongodb_dokumenttidb_uri | default("${mongodb.virkailija.uri}") }}/${dokumenttipalvelu.mongodb.dbname}
+flyway.initOnMigrate=true
+koodi.public.webservice.url.backend=https://${host.virkailija}/koodisto-service/services/koodiService
+koodisto.public.webservice.url.backend=https://${host.virkailija}/koodisto-service/services/koodistoService
+jpa.schemaUpdate=validate
+jpa.showSql=false
+ldap.cache.size=10000
+ldap.data.dir=${user.home}/data
+ldap.filter.people=uid\=%u
+ldap.index.cache.size=10000
+ldap.manager-dn=${ldap.manager.userdn}
+ldap.search.base.people=ou=People,dc=opintopolku,dc=fi
+ldap.url=ldap://${host.ldap}
+ldap.url.with.base=ldap\://${host.ldap}/dc\=opintopolku,dc\=fi
+log4j.properties.file=${user.home.conf}/log4j.properties
+oid.rest.url.backend=${host.ilb}/oid-service/rest/oid
+oid.webservice.url.backend=${host.ilb}/services/oidService
+root.organisaatio.oid=1.2.246.562.10.00000000001
+user.home.conf=${user.home}/oph-configuration
+web.url.cas=https\://${host.cas}/cas
+
+valintalaskentakoostepalvelu.jatkuvasijoittelu.cron=0+*/15+*+*+*+?
+valintalaskentakoostepalvelu.tarjonta.ajastinReitti.aktivoi=false
+valintalaskentakoostepalvelu.tarjonta.ajastinReitti.cron=*/1+*+*+?+*+*
+valintalaskentakoostepalvelu.valintaperusteService.url=https://${host.virkailija}/valintaperusteet-service/services/ws/valintaperusteService
+valintalaskentakoostepalvelu.valintalaskentaService.url=https://${host.virkailija}/valintalaskenta-laskenta-service/services/valintalaskentaService
+valintalaskentakoostepalvelu.valintaTulosService.url=https://${host.virkailija}/valintalaskenta-laskenta-service/services/valintatietoService
+valintalaskentakoostepalvelu.sijoitteluService.url=https://${host.virkailija}/sijoittelu-service/services/sijoitteluService
+valintalaskentakoostepalvelu.viestintapalvelu.url=https://${host.virkailija}/viestintapalvelu
+valintalaskentakoostepalvelu.ryhmasahkoposti.url=https://${host.virkailija}/ryhmasahkoposti-service
+valintalaskentakoostepalvelu.tarjontaService.url=https://${host.virkailija}/tarjonta-service/services/tarjontaPublicService
+valintalaskentakoostepalvelu.organisaatioService.url=https://${host.virkailija}/organisaatio-service/services/organisaatioService
+valintalaskentakoostepalvelu.organisaatioService.rest.url=https://${host.virkailija}/organisaatio-service/rest
+valintalaskentakoostepalvelu.hakemusService.url=https://${host.virkailija}/haku-app/services/ws/hakemusService
+valintalaskentakoostepalvelu.tarjonta.rest.url=https://${host.virkailija}/tarjonta-service/rest
+valintalaskentakoostepalvelu.valintatulosservice.rest.url=${host.alb}/valinta-tulos-service
+valintalaskentakoostepalvelu.oppijantunnistus.rest.url=https://${host.virkailija}/oppijan-tunnistus
+valintalaskentakoostepalvelu.hakemus.rest.url=https://${host.virkailija}/haku-app
+valintalaskentakoostepalvelu.authentication.rest.url=https://${host.virkailija}/authentication-service
+valintalaskentakoostepalvelu.koodisto.rest.url=https://${host.virkailija}/koodisto-service/rest
+valintalaskentakoostepalvelu.sijoittelu.rest.url=https://${host.virkailija}/sijoittelu-service/resources
+valintalaskentakoostepalvelu.valintalaskenta.rest.url=${host.ilb}/valintalaskenta-laskenta-service/resources
+valintalaskentakoostepalvelu.koodiService.url=https://${host.virkailija}/koodisto-service/services/koodiService
+valintalaskentakoostepalvelu.dokumenttipalvelu.rest.url=https://${host.virkailija}/dokumenttipalvelu-service/resources
+valintalaskentakoostepalvelu.swagger.basepath=/valintalaskentakoostepalvelu/resources
+valintalaskentakoostepalvelu.valintaperusteet.rest.url=${host.ilb}/valintaperusteet-service/resources
+valintalaskentakoostepalvelu.parametriservice.rest.url=https://${host.virkailija}/ohjausparametrit-service/api
+valintalaskentakoostepalvelu.valintaperusteet.ilb.url=${host.ilb}/valintaperusteet-service/resources
+valintalaskentakoostepalvelu.maxWorkerCount={{valintalaskentakoostepalvelu_maxWorkerCount}}
+valintalaskentakoostepalvelu.laskennan.splittaus={{valintalaskentakoostepalvelu_laskennan_splittaus}}
+valintalaskentakoostepalvelu.ohjausparametrit.cache.ttl.minutes=30
+valintalaskentakoostepalvelu.ohjausparametrit.request.timeout.seconds=20
+valintalaskentakoostepalvelu.tarjonta.sync.cron={{valintalaskentakoostepalvelu_tarjonta_sync_cron}}
+valintalaskentakoostepalvelu.jalkiohjauskirjeet.polling.interval.millis=10000
+valintalaskentakoostepalvelu.jalkiohjauskirjeet.viePdf.timeout.minutes={{ valintalaskentakoostepalvelu_jalkiohjauskirjeet_viepdf_timeout_minutes | default("19") }}
+valintalaskentakoostepalvelu.hyvaksymiskirjeet.polling.interval.millis=10000
+valintalaskentakoostepalvelu.global.http.connectionTimeoutMillis={{valintalaskentakoostepalvelu_global_http_connectiontimeoutmillis}}
+valintalaskentakoostepalvelu.global.http.receiveTimeoutMillis={{valintalaskentakoostepalvelu_global_http_receivetimeoutmillis}}
+valintalaskentakoostepalvelu.hakuimport.threadpoolsize={{ valintalaskentakoostepalvelu_hakuimport_threadpoolsize | default("10") }}
+valintalaskentakoostepalvelu.hakukohdeimport.threadpoolsize={{ valintalaskentakoostepalvelu_hakukohdeimport_threadpoolsize | default("10") }}
+
+#DOKUMENTTIPALVELU
+dokumenttipalvelu-service.swagger.basepath=/dokumenttipalvelu-service/resources
+
+#VALINTAPERUSTEET-UI
+valintaperusteet-ui.valintaperuste-service-url.rest=https://${host.virkailija}/valintaperusteet-service/
+valintaperusteet-ui.tarjona-service-url.rest = https://${host.virkailija}/tarjonta-service/rest/v1/
+valintaperusteet-ui.valintalaskentakoostepalvelu-service-url.rest = https://${host.virkailija}/valintalaskentakoostepalvelu/
+valintaperusteet-ui.koodisto-service-url.rest= https://${host.virkailija}/koodisto-service/rest/
+valintaperusteet-ui.valintalaskenta-service-url.rest=https://${host.virkailija}/valintalaskenta-laskenta-service/
+
+
+#VALINTALASKENTA-UI
+valintalaskenta-ui.valintaperusteet-service-url.rest = https://${host.virkailija}/valintaperusteet-service/
+valintalaskenta-ui.valintalaskentakoostepalvelu-service-url.rest = https://${host.virkailija}/valintalaskentakoostepalvelu/
+valintalaskenta-ui.valintalaskenta-service-url.rest =https://${host.virkailija}/valintalaskenta-laskenta-service/
+valintalaskenta-ui.sijoittelu-service-url.rest =https://${host.virkailija}/sijoittelu-service/
+valintalaskenta-ui.tarjona-service-url.rest = https://${host.virkailija}/tarjonta-service/rest/v1/
+valintalaskenta-ui.hakemus-service-url.rest = https://${host.virkailija}/
+valintalaskenta-ui.hakemus-ui-url= https://${host.virkailija}/haku-app
+valintalaskenta-ui.koodisto-service-url.rest= https://${host.virkailija}/koodisto-service/rest/
+valintalaskenta-ui.authentication-henkiloui-url=https://${host.virkailija}/authentication-henkiloui
+valintalaskenta-ui.sijoitteluntulokset.show-tila-hakijalle={{valintalaskentaui_show_tila_hakijalle_in_valinta_ui}}
+
+
+valintalaskenta-ui.session-keepalive-interval.seconds=150
+valintalaskenta-ui.session-max-idle-time.seconds=1800
+
+#EXCEL EXPORTS
+valintalaskenta-ui.valintalaskenta-service-url.excel = https://${host.virkailija}/valintalaskenta-laskenta-service/
+valintalaskenta-ui.sijoittelu-service-url.excel = https://${host.virkailija}/sijoittelu-service/
+
+
+#VALINTALASKENTA-SERVICE
+valintalaskenta-laskenta-service.mongodb.dbname=valintalaskentadb
+valintalaskenta-laskenta-service.mongodb.uri={{ mongodb_valintalaskentadb_uri | default("${mongodb.virkailija.uri}") }}/${valintalaskenta-laskenta-service.mongodb.dbname}
+valintalaskenta-laskenta-service.mongodb.useIndexQueries=true
+valintalaskenta-laskenta-service.swagger.basepath=/valintalaskenta-laskenta-service/resources
+valintalaskenta-laskenta-service.global.http.connectionTimeoutMillis={{valintalaskentalaskentaservice_global_http_connectiontimeoutmillis}}
+valintalaskenta-laskenta-service.global.http.receiveTimeoutMillis={{valintalaskentalaskentaservice_global_http_receivetimeoutmillis}}
+
+
+#SIJOITTELU-SERVICE
+sijoittelu-service.global.http.connectionTimeoutMillis={{sijoitteluservice_global_http_connectiontimeoutmillis}}
+sijoittelu-service.global.http.receiveTimeoutMillis={{sijoitteluservice_global_http_receivetimeoutmillis}}
+sijoittelu-service.swagger.basepath=/sijoittelu-service/resources/
+
+#VALINTAPERUSTEET-SERVICE
+valintaperusteet-service.swagger.basepath=/valintaperusteet-service/resources
+valintaperusteet-service.postgresql.url=jdbc:postgresql://{{host_postgresql_valintaperusteet}}:{{port_postgresql}}/valintaperusteet?ApplicationName=valintaperusteet-service
+valintaperusteet-service.postgresql.user={{host_postgresql_valintaperusteet_user}}
+valintaperusteet-service.postgresql.password={{host_postgresql_valintaperusteet_password}}
+valintaperusteet-service.postgresql.maxactive={{host_postgresql_valintaperusteet_max_active}}
+valintaperusteet-service.postgresql.maxwait={{host_postgresql_valintaperusteet_max_wait}}
+valintaperusteet-service.postgresql.maxlifetimemillis=60000
+valintaperusteet-service.postgresql.leakDetectionThresholdMillis=1800000
+valintaperusteet.service.username.to.valinta.tulos.service={{valintaperusteet_service_username_to_valinta_tulos_service}}
+valintaperusteet.service.password.to.valinta.tulos.service={{valintaperusteet_service_password_to_valinta_tulos_service}}
+
+#SEURANTA
+seuranta.mongodb.dbname=seurantadb
+seuranta.mongodb.uri={{ mongodb_seurantadb_uri | default("${mongodb.virkailija.uri}") }}/${seuranta.mongodb.dbname}
+valintalaskentakoostepalvelu.seuranta.rest.url=https://${host.virkailija}/seuranta-service/resources
+seuranta-service.swagger.basepath=/seuranta-service/resources
+seuranta-service.rest.url=https://${host.virkailija}/seuranta-service/resources
+
+#ORGANISAATIO
+valintaperusteet-ui.organisaatio-service-url=https://${host.virkailija}/organisaatio-service/
+organisaatio.api.rest.url=https://${host.virkailija}/organisaatio-service/rest/
+
+
+#LOKALISOINTI
+valintaperusteet-ui.lokalisointi-service-url=https://${host.virkailija}/lokalisointi/
+localisation.rest=https://${host.virkailija}/lokalisointi/cxf/rest/v1
+
+
+#KELARESURSSI:
+valintalaskentakoostepalvelu.rajapinnat.kela-service.rest.url=https://${host.virkailija}/kela-service/resources/
+
+#SECURELINK:
+host.haku={{host_haku}}
+host.haku.sv={{host_haku_sv}}
+host.haku.en={{host_haku_en}}
+url-haku=https://${host.haku}
+url-haku-en=https://${host.haku.en}
+url-haku-sv=https://${host.haku.sv}
+omatsivut.email.application.modify.link.en=${url-haku-en}/omatsivut/tuloskirjeet/
+omatsivut.email.application.modify.link.fi=${url-haku}/omatsivut/tuloskirjeet/
+omatsivut.email.application.modify.link.sv=${url-haku-sv}/omatsivut/tuloskirjeet/
+
+#VALINTAREKISTERI
+valintarekisteri.db.user={{host_postgresql_valintarekisteri_user}}
+valintarekisteri.db.password={{host_postgresql_valintarekisteri_password}}
+valintarekisteri.db.url=jdbc:postgresql://{{host_postgresql_valintarekisteri}}/valintarekisteri
+valintarekisteri.tarjonta-service.url=https://{{host_virkailija}}/tarjonta-service
+valintarekisteri.organisaatio-service.url=https://{{host_virkailija}}/organisaatio-service
+valintarekisteri.parseleniently.tarjonta={{valintatulosservice_parseleniently_tarjonta}}
+valintarekisteri.koodisto-service.url=https://{{host_virkailija}}/koodisto-service

@@ -25,7 +25,7 @@ public class ValintaLaskentaLaskentaJetty {
     public static void startShared(boolean useMocks) {
         try {
             if (server.isStopped()) {
-                String root =  ProjectRootFinder.findProjectRoot() + "/valintalaskenta/valintalaskenta-laskenta-service";
+                String root =  ProjectRootFinder.findProjectRoot() + "/valintalaskenta-laskenta-service";
                 WebAppContext wac = new WebAppContext();
                 if (useMocks) {
                     wac.setResourceBase(root);
