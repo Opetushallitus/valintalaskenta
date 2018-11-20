@@ -44,16 +44,6 @@
         </jaxrs-client:providers>
     </jaxrs-client:client>
 
-    <jaxrs-client:client id="ValintaperusteetV2Client"
-                         serviceClass="fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResourceV2"
-                         address="${valintalaskentakoostepalvelu.valintaperusteet.ilb.url}"
-                         inheritHeaders="true">
-        <jaxrs-client:providers>
-            <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
-            <bean class="fi.vm.sade.valintalaskenta.tulos.ObjectMapperProvider" />
-        </jaxrs-client:providers>
-    </jaxrs-client:client>
-
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.dao"/>
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.service.impl"/>
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.resource.impl"/>

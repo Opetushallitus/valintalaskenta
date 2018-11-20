@@ -1,9 +1,8 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
-import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResourceV2;
+import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;
-import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
@@ -37,9 +36,6 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
 
     @Autowired
     private ValintalaskentaModelMapper modelMapper;
-
-    @Autowired
-    private ValintaperusteetResourceV2 valintaperusteetResourceV2;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -91,19 +87,15 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
                                              @ApiParam(value = "Valintatapajono", required = true) ValintatapajonoDTO valintatapajono, @Context HttpServletRequest request) {
         Optional<Valintatapajono> dto = tulosService.muokkaaValintatapajonoa(valintatapajonoOid,
                 jono -> {
-                    //fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO jonoDto = valintaperusteetResourceV2.updateAutomaattinenSijoitteluunSiirto(valintatapajonoOid, status, request);
+                    // Käyttöliittymä kutsuu ValintaperusteetResourceV2::updateAutomaattinenSijoitteluunSiirto(valintatapajonoOid, status, request)
                     jono.setAloituspaikat(valintatapajono.getAloituspaikat());
                     jono.setEiVarasijatayttoa(valintatapajono.getEiVarasijatayttoa());
-                    //jono.setJonosijat(jonoDto.get);
                     jono.setKaikkiEhdonTayttavatHyvaksytaan(valintatapajono.getKaikkiEhdonTayttavatHyvaksytaan());
                     jono.setKaytetaanValintalaskentaa(valintatapajono.getKaytetaanValintalaskentaa());
                     jono.setNimi(valintatapajono.getNimi());
                     jono.setPoissaOlevaTaytto(valintatapajono.getPoissaOlevaTaytto());
                     jono.setPrioriteetti(valintatapajono.getPrioriteetti());
                     jono.setSiirretaanSijoitteluun(valintatapajono.getSiirretaanSijoitteluun());
-                    //jono.setSijoitteluajoId(jonoDto.getS);
-                    //jono.setTasasijasaanto(jonoDto.get);
-                    //jono.setValintatapajonoOid();
                     jono.setValmisSijoiteltavaksi(status);
                 });
         return dto.map(jono -> Response.status(Response.Status.ACCEPTED).entity(modelMapper.map(jono, ValintatapajonoDTO.class)).build()).orElse(Response.status(Response.Status.NOT_FOUND).build());

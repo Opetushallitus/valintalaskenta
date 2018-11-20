@@ -4,7 +4,7 @@ import fi.vm.sade.auditlog.Changes;
 import fi.vm.sade.auditlog.User;
 import fi.vm.sade.authentication.business.service.Authorizer;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
-import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResourceV2;
+import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource;
 import fi.vm.sade.sharedutils.AuditLog;
 import fi.vm.sade.sharedutils.ValintaResource;
 import fi.vm.sade.sharedutils.ValintaperusteetOperation;
@@ -50,7 +50,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
     private Authorizer authorizer;
 
     @Autowired
-    private ValintaperusteetResourceV2 valintaperusteetResourceV2;
+    private ValintaperusteetResource valintaperusteetResource;
 
     @GET
     @Path("{hakukohdeoid}/valinnanvaihe")
@@ -82,7 +82,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
         try {
             authorizer.checkOrganisationAccess(tarjoajaOid, ROLE_VALINTOJENTOTEUTTAMINEN_TULOSTENTUONTI);
 
-            List<ValintaperusteetDTO> valintaperusteet = valintaperusteetResourceV2.haeValintaperusteet(hakukohdeoid, null);
+            List<ValintaperusteetDTO> valintaperusteet = valintaperusteetResource.haeValintaperusteet(hakukohdeoid, null);
             if (vaihe.empty()) {
                 Map<String,String> message = new HashMap<>();
                 LOGGER.warn(String.format("Saatiin tyhjä data käyttöliittymältä; ei tallenneta. " +
