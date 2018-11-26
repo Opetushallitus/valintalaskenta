@@ -20,4 +20,7 @@ public interface ValinnanvaiheDAO {
     void poistaValinnanvaihe(Valinnanvaihe valinnanvaihe);
 
     void poistaJono(Valintatapajono jono);
-}
+
+    void poistaJononJonosijatHakemusOideilla(Valintatapajono jono, List<String> hakemusOids);
+
+    }

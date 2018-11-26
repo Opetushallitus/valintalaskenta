@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.AdvancedDatastore;
 import org.mongodb.morphia.Datastore;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import org.slf4j.Logger;
@@ -102,6 +103,23 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
             datastore.delete(datastore.createQuery(Jonosija.class).field("_id").in(jonosijaIdt));
         }
         datastore.delete(jono);
+    }
+
+    //TODO tämä ei vielä oikeasti poista mitään, logittaa vain poistettavien jonosijojen id:t. (BUG1899)
+    @Override
+    public void poistaJononJonosijatHakemusOideilla(Valintatapajono jono, List<String> hakemusOidsToRemove) {
+        if (!hakemusOidsToRemove.isEmpty()) {
+            LOGGER.warn("Poistetaan jonosijoja hakemuksille {}", hakemusOidsToRemove);
+            List<ObjectId> tamanJononJonosijaIdt = jono.getJonosijaIdt();
+            List<Jonosija> poistettavatJonosijat = datastore.createQuery(Jonosija.class)
+                    .field("_id").in(tamanJononJonosijaIdt)
+                    .field("hakemusOid").in(hakemusOidsToRemove)
+                    .asList();
+
+            for (Jonosija j : poistettavatJonosijat) {
+                LOGGER.warn("Ollaan valmiita poistamaan hakemuksen {} jonosija ObjectId:llä {} ", j.getHakemusOid(), j.getId());
+            }
+        }
     }
 
     private void saveJonosijat(Valintatapajono valintatapajono) {

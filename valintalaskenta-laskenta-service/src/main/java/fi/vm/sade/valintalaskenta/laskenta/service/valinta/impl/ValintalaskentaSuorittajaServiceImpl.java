@@ -117,13 +117,45 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
             ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
 
+            searchForPassives("PRE", valinnanvaihe, hakemukset);
+
             laskeValintatapajonot(hakukohdeOid, uuid, hakemukset, laskentahakemukset, hakukohteenValintaperusteet, vaihe, jarjestysnumero, edellinenVaihe, viimeisinVaihe, valinnanvaihe, edellinenOsallistuminen, korkeakouluhaku);
+
+            searchForPassives("POST ", valinnanvaihe, hakemukset);
             valinnanvaiheDAO.saveOrUpdate(valinnanvaihe);
         }
 
         poistaHaamuryhmat(hakijaryhmat, valintaperusteet.get(0).getHakukohdeOid());
         LOG.info("(Uuid={}) Hakijaryhmien määrä {} hakukohteessa {}", uuid, hakijaryhmat.size(), hakukohdeOid);
         laskeHakijaryhmat(valintaperusteet, hakijaryhmat, hakukohdeOid, uuid, hakemuksetHakukohteittain, korkeakouluhaku);
+    }
+
+    private void searchForPassives(String etuliite, Valinnanvaihe uusi, List<HakemusWrapper> hakemukset) {
+        List<String> validHakemusOids = hakemukset.stream().map(h -> h.getHakemusDTO().getHakemusoid()).collect(Collectors.toList());
+        //Passivoituja ovat ehkä jonosijat, joiden hakemusoideja ei löydy tuoreista (tätä laskentaa varten haetuista) hakemuksista
+        List<String> passiveHakemusOids = new ArrayList<>();
+        List<String> goodHakemusOids = new ArrayList<>();
+        for (Valintatapajono jono : uusi.getValintatapajonot()) {
+            for (Jonosija j : jono.getJonosijat() ) {
+                if (!validHakemusOids.contains(j.getHakemusOid())) {
+                    passiveHakemusOids.add(j.getHakemusOid());
+                } else {
+                    goodHakemusOids.add(j.getHakemusOid());
+                }
+            }
+        }
+        if(!passiveHakemusOids.isEmpty()){
+            LOG.warn("Löytyi passiivisia hakemuksia!");
+            uusi.getValintatapajonot().forEach(j -> j.getJonosijat().forEach(js -> LOG.warn(etuliite + " HAKEMUS {} JONOSSA {}", js.getHakemusOid(), j.getValintatapajonoOid())));
+            LOG.warn (etuliite + " Valid hakemusOids (active, incomplete hakemukses): "+  validHakemusOids);
+            LOG.error (etuliite + " Passivoidut jonosijas, hakemusOid not in valids: " + passiveHakemusOids + ", good hakemusOids: " + goodHakemusOids);
+        }
+        LOG.info(etuliite + " Hakukohde {}, hakemuksia {} kpl : Tutkittiin, löytyykö laskennan tuloksista hakemusoideja joita ei ole tämän laskentakierroksen hakemusten joukossa. Passivoituja: {}, hyviä: {}", uusi.getHakukohdeOid(), hakemukset.size(), passiveHakemusOids.size(), goodHakemusOids.size());
+        if (!passiveHakemusOids.isEmpty()) {
+            for (Valintatapajono j : uusi.getValintatapajonot()) {
+                valinnanvaiheDAO.poistaJononJonosijatHakemusOideilla(j, passiveHakemusOids);
+            }
+        }
     }
 
     private boolean emptyHakemuksetOrValinnanVaiheTyyppiValintakoe(ValintaperusteetDTO vp, List<HakemusWrapper> hakemukset) {
@@ -309,6 +341,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                             .collect(Collectors.toList());
                     jono.setJonosijat(filteroity);
                 }
+                //Tässä vois ehkä poistella vähän myös passivoitujen hakemuksien tuloksia?
                 valinnanvaihe.getValintatapajonot().add(jono);
             }
         }
