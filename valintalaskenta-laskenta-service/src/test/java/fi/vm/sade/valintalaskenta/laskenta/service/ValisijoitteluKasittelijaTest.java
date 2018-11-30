@@ -9,6 +9,7 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKa
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.util.StopWatch;
 
 import java.util.*;
 
@@ -89,8 +90,8 @@ public class ValisijoitteluKasittelijaTest {
 
         LaskeDTO hakukohde1 = new LaskeDTO(null, false, false,"hakukohde1", new ArrayList<>(), Arrays.asList(perusteet1, perusteet2, perusteet3));
         LaskeDTO hakukohde2 = new LaskeDTO(null, false, false,"hakukohde2", new ArrayList<>(), Arrays.asList(perusteet4, perusteet5));
-
-        ValisijoitteluKasittelija.ValisijoiteltavatJonot jonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Arrays.asList(hakukohde1, hakukohde2));
+StopWatch stopWatch = new StopWatch();
+        ValisijoitteluKasittelija.ValisijoiteltavatJonot jonot = valisijoitteluKasittelija.valisijoiteltavatJonot(Arrays.asList(hakukohde1, hakukohde2), stopWatch);
         assertEquals(2, jonot.jonot.size());
         assertEquals(2, jonot.jonot.get("hakukohde1").size());
         assertEquals(1, jonot.jonot.get("hakukohde2").size());

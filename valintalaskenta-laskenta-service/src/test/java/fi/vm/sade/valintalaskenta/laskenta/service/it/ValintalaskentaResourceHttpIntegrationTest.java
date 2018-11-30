@@ -88,7 +88,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
 
     @Test
     public void crashingLaskenta() throws InterruptedException {
-        when(getBean(ValisijoitteluKasittelija.class).valisijoiteltavatJonot(anyListOf(LaskeDTO.class)))
+        when(getBean(ValisijoitteluKasittelija.class).valisijoiteltavatJonot(anyListOf(LaskeDTO.class), any()))
             .thenThrow(new RuntimeException(ValisijoitteluKasittelija.class.getSimpleName() + " call failing in " + getClass().getSimpleName()));
         Laskentakutsu laskentakutsu = createLaskentakutsu("crashingUuid");
         assertEquals(HakukohteenLaskennanTila.UUSI, createHttpClient("/valintalaskenta/laskekaikki").post(laskentakutsu, String.class));
@@ -108,7 +108,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
     }
 
     private void mockValisijoiteltavatJonotCall() {
-        when(getBean(ValisijoitteluKasittelija.class).valisijoiteltavatJonot(anyListOf(LaskeDTO.class)))
+        when(getBean(ValisijoitteluKasittelija.class).valisijoiteltavatJonot(anyListOf(LaskeDTO.class), any()))
             .thenReturn(new ValisijoiteltavatJonot(Collections.emptySet(), Collections.emptyMap()));
     }
 
