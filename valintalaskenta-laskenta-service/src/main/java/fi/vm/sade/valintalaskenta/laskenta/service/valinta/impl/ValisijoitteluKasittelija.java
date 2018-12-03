@@ -25,7 +25,7 @@ public class ValisijoitteluKasittelija {
         }
     }
     public ValisijoiteltavatJonot valisijoiteltavatJonot(List<LaskeDTO> lista, StopWatch stopWatch) {
-        stopWatch.start("Haetaan välisijoiteltavat jonot");
+        stopWatch.start("Muodostetaan välisijoiteltavien jonojen lista");
         Map<String, List<String>> hakukohteet = new ConcurrentHashMap<>();
         Set<Integer> valinnanvaiheet = new TreeSet<>();
         lista.forEach(dto -> {
