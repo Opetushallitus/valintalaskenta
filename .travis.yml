@@ -41,7 +41,7 @@ script:
 
 deploy:
 - provider: script
-  script: mvn deploy -pl fi.vm.sade.valintaperusteet:valintalaskenta,valintalaskenta-laskenta-api,valintalaskenta-tulos-api,valintalaskenta-domain -DskipTests --settings ci-tools/common/maven-settings.xml
+  script: mvn deploy -pl fi.vm.sade.valintaperusteet:valintalaskenta,valintalaskenta-laskenta-api,valintalaskenta-tulos-api,valintalaskenta-domain,valintalaskenta-tulos-service -DskipTests --settings ci-tools/common/maven-settings.xml
   skip_cleanup: true
   on:
 #    all_branches: true
