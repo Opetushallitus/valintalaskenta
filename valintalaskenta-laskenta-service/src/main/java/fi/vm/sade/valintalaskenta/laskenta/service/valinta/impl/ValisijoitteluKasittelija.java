@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
+import org.springframework.util.StopWatch;
 
 @Component
 public class ValisijoitteluKasittelija {
@@ -23,7 +24,8 @@ public class ValisijoitteluKasittelija {
             this.jonot = jonot;
         }
     }
-    public ValisijoiteltavatJonot valisijoiteltavatJonot(List<LaskeDTO> lista) {
+    public ValisijoiteltavatJonot valisijoiteltavatJonot(List<LaskeDTO> lista, StopWatch stopWatch) {
+        stopWatch.start("Muodostetaan välisijoiteltavien jonojen lista");
         Map<String, List<String>> hakukohteet = new ConcurrentHashMap<>();
         Set<Integer> valinnanvaiheet = new TreeSet<>();
         lista.forEach(dto -> {
@@ -47,7 +49,7 @@ public class ValisijoitteluKasittelija {
                 hakukohteet.putIfAbsent(dto.getHakukohdeOid(), jonot);
             }
         });
-
+        stopWatch.stop();
         return new ValisijoiteltavatJonot(valinnanvaiheet, hakukohteet);
 
     }
