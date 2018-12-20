@@ -198,8 +198,8 @@ public class ValintalaskentaResourceImpl {
         List<String> jonot = valintaperusteetDTO.getValinnanVaihe().getValintatapajono().stream().map(ValintatapajonoJarjestyskriteereillaDTO::getOid).collect(Collectors.toList());
         Map<String, List<String>> kohteet = new HashMap<>();
         kohteet.put(valintaperusteetDTO.getHakukohdeOid(), jonot);
-        erillissijoitteleJonot(laskeDTO, kohteet, stopWatch);
         stopWatch.stop();
+        erillissijoitteleJonot(laskeDTO, kohteet, stopWatch);
     }
 
     private Map<String, List<String>> haeKopiotValintaperusteista(List<String> jonot) {
