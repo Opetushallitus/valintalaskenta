@@ -584,7 +584,9 @@ public class ValintalaskentaResourceImpl {
 
                 });
             }
-            stopWatch.stop();
+            if (stopWatch.isRunning()) {
+                stopWatch.stop();
+            }
             paivitaKohteenLaskennanTila(pollKey, HakukohteenLaskennanTila.VALMIS, stopWatch);
             LOG.info(stopWatch.prettyPrint());
         } catch (Throwable t) {
