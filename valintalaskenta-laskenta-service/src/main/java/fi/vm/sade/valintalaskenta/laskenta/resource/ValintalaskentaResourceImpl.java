@@ -566,7 +566,8 @@ public class ValintalaskentaResourceImpl {
                         } catch (Throwable t) {
                             if (stopWatch.isRunning()) {
                                 stopWatch.stop();
-                            }                            paivitaKohteenLaskennanTila(pollKey, HakukohteenLaskennanTila.VIRHE, stopWatch);
+                            }
+                            paivitaKohteenLaskennanTila(pollKey, HakukohteenLaskennanTila.VIRHE, stopWatch);
                             LOG.error(String.format("(Uuid=%s, %s=%s/%s, hakukohde=%s/%s) virhe hakukohteelle %s",
                                     laskeDTO.getUuid(),
                                     valinnanVaihe.getValinnanVaiheTyyppi(),
@@ -574,8 +575,8 @@ public class ValintalaskentaResourceImpl {
                                     valinnanVaiheidenMaara,
                                     i + 1,
                                     hakukohteidenMaaraValinnanVaiheessa,
-                                    laskeDTO.getHakukohdeOid())
-                                    , t);
+                                    laskeDTO.getHakukohdeOid()),
+                                    t);
                             LOG.info(stopWatch.prettyPrint());
                             throw new RuntimeException(t);
 
