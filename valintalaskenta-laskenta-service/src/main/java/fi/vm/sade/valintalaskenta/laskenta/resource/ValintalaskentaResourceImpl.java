@@ -529,7 +529,7 @@ public class ValintalaskentaResourceImpl {
                                         i + 1,
                                         hakukohteidenMaaraValinnanVaiheessa,
                                         laskeDTO.getHakemus().size()));
-                                stopWatch.start("Suoritetaan valintalaskenta " + laskeDTO.getHakemus().size() + " hakemukkselle");
+                                stopWatch.start("Suoritetaan valintalaskenta " + laskeDTO.getHakemus().size() + " hakemukselle");
                                 valintalaskentaService.laske(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid(), laskeDTO.getUuid(), laskeDTO.isKorkeakouluhaku());
                                 stopWatch.stop();
                                 if (valisijoiteltavatJonot.valinnanvaiheet.contains(vaiheenJarjestysNumero)) {
