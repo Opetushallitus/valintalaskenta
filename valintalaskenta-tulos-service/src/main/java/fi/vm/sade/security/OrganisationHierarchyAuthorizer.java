@@ -1,6 +1,5 @@
 package fi.vm.sade.security;
 
-import fi.vm.sade.generic.service.exception.NotAuthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import javax.ws.rs.NotAuthorizedException;
 import java.util.*;
 
 /**

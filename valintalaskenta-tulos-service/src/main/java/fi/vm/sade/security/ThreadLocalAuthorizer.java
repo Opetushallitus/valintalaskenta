@@ -1,8 +1,7 @@
 package fi.vm.sade.security;
 
 import fi.vm.sade.authentication.business.service.Authorizer;
-import fi.vm.sade.generic.common.auth.Role;
-import fi.vm.sade.generic.service.exception.NotAuthorizedException;
+import fi.vm.sade.authorization.NotAuthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
