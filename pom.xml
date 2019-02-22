@@ -18,6 +18,8 @@
     </modules>
 
     <properties>
+        <valintaperusteet.version>5.3-SNAPSHOT</valintaperusteet.version>
+
         <cxf.version>3.2.4</cxf.version>
         <flapdoodle.embed.mongo.version>1.50.5</flapdoodle.embed.mongo.version>
         <httpcomponents.core.version>4.4.4</httpcomponents.core.version>
@@ -50,6 +52,16 @@
                 <version>5.3-SNAPSHOT</version>
                 <type>test-jar</type>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>fi.vm.sade.valintaperusteet</groupId>
+                <artifactId>valintaperusteet-api</artifactId>
+                <version>${valintaperusteet.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fi.vm.sade.valintaperusteet</groupId>
+                <artifactId>valintaperusteet-laskenta</artifactId>
+                <version>${valintaperusteet.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.lordofthejars</groupId>
