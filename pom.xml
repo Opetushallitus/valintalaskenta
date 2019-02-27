@@ -21,11 +21,11 @@
         <valintaperusteet.version>5.3-SNAPSHOT</valintaperusteet.version>
 
         <cxf.version>3.2.4</cxf.version>
-        <flapdoodle.embed.mongo.version>1.50.5</flapdoodle.embed.mongo.version>
+        <flapdoodle.embed.mongo.version>2.2.0</flapdoodle.embed.mongo.version>
         <httpcomponents.core.version>4.4.4</httpcomponents.core.version>
         <httpcomponents.version>4.5.2</httpcomponents.version>
         <jackson.version>1.9.13</jackson.version>
-        <modelmapper.version>2.1.0</modelmapper.version>
+        <modelmapper.version>2.3.2</modelmapper.version>
         <spring.asm.version>3.1.4.RELEASE</spring.asm.version>
         <spring.version>5.1.5.RELEASE</spring.version>
         <spring.security.version>4.2.11.RELEASE</spring.security.version>
@@ -45,6 +45,12 @@
                 <groupId>fi.vm.sade.valintaperusteet</groupId>
                 <artifactId>sharedutils</artifactId>
                 <version>5.3-SNAPSHOT</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax</groupId>
+                        <artifactId>javaee-web-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade.valintaperusteet</groupId>
@@ -52,6 +58,12 @@
                 <version>5.3-SNAPSHOT</version>
                 <type>test-jar</type>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax</groupId>
+                        <artifactId>javaee-web-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade.valintaperusteet</groupId>
@@ -73,6 +85,11 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>20.0</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.xml.ws</groupId>
+                <artifactId>jaxws-api</artifactId>
+                <version>2.3.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.cxf</groupId>
@@ -175,7 +192,7 @@
             <dependency>
                 <groupId>org.mongodb.morphia</groupId>
                 <artifactId>morphia</artifactId>
-                <version>1.2.1</version>
+                <version>1.3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.jasig.cas.client</groupId>
@@ -229,7 +246,7 @@
             <dependency>
                 <groupId>javax.validation</groupId>
                 <artifactId>validation-api</artifactId>
-                <version>1.0.0.GA</version>
+                <version>1.1.0.Final</version>
             </dependency>
 
             <dependency>
@@ -311,6 +328,11 @@
                 <version>42.2.4</version>
             </dependency>
             <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>2.3.1</version>
+            </dependency>
+            <dependency>
                 <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-impl</artifactId>
                 <version>2.2.11</version>
@@ -343,12 +365,6 @@
                 <groupId>org.jboss.logging</groupId>
                 <artifactId>jboss-logging</artifactId>
                 <version>3.1.3.GA</version>
-            </dependency>
-            <dependency>
-                <groupId>javax</groupId>
-                <artifactId>javaee-web-api</artifactId>
-                <version>7.0</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
@@ -421,6 +437,11 @@
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-guava</artifactId>
                 <version>2.9.5</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.annotation</groupId>
+                <artifactId>javax.annotation-api</artifactId>
+                <version>1.3.2</version>
             </dependency>
 
             <!-- TEST -->
@@ -568,13 +589,12 @@ buildTtime=${maven.build.timestamp}
                 </executions>
             </plugin>
             <plugin>
-                <inherited>true</inherited>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.8.0</version>
+                <inherited>true</inherited>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <release>11</release>
+                    <debug>false</debug>
                 </configuration>
             </plugin>
             <plugin>
@@ -592,7 +612,7 @@ buildTtime=${maven.build.timestamp}
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>1.4.1</version>
+                <version>3.0.0-M2</version>
                 <executions>
                     <execution>
                         <id>enforce-versions</id>
@@ -602,7 +622,7 @@ buildTtime=${maven.build.timestamp}
                         <configuration>
                             <rules>
                                 <requireJavaVersion>
-                                    <version>1.8</version>
+                                    <version>11</version>
                                 </requireJavaVersion>
                                 <dependencyConvergence/>
                             </rules>

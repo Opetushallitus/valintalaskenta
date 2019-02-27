@@ -1,16 +1,5 @@
 package fi.vm.sade.valintalaskenta.tulos.context;
 
-import java.io.IOException;
-import java.util.Random;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.Morphia;
-import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 
@@ -22,6 +11,15 @@ import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
 import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.io.IOException;
+import java.util.Random;
 
 /**
  * @author Jussi Jartamo
@@ -73,7 +71,7 @@ public class MongoConfigurationImpl {
 		// MongoClient mongo =
 		// return new MongoClient(new ServerAddress(Network.getLocalHost(),
 		// Network.getFreeServerPort()));
-		return new MongoClient(new ServerAddress(Network.getLocalHost(), PORT)); // factory.newMongo();
+		return new MongoClient(new ServerAddress("127.0.0.1", PORT)); // factory.newMongo();
 	}
 
     @Bean(name = "morphia2")
