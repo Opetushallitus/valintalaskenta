@@ -39,6 +39,7 @@ public class ValintaLaskentaLaskentaJetty {
                 wac.setParentLoaderPriority(true);
                 server.setHandler(wac);
                 server.setStopAtShutdown(true);
+                System.setProperty("ValintaLaskentaLaskentaJetty.server.rootUrl", rootUrl);
                 server.start();
             }
         } catch (Throwable t) {
