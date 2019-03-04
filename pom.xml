@@ -94,18 +94,18 @@
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-rs-service-description-swagger</artifactId>
-                <version>3.2.4</version>
+                <version>${cxf.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-                <version>3.2.4</version>
+                <version>${cxf.version}</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-frontend-jaxws</artifactId>
-                <version>3.2.4</version>
+                <version>${cxf.version}</version>
                 <scope>compile</scope>
                 <exclusions>
                     <exclusion>
@@ -117,7 +117,7 @@
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-transports-http</artifactId>
-                <version>3.2.4</version>
+                <version>${cxf.version}</version>
                 <scope>compile</scope>
                 <exclusions>
                     <exclusion>
@@ -133,7 +133,7 @@
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-rs-client</artifactId>
-                <version>3.2.4</version>
+                <version>${cxf.version}</version>
                 <scope>compile</scope>
                 <exclusions>
                     <exclusion>
