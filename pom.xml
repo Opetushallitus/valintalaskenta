@@ -166,7 +166,6 @@
             <dependency>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-jaxrs</artifactId>
-                <scope>provided</scope>
                 <version>${swagger.version}</version>
             </dependency>
             <dependency>
