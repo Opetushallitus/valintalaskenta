@@ -29,7 +29,7 @@
         <spring.asm.version>3.1.4.RELEASE</spring.asm.version>
         <spring.version>5.1.5.RELEASE</spring.version>
         <spring.security.version>4.2.11.RELEASE</spring.security.version>
-        <swagger.version>1.5.16</swagger.version>
+        <swagger.version>1.5.17</swagger.version>
 
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -535,6 +535,11 @@
                 <artifactId>java-8-matchers</artifactId>
                 <version>1.5</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>3.24.1-GA</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
