@@ -639,7 +639,8 @@ buildTtime=${maven.build.timestamp}
                 <version>3.8.0</version>
                 <inherited>true</inherited>
                 <configuration>
-                    <release>11</release>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <debug>false</debug>
                 </configuration>
             </plugin>
@@ -668,7 +669,7 @@ buildTtime=${maven.build.timestamp}
                         <configuration>
                             <rules>
                                 <requireJavaVersion>
-                                    <version>11</version>
+                                    <version>1.8</version>
                                 </requireJavaVersion>
                                 <dependencyConvergence/>
                             </rules>

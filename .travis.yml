@@ -3,7 +3,7 @@ sudo: required
 language: java
 
 jdk:
-- openjdk11
+- oraclejdk8
 
 services:
 - docker
@@ -35,7 +35,7 @@ script:
 - mv valintalaskenta-laskenta-service/target/valintalaskenta-laskenta-service.war $DOCKER_BUILD_DIR/artifact/valintalaskenta-laskenta-service.war
 - cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
 
-- export BASE_IMAGE="baseimage-war:jdk11"
+- export BASE_IMAGE="baseimage-war:master"
 - ./ci-tools/common/pull-image.sh
 - ./ci-tools/build/build-war.sh $ARTIFACT_NAME
 
