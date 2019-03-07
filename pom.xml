@@ -36,7 +36,7 @@
 
         <maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
 
-        <jetty.version>9.2.11.v20150529</jetty.version>
+        <jetty.version>9.4.15.v20190215</jetty.version>
     </properties>
 
     <dependencyManagement>
@@ -390,13 +390,13 @@
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-server</artifactId>
-                <version>9.2.11.v20150529</version>
+                <version>${jetty.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-webapp</artifactId>
-                <version>9.2.11.v20150529</version>
+                <version>${jetty.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
