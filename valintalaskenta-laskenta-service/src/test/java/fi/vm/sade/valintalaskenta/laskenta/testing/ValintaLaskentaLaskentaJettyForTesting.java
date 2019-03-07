@@ -8,7 +8,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-public class ValintaLaskentaLaskentaJetty {
+public class ValintaLaskentaLaskentaJettyForTesting {
     public final static int port = Integer.parseInt(System.getProperty("valintalaskenta-laskenta.port", String.valueOf(PortChecker.findFreeLocalPort())));
     public static final String rootUrl = "http://localhost:" + port + "/valintalaskenta-laskenta-service/resources";
 

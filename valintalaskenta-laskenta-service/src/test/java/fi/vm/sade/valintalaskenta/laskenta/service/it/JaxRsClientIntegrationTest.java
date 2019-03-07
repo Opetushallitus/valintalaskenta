@@ -3,7 +3,7 @@ package fi.vm.sade.valintalaskenta.laskenta.service.it;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
 
-import fi.vm.sade.valintalaskenta.laskenta.testing.ValintaLaskentaLaskentaJetty;
+import fi.vm.sade.valintalaskenta.laskenta.testing.ValintaLaskentaLaskentaJettyForTesting;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -18,8 +18,8 @@ public class JaxRsClientIntegrationTest {
 
     @Before
     public void setUp() {
-        ValintaLaskentaLaskentaJetty.startShared();
-        applicationContext = ValintaLaskentaLaskentaJetty.ApplicationContextGetter.applicationContext;
+        ValintaLaskentaLaskentaJettyForTesting.startShared();
+        applicationContext = ValintaLaskentaLaskentaJettyForTesting.ApplicationContextGetter.applicationContext;
     }
 
     @Test
