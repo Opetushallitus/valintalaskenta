@@ -35,7 +35,7 @@ script:
 - mv valintalaskenta-laskenta-service/target/valintalaskenta-laskenta-service-*allinone.jar $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}.jar
 - cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
 
-- export BASE_IMAGE="baseimage-fatjar:master"
+- export BASE_IMAGE="baseimage-fatjar:commonproperties"
 - ./ci-tools/common/pull-image.sh
 - ./ci-tools/build/build-fatjar.sh $ARTIFACT_NAME
 
