@@ -50,6 +50,10 @@
                         <groupId>javax</groupId>
                         <artifactId>javaee-web-api</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>javax.ws.rs</groupId>
+                        <artifactId>javax.ws.rs-api</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -63,6 +67,10 @@
                         <groupId>javax</groupId>
                         <artifactId>javaee-web-api</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>javax.ws.rs</groupId>
+                        <artifactId>javax.ws.rs-api</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -74,12 +82,22 @@
                         <groupId>javax.servlet</groupId>
                         <artifactId>javax.servlet-api</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>javax.ws.rs</groupId>
+                        <artifactId>javax.ws.rs-api</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade.valintaperusteet</groupId>
                 <artifactId>valintaperusteet-laskenta</artifactId>
                 <version>${valintaperusteet.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.jboss.spec.javax.transaction</groupId>
+                        <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -99,25 +117,38 @@
                 <version>20.0</version>
             </dependency>
             <dependency>
-                <groupId>javax.xml.ws</groupId>
-                <artifactId>jaxws-api</artifactId>
-                <version>2.3.1</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-core</artifactId>
                 <version>${cxf.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.sun.activation</groupId>
+                        <artifactId>javax.activation</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-rs-service-description-swagger</artifactId>
                 <version>${cxf.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.sun.activation</groupId>
+                        <artifactId>javax.activation</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-frontend-jaxrs</artifactId>
                 <version>${cxf.version}</version>
                 <scope>compile</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.sun.activation</groupId>
+                        <artifactId>javax.activation</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.cxf</groupId>
@@ -128,6 +159,10 @@
                     <exclusion>
                         <artifactId>jaxb-impl</artifactId>
                         <groupId>com.sun.xml.bind</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.sun.activation</groupId>
+                        <artifactId>javax.activation</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -145,6 +180,10 @@
                         <artifactId>spring-beans</artifactId>
                         <groupId>org.springframework</groupId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>com.sun.activation</groupId>
+                        <artifactId>javax.activation</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -160,6 +199,10 @@
                     <exclusion>
                         <artifactId>spring-beans</artifactId>
                         <groupId>org.springframework</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.sun.activation</groupId>
+                        <artifactId>javax.activation</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -234,6 +277,12 @@
                 <groupId>fi.vm.sade.java-utils</groupId>
                 <artifactId>opintopolku-cas-servlet-filter</artifactId>
                 <version>0.1.2-SNAPSHOT</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
@@ -331,6 +380,34 @@
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-core</artifactId>
                 <version>${spring.security.version}</version>
+                <exclusions>
+                  <exclusion>
+                    <groupId>aopalliance</groupId>
+                    <artifactId>aopalliance</artifactId>
+                  </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-config</artifactId>
+                <version>${spring.security.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>aopalliance</groupId>
+                        <artifactId>aopalliance</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-web</artifactId>
+                <version>${spring.security.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>aopalliance</groupId>
+                        <artifactId>aopalliance</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
@@ -347,21 +424,6 @@
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>42.2.4</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.xml.bind</groupId>
-                <artifactId>jaxb-api</artifactId>
-                <version>2.3.1</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-impl</artifactId>
-                <version>2.2.11</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-core</artifactId>
-                <version>2.2.11</version>
             </dependency>
             <dependency>
                 <groupId>org.mongodb</groupId>
