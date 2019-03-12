@@ -26,7 +26,7 @@ public class ValintaLaskentaLaskentaJettyForTesting {
             wac.setResourceBase(root);
             wac.setDescriptor(root + "/src/test/resources/it-profile-web.xml");
             System.setProperty("ValintaLaskentaLaskentaJetty.server.rootUrl", rootUrl);
-            ValintaLaskentaLaskentaJetty.start(wac, server);
+            ValintaLaskentaLaskentaJetty.JETTY.start(wac, server, ValintaLaskentaLaskentaJetty.CONTEXT_PATH);
         } catch (Throwable t) {
             throw new RuntimeException(t);
         }
