@@ -32,12 +32,12 @@ install:
 script:
 - mvn clean install -B -Dbranch=${TRAVIS_BRANCH} -Drevision=${TRAVIS_COMMIT} -DbuildNumber=${TRAVIS_BUILD_NUMBER}
 
-- mv valintalaskenta-laskenta-service/target/valintalaskenta-laskenta-service.war $DOCKER_BUILD_DIR/artifact/valintalaskenta-laskenta-service.war
+- mv valintalaskenta-laskenta-service/target/valintalaskenta-laskenta-service-*allinone.jar $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}.jar
 - cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
 
-- export BASE_IMAGE="baseimage-war:master"
+- export BASE_IMAGE="baseimage-fatjar:master"
 - ./ci-tools/common/pull-image.sh
-- ./ci-tools/build/build-war.sh $ARTIFACT_NAME
+- ./ci-tools/build/build-fatjar.sh $ARTIFACT_NAME
 
 deploy:
 - provider: script

@@ -17,7 +17,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.Laskentakutsu;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija.ValisijoiteltavatJonot;
-import fi.vm.sade.valintalaskenta.laskenta.testing.ValintaLaskentaLaskentaJetty;
+import fi.vm.sade.valintalaskenta.laskenta.testing.ValintaLaskentaLaskentaJettyForTesting;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,8 +37,8 @@ public class ValintalaskentaResourceHttpIntegrationTest {
 
     @Before
     public void setUp() {
-        ValintaLaskentaLaskentaJetty.startShared();
-        applicationContext = ValintaLaskentaLaskentaJetty.ApplicationContextGetter.applicationContext;
+        ValintaLaskentaLaskentaJettyForTesting.startShared();
+        applicationContext = ValintaLaskentaLaskentaJettyForTesting.ApplicationContextGetter.applicationContext;
     }
 
     @Test
@@ -137,7 +137,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
 
     private WebClient createHttpClient(String path) {
         return new HttpResourceBuilder()
-            .address(ValintaLaskentaLaskentaJetty.rootUrl + path)
+            .address(ValintaLaskentaLaskentaJettyForTesting.rootUrl + path)
             .buildExposingWebClientDangerously()
             .getWebClient()
             .type(APPLICATION_JSON_TYPE);

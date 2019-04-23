@@ -7,7 +7,7 @@
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
                            http://www.mockito.org/spring/mockito http://www.mockito.org/spring/mockito.xsd">
 
-  <bean id="embeddedMongodFactory" class="de.flapdoodle.embed.mongo.tests.MongodForTestsFactory" destroy-method="shutdown" lazy-init="true"/>
+  <bean id="embeddedMongodFactory" class="fi.vm.sade.valintalaskenta.laskenta.testing.ValintalaskentaMongodForTestsFactory" destroy-method="shutdown" lazy-init="true"/>
   <bean id="switchingMongoFactory" class="fi.vm.sade.valintalaskenta.laskenta.service.it.ValintalaskentaDbDumpingTest$SwitchingMongoFactory" destroy-method="shutdown"/>
   <bean id="mongo" class="com.mongodb.MongoClient" factory-bean="switchingMongoFactory" factory-method="newMongo"/>
 
