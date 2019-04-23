@@ -45,7 +45,7 @@ deploy:
   skip_cleanup: true
   on:
 #    all_branches: true
-    branch: VTKU-28__generic-common_pois
+    branch: master
 - provider: script
   script: ./ci-tools/build/upload-image.sh $ARTIFACT_NAME
   on:
