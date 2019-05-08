@@ -113,10 +113,10 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
         vaihe.getValintatapajonot()
                 .forEach(
                         v -> {
-                            v.getHakija().forEach(h -> {
+                            v.getJonosijat().forEach(h -> {
                                 Map<String,String> additionalAuditFields = new HashMap<>();
                                 additionalAuditFields.put("hakemusOid", h.getHakemusOid());
-                                additionalAuditFields.put("hakijaOid", h.getOid());
+                                additionalAuditFields.put("hakijaOid", h.getHakijaOid());
                                 additionalAuditFields.put("jonosija", Integer.toString(h.getJonosija()));
                                 additionalAuditFields.put("valintatapajonoOid", v.getValintatapajonooid());
                                 additionalAuditFields.put("hakukohdeOid", hakukohdeoid);
