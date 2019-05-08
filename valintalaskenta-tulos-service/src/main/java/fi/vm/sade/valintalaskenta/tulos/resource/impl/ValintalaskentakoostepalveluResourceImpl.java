@@ -143,7 +143,7 @@ public class ValintalaskentakoostepalveluResourceImpl {
                                 additionalAuditFields.put("hakukohdeOid", hakukohdeoid);
                                 AuditLog.log(LaskentaAudit.AUDIT,
                                         user,
-                                        ValintaperusteetOperation.VALINNANVAIHE_TUONTI_KAYTTOLIITTYMA,
+                                        ValintaperusteetOperation.VALINTATAPAJONO_PAIVITYS,
                                         ValintaResource.VALINNANVAIHE,
                                         vaihe.getValinnanvaiheoid(),
                                         Changes.addedDto(vaihe),
