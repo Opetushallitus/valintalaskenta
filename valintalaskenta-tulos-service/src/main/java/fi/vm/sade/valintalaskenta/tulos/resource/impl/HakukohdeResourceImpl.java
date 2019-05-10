@@ -110,7 +110,6 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
     }
 
     private void auditLog(String hakukohdeoid, ValinnanvaiheDTO vaihe, User user) {
-        try {
             vaihe.getValintatapajonot()
                     .forEach(
                             v -> {
@@ -131,9 +130,6 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
                                 });
                             }
                     );
-        } catch (Exception e) {
-            LOGGER.error("AUDITLOGITUS MENI VIRHEESEEN! " + e);
-        }
     }
 
     @GET
