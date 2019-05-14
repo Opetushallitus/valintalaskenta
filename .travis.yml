@@ -30,7 +30,7 @@ install:
 - export ARTIFACT_NAME="valintalaskenta"
 
 script:
-- mvn clean install -B -Dbranch=${TRAVIS_BRANCH} -Drevision=${TRAVIS_COMMIT} -DbuildNumber=${TRAVIS_BUILD_NUMBER}
+- mvn clean install -U -B -Dbranch=${TRAVIS_BRANCH} -Drevision=${TRAVIS_COMMIT} -DbuildNumber=${TRAVIS_BUILD_NUMBER}
 
 - mv valintalaskenta-laskenta-service/target/valintalaskenta-laskenta-service-*allinone.jar $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}.jar
 - cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
