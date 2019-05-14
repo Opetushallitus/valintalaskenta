@@ -4,7 +4,7 @@
 
     <groupId>fi.vm.sade.valintaperusteet</groupId>
     <artifactId>valintalaskenta</artifactId>
-    <version>5.3-SNAPSHOT</version>
+    <version>5.4-SNAPSHOT</version>
 
     <name>Valintalaskenta</name>
     <packaging>pom</packaging>
@@ -18,7 +18,7 @@
     </modules>
 
     <properties>
-        <valintaperusteet.version>5.3-SNAPSHOT</valintaperusteet.version>
+        <valintaperusteet.version>5.4-SNAPSHOT</valintaperusteet.version>
 
         <cxf.version>3.3.1</cxf.version>
         <flapdoodle.embed.mongo.version>2.2.0</flapdoodle.embed.mongo.version>
