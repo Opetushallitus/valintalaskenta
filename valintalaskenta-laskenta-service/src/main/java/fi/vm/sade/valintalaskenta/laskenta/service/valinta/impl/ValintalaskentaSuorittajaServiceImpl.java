@@ -297,6 +297,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                         continue;
                     }
 
+                    int processed = 0;
                     for (HakemusWrapper hw : hakemukset) {
                         LOG.debug("hakemus {}", new Object[]{hw.getHakemusDTO().getHakemusoid()});
 
@@ -323,6 +324,10 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                                     jk.getNimi(),
                                     jarjestysnumero, edellinenOsallistuminen
                             );
+                        }
+                        processed++;
+                        if (processed % 100 == 0 || processed == hakemukset.size()) {
+                            LOG.info("Processed {}/{} hakemukses for järjestyskriteeri prio {} in jono {} for hakukohde {}.", processed, hakemukset.size(), jk.getPrioriteetti(), j.getOid(), hakukohdeOid);
                         }
                     }
                 }
