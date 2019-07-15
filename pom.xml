@@ -293,7 +293,7 @@
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
                 <artifactId>legacy-cxf-cas</artifactId>
-                <version>0.1.0-SNAPSHOT</version>
+                <version>0.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
