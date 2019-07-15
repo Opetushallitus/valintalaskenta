@@ -28,7 +28,7 @@
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.resource"/>
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.service.impl.converters"/>
 
-    <mockito:mock id="authorizer" class="fi.vm.sade.authentication.business.service.Authorizer" />
+    <mockito:mock id="authorizer" class="fi.vm.sade.javautils.opintopolku_spring_security.Authorizer" />
 
     <bean id="modelMapper" class="fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper"/>
     <bean id="valintaPerusteetResource" class="fi.vm.sade.valintalaskenta.tulos.context.ValintaperusteetResourceImpl"/>
