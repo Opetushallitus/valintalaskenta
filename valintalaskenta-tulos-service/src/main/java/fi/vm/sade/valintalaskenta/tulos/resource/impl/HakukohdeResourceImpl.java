@@ -2,12 +2,12 @@ package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
 import fi.vm.sade.auditlog.Changes;
 import fi.vm.sade.auditlog.User;
-import fi.vm.sade.authentication.business.service.Authorizer;
+import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource;
-import fi.vm.sade.sharedutils.AuditLog;
-import fi.vm.sade.sharedutils.ValintaResource;
-import fi.vm.sade.sharedutils.ValintaperusteetOperation;
+import fi.vm.sade.valinta.sharedutils.AuditLog;
+import fi.vm.sade.valinta.sharedutils.ValintaResource;
+import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
