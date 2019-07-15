@@ -45,7 +45,7 @@ deploy:
   skip_cleanup: true
   on:
 #    all_branches: true
-    branch: master
+    branch: OK-241__caller-id
 - provider: script
   script: ./ci-tools/build/upload-image.sh $ARTIFACT_NAME
   on:
