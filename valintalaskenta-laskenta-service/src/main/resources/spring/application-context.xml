@@ -59,7 +59,7 @@
                          inheritHeaders="true">
         <jaxrs-client:outInterceptors>
             <bean
-                    class="fi.vm.sade.authentication.cas.CasApplicationAsAUserInterceptor">
+                    class="fi.vm.sade.javautils.legacy_cxf_cas.authentication.cas.CasApplicationAsAUserInterceptor">
                 <property name="webCasUrl" value="${web.url.cas}" />
                 <property name="targetService"
                           value="${cas.service.sijoittelu-service}/j_spring_cas_security_check" />
