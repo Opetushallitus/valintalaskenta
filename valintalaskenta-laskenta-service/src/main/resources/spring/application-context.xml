@@ -43,10 +43,17 @@
 
     <bean id="jacksonMapper" class="org.codehaus.jackson.map.ObjectMapper" />
 
+    <bean id="ophRequestHeaders" class="fi.vm.sade.javautils.cxf.OphRequestHeadersCxfInterceptor">
+        <constructor-arg index="0"  name="callerId" value="1.2.246.562.10.00000000001.valintalaskenta.valintalaskenta-laskenta-service"/>
+    </bean>
+
     <jaxrs-client:client id="sijoitteluRestClient"
                          address="${host.ilb}"
                          serviceClass="fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource"
                          inheritHeaders="true">
+        <jaxrs-client:outInterceptors>
+            <ref bean="ophRequestHeaders"/>
+        </jaxrs-client:outInterceptors>
         <jaxrs-client:providers>
             <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
             <bean class="fi.vm.sade.valintalaskenta.laskenta.ObjectMapperProvider" />
@@ -58,6 +65,7 @@
                          serviceClass="fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource"
                          inheritHeaders="true">
         <jaxrs-client:outInterceptors>
+            <ref bean="ophRequestHeaders"/>
             <bean
                     class="fi.vm.sade.javautils.legacy_cxf_cas.authentication.cas.CasApplicationAsAUserInterceptor">
                 <property name="webCasUrl" value="${web.url.cas}" />
@@ -79,6 +87,9 @@
                          serviceClass="fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource"
                          address="${host.ilb}"
                          inheritHeaders="true">
+        <jaxrs-client:outInterceptors>
+            <ref bean="ophRequestHeaders"/>
+        </jaxrs-client:outInterceptors>
         <jaxrs-client:providers>
             <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
             <bean class="fi.vm.sade.valintalaskenta.laskenta.ObjectMapperProvider" />
