@@ -20,6 +20,7 @@
     <properties>
         <valintaperusteet.version>5.6-SNAPSHOT</valintaperusteet.version>
         <valinta-sharedutils.version>5.6-SNAPSHOT</valinta-sharedutils.version>
+        <sijoittelu.version>7.3.0-SNAPSHOT</sijoittelu.version>
 
         <cxf.version>3.3.1</cxf.version>
         <flapdoodle.embed.mongo.version>2.2.0</flapdoodle.embed.mongo.version>
