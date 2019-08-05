@@ -214,7 +214,7 @@
 
     <!-- Tracing -->
     <!--
-    <beans:bean name="traceInterceptor" class="fi.vm.sade.security.TraceInterceptor">
+    <beans:bean name="traceInterceptor" class="fi.vm.sade.javautils.tracing.TraceInterceptor">
     </beans:bean>
     <beans:bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
         <beans:property name="beanNames" value="*WS,*Ws,*AdminService,*PublicService"/>
