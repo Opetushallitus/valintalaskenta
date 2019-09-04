@@ -25,5 +25,5 @@
   <bean id="valinnanvaihedao" class="fi.vm.sade.valintalaskenta.laskenta.dao.impl.ValinnanvaiheDAOImpl"/>
   <bean id="valintalaskentaDbDumper" class="fi.vm.sade.valintalaskenta.laskenta.service.it.ValintalaskentaDbDumpingTest"/>
 
-  <mockito:mock id="authorizer" class="fi.vm.sade.authentication.business.service.Authorizer"/>
+  <mockito:mock id="authorizer" class="fi.vm.sade.javautils.opintopolku_spring_security.Authorizer"/>
 </beans>

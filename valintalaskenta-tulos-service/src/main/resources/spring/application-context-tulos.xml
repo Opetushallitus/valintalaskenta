@@ -28,16 +28,23 @@
         </property>
     </bean>
 
-    <bean id="oidProvider" class="fi.vm.sade.security.OidProvider"/>
-    <bean id="organisationHierarchyAuthorizer" class="fi.vm.sade.security.OrganisationHierarchyAuthorizer"/>
-    <bean id="authorizer" class="fi.vm.sade.security.ThreadLocalAuthorizer"/>
+    <bean id="oidProvider" class="fi.vm.sade.javautils.opintopolku_spring_security.OidProvider"/>
+    <bean id="organisationHierarchyAuthorizer" class="fi.vm.sade.javautils.opintopolku_spring_security.OrganisationHierarchyAuthorizer"/>
+    <bean id="authorizer" class="fi.vm.sade.javautils.opintopolku_spring_security.ThreadLocalAuthorizer"/>
 
     <bean id="modelMapper" class="fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper"/>
+
+    <bean id="ophRequestHeaders" class="fi.vm.sade.javautils.cxf.OphRequestHeadersCxfInterceptor">
+        <constructor-arg index="0"  name="callerId" value="1.2.246.562.10.00000000001.valintalaskenta.valintalaskenta-tulos-service"/>
+    </bean>
 
     <jaxrs-client:client id="ValintaperusteetClient"
                          serviceClass="fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource"
                          address="${valintalaskentakoostepalvelu.valintaperusteet.ilb.url}"
                          inheritHeaders="true">
+        <jaxrs-client:outInterceptors>
+            <ref bean="ophRequestHeaders"/>
+        </jaxrs-client:outInterceptors>
         <jaxrs-client:providers>
             <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
             <bean class="fi.vm.sade.valintalaskenta.tulos.ObjectMapperProvider" />

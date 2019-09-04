@@ -4,7 +4,7 @@
 
     <groupId>fi.vm.sade.valintaperusteet</groupId>
     <artifactId>valintalaskenta</artifactId>
-    <version>5.4-SNAPSHOT</version>
+    <version>5.6-SNAPSHOT</version>
 
     <name>Valintalaskenta</name>
     <packaging>pom</packaging>
@@ -18,7 +18,9 @@
     </modules>
 
     <properties>
-        <valintaperusteet.version>5.4-SNAPSHOT</valintaperusteet.version>
+        <valintaperusteet.version>5.6-SNAPSHOT</valintaperusteet.version>
+        <valinta-sharedutils.version>5.6-SNAPSHOT</valinta-sharedutils.version>
+        <sijoittelu.version>7.4.0-SNAPSHOT</sijoittelu.version>
 
         <cxf.version>3.3.1</cxf.version>
         <flapdoodle.embed.mongo.version>2.2.0</flapdoodle.embed.mongo.version>
@@ -44,7 +46,7 @@
             <dependency>
                 <groupId>fi.vm.sade.valintaperusteet</groupId>
                 <artifactId>sharedutils</artifactId>
-                <version>5.3-SNAPSHOT</version>
+                <version>${valinta-sharedutils.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax</groupId>
@@ -59,7 +61,7 @@
             <dependency>
                 <groupId>fi.vm.sade.valintaperusteet</groupId>
                 <artifactId>sharedutils</artifactId>
-                <version>5.3-SNAPSHOT</version>
+                <version>${valinta-sharedutils.version}</version>
                 <type>test-jar</type>
                 <scope>test</scope>
                 <exclusions>
@@ -271,7 +273,7 @@
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
                 <artifactId>opintopolku-spring-security</artifactId>
-                <version>0.1.0-SNAPSHOT</version>
+                <version>0.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
@@ -292,7 +294,17 @@
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
                 <artifactId>legacy-cxf-cas</artifactId>
-                <version>0.1.0-SNAPSHOT</version>
+                <version>0.5.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>fi.vm.sade.java-utils</groupId>
+                <artifactId>java-cxf</artifactId>
+                <version>0.3.2-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm</artifactId>
+                <version>7.0</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>

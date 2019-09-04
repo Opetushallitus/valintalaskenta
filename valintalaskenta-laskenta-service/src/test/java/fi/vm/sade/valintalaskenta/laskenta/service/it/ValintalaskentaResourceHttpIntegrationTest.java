@@ -136,7 +136,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
     }
 
     private WebClient createHttpClient(String path) {
-        return new HttpResourceBuilder()
+        return new HttpResourceBuilder("valintalaskenta.valintalaskenta-laskenta-service")
             .address(ValintaLaskentaLaskentaJettyForTesting.rootUrl + path)
             .buildExposingWebClientDangerously()
             .getWebClient()
