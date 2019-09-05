@@ -110,26 +110,26 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
     }
 
     private void auditLog(String hakukohdeoid, ValinnanvaiheDTO vaihe, User user) {
-        vaihe.getValintatapajonot()
-                .forEach(
-                        v -> {
-                            v.getHakija().forEach(h -> {
-                                Map<String,String> additionalAuditFields = new HashMap<>();
-                                additionalAuditFields.put("hakemusOid", h.getHakemusOid());
-                                additionalAuditFields.put("hakijaOid", h.getOid());
-                                additionalAuditFields.put("jonosija", Integer.toString(h.getJonosija()));
-                                additionalAuditFields.put("valintatapajonoOid", v.getValintatapajonooid());
-                                additionalAuditFields.put("hakukohdeOid", hakukohdeoid);
-                                AuditLog.log(LaskentaAudit.AUDIT,
-                                    user,
-                                    ValintaperusteetOperation.VALINNANVAIHE_TUONTI_KAYTTOLIITTYMA,
-                                    ValintaResource.VALINNANVAIHE,
-                                    vaihe.getValinnanvaiheoid(),
-                                    Changes.addedDto(vaihe),
-                                    additionalAuditFields);
-                            });
-                        }
-                );
+            vaihe.getValintatapajonot()
+                    .forEach(
+                            v -> {
+                                v.getJonosijat().forEach(h -> {
+                                    Map<String, String> additionalAuditFields = new HashMap<>();
+                                    additionalAuditFields.put("hakemusOid", h.getHakemusOid());
+                                    additionalAuditFields.put("hakijaOid", h.getHakijaOid());
+                                    additionalAuditFields.put("jonosija", Integer.toString(h.getJonosija()));
+                                    additionalAuditFields.put("valintatapajonoOid", v.getValintatapajonooid());
+                                    additionalAuditFields.put("hakukohdeOid", hakukohdeoid);
+                                    AuditLog.log(LaskentaAudit.AUDIT,
+                                            user,
+                                            ValintaperusteetOperation.VALINNANVAIHE_TUONTI_KAYTTOLIITTYMA,
+                                            ValintaResource.VALINNANVAIHE,
+                                            vaihe.getValinnanvaiheoid(),
+                                            Changes.addedDto(vaihe),
+                                            additionalAuditFields);
+                                });
+                            }
+                    );
     }
 
     @GET
