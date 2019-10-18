@@ -367,7 +367,8 @@ public class ValintalaskentaResourceImpl {
         try {
             stopWatch.start("Suoritetaan valintakoelaskenta " + laskeDTO.getUuid() + " " + laskeDTO.getHakemus().size() + " hakemukselle hakukohteessa" + laskeDTO.getHakukohdeOid());
             LOG.info(String.format("(Uuid=%s) Suoritetaan valintakoelaskenta %s hakemukselle hakukohteessa %s", laskeDTO.getUuid(), laskeDTO.getHakemus().size(), laskeDTO.getHakukohdeOid()));
-            laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste(), laskeDTO.getUuid(), new ValintakoelaskennanKumulatiivisetTulokset(), laskeDTO.isKorkeakouluhaku()));
+            //laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste(), laskeDTO.getUuid(), new ValintakoelaskennanKumulatiivisetTulokset(), laskeDTO.isKorkeakouluhaku()));
+            valintalaskentaService.valintakokeetRinnakkain(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getUuid(), new ValintakoelaskennanKumulatiivisetTulokset(), laskeDTO.isKorkeakouluhaku());
             LOG.info(String.format("(Uuid=%s) Valintakoelaskenta suoritettu %s hakemukselle hakukohteessa %s", laskeDTO.getUuid(), laskeDTO.getHakemus().size(), laskeDTO.getHakukohdeOid()));
             stopWatch.stop();
             paivitaKohteenLaskennanTila(pollkey, HakukohteenLaskennanTila.VALMIS, stopWatch);
@@ -428,7 +429,8 @@ public class ValintalaskentaResourceImpl {
                             LOG.info(String.format("(Uuid=%s) Suoritetaan valintakoelaskenta %s hakemukselle", laskeDTO.getUuid(), laskeDTO.getHakemus().size()));
 
                             stopWatch.start("Suoritetaan laskenta" + laskeDTO.getHakemus().size()+ " hakemukselle ");
-                            laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, dto.getValintaperuste(), laskeDTO.getUuid(), kumulatiivisetTulokset, laskeDTO.isKorkeakouluhaku()));
+                            //laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, dto.getValintaperuste(), laskeDTO.getUuid(), kumulatiivisetTulokset, laskeDTO.isKorkeakouluhaku()));
+                            valintalaskentaService.valintakokeetRinnakkain(laskeDTO.getHakemus(), dto.getValintaperuste(), laskeDTO.getUuid(), kumulatiivisetTulokset, laskeDTO.isKorkeakouluhaku());
                             stopWatch.stop();
                         } else {
                             ValintaperusteetDTO valintaperusteetDTO = dto.getValintaperuste().get(0);
@@ -511,7 +513,8 @@ public class ValintalaskentaResourceImpl {
                                         hakukohteidenMaaraValinnanVaiheessa,
                                         laskeDTO.getHakemus().size()));
                                 stopWatch.start("Suoritetaan valintakoelaskenta Uuid:n " + laskeDTO.getUuid() + " " + laskeDTO.getHakemus().size() + " hakemukselle");
-                                laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste(), laskeDTO.getUuid(), kumulatiivisetTulokset, laskeDTO.isKorkeakouluhaku()));
+                                //laskeDTO.getHakemus().forEach(h -> valintalaskentaService.'valintakokeet(h, laskeDTO.getValintaperuste(), laskeDTO.getUuid(), kumulatiivisetTulokset, laskeDTO.isKorkeakouluhaku()));
+                                valintalaskentaService.valintakokeetRinnakkain(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getUuid(), kumulatiivisetTulokset, laskeDTO.isKorkeakouluhaku());
                                 stopWatch.stop();
                             } else {
                                 stopWatch.start("Tarkistetaan, onko haku erillishaku");
