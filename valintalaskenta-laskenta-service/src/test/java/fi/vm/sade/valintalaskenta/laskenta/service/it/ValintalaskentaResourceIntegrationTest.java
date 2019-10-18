@@ -161,7 +161,11 @@ public class ValintalaskentaResourceIntegrationTest {
         LaskeDTO laskeDtoUseammanKoekutsunKanssa = readJson("laskeDTOUseammanKoekutsuVaiheenKanssa.json", new TypeToken<LaskeDTO>() {});
         Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDtoUseammanKoekutsunKanssa);
 
-        valintalaskentaResource.toteutaLaskeKaikki(laskentakutsu);
+        try {
+            valintalaskentaResource.toteutaLaskeKaikki(laskentakutsu);
+        } catch (Exception e) {
+
+        }
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid("1.2.246.562.29.14662042044", "1.2.246.562.11.00000003337");
 
