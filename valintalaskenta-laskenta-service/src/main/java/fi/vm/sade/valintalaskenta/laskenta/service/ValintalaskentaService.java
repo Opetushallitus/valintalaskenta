@@ -16,13 +16,6 @@ public interface ValintalaskentaService {
                  String uuid, boolean korkeakouluhaku)
                 throws RuntimeException;
 
-    String valintakokeet(HakemusDTO hakemus,
-                         List<ValintaperusteetDTO> valintaperuste,
-                         String uuid,
-                         ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset,
-                         boolean korkeakouluhaku)
-                        throws RuntimeException;
-
     String valintakokeetRinnakkain(List<HakemusDTO> hakemukset,
                                    List<ValintaperusteetDTO> valintaperuste,
                                    String uuid,

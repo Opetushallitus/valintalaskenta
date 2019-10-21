@@ -10,9 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -20,16 +18,7 @@ import java.util.stream.Collectors;
 public class ValintakoelaskennanKumulatiivisetTulokset {
     private static final Logger LOG = LoggerFactory.getLogger(ValintakoelaskennanKumulatiivisetTulokset.class);
 
-    private final Map<String,ValintakoeOsallistuminen> osallistumisetHakemuksittain;
-
-    public ValintakoelaskennanKumulatiivisetTulokset(int expectedMapSize) {
-        this.osallistumisetHakemuksittain = new ConcurrentHashMap<>(expectedMapSize);
-    }
-
-    public ValintakoelaskennanKumulatiivisetTulokset() {
-        this.osallistumisetHakemuksittain = new ConcurrentHashMap<>();
-    }
-
+    private final ConcurrentHashMap<String,ValintakoeOsallistuminen> osallistumisetHakemuksittain = new ConcurrentHashMap<>();
 
     public ValintakoeOsallistuminen add(ValintakoeOsallistuminen osallistuminenLaskennasta) {
         return osallistumisetHakemuksittain.compute(osallistuminenLaskennasta.getHakemusOid(), (key, aiemminLaskettuOsallistuminen) -> {
@@ -57,7 +46,6 @@ public class ValintakoelaskennanKumulatiivisetTulokset {
     }
 
     private ValintakoeOsallistuminen yhdista(ValintakoeOsallistuminen laskettuOsallistuminen, ValintakoeOsallistuminen tallennettavaOsallistuminen) {
-        LOG.info("(Thread {}) (Hakemus {}) yhdistetään valintakoeosallistumiset!", Thread.currentThread().getName(), tallennettavaOsallistuminen.getHakemusOid());
         BeanUtils.copyProperties(laskettuOsallistuminen, tallennettavaOsallistuminen, "hakutoiveet");
 
         laskettuOsallistuminen.getHakutoiveet().forEach(laskettuHakutoive ->

@@ -64,27 +64,11 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     }
 
     @Override
-    public String valintakokeet(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperuste, String uuid, ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset, boolean korkeakouluhaku) throws RuntimeException {
-        try {
-            valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste, uuid, kumulatiivisetTulokset, korkeakouluhaku);
-            return "Onnistui!";
-        } catch (Exception e) {
-            LOG.error("Valintakoevaihe epäonnistui", e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    //laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, dto.getValintaperuste(), laskeDTO.getUuid(), kumulatiivisetTulokset, laskeDTO.isKorkeakouluhaku()));
-    //laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste(), laskeDTO.getUuid(), new ValintakoelaskennanKumulatiivisetTulokset(), laskeDTO.isKorkeakouluhaku()));
-    //laskeDTO.getHakemus().forEach(h -> valintalaskentaService.valintakokeet(h, laskeDTO.getValintaperuste(), laskeDTO.getUuid(), kumulatiivisetTulokset, laskeDTO.isKorkeakouluhaku()));
-    @Override
     public String valintakokeetRinnakkain(List<HakemusDTO> hakemukset, List<ValintaperusteetDTO> valintaperuste, String uuid, ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset, boolean korkeakouluhaku) throws RuntimeException {
         try {
-            LOG.info("---- Running valintakokeetRinnakkain parallelStream for {} hakemukses", hakemukset.size());
-            hakemukset.parallelStream().forEach(hakemus -> {
-                valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste, uuid, kumulatiivisetTulokset, korkeakouluhaku);
-            });
-            LOG.info("---- Done running valintakokeetRinnakkain parallelStream for {} hakemukses", hakemukset.size());
+            LOG.info("(Uuid={}) Lasketaan rinnakkain valintakoeosallistumiset {} hakemukselle", uuid, hakemukset.size());
+            hakemukset.parallelStream().forEach(hakemus -> valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste, uuid, kumulatiivisetTulokset, korkeakouluhaku));
+            LOG.info("(Uuid={}) Valintakoeosallistumisten laskenta {} hakemukselle valmis", uuid, hakemukset.size());
             return "Onnistui!";
         } catch (Exception e) {
             LOG.error("Valintakoevaihe epäonnistui", e);
@@ -101,9 +85,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
         valintaperuste.stream().forEachOrdered(peruste -> {
             if (peruste.getValinnanVaihe().getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
                 LOG.info("Suoritetaan valinnanvaiheen {} valintakoelaskenta {} hakemukselle", peruste.getValinnanVaihe().getValinnanVaiheOid(), hakemukset.size());
-                //hakemukset.forEach(h -> valintakokeet(h, singletonList(peruste), uuid, kumulatiivisetTulokset, korkeakouluhaku));
                 valintakokeetRinnakkain(hakemukset, singletonList(peruste), uuid, kumulatiivisetTulokset, korkeakouluhaku);
-
             } else {
                 laske(hakemukset, singletonList(peruste), hakijaryhmat, hakukohdeOid, uuid, korkeakouluhaku);
             }
