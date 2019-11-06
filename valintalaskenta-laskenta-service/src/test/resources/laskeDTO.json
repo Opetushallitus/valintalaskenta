@@ -728,7 +728,7 @@
         "hakukohteet": [
             {
                 "hakijaryhma": [],
-                "hakukohdeoid": "1.2.246.562.5.85532589612",
+                "oid": "1.2.246.562.5.85532589612",
                 "harkinnanvaraisuus": false,
                 "kaikkiJonotSijoiteltu": true,
                 "prioriteetti": 1,
@@ -736,7 +736,7 @@
             },
             {
                 "hakijaryhma": [],
-                "hakukohdeoid": "1.2.246.562.5.85117569336",
+                "oid": "1.2.246.562.5.85117569336",
                 "harkinnanvaraisuus": false,
                 "kaikkiJonotSijoiteltu": true,
                 "prioriteetti": 2,
@@ -744,7 +744,7 @@
             },
             {
                 "hakijaryhma": [],
-                "hakukohdeoid": "1.2.246.562.5.37009438716",
+                "oid": "1.2.246.562.5.37009438716",
                 "harkinnanvaraisuus": false,
                 "kaikkiJonotSijoiteltu": true,
                 "prioriteetti": 3,
@@ -752,7 +752,7 @@
             },
             {
                 "hakijaryhma": [],
-                "hakukohdeoid": "1.2.246.562.5.31982630126",
+                "oid": "1.2.246.562.5.31982630126",
                 "harkinnanvaraisuus": false,
                 "kaikkiJonotSijoiteltu": true,
                 "prioriteetti": 4,
@@ -760,7 +760,7 @@
             },
             {
                 "hakijaryhma": [],
-                "hakukohdeoid": "1.2.246.562.5.72457229796",
+                "oid": "1.2.246.562.5.72457229796",
                 "harkinnanvaraisuus": false,
                 "kaikkiJonotSijoiteltu": true,
                 "prioriteetti": 5,
