@@ -27,7 +27,7 @@
         <httpcomponents.core.version>4.4.4</httpcomponents.core.version>
         <httpcomponents.version>4.5.2</httpcomponents.version>
         <jackson.version>1.9.13</jackson.version>
-        <modelmapper.version>2.3.2</modelmapper.version>
+        <modelmapper.version>2.3.5</modelmapper.version>
         <spring.asm.version>3.1.4.RELEASE</spring.asm.version>
         <spring.version>5.1.5.RELEASE</spring.version>
         <spring.security.version>4.2.11.RELEASE</spring.security.version>

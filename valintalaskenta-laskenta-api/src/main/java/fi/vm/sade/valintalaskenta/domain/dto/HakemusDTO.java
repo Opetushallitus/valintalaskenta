@@ -1,7 +1,5 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
-import com.google.gson.JsonArray;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -43,7 +41,7 @@ public class HakemusDTO {
     private String sukunimi;
 
     @ApiModelProperty(value = "Hakijan Koski-opiskeluoikeudet", required = false)
-    private JsonArray koskiOpiskeluoikeudet;
+    private String koskiOpiskeluoikeudetJson;
 
     /**
      * @Deprecated Jatkossa käytetään avainSuoritusTiedot -kenttää
@@ -117,11 +115,11 @@ public class HakemusDTO {
         this.avaimet = avaimet;
     }
 
-    public JsonArray getKoskiOpiskeluoikeudet() {
-        return koskiOpiskeluoikeudet;
+    public String getKoskiOpiskeluoikeudetJson() {
+        return koskiOpiskeluoikeudetJson;
     }
 
-    public void setKoskiOpiskeluoikeudet(JsonArray koskiOpiskeluoikeudet) {
-        this.koskiOpiskeluoikeudet = koskiOpiskeluoikeudet;
+    public void setKoskiOpiskeluoikeudetJson(String koskiOpiskeluoikeudetJson) {
+        this.koskiOpiskeluoikeudetJson = koskiOpiskeluoikeudetJson;
     }
 }
