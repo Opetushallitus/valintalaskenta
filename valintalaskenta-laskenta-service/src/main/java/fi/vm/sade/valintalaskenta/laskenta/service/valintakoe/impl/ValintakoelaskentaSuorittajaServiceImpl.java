@@ -90,8 +90,10 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
     }
 
     @Override
-    public void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet, String uuid, ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset, boolean korkeakouluhaku) {
-        LOG.info("(Uuid={}) Laskentaan valintakoeosallistumiset hakemukselle {}", uuid, hakemus.getHakemusoid());
+    public void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet, String uuid,
+                      ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset, boolean korkeakouluhaku) {
+        LOG.info("(Uuid={}) (Thread={}) Laskentaan valintakoeosallistumiset hakemukselle {}", uuid, Thread.currentThread(), hakemus.getHakemusoid());
+        //LOG.info("Kumulatiiviset tulokset hakemukselle {}: {} ", hakemus.getHakemusoid(), kumulatiivisetTulokset.get(hakemus.getHakemusoid()));
         if (valintaperusteet.size() == 0) {
             return;
         }
@@ -110,16 +112,19 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                     if (koe.getAktiivinen()) {
                         String tunniste = haeTunniste(koe.getTunniste(), hakukohteenValintaperusteet);
                         if (tunniste == null) {
-                            LOG.error("(Uuid={}) Valintakokoeen tunnistetta ei pystytty määrittelemään. HakukohdeOid: {} - ValintakoeOid: {}", uuid, vp.getHakukohdeOid(), koe.getOid());
+                            LOG.error("(Uuid={}) Valintakokoeen tunnistetta ei pystytty määrittelemään. HakukohdeOid: {} - ValintakoeOid: {}",
+                                    uuid, vp.getHakukohdeOid(), koe.getOid());
                             continue;
                         }
                         valintakoeData.putIfAbsent(tunniste, new ArrayList<>());
-                        Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdeltavaValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku());
+                        Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdeltavaValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(),
+                                vaihe.getValinnanVaiheJarjestysluku());
                         if (invalidEdellinenValinnanVaine(uuid, vp, vaihe, edellinenVaihe)) {
                             continue;
                         }
                         Valinnanvaihe viimeisinValinnanVaihe = getViimeisinValinnanvaihe(vp, vaihe, edellinenVaihe);
-                        OsallistuminenTulos osallistuminen = getOsallistuminenTulos(hakemus, vp, hakukohteenValintaperusteet, koe, viimeisinValinnanVaihe, korkeakouluhaku, vanhatOsallistumiset);
+                        OsallistuminenTulos osallistuminen = getOsallistuminenTulos(hakemus, vp, hakukohteenValintaperusteet, koe, viimeisinValinnanVaihe,
+                                korkeakouluhaku, vanhatOsallistumiset);
                         HakukohdeValintakoeData data = getHakukohdeValintakoeData(hakemus, uuid, vp, vaihe, koe, tunniste);
                         data.setOsallistuminenTulos(osallistuminen);
                         valintakoeData.get(tunniste).add(data);

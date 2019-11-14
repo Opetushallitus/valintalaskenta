@@ -10,16 +10,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class ValintakoelaskennanKumulatiivisetTulokset {
     private static final Logger LOG = LoggerFactory.getLogger(ValintakoelaskennanKumulatiivisetTulokset.class);
 
-    private final Map<String,ValintakoeOsallistuminen> osallistumisetHakemuksittain = new HashMap<>();
+    private final ConcurrentHashMap<String,ValintakoeOsallistuminen> osallistumisetHakemuksittain = new ConcurrentHashMap<>();
 
     public ValintakoeOsallistuminen add(ValintakoeOsallistuminen osallistuminenLaskennasta) {
         return osallistumisetHakemuksittain.compute(osallistuminenLaskennasta.getHakemusOid(), (key, aiemminLaskettuOsallistuminen) -> {
