@@ -35,3 +35,4 @@ valintalaskenta-laskenta-service.mongodb.useIndexQueries=true
 valintalaskenta-laskenta-service.swagger.basepath=/valintalaskenta-laskenta-service/resources
 valintalaskenta-laskenta-service.global.http.connectionTimeoutMillis={{valintalaskentalaskentaservice_global_http_connectiontimeoutmillis}}
 valintalaskenta-laskenta-service.global.http.receiveTimeoutMillis={{valintalaskentalaskentaservice_global_http_receivetimeoutmillis}}
+valintalaskenta-laskenta-service.organisaatio-service.url=https://${host.virkailija}/organisaatio-service
