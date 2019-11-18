@@ -4,7 +4,7 @@
     <parent>
         <groupId>fi.vm.sade.valintaperusteet</groupId>
         <artifactId>valintalaskenta</artifactId>
-        <version>5.7-VTKU-98-scala_2.12-SNAPSHOT</version>
+        <version>5.8-VTKU-98-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
     <artifactId>valintalaskenta-laskenta-api</artifactId>
@@ -33,10 +33,6 @@
         <dependency>
             <groupId>fi.vm.sade.valintaperusteet</groupId>
             <artifactId>valintaperusteet-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
         </dependency>
 
     </dependencies>
