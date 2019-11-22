@@ -454,6 +454,10 @@ public class ValintalaskentaResourceImpl {
                     }
                 });
             }
+
+            List<String> oids = laskeDTO.getValintaperuste().stream().map(p -> p.getValinnanVaihe().getValinnanVaiheOid()).collect(Collectors.toList());
+            valintalaskentaService.siivoaPuuttuvatValinnanvaiheet(oids, laskeDTO.getHakemus());
+
             LOG.info(String.format("(Uuid=%s) Laskenta suoritettu hakukohteessa %s", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid()));
             paivitaKohteenLaskennanTila(pollkey, HakukohteenLaskennanTila.VALMIS, stopWatch);
             LOG.info(stopWatch.prettyPrint());

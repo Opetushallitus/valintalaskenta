@@ -34,4 +34,7 @@ public interface ValintalaskentaService {
     void applyValisijoittelu(Map<String, List<String>> valisijoiteltavatJonot, Map<String, fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO> hakemusHashMap);
 
     void applyErillissijoittelu(Map<String, List<String>> jonot, Long ajo);
+
+    //Logitetaan (ja myöhemmin toivottavasti poistetaan) sellaiset valintakoeosallistumiset, joiden valinnanvaihetta ei vaikuta olevan olemassa.
+    void siivoaPuuttuvatValinnanvaiheet(List<String> loytyvatVaiheOidit, List<HakemusDTO> hakemukset);
 }

@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface ValintakoelaskentaSuorittajaService {
     void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet, String uuid, ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset, boolean korkeakouluhaku);
+    void siivoa(List<String> saastettavienValinnanvaiheidenOidit, List<HakemusDTO> hakemukset);
 }

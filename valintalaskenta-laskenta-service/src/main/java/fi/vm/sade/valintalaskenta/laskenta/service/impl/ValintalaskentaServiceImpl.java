@@ -66,7 +66,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     @Override
     public String valintakokeetRinnakkain(List<HakemusDTO> hakemukset, List<ValintaperusteetDTO> valintaperuste, String uuid, ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset, boolean korkeakouluhaku) throws RuntimeException {
         try {
-            LOG.info("(Uuid={}) Lasketaan rinnakkain valintakoeosallistumiset {} hakemukselle", uuid, hakemukset.size());
+            LOG.info("(Uuid={}) Lasketaan ei-oikeasti-rinnakkain FIXME valintakoeosallistumiset {} hakemukselle", uuid, hakemukset.size());
             //hakemukset.parallelStream().forEach(hakemus -> valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste, uuid, kumulatiivisetTulokset, korkeakouluhaku));
             //Temporarily not parallel for readable debug logging
             hakemukset.stream().forEach(hakemus -> valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste, uuid, kumulatiivisetTulokset, korkeakouluhaku));
@@ -160,5 +160,10 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                 valinnanvaiheDAO.saveOrUpdate(vaihe);
             });
         });
+    }
+
+    @Override
+    public void siivoaPuuttuvatValinnanvaiheet(List<String> loytyvatVaiheOidit, List<HakemusDTO> hakemukset) {
+        valintakoelaskentaSuorittajaService.siivoa(loytyvatVaiheOidit, hakemukset);
     }
 }

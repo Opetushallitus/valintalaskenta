@@ -194,6 +194,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
 
         LOG.info("BUG-2087 Hakemus {} Osallistumisissa vaiheOidit {}, koeTunnisteet {}", hakemus.getHakemusoid(), osallistumisistaLoytyvatValinnanvaiheOidit, osallistumisistaLoytyvatValintakoeTunnisteet);
 
+
         List<String> tunnetutValinnanvaiheOidit = valintaperusteet.stream().map(p -> p.getValinnanVaihe().getValinnanVaiheOid()).collect(Collectors.toList());
         List<String> tunnetutValintakoeTunnisteet = valintaperusteet.stream()
                 .flatMap(p -> p.getHakukohteenValintaperuste().stream())
@@ -239,6 +240,26 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
             ValintakoeOsallistuminen tallennettuOsallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakemus.getHakuoid(), hakemus.getHakemusoid());
             debugLogitaKoetiedot(tallennettuOsallistuminen);
         }
+    }
+
+    @Override
+    public void siivoa(List<String> saastettavienValinnanvaiheidenOidit, List<HakemusDTO> hakemukset) {
+        LOG.info("Tutkitaan, löytyykö {} hakemuksen valintakoeOsallistumisista valinnanvaiheOideja, jotka eivät kuulu säästettäviin ({})", hakemukset.size(), saastettavienValinnanvaiheidenOidit);
+        hakemukset.forEach(h -> {
+            ValintakoeOsallistuminen tallennettuOsallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(h.getHakuoid(), h.getHakemusoid());
+
+            List<String> osallistumisistaLoytyvatValinnanvaiheOidit = Collections.emptyList();
+            if (tallennettuOsallistuminen != null) {
+                osallistumisistaLoytyvatValinnanvaiheOidit = tallennettuOsallistuminen
+                        .getHakutoiveet().stream()
+                        .flatMap(ht -> ht.getValinnanVaiheet().stream())
+                        .map(ValintakoeValinnanvaihe::getValinnanVaiheOid).collect(Collectors.toList());
+            }
+            osallistumisistaLoytyvatValinnanvaiheOidit.forEach(o -> {
+                if (!saastettavienValinnanvaiheidenOidit.contains(o))
+                    LOG.warn("Hakemuksen {} osallistumiset sisältävät valinnanvaiheOidin {}, jota ei löydy säästettävien valinnanvaiheOidien joukosta.", h.getHakemusoid(), o);
+            });
+        });
     }
 
     private void debugLogitaKoetiedot(ValintakoeOsallistuminen osallistuminen) {
