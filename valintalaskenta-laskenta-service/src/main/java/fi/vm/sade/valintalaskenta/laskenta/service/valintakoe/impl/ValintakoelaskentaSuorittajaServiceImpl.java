@@ -89,6 +89,19 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         }
     }
 
+    public void logValintakoeOsallistuminen(ValintakoeOsallistuminen o) {
+        //LOG.info("--- Osallistuminen {}, hakutoiveita {}", o.getId(), o.getHakutoiveet().size());
+        for (Hakutoive h : o.getHakutoiveet()) {
+            //LOG.info("--- Hakutoive {}", h.getHakukohdeOid());
+            for (ValintakoeValinnanvaihe v : h.getValinnanVaiheet()) {
+                //LOG.info("--- Valinnanvaihe {}, {} valintakoetta ", v.getValinnanVaiheOid(), v.getValintakokeet().size());
+                for (Valintakoe vk : v.getValintakokeet()) {
+                    LOG.info("--- BUG-2087 Hakemus {} Osallistuminen {}, HakukohdeOid {}, ValinnanvaiheOid {} Valintakoe {}, ", o.getHakemusOid(), o.getId(), h.getHakukohdeOid(), v.getValinnanVaiheOid(), vk.toString());
+                }
+            }
+        }
+    }
+
     @Override
     public void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet, String uuid,
                       ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset, boolean korkeakouluhaku) {
@@ -115,6 +128,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                             LOG.error("(Uuid={}) Valintakokoeen tunnistetta ei pystytty määrittelemään. HakukohdeOid: {} - ValintakoeOid: {}",
                                     uuid, vp.getHakukohdeOid(), koe.getOid());
                             continue;
+                        } else {
+                            LOG.info("BUG-2087 (Uuid={}) Valintakokeen tunniste: {} Hakemus {} Hakukohde {}", uuid, tunniste, hakemus.getHakemusoid(), vp.getHakukohdeOid());
                         }
                         valintakoeData.putIfAbsent(tunniste, new ArrayList<>());
                         Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdeltavaValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(),
@@ -162,6 +177,59 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         }
 
         ValintakoeOsallistuminen osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset = kumulatiivisetTulokset.get(hakemus.getHakemusoid());
+
+        List<String> osallistumisistaLoytyvatValinnanvaiheOidit = Collections.emptyList();
+        List<String> osallistumisistaLoytyvatValintakoeTunnisteet = Collections.emptyList();;
+        if (osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset != null) {
+            osallistumisistaLoytyvatValinnanvaiheOidit = osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset
+                    .getHakutoiveet().stream()
+                    .flatMap(ht -> ht.getValinnanVaiheet().stream())
+                    .map(ValintakoeValinnanvaihe::getValinnanVaiheOid).collect(Collectors.toList());
+            osallistumisistaLoytyvatValintakoeTunnisteet = osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset
+                    .getHakutoiveet().stream()
+                    .flatMap(ht -> ht.getValinnanVaiheet().stream())
+                    .flatMap(vv -> vv.getValintakokeet().stream())
+                    .map(Valintakoe::getValintakoeTunniste).collect(Collectors.toList());
+        }
+
+        LOG.info("BUG-2087 Hakemus {} Osallistumisissa vaiheOidit {}, koeTunnisteet {}", hakemus.getHakemusoid(), osallistumisistaLoytyvatValinnanvaiheOidit, osallistumisistaLoytyvatValintakoeTunnisteet);
+
+        List<String> tunnetutValinnanvaiheOidit = valintaperusteet.stream().map(p -> p.getValinnanVaihe().getValinnanVaiheOid()).collect(Collectors.toList());
+        List<String> tunnetutValintakoeTunnisteet = valintaperusteet.stream()
+                .flatMap(p -> p.getHakukohteenValintaperuste().stream())
+                .map(hkvp -> {
+                    LOG.info("peruste: " + hkvp);
+                    return hkvp.getTunniste();
+                })
+                .collect(Collectors.toList());
+
+        LOG.info("BUG-2087 Hakemus {} tunnetut vaiheOidit {}, koeTunnisteet {}", hakemus.getHakemusoid(), tunnetutValinnanvaiheOidit, tunnetutValintakoeTunnisteet);
+
+        LOG.info("BUG-2087 Hakemus {} tunnetut oids {} tunns {}, osallistumisissa oids {} tunns {}", hakemus.getHakemusoid(), tunnetutValinnanvaiheOidit.size(), tunnetutValintakoeTunnisteet.size(), osallistumisistaLoytyvatValinnanvaiheOidit.size(), osallistumisistaLoytyvatValintakoeTunnisteet.size());
+
+        if (tunnetutValinnanvaiheOidit.size() < osallistumisistaLoytyvatValinnanvaiheOidit.size() || tunnetutValintakoeTunnisteet.size() < osallistumisistaLoytyvatValintakoeTunnisteet.size()) {
+            LOG.info("BUG-2087 WARNING");
+            logValintakoeOsallistuminen(osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset);
+        }
+
+        for (String vaiheOid : osallistumisistaLoytyvatValinnanvaiheOidit) {
+            if (!tunnetutValinnanvaiheOidit.contains(vaiheOid)) {
+                LOG.warn("BUG-2087 Hakemuksen {} osallistumisista löytyy valinnanvaiheOid {}, jota ei löydy valintaperusteista! Pitää ehkä tehdä poistoliikkeitä?", hakemus.getHakemusoid(), vaiheOid);
+                //LOG.warn("BUG-2087 {}", valintaperusteet);
+            } else {
+                LOG.info("vaiheoid {} ok!", vaiheOid);
+            }
+        }
+
+        for (String koeTunniste : osallistumisistaLoytyvatValintakoeTunnisteet) {
+            if (!tunnetutValintakoeTunnisteet.contains(koeTunniste)) {
+                LOG.warn("BUG-2087 Hakemuksen {} osallistumisista löytyy valintakoeTunniste {}, jota ei löydy valintaperusteista! Pitää ehkä tehdä poistoliikkeitä?", hakemus.getHakemusoid(), koeTunniste);
+                LOG.warn("BUG-2087 {}", valintaperusteet);
+            } else {
+                LOG.info("koeTunniste {} ok!", koeTunniste);
+            }
+        }
+
         if (osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset != null) {
             valintakoeOsallistuminenDAO.createOrUpdate(osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset);
         }
@@ -205,6 +273,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                 data.setAktiivinen(koe.isAktiivinen());
                 data.setKutsunKohde(koe.getKutsunKohde());
                 data.setKutsunKohdeAvain(koe.getKutsunKohdeAvain());
+                LOG.info("BUG-2087 Koe {} : Lisätään data {}", koe.getValintakoeTunniste(), data);
                 olemassaOlevat.add(data);
             }
         })));
