@@ -178,59 +178,6 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
 
         ValintakoeOsallistuminen osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset = kumulatiivisetTulokset.get(hakemus.getHakemusoid());
 
-        List<String> osallistumisistaLoytyvatValinnanvaiheOidit = Collections.emptyList();
-        List<String> osallistumisistaLoytyvatValintakoeTunnisteet = Collections.emptyList();;
-        if (osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset != null) {
-            osallistumisistaLoytyvatValinnanvaiheOidit = osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset
-                    .getHakutoiveet().stream()
-                    .flatMap(ht -> ht.getValinnanVaiheet().stream())
-                    .map(ValintakoeValinnanvaihe::getValinnanVaiheOid).collect(Collectors.toList());
-            osallistumisistaLoytyvatValintakoeTunnisteet = osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset
-                    .getHakutoiveet().stream()
-                    .flatMap(ht -> ht.getValinnanVaiheet().stream())
-                    .flatMap(vv -> vv.getValintakokeet().stream())
-                    .map(Valintakoe::getValintakoeTunniste).collect(Collectors.toList());
-        }
-
-        LOG.info("BUG-2087 Hakemus {} Osallistumisissa vaiheOidit {}, koeTunnisteet {}", hakemus.getHakemusoid(), osallistumisistaLoytyvatValinnanvaiheOidit, osallistumisistaLoytyvatValintakoeTunnisteet);
-
-
-        List<String> tunnetutValinnanvaiheOidit = valintaperusteet.stream().map(p -> p.getValinnanVaihe().getValinnanVaiheOid()).collect(Collectors.toList());
-        List<String> tunnetutValintakoeTunnisteet = valintaperusteet.stream()
-                .flatMap(p -> p.getHakukohteenValintaperuste().stream())
-                .map(hkvp -> {
-                    LOG.info("peruste: " + hkvp);
-                    return hkvp.getTunniste();
-                })
-                .collect(Collectors.toList());
-
-        LOG.info("BUG-2087 Hakemus {} tunnetut vaiheOidit {}, koeTunnisteet {}", hakemus.getHakemusoid(), tunnetutValinnanvaiheOidit, tunnetutValintakoeTunnisteet);
-
-        LOG.info("BUG-2087 Hakemus {} tunnetut oids {} tunns {}, osallistumisissa oids {} tunns {}", hakemus.getHakemusoid(), tunnetutValinnanvaiheOidit.size(), tunnetutValintakoeTunnisteet.size(), osallistumisistaLoytyvatValinnanvaiheOidit.size(), osallistumisistaLoytyvatValintakoeTunnisteet.size());
-
-        if (tunnetutValinnanvaiheOidit.size() < osallistumisistaLoytyvatValinnanvaiheOidit.size() || tunnetutValintakoeTunnisteet.size() < osallistumisistaLoytyvatValintakoeTunnisteet.size()) {
-            LOG.info("BUG-2087 WARNING");
-            logValintakoeOsallistuminen(osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset);
-        }
-
-        for (String vaiheOid : osallistumisistaLoytyvatValinnanvaiheOidit) {
-            if (!tunnetutValinnanvaiheOidit.contains(vaiheOid)) {
-                LOG.warn("BUG-2087 Hakemuksen {} osallistumisista löytyy valinnanvaiheOid {}, jota ei löydy valintaperusteista! Pitää ehkä tehdä poistoliikkeitä?", hakemus.getHakemusoid(), vaiheOid);
-                //LOG.warn("BUG-2087 {}", valintaperusteet);
-            } else {
-                LOG.info("vaiheoid {} ok!", vaiheOid);
-            }
-        }
-
-        for (String koeTunniste : osallistumisistaLoytyvatValintakoeTunnisteet) {
-            if (!tunnetutValintakoeTunnisteet.contains(koeTunniste)) {
-                LOG.warn("BUG-2087 Hakemuksen {} osallistumisista löytyy valintakoeTunniste {}, jota ei löydy valintaperusteista! Pitää ehkä tehdä poistoliikkeitä?", hakemus.getHakemusoid(), koeTunniste);
-                LOG.warn("BUG-2087 {}", valintaperusteet);
-            } else {
-                LOG.info("koeTunniste {} ok!", koeTunniste);
-            }
-        }
-
         if (osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset != null) {
             valintakoeOsallistuminenDAO.createOrUpdate(osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset);
         }

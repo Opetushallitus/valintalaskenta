@@ -592,6 +592,14 @@ public class ValintalaskentaResourceImpl {
             if (stopWatch.isRunning()) {
                 stopWatch.stop();
             }
+            List<String> oids = lista.stream().flatMap(laskeDTO -> laskeDTO.getValintaperuste().stream()).map(valintaperusteetDTO -> valintaperusteetDTO.getValinnanVaihe().getValinnanVaiheOid()).collect(Collectors.toList());
+            lista.forEach(laskeDTO -> {
+                List<String> tamanLaskeDTOnVaiheet = laskeDTO.getValintaperuste().stream().map(p -> p.getValinnanVaihe().getValinnanVaiheOid()).collect(Collectors.toList());
+                LOG.info("Käsitellään laskeDTO hakukohteelle {}, omat {}, kaikki {}", laskeDTO.getHakukohdeOid(), tamanLaskeDTOnVaiheet, oids);
+                valintalaskentaService.siivoaPuuttuvatValinnanvaiheet(oids, laskeDTO.getHakemus());
+                valintalaskentaService.siivoaPuuttuvatValinnanvaiheet(tamanLaskeDTOnVaiheet, laskeDTO.getHakemus());
+            });
+
             paivitaKohteenLaskennanTila(pollKey, HakukohteenLaskennanTila.VALMIS, stopWatch);
             LOG.info(stopWatch.prettyPrint());
         } catch (Throwable t) {
