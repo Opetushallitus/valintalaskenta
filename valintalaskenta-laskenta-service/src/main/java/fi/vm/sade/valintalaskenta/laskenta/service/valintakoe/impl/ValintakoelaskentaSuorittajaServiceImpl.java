@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -190,22 +191,35 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
     }
 
     @Override
-    public void siivoa(List<String> saastettavienValinnanvaiheidenOidit, List<HakemusDTO> hakemukset) {
-        LOG.info("Tutkitaan, löytyykö {} hakemuksen valintakoeOsallistumisista valinnanvaiheOideja, jotka eivät kuulu säästettäviin ({})", hakemukset.size(), saastettavienValinnanvaiheidenOidit);
+    public void siivoa(List<HakemusDTO> hakemukset, String hakukohdeOid, List<String> saastettavienValinnanvaiheidenOidit) {
+        LOG.info("Tutkitaan, löytyykö {} hakemuksen valintakoeOsallistumisista valinnanvaiheOideja, jotka eivät kuulu säästettäviin ({}) hakukohteessa {}", hakemukset.size(), saastettavienValinnanvaiheidenOidit, hakukohdeOid);
         hakemukset.forEach(h -> {
             ValintakoeOsallistuminen tallennettuOsallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(h.getHakuoid(), h.getHakemusoid());
 
-            List<String> osallistumisistaLoytyvatValinnanvaiheOidit = Collections.emptyList();
             if (tallennettuOsallistuminen != null) {
-                osallistumisistaLoytyvatValinnanvaiheOidit = tallennettuOsallistuminen
+                AtomicInteger loytyvia = new AtomicInteger(0);
+                AtomicInteger puuttuvia = new AtomicInteger((0));
+                List<String> osallistumisistaLoytyvatValinnanvaiheOiditHakukohteelle = tallennettuOsallistuminen
                         .getHakutoiveet().stream()
+                        .filter(ht -> ht.getHakukohdeOid().equals(hakukohdeOid))
                         .flatMap(ht -> ht.getValinnanVaiheet().stream())
                         .map(ValintakoeValinnanvaihe::getValinnanVaiheOid).collect(Collectors.toList());
+                if (osallistumisistaLoytyvatValinnanvaiheOiditHakukohteelle.isEmpty()) {
+                    LOG.warn("Tallennetut osallistumiset hakemukselle {} eivät vaikuta sisältävän valinnanvaiheOideja: {} ", h.getHakemusoid(), tallennettuOsallistuminen);
+                    debugLogitaKoetiedot(tallennettuOsallistuminen);
+                }
+                osallistumisistaLoytyvatValinnanvaiheOiditHakukohteelle.forEach(o -> {
+                    if (!saastettavienValinnanvaiheidenOidit.contains(o)) {
+                        puuttuvia.incrementAndGet();
+                        LOG.warn("Hakemuksen {} osallistumiset sisältävät valinnanvaiheOidin {}, jota ei löydy säästettävien valinnanvaiheOidien joukosta.", h.getHakemusoid(), o);
+                    } else {
+                        loytyvia.incrementAndGet();
+                    }
+                });
+                LOG.info("Hakemukselle {} löytyi hyviä valintakoeosallistumisia {} ja puuttuvia {} kpl.", h.getHakemusoid(), loytyvia.get(), puuttuvia.get());
+            } else {
+                LOG.debug("Ilmeisesti hakemukselle {} ei ole vielä valintakoeosallistumisia.", h.getHakemusoid());
             }
-            osallistumisistaLoytyvatValinnanvaiheOidit.forEach(o -> {
-                if (!saastettavienValinnanvaiheidenOidit.contains(o))
-                    LOG.warn("Hakemuksen {} osallistumiset sisältävät valinnanvaiheOidin {}, jota ei löydy säästettävien valinnanvaiheOidien joukosta.", h.getHakemusoid(), o);
-            });
         });
     }
 

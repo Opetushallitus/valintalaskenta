@@ -347,6 +347,9 @@ public class ValintalaskentaResourceImpl {
             if (!valisijoiteltavatJonot.valinnanvaiheet.isEmpty()) {
                 valisijoitteleKopiot(laskeDTO, valisijoiteltavatJonot.jonot, stopWatch);
             }
+
+            valintalaskentaService.siivoaValintakoeOsallistumisetPuuttuviltaValinnanvaiheilta(Collections.singletonList(laskeDTO));
+
             paivitaKohteenLaskennanTila(pollkey, HakukohteenLaskennanTila.VALMIS, stopWatch);
             LOG.info(stopWatch.prettyPrint());
         } catch (Exception e) {
@@ -370,6 +373,9 @@ public class ValintalaskentaResourceImpl {
             valintalaskentaService.valintakokeetRinnakkain(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getUuid(), new ValintakoelaskennanKumulatiivisetTulokset(), laskeDTO.isKorkeakouluhaku());
             LOG.info(String.format("(Uuid=%s) Valintakoelaskenta suoritettu %s hakemukselle hakukohteessa %s", laskeDTO.getUuid(), laskeDTO.getHakemus().size(), laskeDTO.getHakukohdeOid()));
             stopWatch.stop();
+
+            valintalaskentaService.siivoaValintakoeOsallistumisetPuuttuviltaValinnanvaiheilta(Collections.singletonList(laskeDTO));
+
             paivitaKohteenLaskennanTila(pollkey, HakukohteenLaskennanTila.VALMIS, stopWatch);
             LOG.info(stopWatch.prettyPrint());
         } catch (Exception e) {
@@ -455,8 +461,7 @@ public class ValintalaskentaResourceImpl {
                 });
             }
 
-            List<String> oids = laskeDTO.getValintaperuste().stream().map(p -> p.getValinnanVaihe().getValinnanVaiheOid()).collect(Collectors.toList());
-            valintalaskentaService.siivoaPuuttuvatValinnanvaiheet(oids, laskeDTO.getHakemus());
+            valintalaskentaService.siivoaValintakoeOsallistumisetPuuttuviltaValinnanvaiheilta(Collections.singletonList(laskeDTO));
 
             LOG.info(String.format("(Uuid=%s) Laskenta suoritettu hakukohteessa %s", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid()));
             paivitaKohteenLaskennanTila(pollkey, HakukohteenLaskennanTila.VALMIS, stopWatch);
@@ -592,13 +597,8 @@ public class ValintalaskentaResourceImpl {
             if (stopWatch.isRunning()) {
                 stopWatch.stop();
             }
-            List<String> oids = lista.stream().flatMap(laskeDTO -> laskeDTO.getValintaperuste().stream()).map(valintaperusteetDTO -> valintaperusteetDTO.getValinnanVaihe().getValinnanVaiheOid()).collect(Collectors.toList());
-            lista.forEach(laskeDTO -> {
-                List<String> tamanLaskeDTOnVaiheet = laskeDTO.getValintaperuste().stream().map(p -> p.getValinnanVaihe().getValinnanVaiheOid()).collect(Collectors.toList());
-                LOG.info("Käsitellään laskeDTO hakukohteelle {}, omat {}, kaikki {}", laskeDTO.getHakukohdeOid(), tamanLaskeDTOnVaiheet, oids);
-                valintalaskentaService.siivoaPuuttuvatValinnanvaiheet(oids, laskeDTO.getHakemus());
-                valintalaskentaService.siivoaPuuttuvatValinnanvaiheet(tamanLaskeDTOnVaiheet, laskeDTO.getHakemus());
-            });
+
+            valintalaskentaService.siivoaValintakoeOsallistumisetPuuttuviltaValinnanvaiheilta(lista);
 
             paivitaKohteenLaskennanTila(pollKey, HakukohteenLaskennanTila.VALMIS, stopWatch);
             LOG.info(stopWatch.prettyPrint());

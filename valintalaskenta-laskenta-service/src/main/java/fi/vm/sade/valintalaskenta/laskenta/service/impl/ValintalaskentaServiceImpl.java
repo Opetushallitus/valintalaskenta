@@ -9,6 +9,7 @@ import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetHakijaryhmaDTO;
 import fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
@@ -28,6 +29,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ValintalaskentaServiceImpl implements ValintalaskentaService {
@@ -111,14 +113,14 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                                     jono.getJonosijat().forEach(jonosija -> {
                                         fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO hakemusDTO = hakemusHashMap.get(hakukohdeOid + jono.getValintatapajonoOid() + jonosija.getHakemusOid());
 
-                                        if(jonosija.isHylattyValisijoittelussa() && hakemusDTO.getTila().isHyvaksytty()) {
+                                        if (jonosija.isHylattyValisijoittelussa() && hakemusDTO.getTila().isHyvaksytty()) {
                                             Collections.sort(jonosija.getJarjestyskriteeritulokset(), Comparator.comparingInt(Jarjestyskriteeritulos::getPrioriteetti));
                                             Jarjestyskriteeritulos jarjestyskriteeritulos = jonosija.getJarjestyskriteeritulokset().get(0);
                                             jarjestyskriteeritulos.setTila(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA);
                                             jonosija.setHylattyValisijoittelussa(false);
                                             jarjestyskriteeritulos.setKuvaus(new HashMap<>());
                                         }
-                                        
+
                                         if (hakemusDTO != null && asList(VARALLA, PERUUNTUNUT).contains(hakemusDTO.getTila())) {
                                             Collections.sort(jonosija.getJarjestyskriteeritulokset(), Comparator.comparingInt(Jarjestyskriteeritulos::getPrioriteetti));
                                             Jarjestyskriteeritulos jarjestyskriteeritulos = jonosija.getJarjestyskriteeritulokset().get(0);
@@ -163,7 +165,17 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     }
 
     @Override
-    public void siivoaPuuttuvatValinnanvaiheet(List<String> loytyvatVaiheOidit, List<HakemusDTO> hakemukset) {
-        valintakoelaskentaSuorittajaService.siivoa(loytyvatVaiheOidit, hakemukset);
+    public void siivoaPuuttuvatValinnanvaiheet(Map<String, List<String>> saastettavienValinnanvaiheidenOiditHakukohteittain, List<HakemusDTO> hakemukset) {
+        //valintakoelaskentaSuorittajaService.siivoa(saastettavienValinnanvaiheidenOiditHakukohteittain, hakemukset);
     }
+
+    @Override
+    public void siivoaValintakoeOsallistumisetPuuttuviltaValinnanvaiheilta(List<LaskeDTO> laskeDTOs) {
+        LOG.info("Siivotaan valintakoeosallistumiset {} laskeDTO:lta. ", laskeDTOs.size());
+        laskeDTOs.forEach(ldto -> {
+            List<String> saastettavat = ldto.getValintaperuste().stream().map(p -> p.getValinnanVaihe().getValinnanVaiheOid()).collect(Collectors.toList());
+            valintakoelaskentaSuorittajaService.siivoa(ldto.getHakemus(), ldto.getHakukohdeOid(), saastettavat);
+        });
+    }
+
 }
