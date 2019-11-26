@@ -162,11 +162,6 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     }
 
     @Override
-    public void siivoaPuuttuvatValinnanvaiheet(Map<String, List<String>> saastettavienValinnanvaiheidenOiditHakukohteittain, List<HakemusDTO> hakemukset) {
-        //valintakoelaskentaSuorittajaService.siivoa(saastettavienValinnanvaiheidenOiditHakukohteittain, hakemukset);
-    }
-
-    @Override
     public void siivoaValintakoeOsallistumisetPuuttuviltaValinnanvaiheilta(List<LaskeDTO> laskeDTOs) {
         LOG.info("Siivotaan valintakoeosallistumiset {} laskeDTO:lta. ", laskeDTOs.size());
         laskeDTOs.forEach(ldto -> {

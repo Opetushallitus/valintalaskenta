@@ -36,8 +36,5 @@ public interface ValintalaskentaService {
 
     void applyErillissijoittelu(Map<String, List<String>> jonot, Long ajo);
 
-    //Logitetaan (ja myöhemmin toivottavasti poistetaan) sellaiset valintakoeosallistumiset, joiden valinnanvaihetta ei vaikuta olevan olemassa.
-    void siivoaPuuttuvatValinnanvaiheet(Map<String, List<String>> saastettavatHakukohteittain, List<HakemusDTO> hakemukset);
-
     void siivoaValintakoeOsallistumisetPuuttuviltaValinnanvaiheilta(List<LaskeDTO> laskeDTOs);
 }
