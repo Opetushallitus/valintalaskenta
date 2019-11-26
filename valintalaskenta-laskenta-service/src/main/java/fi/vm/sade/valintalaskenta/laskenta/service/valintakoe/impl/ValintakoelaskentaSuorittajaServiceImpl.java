@@ -90,24 +90,10 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         }
     }
 
-    public void logValintakoeOsallistuminen(ValintakoeOsallistuminen o) {
-        //LOG.info("--- Osallistuminen {}, hakutoiveita {}", o.getId(), o.getHakutoiveet().size());
-        for (Hakutoive h : o.getHakutoiveet()) {
-            //LOG.info("--- Hakutoive {}", h.getHakukohdeOid());
-            for (ValintakoeValinnanvaihe v : h.getValinnanVaiheet()) {
-                //LOG.info("--- Valinnanvaihe {}, {} valintakoetta ", v.getValinnanVaiheOid(), v.getValintakokeet().size());
-                for (Valintakoe vk : v.getValintakokeet()) {
-                    LOG.info("--- BUG-2087 Hakemus {} Osallistuminen {}, HakukohdeOid {}, ValinnanvaiheOid {} Valintakoe {}, ", o.getHakemusOid(), o.getId(), h.getHakukohdeOid(), v.getValinnanVaiheOid(), vk.toString());
-                }
-            }
-        }
-    }
-
     @Override
     public void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet, String uuid,
                       ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset, boolean korkeakouluhaku) {
         LOG.info("(Uuid={}) (Thread={}) Laskentaan valintakoeosallistumiset hakemukselle {}", uuid, Thread.currentThread(), hakemus.getHakemusoid());
-        //LOG.info("Kumulatiiviset tulokset hakemukselle {}: {} ", hakemus.getHakemusoid(), kumulatiivisetTulokset.get(hakemus.getHakemusoid()));
         if (valintaperusteet.size() == 0) {
             return;
         }
@@ -129,8 +115,6 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                             LOG.error("(Uuid={}) Valintakokoeen tunnistetta ei pystytty määrittelemään. HakukohdeOid: {} - ValintakoeOid: {}",
                                     uuid, vp.getHakukohdeOid(), koe.getOid());
                             continue;
-                        } else {
-                            LOG.info("BUG-2087 (Uuid={}) Valintakokeen tunniste: {} Hakemus {} Hakukohde {}", uuid, tunniste, hakemus.getHakemusoid(), vp.getHakukohdeOid());
                         }
                         valintakoeData.putIfAbsent(tunniste, new ArrayList<>());
                         Valinnanvaihe edellinenVaihe = valinnanvaiheDAO.haeEdeltavaValinnanvaihe(vp.getHakuOid(), vp.getHakukohdeOid(),
@@ -252,7 +236,6 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                 data.setAktiivinen(koe.isAktiivinen());
                 data.setKutsunKohde(koe.getKutsunKohde());
                 data.setKutsunKohdeAvain(koe.getKutsunKohdeAvain());
-                LOG.info("BUG-2087 Koe {} : Lisätään data {}", koe.getValintakoeTunniste(), data);
                 olemassaOlevat.add(data);
             }
         })));
