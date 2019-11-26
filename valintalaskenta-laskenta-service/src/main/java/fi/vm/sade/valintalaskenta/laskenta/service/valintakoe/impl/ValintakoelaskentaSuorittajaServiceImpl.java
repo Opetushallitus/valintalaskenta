@@ -193,8 +193,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
     @Override
     public void siivoa(List<HakemusDTO> hakemukset, String hakukohdeOid, List<String> saastettavienValinnanvaiheidenOidit) {
         LOG.info("Tutkitaan, löytyykö {} hakemuksen valintakoeOsallistumisista valinnanvaiheOideja, jotka eivät kuulu säästettäviin ({}) hakukohteessa {}", hakemukset.size(), saastettavienValinnanvaiheidenOidit, hakukohdeOid);
-        hakemukset.forEach(h -> {
-            ValintakoeOsallistuminen tallennettuOsallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(h.getHakuoid(), h.getHakemusoid());
+        hakemukset.forEach(hakemus -> {
+            ValintakoeOsallistuminen tallennettuOsallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakemus.getHakuoid(), hakemus.getHakemusoid());
 
             if (tallennettuOsallistuminen != null) {
                 AtomicInteger loytyvia = new AtomicInteger(0);
@@ -205,20 +205,39 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                         .flatMap(ht -> ht.getValinnanVaiheet().stream())
                         .map(ValintakoeValinnanvaihe::getValinnanVaiheOid).collect(Collectors.toList());
                 if (osallistumisistaLoytyvatValinnanvaiheOiditHakukohteelle.isEmpty()) {
-                    LOG.warn("Tallennetut osallistumiset hakemukselle {} eivät vaikuta sisältävän valinnanvaiheOideja: {} ", h.getHakemusoid(), tallennettuOsallistuminen);
+                    LOG.warn("Tallennetut osallistumiset hakemukselle {} eivät vaikuta sisältävän valinnanvaiheOideja: {} ", hakemus.getHakemusoid(), tallennettuOsallistuminen);
                     debugLogitaKoetiedot(tallennettuOsallistuminen);
                 }
                 osallistumisistaLoytyvatValinnanvaiheOiditHakukohteelle.forEach(o -> {
                     if (!saastettavienValinnanvaiheidenOidit.contains(o)) {
                         puuttuvia.incrementAndGet();
-                        LOG.warn("Hakemuksen {} osallistumiset sisältävät valinnanvaiheOidin {}, jota ei löydy säästettävien valinnanvaiheOidien joukosta.", h.getHakemusoid(), o);
+                        LOG.warn("Hakemuksen {} osallistumiset sisältävät valinnanvaiheOidin {}, jota ei löydy säästettävien valinnanvaiheOidien joukosta.", hakemus.getHakemusoid(), o);
                     } else {
                         loytyvia.incrementAndGet();
                     }
                 });
-                LOG.info("Hakemukselle {} löytyi hyviä valintakoeosallistumisia {} ja puuttuvia {} kpl.", h.getHakemusoid(), loytyvia.get(), puuttuvia.get());
+
+                if (puuttuvia.get() > 0) {
+                    tallennettuOsallistuminen.getHakutoiveet().forEach(ht -> {
+                        if (ht.getHakukohdeOid().equals(hakukohdeOid)) {
+                            LOG.info("Hakemukselle {} löytyi hyviä valintakoeosallistumisia {} ja puuttuvia {} kpl. Siivotaan hakukohde {}.", hakemus.getHakemusoid(), loytyvia.get(), puuttuvia.get(), hakukohdeOid);
+
+                            List<ValintakoeValinnanvaihe> siivotutValinnanvaiheet =
+                                    ht.getValinnanVaiheet().stream()
+                                            .filter(vv -> saastettavienValinnanvaiheidenOidit.contains(vv.getValinnanVaiheOid()))
+                                            .collect(Collectors.toList());
+                            int ennen = ht.getValinnanVaiheet().size();
+                            int jalkeen = siivotutValinnanvaiheet.size();
+                            LOG.warn("Siivottiin hakemuksen {} valinnanvaiheet hakukohteessa {}. Ennen siivousta {} kpl, jälkeen {} kpl.", hakemus.getHakemusoid(), hakukohdeOid, ennen, jalkeen);
+                            if (ennen > jalkeen) {
+                                ht.setValinnanVaiheet(siivotutValinnanvaiheet);
+                                valintakoeOsallistuminenDAO.createOrUpdate(tallennettuOsallistuminen);
+                            }
+                        }
+                    });
+                  }
             } else {
-                LOG.debug("Ilmeisesti hakemukselle {} ei ole vielä valintakoeosallistumisia.", h.getHakemusoid());
+                LOG.debug("Ilmeisesti hakemukselle {} ei ole vielä valintakoeosallistumisia.", hakemus.getHakemusoid());
             }
         });
     }
