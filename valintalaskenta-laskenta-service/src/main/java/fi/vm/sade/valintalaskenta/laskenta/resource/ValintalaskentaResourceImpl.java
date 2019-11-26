@@ -348,7 +348,9 @@ public class ValintalaskentaResourceImpl {
                 valisijoitteleKopiot(laskeDTO, valisijoiteltavatJonot.jonot, stopWatch);
             }
 
+            stopWatch.start("Siivotaan poistuneisiin valinnanvaiheisiin liittyneet valintakoeosallistumiset");
             valintalaskentaService.siivoaValintakoeOsallistumisetPuuttuviltaValinnanvaiheilta(Collections.singletonList(laskeDTO));
+            stopWatch.stop();
 
             paivitaKohteenLaskennanTila(pollkey, HakukohteenLaskennanTila.VALMIS, stopWatch);
             LOG.info(stopWatch.prettyPrint());
@@ -374,7 +376,9 @@ public class ValintalaskentaResourceImpl {
             LOG.info(String.format("(Uuid=%s) Valintakoelaskenta suoritettu %s hakemukselle hakukohteessa %s", laskeDTO.getUuid(), laskeDTO.getHakemus().size(), laskeDTO.getHakukohdeOid()));
             stopWatch.stop();
 
+            stopWatch.start("Siivotaan poistuneisiin valinnanvaiheisiin liittyneet valintakoeosallistumiset");
             valintalaskentaService.siivoaValintakoeOsallistumisetPuuttuviltaValinnanvaiheilta(Collections.singletonList(laskeDTO));
+            stopWatch.stop();
 
             paivitaKohteenLaskennanTila(pollkey, HakukohteenLaskennanTila.VALMIS, stopWatch);
             LOG.info(stopWatch.prettyPrint());
@@ -461,7 +465,9 @@ public class ValintalaskentaResourceImpl {
                 });
             }
 
+            stopWatch.start("Siivotaan poistuneisiin valinnanvaiheisiin liittyneet valintakoeosallistumiset");
             valintalaskentaService.siivoaValintakoeOsallistumisetPuuttuviltaValinnanvaiheilta(Collections.singletonList(laskeDTO));
+            stopWatch.stop();
 
             LOG.info(String.format("(Uuid=%s) Laskenta suoritettu hakukohteessa %s", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid()));
             paivitaKohteenLaskennanTila(pollkey, HakukohteenLaskennanTila.VALMIS, stopWatch);
@@ -598,7 +604,9 @@ public class ValintalaskentaResourceImpl {
                 stopWatch.stop();
             }
 
+            stopWatch.start("Siivotaan poistuneisiin valinnanvaiheisiin liittyneet valintakoeosallistumiset");
             valintalaskentaService.siivoaValintakoeOsallistumisetPuuttuviltaValinnanvaiheilta(lista);
+            stopWatch.stop();
 
             paivitaKohteenLaskennanTila(pollKey, HakukohteenLaskennanTila.VALMIS, stopWatch);
             LOG.info(stopWatch.prettyPrint());
