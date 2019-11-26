@@ -179,6 +179,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
     //Tämä oid ei siis tule valintaperusteista kuten muut vv-oidit, vaan syntyy tietyssä tilanteessa valintakoelaskennan aikana.
     @Override
     public void siivoaValintakoeOsallistumiset(List<HakemusDTO> hakemukset, String hakukohdeOid, List<String> saastettavienValinnanvaiheidenOidit) {
+        saastettavienValinnanvaiheidenOidit.add(VALINNANVAIHE_HAKIJAN_VALINTA);
         LOG.info("Tutkitaan, löytyykö {} hakemuksen valintakoeOsallistumisista valinnanvaiheOideja, jotka eivät kuulu säästettäviin ({}) hakukohteessa {}", hakemukset.size(), saastettavienValinnanvaiheidenOidit, hakukohdeOid);
         hakemukset.parallelStream().forEach(hakemus -> {
             ValintakoeOsallistuminen tallennettuOsallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakemus.getHakuoid(), hakemus.getHakemusoid());
@@ -187,12 +188,17 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                     if (ht.getHakukohdeOid().equals(hakukohdeOid)) {
                         List<ValintakoeValinnanvaihe> siivotutValinnanvaiheet =
                                 ht.getValinnanVaiheet().stream()
-                                        .filter(vv -> vv.getValinnanVaiheOid().equals(VALINNANVAIHE_HAKIJAN_VALINTA) || saastettavienValinnanvaiheidenOidit.contains(vv.getValinnanVaiheOid()))
+                                        .filter(vv -> saastettavienValinnanvaiheidenOidit.contains(vv.getValinnanVaiheOid()))
                                         .collect(Collectors.toList());
                         int ennen = ht.getValinnanVaiheet().size();
                         int jalkeen = siivotutValinnanvaiheet.size();
                         if (ennen > jalkeen) {
                             LOG.warn("Siivottiin hakemuksen {} valinnanvaiheet hakukohteessa {}. Ennen siivousta {} kpl, jälkeen {} kpl.", hakemus.getHakemusoid(), hakukohdeOid, ennen, jalkeen);
+                            ht.getValinnanVaiheet().forEach(vv -> {
+                               if (!saastettavienValinnanvaiheidenOidit.contains(vv.getValinnanVaiheOid())) {
+                                   LOG.warn("Poistetaan hakemuksen {} hakutoiveelta {} valinnanvaihe oidilla {}, koska se vaikuttaa kadonneen valintaperusteista.", hakemus.getHakemusoid(), hakukohdeOid, vv.getValinnanVaiheOid());
+                               }
+                            });
                             ht.setValinnanVaiheet(siivotutValinnanvaiheet);
                             valintakoeOsallistuminenDAO.createOrUpdate(tallennettuOsallistuminen);
                         }
