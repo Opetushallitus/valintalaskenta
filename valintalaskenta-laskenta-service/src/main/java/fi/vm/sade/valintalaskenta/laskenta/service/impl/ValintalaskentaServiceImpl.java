@@ -68,10 +68,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     @Override
     public String valintakokeetRinnakkain(List<HakemusDTO> hakemukset, List<ValintaperusteetDTO> valintaperuste, String uuid, ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset, boolean korkeakouluhaku) throws RuntimeException {
         try {
-            LOG.info("(Uuid={}) Lasketaan ei-oikeasti-rinnakkain FIXME valintakoeosallistumiset {} hakemukselle", uuid, hakemukset.size());
-            //hakemukset.parallelStream().forEach(hakemus -> valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste, uuid, kumulatiivisetTulokset, korkeakouluhaku));
-            //Temporarily not parallel for readable debug logging
-            hakemukset.stream().forEach(hakemus -> valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste, uuid, kumulatiivisetTulokset, korkeakouluhaku));
+            hakemukset.parallelStream().forEach(hakemus -> valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste, uuid, kumulatiivisetTulokset, korkeakouluhaku));
             LOG.info("(Uuid={}) Valintakoeosallistumisten laskenta {} hakemukselle valmis", uuid, hakemukset.size());
             return "Onnistui!";
         } catch (Exception e) {
@@ -173,8 +170,8 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     public void siivoaValintakoeOsallistumisetPuuttuviltaValinnanvaiheilta(List<LaskeDTO> laskeDTOs) {
         LOG.info("Siivotaan valintakoeosallistumiset {} laskeDTO:lta. ", laskeDTOs.size());
         laskeDTOs.forEach(ldto -> {
-            List<String> saastettavat = ldto.getValintaperuste().stream().map(p -> p.getValinnanVaihe().getValinnanVaiheOid()).collect(Collectors.toList());
-            valintakoelaskentaSuorittajaService.siivoa(ldto.getHakemus(), ldto.getHakukohdeOid(), saastettavat);
+            List<String> saastettavienValinnanvaiheidenOidit = ldto.getValintaperuste().stream().map(p -> p.getValinnanVaihe().getValinnanVaiheOid()).collect(Collectors.toList());
+            valintakoelaskentaSuorittajaService.siivoaValintakoeOsallistumiset(ldto.getHakemus(), ldto.getHakukohdeOid(), saastettavienValinnanvaiheidenOidit);
         });
     }
 

@@ -9,5 +9,5 @@ import java.util.Map;
 
 public interface ValintakoelaskentaSuorittajaService {
     void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet, String uuid, ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset, boolean korkeakouluhaku);
-    void siivoa(List<HakemusDTO> hakemukset, String hakukohdeOid, List<String> saastettavienValinnanvaiheidenOidit);
+    void siivoaValintakoeOsallistumiset(List<HakemusDTO> hakemukset, String hakukohdeOid, List<String> saastettavienValinnanvaiheidenOidit);
 }
