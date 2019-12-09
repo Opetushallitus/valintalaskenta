@@ -196,7 +196,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                             LOG.warn("Siivottiin hakemuksen {} valinnanvaiheet hakukohteessa {}. Ennen siivousta {} kpl, jälkeen {} kpl.", hakemus.getHakemusoid(), hakukohdeOid, ennen, jalkeen);
                             ht.getValinnanVaiheet().forEach(vv -> {
                                if (!saastettavienValinnanvaiheidenOidit.contains(vv.getValinnanVaiheOid())) {
-                                   LOG.warn("Poistetaan hakemuksen {} hakutoiveelta {} valinnanvaihe oidilla {}, koska se vaikuttaa kadonneen valintaperusteista.", hakemus.getHakemusoid(), hakukohdeOid, vv.getValinnanVaiheOid());
+                                   LOG.warn("Poistetaan hakemuksen {} hakutoiveen {} valintakoeosallistumisista valinnanvaihe oidilla {}, koska se vaikuttaa kadonneen valintaperusteista.", hakemus.getHakemusoid(), hakukohdeOid, vv.getValinnanVaiheOid());
                                }
                             });
                             ht.setValinnanVaiheet(siivotutValinnanvaiheet);
