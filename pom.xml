@@ -41,7 +41,7 @@
 
         <maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
 
-        <jetty.version>9.4.15.v20190215</jetty.version>
+        <jetty.version>9.4.24.v20191120</jetty.version>
     </properties>
 
     <dependencyManagement>
