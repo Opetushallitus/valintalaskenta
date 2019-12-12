@@ -46,6 +46,11 @@ deploy:
   on:
     branch: master
 - provider: script
+  script: mvn deploy -pl fi.vm.sade.valintaperusteet:valintalaskenta,valintalaskenta-laskenta-api,valintalaskenta-tulos-api,valintalaskenta-domain,valintalaskenta-tulos-service -DskipTests --settings ci-tools/common/maven-settings.xml
+  skip_cleanup: true
+  on:
+    branch: VTKU-107__tuki_usealle_ammatilliselle_tutkinnolle
+- provider: script
   script: ./ci-tools/build/upload-image.sh $ARTIFACT_NAME
   on:
     all_branches: true
