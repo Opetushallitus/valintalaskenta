@@ -30,7 +30,7 @@
         <modelmapper.version>2.3.5</modelmapper.version>
         <spring.asm.version>3.1.4.RELEASE</spring.asm.version>
         <spring.version>5.1.5.RELEASE</spring.version>
-        <spring.security.version>4.2.11.RELEASE</spring.security.version>
+        <spring.security.version>5.2.1.RELEASE</spring.security.version>
         <swagger.version>1.5.17</swagger.version>
 
         <maven.compiler.source>1.8</maven.compiler.source>
