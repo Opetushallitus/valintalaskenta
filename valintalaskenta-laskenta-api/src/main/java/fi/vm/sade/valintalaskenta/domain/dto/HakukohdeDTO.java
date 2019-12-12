@@ -16,7 +16,7 @@ public class HakukohdeDTO {
     private String tarjoajaoid;
 
     @ApiModelProperty(value = "Hakukohde OID", required = true)
-    private String hakukohdeoid;
+    private String oid;
 
     @ApiModelProperty(value = "Valinnan vaiheet", required = true)
     private List<ValintatietoValinnanvaiheDTO> valinnanvaihe = new ArrayList<ValintatietoValinnanvaiheDTO>();
@@ -42,11 +42,11 @@ public class HakukohdeDTO {
     }
 
     public String getOid() {
-        return hakukohdeoid;
+        return oid;
     }
 
     public void setOid(String oid) {
-        this.hakukohdeoid = oid;
+        this.oid = oid;
     }
 
     public List<ValintatietoValinnanvaiheDTO> getValinnanvaihe() {

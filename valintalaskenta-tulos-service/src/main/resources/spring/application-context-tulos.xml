@@ -28,7 +28,11 @@
         </property>
     </bean>
 
-    <bean id="oidProvider" class="fi.vm.sade.javautils.opintopolku_spring_security.OidProvider"/>
+    <bean id="oidProvider" class="fi.vm.sade.javautils.opintopolku_spring_security.OidProvider">
+        <constructor-arg index="0"  name="organisaatioServiceUrl" value="${valintalaskenta-laskenta-service.organisaatio-service.url}"/>
+        <constructor-arg index="1"  name="rootOrganisaatioOid" value="${root.organisaatio.oid}"/>
+        <constructor-arg index="2"  name="callerId" value="1.2.246.562.10.00000000001.valintalaskenta.valintalaskenta-laskenta-service"/>
+    </bean>
     <bean id="organisationHierarchyAuthorizer" class="fi.vm.sade.javautils.opintopolku_spring_security.OrganisationHierarchyAuthorizer"/>
     <bean id="authorizer" class="fi.vm.sade.javautils.opintopolku_spring_security.ThreadLocalAuthorizer"/>
 

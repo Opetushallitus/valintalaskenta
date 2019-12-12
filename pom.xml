@@ -4,7 +4,7 @@
 
     <groupId>fi.vm.sade.valintaperusteet</groupId>
     <artifactId>valintalaskenta</artifactId>
-    <version>5.6-SNAPSHOT</version>
+    <version>5.8-VTKU-98-SNAPSHOT</version>
 
     <name>Valintalaskenta</name>
     <packaging>pom</packaging>
@@ -18,7 +18,7 @@
     </modules>
 
     <properties>
-        <valintaperusteet.version>5.6-SNAPSHOT</valintaperusteet.version>
+        <valintaperusteet.version>5.8-VTKU-98-SNAPSHOT</valintaperusteet.version>
         <valinta-sharedutils.version>5.6-SNAPSHOT</valinta-sharedutils.version>
         <sijoittelu.version>7.4.0-SNAPSHOT</sijoittelu.version>
 
@@ -27,7 +27,7 @@
         <httpcomponents.core.version>4.4.4</httpcomponents.core.version>
         <httpcomponents.version>4.5.2</httpcomponents.version>
         <jackson.version>1.9.13</jackson.version>
-        <modelmapper.version>2.3.2</modelmapper.version>
+        <modelmapper.version>2.3.5</modelmapper.version>
         <spring.asm.version>3.1.4.RELEASE</spring.asm.version>
         <spring.version>5.1.5.RELEASE</spring.version>
         <spring.security.version>4.2.11.RELEASE</spring.security.version>
@@ -35,6 +35,9 @@
 
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
 
@@ -273,7 +276,7 @@
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
                 <artifactId>opintopolku-spring-security</artifactId>
-                <version>0.3.0-SNAPSHOT</version>
+                <version>0.4.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
@@ -317,10 +320,6 @@
                 <version>1.7.5</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-            </dependency>
-            <dependency>
                 <groupId>fi.vm.sade.valintaperusteet</groupId>
                 <artifactId>valintalaskenta-laskenta-api</artifactId>
                 <version>${project.version}</version>
@@ -334,7 +333,7 @@
             <dependency>
                 <groupId>org.scala-lang</groupId>
                 <artifactId>scala-library</artifactId>
-                <version>2.11.12</version>
+                <version>2.13.1</version>
             </dependency>
 
             <dependency>
@@ -461,10 +460,6 @@
                 <groupId>org.hibernate.javax.persistence</groupId>
                 <artifactId>hibernate-jpa-2.0-api</artifactId>
                 <version>1.0.1.Final</version>
-            </dependency>
-            <dependency>
-                <groupId>net.sf.ehcache</groupId>
-                <artifactId>ehcache-core</artifactId>
             </dependency>
             <dependency>
                 <groupId>org.jboss.logging</groupId>
@@ -642,6 +637,11 @@
                 <artifactId>reflections</artifactId>
                 <version>0.9.10</version>
             </dependency>
+            <dependency>
+                <groupId>io.circe</groupId>
+                <artifactId>circe-core_2.13</artifactId>
+                <version>0.12.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -717,6 +717,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
+                <version>3.2.3</version>
                 <configuration>
                     <webResources>
                         <resource>

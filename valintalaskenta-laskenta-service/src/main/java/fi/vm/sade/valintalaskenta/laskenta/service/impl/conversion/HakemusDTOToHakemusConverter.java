@@ -6,16 +6,27 @@ import fi.vm.sade.valintalaskenta.domain.dto.AvainArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.AvainMetatiedotDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
+import io.circe.Encoder;
+import io.circe.Encoder$;
+import io.circe.Json;
+import io.circe.ParsingFailure;
+import io.circe.jawn.JawnParser;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
+import scala.collection.immutable.List$;
+import scala.util.Either;
 
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+;
+
 @Component("HakemusDTOKonvertteri")
 public class HakemusDTOToHakemusConverter implements Converter<HakemusDTO, Hakemus> {
+    private final JawnParser circeParser = new JawnParser();
 
     private static Function<HakukohdeDTO, Hakutoive> getHakutoive = hakukohdeDTO -> new Hakutoive (hakukohdeDTO.getOid(), hakukohdeDTO.getHakukohdeRyhmatOids());
 
@@ -32,7 +43,22 @@ public class HakemusDTOToHakemusConverter implements Converter<HakemusDTO, Hakem
                     s.addAll(a);
                     return s;
                 }));
-        return new Hakemus(dto.getHakemusoid(), prioriteettiHakukohde, target, metatiedot);
+        return new Hakemus(dto.getHakemusoid(), prioriteettiHakukohde, target, metatiedot, stringToCirceJson(dto.getKoskiOpiskeluoikeudetJson()));
     }
 
+    private Json stringToCirceJson(String koskiOpiskeluoikeudetJson) {
+        if (StringUtils.isBlank(koskiOpiskeluoikeudetJson)) {
+            return createEmptyCirceJsonArray();
+        }
+        Either<ParsingFailure, Json> parseResult = circeParser.parse(koskiOpiskeluoikeudetJson);
+        if (parseResult.isRight()) {
+            return parseResult.right().get();
+        }
+        throw new IllegalArgumentException("Virhe jäsennettäessä JSON-dokumenttia Koskesta. JSON='" + koskiOpiskeluoikeudetJson + "'", parseResult.left().get());
+    }
+
+    private Json createEmptyCirceJsonArray() {
+        scala.collection.immutable.List<Object> empty = List$.MODULE$.<Object>empty();
+        return Encoder$.MODULE$.encodeList(Encoder.AsArray$.MODULE$.apply(null)).apply(empty);
+    }
 }

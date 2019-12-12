@@ -36,6 +36,7 @@ log4j.logger.fi.vm.sade.valinta=INFO
 log4j.logger.fi.vm.sade.valintalaskenta=INFO
 log4j.logger.fi.vm.sade.sijoittelu=INFO
 log4j.logger.fi.vm.sade.service.service.valintaperusteet=INFO
+log4j.logger.fi.vm.sade.service.valintaperusteet.laskenta=DEBUG
 #log4j.logger.fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl=DEBUG
 
 log4j.additivity.fi.vm.sade.valinta.sharedutils.AuditLogger=false

@@ -40,6 +40,9 @@ public class HakemusDTO {
     @ApiModelProperty(value = "Hakijan sukunimi", required = false)
     private String sukunimi;
 
+    @ApiModelProperty(value = "Hakijan Koski-opiskeluoikeudet", required = false)
+    private String koskiOpiskeluoikeudetJson;
+
     /**
      * @Deprecated Jatkossa käytetään avainSuoritusTiedot -kenttää
      */
@@ -110,5 +113,13 @@ public class HakemusDTO {
 
     public void setAvaimet(List<AvainArvoDTO> avaimet) {
         this.avaimet = avaimet;
+    }
+
+    public String getKoskiOpiskeluoikeudetJson() {
+        return koskiOpiskeluoikeudetJson;
+    }
+
+    public void setKoskiOpiskeluoikeudetJson(String koskiOpiskeluoikeudetJson) {
+        this.koskiOpiskeluoikeudetJson = koskiOpiskeluoikeudetJson;
     }
 }
