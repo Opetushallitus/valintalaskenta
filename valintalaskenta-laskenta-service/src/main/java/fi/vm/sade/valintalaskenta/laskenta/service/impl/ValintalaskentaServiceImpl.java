@@ -166,7 +166,13 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
         LOG.info("Siivotaan valintakoeosallistumiset {} laskeDTO:lta. ", laskeDTOs.size());
         laskeDTOs.forEach(ldto -> {
             List<String> saastettavienValinnanvaiheidenOidit = ldto.getValintaperuste().stream().map(p -> p.getValinnanVaihe().getValinnanVaiheOid()).collect(Collectors.toList());
-            valintakoelaskentaSuorittajaService.siivoaValintakoeOsallistumiset(ldto.getHakemus(), ldto.getHakukohdeOid(), saastettavienValinnanvaiheidenOidit);
+            //Laskenta saa kirjoitushetkellä valintalaskentakoostepalvelulta joko vain yhden tai kaikki valinnanvaiheet. Siivotaan vain, jos kaikki säästettävät oidit ovat tiedossa.
+            if (saastettavienValinnanvaiheidenOidit.size() > 1) {
+                valintakoelaskentaSuorittajaService.siivoaValintakoeOsallistumiset(ldto.getHakemus(), ldto.getHakukohdeOid(), saastettavienValinnanvaiheidenOidit);
+            } else {
+                LOG.info("LaskeDTO sisälsi korkeintaan yhden valinnanvaiheOidin ({}) hakukohteelle {}. Ei siivota tuloksia.",
+                        saastettavienValinnanvaiheidenOidit, ldto.getHakukohdeOid());
+            }
         });
     }
 
