@@ -1,6 +1,8 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO;
+import fi.vm.sade.valinta.sharedutils.AuditLog;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
@@ -47,7 +49,9 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
             @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
             @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid,
             @ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true) @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
-            @ApiParam(value = "Järjestyskriteerin uusi arvo", required = true) MuokattuJonosijaArvoDTO arvo) {
+            @ApiParam(value = "Järjestyskriteerin uusi arvo", required = true) MuokattuJonosijaArvoDTO arvo,
+            HttpServletRequest request) {
+        User user = AuditLog.getUser(request);
 
         MuokattuJonosija muokattuJonosija = tulosService.muutaJarjestyskriteeri(valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, arvo);
         if (muokattuJonosija != null) {
@@ -67,7 +71,10 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
     public Response poistaMuokattuJonosija(
             @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
             @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid,
-            @ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true) @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti) {
+            @ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true) @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
+            HttpServletRequest request) {
+        User user = AuditLog.getUser(request);
+
         MuokattuJonosija muokattuJonosija = tulosService.poistaMuokattuJonosija(valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti);
         if (muokattuJonosija != null) {
             MuokattuJonosijaDTO map = modelMapper.map(muokattuJonosija, MuokattuJonosijaDTO.class);
@@ -84,7 +91,10 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
     @ApiOperation(value = "Tallentaa/muokkaa valintatapajonoa", response = ValintatapajonoDTO.class)
     public Response muokkaaSijotteluStatusta(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
                                              @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status,
-                                             @ApiParam(value = "Valintatapajono", required = true) ValintatapajonoDTO valintatapajono, @Context HttpServletRequest request) {
+                                             @ApiParam(value = "Valintatapajono", required = true) ValintatapajonoDTO valintatapajono,
+                                             HttpServletRequest request) {
+        User user = AuditLog.getUser(request);
+
         Optional<Valintatapajono> dto = tulosService.muokkaaValintatapajonoa(valintatapajonoOid,
                 jono -> {
                     // Käyttöliittymä kutsuu ValintaperusteetResourceV2::updateAutomaattinenSijoitteluunSiirto(valintatapajonoOid, status, request)

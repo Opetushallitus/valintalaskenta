@@ -5,6 +5,7 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -12,6 +13,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import fi.vm.sade.auditlog.User;
+import fi.vm.sade.valinta.sharedutils.AuditLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
@@ -46,7 +49,10 @@ public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResourc
             @ApiParam(value = "Haun OID", required = true) @PathParam("hakuOid") String hakuOid,
             @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeOid") String hakukohdeOid,
             @ApiParam(value = "Hakemuksen OID", required = true) @PathParam("hakemusOid") String hakemusOid,
-            @ApiParam(value = "Asetettava tila", required = true) HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen) {
+            @ApiParam(value = "Asetettava tila", required = true) HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen,
+            HttpServletRequest request) {
+        User user = AuditLog.getUser(request);
+
         tulosService.asetaHarkinnanvaraisestiHyvaksymisenTila(hakuOid, hakukohdeOid, hakemusOid, harkinnanvarainenHyvaksyminen.getHarkinnanvaraisuusTila());
     }
 
@@ -55,7 +61,10 @@ public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResourc
     @PreAuthorize(UPDATE_CRUD)
     @ApiOperation(value = "Asettaa tilan harkinnanvaraisesti hakeneelle hakijalle")
     public void asetaTilat(
-            @ApiParam(value = "Asetettava tila", required = true) List<HarkinnanvarainenHyvaksyminenDTO> harkinnanvaraisetHyvaksymiset) {
+            @ApiParam(value = "Asetettava tila", required = true) List<HarkinnanvarainenHyvaksyminenDTO> harkinnanvaraisetHyvaksymiset,
+            HttpServletRequest request) {
+        User user = AuditLog.getUser(request);
+
         for (HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen : harkinnanvaraisetHyvaksymiset) {
             tulosService.asetaHarkinnanvaraisestiHyvaksymisenTila(
                     harkinnanvarainenHyvaksyminen.getHakuOid(),

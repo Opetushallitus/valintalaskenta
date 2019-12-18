@@ -1,5 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
+import fi.vm.sade.auditlog.User;
+import fi.vm.sade.valinta.sharedutils.AuditLog;
 import fi.vm.sade.valintalaskenta.domain.dto.JonoDto;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
@@ -16,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -98,8 +101,11 @@ public class ValintalaskentakoostepalveluResourceImpl {
     public ValinnanvaiheDTO lisaaTuloksia(
             @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid,
             @ApiParam(value = "Tarjoaja OID", required = true) @QueryParam("tarjoajaOid") String tarjoajaOid,
-            @ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe) {
+            @ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe,
+            HttpServletRequest request) {
         try {
+            User user = AuditLog.getUser(request);
+
             return tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid);
         } catch (Exception e) {
             LOGGER.error("Valintatapajonon pisteitä ei saatu päivitettyä hakukohteelle " + hakukohdeoid, e);

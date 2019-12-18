@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta.resource;
 
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetValinnanVaiheDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoJarjestyskriteereillaDTO;
@@ -7,6 +8,7 @@ import fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi;
 import fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO;
 import fi.vm.sade.sijoittelu.tulos.dto.HakukohdeDTO;
 import fi.vm.sade.sijoittelu.tulos.dto.ValisijoitteluDTO;
+import fi.vm.sade.valinta.sharedutils.AuditLog;
 import fi.vm.sade.valintalaskenta.domain.HakukohteenLaskennanTila;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.Laskentakutsu;
@@ -22,12 +24,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StopWatch;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,8 +89,9 @@ public class ValintalaskentaResourceImpl {
     @Consumes("application/json")
     @Produces("text/plain")
     @POST
-    public String laske(Laskentakutsu laskentakutsu) throws Exception {
+    public String laske(Laskentakutsu laskentakutsu, @Context HttpServletRequest request) throws Exception {
         try {
+            User user = AuditLog.getUser(request);
             String pollKey = laskentakutsu.getPollKey();
 
             String status = pidaKirjaaMeneillaanOlevista(pollKey);
@@ -112,10 +117,11 @@ public class ValintalaskentaResourceImpl {
     @Consumes("application/json")
     @Produces("text/plain")
     @POST
-    public String valintakokeet(Laskentakutsu laskentakutsu) throws Exception {
+    public String valintakokeet(Laskentakutsu laskentakutsu, @Context HttpServletRequest request) throws Exception {
         try {
-            String pollKey = laskentakutsu.getPollKey();
+            User user = AuditLog.getUser(request);
 
+            String pollKey = laskentakutsu.getPollKey();
             String status = pidaKirjaaMeneillaanOlevista(pollKey);
             if (!status.equals(HakukohteenLaskennanTila.UUSI)) {
                 return status;
@@ -139,10 +145,11 @@ public class ValintalaskentaResourceImpl {
     @Consumes("application/json")
     @Produces("text/plain")
     @POST
-    public String laskeKaikki(Laskentakutsu laskentakutsu) throws Exception {
+    public String laskeKaikki(Laskentakutsu laskentakutsu, @Context HttpServletRequest request) throws Exception {
         try {
-            String pollKey = laskentakutsu.getPollKey();
+            User user = AuditLog.getUser(request);
 
+            String pollKey = laskentakutsu.getPollKey();
             String status = pidaKirjaaMeneillaanOlevista(pollKey);
             if (!status.equals(HakukohteenLaskennanTila.UUSI)) {
                 return status;
@@ -166,8 +173,10 @@ public class ValintalaskentaResourceImpl {
     @Consumes("application/json")
     @Produces("text/plain")
     @POST
-    public String laskeJaSijoittele(Laskentakutsu laskentakutsu) {
+    public String laskeJaSijoittele(Laskentakutsu laskentakutsu, @Context HttpServletRequest request) {
         try {
+            User user = AuditLog.getUser(request);
+
             List<LaskeDTO> lista = laskentakutsu.getLaskeDTOs();
             String pollKey = laskentakutsu.getPollKey();
             if (lista == null || lista.isEmpty()) {
