@@ -1,8 +1,13 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
-import com.google.common.collect.ImmutableList;
+import fi.vm.sade.auditlog.Changes;
+import fi.vm.sade.auditlog.User;
+import fi.vm.sade.valinta.sharedutils.ValintaResource;
+import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
+import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
+import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
@@ -24,9 +29,12 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     @Autowired
     private Datastore datastore;
 
+    @Autowired
+    private LaskentaAuditLog auditLog;
+
+
     @Override
-    public List<Valinnanvaihe> readByHakuOidAndHakemusOid(String hakuOid,
-                                                          String hakemusOid) {
+    public List<Valinnanvaihe> readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid) {
         List<ObjectId> hakemuksenJonosijaIdt = new LinkedList<>();
         datastore.find(Jonosija.class)
                 .field("hakemusOid").equal(hakemusOid)
@@ -97,22 +105,28 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         return Optional.ofNullable(datastore.find(ValinnanvaiheMigrationDTO.class)
                 .field("valinnanvaiheOid").equal(valinnanvaiheOid)
                 .get())
-                .map(this::migrate)
+                .map(vaihe -> migrate(vaihe))
                 .orElse(null);
     }
 
     @Override
-    public void saveOrUpdate(Valinnanvaihe vaihe) {
+    public void saveOrUpdate(Valinnanvaihe vaihe, User auditUser) {
         vaihe.getValintatapajonot().forEach(valintatapajono -> {
-            saveJonosijat(valintatapajono);
-            datastore.save(valintatapajono);
+            saveJonosijat(valintatapajono, vaihe, auditUser);
+            saveJono(valintatapajono, vaihe, auditUser);
         });
-        datastore.save(vaihe);
+        saveVaihe(vaihe, auditUser);
     }
 
-    private void saveJonosijat(Valintatapajono valintatapajono) {
+    private void saveJonosijat(Valintatapajono valintatapajono, Valinnanvaihe vaihe, User auditUser) {
         valintatapajono.setJonosijaIdt(valintatapajono.getJonosijat().stream()
-                .map(jonosija -> (ObjectId) datastore.save(jonosija).getId())
+                .map(jonosija -> (ObjectId) saveJonosija(jonosija, valintatapajono, vaihe, auditUser).getId())
+                .collect(Collectors.toList()));
+    }
+
+    private void saveJonosijatWithoutAuditLogging(Valintatapajono valintatapajono) {
+        valintatapajono.setJonosijaIdt(valintatapajono.getJonosijat().stream()
+                .map(jonosija -> (ObjectId) saveJonosijaWithoutAuditLogging(jonosija).getId())
                 .collect(Collectors.toList()));
     }
 
@@ -137,8 +151,8 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         } else {
             LOGGER.info("Migrating valintatapajono {}", jono.getValintatapajonoOid());
             Valintatapajono migratedJono = jono.migrate();
-            saveJonosijat(migratedJono);
-            datastore.save(migratedJono);
+            saveJonosijatWithoutAuditLogging(migratedJono);
+            saveJonoWithoutAuditLogging(migratedJono);
             return migratedJono;
         }
     }
@@ -167,6 +181,61 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     }
 
     private List<Valinnanvaihe> migrate(List<ValinnanvaiheMigrationDTO> vaiheet) {
-        return vaiheet.stream().map(this::migrate).collect(Collectors.toList());
+        return vaiheet.stream().map(vaihe -> migrate(vaihe)).collect(Collectors.toList());
     }
+
+    private Key<Valintatapajono> saveJono(Valintatapajono valintatapajono, Valinnanvaihe vaihe, User auditUser) {
+        Map<String, String> additionalAuditFields = new HashMap<>();
+        additionalAuditFields.put("valinnanvaihe_hakukohdeOid", vaihe.getHakukohdeOid());
+        additionalAuditFields.put("valinnanvaihe_hakuOid", vaihe.getHakuOid());
+        additionalAuditFields.put("valinnanvaihe_jarjestysnumero", String.valueOf(vaihe.getJarjestysnumero()));
+        auditLog.log(LaskentaAudit.AUDIT,
+                auditUser,
+                ValintaperusteetOperation.VALINTATAPAJONO_PAIVITYS,
+                ValintaResource.VALINTATAPAJONO,
+                valintatapajono.getValintatapajonoOid(),
+                Changes.addedDto(valintatapajono),
+                additionalAuditFields);
+        return datastore.save(valintatapajono);
+    }
+
+    private Key<Valintatapajono> saveJonoWithoutAuditLogging(Valintatapajono valintatapajono) {
+        return datastore.save(valintatapajono);
+    }
+
+    private Key<Valinnanvaihe> saveVaihe(Valinnanvaihe vaihe, User auditUser) {
+        auditLog.log(LaskentaAudit.AUDIT,
+                auditUser,
+                ValintaperusteetOperation.VALINNANVAIHE_PAIVITYS,
+                ValintaResource.VALINNANVAIHE,
+                vaihe.getValinnanvaiheOid(),
+                Changes.addedDto(vaihe));
+        return datastore.save(vaihe);
+    }
+
+    @Override
+    public Key<Valinnanvaihe> saveVaiheWithoutAuditLogging(Valinnanvaihe vaihe) {
+        return datastore.save(vaihe);
+    }
+
+    private Key<Jonosija> saveJonosija(Jonosija jonosija, Valintatapajono jono, Valinnanvaihe vaihe, User auditUser) {
+        Map<String, String> additionalAuditFields = new HashMap<>();
+        additionalAuditFields.put("valintatapajono_valintatapajonoOid", jono.getValintatapajonoOid());
+        additionalAuditFields.put("valinnanvaihe_hakukohdeOid", vaihe.getHakukohdeOid());
+        additionalAuditFields.put("valinnanvaihe_hakuOid", vaihe.getHakuOid());
+        additionalAuditFields.put("valinnanvaihe_jarjestysnumero", String.valueOf(vaihe.getJarjestysnumero()));
+        auditLog.log(LaskentaAudit.AUDIT,
+                auditUser,
+                ValintaperusteetOperation.JONOSIJA_PAIVITYS,
+                ValintaResource.JONOSIJA,
+                jonosija.getId().toString(),
+                Changes.addedDto(jonosija),
+                additionalAuditFields);
+        return datastore.save(jonosija);
+    }
+
+    private Key<Jonosija> saveJonosijaWithoutAuditLogging(Jonosija jonosija) {
+        return datastore.save(jonosija);
+    }
+
 }

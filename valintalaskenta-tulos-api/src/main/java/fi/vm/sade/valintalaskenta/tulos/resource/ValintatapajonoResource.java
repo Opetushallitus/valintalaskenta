@@ -25,7 +25,8 @@ public interface ValintatapajonoResource {
             @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
             @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid,
             @ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true) @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
-            @ApiParam(value = "Järjestyskriteerin uusi arvo", required = true) MuokattuJonosijaArvoDTO arvo);
+            @ApiParam(value = "Järjestyskriteerin uusi arvo", required = true) MuokattuJonosijaArvoDTO arvo,
+            @Context HttpServletRequest request);
 
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
@@ -35,7 +36,8 @@ public interface ValintatapajonoResource {
     public Response poistaMuokattuJonosija(
             @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
             @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid,
-            @ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true) @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti);
+            @ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true) @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
+            @Context HttpServletRequest request);
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -45,7 +47,8 @@ public interface ValintatapajonoResource {
     public Response muokkaaSijotteluStatusta(
             @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
             @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status,
-            @ApiParam(value = "Valintatapajono", required = true) ValintatapajonoDTO valintapajono, @Context HttpServletRequest request);
+            @ApiParam(value = "Valintatapajono", required = true) ValintatapajonoDTO valintapajono,
+            @Context HttpServletRequest request);
 
     @GET
     @Path("/{valintatapajonoOid}/valmissijoiteltavaksi")

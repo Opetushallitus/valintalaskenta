@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.service;
 
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
@@ -16,7 +17,6 @@ import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -41,11 +41,13 @@ public interface ValintalaskentaTulosService {
 
     MuokattuJonosija muutaJarjestyskriteeri(String valintatapajonoOid,
                                             String hakemusOid, Integer jarjestyskriteeriPrioriteetti,
-                                            MuokattuJonosijaArvoDTO arvo);
+                                            MuokattuJonosijaArvoDTO arvo,
+                                            User auditUser);
 
     MuokattuJonosija poistaMuokattuJonosija(String valintatapajonoOid,
                                             String hakemusOid,
-                                            Integer jarjestyskriteeriPrioriteetti);
+                                            Integer jarjestyskriteeriPrioriteetti,
+                                            User auditUser);
 
     ValintakoeOsallistuminen haeValintakoeOsallistumiset(String hakemusOid);
 
@@ -57,15 +59,16 @@ public interface ValintalaskentaTulosService {
 
     void asetaHarkinnanvaraisestiHyvaksymisenTila(String hakuoid,
                                                   String hakukohdeoid, String hakemusoid,
-                                                  HarkinnanvaraisuusTila hyvaksyttyHarkinannvaraisesti);
+                                                  HarkinnanvaraisuusTila hyvaksyttyHarkinannvaraisesti,
+                                                  User auditUser);
 
     List<HarkinnanvarainenHyvaksyminen> haeHarkinnanvaraisestiHyvaksymisenTila(String hakukohdeoid);
 
     List<HarkinnanvarainenHyvaksyminen> haeHakemuksenHarkinnanvaraisestiHyvaksymisenTilat(String hakuOid, String hakemusOid);
 
-    ValinnanvaiheDTO lisaaTuloksia(ValinnanvaiheDTO vaihe, String hakukohdeoid, String tarjoajaOid);
+    ValinnanvaiheDTO lisaaTuloksia(ValinnanvaiheDTO vaihe, String hakukohdeoid, String tarjoajaOid, User auditUser);
 
-    Optional<Valintatapajono> muokkaaValintatapajonoa(String valintatapajonoOid, Consumer<Valintatapajono> muokkausFunktio);
+    Optional<Valintatapajono> muokkaaValintatapajonoa(String valintatapajonoOid, Consumer<Valintatapajono> muokkausFunktio, User auditUser);
 
     boolean haeSijoitteluStatus(String valintatapajonoOid);
 

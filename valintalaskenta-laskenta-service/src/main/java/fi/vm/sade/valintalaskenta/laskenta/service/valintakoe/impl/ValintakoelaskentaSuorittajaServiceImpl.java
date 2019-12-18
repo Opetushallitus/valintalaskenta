@@ -63,10 +63,12 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
     private final ValintalaskentaModelMapper modelMapper;
 
     @Autowired
-    public ValintakoelaskentaSuorittajaServiceImpl(ValintalaskentaModelMapper modelMapper, HakemusDTOToHakemusConverter hakemusConverter,
+    public ValintakoelaskentaSuorittajaServiceImpl(ValintalaskentaModelMapper modelMapper,
+                                                   HakemusDTOToHakemusConverter hakemusConverter,
                                                    EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija,
                                                    ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO,
-                                                   Valintakoeosallistumislaskin valintakoeosallistumislaskin, ValinnanvaiheDAO valinnanvaiheDAO) {
+                                                   Valintakoeosallistumislaskin valintakoeosallistumislaskin,
+                                                   ValinnanvaiheDAO valinnanvaiheDAO) {
         this.modelMapper = modelMapper;
         this.hakemusConverter = hakemusConverter;
         this.edellinenValinnanvaiheKasittelija = edellinenValinnanvaiheKasittelija;
@@ -91,8 +93,11 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
     }
 
     @Override
-    public void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet, String uuid,
-                      ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset, boolean korkeakouluhaku) {
+    public void laske(HakemusDTO hakemus,
+                      List<ValintaperusteetDTO> valintaperusteet,
+                      String uuid,
+                      ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset,
+                      boolean korkeakouluhaku) {
         LOG.info("(Uuid={}) (Thread={}) Laskentaan valintakoeosallistumiset hakemukselle {}", uuid, Thread.currentThread(), hakemus.getHakemusoid());
         if (valintaperusteet.size() == 0) {
             return;
@@ -164,7 +169,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         ValintakoeOsallistuminen osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset = kumulatiivisetTulokset.get(hakemus.getHakemusoid());
 
         if (osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset != null) {
-            valintakoeOsallistuminenDAO.createOrUpdate(osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset);
+            saveValintakoeOsallistuminen(osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset);
         }
 
         if (LOG.isDebugEnabled()) {
@@ -367,10 +372,14 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                     }
                     LOG.debug(String.format("poistaVanhatOsallistumiset: hakemukselle %s tallennetaan osallistumiset %s (%d hakutoivetta)",
                         hakemus.getHakemusoid(), ToStringBuilder.reflectionToString(kaikkiOsallistumiset), kaikkiOsallistumiset.getHakutoiveet().size()));
-                    valintakoeOsallistuminenDAO.createOrUpdate(kaikkiOsallistumiset);
+                    saveValintakoeOsallistuminen(kaikkiOsallistumiset);
                 }
             }
         }
+    }
+
+    private void saveValintakoeOsallistuminen(ValintakoeOsallistuminen v) {
+        valintakoeOsallistuminenDAO.createOrUpdate(v);
     }
 
     private OsallistuminenTulos getOsallistuminenTulos(Hakukohde hakukohde, Hakemus convert, Funktiokutsu fuk) {

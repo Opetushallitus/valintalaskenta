@@ -1,10 +1,12 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.dto.JonoDto;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.HakemusOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.ValintatietoService;
@@ -16,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -23,11 +26,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Controller
 @Path("valintalaskentakoostepalvelu")
+// TBD: should there be @PreAuthorize("isAuthenticated()") here? Otherwise auditLog.getUser may throw a RuntimeException.
+// If this is meant to be called only by another service with no session (as is ValintalaskentaResourceImpl), then auditlogging can be removed.
 @Api(value = "/valintalaskentakoostepalvelu", description = "Resurssi tulosten hakemiseen hakukohteittain")
 public class ValintalaskentakoostepalveluResourceImpl {
     protected static final Logger LOGGER = LoggerFactory.getLogger(ValintalaskentakoostepalveluResourceImpl.class);
@@ -39,6 +45,9 @@ public class ValintalaskentakoostepalveluResourceImpl {
     private ValintalaskentaModelMapper modelMapper;
     @Autowired
     private ValintatietoService valintatietoService;
+
+    @Autowired
+    private LaskentaAuditLog auditLog;
 
     /**
      * @param hakuOid
@@ -98,9 +107,13 @@ public class ValintalaskentakoostepalveluResourceImpl {
     public ValinnanvaiheDTO lisaaTuloksia(
             @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid,
             @ApiParam(value = "Tarjoaja OID", required = true) @QueryParam("tarjoajaOid") String tarjoajaOid,
-            @ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe) {
+            @ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe,
+            @Context HttpServletRequest request) {
         try {
-            return tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid);
+            // this resource is not @PreAuthorize - can it be called without a session? If so, getUser will throw a RuntimeException.
+            User user = auditLog.getUser(request);
+
+            return tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid, user);
         } catch (Exception e) {
             LOGGER.error("Valintatapajonon pisteitä ei saatu päivitettyä hakukohteelle " + hakukohdeoid, e);
             throw e;

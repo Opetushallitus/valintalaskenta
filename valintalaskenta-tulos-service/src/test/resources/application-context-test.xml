@@ -32,4 +32,5 @@
 
     <bean id="modelMapper" class="fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper"/>
     <bean id="valintaPerusteetResource" class="fi.vm.sade.valintalaskenta.tulos.context.ValintaperusteetResourceImpl"/>
+    <bean id="tulosAuditLogMock" class="fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogMock"/>
 </beans>

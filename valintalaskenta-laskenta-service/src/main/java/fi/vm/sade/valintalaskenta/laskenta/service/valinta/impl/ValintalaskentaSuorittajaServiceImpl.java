@@ -247,7 +247,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                     hakijaryhma.getJonosijat().add(createJonosija(js));
                 }
                 LOG.info("(Uuid={}) Persistoidaan hakijaryhmä {}", uuid, hakijaryhma.getHakijaryhmaOid());
-                hakijaryhmaDAO.create(hakijaryhma);
+                hakijaryhmaDAO.createWithoutAuditLogging(hakijaryhma);
             });
         }
     }

@@ -2,6 +2,10 @@ package fi.vm.sade.valintalaskenta.tulos.service.impl;
 
 import com.google.common.collect.Collections2;
 
+import fi.vm.sade.auditlog.Changes;
+import fi.vm.sade.auditlog.User;
+import fi.vm.sade.valinta.sharedutils.ValintaResource;
+import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
@@ -33,12 +37,14 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
+import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.dao.HakijaryhmaDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.HarkinnanvarainenHyvaksyminenDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.ValintakoeOsallistuminenDAO;
+import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.service.AuthorizationUtil;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
@@ -94,6 +100,9 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
     @Autowired
     private ValintalaskentaModelMapper modelMapper;
+
+    @Autowired
+    private LaskentaAuditLog auditLog;
 
     @Value("${root.organisaatio.oid}")
     private String rootOrgOid;
@@ -459,7 +468,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
-    public void asetaHarkinnanvaraisestiHyvaksymisenTila(String hakuoid, String hakukohdeoid, String hakemusoid, HarkinnanvaraisuusTila tila) {
+    public void asetaHarkinnanvaraisestiHyvaksymisenTila(String hakuoid, String hakukohdeoid, String hakemusoid, HarkinnanvaraisuusTila tila, User auditUser) {
         HarkinnanvarainenHyvaksyminen a = harkinnanvarainenHyvaksyminenDAO.haeHarkinnanvarainenHyvaksyminen(hakukohdeoid, hakemusoid);
         if (a == null) {
             a = new HarkinnanvarainenHyvaksyminen();
@@ -468,7 +477,17 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             a.setHakuOid(hakuoid);
         }
         a.setHarkinnanvaraisuusTila(tila);
-        harkinnanvarainenHyvaksyminenDAO.tallennaHarkinnanvarainenHyvaksyminen(a);
+        saveHarkinnanvarainenHyvaksyminen(a, auditUser);
+    }
+
+    private void saveHarkinnanvarainenHyvaksyminen(HarkinnanvarainenHyvaksyminen harkinnanvarainenHyvaksyminen, User auditUser) {
+        auditLog.log(LaskentaAudit.AUDIT,
+                auditUser,
+                ValintaperusteetOperation.HARKINNANVARAINEN_HYVAKSYMINEN_PAIVITYS,
+                ValintaResource.HARKINNANVARAINEN_HYVAKSYMINEN,
+                harkinnanvarainenHyvaksyminen.getHakemusOid(),
+                Changes.addedDto(harkinnanvarainenHyvaksyminen));
+        harkinnanvarainenHyvaksyminenDAO.tallennaHarkinnanvarainenHyvaksyminen(harkinnanvarainenHyvaksyminen);
     }
 
     @Override
@@ -482,12 +501,12 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
-    public ValinnanvaiheDTO lisaaTuloksia(ValinnanvaiheDTO vaihe, String hakukohdeoid, String tarjoajaOid) {
+    public ValinnanvaiheDTO lisaaTuloksia(ValinnanvaiheDTO vaihe, String hakukohdeoid, String tarjoajaOid, User auditUser) {
         Valinnanvaihe haettu = valinnanvaiheDAO.haeValinnanvaihe(vaihe.getValinnanvaiheoid());
         Valinnanvaihe annettu = modelMapper.map(vaihe, Valinnanvaihe.class);
         annettu.setHakukohdeOid(hakukohdeoid);
         if (haettu == null) {
-            valinnanvaiheDAO.saveOrUpdate(annettu);
+            valinnanvaiheDAO.saveOrUpdate(annettu, auditUser);
         } else {
             List<Valintatapajono> vanhat = new ArrayList<Valintatapajono>();
             for (Valintatapajono jono : haettu.getValintatapajonot()) {
@@ -506,13 +525,13 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             haettu.setHakuOid(vaihe.getHakuOid());
             haettu.setTarjoajaOid(tarjoajaOid);
             haettu.setValintatapajonot(annettu.getValintatapajonot());
-            valinnanvaiheDAO.saveOrUpdate(haettu);
+            valinnanvaiheDAO.saveOrUpdate(haettu, auditUser);
         }
         return vaihe;
     }
 
     @Override
-    public Optional<Valintatapajono> muokkaaValintatapajonoa(String valintatapajonoOid, Consumer<Valintatapajono> muokkausFunktio) {
+    public Optional<Valintatapajono> muokkaaValintatapajonoa(String valintatapajonoOid, Consumer<Valintatapajono> muokkausFunktio, User auditUser) {
         if (haeSijoitteluStatus(valintatapajonoOid) && !isOPH()) {
             throw new EiOikeuttaPoistaaValintatapajonoaSijoittelustaException("Ei oikeutta muokata valintatapajonoa");
         }
@@ -521,7 +540,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                 .stream()
                 .filter(j -> j.getValintatapajonoOid().equals(valintatapajonoOid))
                 .forEach(j -> muokkausFunktio.accept(j));
-        valinnanvaiheDAO.saveOrUpdate(vaihe);
+        valinnanvaiheDAO.saveOrUpdate(vaihe, auditUser);
         return vaihe
                 .getValintatapajonot()
                 .stream()
@@ -547,7 +566,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     @Override
     public MuokattuJonosija muutaJarjestyskriteeri(String valintatapajonoOid,
                                                    String hakemusOid, Integer jarjestyskriteeriPrioriteetti,
-                                                   MuokattuJonosijaArvoDTO jonosija) {
+                                                   MuokattuJonosijaArvoDTO jonosija,
+                                                   User auditUser) {
         Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.findByValintatapajonoOid(valintatapajonoOid);
         MuokattuJonosija muokattuJonosija = muokattuJonosijaDAO.readByValintatapajonoOid(valintatapajonoOid, hakemusOid);
         if (muokattuJonosija == null) {
@@ -588,12 +608,12 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                         + jonosija.getArvo() + " tila: "
                         + jonosija.getTila().name());
 
-        muokattuJonosijaDAO.saveOrUpdate(muokattuJonosija);
+        saveMuokattuJonosija(muokattuJonosija, auditUser);
         return muokattuJonosija;
     }
 
     @Override
-    public MuokattuJonosija poistaMuokattuJonosija(String valintatapajonoOid, String hakemusOid, Integer jarjestyskriteeriPrioriteetti) {
+    public MuokattuJonosija poistaMuokattuJonosija(String valintatapajonoOid, String hakemusOid, Integer jarjestyskriteeriPrioriteetti, User auditUser) {
         MuokattuJonosija muokattuJonosija;
         muokattuJonosija = muokattuJonosijaDAO.readByValintatapajonoOid(valintatapajonoOid, hakemusOid);
         if (muokattuJonosija == null) {
@@ -604,9 +624,19 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                     .filter(j -> j.getPrioriteetti() != jarjestyskriteeriPrioriteetti)
                     .collect(Collectors.toList());
             muokattuJonosija.setJarjestyskriteerit(saastettavat);
-            muokattuJonosijaDAO.saveOrUpdate(muokattuJonosija);
+            saveMuokattuJonosija(muokattuJonosija, auditUser);
             return muokattuJonosija;
         }
+    }
+
+    private void saveMuokattuJonosija(MuokattuJonosija muokattuJonosija, User auditUser) {
+        auditLog.log(LaskentaAudit.AUDIT,
+                auditUser,
+                ValintaperusteetOperation.JONOSIJA_PAIVITYS,
+                ValintaResource.JONOSIJA,
+                muokattuJonosija.getHakemusOid(),
+                Changes.addedDto(muokattuJonosija));
+        muokattuJonosijaDAO.saveOrUpdate(muokattuJonosija);
     }
 
     private void addLogEntry(String selite, MuokattuJonosija muokattuJonosija, String muutos) {

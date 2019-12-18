@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.laskenta.dao;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import org.bson.types.ObjectId;
@@ -44,6 +45,8 @@ public class HakijaryhmaDAOTest {
 
     @Autowired
     private HakijaryhmaDAO hakijaryhmaDAO;
+
+    private final User auditUser = null;
 
     @Test
     @UsingDataSet(locations = "hakijaryhmaMigrationTestData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
@@ -92,7 +95,7 @@ public class HakijaryhmaDAOTest {
         Hakijaryhma hakijaryhma = new Hakijaryhma();
         hakijaryhma.setJonosijat(asList(new Jonosija(), new Jonosija()));
         hakijaryhma.setHakijaryhmaOid("uusiHakijaryhmaOid");
-        hakijaryhmaDAO.create(hakijaryhma);
+        hakijaryhmaDAO.create(hakijaryhma, auditUser);
         Hakijaryhma savedHakijaryhma = hakijaryhmaDAO.haeHakijaryhma("uusiHakijaryhmaOid").get();
         assertThat(savedHakijaryhma.getJonosijat(), Matchers.hasSize(2));
         assertThat(savedHakijaryhma.getJonosijaIdt(), Matchers.hasSize(2));
