@@ -21,6 +21,7 @@
         <constructor-arg type="java.lang.String" value="test" />
     </bean>
 
+    <bean id="laskentaAuditLogMock" class="fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogMock"/>
 
 	<!--
 		Tehdasluokat testidatan generointiin. Tehdasluokat toimii suoraan kontekstista nykimällä context.getBean('TestObjectNeededToBeCreated'.class)

@@ -1,12 +1,12 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
 import fi.vm.sade.auditlog.User;
-import fi.vm.sade.valinta.sharedutils.AuditLog;
 import fi.vm.sade.valintalaskenta.domain.dto.JonoDto;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.HakemusOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.ValintatietoService;
@@ -42,6 +42,9 @@ public class ValintalaskentakoostepalveluResourceImpl {
     private ValintalaskentaModelMapper modelMapper;
     @Autowired
     private ValintatietoService valintatietoService;
+
+    @Autowired
+    private LaskentaAuditLog auditLogger;
 
     /**
      * @param hakuOid
@@ -104,7 +107,7 @@ public class ValintalaskentakoostepalveluResourceImpl {
             @ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe,
             HttpServletRequest request) {
         try {
-            User user = AuditLog.getUser(request);
+            User user = auditLogger.getUser(request);
 
             return tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid);
         } catch (Exception e) {

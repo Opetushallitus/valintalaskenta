@@ -8,7 +8,6 @@ import fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi;
 import fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO;
 import fi.vm.sade.sijoittelu.tulos.dto.HakukohdeDTO;
 import fi.vm.sade.sijoittelu.tulos.dto.ValisijoitteluDTO;
-import fi.vm.sade.valinta.sharedutils.AuditLog;
 import fi.vm.sade.valintalaskenta.domain.HakukohteenLaskennanTila;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.Laskentakutsu;
@@ -17,6 +16,7 @@ import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResou
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
+import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,18 +56,24 @@ public class ValintalaskentaResourceImpl {
     private final ErillisSijoitteluResource erillisSijoitteluResource;
     private final ValintaperusteetValintatapajonoResource valintatapajonoResource;
     private final ExecutorService executorService;
+    private final LaskentaAuditLog auditLog;
 
     private static volatile ConcurrentHashMap<String, String> hakukohteetLaskettavina;
 
+
     @Autowired
-    public ValintalaskentaResourceImpl(ValintalaskentaService valintalaskentaService, ValisijoitteluKasittelija valisijoitteluKasittelija,
-                                       ValiSijoitteluResource valiSijoitteluResource, ErillisSijoitteluResource erillisSijoitteluResource,
-                                       ValintaperusteetValintatapajonoResource valintatapajonoResource) {
+    public ValintalaskentaResourceImpl(ValintalaskentaService valintalaskentaService,
+                                       ValisijoitteluKasittelija valisijoitteluKasittelija,
+                                       ValiSijoitteluResource valiSijoitteluResource,
+                                       ErillisSijoitteluResource erillisSijoitteluResource,
+                                       ValintaperusteetValintatapajonoResource valintatapajonoResource,
+                                       LaskentaAuditLog auditLog) {
         this.valintalaskentaService = valintalaskentaService;
         this.valisijoitteluKasittelija = valisijoitteluKasittelija;
         this.valiSijoitteluResource = valiSijoitteluResource;
         this.erillisSijoitteluResource = erillisSijoitteluResource;
         this.valintatapajonoResource = valintatapajonoResource;
+        this.auditLog = auditLog;
 
         hakukohteetLaskettavina = new ConcurrentHashMap<>();
         this.executorService = Executors.newWorkStealingPool();
@@ -91,7 +97,7 @@ public class ValintalaskentaResourceImpl {
     @POST
     public String laske(Laskentakutsu laskentakutsu, @Context HttpServletRequest request) throws Exception {
         try {
-            User user = AuditLog.getUser(request);
+            User user = auditLog.getUser(request);
             String pollKey = laskentakutsu.getPollKey();
 
             String status = pidaKirjaaMeneillaanOlevista(pollKey);
@@ -119,7 +125,7 @@ public class ValintalaskentaResourceImpl {
     @POST
     public String valintakokeet(Laskentakutsu laskentakutsu, @Context HttpServletRequest request) throws Exception {
         try {
-            User user = AuditLog.getUser(request);
+            User user = auditLog.getUser(request);
 
             String pollKey = laskentakutsu.getPollKey();
             String status = pidaKirjaaMeneillaanOlevista(pollKey);
@@ -147,7 +153,7 @@ public class ValintalaskentaResourceImpl {
     @POST
     public String laskeKaikki(Laskentakutsu laskentakutsu, @Context HttpServletRequest request) throws Exception {
         try {
-            User user = AuditLog.getUser(request);
+            User user = auditLog.getUser(request);
 
             String pollKey = laskentakutsu.getPollKey();
             String status = pidaKirjaaMeneillaanOlevista(pollKey);
@@ -175,7 +181,7 @@ public class ValintalaskentaResourceImpl {
     @POST
     public String laskeJaSijoittele(Laskentakutsu laskentakutsu, @Context HttpServletRequest request) {
         try {
-            User user = AuditLog.getUser(request);
+            User user = auditLog.getUser(request);
 
             List<LaskeDTO> lista = laskentakutsu.getLaskeDTOs();
             String pollKey = laskentakutsu.getPollKey();

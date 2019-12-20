@@ -14,10 +14,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import fi.vm.sade.auditlog.User;
-import fi.vm.sade.valinta.sharedutils.AuditLog;
+import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Component;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -40,6 +39,9 @@ public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResourc
     @Autowired
     private ValintalaskentaModelMapper modelMapper;
 
+    @Autowired
+    private LaskentaAuditLog auditLogger;
+
     @POST
     @Path("/haku/{hakuOid}/hakukohde/{hakukohdeOid}/hakemus/{hakemusOid}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -51,7 +53,7 @@ public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResourc
             @ApiParam(value = "Hakemuksen OID", required = true) @PathParam("hakemusOid") String hakemusOid,
             @ApiParam(value = "Asetettava tila", required = true) HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen,
             HttpServletRequest request) {
-        User user = AuditLog.getUser(request);
+        User user = auditLogger.getUser(request);
 
         tulosService.asetaHarkinnanvaraisestiHyvaksymisenTila(hakuOid, hakukohdeOid, hakemusOid, harkinnanvarainenHyvaksyminen.getHarkinnanvaraisuusTila());
     }
@@ -63,7 +65,7 @@ public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResourc
     public void asetaTilat(
             @ApiParam(value = "Asetettava tila", required = true) List<HarkinnanvarainenHyvaksyminenDTO> harkinnanvaraisetHyvaksymiset,
             HttpServletRequest request) {
-        User user = AuditLog.getUser(request);
+        User user = auditLogger.getUser(request);
 
         for (HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen : harkinnanvaraisetHyvaksymiset) {
             tulosService.asetaHarkinnanvaraisestiHyvaksymisenTila(

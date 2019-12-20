@@ -2,11 +2,11 @@ package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
 import fi.vm.sade.auditlog.User;
 import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO;
-import fi.vm.sade.valinta.sharedutils.AuditLog;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
+import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.resource.ValintatapajonoResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
@@ -39,6 +38,9 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
     @Autowired
     private ValintalaskentaModelMapper modelMapper;
 
+    @Autowired
+    private LaskentaAuditLog auditLogger;
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -51,7 +53,7 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
             @ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true) @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
             @ApiParam(value = "Järjestyskriteerin uusi arvo", required = true) MuokattuJonosijaArvoDTO arvo,
             HttpServletRequest request) {
-        User user = AuditLog.getUser(request);
+        User user = auditLogger.getUser(request);
 
         MuokattuJonosija muokattuJonosija = tulosService.muutaJarjestyskriteeri(valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, arvo);
         if (muokattuJonosija != null) {
@@ -73,7 +75,7 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
             @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid,
             @ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true) @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
             HttpServletRequest request) {
-        User user = AuditLog.getUser(request);
+        User user = auditLogger.getUser(request);
 
         MuokattuJonosija muokattuJonosija = tulosService.poistaMuokattuJonosija(valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti);
         if (muokattuJonosija != null) {
@@ -93,7 +95,7 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
                                              @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status,
                                              @ApiParam(value = "Valintatapajono", required = true) ValintatapajonoDTO valintatapajono,
                                              HttpServletRequest request) {
-        User user = AuditLog.getUser(request);
+        User user = auditLogger.getUser(request);
 
         Optional<Valintatapajono> dto = tulosService.muokkaaValintatapajonoa(valintatapajonoOid,
                 jono -> {

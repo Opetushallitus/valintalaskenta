@@ -47,6 +47,7 @@ import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResou
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
+import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogMock;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -128,7 +129,7 @@ public class ValintalaskentaResourceIntegrationTest {
     @Before
     public void initResource() {
         valintalaskentaResource = new ValintalaskentaResourceImpl(valintalaskentaService, valisijoitteluKasittelija,
-            mockValisijoitteluResource, erillisSijoitteluResource, mockValintatapajonoResource);
+            mockValisijoitteluResource, erillisSijoitteluResource, mockValintatapajonoResource, new LaskentaAuditLogMock());
     }
 
     @Test
