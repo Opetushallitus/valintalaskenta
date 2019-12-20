@@ -2,11 +2,13 @@ package fi.vm.sade.valintalaskenta.tulos.resource;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import io.swagger.annotations.Api;
@@ -26,13 +28,15 @@ public interface HarkinnanvaraisuusResource {
             @ApiParam(value = "Haun OID", required = true) @PathParam("hakuOid") String hakuOid,
             @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeOid") String hakukohdeOid,
             @ApiParam(value = "Hakemuksen OID", required = true) @PathParam("hakemusOid") String hakemusOid,
-            @ApiParam(value = "Asetettava tila", required = true) HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen);
+            @ApiParam(value = "Asetettava tila", required = true) HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen,
+            @Context HttpServletRequest request);
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Asettaa tilan harkinnanvaraisesti hakeneelle hakijalle")
     public void asetaTilat(
-            @ApiParam(value = "Asetettava tila", required = true) List<HarkinnanvarainenHyvaksyminenDTO> harkinnanvaraisetHyvaksymiset);
+            @ApiParam(value = "Asetettava tila", required = true) List<HarkinnanvarainenHyvaksyminenDTO> harkinnanvaraisetHyvaksymiset,
+            @Context HttpServletRequest request);
 
     @GET
     @Path("/haku/{hakuOid}/hakukohde/{hakukohdeOid}")

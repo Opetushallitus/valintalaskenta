@@ -9,6 +9,7 @@ import fi.vm.sade.valinta.sharedutils.FakeAuthenticationInitialiser;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValintatapajonoDTO;
+import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogMock;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +40,7 @@ public class HakukohdeResourceImplTest {
     private ValintaperusteetResource valintaperusteetResource;
 
     @InjectMocks
-    HakukohdeResourceImpl hakukohdeResource = new HakukohdeResourceImpl();
+    HakukohdeResourceImpl hakukohdeResource = new HakukohdeResourceImpl(new LaskentaAuditLogMock());
     private final ValinnanvaiheDTO valinnanvaiheFromUi = new ValinnanvaiheDTO();
 
     @Before

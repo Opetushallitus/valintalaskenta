@@ -27,6 +27,7 @@
                 class="fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource"/>
   <mockito:mock id="mockValintalaskentaService" class="fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService"/>
   <mockito:mock id="mockValisijoitteluKasittelija" class="fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija"/>
+  <bean id="laskentaAuditLogMock" class="fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogMock"/>
 
   <bean id="valintalaskentaLaskentaResource"
         class="fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl"/>
