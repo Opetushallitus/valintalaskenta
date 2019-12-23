@@ -39,7 +39,7 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
     private ValintalaskentaModelMapper modelMapper;
 
     @Autowired
-    private LaskentaAuditLog auditLogger;
+    private LaskentaAuditLog auditLog;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -53,7 +53,7 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
             @ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true) @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
             @ApiParam(value = "Järjestyskriteerin uusi arvo", required = true) MuokattuJonosijaArvoDTO arvo,
             HttpServletRequest request) {
-        User user = auditLogger.getUser(request);
+        User user = auditLog.getUser(request);
 
         MuokattuJonosija muokattuJonosija = tulosService.muutaJarjestyskriteeri(valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, arvo);
         if (muokattuJonosija != null) {
@@ -75,7 +75,7 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
             @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid,
             @ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true) @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
             HttpServletRequest request) {
-        User user = auditLogger.getUser(request);
+        User user = auditLog.getUser(request);
 
         MuokattuJonosija muokattuJonosija = tulosService.poistaMuokattuJonosija(valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti);
         if (muokattuJonosija != null) {
@@ -95,7 +95,7 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
                                              @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status,
                                              @ApiParam(value = "Valintatapajono", required = true) ValintatapajonoDTO valintatapajono,
                                              HttpServletRequest request) {
-        User user = auditLogger.getUser(request);
+        User user = auditLog.getUser(request);
 
         Optional<Valintatapajono> dto = tulosService.muokkaaValintatapajonoa(valintatapajonoOid,
                 jono -> {

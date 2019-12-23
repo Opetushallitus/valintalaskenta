@@ -44,7 +44,7 @@ public class ValintalaskentakoostepalveluResourceImpl {
     private ValintatietoService valintatietoService;
 
     @Autowired
-    private LaskentaAuditLog auditLogger;
+    private LaskentaAuditLog auditLog;
 
     /**
      * @param hakuOid
@@ -107,7 +107,7 @@ public class ValintalaskentakoostepalveluResourceImpl {
             @ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe,
             HttpServletRequest request) {
         try {
-            User user = auditLogger.getUser(request);
+            User user = auditLog.getUser(request);
 
             return tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid);
         } catch (Exception e) {
