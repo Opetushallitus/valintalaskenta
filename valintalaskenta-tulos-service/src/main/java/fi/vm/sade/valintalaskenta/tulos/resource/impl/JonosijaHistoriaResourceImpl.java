@@ -4,12 +4,16 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import fi.vm.sade.auditlog.User;
+import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +43,9 @@ public class JonosijaHistoriaResourceImpl implements JonosijaHistoriaResource {
     @Autowired
     private ValintalaskentaModelMapper modelMapper;
 
+    @Autowired
+    private LaskentaAuditLog auditLog;
+
     @GET
     @Path("{valintatapajonoOid}/{hakemusOid}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -46,7 +53,9 @@ public class JonosijaHistoriaResourceImpl implements JonosijaHistoriaResource {
     @ApiOperation(value = "Hakee jonosijahistoriat valintatapajono OID:n ja hakemus OID:n perusteella", response = JarjestyskriteerihistoriaDTO.class)
     public List<JarjestyskriteerihistoriaDTO> listJonosijaHistoria(
             @ApiParam(value = "Valintatapajono OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
-            @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid) {
-        return modelMapper.mapList(tulosService.haeJonosijaHistoria(valintatapajonoOid, hakemusOid), JarjestyskriteerihistoriaDTO.class);
+            @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid,
+            HttpServletRequest request) {
+        User user = auditLog.getUser(request);
+        return modelMapper.mapList(tulosService.haeJonosijaHistoria(valintatapajonoOid, hakemusOid, user), JarjestyskriteerihistoriaDTO.class);
     }
 }

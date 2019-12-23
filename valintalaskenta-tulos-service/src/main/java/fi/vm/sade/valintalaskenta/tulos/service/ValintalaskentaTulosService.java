@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.service;
 
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
@@ -16,32 +17,32 @@ import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 public interface ValintalaskentaTulosService {
 
-    List<JonoDto> haeJonotSijoittelussa(String hakuOid);
+    List<JonoDto> haeJonotSijoittelussa(String hakuOid, User auditUser);
 
-    HakemusDTO haeTuloksetHakemukselle(String hakuoid, String hakemusoid);
+    HakemusDTO haeTuloksetHakemukselle(String hakuoid, String hakemusoid, User auditUser);
 
-    List<ValintatietoValinnanvaiheDTO> haeValinnanvaiheetHakukohteelle(String hakukohdeoid);
+    List<ValintatietoValinnanvaiheDTO> haeValinnanvaiheetHakukohteelle(String hakukohdeoid, User auditUser);
 
-    List<MinimalJonoDTO> haeSijoittelunKayttamatJonotIlmanValintalaskentaa();
+    List<MinimalJonoDTO> haeSijoittelunKayttamatJonotIlmanValintalaskentaa(User auditUser);
 
-    Optional<HakukohdeDTO> haeValinnanvaiheetHakukohteelleJaJonolle(String hakukohdeoid, List<String> valintatapajonot);
+    Optional<HakukohdeDTO> haeValinnanvaiheetHakukohteelleJaJonolle(String hakukohdeoid, List<String> valintatapajonot, User auditUser);
 
     List<HakijaryhmaDTO> haeHakijaryhmatHakukohteelle(String hakukohdeoid);
 
-    List<HakukohdeDTO> haeVirheetHaulle(String hakuOid);
+    List<HakukohdeDTO> haeVirheetHaulle(String hakuOid, User auditUser);
 
-    List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid);
+    List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid, User auditUser);
 
     MuokattuJonosija muutaJarjestyskriteeri(String valintatapajonoOid,
                                             String hakemusOid, Integer jarjestyskriteeriPrioriteetti,
-                                            MuokattuJonosijaArvoDTO arvo);
+                                            MuokattuJonosijaArvoDTO arvo,
+                                            User auditUser);
 
     MuokattuJonosija poistaMuokattuJonosija(String valintatapajonoOid,
                                             String hakemusOid,
@@ -51,7 +52,7 @@ public interface ValintalaskentaTulosService {
 
     List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakutoive(String hakukohdeOid);
 
-    List<Jarjestyskriteerihistoria> haeJonosijaHistoria(String valintatapajonoOid, String hakemusOid);
+    List<Jarjestyskriteerihistoria> haeJonosijaHistoria(String valintatapajonoOid, String hakemusOid, User auditUser);
 
     List<ValintakoeOsallistuminenDTO> haeValintakoevirheetHaulle(String hakuOid);
 
@@ -63,11 +64,11 @@ public interface ValintalaskentaTulosService {
 
     List<HarkinnanvarainenHyvaksyminen> haeHakemuksenHarkinnanvaraisestiHyvaksymisenTilat(String hakuOid, String hakemusOid);
 
-    ValinnanvaiheDTO lisaaTuloksia(ValinnanvaiheDTO vaihe, String hakukohdeoid, String tarjoajaOid);
+    ValinnanvaiheDTO lisaaTuloksia(ValinnanvaiheDTO vaihe, String hakukohdeoid, String tarjoajaOid, User auditUser);
 
-    Optional<Valintatapajono> muokkaaValintatapajonoa(String valintatapajonoOid, Consumer<Valintatapajono> muokkausFunktio);
+    Optional<Valintatapajono> muokkaaValintatapajonoa(String valintatapajonoOid, Consumer<Valintatapajono> muokkausFunktio, User auditUser);
 
-    boolean haeSijoitteluStatus(String valintatapajonoOid);
+    boolean haeSijoitteluStatus(String valintatapajonoOid, User auditUser);
 
     List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakukohdes(List<String> hakukohdeOids);
 }

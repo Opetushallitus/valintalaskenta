@@ -1,7 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl.rest;
 
 
-import fi.vm.sade.service.valintaperusteet.dto.*;
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.AvainArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
@@ -86,10 +86,10 @@ public class ValintatietoServiceImpl implements ValintatietoService {
         return osallistumiset;
     }
 
-    public HakuDTO haeValintatiedot(String hakuOid) {
+    public HakuDTO haeValintatiedot(String hakuOid, User auditUser) {
         try {
             List<HakukohdeDTO> a = tulosService
-                    .haeLasketutValinnanvaiheetHaulle(hakuOid);
+                    .haeLasketutValinnanvaiheetHaulle(hakuOid, auditUser);
 
             HakuDTO hakuDTO = new HakuDTO();
             hakuDTO.setHakuOid(hakuOid);
@@ -119,11 +119,12 @@ public class ValintatietoServiceImpl implements ValintatietoService {
     public HakuDTO haeValintatiedotJonoille(
             String hakuoid,
             Map<String, List<String>> jonot,
-            Optional<Map<String, List<fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO>>> valintaperusteet) {
+            Optional<Map<String, List<fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO>>> valintaperusteet,
+            User auditUser) {
         try {
             List<HakukohdeDTO> kohteet = new ArrayList<>();
             jonot.keySet().parallelStream().forEach(oid -> {
-                Optional<HakukohdeDTO> kohde = tulosService.haeValinnanvaiheetHakukohteelleJaJonolle(oid, jonot.get(oid));
+                Optional<HakukohdeDTO> kohde = tulosService.haeValinnanvaiheetHakukohteelleJaJonolle(oid, jonot.get(oid), auditUser);
 
                 kohde.ifPresent(kohteet::add);
 

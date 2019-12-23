@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta.service;
 
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetHakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
@@ -31,7 +32,7 @@ public interface ValintalaskentaService {
                        boolean korkeakouluhaku)
             throws RuntimeException;
 
-    void applyValisijoittelu(Map<String, List<String>> valisijoiteltavatJonot, Map<String, fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO> hakemusHashMap);
+    void applyValisijoittelu(Map<String, List<String>> valisijoiteltavatJonot, Map<String, fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO> hakemusHashMap, User auditUser);
 
-    void applyErillissijoittelu(Map<String, List<String>> jonot, Long ajo);
+    void applyErillissijoittelu(Map<String, List<String>> jonot, Long ajo, User auditUser);
 }

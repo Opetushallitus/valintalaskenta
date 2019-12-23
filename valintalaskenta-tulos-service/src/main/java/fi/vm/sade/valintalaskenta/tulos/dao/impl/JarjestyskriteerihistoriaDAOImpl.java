@@ -8,11 +8,17 @@ import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import fi.vm.sade.auditlog.Changes;
+import fi.vm.sade.auditlog.User;
+import fi.vm.sade.valinta.sharedutils.ValintaResource;
+import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
+import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.dao.util.JarjestyskriteeriKooderi;
 import org.apache.commons.io.IOUtils;
 import org.bson.types.BasicBSONList;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.Key;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +43,11 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
     private Datastore datastore;
 
     @Override
-    public List<Jarjestyskriteerihistoria> findByValintatapajonoAndHakemusOid(String valintatapajonoOid, String hakemusOid) {
+    public List<Jarjestyskriteerihistoria> findByValintatapajonoAndHakemusOid(String valintatapajonoOid, String hakemusOid, User auditUser) {
         List<ObjectId> jononJonosijaIdt = new LinkedList<>();
         datastore.find(ValintatapajonoMigrationDTO.class)
                 .field("valintatapajonoOid").equal(valintatapajonoOid)
-                .forEach(valintatapajono -> jononJonosijaIdt.addAll(migrate(valintatapajono).getJonosijaIdt()));
+                .forEach(valintatapajono -> jononJonosijaIdt.addAll(migrate(valintatapajono, auditUser).getJonosijaIdt()));
         List<ObjectId> historiaIdt = new LinkedList<>();
         if (!jononJonosijaIdt.isEmpty()) {
             datastore.find(Jonosija.class)
@@ -65,10 +71,20 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
         return historiat.stream().map(JarjestyskriteeriKooderi::dekoodaa).collect(Collectors.toList());
     }
 
-    private void saveJonosijat(Valintatapajono valintatapajono) {
+    private void saveJonosijat(Valintatapajono valintatapajono, User auditUser) {
         valintatapajono.setJonosijaIdt(valintatapajono.getJonosijat().stream()
-                .map(jonosija -> (ObjectId) datastore.save(jonosija).getId())
+                .map(jonosija -> (ObjectId) saveJonosija(jonosija, auditUser).getId())
                 .collect(Collectors.toList()));
+    }
+
+    private Key<Jonosija> saveJonosija(Jonosija jonosija, User auditUser) {
+/*        auditLog.log(LaskentaAudit.AUDIT,
+                auditUser,
+                ValintaperusteetOperation.JONOSIJA_PAIVITYS,
+                ValintaResource.JONOSIJA,
+                jonosija.getId(),
+                Changes.addedDto(jonosija));*/
+        return datastore.save(jonosija);
     }
 
     private void populateJonosijat(Valintatapajono valintatapajono) {
@@ -82,7 +98,7 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
         }
     }
 
-    private Valintatapajono migrate(ValintatapajonoMigrationDTO jono) {
+    private Valintatapajono migrate(ValintatapajonoMigrationDTO jono, User auditUser) {
         if (jono.getSchemaVersion() == Valintatapajono.CURRENT_SCHEMA_VERSION) {
             Valintatapajono alreadyMigrated = datastore.find(Valintatapajono.class)
                     .field("_id").equal(jono.getId())
@@ -92,7 +108,7 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
         } else {
             LOG.info("Migrating valintatapajono {}", jono.getValintatapajonoOid());
             Valintatapajono migratedJono = jono.migrate();
-            saveJonosijat(migratedJono);
+            saveJonosijat(migratedJono, auditUser);
             datastore.save(migratedJono);
             return migratedJono;
         }

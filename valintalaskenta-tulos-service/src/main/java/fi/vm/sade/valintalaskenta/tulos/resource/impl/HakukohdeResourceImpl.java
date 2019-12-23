@@ -52,6 +52,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
     @Autowired
     private ValintaperusteetResource valintaperusteetResource;
 
+    @Autowired
     private LaskentaAuditLog auditLog;
 
     public HakukohdeResourceImpl(LaskentaAuditLog auditLog) {
@@ -64,9 +65,11 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
     @PreAuthorize(READ_UPDATE_CRUD)
     @ApiOperation(value = "Hakee hakukohteen valinnan vaiheiden tulokset", response = ValinnanvaiheDTO.class)
     public List<ValintatietoValinnanvaiheDTO> hakukohde(
-            @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid) {
+            @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid,
+            HttpServletRequest request) {
         try {
-            return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
+            User user = auditLog.getUser(request);
+            return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid, user);
         } catch (Exception e) {
             LOGGER.error("Valintalaskennan tulosten haku hakukohteelle {} epäonnistui!", hakukohdeoid, e);
             throw e;
@@ -112,7 +115,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         User user = auditLog.getUser(request);
-        ValinnanvaiheDTO valinnanvaihe = tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid);
+        ValinnanvaiheDTO valinnanvaihe = tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid, user);
         auditLog(hakukohdeoid, vaihe, user);
         return Response.status(Response.Status.ACCEPTED).entity(valinnanvaihe).build();
     }

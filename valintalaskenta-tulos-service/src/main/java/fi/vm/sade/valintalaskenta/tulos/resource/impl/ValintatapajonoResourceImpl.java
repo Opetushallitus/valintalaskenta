@@ -23,6 +23,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.UPDATE_CRUD;
 
@@ -55,7 +56,7 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
             HttpServletRequest request) {
         User user = auditLog.getUser(request);
 
-        MuokattuJonosija muokattuJonosija = tulosService.muutaJarjestyskriteeri(valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, arvo);
+        MuokattuJonosija muokattuJonosija = tulosService.muutaJarjestyskriteeri(valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, arvo, user);
         if (muokattuJonosija != null) {
             MuokattuJonosijaDTO map = modelMapper.map(muokattuJonosija, MuokattuJonosijaDTO.class);
             return Response.status(Response.Status.ACCEPTED).entity(map).build();
@@ -97,28 +98,31 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
                                              HttpServletRequest request) {
         User user = auditLog.getUser(request);
 
-        Optional<Valintatapajono> dto = tulosService.muokkaaValintatapajonoa(valintatapajonoOid,
-                jono -> {
-                    // Käyttöliittymä kutsuu ValintaperusteetResourceV2::updateAutomaattinenSijoitteluunSiirto(valintatapajonoOid, status, request)
-                    jono.setAloituspaikat(valintatapajono.getAloituspaikat());
-                    jono.setEiVarasijatayttoa(valintatapajono.getEiVarasijatayttoa());
-                    jono.setKaikkiEhdonTayttavatHyvaksytaan(valintatapajono.getKaikkiEhdonTayttavatHyvaksytaan());
-                    jono.setKaytetaanValintalaskentaa(valintatapajono.getKaytetaanValintalaskentaa());
-                    jono.setNimi(valintatapajono.getNimi());
-                    jono.setPoissaOlevaTaytto(valintatapajono.getPoissaOlevaTaytto());
-                    jono.setPrioriteetti(valintatapajono.getPrioriteetti());
-                    jono.setSiirretaanSijoitteluun(valintatapajono.getSiirretaanSijoitteluun());
-                    jono.setValmisSijoiteltavaksi(status);
-                });
+        Consumer<Valintatapajono> valintatapajonoMuokkausFunktio = jono -> {
+            // Käyttöliittymä kutsuu ValintaperusteetResourceV2::updateAutomaattinenSijoitteluunSiirto(valintatapajonoOid, status, request)
+            jono.setAloituspaikat(valintatapajono.getAloituspaikat());
+            jono.setEiVarasijatayttoa(valintatapajono.getEiVarasijatayttoa());
+            jono.setKaikkiEhdonTayttavatHyvaksytaan(valintatapajono.getKaikkiEhdonTayttavatHyvaksytaan());
+            jono.setKaytetaanValintalaskentaa(valintatapajono.getKaytetaanValintalaskentaa());
+            jono.setNimi(valintatapajono.getNimi());
+            jono.setPoissaOlevaTaytto(valintatapajono.getPoissaOlevaTaytto());
+            jono.setPrioriteetti(valintatapajono.getPrioriteetti());
+            jono.setSiirretaanSijoitteluun(valintatapajono.getSiirretaanSijoitteluun());
+            jono.setValmisSijoiteltavaksi(status);
+        };
+        Optional<Valintatapajono> dto = tulosService.muokkaaValintatapajonoa(valintatapajonoOid, valintatapajonoMuokkausFunktio, user);
         return dto.map(jono -> Response.status(Response.Status.ACCEPTED).entity(modelMapper.map(jono, ValintatapajonoDTO.class)).build()).orElse(Response.status(Response.Status.NOT_FOUND).build());
     }
 
     @GET
     @Path("/{valintatapajonoOid}/valmissijoiteltavaksi")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response haeSijoitteluStatus(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String oid) {
+    public Response haeSijoitteluStatus(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String oid,
+                                        HttpServletRequest request) {
+        User user = auditLog.getUser(request);
         HashMap object = new HashMap();
-        object.put("value", tulosService.haeSijoitteluStatus(oid));
+        boolean status = tulosService.haeSijoitteluStatus(oid, user);
+        object.put("value", status);
         return Response.status(Response.Status.ACCEPTED).entity(object).build();
     }
 }

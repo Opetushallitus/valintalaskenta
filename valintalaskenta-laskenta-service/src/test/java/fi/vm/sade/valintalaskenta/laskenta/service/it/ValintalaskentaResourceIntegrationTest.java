@@ -24,6 +24,7 @@ import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 
 import co.unruly.matchers.StreamMatchers;
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.service.valintaperusteet.dto.FunktiokutsuDTO;
 import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
@@ -138,7 +139,8 @@ public class ValintalaskentaResourceIntegrationTest {
         LaskeDTO laskeDtoYhdenKoekutsunKanssa = readJson("laskeDTOYhdenKoekutsuVaiheenKanssa.json", new TypeToken<LaskeDTO>() {});
         Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDtoYhdenKoekutsunKanssa);
         try {
-            valintalaskentaResource.toteutaLaskeKaikki(laskentakutsu);
+            User auditUser = null;
+            valintalaskentaResource.toteutaLaskeKaikki(laskentakutsu, auditUser);
         } catch (Exception e) {
         }
 
@@ -164,7 +166,8 @@ public class ValintalaskentaResourceIntegrationTest {
         LaskeDTO laskeDtoUseammanKoekutsunKanssa = readJson("laskeDTOUseammanKoekutsuVaiheenKanssa.json", new TypeToken<LaskeDTO>() {});
         Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDtoUseammanKoekutsunKanssa);
 
-        valintalaskentaResource.toteutaLaskeKaikki(laskentakutsu);
+        User auditUser = null;
+        valintalaskentaResource.toteutaLaskeKaikki(laskentakutsu, auditUser);
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid("1.2.246.562.29.14662042044", "1.2.246.562.11.00000003337");
 

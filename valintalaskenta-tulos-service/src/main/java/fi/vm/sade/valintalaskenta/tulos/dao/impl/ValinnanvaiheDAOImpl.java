@@ -1,8 +1,13 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
-import com.google.common.collect.ImmutableList;
+import fi.vm.sade.auditlog.Changes;
+import fi.vm.sade.auditlog.User;
+import fi.vm.sade.valinta.sharedutils.ValintaResource;
+import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
+import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
+import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
@@ -24,9 +29,12 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     @Autowired
     private Datastore datastore;
 
+    @Autowired
+    private LaskentaAuditLog auditLog;
+
+
     @Override
-    public List<Valinnanvaihe> readByHakuOidAndHakemusOid(String hakuOid,
-                                                          String hakemusOid) {
+    public List<Valinnanvaihe> readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid, User auditUser) {
         List<ObjectId> hakemuksenJonosijaIdt = new LinkedList<>();
         datastore.find(Jonosija.class)
                 .field("hakemusOid").equal(hakemusOid)
@@ -43,11 +51,11 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         return migrate(datastore.createQuery(ValinnanvaiheMigrationDTO.class)
                 .field("hakuOid").equal(hakuOid)
                 .field("valintatapajonot").in(hakemuksenJonot)
-                .asList());
+                .asList(), auditUser);
     }
 
     @Override
-    public Valinnanvaihe findByValintatapajonoOid(String valintatapajonoOid) {
+    public Valinnanvaihe findByValintatapajonoOid(String valintatapajonoOid, User auditUser) {
         List<Key<Valintatapajono>> keys = datastore.find(Valintatapajono.class)
                 .field("valintatapajonoOid").equal(valintatapajonoOid)
                 .asKeyList();
@@ -56,21 +64,21 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         }
         return migrate(datastore.createQuery(ValinnanvaiheMigrationDTO.class)
                 .field("valintatapajonot").in(keys)
-                .get());
+                .get(), auditUser);
     }
 
     @Override
-    public List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid) {
+    public List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid, User auditUser) {
         return migrate(datastore.createQuery(ValinnanvaiheMigrationDTO.class)
                 .field("hakukohdeOid").equal(hakukohdeoid)
-                .asList());
+                .asList(), auditUser);
     }
 
     @Override
-    public List<Valinnanvaihe> readByHakuOid(String hakuoid) {
+    public List<Valinnanvaihe> readByHakuOid(String hakuoid, User auditUser) {
         return migrate(datastore.createQuery(ValinnanvaiheMigrationDTO.class)
                 .field("hakuOid").equal(hakuoid)
-                .asList());
+                .asList(), auditUser);
     }
 
     @Override
@@ -93,26 +101,26 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     }
 
     @Override
-    public Valinnanvaihe haeValinnanvaihe(String valinnanvaiheOid) {
+    public Valinnanvaihe haeValinnanvaihe(String valinnanvaiheOid, User auditUser) {
         return Optional.ofNullable(datastore.find(ValinnanvaiheMigrationDTO.class)
                 .field("valinnanvaiheOid").equal(valinnanvaiheOid)
                 .get())
-                .map(this::migrate)
+                .map(vaihe -> migrate(vaihe, auditUser))
                 .orElse(null);
     }
 
     @Override
-    public void saveOrUpdate(Valinnanvaihe vaihe) {
+    public void saveOrUpdate(Valinnanvaihe vaihe, User auditUser) {
         vaihe.getValintatapajonot().forEach(valintatapajono -> {
-            saveJonosijat(valintatapajono);
-            datastore.save(valintatapajono);
+            saveJonosijat(valintatapajono, auditUser);
+            saveJono(valintatapajono, auditUser);
         });
-        datastore.save(vaihe);
+        saveVaihe(vaihe, auditUser);
     }
 
-    private void saveJonosijat(Valintatapajono valintatapajono) {
+    private void saveJonosijat(Valintatapajono valintatapajono, User auditUser) {
         valintatapajono.setJonosijaIdt(valintatapajono.getJonosijat().stream()
-                .map(jonosija -> (ObjectId) datastore.save(jonosija).getId())
+                .map(jonosija -> (ObjectId) saveJonosija(jonosija, auditUser).getId())
                 .collect(Collectors.toList()));
     }
 
@@ -127,7 +135,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         }
     }
 
-    private Valintatapajono migrate(ValintatapajonoMigrationDTO jono) {
+    private Valintatapajono migrate(ValintatapajonoMigrationDTO jono, User auditUser) {
         if (jono.getSchemaVersion() == Valintatapajono.CURRENT_SCHEMA_VERSION) {
             Valintatapajono alreadyMigrated = datastore.find(Valintatapajono.class)
                     .field("_id").equal(jono.getId())
@@ -137,13 +145,13 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         } else {
             LOGGER.info("Migrating valintatapajono {}", jono.getValintatapajonoOid());
             Valintatapajono migratedJono = jono.migrate();
-            saveJonosijat(migratedJono);
-            datastore.save(migratedJono);
+            saveJonosijat(migratedJono, auditUser);
+            saveJono(migratedJono, auditUser);
             return migratedJono;
         }
     }
 
-    private Valinnanvaihe migrate(ValinnanvaiheMigrationDTO vaihe) {
+    private Valinnanvaihe migrate(ValinnanvaiheMigrationDTO vaihe, User auditUser) {
         Valinnanvaihe migrated = new Valinnanvaihe();
         migrated.setId(vaihe.getId());
         migrated.setJarjestysnumero(vaihe.getJarjestysnumero());
@@ -156,7 +164,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         migrated.setValintatapajonot(vaihe.getValintatapajonot().stream()
             .map(jono -> {
                 try {
-                    return migrate(jono);
+                    return migrate(jono, auditUser);
                 } catch (RuntimeException e) {
                     LOGGER.error(String.format("Error when calling migrate for jono %s of valinnanvaihe %s", jono.getId(), vaihe.getId()), e);
                     throw e;
@@ -166,7 +174,38 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         return migrated;
     }
 
-    private List<Valinnanvaihe> migrate(List<ValinnanvaiheMigrationDTO> vaiheet) {
-        return vaiheet.stream().map(this::migrate).collect(Collectors.toList());
+    private List<Valinnanvaihe> migrate(List<ValinnanvaiheMigrationDTO> vaiheet, User auditUser) {
+        return vaiheet.stream().map(vaihe -> migrate(vaihe, auditUser)).collect(Collectors.toList());
     }
+
+    private Key<Valintatapajono> saveJono(Valintatapajono valintatapajono, User auditUser) {
+        auditLog.log(LaskentaAudit.AUDIT,
+                auditUser,
+                ValintaperusteetOperation.VALINTATAPAJONO_PAIVITYS,
+                ValintaResource.VALINTATAPAJONO,
+                valintatapajono.getValintatapajonoOid(),
+                Changes.addedDto(valintatapajono));
+        return datastore.save(valintatapajono);
+    }
+
+    private Key<Valinnanvaihe> saveVaihe(Valinnanvaihe vaihe, User auditUser) {
+        auditLog.log(LaskentaAudit.AUDIT,
+                auditUser,
+                ValintaperusteetOperation.VALINNANVAIHE_PAIVITYS,
+                ValintaResource.VALINNANVAIHE,
+                vaihe.getValinnanvaiheOid(),
+                Changes.addedDto(vaihe));
+        return datastore.save(vaihe);
+    }
+
+    private Key<Jonosija> saveJonosija(Jonosija jonosija, User auditUser) {
+/*        auditLog.log(LaskentaAudit.AUDIT,
+                auditUser,
+                ValintaperusteetOperation.JONOSIJA_PAIVITYS,
+                ValintaResource.JONOSIJA,
+                jonosija.getId(),
+                Changes.addedDto(jonosija));*/
+        return datastore.save(jonosija);
+    }
+
 }

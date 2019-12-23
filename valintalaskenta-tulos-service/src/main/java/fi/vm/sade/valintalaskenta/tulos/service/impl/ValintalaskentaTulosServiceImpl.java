@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.tulos.service.impl;
 
 import com.google.common.collect.Collections2;
 
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
@@ -98,15 +99,15 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     @Value("${root.organisaatio.oid}")
     private String rootOrgOid;
 
-    public List<JonoDto> haeJonotSijoittelussa(String hakuOid) {
+    public List<JonoDto> haeJonotSijoittelussa(String hakuOid, User auditUser) {
         final Function<Valinnanvaihe, Stream<JonoDto>> valinnanvaiheToJonoDtos = vv -> vv.getValintatapajonot().stream()
                 .map(jono -> new JonoDto(vv.getHakukohdeOid(), jono.getValintatapajonoOid(), jono.getValmisSijoiteltavaksi(), jono.isSiirretaanSijoitteluun()));
-        return valinnanvaiheDAO.readByHakuOid(hakuOid).stream()
+        return valinnanvaiheDAO.readByHakuOid(hakuOid, auditUser).stream()
                 .flatMap(valinnanvaiheToJonoDtos).collect(Collectors.toList());
     }
 
-    public HakemusDTO haeTuloksetHakemukselle(final String hakuOid, final String hakemusOid) {
-        List<Valinnanvaihe> valinnanVaiheet = valinnanvaiheDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
+    public HakemusDTO haeTuloksetHakemukselle(final String hakuOid, final String hakemusOid, User auditUser) {
+        List<Valinnanvaihe> valinnanVaiheet = valinnanvaiheDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid, auditUser);
         Map<String, HakukohdeDTO> hakukohdeDTOtOidinMukaan = new HashMap<>();
         List<MuokattuJonosija> muokatutJonosijat = muokattuJonosijaDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         List<HarkinnanvarainenHyvaksyminen> harkinnanvaraiset = harkinnanvarainenHyvaksyminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
@@ -264,8 +265,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
-    public List<ValintatietoValinnanvaiheDTO> haeValinnanvaiheetHakukohteelle(String hakukohdeoid) {
-        List<Valinnanvaihe> valinnanVaihes = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeoid);
+    public List<ValintatietoValinnanvaiheDTO> haeValinnanvaiheetHakukohteelle(String hakukohdeoid, User auditUser) {
+        List<Valinnanvaihe> valinnanVaihes = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeoid, auditUser);
         List<ValintatietoValinnanvaiheDTO> valintatietoValinnanVaihes = valintatulosConverter.convertValinnanvaiheList(valinnanVaihes);
         applyMuokatutJonosijatToValinnanvaihe(hakukohdeoid, valintatietoValinnanVaihes);
         return valintatietoValinnanVaihes;
@@ -275,25 +276,26 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     /**
      * ODW requires list of valintatapajonos, which don't use laskenta but use sijoittelu (meaning officers have to
      * manually input the grades).
+     * @param auditUser
      */
     @Override
-    public List<MinimalJonoDTO> haeSijoittelunKayttamatJonotIlmanValintalaskentaa() {
+    public List<MinimalJonoDTO> haeSijoittelunKayttamatJonotIlmanValintalaskentaa(User auditUser) {
         List<ValintatapajonoMigrationDTO> validValintatapajonos = valinnanvaiheDAO.valintatapajonotJotkaEivatKaytaLaskentaa();
         return valinnanvaiheDAO.hakuOidHakukohdeOidPairsForJonos(validValintatapajonos).stream()
-                .flatMap(hakuHakukohdePair -> minimalJonoListForHakukohde(hakuHakukohdePair.getLeft(), hakuHakukohdePair.getRight()))
+                .flatMap(hakuHakukohdePair -> minimalJonoListForHakukohde(hakuHakukohdePair.getLeft(), hakuHakukohdePair.getRight(), auditUser))
                 .collect(Collectors.toList());
     }
 
-    private Stream<MinimalJonoDTO> minimalJonoListForHakukohde(String haku, String hakukohde) {
-        return haeValinnanvaiheetHakukohteelle(hakukohde).stream()
+    private Stream<MinimalJonoDTO> minimalJonoListForHakukohde(String haku, String hakukohde, User auditUser) {
+        return haeValinnanvaiheetHakukohteelle(hakukohde, auditUser).stream()
                 .flatMap(vv -> vv.getValintatapajonot().stream())
                 .filter(Objects::nonNull)
                 .map(vtj -> new MinimalJonoDTO(haku, hakukohde, vtj.getOid(), vtj.getJonosijat(), vtj.getKaytetaanValintalaskentaa(), vtj.isSiirretaanSijoitteluun()));
     }
 
     @Override
-    public Optional<HakukohdeDTO> haeValinnanvaiheetHakukohteelleJaJonolle(String hakukohdeoid, List<String> valintatapajonot) {
-        List<Valinnanvaihe> a = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeoid);
+    public Optional<HakukohdeDTO> haeValinnanvaiheetHakukohteelleJaJonolle(String hakukohdeoid, List<String> valintatapajonot, User auditUser) {
+        List<Valinnanvaihe> a = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeoid, auditUser);
         List<Valinnanvaihe> result = new ArrayList<>();
         a.forEach(vaihe -> {
             List<Valintatapajono> jonot = vaihe
@@ -365,9 +367,9 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
-    public List<HakukohdeDTO> haeVirheetHaulle(String hakuOid) {
+    public List<HakukohdeDTO> haeVirheetHaulle(String hakuOid, User auditUser) {
         // FIXME: Suora mongo kysely tälle.
-        List<Valinnanvaihe> valinnanvaiheet = valinnanvaiheDAO.readByHakuOid(hakuOid);
+        List<Valinnanvaihe> valinnanvaiheet = valinnanvaiheDAO.readByHakuOid(hakuOid, auditUser);
 
         Iterator<Valinnanvaihe> i = valinnanvaiheet.iterator();
         while (i.hasNext()) {
@@ -419,9 +421,9 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
-    public List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid) {
+    public List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid, User auditUser) {
         LOGGER.info("Valintatietoja haetaan mongosta {}!", hakuOid);
-        List<Valinnanvaihe> a = valinnanvaiheDAO.readByHakuOid(hakuOid);
+        List<Valinnanvaihe> a = valinnanvaiheDAO.readByHakuOid(hakuOid, auditUser);
         LOGGER.info("Valintatietoja haettu mongosta {}!", hakuOid);
         List<HakukohdeDTO> b = valintatulosConverter.convertValinnanvaihe(a);
         LOGGER.info("Valintatiedot kovertoitu DTO:iksi {}!", hakuOid);
@@ -454,8 +456,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
-    public List<Jarjestyskriteerihistoria> haeJonosijaHistoria(String valintatapajonoOid, String hakemusOid) {
-        return jarjestyskriteerihistoriaDAO.findByValintatapajonoAndHakemusOid(valintatapajonoOid, hakemusOid);
+    public List<Jarjestyskriteerihistoria> haeJonosijaHistoria(String valintatapajonoOid, String hakemusOid, User auditUser) {
+        return jarjestyskriteerihistoriaDAO.findByValintatapajonoAndHakemusOid(valintatapajonoOid, hakemusOid, auditUser);
     }
 
     @Override
@@ -482,12 +484,12 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
-    public ValinnanvaiheDTO lisaaTuloksia(ValinnanvaiheDTO vaihe, String hakukohdeoid, String tarjoajaOid) {
-        Valinnanvaihe haettu = valinnanvaiheDAO.haeValinnanvaihe(vaihe.getValinnanvaiheoid());
+    public ValinnanvaiheDTO lisaaTuloksia(ValinnanvaiheDTO vaihe, String hakukohdeoid, String tarjoajaOid, User auditUser) {
+        Valinnanvaihe haettu = valinnanvaiheDAO.haeValinnanvaihe(vaihe.getValinnanvaiheoid(), auditUser);
         Valinnanvaihe annettu = modelMapper.map(vaihe, Valinnanvaihe.class);
         annettu.setHakukohdeOid(hakukohdeoid);
         if (haettu == null) {
-            valinnanvaiheDAO.saveOrUpdate(annettu);
+            valinnanvaiheDAO.saveOrUpdate(annettu, auditUser);
         } else {
             List<Valintatapajono> vanhat = new ArrayList<Valintatapajono>();
             for (Valintatapajono jono : haettu.getValintatapajonot()) {
@@ -506,22 +508,22 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             haettu.setHakuOid(vaihe.getHakuOid());
             haettu.setTarjoajaOid(tarjoajaOid);
             haettu.setValintatapajonot(annettu.getValintatapajonot());
-            valinnanvaiheDAO.saveOrUpdate(haettu);
+            valinnanvaiheDAO.saveOrUpdate(haettu, auditUser);
         }
         return vaihe;
     }
 
     @Override
-    public Optional<Valintatapajono> muokkaaValintatapajonoa(String valintatapajonoOid, Consumer<Valintatapajono> muokkausFunktio) {
-        if (haeSijoitteluStatus(valintatapajonoOid) && !isOPH()) {
+    public Optional<Valintatapajono> muokkaaValintatapajonoa(String valintatapajonoOid, Consumer<Valintatapajono> muokkausFunktio, User auditUser) {
+        if (haeSijoitteluStatus(valintatapajonoOid, auditUser) && !isOPH()) {
             throw new EiOikeuttaPoistaaValintatapajonoaSijoittelustaException("Ei oikeutta muokata valintatapajonoa");
         }
-        Valinnanvaihe vaihe = valinnanvaiheDAO.findByValintatapajonoOid(valintatapajonoOid);
+        Valinnanvaihe vaihe = valinnanvaiheDAO.findByValintatapajonoOid(valintatapajonoOid, auditUser);
         vaihe.getValintatapajonot()
                 .stream()
                 .filter(j -> j.getValintatapajonoOid().equals(valintatapajonoOid))
                 .forEach(j -> muokkausFunktio.accept(j));
-        valinnanvaiheDAO.saveOrUpdate(vaihe);
+        valinnanvaiheDAO.saveOrUpdate(vaihe, auditUser);
         return vaihe
                 .getValintatapajonot()
                 .stream()
@@ -529,8 +531,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
-    public boolean haeSijoitteluStatus(String valintatapajonoOid) {
-        Valinnanvaihe vaihe = valinnanvaiheDAO.findByValintatapajonoOid(valintatapajonoOid);
+    public boolean haeSijoitteluStatus(String valintatapajonoOid, User auditUser) {
+        Valinnanvaihe vaihe = valinnanvaiheDAO.findByValintatapajonoOid(valintatapajonoOid, auditUser);
         if (vaihe == null) {
             return false;
         }
@@ -547,8 +549,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     @Override
     public MuokattuJonosija muutaJarjestyskriteeri(String valintatapajonoOid,
                                                    String hakemusOid, Integer jarjestyskriteeriPrioriteetti,
-                                                   MuokattuJonosijaArvoDTO jonosija) {
-        Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.findByValintatapajonoOid(valintatapajonoOid);
+                                                   MuokattuJonosijaArvoDTO jonosija, User auditUser) {
+        Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.findByValintatapajonoOid(valintatapajonoOid, auditUser);
         MuokattuJonosija muokattuJonosija = muokattuJonosijaDAO.readByValintatapajonoOid(valintatapajonoOid, hakemusOid);
         if (muokattuJonosija == null) {
             muokattuJonosija = new MuokattuJonosija();

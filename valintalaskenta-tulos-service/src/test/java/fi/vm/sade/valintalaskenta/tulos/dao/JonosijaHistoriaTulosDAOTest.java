@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.tulos.dao;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
 import org.bson.types.ObjectId;
 import org.junit.Rule;
@@ -42,8 +43,9 @@ public class JonosijaHistoriaTulosDAOTest {
     public void testFindByValintapajonoOidHakemusOidAndJarjestyskriteeriPrioriteetti() {
         final String valintatapajonoOid = "valintatapajonoOid1";
         final String hakemusOid = "hakemusOid1";
+        User auditUser = null;
         List<Jarjestyskriteerihistoria> jonosijaHistoriat =
-                jonosijaHistoriaTulosDAO.findByValintatapajonoAndHakemusOid(valintatapajonoOid, hakemusOid);
+                jonosijaHistoriaTulosDAO.findByValintatapajonoAndHakemusOid(valintatapajonoOid, hakemusOid, auditUser);
 
         assertEquals(2, jonosijaHistoriat.size());
         Collections.sort(jonosijaHistoriat, (o1, o2) -> o1.getHistoria().compareTo(o2.getHistoria()));
@@ -57,8 +59,9 @@ public class JonosijaHistoriaTulosDAOTest {
     public void testJonosijaHistoriat() {
         final String valintatapajonoOid = "1410335755064-1436990924193196531";
         final String hakemusOid = "1.2.246.562.11.00000876962";
+        User auditUser = null;
         List<Jarjestyskriteerihistoria> jonosijaHistoriat =
-                jonosijaHistoriaTulosDAO.findByValintatapajonoAndHakemusOid(valintatapajonoOid, hakemusOid);
+                jonosijaHistoriaTulosDAO.findByValintatapajonoAndHakemusOid(valintatapajonoOid, hakemusOid, auditUser);
 
         assertEquals(3, jonosijaHistoriat.size());
         Collections.sort(jonosijaHistoriat, (o1, o2) -> o1.getHistoria().compareTo(o2.getHistoria()));

@@ -4,13 +4,16 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.dto.MinimalJonoDTO;
+import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,13 +38,18 @@ public class HakuResourceImpl implements HakuResource {
     @Autowired
     private ValintalaskentaTulosService tulosService;
 
+    @Autowired
+    private LaskentaAuditLog auditLog;
+
     @GET
     @Path("{hakuOid}/virheet")
     @Produces(MediaType.APPLICATION_JSON)
     @PreAuthorize(READ_UPDATE_CRUD)
     @ApiOperation(value = "Hakee haun valintalaskennan virhetilanteet OID:n perusteella", response = HakukohdeDTO.class)
-    public List<HakukohdeDTO> virheet(@PathParam("hakuOid") String hakuOid) {
-        return tulosService.haeVirheetHaulle(hakuOid);
+    public List<HakukohdeDTO> virheet(@PathParam("hakuOid") String hakuOid,
+                                      HttpServletRequest request) {
+        User user = auditLog.getUser(request);
+        return tulosService.haeVirheetHaulle(hakuOid, user);
     }
 
     @GET
@@ -62,7 +70,8 @@ public class HakuResourceImpl implements HakuResource {
     @Path("/ilmanvalintalaskentaasijoitteluun")
     @Produces(MediaType.APPLICATION_JSON)
     @PreAuthorize(READ_UPDATE_CRUD)
-    public List<MinimalJonoDTO> jonotSijoitteluun() {
-        return tulosService.haeSijoittelunKayttamatJonotIlmanValintalaskentaa();
+    public List<MinimalJonoDTO> jonotSijoitteluun(HttpServletRequest request) {
+        User user = auditLog.getUser(request);
+        return tulosService.haeSijoittelunKayttamatJonotIlmanValintalaskentaa(user);
     }
 }

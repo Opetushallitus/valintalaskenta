@@ -2,10 +2,12 @@ package fi.vm.sade.valintalaskenta.tulos.resource;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import io.swagger.annotations.Api;
@@ -24,6 +26,7 @@ public interface JonosijaHistoriaResource {
     @ApiOperation(value = "Hakee jonosijahistoriat valintatapajono OID:n ja hakemus OID:n perusteella", response = JarjestyskriteerihistoriaDTO.class)
     public List<JarjestyskriteerihistoriaDTO> listJonosijaHistoria(
             @ApiParam(value = "Valintatapajono OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
-            @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid);
+            @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid,
+            @Context HttpServletRequest request);
 
 }

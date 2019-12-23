@@ -5,6 +5,7 @@ import static fi.vm.sade.sijoittelu.tulos.dto.HakemuksenTila.VARALLA;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetHakijaryhmaDTO;
 import fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi;
@@ -94,9 +95,9 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     }
 
     @Override
-    public void applyValisijoittelu(Map<String, List<String>> valisijoiteltavatJonot, Map<String, fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO> hakemusHashMap) {
+    public void applyValisijoittelu(Map<String, List<String>> valisijoiteltavatJonot, Map<String, fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO> hakemusHashMap, User auditUser) {
         valisijoiteltavatJonot.keySet().parallelStream().forEach(hakukohdeOid -> {
-            List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid);
+            List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid, auditUser);
             vaiheet.forEach(vaihe -> {
                 List<String> hakukohteenValisijoitelujonot = valisijoiteltavatJonot.getOrDefault(hakukohdeOid, new ArrayList<>());
 
@@ -137,7 +138,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                                     });
                                 }
                             });
-                    valinnanvaiheDAO.saveOrUpdate(vaihe);
+                    valinnanvaiheDAO.saveOrUpdate(vaihe, auditUser);
                 }
             });
         });
@@ -145,9 +146,9 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     }
 
     @Override
-    public void applyErillissijoittelu(Map<String, List<String>> jonot, Long ajo) {
+    public void applyErillissijoittelu(Map<String, List<String>> jonot, Long ajo, User auditUser) {
         jonot.keySet().parallelStream().forEach(hakukohdeOid -> {
-            List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid);
+            List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid, auditUser);
             vaiheet.forEach(vaihe -> {
                 vaihe.getValintatapajonot()
                         .forEach(jono -> {
@@ -155,7 +156,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                                 jono.setSijoitteluajoId(ajo);
                             }
                         });
-                valinnanvaiheDAO.saveOrUpdate(vaihe);
+                valinnanvaiheDAO.saveOrUpdate(vaihe, auditUser);
             });
         });
     }

@@ -62,5 +62,6 @@
 
     <import resource="application-context-tulos-ws.xml"/>
 
+    <bean id="tulosAuditLogMock" class="fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogMock"/>
 
 </beans>

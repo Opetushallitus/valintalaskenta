@@ -33,5 +33,4 @@
     <bean id="modelMapper" class="fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper"/>
 	
     <import resource="spring/application-context-service.xml" />
-    
 </beans>

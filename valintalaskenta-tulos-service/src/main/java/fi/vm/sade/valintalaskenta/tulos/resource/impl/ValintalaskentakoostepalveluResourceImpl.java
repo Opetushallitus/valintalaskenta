@@ -26,6 +26,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
@@ -54,8 +55,10 @@ public class ValintalaskentakoostepalveluResourceImpl {
     @Path("jonotsijoittelussa/{hakuOid}")
     @Consumes("application/json")
     @Produces("application/json")
-    public List<JonoDto> jonotSijoittelussa(@PathParam("hakuOid") String hakuOid) {
-        return tulosService.haeJonotSijoittelussa(hakuOid);
+    public List<JonoDto> jonotSijoittelussa(@PathParam("hakuOid") String hakuOid,
+                                            HttpServletRequest request) {
+        User user = auditLog.getUser(request);
+        return tulosService.haeJonotSijoittelussa(hakuOid, user);
     }
 
     @POST
@@ -92,8 +95,10 @@ public class ValintalaskentakoostepalveluResourceImpl {
     @ApiOperation(value = "Hakee hakukohteen valinnan vaiheiden tulokset", response = ValinnanvaiheDTO.class)
     public List<ValintatietoValinnanvaiheDTO> hakukohde(
             @ApiParam(value = "Hakukohteen OID", required = true)
-            @PathParam("hakukohdeoid") String hakukohdeoid) {
-        return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
+            @PathParam("hakukohdeoid") String hakukohdeoid,
+            @Context HttpServletRequest request) {
+        User user = auditLog.getUser(request);
+        return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid, user);
     }
 
     @POST
@@ -109,7 +114,7 @@ public class ValintalaskentakoostepalveluResourceImpl {
         try {
             User user = auditLog.getUser(request);
 
-            return tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid);
+            return tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid, user);
         } catch (Exception e) {
             LOGGER.error("Valintatapajonon pisteitä ei saatu päivitettyä hakukohteelle " + hakukohdeoid, e);
             throw e;

@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.tulos.dao;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,7 +38,8 @@ public class ValinnanvaiheDaoTest {
     @UsingDataSet(locations = "valinnanvaiheJono.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testHaeTuloksetValinnantapajonolle() {
         {
-            Valinnanvaihe vaihe = valinnanvaiheDAO.findByValintatapajonoOid("jono1");
+            User auditUser = null;
+            Valinnanvaihe vaihe = valinnanvaiheDAO.findByValintatapajonoOid("jono1", auditUser);
 
             assertNotNull(vaihe);
             assertEquals("vaihe1", vaihe.getValinnanvaiheOid());
