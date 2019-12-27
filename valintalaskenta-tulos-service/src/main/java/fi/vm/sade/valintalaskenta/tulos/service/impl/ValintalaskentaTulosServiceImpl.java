@@ -461,7 +461,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
-    public void asetaHarkinnanvaraisestiHyvaksymisenTila(String hakuoid, String hakukohdeoid, String hakemusoid, HarkinnanvaraisuusTila tila) {
+    public void asetaHarkinnanvaraisestiHyvaksymisenTila(String hakuoid, String hakukohdeoid, String hakemusoid, HarkinnanvaraisuusTila tila, User auditUser) {
         HarkinnanvarainenHyvaksyminen a = harkinnanvarainenHyvaksyminenDAO.haeHarkinnanvarainenHyvaksyminen(hakukohdeoid, hakemusoid);
         if (a == null) {
             a = new HarkinnanvarainenHyvaksyminen();
@@ -470,7 +470,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             a.setHakuOid(hakuoid);
         }
         a.setHarkinnanvaraisuusTila(tila);
-        harkinnanvarainenHyvaksyminenDAO.tallennaHarkinnanvarainenHyvaksyminen(a);
+        harkinnanvarainenHyvaksyminenDAO.tallennaHarkinnanvarainenHyvaksyminen(a, auditUser);
     }
 
     @Override

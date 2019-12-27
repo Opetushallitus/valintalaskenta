@@ -55,7 +55,7 @@ public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResourc
             HttpServletRequest request) {
         User user = auditLog.getUser(request);
 
-        tulosService.asetaHarkinnanvaraisestiHyvaksymisenTila(hakuOid, hakukohdeOid, hakemusOid, harkinnanvarainenHyvaksyminen.getHarkinnanvaraisuusTila());
+        tulosService.asetaHarkinnanvaraisestiHyvaksymisenTila(hakuOid, hakukohdeOid, hakemusOid, harkinnanvarainenHyvaksyminen.getHarkinnanvaraisuusTila(), user);
     }
 
     @POST
@@ -72,7 +72,8 @@ public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResourc
                     harkinnanvarainenHyvaksyminen.getHakuOid(),
                     harkinnanvarainenHyvaksyminen.getHakukohdeOid(),
                     harkinnanvarainenHyvaksyminen.getHakemusOid(),
-                    harkinnanvarainenHyvaksyminen.getHarkinnanvaraisuusTila());
+                    harkinnanvarainenHyvaksyminen.getHarkinnanvaraisuusTila(),
+                    user);
         }
     }
 

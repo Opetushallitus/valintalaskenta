@@ -58,7 +58,7 @@ public interface ValintalaskentaTulosService {
 
     void asetaHarkinnanvaraisestiHyvaksymisenTila(String hakuoid,
                                                   String hakukohdeoid, String hakemusoid,
-                                                  HarkinnanvaraisuusTila hyvaksyttyHarkinannvaraisesti);
+                                                  HarkinnanvaraisuusTila hyvaksyttyHarkinannvaraisesti, User auditUser);
 
     List<HarkinnanvarainenHyvaksyminen> haeHarkinnanvaraisestiHyvaksymisenTila(String hakukohdeoid);
 
