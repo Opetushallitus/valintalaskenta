@@ -91,8 +91,6 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
         try {
             authorizer.checkOrganisationAccess(tarjoajaOid, ROLE_VALINTOJENTOTEUTTAMINEN_TULOSTENTUONTI);
 
-            User user = auditLog.getUser(request);
-
             List<ValintaperusteetDTO> valintaperusteet = valintaperusteetResource.haeValintaperusteet(hakukohdeoid, null);
             if (vaihe.empty()) {
                 Map<String,String> message = new HashMap<>();
