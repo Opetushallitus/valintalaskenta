@@ -2,6 +2,13 @@ package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
 import java.util.List;
 
+import fi.vm.sade.auditlog.Changes;
+import fi.vm.sade.auditlog.User;
+import fi.vm.sade.valinta.sharedutils.ValintaResource;
+import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
+import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
+import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
+import org.mongodb.morphia.Key;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +29,9 @@ public class MuokattuJonosijaDAOImpl implements MuokattuJonosijaDAO {
     @Qualifier("datastore2")
     @Autowired
     private Datastore datastore;
+
+    @Autowired
+    private LaskentaAuditLog auditLog;
 
     @PostConstruct
     public void ensureIndexes() {
@@ -53,7 +63,17 @@ public class MuokattuJonosijaDAOImpl implements MuokattuJonosijaDAO {
     }
 
     @Override
-    public void saveOrUpdate(MuokattuJonosija muokattuJonosija) {
-        datastore.save(muokattuJonosija);
+    public void saveOrUpdate(MuokattuJonosija muokattuJonosija, User auditUser) {
+        saveMuokattuJonosija(muokattuJonosija, auditUser);
+    }
+
+    private Key<MuokattuJonosija> saveMuokattuJonosija(MuokattuJonosija muokattuJonosija, User auditUser) {
+            auditLog.log(LaskentaAudit.AUDIT,
+                    auditUser,
+                    ValintaperusteetOperation.JONOSIJA_PAIVITYS,
+                    ValintaResource.JONOSIJA,
+                    muokattuJonosija.getHakemusOid(),
+                    Changes.addedDto(muokattuJonosija));
+       return datastore.save(muokattuJonosija);
     }
 }

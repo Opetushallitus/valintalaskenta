@@ -549,7 +549,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     @Override
     public MuokattuJonosija muutaJarjestyskriteeri(String valintatapajonoOid,
                                                    String hakemusOid, Integer jarjestyskriteeriPrioriteetti,
-                                                   MuokattuJonosijaArvoDTO jonosija, User auditUser) {
+                                                   MuokattuJonosijaArvoDTO jonosija,
+                                                   User auditUser) {
         Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.findByValintatapajonoOid(valintatapajonoOid, auditUser);
         MuokattuJonosija muokattuJonosija = muokattuJonosijaDAO.readByValintatapajonoOid(valintatapajonoOid, hakemusOid);
         if (muokattuJonosija == null) {
@@ -590,12 +591,12 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                         + jonosija.getArvo() + " tila: "
                         + jonosija.getTila().name());
 
-        muokattuJonosijaDAO.saveOrUpdate(muokattuJonosija);
+        muokattuJonosijaDAO.saveOrUpdate(muokattuJonosija, auditUser);
         return muokattuJonosija;
     }
 
     @Override
-    public MuokattuJonosija poistaMuokattuJonosija(String valintatapajonoOid, String hakemusOid, Integer jarjestyskriteeriPrioriteetti) {
+    public MuokattuJonosija poistaMuokattuJonosija(String valintatapajonoOid, String hakemusOid, Integer jarjestyskriteeriPrioriteetti, User auditUser) {
         MuokattuJonosija muokattuJonosija;
         muokattuJonosija = muokattuJonosijaDAO.readByValintatapajonoOid(valintatapajonoOid, hakemusOid);
         if (muokattuJonosija == null) {
@@ -606,7 +607,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                     .filter(j -> j.getPrioriteetti() != jarjestyskriteeriPrioriteetti)
                     .collect(Collectors.toList());
             muokattuJonosija.setJarjestyskriteerit(saastettavat);
-            muokattuJonosijaDAO.saveOrUpdate(muokattuJonosija);
+            muokattuJonosijaDAO.saveOrUpdate(muokattuJonosija, auditUser);
             return muokattuJonosija;
         }
     }

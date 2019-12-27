@@ -46,7 +46,7 @@ public interface ValintalaskentaTulosService {
 
     MuokattuJonosija poistaMuokattuJonosija(String valintatapajonoOid,
                                             String hakemusOid,
-                                            Integer jarjestyskriteeriPrioriteetti);
+                                            Integer jarjestyskriteeriPrioriteetti, User auditUser);
 
     ValintakoeOsallistuminen haeValintakoeOsallistumiset(String hakemusOid);
 

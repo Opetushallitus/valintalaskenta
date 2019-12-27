@@ -78,7 +78,7 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
             HttpServletRequest request) {
         User user = auditLog.getUser(request);
 
-        MuokattuJonosija muokattuJonosija = tulosService.poistaMuokattuJonosija(valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti);
+        MuokattuJonosija muokattuJonosija = tulosService.poistaMuokattuJonosija(valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, user);
         if (muokattuJonosija != null) {
             MuokattuJonosijaDTO map = modelMapper.map(muokattuJonosija, MuokattuJonosijaDTO.class);
             return Response.status(Response.Status.ACCEPTED).entity(map).build();
