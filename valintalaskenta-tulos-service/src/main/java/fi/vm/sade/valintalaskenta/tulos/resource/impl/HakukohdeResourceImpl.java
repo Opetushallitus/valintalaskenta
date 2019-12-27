@@ -147,9 +147,11 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
     @Path("{hakukohdeoid}/hakijaryhma")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Hakee hakukohteen hakijaryhmien tulokset", response = HakijaryhmaDTO.class)
-    public List<HakijaryhmaDTO> hakijaryhmat(@ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid) {
+    public List<HakijaryhmaDTO> hakijaryhmat(@ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid,
+                                             HttpServletRequest request) {
         try {
-            return tulosService.haeHakijaryhmatHakukohteelle(hakukohdeoid);
+            User user = auditLog.getUser(request);
+            return tulosService.haeHakijaryhmatHakukohteelle(hakukohdeoid, user);
         } catch (Exception e) {
             LOGGER.error("Hakijaryhmien tulosten haku hakukohteelle {} epäonnistui!", hakukohdeoid, e);
             throw e;

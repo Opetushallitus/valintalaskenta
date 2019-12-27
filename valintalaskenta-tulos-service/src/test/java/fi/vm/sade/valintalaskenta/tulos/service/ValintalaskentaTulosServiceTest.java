@@ -43,6 +43,7 @@ public class ValintalaskentaTulosServiceTest {
     @Rule
     public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
 
+    private final User auditUser = null;
 
     @Test
     @UsingDataSet(locations = "initialData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
@@ -86,7 +87,6 @@ public class ValintalaskentaTulosServiceTest {
     @UsingDataSet(locations = "testHaeTuloksetHakemukselle.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testHaeTuloksetHakemukselle() {
         {
-            User auditUser = null;
             HakemusDTO hakemus = valintalaskentaTulosService.haeTuloksetHakemukselle("hakuOid1", "hakemusOid1", auditUser);
             assertEquals(1, hakemus.getHakukohteet().size());
             HakukohdeDTO hakukohde = hakemus.getHakukohteet().get(0);
@@ -112,7 +112,6 @@ public class ValintalaskentaTulosServiceTest {
         }
 
         {
-            User auditUser = null;
             HakemusDTO hakemus = valintalaskentaTulosService.haeTuloksetHakemukselle("hakuOid1", "hakemusOid2", auditUser);
             assertEquals(1, hakemus.getHakukohteet().size());
             HakukohdeDTO hakukohde = hakemus.getHakukohteet().get(0);
@@ -142,7 +141,6 @@ public class ValintalaskentaTulosServiceTest {
     @UsingDataSet(locations = "valinnanvaiheTasasija.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testHaeTuloksetHakukohteelle() {
         {
-            User auditUser = null;
             List<ValintatietoValinnanvaiheDTO> hakukohde = valintalaskentaTulosService.haeValinnanvaiheetHakukohteelle("hakukohde1", auditUser);
             hakukohde.get(0).getValintatapajonot().get(0).getJonosijat().stream().filter(h -> h.getSukunimi().equals("Lahtinen")).forEach(h -> {
                 assertEquals(1, h.getJonosija());
@@ -158,7 +156,6 @@ public class ValintalaskentaTulosServiceTest {
     @Test
     @UsingDataSet(locations = "testHaeTuloksetHakemukselle.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testHaeTuloksetHaulle() {
-        User auditUser = null;
         List<MinimalJonoDTO> list = valintalaskentaTulosService.haeSijoittelunKayttamatJonotIlmanValintalaskentaa(auditUser);
         list.forEach(d -> {
             assertEquals("hakuOid1", d.getHakuOid());

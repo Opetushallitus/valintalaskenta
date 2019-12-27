@@ -51,7 +51,8 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         return migrate(datastore.createQuery(ValinnanvaiheMigrationDTO.class)
                 .field("hakuOid").equal(hakuOid)
                 .field("valintatapajonot").in(hakemuksenJonot)
-                .asList(), auditUser);
+                .asList(),
+                auditUser);
     }
 
     @Override
@@ -64,21 +65,24 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         }
         return migrate(datastore.createQuery(ValinnanvaiheMigrationDTO.class)
                 .field("valintatapajonot").in(keys)
-                .get(), auditUser);
+                .get(),
+                auditUser);
     }
 
     @Override
     public List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid, User auditUser) {
         return migrate(datastore.createQuery(ValinnanvaiheMigrationDTO.class)
                 .field("hakukohdeOid").equal(hakukohdeoid)
-                .asList(), auditUser);
+                .asList(),
+                auditUser);
     }
 
     @Override
     public List<Valinnanvaihe> readByHakuOid(String hakuoid, User auditUser) {
         return migrate(datastore.createQuery(ValinnanvaiheMigrationDTO.class)
                 .field("hakuOid").equal(hakuoid)
-                .asList(), auditUser);
+                .asList(),
+                auditUser);
     }
 
     @Override
@@ -199,12 +203,12 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     }
 
     private Key<Jonosija> saveJonosija(Jonosija jonosija, User auditUser) {
-/*        auditLog.log(LaskentaAudit.AUDIT,
+        auditLog.log(LaskentaAudit.AUDIT,
                 auditUser,
                 ValintaperusteetOperation.JONOSIJA_PAIVITYS,
                 ValintaResource.JONOSIJA,
-                jonosija.getId(),
-                Changes.addedDto(jonosija));*/
+                jonosija.getId().toString(),
+                Changes.addedDto(jonosija));
         return datastore.save(jonosija);
     }
 

@@ -324,8 +324,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
-    public List<HakijaryhmaDTO> haeHakijaryhmatHakukohteelle(String hakukohdeoid) {
-        List<Hakijaryhma> hakijaryhmat = hakijaryhmaDAO.readByHakukohdeOid(hakukohdeoid);
+    public List<HakijaryhmaDTO> haeHakijaryhmatHakukohteelle(String hakukohdeoid, User auditUser) {
+        List<Hakijaryhma> hakijaryhmat = hakijaryhmaDAO.readByHakukohdeOid(hakukohdeoid, auditUser);
         return modelMapper.mapList(hakijaryhmat, HakijaryhmaDTO.class);
     }
 
@@ -429,7 +429,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         LOGGER.info("Valintatiedot kovertoitu DTO:iksi {}!", hakuOid);
         applyMuokatutJonosijatToHakukohde(hakuOid, b);
         LOGGER.info("Muokatut jonosijat liitetty {}!", hakuOid);
-        b.forEach(hakukohde -> hakukohde.getHakijaryhma().addAll(haeHakijaryhmatHakukohteelle(hakukohde.getOid())));
+        b.forEach(hakukohde -> hakukohde.getHakijaryhma().addAll(haeHakijaryhmatHakukohteelle(hakukohde.getOid(), auditUser)));
         return b;
     }
 

@@ -97,6 +97,8 @@ public class ValintalaskentaResourceIntegrationTest {
     private static final FunktiokutsuDTO totuusarvoTrue;
     private static final FunktiokutsuDTO totuusarvoFalse;
 
+    private final User auditUser = null;
+
     static {
         totuusarvoTrue = new FunktiokutsuDTO();
         totuusarvoTrue.setFunktionimi(Funktionimi.TOTUUSARVO);
@@ -139,7 +141,6 @@ public class ValintalaskentaResourceIntegrationTest {
         LaskeDTO laskeDtoYhdenKoekutsunKanssa = readJson("laskeDTOYhdenKoekutsuVaiheenKanssa.json", new TypeToken<LaskeDTO>() {});
         Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDtoYhdenKoekutsunKanssa);
         try {
-            User auditUser = null;
             valintalaskentaResource.toteutaLaskeKaikki(laskentakutsu, auditUser);
         } catch (Exception e) {
         }
@@ -166,7 +167,6 @@ public class ValintalaskentaResourceIntegrationTest {
         LaskeDTO laskeDtoUseammanKoekutsunKanssa = readJson("laskeDTOUseammanKoekutsuVaiheenKanssa.json", new TypeToken<LaskeDTO>() {});
         Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDtoUseammanKoekutsunKanssa);
 
-        User auditUser = null;
         valintalaskentaResource.toteutaLaskeKaikki(laskentakutsu, auditUser);
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid("1.2.246.562.29.14662042044", "1.2.246.562.11.00000003337");

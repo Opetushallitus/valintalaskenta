@@ -47,5 +47,6 @@ public interface HakukohdeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Hakee hakukohteen hakijaryhmien tulokset", response = HakijaryhmaDTO.class)
     List<HakijaryhmaDTO> hakijaryhmat(
-        @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid);
+        @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid,
+        @Context HttpServletRequest request);
 }

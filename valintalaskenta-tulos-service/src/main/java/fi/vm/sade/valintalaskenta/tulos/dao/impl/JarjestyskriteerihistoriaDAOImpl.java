@@ -15,6 +15,8 @@ import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.dao.util.JarjestyskriteeriKooderi;
+import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
+
 import org.apache.commons.io.IOUtils;
 import org.bson.types.BasicBSONList;
 import org.bson.types.ObjectId;
@@ -41,6 +43,9 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
     @Qualifier("datastore2")
     @Autowired
     private Datastore datastore;
+
+    @Autowired
+    private LaskentaAuditLog auditLog;
 
     @Override
     public List<Jarjestyskriteerihistoria> findByValintatapajonoAndHakemusOid(String valintatapajonoOid, String hakemusOid, User auditUser) {
@@ -77,16 +82,6 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
                 .collect(Collectors.toList()));
     }
 
-    private Key<Jonosija> saveJonosija(Jonosija jonosija, User auditUser) {
-/*        auditLog.log(LaskentaAudit.AUDIT,
-                auditUser,
-                ValintaperusteetOperation.JONOSIJA_PAIVITYS,
-                ValintaResource.JONOSIJA,
-                jonosija.getId(),
-                Changes.addedDto(jonosija));*/
-        return datastore.save(jonosija);
-    }
-
     private void populateJonosijat(Valintatapajono valintatapajono) {
         List<ObjectId> jonosijaIdt = valintatapajono.getJonosijaIdt();
         if (jonosijaIdt.isEmpty()) {
@@ -109,8 +104,28 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
             LOG.info("Migrating valintatapajono {}", jono.getValintatapajonoOid());
             Valintatapajono migratedJono = jono.migrate();
             saveJonosijat(migratedJono, auditUser);
-            datastore.save(migratedJono);
+            saveJono(migratedJono, auditUser);
             return migratedJono;
         }
+    }
+
+    private Key<Valintatapajono> saveJono(Valintatapajono jono, User auditUser) {
+        auditLog.log(LaskentaAudit.AUDIT,
+                auditUser,
+                ValintaperusteetOperation.VALINTATAPAJONO_PAIVITYS,
+                ValintaResource.VALINTATAPAJONO,
+                jono.getValintatapajonoOid(),
+                Changes.addedDto(jono));
+        return datastore.save(jono);
+    }
+
+    private Key<Jonosija> saveJonosija(Jonosija jonosija, User auditUser) {
+        auditLog.log(LaskentaAudit.AUDIT,
+                auditUser,
+                ValintaperusteetOperation.JONOSIJA_PAIVITYS,
+                ValintaResource.JONOSIJA,
+                jonosija.getId().toString(),
+                Changes.addedDto(jonosija));
+        return datastore.save(jonosija);
     }
 }

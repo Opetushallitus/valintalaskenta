@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.laskenta.dao;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import org.bson.types.ObjectId;
@@ -45,10 +46,12 @@ public class HakijaryhmaDAOTest {
     @Autowired
     private HakijaryhmaDAO hakijaryhmaDAO;
 
+    private final User auditUser = null;
+
     @Test
     @UsingDataSet(locations = "hakijaryhmaMigrationTestData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testMigrationOfHakijaryma() {
-        Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("vanhaHakijaryhmaOid").get();
+        Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("vanhaHakijaryhmaOid", auditUser).get();
         List<Jonosija> jonosijat = hakijaryhma.getJonosijat();
         List<ObjectId> jonosijaIdt = hakijaryhma.getJonosijaIdt();
         assertThat(jonosijat, Matchers.hasSize(3));
@@ -61,7 +64,7 @@ public class HakijaryhmaDAOTest {
     @Test
     @UsingDataSet(locations = "hakijaryhmaMigrationTestData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testLoadingOfMigratedHakijaryhma() {
-        Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("migroituHakijaryhmaOid").get();
+        Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("migroituHakijaryhmaOid", auditUser).get();
         List<Jonosija> jonosijat = hakijaryhma.getJonosijat();
         List<ObjectId> jonosijaIdt = hakijaryhma.getJonosijaIdt();
         assertThat(jonosijat, Matchers.hasSize(3));
@@ -74,7 +77,7 @@ public class HakijaryhmaDAOTest {
     @Test
     @UsingDataSet(locations = "hakijaryhmaMigrationTestData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testLoadingHakijaryhmaWithoutJonosijas() {
-        Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("tyhjaHakijaryhmaOid").get();
+        Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("tyhjaHakijaryhmaOid", auditUser).get();
         assertThat(hakijaryhma.getJonosijaIdt(), Matchers.empty());
         assertThat(hakijaryhma.getJonosijat(), Matchers.empty());
     }
@@ -82,9 +85,9 @@ public class HakijaryhmaDAOTest {
     @Test
     @UsingDataSet(locations = "hakijaryhmaMigrationTestData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testDeletingHakijaryhmaWithoutJonosijas() {
-        Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("tyhjaHakijaryhmaOid").get();
+        Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("tyhjaHakijaryhmaOid", auditUser).get();
         hakijaryhmaDAO.poistaHakijaryhma(hakijaryhma);
-        assertEquals(Optional.empty(), hakijaryhmaDAO.haeHakijaryhma("tyhjaHakijaryhmaOid"));
+        assertEquals(Optional.empty(), hakijaryhmaDAO.haeHakijaryhma("tyhjaHakijaryhmaOid", auditUser));
     }
 
     @Test
@@ -92,8 +95,8 @@ public class HakijaryhmaDAOTest {
         Hakijaryhma hakijaryhma = new Hakijaryhma();
         hakijaryhma.setJonosijat(asList(new Jonosija(), new Jonosija()));
         hakijaryhma.setHakijaryhmaOid("uusiHakijaryhmaOid");
-        hakijaryhmaDAO.create(hakijaryhma);
-        Hakijaryhma savedHakijaryhma = hakijaryhmaDAO.haeHakijaryhma("uusiHakijaryhmaOid").get();
+        hakijaryhmaDAO.create(hakijaryhma, auditUser);
+        Hakijaryhma savedHakijaryhma = hakijaryhmaDAO.haeHakijaryhma("uusiHakijaryhmaOid", auditUser).get();
         assertThat(savedHakijaryhma.getJonosijat(), Matchers.hasSize(2));
         assertThat(savedHakijaryhma.getJonosijaIdt(), Matchers.hasSize(2));
     }
@@ -101,7 +104,7 @@ public class HakijaryhmaDAOTest {
     @Test
     @UsingDataSet(locations = "multipleHakijaryhmasWithVaryingPriorities.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void allCallsSortHakijaryhmaEntitiesInPriorityAscendingOrder() throws Exception {
-        List<Hakijaryhma> fetched = hakijaryhmaDAO.haeHakijaryhmat("1.2.246.562.20.18895322503");
+        List<Hakijaryhma> fetched = hakijaryhmaDAO.haeHakijaryhmat("1.2.246.562.20.18895322503", auditUser);
         assertEquals(3, fetched.size());
 
         List<Hakijaryhma> sorted = new ArrayList<>(fetched);

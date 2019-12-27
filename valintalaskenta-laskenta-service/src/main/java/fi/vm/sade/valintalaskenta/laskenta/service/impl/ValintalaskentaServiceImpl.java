@@ -44,8 +44,13 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     private ValinnanvaiheDAO valinnanvaiheDAO;
 
     @Override
-    public String laske(List<HakemusDTO> hakemus, List<ValintaperusteetDTO> valintaperuste, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
-                        String hakukohdeOid, String uuid, boolean korkeakouluhaku) throws RuntimeException {
+    public String laske(List<HakemusDTO> hakemus,
+                        List<ValintaperusteetDTO> valintaperuste,
+                        List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
+                        String hakukohdeOid,
+                        String uuid,
+                        boolean korkeakouluhaku,
+                        User auditUser) throws RuntimeException {
         if (hakemus == null) {
             LOG.error("Hakemukset tuli nullina hakukohteelle {}", hakukohdeOid);
         }
@@ -56,7 +61,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
             throw new RuntimeException("Hakemukset == null? " + (hakemus == null) + ", valintaperusteet == null? " + (valintaperuste == null) + " hakukohteelle " + hakukohdeOid);
         }
         try {
-            valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste, hakijaryhmat, hakukohdeOid, uuid, korkeakouluhaku);
+            valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste, hakijaryhmat, hakukohdeOid, uuid, korkeakouluhaku, auditUser);
             return "Onnistui!";
         } catch (Exception e) {
             LOG.error("Valintalaskennassa tapahtui virhe hakukohteelle " + hakukohdeOid, e);
@@ -79,7 +84,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 
     @Override
     public String laskeKaikki(List<HakemusDTO> hakemukset, List<ValintaperusteetDTO> valintaperuste, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
-                              String hakukohdeOid, String uuid, boolean korkeakouluhaku) throws RuntimeException {
+                              String hakukohdeOid, String uuid, boolean korkeakouluhaku, User auditUser) throws RuntimeException {
         valintaperuste.sort(Comparator.comparingInt(o -> o.getValinnanVaihe().getValinnanVaiheJarjestysluku()));
 
         ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset = new ValintakoelaskennanKumulatiivisetTulokset();
@@ -88,7 +93,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                 LOG.info("Suoritetaan valinnanvaiheen {} valintakoelaskenta {} hakemukselle", peruste.getValinnanVaihe().getValinnanVaiheOid(), hakemukset.size());
                 valintakokeetRinnakkain(hakemukset, singletonList(peruste), uuid, kumulatiivisetTulokset, korkeakouluhaku);
             } else {
-                laske(hakemukset, singletonList(peruste), hakijaryhmat, hakukohdeOid, uuid, korkeakouluhaku);
+                laske(hakemukset, singletonList(peruste), hakijaryhmat, hakukohdeOid, uuid, korkeakouluhaku, auditUser);
             }
         });
         return "Onnistui!";

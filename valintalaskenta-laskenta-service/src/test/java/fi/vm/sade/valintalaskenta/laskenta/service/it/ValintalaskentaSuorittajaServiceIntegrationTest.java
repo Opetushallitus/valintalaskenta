@@ -18,6 +18,7 @@ import static org.junit.Assert.assertThat;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetFunktiokutsuDTO;
@@ -82,6 +83,8 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
     private static ValintaperusteetFunktiokutsuDTO kahdeksansataa;
 
     private final boolean korkeakouluhaku = false;
+
+    private final User auditUser = null;
 
     static {
         sata = new ValintaperusteetFunktiokutsuDTO();
@@ -214,8 +217,8 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
             HakemusDTO hakemus1 = luoHakemus(hakuOid, hakemusOid1, hakijaOid1, hakukohdeOid1, hakukohdeOid2);
             HakemusDTO hakemus2 = luoHakemus(hakuOid, hakemusOid2, hakijaOid2, hakukohdeOid2, hakukohdeOid1);
 
-            valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(hakemus1, hakemus2), Arrays.asList(valintaperusteet2, valintaperusteet1), new ArrayList<>(), hakukohdeOid1, uuid, korkeakouluhaku);
-            valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(hakemus1, hakemus2), Arrays.asList(valintaperusteet4, valintaperusteet3), new ArrayList<>(), hakukohdeOid2, uuid, korkeakouluhaku);
+            valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(hakemus1, hakemus2), Arrays.asList(valintaperusteet2, valintaperusteet1), new ArrayList<>(), hakukohdeOid1, uuid, korkeakouluhaku, auditUser);
+            valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(hakemus1, hakemus2), Arrays.asList(valintaperusteet4, valintaperusteet3), new ArrayList<>(), hakukohdeOid2, uuid, korkeakouluhaku, auditUser);
         }
 
         {
@@ -586,7 +589,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         ValintaperusteetDTO vv3 = luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 2);
         (vv3.getValinnanVaihe()).getValintatapajono().add(luoValintatapajono(valintatapajonoOid, 0, 10, luoJarjestyskriteeri(sata, 1)));
         valintalaskentaSuorittajaService.suoritaLaskenta(Collections.singletonList(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid)),
-            Collections.singletonList(vv3), new ArrayList<>(), hakukohdeOid, uuid, korkeakouluhaku);
+            Collections.singletonList(vv3), new ArrayList<>(), hakukohdeOid, uuid, korkeakouluhaku, auditUser);
 
         Valinnanvaihe vaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanVaiheOid);
         assertNotNull(vaihe);
@@ -619,7 +622,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         (vv3.getValinnanVaihe()).getValintatapajono().add(luoValintatapajono(valintatapajonoOid, 0, 10, luoJarjestyskriteeri(sata, 1)));
         (vv3.getValinnanVaihe()).getValintatapajono().get(0).setPoistetaankoHylatyt(true);
         valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid), luoHakemus(hakuOid, hakemusOid2,hakemusOid, hakukohdeOid)),
-            Collections.singletonList(vv3), new ArrayList<>(), hakukohdeOid, uuid, korkeakouluhaku);
+            Collections.singletonList(vv3), new ArrayList<>(), hakukohdeOid, uuid, korkeakouluhaku, auditUser);
 
         Valinnanvaihe vaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanVaiheOid);
         assertNotNull(vaihe);
@@ -652,7 +655,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         ValintaperusteetDTO vv3 = luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 3);
         (vv3.getValinnanVaihe()).getValintatapajono().add(luoValintatapajono(valintatapajonoOid, 0, 10, luoJarjestyskriteeri(sata, 1)));
         valintalaskentaSuorittajaService.suoritaLaskenta(Arrays.asList(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid), luoHakemus(hakuOid, hakemusOid2, hakemusOid, hakukohdeOid)),
-            Collections.singletonList(vv3), new ArrayList<>(), hakukohdeOid, uuid, korkeakouluhaku);
+            Collections.singletonList(vv3), new ArrayList<>(), hakukohdeOid, uuid, korkeakouluhaku, auditUser);
 
         Valinnanvaihe vaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanVaiheOid);
         assertNotNull(vaihe);
@@ -674,7 +677,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         ValintaperusteetDTO vv3 = luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 3);
         (vv3.getValinnanVaihe()).getValintatapajono().add(luoValintatapajono(valintatapajonoOid, 0, 10, luoJarjestyskriteeri(sata, 1)));
         valintalaskentaSuorittajaService.suoritaLaskenta(Collections.singletonList(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid)),
-            Collections.singletonList(vv3), new ArrayList<>(), hakukohdeOid, uuid, korkeakouluhaku);
+            Collections.singletonList(vv3), new ArrayList<>(), hakukohdeOid, uuid, korkeakouluhaku, auditUser);
 
         Valinnanvaihe vaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanVaiheOid);
         assertNotNull(vaihe);

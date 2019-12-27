@@ -33,7 +33,7 @@ public interface ValintalaskentaTulosService {
 
     Optional<HakukohdeDTO> haeValinnanvaiheetHakukohteelleJaJonolle(String hakukohdeoid, List<String> valintatapajonot, User auditUser);
 
-    List<HakijaryhmaDTO> haeHakijaryhmatHakukohteelle(String hakukohdeoid);
+    List<HakijaryhmaDTO> haeHakijaryhmatHakukohteelle(String hakukohdeoid, User auditUser);
 
     List<HakukohdeDTO> haeVirheetHaulle(String hakuOid, User auditUser);
 

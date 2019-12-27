@@ -38,12 +38,13 @@ public class JonosijaHistoriaTulosDAOTest {
     @Rule
     public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
 
+    private final User auditUser = null;
+
     @Test
     @UsingDataSet(locations = "jonosijaHistoriaDAOInitialData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testFindByValintapajonoOidHakemusOidAndJarjestyskriteeriPrioriteetti() {
         final String valintatapajonoOid = "valintatapajonoOid1";
         final String hakemusOid = "hakemusOid1";
-        User auditUser = null;
         List<Jarjestyskriteerihistoria> jonosijaHistoriat =
                 jonosijaHistoriaTulosDAO.findByValintatapajonoAndHakemusOid(valintatapajonoOid, hakemusOid, auditUser);
 
@@ -59,7 +60,6 @@ public class JonosijaHistoriaTulosDAOTest {
     public void testJonosijaHistoriat() {
         final String valintatapajonoOid = "1410335755064-1436990924193196531";
         final String hakemusOid = "1.2.246.562.11.00000876962";
-        User auditUser = null;
         List<Jarjestyskriteerihistoria> jonosijaHistoriat =
                 jonosijaHistoriaTulosDAO.findByValintatapajonoAndHakemusOid(valintatapajonoOid, hakemusOid, auditUser);
 

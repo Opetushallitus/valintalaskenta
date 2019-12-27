@@ -34,11 +34,12 @@ public class ValinnanvaiheDaoTest {
     @Rule
     public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
 
+    private final User auditUser = null;
+
     @Test
     @UsingDataSet(locations = "valinnanvaiheJono.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testHaeTuloksetValinnantapajonolle() {
         {
-            User auditUser = null;
             Valinnanvaihe vaihe = valinnanvaiheDAO.findByValintatapajonoOid("jono1", auditUser);
 
             assertNotNull(vaihe);

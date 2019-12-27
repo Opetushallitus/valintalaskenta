@@ -14,7 +14,7 @@ public interface ValintalaskentaService {
                  List<ValintaperusteetDTO> valintaperuste,
                  List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
                  String hakukohdeOid,
-                 String uuid, boolean korkeakouluhaku)
+                 String uuid, boolean korkeakouluhaku, User auditUser)
                 throws RuntimeException;
 
     String valintakokeetRinnakkain(List<HakemusDTO> hakemukset,
@@ -29,7 +29,7 @@ public interface ValintalaskentaService {
                        List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
                        String hakukohdeOid,
                        String uuid,
-                       boolean korkeakouluhaku)
+                       boolean korkeakouluhaku, User auditUser)
             throws RuntimeException;
 
     void applyValisijoittelu(Map<String, List<String>> valisijoiteltavatJonot, Map<String, fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO> hakemusHashMap, User auditUser);

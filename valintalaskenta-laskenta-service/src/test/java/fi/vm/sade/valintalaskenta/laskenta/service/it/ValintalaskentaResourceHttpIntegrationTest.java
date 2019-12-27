@@ -7,6 +7,7 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.when;
 
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetHakijaryhmaDTO;
 import fi.vm.sade.valinta.sharedutils.http.HttpResourceBuilder;
@@ -45,7 +46,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
     public void successfulLaskentaBecomesReady() throws Exception {
         mockValisijoiteltavatJonotCall();
         when(getBean(ValintalaskentaService.class).laskeKaikki(anyListOf(HakemusDTO.class), anyListOf(ValintaperusteetDTO.class),
-            anyListOf(ValintaperusteetHakijaryhmaDTO.class), Matchers.eq(hakukohdeOid), any(String.class), anyBoolean())).thenReturn("Onnistui!");
+            anyListOf(ValintaperusteetHakijaryhmaDTO.class), Matchers.eq(hakukohdeOid), any(String.class), anyBoolean(), any(User.class))).thenReturn("Onnistui!");
 
         Laskentakutsu laskentakutsu = createLaskentakutsu("successfulUuid");
         assertEquals(HakukohteenLaskennanTila.UUSI,
@@ -58,7 +59,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
     public void failingLaskentaIsRecognised() throws Exception {
         mockValisijoiteltavatJonotCall();
         when(getBean(ValintalaskentaService.class).laskeKaikki(anyListOf(HakemusDTO.class), anyListOf(ValintaperusteetDTO.class),
-            anyListOf(ValintaperusteetHakijaryhmaDTO.class), Matchers.eq(hakukohdeOid), any(String.class), anyBoolean()))
+            anyListOf(ValintaperusteetHakijaryhmaDTO.class), Matchers.eq(hakukohdeOid), any(String.class), anyBoolean(), any(User.class)))
             .thenThrow(new RuntimeException(getClass().getSimpleName() + "-failure"));
 
         Laskentakutsu laskentakutsu = createLaskentakutsu("failingUuid");
@@ -71,7 +72,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
     public void unfinishedLaskentaIsWaitedFor() throws Exception {
         mockValisijoiteltavatJonotCall();
         when(getBean(ValintalaskentaService.class).laskeKaikki(anyListOf(HakemusDTO.class), anyListOf(ValintaperusteetDTO.class),
-            anyListOf(ValintaperusteetHakijaryhmaDTO.class), Matchers.eq(hakukohdeOid), any(String.class), anyBoolean()))
+            anyListOf(ValintaperusteetHakijaryhmaDTO.class), Matchers.eq(hakukohdeOid), any(String.class), anyBoolean(), any(User.class)))
             .thenAnswer(invocation -> {
                 waitWhileMayFinishIsNotSet();
                 return "Onnistui vähän myöhemmin!";
