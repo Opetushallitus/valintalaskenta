@@ -1,27 +1,21 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 
-import com.mongodb.AggregationOutput;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
+import fi.vm.sade.auditlog.Changes;
+import fi.vm.sade.auditlog.User;
+import fi.vm.sade.valinta.sharedutils.ValintaResource;
+import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.exception.DaoException;
-import org.bson.types.BasicBSONList;
-import org.bson.types.ObjectId;
+import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
+import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.aggregation.AggregationPipeline;
 import org.mongodb.morphia.aggregation.Projection;
-import org.mongodb.morphia.query.MorphiaIterator;
 import org.mongodb.morphia.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -32,6 +26,9 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
 
     @Autowired
     private Datastore morphiaDS;
+
+    @Autowired
+    private LaskentaAuditLog auditLog;
 
     @PostConstruct
     public void ensureIndexes() {
@@ -48,7 +45,14 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
     }
 
     @Override
-    public void createOrUpdate(ValintakoeOsallistuminen v) {
+    public void createOrUpdate(ValintakoeOsallistuminen v, User auditUser) {
+        auditLog.log(LaskentaAudit.AUDIT,
+                auditUser,
+                ValintaperusteetOperation.VALINTAKOE_OSALLISTUMINEN_PAIVITYS,
+                ValintaResource.VALINTAKOE_OSALLISTUMINEN,
+                v.getHakemusOid(),
+                Changes.addedDto(v));
+
         morphiaDS.save(v);
     }
 

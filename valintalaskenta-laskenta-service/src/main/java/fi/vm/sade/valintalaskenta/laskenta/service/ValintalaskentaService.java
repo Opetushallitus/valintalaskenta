@@ -21,7 +21,8 @@ public interface ValintalaskentaService {
                                    List<ValintaperusteetDTO> valintaperuste,
                                    String uuid,
                                    ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset,
-                                   boolean korkeakouluhaku)
+                                   boolean korkeakouluhaku,
+                                   User auditUser)
             throws RuntimeException;
 
     String laskeKaikki(List<HakemusDTO> hakemus,

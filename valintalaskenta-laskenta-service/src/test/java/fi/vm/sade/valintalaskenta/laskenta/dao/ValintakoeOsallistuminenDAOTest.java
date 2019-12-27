@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.laskenta.dao;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import org.junit.Rule;
 import org.junit.Test;
@@ -39,6 +40,8 @@ public class ValintakoeOsallistuminenDAOTest {
 
     @Autowired
     private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
+
+    private final User auditUser = null;
 
     private static Valintakoe luoValintakoe(String valintakoeOid, String valintakoetunniste,
                                             Osallistuminen osallistuminen) {
@@ -114,8 +117,8 @@ public class ValintakoeOsallistuminenDAOTest {
 
         ValintakoeOsallistuminen osallistuminen2 = luoTestiOsallistuminen(hakemusOid2, hakijaOid2, hakuOid);
 
-        valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen1);
-        valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen2);
+        valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen1, auditUser);
+        valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen2, auditUser);
         assertEquals(2, valintakoeOsallistuminenDAO.readAll().size());
 
         ValintakoeOsallistuminen haettu1 = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid1);

@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl;
 
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.service.valintaperusteet.dto.HakukohteenValintaperusteDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintakoeDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
@@ -90,8 +91,12 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
     }
 
     @Override
-    public void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet, String uuid,
-                      ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset, boolean korkeakouluhaku) {
+    public void laske(HakemusDTO hakemus,
+                      List<ValintaperusteetDTO> valintaperusteet,
+                      String uuid,
+                      ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset,
+                      boolean korkeakouluhaku,
+                      User auditUser) {
         LOG.info("(Uuid={}) (Thread={}) Laskentaan valintakoeosallistumiset hakemukselle {}", uuid, Thread.currentThread(), hakemus.getHakemusoid());
         //LOG.info("Kumulatiiviset tulokset hakemukselle {}: {} ", hakemus.getHakemusoid(), kumulatiivisetTulokset.get(hakemus.getHakemusoid()));
         if (valintaperusteet.size() == 0) {
@@ -102,7 +107,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         Map<String, List<HakukohdeValintakoeData>> valintakoeData = new HashMap<>();
         String hakuOid = valintaperusteet.get(0).getHakuOid();
         ValintakoeOsallistuminen vanhatOsallistumiset = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemus.getHakemusoid());
-        poistaVanhatOsallistumiset(hakemus, valintaperusteet);
+        poistaVanhatOsallistumiset(hakemus, valintaperusteet, auditUser);
         LOG.debug(String.format("Hakijan %s hakemukselle valintaperusteet.size() == %d", hakemus.getHakijaOid(), valintaperusteet.size()));
         for (ValintaperusteetDTO vp : valintaperusteet) {
             Map<String, String> hakukohteenValintaperusteet = muodostaHakukohteenValintaperusteetMap(vp.getHakukohteenValintaperuste());
@@ -163,7 +168,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
 
         ValintakoeOsallistuminen osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset = kumulatiivisetTulokset.get(hakemus.getHakemusoid());
         if (osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset != null) {
-            valintakoeOsallistuminenDAO.createOrUpdate(osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset);
+            valintakoeOsallistuminenDAO.createOrUpdate(osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset, auditUser);
         }
 
         if (LOG.isDebugEnabled()) {
@@ -294,7 +299,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         return osallistuminen;
     }
 
-    private void poistaVanhatOsallistumiset(final HakemusDTO hakemus, final List<ValintaperusteetDTO> valintaperusteet) {
+    private void poistaVanhatOsallistumiset(final HakemusDTO hakemus, final List<ValintaperusteetDTO> valintaperusteet, User auditUser) {
         final String ensimmainenHakukohde = valintaperusteet.get(0).getHakukohdeOid();
         final Stream<ValintakoeDTO> laskettavat = valintaperusteet.stream()
                 .flatMap(vp -> vp.getValinnanVaihe().getValintakoe().stream())
@@ -327,7 +332,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                     }
                     LOG.debug(String.format("poistaVanhatOsallistumiset: hakemukselle %s tallennetaan osallistumiset %s (%d hakutoivetta)",
                         hakemus.getHakemusoid(), ToStringBuilder.reflectionToString(kaikkiOsallistumiset), kaikkiOsallistumiset.getHakutoiveet().size()));
-                    valintakoeOsallistuminenDAO.createOrUpdate(kaikkiOsallistumiset);
+                    valintakoeOsallistuminenDAO.createOrUpdate(kaikkiOsallistumiset, auditUser);
                 }
             }
         }

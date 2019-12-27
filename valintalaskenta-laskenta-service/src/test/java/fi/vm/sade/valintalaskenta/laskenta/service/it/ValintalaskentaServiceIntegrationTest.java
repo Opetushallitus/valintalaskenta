@@ -18,6 +18,7 @@ import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 
 import co.unruly.matchers.StreamMatchers;
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
@@ -63,6 +64,8 @@ public class ValintalaskentaServiceIntegrationTest {
     @Autowired
     private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
 
+    private final User auditUser = null;
+
     private <T> T readJsonFromSamePackage(Class<?> clazz, String nameInSamePackage, TypeToken<T> typeToken) throws IOException {
         return new Gson().fromJson(IOUtils.toString(new ClassPathResource(nameInSamePackage, clazz).getInputStream(), "UTF-8"), typeToken.getType());
     }
@@ -85,12 +88,12 @@ public class ValintalaskentaServiceIntegrationTest {
         kutsuttavat.add(kutsuttavaHakemus);
         HakemusDTO hakemusJotaEiKuuluKutsua = luoHakemus(hakuOid, hakemusOidJotaEiKuuluKutsua, hakemusOidJotaEiKuuluKutsua, ylempiHakukohdeOidJossaYhteinenKoe, hakukohdeOidJossaOmaKoe);
         eiKutsuttavat.add(hakemusJotaEiKuuluKutsua);
-        valintalaskentaService.valintakokeetRinnakkain(kutsuttavat, perusteetKohde1, "uuid1", new ValintakoelaskennanKumulatiivisetTulokset(), true);
-        valintalaskentaService.valintakokeetRinnakkain(kutsuttavat, perusteetKohde2, "uuid2", new ValintakoelaskennanKumulatiivisetTulokset(), true);
-        valintalaskentaService.valintakokeetRinnakkain(kutsuttavat, perusteetKohde2, "uuid2", new ValintakoelaskennanKumulatiivisetTulokset(), true);  // again, to get previous results in place...
-        valintalaskentaService.valintakokeetRinnakkain(eiKutsuttavat, perusteetKohde1, "uuid1", new ValintakoelaskennanKumulatiivisetTulokset(), true);
-        valintalaskentaService.valintakokeetRinnakkain(eiKutsuttavat, perusteetKohde2, "uuid2", new ValintakoelaskennanKumulatiivisetTulokset(), true);
-        valintalaskentaService.valintakokeetRinnakkain(eiKutsuttavat, perusteetKohde2, "uuid2", new ValintakoelaskennanKumulatiivisetTulokset(), true);  // again, to get previous results in place...
+        valintalaskentaService.valintakokeetRinnakkain(kutsuttavat, perusteetKohde1, "uuid1", new ValintakoelaskennanKumulatiivisetTulokset(), true, auditUser);
+        valintalaskentaService.valintakokeetRinnakkain(kutsuttavat, perusteetKohde2, "uuid2", new ValintakoelaskennanKumulatiivisetTulokset(), true, auditUser);
+        valintalaskentaService.valintakokeetRinnakkain(kutsuttavat, perusteetKohde2, "uuid2", new ValintakoelaskennanKumulatiivisetTulokset(), true, auditUser);  // again, to get previous results in place...
+        valintalaskentaService.valintakokeetRinnakkain(eiKutsuttavat, perusteetKohde1, "uuid1", new ValintakoelaskennanKumulatiivisetTulokset(), true, auditUser);
+        valintalaskentaService.valintakokeetRinnakkain(eiKutsuttavat, perusteetKohde2, "uuid2", new ValintakoelaskennanKumulatiivisetTulokset(), true, auditUser);
+        valintalaskentaService.valintakokeetRinnakkain(eiKutsuttavat, perusteetKohde2, "uuid2", new ValintakoelaskennanKumulatiivisetTulokset(), true, auditUser);  // again, to get previous results in place...
 
         ValintakoeOsallistuminen kutsuttavaOsallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOidJokaKuuluuKutsua);
 

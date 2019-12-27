@@ -29,6 +29,7 @@ import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 
 import co.unruly.matchers.StreamMatchers;
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.service.valintaperusteet.dto.FunktiokutsuDTO;
 import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
@@ -99,6 +100,8 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
     private boolean korkeakouluhaku = false;
 
+    private final User auditUser = null;
+
     static {
         totuusarvoTrue = new FunktiokutsuDTO();
         totuusarvoTrue.setFunktionimi(Funktionimi.TOTUUSARVO);
@@ -154,7 +157,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         valintaperusteet.add(valintaperusteet2);
 
         assertNull(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid));
-        valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid, kumulatiivisetTulokset, korkeakouluhaku);
+        valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         assertNotNull(osallistuminen);
         assertEquals(osallistuminen.getHakutoiveet().get(0).getValinnanVaiheet().get(0).getValintakokeet().get(0).getOsallistuminenTulos().getOsallistuminen(), OSALLISTUU);
@@ -182,7 +185,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         List<ValintaperusteetDTO> valintaperusteet = new ArrayList<>();
         valintaperusteet.add(valintaperusteet1);
 
-        valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid, kumulatiivisetTulokset, korkeakouluhaku);
+        valintakoelaskentaSuorittajaService.laske(hakemus, valintaperusteet, uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         assertNotNull(osallistuminen);
@@ -240,9 +243,9 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     private void testWithOrder(String hakemusOid, String hakukohdeOid1, String hakukohdeOid2, String hakukohdeOid3, String hakuOid, ValintaperusteetDTO vp1, ValintaperusteetDTO vp2, ValintaperusteetDTO vp3) {
         final HakemusDTO hakemus = luoHakemus("hakuOid", hakemusOid, "hakijaOid", hakukohdeOid1, hakukohdeOid2, hakukohdeOid3);
         assertNull(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid));
-        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(vp1), uuid, kumulatiivisetTulokset, korkeakouluhaku);
-        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(vp2), uuid, kumulatiivisetTulokset, korkeakouluhaku);
-        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(vp3), uuid, kumulatiivisetTulokset, korkeakouluhaku);
+        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(vp1), uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
+        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(vp2), uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
+        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(vp3), uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
         assertTest1Results(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid));
     }
 
@@ -340,9 +343,9 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         hakemus.setAvaimet(Arrays.asList(avain, avain2));
 
         assertNull(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid));
-        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(vp1), uuid, kumulatiivisetTulokset, korkeakouluhaku);
-        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(vp2), uuid, kumulatiivisetTulokset, korkeakouluhaku);
-        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(vp3), uuid, kumulatiivisetTulokset, korkeakouluhaku);
+        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(vp1), uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
+        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(vp2), uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
+        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(vp3), uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
         assertTest2Results(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid));
     }
 
@@ -431,9 +434,9 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         hakemus.setAvaimet(Arrays.asList(avain, avain2));
 
         assertNull(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid));
-        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(vp1), uuid, kumulatiivisetTulokset, korkeakouluhaku);
-        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(vp2), uuid, kumulatiivisetTulokset, korkeakouluhaku);
-        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(vp3), uuid, kumulatiivisetTulokset, korkeakouluhaku);
+        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(vp1), uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
+        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(vp2), uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
+        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(vp3), uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
         assertTest3Results(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid));
     }
 
@@ -507,11 +510,11 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         final HakemusDTO hakemus = luoHakemus("hakuOid", "hakemusOid1", "hakijaOid", hakukohdeOid1, hakukohdeOid2, hakukohdeOid3);
         hakemus.setAvaimet(Arrays.asList(avain, avain2));
 
-        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(valintaperusteet1, valintaperusteet2, valintaperusteet3), uuid, kumulatiivisetTulokset, korkeakouluhaku);
+        valintakoelaskentaSuorittajaService.laske(hakemus, Arrays.asList(valintaperusteet1, valintaperusteet2, valintaperusteet3), uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
         final HakemusDTO hakemus2 = luoHakemus("hakuOid", "hakemusOid2", "hakijaOid", hakukohdeOid1, hakukohdeOid3);
         hakemus2.setAvaimet(Arrays.asList(avain, avain2));
 
-        valintakoelaskentaSuorittajaService.laske(hakemus2, Arrays.asList(valintaperusteet1, valintaperusteet2, valintaperusteet3), uuid, kumulatiivisetTulokset, korkeakouluhaku);
+        valintakoelaskentaSuorittajaService.laske(hakemus2, Arrays.asList(valintaperusteet1, valintaperusteet2, valintaperusteet3), uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
         assertTest4Results(valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, "hakemusOid2"));
     }
 
@@ -556,7 +559,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         final HakemusDTO hakemus = luoHakemus(hakuOid, hakemusOid, "hakijaOid", hakukohdeOid);
         hakemus.setAvaimet(Collections.singletonList(avain2));
 
-        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(vv2), uuid, kumulatiivisetTulokset, korkeakouluhaku);
+        valintakoelaskentaSuorittajaService.laske(hakemus, Collections.singletonList(vv2), uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         assertNotNull(osallistuminen);
@@ -574,7 +577,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         final String valintakoetunniste = "koe1";
 
         ValintaperusteetDTO vv2 = luoValintaperusteetJaValintakoeValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 1, valintakoetunniste);
-        valintakoelaskentaSuorittajaService.laske(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid), Collections.singletonList(vv2), uuid, kumulatiivisetTulokset, korkeakouluhaku);
+        valintakoelaskentaSuorittajaService.laske(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid), Collections.singletonList(vv2), uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
         assertNotNull(osallistuminen);
@@ -609,8 +612,8 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         ValintaperusteetDTO vv2_kohde1 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid1, koekutsuvaiheOid_kohde1, 1, createValintakokeet(valintakoetunniste), Koekutsu.YLIN_TOIVE, "hakukohdeKutsunKohde2");
         ValintaperusteetDTO vv2_kohde2 = luoValintaperusteetJaValintakoeValinnanVaihe(hakuOid, hakukohdeOid2, koekutsuvaiheOid_kohde2, 1, createValintakokeet(valintakoetunniste), Koekutsu.YLIN_TOIVE, "hakukohdeKutsunKohde2");
 
-        valintakoelaskentaSuorittajaService.laske(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid1, hakukohdeOid2), Collections.singletonList(vv2_kohde1), uuid, kumulatiivisetTulokset, korkeakouluhaku);
-        valintakoelaskentaSuorittajaService.laske(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid1, hakukohdeOid2), Collections.singletonList(vv2_kohde2), uuid, kumulatiivisetTulokset, korkeakouluhaku);
+        valintakoelaskentaSuorittajaService.laske(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid1, hakukohdeOid2), Collections.singletonList(vv2_kohde1), uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
+        valintakoelaskentaSuorittajaService.laske(luoHakemus(hakuOid, hakemusOid, hakemusOid, hakukohdeOid1, hakukohdeOid2), Collections.singletonList(vv2_kohde2), uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
 
@@ -638,7 +641,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
         LaskeDTO dto = readJson("laskeDTO.json", new TypeToken<LaskeDTO>() {});
 
-        valintakoelaskentaSuorittajaService.laske(dto.getHakemus().get(0), dto.getValintaperuste(), uuid, kumulatiivisetTulokset, korkeakouluhaku);
+        valintakoelaskentaSuorittajaService.laske(dto.getHakemus().get(0), dto.getValintaperuste(), uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid("1.2.246.562.5.2013080813081926341927", "1.2.246.562.11.00000304421");
 
@@ -662,7 +665,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     public void kielikokeeseenKutsutaanJosSuoritustaTaiTodennettuaKielitaitoaEiLoydy() throws JsonSyntaxException, IOException {
         LaskeDTO laskeDTOIlmanKielikoetulosta = readJson("laskeDTOIlmanKielikoetulosta.json", new TypeToken<LaskeDTO>() {});
 
-        valintakoelaskentaSuorittajaService.laske(laskeDTOIlmanKielikoetulosta.getHakemus().get(0), laskeDTOIlmanKielikoetulosta.getValintaperuste(), uuid, kumulatiivisetTulokset, korkeakouluhaku);
+        valintakoelaskentaSuorittajaService.laske(laskeDTOIlmanKielikoetulosta.getHakemus().get(0), laskeDTOIlmanKielikoetulosta.getValintaperuste(), uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid("1.2.246.562.5.2013080813081926341927", "1.2.246.562.11.00000304421");
 
@@ -688,7 +691,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         setValueOnCombinedHakemusData(hakemus, "kielikoe_fi", "true");
         setValueOnCombinedHakemusData(hakemus, "kielikoe_fi-OSALLISTUMINEN", "OSALLISTUI");
 
-        valintakoelaskentaSuorittajaService.laske(hakemus, laskeDTOIlmanKielikoetulosta.getValintaperuste(), uuid, kumulatiivisetTulokset, korkeakouluhaku);
+        valintakoelaskentaSuorittajaService.laske(hakemus, laskeDTOIlmanKielikoetulosta.getValintaperuste(), uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid("1.2.246.562.5.2013080813081926341927", "1.2.246.562.11.00000304421");
 
@@ -714,7 +717,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         setValueOnCombinedHakemusData(hakemus, "kielikoe_fi", "true");
         setValueOnCombinedHakemusData(hakemus, "kielikoe_fi-OSALLISTUMINEN", "MERKITSEMATTA");
 
-        valintakoelaskentaSuorittajaService.laske(hakemus, laskeDTOIlmanKielikoetulosta.getValintaperuste(), uuid, kumulatiivisetTulokset, korkeakouluhaku);
+        valintakoelaskentaSuorittajaService.laske(hakemus, laskeDTOIlmanKielikoetulosta.getValintaperuste(), uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid("1.2.246.562.5.2013080813081926341927", "1.2.246.562.11.00000304421");
 
@@ -846,9 +849,9 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
         ArrayList<ValintaperusteetDTO>  perusteetKohde2 = readJsonFromSamePackage(getClass(), "bug1564-valintaperusteet.json", new TypeToken<ArrayList<ValintaperusteetDTO>>() {});
 
         HakemusDTO hakemus = luoHakemus(hakuOid, hakemusOid, hakemusOid, ylempiHakukohdeOidJossaYhteinenKoe, hakukohdeOidJossaOmaKoe);
-        valintakoelaskentaSuorittajaService.laske(hakemus, perusteetKohde1, uuid, new ValintakoelaskennanKumulatiivisetTulokset(), korkeakouluhaku);
-        valintakoelaskentaSuorittajaService.laske(hakemus, perusteetKohde2, uuid, new ValintakoelaskennanKumulatiivisetTulokset(), korkeakouluhaku);
-        valintakoelaskentaSuorittajaService.laske(hakemus, perusteetKohde2, uuid, new ValintakoelaskennanKumulatiivisetTulokset(), korkeakouluhaku); // again, to get previous results in place...
+        valintakoelaskentaSuorittajaService.laske(hakemus, perusteetKohde1, uuid, new ValintakoelaskennanKumulatiivisetTulokset(), korkeakouluhaku, auditUser);
+        valintakoelaskentaSuorittajaService.laske(hakemus, perusteetKohde2, uuid, new ValintakoelaskennanKumulatiivisetTulokset(), korkeakouluhaku, auditUser);
+        valintakoelaskentaSuorittajaService.laske(hakemus, perusteetKohde2, uuid, new ValintakoelaskennanKumulatiivisetTulokset(), korkeakouluhaku, auditUser); // again, to get previous results in place...
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
 

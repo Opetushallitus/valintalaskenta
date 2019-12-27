@@ -147,7 +147,7 @@ public class ValintalaskentaResourceImpl {
                             Changes.addedDto(laskentakutsu),
                             additionalAuditFields);
 
-                    executorService.submit(timeRunnable.apply(laskentakutsu.getUuid(), () -> toteutaValintakoeLaskenta(laskentakutsu)));
+                    executorService.submit(timeRunnable.apply(laskentakutsu.getUuid(), () -> toteutaValintakoeLaskenta(laskentakutsu, user)));
                     return HakukohteenLaskennanTila.UUSI;
                 } catch (Exception e) {
                     LOG.error("Virhe laskennan suorituksessa, ", e);
@@ -391,7 +391,7 @@ public class ValintalaskentaResourceImpl {
         }
     }
 
-    private void toteutaValintakoeLaskenta(Laskentakutsu laskentakutsu) {
+    private void toteutaValintakoeLaskenta(Laskentakutsu laskentakutsu, User auditUser) {
         StopWatch stopWatch = new StopWatch("Toteutetaan valintakoelaskenta laskentakutsulle " + laskentakutsu.getUuid());
         LaskeDTO laskeDTO = laskentakutsu.getLaskeDTO();
         String pollkey = laskentakutsu.getPollKey();
@@ -399,7 +399,12 @@ public class ValintalaskentaResourceImpl {
         try {
             stopWatch.start("Suoritetaan valintakoelaskenta " + laskeDTO.getUuid() + " " + laskeDTO.getHakemus().size() + " hakemukselle hakukohteessa" + laskeDTO.getHakukohdeOid());
             LOG.info(String.format("(Uuid=%s) Suoritetaan valintakoelaskenta %s hakemukselle hakukohteessa %s", laskeDTO.getUuid(), laskeDTO.getHakemus().size(), laskeDTO.getHakukohdeOid()));
-            valintalaskentaService.valintakokeetRinnakkain(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getUuid(), new ValintakoelaskennanKumulatiivisetTulokset(), laskeDTO.isKorkeakouluhaku());
+            valintalaskentaService.valintakokeetRinnakkain(laskeDTO.getHakemus(),
+                    laskeDTO.getValintaperuste(),
+                    laskeDTO.getUuid(),
+                    new ValintakoelaskennanKumulatiivisetTulokset(),
+                    laskeDTO.isKorkeakouluhaku(),
+                    auditUser);
             LOG.info(String.format("(Uuid=%s) Valintakoelaskenta suoritettu %s hakemukselle hakukohteessa %s", laskeDTO.getUuid(), laskeDTO.getHakemus().size(), laskeDTO.getHakukohdeOid()));
             stopWatch.stop();
             paivitaKohteenLaskennanTila(pollkey, HakukohteenLaskennanTila.VALMIS, stopWatch);
@@ -460,7 +465,7 @@ public class ValintalaskentaResourceImpl {
                             LOG.info(String.format("(Uuid=%s) Suoritetaan valintakoelaskenta %s hakemukselle", laskeDTO.getUuid(), laskeDTO.getHakemus().size()));
 
                             stopWatch.start("Suoritetaan laskenta" + laskeDTO.getHakemus().size()+ " hakemukselle ");
-                            valintalaskentaService.valintakokeetRinnakkain(laskeDTO.getHakemus(), dto.getValintaperuste(), laskeDTO.getUuid(), kumulatiivisetTulokset, laskeDTO.isKorkeakouluhaku());
+                            valintalaskentaService.valintakokeetRinnakkain(laskeDTO.getHakemus(), dto.getValintaperuste(), laskeDTO.getUuid(), kumulatiivisetTulokset, laskeDTO.isKorkeakouluhaku(), auditUser);
                             stopWatch.stop();
                         } else {
                             ValintaperusteetDTO valintaperusteetDTO = dto.getValintaperuste().get(0);
@@ -543,7 +548,7 @@ public class ValintalaskentaResourceImpl {
                                         hakukohteidenMaaraValinnanVaiheessa,
                                         laskeDTO.getHakemus().size()));
                                 stopWatch.start("Suoritetaan valintakoelaskenta Uuid:n " + laskeDTO.getUuid() + " " + laskeDTO.getHakemus().size() + " hakemukselle");
-                                valintalaskentaService.valintakokeetRinnakkain(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getUuid(), kumulatiivisetTulokset, laskeDTO.isKorkeakouluhaku());
+                                valintalaskentaService.valintakokeetRinnakkain(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getUuid(), kumulatiivisetTulokset, laskeDTO.isKorkeakouluhaku(), auditUser);
                                 stopWatch.stop();
                             } else {
                                 stopWatch.start("Tarkistetaan, onko haku erillishaku");

@@ -70,10 +70,10 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     }
 
     @Override
-    public String valintakokeetRinnakkain(List<HakemusDTO> hakemukset, List<ValintaperusteetDTO> valintaperuste, String uuid, ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset, boolean korkeakouluhaku) throws RuntimeException {
+    public String valintakokeetRinnakkain(List<HakemusDTO> hakemukset, List<ValintaperusteetDTO> valintaperuste, String uuid, ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset, boolean korkeakouluhaku, User auditUser) throws RuntimeException {
         try {
             LOG.info("(Uuid={}) Lasketaan rinnakkain valintakoeosallistumiset {} hakemukselle", uuid, hakemukset.size());
-            hakemukset.parallelStream().forEach(hakemus -> valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste, uuid, kumulatiivisetTulokset, korkeakouluhaku));
+            hakemukset.parallelStream().forEach(hakemus -> valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste, uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser));
             LOG.info("(Uuid={}) Valintakoeosallistumisten laskenta {} hakemukselle valmis", uuid, hakemukset.size());
             return "Onnistui!";
         } catch (Exception e) {
@@ -91,7 +91,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
         valintaperuste.stream().forEachOrdered(peruste -> {
             if (peruste.getValinnanVaihe().getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
                 LOG.info("Suoritetaan valinnanvaiheen {} valintakoelaskenta {} hakemukselle", peruste.getValinnanVaihe().getValinnanVaiheOid(), hakemukset.size());
-                valintakokeetRinnakkain(hakemukset, singletonList(peruste), uuid, kumulatiivisetTulokset, korkeakouluhaku);
+                valintakokeetRinnakkain(hakemukset, singletonList(peruste), uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
             } else {
                 laske(hakemukset, singletonList(peruste), hakijaryhmat, hakukohdeOid, uuid, korkeakouluhaku, auditUser);
             }
