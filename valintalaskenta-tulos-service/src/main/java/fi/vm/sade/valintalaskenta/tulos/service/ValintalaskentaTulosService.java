@@ -33,7 +33,7 @@ public interface ValintalaskentaTulosService {
 
     Optional<HakukohdeDTO> haeValinnanvaiheetHakukohteelleJaJonolle(String hakukohdeoid, List<String> valintatapajonot, User auditUser);
 
-    List<HakijaryhmaDTO> haeHakijaryhmatHakukohteelle(String hakukohdeoid, User auditUser);
+    List<HakijaryhmaDTO> haeHakijaryhmatHakukohteelle(String hakukohdeoid);
 
     List<HakukohdeDTO> haeVirheetHaulle(String hakuOid, User auditUser);
 
@@ -52,7 +52,7 @@ public interface ValintalaskentaTulosService {
 
     List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakutoive(String hakukohdeOid);
 
-    List<Jarjestyskriteerihistoria> haeJonosijaHistoria(String valintatapajonoOid, String hakemusOid, User auditUser);
+    List<Jarjestyskriteerihistoria> haeJonosijaHistoria(String valintatapajonoOid, String hakemusOid);
 
     List<ValintakoeOsallistuminenDTO> haeValintakoevirheetHaulle(String hakuOid);
 

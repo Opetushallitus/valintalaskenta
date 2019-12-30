@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl;
 
+import fi.vm.sade.auditlog.Changes;
 import fi.vm.sade.auditlog.User;
 import fi.vm.sade.service.valintaperusteet.dto.HakukohteenValintaperusteDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintakoeDTO;
@@ -10,6 +11,8 @@ import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Hyvaksyttavissatila;
 import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
+import fi.vm.sade.valinta.sharedutils.ValintaResource;
+import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.dto.AvainArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
@@ -30,6 +33,8 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.TilaJaSelite;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoeosallistumislaskin;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.HakukohdeValintakoeData;
+import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
+import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
@@ -61,18 +66,23 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
     private final ValinnanvaiheDAO valinnanvaiheDAO;
     private final EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija;
     private final ValintalaskentaModelMapper modelMapper;
+    private final LaskentaAuditLog auditLog;
 
     @Autowired
-    public ValintakoelaskentaSuorittajaServiceImpl(ValintalaskentaModelMapper modelMapper, HakemusDTOToHakemusConverter hakemusConverter,
+    public ValintakoelaskentaSuorittajaServiceImpl(ValintalaskentaModelMapper modelMapper,
+                                                   HakemusDTOToHakemusConverter hakemusConverter,
                                                    EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija,
                                                    ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO,
-                                                   Valintakoeosallistumislaskin valintakoeosallistumislaskin, ValinnanvaiheDAO valinnanvaiheDAO) {
+                                                   Valintakoeosallistumislaskin valintakoeosallistumislaskin,
+                                                   ValinnanvaiheDAO valinnanvaiheDAO,
+                                                   LaskentaAuditLog auditLog) {
         this.modelMapper = modelMapper;
         this.hakemusConverter = hakemusConverter;
         this.edellinenValinnanvaiheKasittelija = edellinenValinnanvaiheKasittelija;
         this.valintakoeOsallistuminenDAO = valintakoeOsallistuminenDAO;
         this.valintakoeosallistumislaskin = valintakoeosallistumislaskin;
         this.valinnanvaiheDAO = valinnanvaiheDAO;
+        this.auditLog = auditLog;
     }
 
     private String haeTunniste(String mustache, Map<String, String> hakukohteenValintaperusteet) {
@@ -168,7 +178,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
 
         ValintakoeOsallistuminen osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset = kumulatiivisetTulokset.get(hakemus.getHakemusoid());
         if (osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset != null) {
-            valintakoeOsallistuminenDAO.createOrUpdate(osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset, auditUser);
+            saveValintakoeOsallistuminen(osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset, auditUser);
         }
 
         if (LOG.isDebugEnabled()) {
@@ -332,10 +342,21 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
                     }
                     LOG.debug(String.format("poistaVanhatOsallistumiset: hakemukselle %s tallennetaan osallistumiset %s (%d hakutoivetta)",
                         hakemus.getHakemusoid(), ToStringBuilder.reflectionToString(kaikkiOsallistumiset), kaikkiOsallistumiset.getHakutoiveet().size()));
-                    valintakoeOsallistuminenDAO.createOrUpdate(kaikkiOsallistumiset, auditUser);
+                    saveValintakoeOsallistuminen(kaikkiOsallistumiset, auditUser);
                 }
             }
         }
+    }
+
+    private void saveValintakoeOsallistuminen(ValintakoeOsallistuminen v, User auditUser) {
+        auditLog.log(LaskentaAudit.AUDIT,
+                auditUser,
+                ValintaperusteetOperation.VALINTAKOE_OSALLISTUMINEN_PAIVITYS,
+                ValintaResource.VALINTAKOE_OSALLISTUMINEN,
+                v.getHakemusOid(),
+                Changes.addedDto(v));
+
+        valintakoeOsallistuminenDAO.createOrUpdate(v);
     }
 
     private OsallistuminenTulos getOsallistuminenTulos(Hakukohde hakukohde, Hakemus convert, Funktiokutsu fuk) {

@@ -38,15 +38,13 @@ public class JonosijaHistoriaTulosDAOTest {
     @Rule
     public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
 
-    private final User auditUser = null;
-
     @Test
     @UsingDataSet(locations = "jonosijaHistoriaDAOInitialData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testFindByValintapajonoOidHakemusOidAndJarjestyskriteeriPrioriteetti() {
         final String valintatapajonoOid = "valintatapajonoOid1";
         final String hakemusOid = "hakemusOid1";
         List<Jarjestyskriteerihistoria> jonosijaHistoriat =
-                jonosijaHistoriaTulosDAO.findByValintatapajonoAndHakemusOid(valintatapajonoOid, hakemusOid, auditUser);
+                jonosijaHistoriaTulosDAO.findByValintatapajonoAndHakemusOid(valintatapajonoOid, hakemusOid);
 
         assertEquals(2, jonosijaHistoriat.size());
         Collections.sort(jonosijaHistoriat, (o1, o2) -> o1.getHistoria().compareTo(o2.getHistoria()));
@@ -61,7 +59,7 @@ public class JonosijaHistoriaTulosDAOTest {
         final String valintatapajonoOid = "1410335755064-1436990924193196531";
         final String hakemusOid = "1.2.246.562.11.00000876962";
         List<Jarjestyskriteerihistoria> jonosijaHistoriat =
-                jonosijaHistoriaTulosDAO.findByValintatapajonoAndHakemusOid(valintatapajonoOid, hakemusOid, auditUser);
+                jonosijaHistoriaTulosDAO.findByValintatapajonoAndHakemusOid(valintatapajonoOid, hakemusOid);
 
         assertEquals(3, jonosijaHistoriat.size());
         Collections.sort(jonosijaHistoriat, (o1, o2) -> o1.getHistoria().compareTo(o2.getHistoria()));

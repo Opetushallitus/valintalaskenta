@@ -41,8 +41,6 @@ public class ValintakoeOsallistuminenDAOTest {
     @Autowired
     private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
 
-    private final User auditUser = null;
-
     private static Valintakoe luoValintakoe(String valintakoeOid, String valintakoetunniste,
                                             Osallistuminen osallistuminen) {
         Valintakoe valintakoe = new Valintakoe();
@@ -117,8 +115,8 @@ public class ValintakoeOsallistuminenDAOTest {
 
         ValintakoeOsallistuminen osallistuminen2 = luoTestiOsallistuminen(hakemusOid2, hakijaOid2, hakuOid);
 
-        valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen1, auditUser);
-        valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen2, auditUser);
+        valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen1);
+        valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen2);
         assertEquals(2, valintakoeOsallistuminenDAO.readAll().size());
 
         ValintakoeOsallistuminen haettu1 = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid1);

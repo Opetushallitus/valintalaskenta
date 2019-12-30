@@ -1,13 +1,7 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 
-import fi.vm.sade.auditlog.Changes;
-import fi.vm.sade.auditlog.User;
-import fi.vm.sade.valinta.sharedutils.ValintaResource;
-import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
-import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
-import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.aggregation.Projection;
 import org.mongodb.morphia.query.Query;
@@ -27,9 +21,6 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
     @Autowired
     private Datastore morphiaDS;
 
-    @Autowired
-    private LaskentaAuditLog auditLog;
-
     @PostConstruct
     public void ensureIndexes() {
         morphiaDS.ensureIndexes(ValintakoeOsallistuminen.class);
@@ -45,14 +36,7 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
     }
 
     @Override
-    public void createOrUpdate(ValintakoeOsallistuminen v, User auditUser) {
-        auditLog.log(LaskentaAudit.AUDIT,
-                auditUser,
-                ValintaperusteetOperation.VALINTAKOE_OSALLISTUMINEN_PAIVITYS,
-                ValintaResource.VALINTAKOE_OSALLISTUMINEN,
-                v.getHakemusOid(),
-                Changes.addedDto(v));
-
+    public void createOrUpdate(ValintakoeOsallistuminen v) {
         morphiaDS.save(v);
     }
 

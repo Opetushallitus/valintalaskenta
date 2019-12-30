@@ -148,8 +148,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
     public List<HakijaryhmaDTO> hakijaryhmat(@ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid,
                                              HttpServletRequest request) {
         try {
-            User user = auditLog.getUser(request);
-            return tulosService.haeHakijaryhmatHakukohteelle(hakukohdeoid, user);
+            return tulosService.haeHakijaryhmatHakukohteelle(hakukohdeoid);
         } catch (Exception e) {
             LOGGER.error("Hakijaryhmien tulosten haku hakukohteelle {} epäonnistui!", hakukohdeoid, e);
             throw e;

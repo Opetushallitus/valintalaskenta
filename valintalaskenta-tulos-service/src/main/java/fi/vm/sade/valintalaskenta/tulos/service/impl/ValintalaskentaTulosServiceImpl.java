@@ -2,7 +2,10 @@ package fi.vm.sade.valintalaskenta.tulos.service.impl;
 
 import com.google.common.collect.Collections2;
 
+import fi.vm.sade.auditlog.Changes;
 import fi.vm.sade.auditlog.User;
+import fi.vm.sade.valinta.sharedutils.ValintaResource;
+import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
@@ -34,12 +37,14 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
+import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.dao.HakijaryhmaDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.HarkinnanvarainenHyvaksyminenDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.ValintakoeOsallistuminenDAO;
+import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.service.AuthorizationUtil;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
@@ -95,6 +100,9 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
     @Autowired
     private ValintalaskentaModelMapper modelMapper;
+
+    @Autowired
+    private LaskentaAuditLog auditLog;
 
     @Value("${root.organisaatio.oid}")
     private String rootOrgOid;
@@ -324,8 +332,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
-    public List<HakijaryhmaDTO> haeHakijaryhmatHakukohteelle(String hakukohdeoid, User auditUser) {
-        List<Hakijaryhma> hakijaryhmat = hakijaryhmaDAO.readByHakukohdeOid(hakukohdeoid, auditUser);
+    public List<HakijaryhmaDTO> haeHakijaryhmatHakukohteelle(String hakukohdeoid) {
+        List<Hakijaryhma> hakijaryhmat = hakijaryhmaDAO.readByHakukohdeOid(hakukohdeoid);
         return modelMapper.mapList(hakijaryhmat, HakijaryhmaDTO.class);
     }
 
@@ -429,7 +437,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         LOGGER.info("Valintatiedot kovertoitu DTO:iksi {}!", hakuOid);
         applyMuokatutJonosijatToHakukohde(hakuOid, b);
         LOGGER.info("Muokatut jonosijat liitetty {}!", hakuOid);
-        b.forEach(hakukohde -> hakukohde.getHakijaryhma().addAll(haeHakijaryhmatHakukohteelle(hakukohde.getOid(), auditUser)));
+        b.forEach(hakukohde -> hakukohde.getHakijaryhma().addAll(haeHakijaryhmatHakukohteelle(hakukohde.getOid())));
         return b;
     }
 
@@ -456,8 +464,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
-    public List<Jarjestyskriteerihistoria> haeJonosijaHistoria(String valintatapajonoOid, String hakemusOid, User auditUser) {
-        return jarjestyskriteerihistoriaDAO.findByValintatapajonoAndHakemusOid(valintatapajonoOid, hakemusOid, auditUser);
+    public List<Jarjestyskriteerihistoria> haeJonosijaHistoria(String valintatapajonoOid, String hakemusOid) {
+        return jarjestyskriteerihistoriaDAO.findByValintatapajonoAndHakemusOid(valintatapajonoOid, hakemusOid);
     }
 
     @Override
@@ -470,7 +478,17 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             a.setHakuOid(hakuoid);
         }
         a.setHarkinnanvaraisuusTila(tila);
-        harkinnanvarainenHyvaksyminenDAO.tallennaHarkinnanvarainenHyvaksyminen(a, auditUser);
+        saveHarkinnanvarainenHyvaksyminen(a, auditUser);
+    }
+
+    private void saveHarkinnanvarainenHyvaksyminen(HarkinnanvarainenHyvaksyminen harkinnanvarainenHyvaksyminen, User auditUser) {
+        auditLog.log(LaskentaAudit.AUDIT,
+                auditUser,
+                ValintaperusteetOperation.HARKINNANVARAINEN_HYVAKSYMINEN_PAIVITYS,
+                ValintaResource.HARKINNANVARAINEN_HYVAKSYMINEN,
+                harkinnanvarainenHyvaksyminen.getHakemusOid(),
+                Changes.addedDto(harkinnanvarainenHyvaksyminen));
+        harkinnanvarainenHyvaksyminenDAO.tallennaHarkinnanvarainenHyvaksyminen(harkinnanvarainenHyvaksyminen);
     }
 
     @Override
@@ -591,7 +609,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                         + jonosija.getArvo() + " tila: "
                         + jonosija.getTila().name());
 
-        muokattuJonosijaDAO.saveOrUpdate(muokattuJonosija, auditUser);
+        saveMuokattuJonosija(muokattuJonosija, auditUser);
         return muokattuJonosija;
     }
 
@@ -607,9 +625,19 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                     .filter(j -> j.getPrioriteetti() != jarjestyskriteeriPrioriteetti)
                     .collect(Collectors.toList());
             muokattuJonosija.setJarjestyskriteerit(saastettavat);
-            muokattuJonosijaDAO.saveOrUpdate(muokattuJonosija, auditUser);
+            saveMuokattuJonosija(muokattuJonosija, auditUser);
             return muokattuJonosija;
         }
+    }
+
+    private void saveMuokattuJonosija(MuokattuJonosija muokattuJonosija, User auditUser) {
+        auditLog.log(LaskentaAudit.AUDIT,
+                auditUser,
+                ValintaperusteetOperation.JONOSIJA_PAIVITYS,
+                ValintaResource.JONOSIJA,
+                muokattuJonosija.getHakemusOid(),
+                Changes.addedDto(muokattuJonosija));
+        muokattuJonosijaDAO.saveOrUpdate(muokattuJonosija);
     }
 
     private void addLogEntry(String selite, MuokattuJonosija muokattuJonosija, String muutos) {

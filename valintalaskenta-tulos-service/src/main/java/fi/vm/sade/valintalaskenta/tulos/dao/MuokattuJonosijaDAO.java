@@ -1,6 +1,5 @@
 package fi.vm.sade.valintalaskenta.tulos.dao;
 
-import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 
 import java.util.List;
@@ -8,7 +7,7 @@ import java.util.List;
 public interface MuokattuJonosijaDAO {
     MuokattuJonosija readByValintatapajonoOid(String valintatapajonoOid, String hakemusOid);
 
-    void saveOrUpdate(MuokattuJonosija muokattuJonosija, User auditUser);
+    void saveOrUpdate(MuokattuJonosija muokattuJonosija);
 
     List<MuokattuJonosija> readByHakuOid(String hakuOid);
 

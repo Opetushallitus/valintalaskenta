@@ -2,13 +2,6 @@ package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
 import java.util.List;
 
-import fi.vm.sade.auditlog.Changes;
-import fi.vm.sade.auditlog.User;
-import fi.vm.sade.valinta.sharedutils.ValintaResource;
-import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
-import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
-import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
-import org.mongodb.morphia.Key;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -24,8 +17,6 @@ public class HarkinnanvarainenHyvaksyminenDAOImpl implements HarkinnanvarainenHy
     @Autowired
     private Datastore datastore;
 
-    @Autowired
-    private LaskentaAuditLog auditLog;
 
     @Override
     public HarkinnanvarainenHyvaksyminen haeHarkinnanvarainenHyvaksyminen(String hakukohdeOid, String hakemusOid) {
@@ -35,8 +26,8 @@ public class HarkinnanvarainenHyvaksyminenDAOImpl implements HarkinnanvarainenHy
     }
 
     @Override
-    public void tallennaHarkinnanvarainenHyvaksyminen(HarkinnanvarainenHyvaksyminen harkinnanvarainenHyvaksyminen, User auditUser) {
-        saveHarkinnanvarainenHyvaksyminen(harkinnanvarainenHyvaksyminen, auditUser);
+    public void tallennaHarkinnanvarainenHyvaksyminen(HarkinnanvarainenHyvaksyminen harkinnanvarainenHyvaksyminen) {
+        datastore.save(harkinnanvarainenHyvaksyminen);
     }
 
     @Override
@@ -56,16 +47,6 @@ public class HarkinnanvarainenHyvaksyminenDAOImpl implements HarkinnanvarainenHy
         return datastore.find(HarkinnanvarainenHyvaksyminen.class)
                 .field("hakuOid").equal(hakuOid).field("hakemusOid")
                 .equal(hakemusOid).asList();
-    }
-
-    private Key<HarkinnanvarainenHyvaksyminen> saveHarkinnanvarainenHyvaksyminen(HarkinnanvarainenHyvaksyminen harkinnanvarainenHyvaksyminen, User auditUser) {
-        auditLog.log(LaskentaAudit.AUDIT,
-                auditUser,
-                ValintaperusteetOperation.HARKINNANVARAINEN_HYVAKSYMINEN_PAIVITYS,
-                ValintaResource.HARKINNANVARAINEN_HYVAKSYMINEN,
-                harkinnanvarainenHyvaksyminen.getHakemusOid(),
-                Changes.addedDto(harkinnanvarainenHyvaksyminen));
-        return datastore.save(harkinnanvarainenHyvaksyminen);
     }
 
 }
