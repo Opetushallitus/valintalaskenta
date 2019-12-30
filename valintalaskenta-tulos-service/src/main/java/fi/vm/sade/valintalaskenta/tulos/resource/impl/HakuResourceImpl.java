@@ -48,8 +48,7 @@ public class HakuResourceImpl implements HakuResource {
     @ApiOperation(value = "Hakee haun valintalaskennan virhetilanteet OID:n perusteella", response = HakukohdeDTO.class)
     public List<HakukohdeDTO> virheet(@PathParam("hakuOid") String hakuOid,
                                       HttpServletRequest request) {
-        User user = auditLog.getUser(request);
-        return tulosService.haeVirheetHaulle(hakuOid, user);
+        return tulosService.haeVirheetHaulle(hakuOid);
     }
 
     @GET
@@ -71,7 +70,6 @@ public class HakuResourceImpl implements HakuResource {
     @Produces(MediaType.APPLICATION_JSON)
     @PreAuthorize(READ_UPDATE_CRUD)
     public List<MinimalJonoDTO> jonotSijoitteluun(HttpServletRequest request) {
-        User user = auditLog.getUser(request);
-        return tulosService.haeSijoittelunKayttamatJonotIlmanValintalaskentaa(user);
+        return tulosService.haeSijoittelunKayttamatJonotIlmanValintalaskentaa();
     }
 }

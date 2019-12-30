@@ -3,7 +3,6 @@ package fi.vm.sade.valintalaskenta.tulos.service;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
-import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.HakutoiveDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeDTO;
@@ -42,8 +41,6 @@ public class ValintalaskentaTulosServiceTest {
 
     @Rule
     public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
-
-    private final User auditUser = null;
 
     @Test
     @UsingDataSet(locations = "initialData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
@@ -87,7 +84,7 @@ public class ValintalaskentaTulosServiceTest {
     @UsingDataSet(locations = "testHaeTuloksetHakemukselle.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testHaeTuloksetHakemukselle() {
         {
-            HakemusDTO hakemus = valintalaskentaTulosService.haeTuloksetHakemukselle("hakuOid1", "hakemusOid1", auditUser);
+            HakemusDTO hakemus = valintalaskentaTulosService.haeTuloksetHakemukselle("hakuOid1", "hakemusOid1");
             assertEquals(1, hakemus.getHakukohteet().size());
             HakukohdeDTO hakukohde = hakemus.getHakukohteet().get(0);
             assertEquals(1, hakukohde.getValinnanvaihe().size());
@@ -112,7 +109,7 @@ public class ValintalaskentaTulosServiceTest {
         }
 
         {
-            HakemusDTO hakemus = valintalaskentaTulosService.haeTuloksetHakemukselle("hakuOid1", "hakemusOid2", auditUser);
+            HakemusDTO hakemus = valintalaskentaTulosService.haeTuloksetHakemukselle("hakuOid1", "hakemusOid2");
             assertEquals(1, hakemus.getHakukohteet().size());
             HakukohdeDTO hakukohde = hakemus.getHakukohteet().get(0);
             assertEquals(1, hakukohde.getValinnanvaihe().size());
@@ -141,7 +138,7 @@ public class ValintalaskentaTulosServiceTest {
     @UsingDataSet(locations = "valinnanvaiheTasasija.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testHaeTuloksetHakukohteelle() {
         {
-            List<ValintatietoValinnanvaiheDTO> hakukohde = valintalaskentaTulosService.haeValinnanvaiheetHakukohteelle("hakukohde1", auditUser);
+            List<ValintatietoValinnanvaiheDTO> hakukohde = valintalaskentaTulosService.haeValinnanvaiheetHakukohteelle("hakukohde1");
             hakukohde.get(0).getValintatapajonot().get(0).getJonosijat().stream().filter(h -> h.getSukunimi().equals("Lahtinen")).forEach(h -> {
                 assertEquals(1, h.getJonosija());
             });
@@ -156,7 +153,7 @@ public class ValintalaskentaTulosServiceTest {
     @Test
     @UsingDataSet(locations = "testHaeTuloksetHakemukselle.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testHaeTuloksetHaulle() {
-        List<MinimalJonoDTO> list = valintalaskentaTulosService.haeSijoittelunKayttamatJonotIlmanValintalaskentaa(auditUser);
+        List<MinimalJonoDTO> list = valintalaskentaTulosService.haeSijoittelunKayttamatJonotIlmanValintalaskentaa();
         list.forEach(d -> {
             assertEquals("hakuOid1", d.getHakuOid());
             assertEquals("hakukohdeOid1", d.getHakukohdeOid());

@@ -1,7 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
 
-import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.HakemusOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.HakuDTO;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
@@ -45,7 +44,6 @@ public class ValintatietoResourceImpl implements ValintatietoResource {
     @PreAuthorize(READ_UPDATE_CRUD)
     public HakuDTO haeValintatiedot(@PathParam("hakuOid") String hakuOid,
                                     HttpServletRequest request) {
-        User user = auditLog.getUser(request);
-        return valintatietoService.haeValintatiedot(hakuOid, user);
+        return valintatietoService.haeValintatiedot(hakuOid);
     }
 }

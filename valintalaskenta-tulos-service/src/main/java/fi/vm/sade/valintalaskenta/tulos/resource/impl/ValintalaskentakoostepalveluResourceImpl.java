@@ -57,8 +57,7 @@ public class ValintalaskentakoostepalveluResourceImpl {
     @Produces("application/json")
     public List<JonoDto> jonotSijoittelussa(@PathParam("hakuOid") String hakuOid,
                                             HttpServletRequest request) {
-        User user = auditLog.getUser(request);
-        return tulosService.haeJonotSijoittelussa(hakuOid, user);
+        return tulosService.haeJonotSijoittelussa(hakuOid);
     }
 
     @POST
@@ -97,8 +96,7 @@ public class ValintalaskentakoostepalveluResourceImpl {
             @ApiParam(value = "Hakukohteen OID", required = true)
             @PathParam("hakukohdeoid") String hakukohdeoid,
             @Context HttpServletRequest request) {
-        User user = auditLog.getUser(request);
-        return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid, user);
+        return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
     }
 
     @POST

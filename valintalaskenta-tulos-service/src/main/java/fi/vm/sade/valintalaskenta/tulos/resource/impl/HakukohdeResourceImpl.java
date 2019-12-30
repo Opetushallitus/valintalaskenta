@@ -68,8 +68,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
             @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid,
             HttpServletRequest request) {
         try {
-            User user = auditLog.getUser(request);
-            return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid, user);
+            return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
         } catch (Exception e) {
             LOGGER.error("Valintalaskennan tulosten haku hakukohteelle {} epäonnistui!", hakukohdeoid, e);
             throw e;

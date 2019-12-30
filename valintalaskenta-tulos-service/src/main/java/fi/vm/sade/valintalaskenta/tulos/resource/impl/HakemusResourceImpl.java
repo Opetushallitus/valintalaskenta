@@ -43,7 +43,6 @@ public class HakemusResourceImpl implements HakemusResource {
             @ApiParam(value = "Haku OID", required = true) @PathParam("hakuoid") String hakuoid,
             @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusoid") String hakemusoid,
             HttpServletRequest request) {
-        User user = auditLog.getUser(request);
-        return tulosService.haeTuloksetHakemukselle(hakuoid, hakemusoid, user);
+        return tulosService.haeTuloksetHakemukselle(hakuoid, hakemusoid);
     }
 }

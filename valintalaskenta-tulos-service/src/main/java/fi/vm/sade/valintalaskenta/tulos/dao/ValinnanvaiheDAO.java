@@ -8,19 +8,19 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.List;
 
 public interface ValinnanvaiheDAO {
-    List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid, User auditUser);
+    List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid);
 
-    List<Valinnanvaihe> readByHakuOid(String hakuoid, User auditUser);
+    List<Valinnanvaihe> readByHakuOid(String hakuoid);
 
     List<ValintatapajonoMigrationDTO> valintatapajonotJotkaEivatKaytaLaskentaa();
 
     List<Pair<String, String>> hakuOidHakukohdeOidPairsForJonos(List<ValintatapajonoMigrationDTO> validValintatapajonos);
 
-    List<Valinnanvaihe> readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid, User auditUser);
+    List<Valinnanvaihe> readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid);
 
-    Valinnanvaihe findByValintatapajonoOid(String valintatapajonoOid, User auditUser);
+    Valinnanvaihe findByValintatapajonoOid(String valintatapajonoOid);
 
-    Valinnanvaihe haeValinnanvaihe(String valinnanvaiheOid, User auditUser);
+    Valinnanvaihe haeValinnanvaihe(String valinnanvaiheOid);
 
     void saveOrUpdate(Valinnanvaihe vaihe, User auditUser);
 }

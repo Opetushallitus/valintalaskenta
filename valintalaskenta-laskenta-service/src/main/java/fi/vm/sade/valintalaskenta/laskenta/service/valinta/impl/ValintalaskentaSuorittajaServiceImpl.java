@@ -204,7 +204,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                     return;
                 }
 
-                Hakijaryhma hakijaryhma = haeTaiLuoHakijaryhma(h, auditUser);
+                Hakijaryhma hakijaryhma = haeTaiLuoHakijaryhma(h);
 
                 Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan = new HashMap<>();
                 Map<String, String> hakukohteenValintaperusteet = muodostaHakukohteenValintaperusteetMap(valintaperusteet.get(0).getHakukohteenValintaperuste());
@@ -450,13 +450,13 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     private void poistaHaamuryhmat(List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat, String hakukohdeOid, User auditUser) {
         List<String> oidit = hakijaryhmat.stream().map(ValintaperusteetHakijaryhmaDTO::getOid).collect(Collectors.toList());
 
-        hakijaryhmaDAO.haeHakijaryhmat(hakukohdeOid, auditUser).stream()
+        hakijaryhmaDAO.haeHakijaryhmat(hakukohdeOid).stream()
                 .filter(h -> oidit.indexOf(h.getHakijaryhmaOid()) == -1)
                 .forEach(hakijaryhmaDAO::poistaHakijaryhma);
     }
 
-    private Hakijaryhma haeTaiLuoHakijaryhma(ValintaperusteetHakijaryhmaDTO dto, User auditUser) {
-        Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma(dto.getOid(), auditUser).orElse(new Hakijaryhma());
+    private Hakijaryhma haeTaiLuoHakijaryhma(ValintaperusteetHakijaryhmaDTO dto) {
+        Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma(dto.getOid()).orElse(new Hakijaryhma());
         hakijaryhma.setHakijaryhmaOid(dto.getOid());
         hakijaryhma.setHakukohdeOid(dto.getHakukohdeOid());
         hakijaryhma.setKaytaKaikki(dto.isKaytaKaikki());
