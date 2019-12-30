@@ -51,8 +51,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         return migrate(datastore.createQuery(ValinnanvaiheMigrationDTO.class)
                 .field("hakuOid").equal(hakuOid)
                 .field("valintatapajonot").in(hakemuksenJonot)
-                .asList(),
-                auditUser);
+                .asList());
     }
 
     @Override
@@ -65,24 +64,21 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         }
         return migrate(datastore.createQuery(ValinnanvaiheMigrationDTO.class)
                 .field("valintatapajonot").in(keys)
-                .get(),
-                auditUser);
+                .get());
     }
 
     @Override
     public List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid, User auditUser) {
         return migrate(datastore.createQuery(ValinnanvaiheMigrationDTO.class)
                 .field("hakukohdeOid").equal(hakukohdeoid)
-                .asList(),
-                auditUser);
+                .asList());
     }
 
     @Override
     public List<Valinnanvaihe> readByHakuOid(String hakuoid, User auditUser) {
         return migrate(datastore.createQuery(ValinnanvaiheMigrationDTO.class)
                 .field("hakuOid").equal(hakuoid)
-                .asList(),
-                auditUser);
+                .asList());
     }
 
     @Override
@@ -109,7 +105,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         return Optional.ofNullable(datastore.find(ValinnanvaiheMigrationDTO.class)
                 .field("valinnanvaiheOid").equal(valinnanvaiheOid)
                 .get())
-                .map(vaihe -> migrate(vaihe, auditUser))
+                .map(vaihe -> migrate(vaihe))
                 .orElse(null);
     }
 
@@ -124,7 +120,13 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 
     private void saveJonosijat(Valintatapajono valintatapajono, User auditUser) {
         valintatapajono.setJonosijaIdt(valintatapajono.getJonosijat().stream()
-                .map(jonosija -> (ObjectId) saveJonosija(jonosija, auditUser).getId())
+                .map(jonosija -> (ObjectId) saveJonosija(jonosija, valintatapajono, auditUser).getId())
+                .collect(Collectors.toList()));
+    }
+
+    private void saveJonosijatWithoutAuditLogging(Valintatapajono valintatapajono) {
+        valintatapajono.setJonosijaIdt(valintatapajono.getJonosijat().stream()
+                .map(jonosija -> (ObjectId) saveJonosijaWithoutAuditLogging(jonosija).getId())
                 .collect(Collectors.toList()));
     }
 
@@ -139,7 +141,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         }
     }
 
-    private Valintatapajono migrate(ValintatapajonoMigrationDTO jono, User auditUser) {
+    private Valintatapajono migrate(ValintatapajonoMigrationDTO jono) {
         if (jono.getSchemaVersion() == Valintatapajono.CURRENT_SCHEMA_VERSION) {
             Valintatapajono alreadyMigrated = datastore.find(Valintatapajono.class)
                     .field("_id").equal(jono.getId())
@@ -149,13 +151,13 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         } else {
             LOGGER.info("Migrating valintatapajono {}", jono.getValintatapajonoOid());
             Valintatapajono migratedJono = jono.migrate();
-            saveJonosijat(migratedJono, auditUser);
-            saveJono(migratedJono, auditUser);
+            saveJonosijatWithoutAuditLogging(migratedJono);
+            saveJonoWithoutAuditLogging(migratedJono);
             return migratedJono;
         }
     }
 
-    private Valinnanvaihe migrate(ValinnanvaiheMigrationDTO vaihe, User auditUser) {
+    private Valinnanvaihe migrate(ValinnanvaiheMigrationDTO vaihe) {
         Valinnanvaihe migrated = new Valinnanvaihe();
         migrated.setId(vaihe.getId());
         migrated.setJarjestysnumero(vaihe.getJarjestysnumero());
@@ -168,7 +170,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         migrated.setValintatapajonot(vaihe.getValintatapajonot().stream()
             .map(jono -> {
                 try {
-                    return migrate(jono, auditUser);
+                    return migrate(jono);
                 } catch (RuntimeException e) {
                     LOGGER.error(String.format("Error when calling migrate for jono %s of valinnanvaihe %s", jono.getId(), vaihe.getId()), e);
                     throw e;
@@ -178,8 +180,8 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         return migrated;
     }
 
-    private List<Valinnanvaihe> migrate(List<ValinnanvaiheMigrationDTO> vaiheet, User auditUser) {
-        return vaiheet.stream().map(vaihe -> migrate(vaihe, auditUser)).collect(Collectors.toList());
+    private List<Valinnanvaihe> migrate(List<ValinnanvaiheMigrationDTO> vaiheet) {
+        return vaiheet.stream().map(vaihe -> migrate(vaihe)).collect(Collectors.toList());
     }
 
     private Key<Valintatapajono> saveJono(Valintatapajono valintatapajono, User auditUser) {
@@ -189,6 +191,10 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
                 ValintaResource.VALINTATAPAJONO,
                 valintatapajono.getValintatapajonoOid(),
                 Changes.addedDto(valintatapajono));
+        return datastore.save(valintatapajono);
+    }
+
+    private Key<Valintatapajono> saveJonoWithoutAuditLogging(Valintatapajono valintatapajono) {
         return datastore.save(valintatapajono);
     }
 
@@ -202,13 +208,21 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         return datastore.save(vaihe);
     }
 
-    private Key<Jonosija> saveJonosija(Jonosija jonosija, User auditUser) {
+    private Key<Valinnanvaihe> saveVaiheWithoutAuditLogging(Valinnanvaihe vaihe) {
+        return datastore.save(vaihe);
+    }
+
+    private Key<Jonosija> saveJonosija(Jonosija jonosija, Valintatapajono valintatapajono, User auditUser) {
         auditLog.log(LaskentaAudit.AUDIT,
                 auditUser,
                 ValintaperusteetOperation.JONOSIJA_PAIVITYS,
                 ValintaResource.JONOSIJA,
                 jonosija.getId().toString(),
                 Changes.addedDto(jonosija));
+        return datastore.save(jonosija);
+    }
+
+    private Key<Jonosija> saveJonosijaWithoutAuditLogging(Jonosija jonosija) {
         return datastore.save(jonosija);
     }
 
