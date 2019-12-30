@@ -112,15 +112,15 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     @Override
     public void saveOrUpdate(Valinnanvaihe vaihe, User auditUser) {
         vaihe.getValintatapajonot().forEach(valintatapajono -> {
-            saveJonosijat(valintatapajono, auditUser);
-            saveJono(valintatapajono, auditUser);
+            saveJonosijat(valintatapajono, vaihe, auditUser);
+            saveJono(valintatapajono, vaihe, auditUser);
         });
         saveVaihe(vaihe, auditUser);
     }
 
-    private void saveJonosijat(Valintatapajono valintatapajono, User auditUser) {
+    private void saveJonosijat(Valintatapajono valintatapajono, Valinnanvaihe vaihe, User auditUser) {
         valintatapajono.setJonosijaIdt(valintatapajono.getJonosijat().stream()
-                .map(jonosija -> (ObjectId) saveJonosija(jonosija, valintatapajono, auditUser).getId())
+                .map(jonosija -> (ObjectId) saveJonosija(jonosija, valintatapajono, vaihe, auditUser).getId())
                 .collect(Collectors.toList()));
     }
 
@@ -184,13 +184,18 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         return vaiheet.stream().map(vaihe -> migrate(vaihe)).collect(Collectors.toList());
     }
 
-    private Key<Valintatapajono> saveJono(Valintatapajono valintatapajono, User auditUser) {
+    private Key<Valintatapajono> saveJono(Valintatapajono valintatapajono, Valinnanvaihe vaihe, User auditUser) {
+        Map<String, String> additionalAuditFields = new HashMap<>();
+        additionalAuditFields.put("valinnanvaihe_hakukohdeOid", vaihe.getHakukohdeOid());
+        additionalAuditFields.put("valinnanvaihe_hakuOid", vaihe.getHakuOid());
+        additionalAuditFields.put("valinnanvaihe_jarjestysnumero", String.valueOf(vaihe.getJarjestysnumero()));
         auditLog.log(LaskentaAudit.AUDIT,
                 auditUser,
                 ValintaperusteetOperation.VALINTATAPAJONO_PAIVITYS,
                 ValintaResource.VALINTATAPAJONO,
                 valintatapajono.getValintatapajonoOid(),
-                Changes.addedDto(valintatapajono));
+                Changes.addedDto(valintatapajono),
+                additionalAuditFields);
         return datastore.save(valintatapajono);
     }
 
@@ -212,13 +217,19 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         return datastore.save(vaihe);
     }
 
-    private Key<Jonosija> saveJonosija(Jonosija jonosija, Valintatapajono valintatapajono, User auditUser) {
+    private Key<Jonosija> saveJonosija(Jonosija jonosija, Valintatapajono jono, Valinnanvaihe vaihe, User auditUser) {
+        Map<String, String> additionalAuditFields = new HashMap<>();
+        additionalAuditFields.put("valintatapajono_valintatapajonoOid", jono.getValintatapajonoOid());
+        additionalAuditFields.put("valinnanvaihe_hakukohdeOid", vaihe.getHakukohdeOid());
+        additionalAuditFields.put("valinnanvaihe_hakuOid", vaihe.getHakuOid());
+        additionalAuditFields.put("valinnanvaihe_jarjestysnumero", String.valueOf(vaihe.getJarjestysnumero()));
         auditLog.log(LaskentaAudit.AUDIT,
                 auditUser,
                 ValintaperusteetOperation.JONOSIJA_PAIVITYS,
                 ValintaResource.JONOSIJA,
                 jonosija.getId().toString(),
-                Changes.addedDto(jonosija));
+                Changes.addedDto(jonosija),
+                additionalAuditFields);
         return datastore.save(jonosija);
     }
 
