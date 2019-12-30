@@ -1,11 +1,18 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 
+import fi.vm.sade.auditlog.Changes;
+import fi.vm.sade.auditlog.User;
+import fi.vm.sade.valinta.sharedutils.ValintaResource;
+import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
 import fi.vm.sade.valintalaskenta.domain.valinta.HakijaryhmaMigrationDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.laskenta.dao.HakijaryhmaDAO;
+import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
+import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Key;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,37 +33,47 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
     @Autowired
     private Datastore datastore;
 
+    @Autowired
+    private LaskentaAuditLog auditLog;
+
     @PostConstruct
     public void ensureIndexes() {
         datastore.ensureIndexes(Hakijaryhma.class);
     }
 
     @Override
-    public Optional<Hakijaryhma> haeHakijaryhma(String hakijaryhmaOid) {
+    public Optional<Hakijaryhma> haeHakijaryhma(String hakijaryhmaOid, User auditUser) {
         return Optional.ofNullable(datastore.find(HakijaryhmaMigrationDTO.class)
                 .field("hakijaryhmaOid").equal(hakijaryhmaOid)
                 .get())
-                .map(this::migrateOne);
+                .map(ryhma -> migrateOne(ryhma, auditUser));
     }
 
     @Override
-    public List<Hakijaryhma> haeHakijaryhmatPrioriteetilla(String hakukohdeOid, int prioriteetti) {
+    public List<Hakijaryhma> haeHakijaryhmatPrioriteetilla(String hakukohdeOid, int prioriteetti, User auditUser) {
         return migrateMany(datastore.find(HakijaryhmaMigrationDTO.class)
                 .field("hakukohdeOid").equal(hakukohdeOid)
                 .field("prioriteetti").equal(prioriteetti)
-                .asList());
+                .asList(),
+                auditUser);
     }
 
     @Override
-    public List<Hakijaryhma> haeHakijaryhmat(String hakukohdeOid) {
+    public List<Hakijaryhma> haeHakijaryhmat(String hakukohdeOid, User auditUser) {
         return migrateMany(datastore.find(HakijaryhmaMigrationDTO.class)
                 .field("hakukohdeOid").equal(hakukohdeOid)
-                .asList());
+                .asList(), auditUser);
     }
 
     @Override
-    public void create(Hakijaryhma hakijaryhma) {
-        saveJonosijat(hakijaryhma);
+    public void create(Hakijaryhma hakijaryhma, User auditUser) {
+        saveJonosijat(hakijaryhma, auditUser);
+        auditLog.log(LaskentaAudit.AUDIT,
+                auditUser,
+                ValintaperusteetOperation.HAKIJARYHMA_PAIVITYS,
+                ValintaResource.HAKIJARYHMA,
+                hakijaryhma.getHakijaryhmatyyppikoodiUri(),
+                Changes.addedDto(hakijaryhma));
         datastore.save(hakijaryhma);
     }
 
@@ -80,13 +97,23 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
         }
     }
 
-    private void saveJonosijat(Hakijaryhma ryhma) {
+    private void saveJonosijat(Hakijaryhma ryhma, User auditUser) {
         ryhma.setJonosijaIdt(ryhma.getJonosijat().stream()
-                .map(jonosija -> (ObjectId) datastore.save(jonosija).getId())
+                .map(jonosija -> (ObjectId) saveJonosija(jonosija, auditUser).getId())
                 .collect(Collectors.toList()));
     }
 
-    private Hakijaryhma migrateOne(HakijaryhmaMigrationDTO ryhma) {
+    private Key<Jonosija> saveJonosija(Jonosija jonosija, User auditUser) {
+        auditLog.log(LaskentaAudit.AUDIT,
+                auditUser,
+                ValintaperusteetOperation.JONOSIJA_PAIVITYS,
+                ValintaResource.JONOSIJA,
+                jonosija.getHakemusOid(),
+                Changes.addedDto(jonosija));
+        return datastore.save(jonosija);
+    }
+
+    private Hakijaryhma migrateOne(HakijaryhmaMigrationDTO ryhma, User auditUser) {
         if (ryhma.getSchemaVersion() == Hakijaryhma.CURRENT_SCHEMA_VERSION) {
             Hakijaryhma alreadyMigratedRyhma = datastore.createQuery(Hakijaryhma.class)
                     .field("_id").equal(ryhma.getId())
@@ -96,14 +123,14 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
         } else {
             LOGGER.info("Migrating hakijaryhma {}", ryhma.getHakijaryhmaOid());
             Hakijaryhma migratedRyhma = ryhma.migrate();
-            create(migratedRyhma);
+            create(migratedRyhma, auditUser);
             return migratedRyhma;
         }
     }
 
-    private List<Hakijaryhma> migrateMany(List<HakijaryhmaMigrationDTO> ryhmat) {
+    private List<Hakijaryhma> migrateMany(List<HakijaryhmaMigrationDTO> ryhmat, User auditUser) {
         return ryhmat.stream()
-                .map(this::migrateOne)
+                .map(ryhma -> migrateOne(ryhma, auditUser))
                 .sorted(comparing(Hakijaryhma::getPrioriteetti))
                 .collect(Collectors.toList());
     }

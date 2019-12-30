@@ -1,9 +1,11 @@
 package fi.vm.sade.valintalaskenta.tulos.resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 
@@ -23,6 +25,7 @@ public interface HakemusResource {
     @ApiOperation(value = "Hakee hakemuksen tulokset haku OID:n ja hakemuksen OID:n perustella", response = HakemusDTO.class)
     public HakemusDTO hakemus(
             @ApiParam(value = "Haku OID", required = true) @PathParam("hakuoid") String hakuoid,
-            @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusoid") String hakemusoid
+            @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusoid") String hakemusoid,
+            @Context HttpServletRequest request
     );
 }

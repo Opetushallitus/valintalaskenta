@@ -56,4 +56,5 @@ public class MuokattuJonosijaDAOImpl implements MuokattuJonosijaDAO {
     public void saveOrUpdate(MuokattuJonosija muokattuJonosija) {
         datastore.save(muokattuJonosija);
     }
+
 }

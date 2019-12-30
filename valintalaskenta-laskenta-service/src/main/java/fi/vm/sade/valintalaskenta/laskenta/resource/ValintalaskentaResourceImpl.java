@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta.resource;
 
+import fi.vm.sade.auditlog.Changes;
 import fi.vm.sade.auditlog.User;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetValinnanVaiheDTO;
@@ -8,6 +9,8 @@ import fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi;
 import fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO;
 import fi.vm.sade.sijoittelu.tulos.dto.HakukohdeDTO;
 import fi.vm.sade.sijoittelu.tulos.dto.ValisijoitteluDTO;
+import fi.vm.sade.valinta.sharedutils.ValintaResource;
+import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.HakukohteenLaskennanTila;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.Laskentakutsu;
@@ -16,6 +19,7 @@ import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResou
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
+import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
@@ -106,7 +110,7 @@ public class ValintalaskentaResourceImpl {
             } else {
                 //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran samalle tunnisteelle vaikka pyyntöjä tulisi useita
                 try {
-                    executorService.submit(timeRunnable.apply(laskentakutsu.getUuid(), () -> toteutaLaskenta(laskentakutsu)));
+                    executorService.submit(timeRunnable.apply(laskentakutsu.getUuid(), () -> toteutaLaskenta(laskentakutsu, user)));
                     return HakukohteenLaskennanTila.UUSI;
                 } catch (Exception e) {
                     LOG.error("Virhe laskennan suorituksessa, ", e);
@@ -134,7 +138,16 @@ public class ValintalaskentaResourceImpl {
             } else {
                 //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran samalle tunnisteelle vaikka pyyntöjä tulisi useita
                 try {
-                    executorService.submit(timeRunnable.apply(laskentakutsu.getUuid(), () -> toteutaValintakoeLaskenta(laskentakutsu)));
+                    Map<String, String> additionalAuditFields = new HashMap<>();
+                    auditLog.log(LaskentaAudit.AUDIT,
+                            user,
+                            ValintaperusteetOperation.LASKENTATOTEUTUS_LUONTI,
+                            ValintaResource.LASKENTATOTEUTUS,
+                            pollKey,
+                            Changes.addedDto(laskentakutsu),
+                            additionalAuditFields);
+
+                    executorService.submit(timeRunnable.apply(laskentakutsu.getUuid(), () -> toteutaValintakoeLaskenta(laskentakutsu, user)));
                     return HakukohteenLaskennanTila.UUSI;
                 } catch (Exception e) {
                     LOG.error("Virhe laskennan suorituksessa, ", e);
@@ -162,7 +175,7 @@ public class ValintalaskentaResourceImpl {
             } else {
                 //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran samalle tunnisteelle vaikka pyyntöjä tulisi useita
                 try {
-                    executorService.submit(timeRunnable.apply(laskentakutsu.getUuid(), () -> toteutaLaskeKaikki(laskentakutsu)));
+                    executorService.submit(timeRunnable.apply(laskentakutsu.getUuid(), () -> toteutaLaskeKaikki(laskentakutsu, user)));
                     return HakukohteenLaskennanTila.UUSI;
                 } catch (Exception e) {
                     LOG.error("Virhe laskennan suorituksessa, ", e);
@@ -195,7 +208,7 @@ public class ValintalaskentaResourceImpl {
             } else {
                 //Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran samalle tunnisteelle vaikka pyyntöjä tulisi useita
                 try {
-                    executorService.submit(timeRunnable.apply(laskentakutsu.getUuid(), () -> toteutaLaskeJaSijoittele(laskentakutsu)));
+                    executorService.submit(timeRunnable.apply(laskentakutsu.getUuid(), () -> toteutaLaskeJaSijoittele(laskentakutsu, user)));
                     return HakukohteenLaskennanTila.UUSI;
                 } catch (Exception e) {
                     LOG.error("Virhe laskennan suorituksessa, ", e);
@@ -208,20 +221,20 @@ public class ValintalaskentaResourceImpl {
         }
     }
 
-    private void erillisSijoittele(LaskeDTO laskeDTO, ValintaperusteetDTO valintaperusteetDTO, StopWatch stopWatch) {
+    private void erillisSijoittele(LaskeDTO laskeDTO, ValintaperusteetDTO valintaperusteetDTO, StopWatch stopWatch, User auditUser) {
         stopWatch.start("Suoritetaan erillissijoittelu");
         List<String> jonot = valintaperusteetDTO.getValinnanVaihe().getValintatapajono().stream().map(ValintatapajonoJarjestyskriteereillaDTO::getOid).collect(Collectors.toList());
         Map<String, List<String>> kohteet = new HashMap<>();
         kohteet.put(valintaperusteetDTO.getHakukohdeOid(), jonot);
         stopWatch.stop();
-        erillissijoitteleJonot(laskeDTO, kohteet, stopWatch);
+        erillissijoitteleJonot(laskeDTO, kohteet, stopWatch, auditUser);
     }
 
     private Map<String, List<String>> haeKopiotValintaperusteista(List<String> jonot) {
         return valintatapajonoResource.findKopiot(jonot);
     }
 
-    private void valisijoitteleKopiot(LaskeDTO laskeDTO, Map<String, List<String>> valisijoiteltavatJonot, StopWatch stopWatch) {
+    private void valisijoitteleKopiot(LaskeDTO laskeDTO, Map<String, List<String>> valisijoiteltavatJonot, StopWatch stopWatch, User auditUser) {
         stopWatch.start("Suoritetaan välisijoittelu " + valisijoiteltavatJonot.size() + " jonolle");
         String hakuoid = getHakuOid(laskeDTO);
         ValisijoitteluDTO dto = new ValisijoitteluDTO();
@@ -241,7 +254,7 @@ public class ValintalaskentaResourceImpl {
                 )
         );
 
-        valintalaskentaService.applyValisijoittelu(valisijoiteltavatJonot, hakemusHashMap);
+        valintalaskentaService.applyValisijoittelu(valisijoiteltavatJonot, hakemusHashMap, auditUser);
         stopWatch.stop();
     }
 
@@ -256,7 +269,7 @@ public class ValintalaskentaResourceImpl {
         return hakuoid;
     }
 
-    private void erillissijoitteleJonot(LaskeDTO laskeDTO, Map<String, List<String>> jonot, StopWatch stopWatch) {
+    private void erillissijoitteleJonot(LaskeDTO laskeDTO, Map<String, List<String>> jonot, StopWatch stopWatch, User auditUser) {
         stopWatch.start("Suoritetaan erillissijoittelu " + jonot.size() + " jonolle");
         String hakuoid;
         try {
@@ -275,7 +288,7 @@ public class ValintalaskentaResourceImpl {
             stopWatch.stop();
             throw new RuntimeException("Erillissijoittelu haulle " + hakuoid + " näyttää epäonnistuneen, koska rajapinta palautti null");
         }
-        valintalaskentaService.applyErillissijoittelu(jonot, ajo);
+        valintalaskentaService.applyErillissijoittelu(jonot, ajo, auditUser);
         stopWatch.stop();
     }
 
@@ -330,7 +343,7 @@ public class ValintalaskentaResourceImpl {
                 == valintaperusteetDTO.getValinnanVaihe().getValinnanVaiheJarjestysluku();
     }
 
-    private void toteutaLaskenta(Laskentakutsu laskentakutsu) {
+    private void toteutaLaskenta(Laskentakutsu laskentakutsu, User auditUser) {
         LaskeDTO laskeDTO = laskentakutsu.getLaskeDTO();
         String pollkey = laskentakutsu.getPollKey();
 
@@ -352,15 +365,19 @@ public class ValintalaskentaResourceImpl {
             LOG.info(String.format("(Uuid=%s) Suoritetaan laskenta. Hakemuksia %s kpl ja valintaperusteita %s kpl",
                     laskeDTO.getUuid(), laskeDTO.getHakemus().size(), laskeDTO.getValintaperuste().size()));
             valintalaskentaService.laske(laskeDTO.getHakemus(),
-                    laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(),
-                    laskeDTO.getHakukohdeOid(), laskeDTO.getUuid(), laskeDTO.isKorkeakouluhaku());
+                    laskeDTO.getValintaperuste(),
+                    laskeDTO.getHakijaryhmat(),
+                    laskeDTO.getHakukohdeOid(),
+                    laskeDTO.getUuid(),
+                    laskeDTO.isKorkeakouluhaku(),
+                    auditUser);
             stopWatch.stop();
             if (erillisHaku) {
-                erillisSijoittele(laskeDTO, valintaperusteetDTO, stopWatch);
+                erillisSijoittele(laskeDTO, valintaperusteetDTO, stopWatch, auditUser);
             }
             LOG.info(String.format("(Uuid=%s) Laskenta suoritettu hakukohteessa %s", laskeDTO.getUuid(), laskeDTO.getHakukohdeOid()));
             if (!valisijoiteltavatJonot.valinnanvaiheet.isEmpty()) {
-                valisijoitteleKopiot(laskeDTO, valisijoiteltavatJonot.jonot, stopWatch);
+                valisijoitteleKopiot(laskeDTO, valisijoiteltavatJonot.jonot, stopWatch, auditUser);
             }
 
             stopWatch.start("Siivotaan poistuneisiin valinnanvaiheisiin liittyneet valintakoeosallistumiset");
@@ -379,7 +396,7 @@ public class ValintalaskentaResourceImpl {
         }
     }
 
-    private void toteutaValintakoeLaskenta(Laskentakutsu laskentakutsu) {
+    private void toteutaValintakoeLaskenta(Laskentakutsu laskentakutsu, User auditUser) {
         StopWatch stopWatch = new StopWatch("Toteutetaan valintakoelaskenta laskentakutsulle " + laskentakutsu.getUuid());
         LaskeDTO laskeDTO = laskentakutsu.getLaskeDTO();
         String pollkey = laskentakutsu.getPollKey();
@@ -387,7 +404,12 @@ public class ValintalaskentaResourceImpl {
         try {
             stopWatch.start("Suoritetaan valintakoelaskenta " + laskeDTO.getUuid() + " " + laskeDTO.getHakemus().size() + " hakemukselle hakukohteessa" + laskeDTO.getHakukohdeOid());
             LOG.info(String.format("(Uuid=%s) Suoritetaan valintakoelaskenta %s hakemukselle hakukohteessa %s", laskeDTO.getUuid(), laskeDTO.getHakemus().size(), laskeDTO.getHakukohdeOid()));
-            valintalaskentaService.valintakokeetRinnakkain(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getUuid(), new ValintakoelaskennanKumulatiivisetTulokset(), laskeDTO.isKorkeakouluhaku());
+            valintalaskentaService.valintakokeetRinnakkain(laskeDTO.getHakemus(),
+                    laskeDTO.getValintaperuste(),
+                    laskeDTO.getUuid(),
+                    new ValintakoelaskennanKumulatiivisetTulokset(),
+                    laskeDTO.isKorkeakouluhaku(),
+                    auditUser);
             LOG.info(String.format("(Uuid=%s) Valintakoelaskenta suoritettu %s hakemukselle hakukohteessa %s", laskeDTO.getUuid(), laskeDTO.getHakemus().size(), laskeDTO.getHakukohdeOid()));
             stopWatch.stop();
 
@@ -407,7 +429,7 @@ public class ValintalaskentaResourceImpl {
         }
     }
 
-    public void toteutaLaskeKaikki(Laskentakutsu laskentakutsu) {
+    public void toteutaLaskeKaikki(Laskentakutsu laskentakutsu, User auditUser) {
         LaskeDTO laskeDTO = laskentakutsu.getLaskeDTO();
         String pollkey = laskentakutsu.getPollKey();
 
@@ -428,12 +450,12 @@ public class ValintalaskentaResourceImpl {
                 stopWatch.start("Lasketaan kaikki " + laskeDTO.getHakemus().size() + " hakemusta");
                 valintalaskentaService.laskeKaikki(laskeDTO.getHakemus(),
                         laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(),
-                        laskeDTO.getHakukohdeOid(), laskeDTO.getUuid(), laskeDTO.isKorkeakouluhaku());
+                        laskeDTO.getHakukohdeOid(), laskeDTO.getUuid(), laskeDTO.isKorkeakouluhaku(), auditUser);
                 stopWatch.stop();
                 if (laskeDTO.isErillishaku()) {
                     laskeDTO.getValintaperuste().stream()
                             .filter(v -> v.getValinnanVaihe().getValinnanVaiheJarjestysluku() == v.getViimeinenValinnanvaihe())
-                            .forEach(v -> erillisSijoittele(laskeDTO, v, stopWatch));
+                            .forEach(v -> erillisSijoittele(laskeDTO, v, stopWatch, auditUser));
                 }
             } else {
                 stopWatch.start("Muodostetaan valinnanvaihe map");
@@ -453,7 +475,7 @@ public class ValintalaskentaResourceImpl {
                             LOG.info(String.format("(Uuid=%s) Suoritetaan valintakoelaskenta %s hakemukselle", laskeDTO.getUuid(), laskeDTO.getHakemus().size()));
 
                             stopWatch.start("Suoritetaan laskenta" + laskeDTO.getHakemus().size()+ " hakemukselle ");
-                            valintalaskentaService.valintakokeetRinnakkain(laskeDTO.getHakemus(), dto.getValintaperuste(), laskeDTO.getUuid(), kumulatiivisetTulokset, laskeDTO.isKorkeakouluhaku());
+                            valintalaskentaService.valintakokeetRinnakkain(laskeDTO.getHakemus(), dto.getValintaperuste(), laskeDTO.getUuid(), kumulatiivisetTulokset, laskeDTO.isKorkeakouluhaku(), auditUser);
                             stopWatch.stop();
                         } else {
                             ValintaperusteetDTO valintaperusteetDTO = dto.getValintaperuste().get(0);
@@ -466,16 +488,16 @@ public class ValintalaskentaResourceImpl {
                             LOG.info(String.format("(Uuid=%s) Suoritetaan laskenta. Hakemuksia %s kpl ja valintaperusteita %s kpl",
                                     laskeDTO.getUuid(), laskeDTO.getHakemus().size(), laskeDTO.getValintaperuste().size()));
                             stopWatch.start("Suoritetaan laskenta" + laskeDTO.getHakemus().size() + " hakemukselle ");
-                            valintalaskentaService.laske(dto.getHakemus(), dto.getValintaperuste(), dto.getHakijaryhmat(), dto.getHakukohdeOid(), laskeDTO.getUuid(), laskeDTO.isKorkeakouluhaku());
+                            valintalaskentaService.laske(dto.getHakemus(), dto.getValintaperuste(), dto.getHakijaryhmat(), dto.getHakukohdeOid(), laskeDTO.getUuid(), laskeDTO.isKorkeakouluhaku(), auditUser);
                             stopWatch.stop();
 
                             if (erillisHaku) {
-                                erillisSijoittele(dto, valintaperusteetDTO, stopWatch);
+                                erillisSijoittele(dto, valintaperusteetDTO, stopWatch, auditUser);
                             }
                         }
                     });
                     if (valisijoiteltavatJonot.valinnanvaiheet.contains(key)) {
-                        valisijoitteleKopiot(laskeDTO, new ImmutablePair<>(valisijoiteltavatJonot.valinnanvaiheet, haeKopiotValintaperusteista(valisijoiteltavatJonot.jonot.get(laskeDTO.getHakukohdeOid()))).getRight(), stopWatch);
+                        valisijoitteleKopiot(laskeDTO, new ImmutablePair<>(valisijoiteltavatJonot.valinnanvaiheet, haeKopiotValintaperusteista(valisijoiteltavatJonot.jonot.get(laskeDTO.getHakukohdeOid()))).getRight(), stopWatch, auditUser);
                     }
                 });
             }
@@ -498,7 +520,7 @@ public class ValintalaskentaResourceImpl {
         }
     }
 
-    private void toteutaLaskeJaSijoittele(Laskentakutsu laskentakutsu) {
+    private void toteutaLaskeJaSijoittele(Laskentakutsu laskentakutsu, User auditUser) {
         List<LaskeDTO> lista = laskentakutsu.getLaskeDTOs();
         String pollKey = laskentakutsu.getPollKey();
         StopWatch stopWatch = new StopWatch("Suoritetaan valintaryhmälaskenta uuid:lla " + lista.get(0).getUuid());
@@ -508,7 +530,7 @@ public class ValintalaskentaResourceImpl {
             if (valisijoiteltavatJonot.valinnanvaiheet.isEmpty()) {
                  stopWatch.start("Suoritetaan valintalaskenta ilman sijoittelujonoja " + lista.size() + " hakemukselle");
                 lista.forEach(laskeDTO -> valintalaskentaService.laskeKaikki(laskeDTO.getHakemus(),
-                        laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid(), laskeDTO.getUuid(), laskeDTO.isKorkeakouluhaku()));
+                        laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid(), laskeDTO.getUuid(), laskeDTO.isKorkeakouluhaku(), auditUser));
                 stopWatch.stop();
             } else {
                 stopWatch.start("Muodostetaan lista vaiheittain laskettavista hakukohteista");
@@ -541,7 +563,7 @@ public class ValintalaskentaResourceImpl {
                                         hakukohteidenMaaraValinnanVaiheessa,
                                         laskeDTO.getHakemus().size()));
                                 stopWatch.start("Suoritetaan valintakoelaskenta Uuid:n " + laskeDTO.getUuid() + " " + laskeDTO.getHakemus().size() + " hakemukselle");
-                                valintalaskentaService.valintakokeetRinnakkain(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getUuid(), kumulatiivisetTulokset, laskeDTO.isKorkeakouluhaku());
+                                valintalaskentaService.valintakokeetRinnakkain(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getUuid(), kumulatiivisetTulokset, laskeDTO.isKorkeakouluhaku(), auditUser);
                                 stopWatch.stop();
                             } else {
                                 stopWatch.start("Tarkistetaan, onko haku erillishaku");
@@ -560,7 +582,7 @@ public class ValintalaskentaResourceImpl {
                                         hakukohteidenMaaraValinnanVaiheessa,
                                         laskeDTO.getHakemus().size()));
                                 stopWatch.start("Suoritetaan valintalaskenta " + laskeDTO.getHakemus().size() + " hakemukselle");
-                                valintalaskentaService.laske(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid(), laskeDTO.getUuid(), laskeDTO.isKorkeakouluhaku());
+                                valintalaskentaService.laske(laskeDTO.getHakemus(), laskeDTO.getValintaperuste(), laskeDTO.getHakijaryhmat(), laskeDTO.getHakukohdeOid(), laskeDTO.getUuid(), laskeDTO.isKorkeakouluhaku(), auditUser);
                                 stopWatch.stop();
                                 if (valisijoiteltavatJonot.valinnanvaiheet.contains(vaiheenJarjestysNumero)) {
                                     Map<String, List<String>> kohteet = valisijoiteltavatJonot.jonot;
@@ -575,13 +597,13 @@ public class ValintalaskentaResourceImpl {
                                                 i + 1,
                                                 hakukohteidenMaaraValinnanVaiheessa,
                                                 laskeDTO.getHakukohdeOid()));
-                                        valisijoitteleKopiot(laskeDTO, haeKopiotValintaperusteista(jonot), stopWatch);
+                                        valisijoitteleKopiot(laskeDTO, haeKopiotValintaperusteista(jonot), stopWatch, auditUser);
 
                                     }
                                 }
 
                                 if (erillisHaku) {
-                                    erillisSijoittele(laskeDTO, valintaPerusteet, stopWatch);
+                                    erillisSijoittele(laskeDTO, valintaPerusteet, stopWatch, auditUser);
                                 }
                             }
 

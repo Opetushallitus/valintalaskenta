@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.laskenta.dao;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import org.junit.Rule;
 import org.junit.Test;

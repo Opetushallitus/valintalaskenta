@@ -17,6 +17,7 @@ public class HarkinnanvarainenHyvaksyminenDAOImpl implements HarkinnanvarainenHy
     @Autowired
     private Datastore datastore;
 
+
     @Override
     public HarkinnanvarainenHyvaksyminen haeHarkinnanvarainenHyvaksyminen(String hakukohdeOid, String hakemusOid) {
         return datastore.find(HarkinnanvarainenHyvaksyminen.class)
@@ -47,4 +48,5 @@ public class HarkinnanvarainenHyvaksyminenDAOImpl implements HarkinnanvarainenHy
                 .field("hakuOid").equal(hakuOid).field("hakemusOid")
                 .equal(hakemusOid).asList();
     }
+
 }

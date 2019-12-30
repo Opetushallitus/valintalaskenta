@@ -32,7 +32,7 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
                 .field("hakukohdeOid").equal(hakukohdeoid)
                 .asList();
         List<Hakijaryhma> migratedRyhmat = ryhmat.stream()
-                .map(this::migrate)
+                .map(ryhma -> migrate(ryhma))
                 .sorted(comparing(Hakijaryhma::getPrioriteetti))
                 .collect(Collectors.toList());
         return migratedRyhmat;
@@ -62,4 +62,5 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
             return migratedRyhma;
         }
     }
+
 }

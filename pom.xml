@@ -4,7 +4,7 @@
 
     <groupId>fi.vm.sade.valintaperusteet</groupId>
     <artifactId>valintalaskenta</artifactId>
-    <version>5.8-SNAPSHOT</version>
+    <version>5.9-SNAPSHOT</version>
 
     <name>Valintalaskenta</name>
     <packaging>pom</packaging>
@@ -19,7 +19,7 @@
 
     <properties>
         <valintaperusteet.version>5.8-SNAPSHOT</valintaperusteet.version>
-        <valinta-sharedutils.version>5.8-SNAPSHOT</valinta-sharedutils.version>
+        <valinta-sharedutils.version>5.9-SNAPSHOT</valinta-sharedutils.version>
         <sijoittelu.version>7.4.0-SNAPSHOT</sijoittelu.version>
 
         <cxf.version>3.3.1</cxf.version>

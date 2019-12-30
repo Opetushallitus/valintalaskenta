@@ -40,7 +40,7 @@ public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResourc
     private ValintalaskentaModelMapper modelMapper;
 
     @Autowired
-    private LaskentaAuditLog auditLogger;
+    private LaskentaAuditLog auditLog;
 
     @POST
     @Path("/haku/{hakuOid}/hakukohde/{hakukohdeOid}/hakemus/{hakemusOid}")
@@ -53,9 +53,9 @@ public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResourc
             @ApiParam(value = "Hakemuksen OID", required = true) @PathParam("hakemusOid") String hakemusOid,
             @ApiParam(value = "Asetettava tila", required = true) HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen,
             HttpServletRequest request) {
-        User user = auditLogger.getUser(request);
+        User user = auditLog.getUser(request);
 
-        tulosService.asetaHarkinnanvaraisestiHyvaksymisenTila(hakuOid, hakukohdeOid, hakemusOid, harkinnanvarainenHyvaksyminen.getHarkinnanvaraisuusTila());
+        tulosService.asetaHarkinnanvaraisestiHyvaksymisenTila(hakuOid, hakukohdeOid, hakemusOid, harkinnanvarainenHyvaksyminen.getHarkinnanvaraisuusTila(), user);
     }
 
     @POST
@@ -65,14 +65,15 @@ public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResourc
     public void asetaTilat(
             @ApiParam(value = "Asetettava tila", required = true) List<HarkinnanvarainenHyvaksyminenDTO> harkinnanvaraisetHyvaksymiset,
             HttpServletRequest request) {
-        User user = auditLogger.getUser(request);
+        User user = auditLog.getUser(request);
 
         for (HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen : harkinnanvaraisetHyvaksymiset) {
             tulosService.asetaHarkinnanvaraisestiHyvaksymisenTila(
                     harkinnanvarainenHyvaksyminen.getHakuOid(),
                     harkinnanvarainenHyvaksyminen.getHakukohdeOid(),
                     harkinnanvarainenHyvaksyminen.getHakemusOid(),
-                    harkinnanvarainenHyvaksyminen.getHarkinnanvaraisuusTila());
+                    harkinnanvarainenHyvaksyminen.getHarkinnanvaraisuusTila(),
+                    user);
         }
     }
 

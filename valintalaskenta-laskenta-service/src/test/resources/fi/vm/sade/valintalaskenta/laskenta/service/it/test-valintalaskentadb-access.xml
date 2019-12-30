@@ -24,6 +24,7 @@
   <bean id="modelMapper" class="fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper"/>
   <bean id="valinnanvaihedao" class="fi.vm.sade.valintalaskenta.laskenta.dao.impl.ValinnanvaiheDAOImpl"/>
   <bean id="valintalaskentaDbDumper" class="fi.vm.sade.valintalaskenta.laskenta.service.it.ValintalaskentaDbDumpingTest"/>
+  <bean id="tulosAuditLogMock" class="fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogMock"/>
 
   <mockito:mock id="authorizer" class="fi.vm.sade.javautils.opintopolku_spring_security.Authorizer"/>
 </beans>
