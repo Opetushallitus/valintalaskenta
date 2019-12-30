@@ -8,11 +8,11 @@ import java.util.Optional;
 
 public interface HakijaryhmaDAO {
 
-    Optional<Hakijaryhma> haeHakijaryhma(String hakijaryhmaOid, User auditUser);
+    Optional<Hakijaryhma> haeHakijaryhma(String hakijaryhmaOid);
 
-    List<Hakijaryhma> haeHakijaryhmatPrioriteetilla(String hakukohdeOid, int prioriteetti, User auditUser);
+    List<Hakijaryhma> haeHakijaryhmatPrioriteetilla(String hakukohdeOid, int prioriteetti);
 
-    List<Hakijaryhma> haeHakijaryhmat(String hakukohdeOid, User auditUser);
+    List<Hakijaryhma> haeHakijaryhmat(String hakukohdeOid);
 
     void create(Hakijaryhma hakijaryhma, User auditUser);
 

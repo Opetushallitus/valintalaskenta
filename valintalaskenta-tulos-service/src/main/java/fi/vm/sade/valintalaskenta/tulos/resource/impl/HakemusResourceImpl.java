@@ -9,7 +9,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,7 +42,6 @@ public class HakemusResourceImpl implements HakemusResource {
             @ApiParam(value = "Haku OID", required = true) @PathParam("hakuoid") String hakuoid,
             @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusoid") String hakemusoid,
             HttpServletRequest request) {
-        User user = auditLog.getUser(request);
-        return tulosService.haeTuloksetHakemukselle(hakuoid, hakemusoid, user);
+        return tulosService.haeTuloksetHakemukselle(hakuoid, hakemusoid);
     }
 }

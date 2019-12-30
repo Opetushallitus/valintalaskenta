@@ -103,7 +103,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     @Override
     public void applyValisijoittelu(Map<String, List<String>> valisijoiteltavatJonot, Map<String, fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO> hakemusHashMap, User auditUser) {
         valisijoiteltavatJonot.keySet().parallelStream().forEach(hakukohdeOid -> {
-            List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid, auditUser);
+            List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid);
             vaiheet.forEach(vaihe -> {
                 List<String> hakukohteenValisijoitelujonot = valisijoiteltavatJonot.getOrDefault(hakukohdeOid, new ArrayList<>());
 
@@ -154,7 +154,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     @Override
     public void applyErillissijoittelu(Map<String, List<String>> jonot, Long ajo, User auditUser) {
         jonot.keySet().parallelStream().forEach(hakukohdeOid -> {
-            List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid, auditUser);
+            List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid);
             vaiheet.forEach(vaihe -> {
                 vaihe.getValintatapajonot()
                         .forEach(jono -> {

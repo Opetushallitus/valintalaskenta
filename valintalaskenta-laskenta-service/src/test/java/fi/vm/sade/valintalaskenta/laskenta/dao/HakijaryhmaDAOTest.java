@@ -51,7 +51,7 @@ public class HakijaryhmaDAOTest {
     @Test
     @UsingDataSet(locations = "hakijaryhmaMigrationTestData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testMigrationOfHakijaryma() {
-        Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("vanhaHakijaryhmaOid", auditUser).get();
+        Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("vanhaHakijaryhmaOid").get();
         List<Jonosija> jonosijat = hakijaryhma.getJonosijat();
         List<ObjectId> jonosijaIdt = hakijaryhma.getJonosijaIdt();
         assertThat(jonosijat, Matchers.hasSize(3));
@@ -64,7 +64,7 @@ public class HakijaryhmaDAOTest {
     @Test
     @UsingDataSet(locations = "hakijaryhmaMigrationTestData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testLoadingOfMigratedHakijaryhma() {
-        Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("migroituHakijaryhmaOid", auditUser).get();
+        Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("migroituHakijaryhmaOid").get();
         List<Jonosija> jonosijat = hakijaryhma.getJonosijat();
         List<ObjectId> jonosijaIdt = hakijaryhma.getJonosijaIdt();
         assertThat(jonosijat, Matchers.hasSize(3));
@@ -77,7 +77,7 @@ public class HakijaryhmaDAOTest {
     @Test
     @UsingDataSet(locations = "hakijaryhmaMigrationTestData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testLoadingHakijaryhmaWithoutJonosijas() {
-        Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("tyhjaHakijaryhmaOid", auditUser).get();
+        Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("tyhjaHakijaryhmaOid").get();
         assertThat(hakijaryhma.getJonosijaIdt(), Matchers.empty());
         assertThat(hakijaryhma.getJonosijat(), Matchers.empty());
     }
@@ -85,9 +85,9 @@ public class HakijaryhmaDAOTest {
     @Test
     @UsingDataSet(locations = "hakijaryhmaMigrationTestData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testDeletingHakijaryhmaWithoutJonosijas() {
-        Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("tyhjaHakijaryhmaOid", auditUser).get();
+        Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("tyhjaHakijaryhmaOid").get();
         hakijaryhmaDAO.poistaHakijaryhma(hakijaryhma);
-        assertEquals(Optional.empty(), hakijaryhmaDAO.haeHakijaryhma("tyhjaHakijaryhmaOid", auditUser));
+        assertEquals(Optional.empty(), hakijaryhmaDAO.haeHakijaryhma("tyhjaHakijaryhmaOid"));
     }
 
     @Test
@@ -96,7 +96,7 @@ public class HakijaryhmaDAOTest {
         hakijaryhma.setJonosijat(asList(new Jonosija(), new Jonosija()));
         hakijaryhma.setHakijaryhmaOid("uusiHakijaryhmaOid");
         hakijaryhmaDAO.create(hakijaryhma, auditUser);
-        Hakijaryhma savedHakijaryhma = hakijaryhmaDAO.haeHakijaryhma("uusiHakijaryhmaOid", auditUser).get();
+        Hakijaryhma savedHakijaryhma = hakijaryhmaDAO.haeHakijaryhma("uusiHakijaryhmaOid").get();
         assertThat(savedHakijaryhma.getJonosijat(), Matchers.hasSize(2));
         assertThat(savedHakijaryhma.getJonosijaIdt(), Matchers.hasSize(2));
     }
@@ -104,7 +104,7 @@ public class HakijaryhmaDAOTest {
     @Test
     @UsingDataSet(locations = "multipleHakijaryhmasWithVaryingPriorities.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void allCallsSortHakijaryhmaEntitiesInPriorityAscendingOrder() throws Exception {
-        List<Hakijaryhma> fetched = hakijaryhmaDAO.haeHakijaryhmat("1.2.246.562.20.18895322503", auditUser);
+        List<Hakijaryhma> fetched = hakijaryhmaDAO.haeHakijaryhmat("1.2.246.562.20.18895322503");
         assertEquals(3, fetched.size());
 
         List<Hakijaryhma> sorted = new ArrayList<>(fetched);

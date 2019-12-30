@@ -34,7 +34,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 
 
     @Override
-    public List<Valinnanvaihe> readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid, User auditUser) {
+    public List<Valinnanvaihe> readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid) {
         List<ObjectId> hakemuksenJonosijaIdt = new LinkedList<>();
         datastore.find(Jonosija.class)
                 .field("hakemusOid").equal(hakemusOid)
@@ -55,7 +55,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     }
 
     @Override
-    public Valinnanvaihe findByValintatapajonoOid(String valintatapajonoOid, User auditUser) {
+    public Valinnanvaihe findByValintatapajonoOid(String valintatapajonoOid) {
         List<Key<Valintatapajono>> keys = datastore.find(Valintatapajono.class)
                 .field("valintatapajonoOid").equal(valintatapajonoOid)
                 .asKeyList();
@@ -68,14 +68,14 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     }
 
     @Override
-    public List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid, User auditUser) {
+    public List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid) {
         return migrate(datastore.createQuery(ValinnanvaiheMigrationDTO.class)
                 .field("hakukohdeOid").equal(hakukohdeoid)
                 .asList());
     }
 
     @Override
-    public List<Valinnanvaihe> readByHakuOid(String hakuoid, User auditUser) {
+    public List<Valinnanvaihe> readByHakuOid(String hakuoid) {
         return migrate(datastore.createQuery(ValinnanvaiheMigrationDTO.class)
                 .field("hakuOid").equal(hakuoid)
                 .asList());
@@ -101,7 +101,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     }
 
     @Override
-    public Valinnanvaihe haeValinnanvaihe(String valinnanvaiheOid, User auditUser) {
+    public Valinnanvaihe haeValinnanvaihe(String valinnanvaiheOid) {
         return Optional.ofNullable(datastore.find(ValinnanvaiheMigrationDTO.class)
                 .field("valinnanvaiheOid").equal(valinnanvaiheOid)
                 .get())
