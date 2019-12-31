@@ -11,6 +11,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import fi.vm.sade.auditlog.User;
@@ -52,7 +53,7 @@ public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResourc
             @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeOid") String hakukohdeOid,
             @ApiParam(value = "Hakemuksen OID", required = true) @PathParam("hakemusOid") String hakemusOid,
             @ApiParam(value = "Asetettava tila", required = true) HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen,
-            HttpServletRequest request) {
+            @Context HttpServletRequest request) {
         User user = auditLog.getUser(request);
 
         tulosService.asetaHarkinnanvaraisestiHyvaksymisenTila(hakuOid, hakukohdeOid, hakemusOid, harkinnanvarainenHyvaksyminen.getHarkinnanvaraisuusTila(), user);
@@ -64,7 +65,7 @@ public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResourc
     @ApiOperation(value = "Asettaa tilan harkinnanvaraisesti hakeneelle hakijalle")
     public void asetaTilat(
             @ApiParam(value = "Asetettava tila", required = true) List<HarkinnanvarainenHyvaksyminenDTO> harkinnanvaraisetHyvaksymiset,
-            HttpServletRequest request) {
+            @Context HttpServletRequest request) {
         User user = auditLog.getUser(request);
 
         for (HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen : harkinnanvaraisetHyvaksymiset) {
