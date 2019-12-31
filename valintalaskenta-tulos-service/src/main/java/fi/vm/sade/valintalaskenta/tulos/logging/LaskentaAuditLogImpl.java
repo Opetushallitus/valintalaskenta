@@ -14,6 +14,10 @@ public class LaskentaAuditLogImpl implements LaskentaAuditLog {
 
     @Override
     public User getUser(HttpServletRequest request) {
+        if (request == null) {
+            String msg = "Cannot get user for auditlogging from null request! Is something wrong with the @Context?";
+            throw new RuntimeException(msg);
+        }
         return AuditLog.getUser(request);
     }
 

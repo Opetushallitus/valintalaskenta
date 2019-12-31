@@ -18,7 +18,6 @@ import static org.junit.Assert.assertThat;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 
-import fi.vm.sade.auditlog.User;
 import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetFunktiokutsuDTO;
@@ -83,8 +82,6 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
     private static ValintaperusteetFunktiokutsuDTO kahdeksansataa;
 
     private final boolean korkeakouluhaku = false;
-
-    private final User auditUser = null;
 
     static {
         sata = new ValintaperusteetFunktiokutsuDTO();
