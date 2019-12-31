@@ -5,7 +5,6 @@ import static fi.vm.sade.sijoittelu.tulos.dto.HakemuksenTila.VARALLA;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
-import fi.vm.sade.auditlog.User;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetHakijaryhmaDTO;
 import fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi;
@@ -49,8 +48,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                         List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
                         String hakukohdeOid,
                         String uuid,
-                        boolean korkeakouluhaku,
-                        User auditUser) throws RuntimeException {
+                        boolean korkeakouluhaku) throws RuntimeException {
         if (hakemus == null) {
             LOG.error("Hakemukset tuli nullina hakukohteelle {}", hakukohdeOid);
         }
@@ -61,7 +59,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
             throw new RuntimeException("Hakemukset == null? " + (hakemus == null) + ", valintaperusteet == null? " + (valintaperuste == null) + " hakukohteelle " + hakukohdeOid);
         }
         try {
-            valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste, hakijaryhmat, hakukohdeOid, uuid, korkeakouluhaku, auditUser);
+            valintalaskentaSuorittaja.suoritaLaskenta(hakemus, valintaperuste, hakijaryhmat, hakukohdeOid, uuid, korkeakouluhaku);
             return "Onnistui!";
         } catch (Exception e) {
             LOG.error("Valintalaskennassa tapahtui virhe hakukohteelle " + hakukohdeOid, e);
@@ -70,10 +68,10 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     }
 
     @Override
-    public String valintakokeetRinnakkain(List<HakemusDTO> hakemukset, List<ValintaperusteetDTO> valintaperuste, String uuid, ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset, boolean korkeakouluhaku, User auditUser) throws RuntimeException {
+    public String valintakokeetRinnakkain(List<HakemusDTO> hakemukset, List<ValintaperusteetDTO> valintaperuste, String uuid, ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset, boolean korkeakouluhaku) throws RuntimeException {
         try {
             LOG.info("(Uuid={}) Lasketaan rinnakkain valintakoeosallistumiset {} hakemukselle", uuid, hakemukset.size());
-            hakemukset.parallelStream().forEach(hakemus -> valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste, uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser));
+            hakemukset.parallelStream().forEach(hakemus -> valintakoelaskentaSuorittajaService.laske(hakemus, valintaperuste, uuid, kumulatiivisetTulokset, korkeakouluhaku));
             LOG.info("(Uuid={}) Valintakoeosallistumisten laskenta {} hakemukselle valmis", uuid, hakemukset.size());
             return "Onnistui!";
         } catch (Exception e) {
@@ -84,23 +82,23 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 
     @Override
     public String laskeKaikki(List<HakemusDTO> hakemukset, List<ValintaperusteetDTO> valintaperuste, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
-                              String hakukohdeOid, String uuid, boolean korkeakouluhaku, User auditUser) throws RuntimeException {
+                              String hakukohdeOid, String uuid, boolean korkeakouluhaku) throws RuntimeException {
         valintaperuste.sort(Comparator.comparingInt(o -> o.getValinnanVaihe().getValinnanVaiheJarjestysluku()));
 
         ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset = new ValintakoelaskennanKumulatiivisetTulokset();
         valintaperuste.stream().forEachOrdered(peruste -> {
             if (peruste.getValinnanVaihe().getValinnanVaiheTyyppi().equals(ValinnanVaiheTyyppi.VALINTAKOE)) {
                 LOG.info("Suoritetaan valinnanvaiheen {} valintakoelaskenta {} hakemukselle", peruste.getValinnanVaihe().getValinnanVaiheOid(), hakemukset.size());
-                valintakokeetRinnakkain(hakemukset, singletonList(peruste), uuid, kumulatiivisetTulokset, korkeakouluhaku, auditUser);
+                valintakokeetRinnakkain(hakemukset, singletonList(peruste), uuid, kumulatiivisetTulokset, korkeakouluhaku);
             } else {
-                laske(hakemukset, singletonList(peruste), hakijaryhmat, hakukohdeOid, uuid, korkeakouluhaku, auditUser);
+                laske(hakemukset, singletonList(peruste), hakijaryhmat, hakukohdeOid, uuid, korkeakouluhaku);
             }
         });
         return "Onnistui!";
     }
 
     @Override
-    public void applyValisijoittelu(Map<String, List<String>> valisijoiteltavatJonot, Map<String, fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO> hakemusHashMap, User auditUser) {
+    public void applyValisijoittelu(Map<String, List<String>> valisijoiteltavatJonot, Map<String, fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO> hakemusHashMap) {
         valisijoiteltavatJonot.keySet().parallelStream().forEach(hakukohdeOid -> {
             List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid);
             vaiheet.forEach(vaihe -> {
@@ -143,7 +141,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                                     });
                                 }
                             });
-                    valinnanvaiheDAO.saveOrUpdate(vaihe, auditUser);
+                    valinnanvaiheDAO.saveVaiheWithoutAuditLogging(vaihe);
                 }
             });
         });
@@ -151,7 +149,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     }
 
     @Override
-    public void applyErillissijoittelu(Map<String, List<String>> jonot, Long ajo, User auditUser) {
+    public void applyErillissijoittelu(Map<String, List<String>> jonot, Long ajo) {
         jonot.keySet().parallelStream().forEach(hakukohdeOid -> {
             List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid);
             vaiheet.forEach(vaihe -> {
@@ -161,7 +159,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                                 jono.setSijoitteluajoId(ajo);
                             }
                         });
-                valinnanvaiheDAO.saveOrUpdate(vaihe, auditUser);
+                valinnanvaiheDAO.saveVaiheWithoutAuditLogging(vaihe);
             });
         });
     }

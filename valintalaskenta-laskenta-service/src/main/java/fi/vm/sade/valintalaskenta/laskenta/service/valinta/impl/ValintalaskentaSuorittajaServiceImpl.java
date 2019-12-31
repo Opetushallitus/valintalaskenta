@@ -1,6 +1,5 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl;
 
-import fi.vm.sade.auditlog.User;
 import fi.vm.sade.kaava.Laskentadomainkonvertteri;
 import fi.vm.sade.service.valintaperusteet.dto.HakukohteenValintaperusteDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
@@ -82,7 +81,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     }
 
     @Override
-    public void suoritaLaskenta(List<HakemusDTO> kaikkiHakemukset, List<ValintaperusteetDTO> valintaperusteet, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat, String hakukohdeOid, String uuid, boolean korkeakouluhaku, User auditUser) {
+    public void suoritaLaskenta(List<HakemusDTO> kaikkiHakemukset, List<ValintaperusteetDTO> valintaperusteet, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat, String hakukohdeOid, String uuid, boolean korkeakouluhaku) {
         Map<String, Hakemukset> hakemuksetHakukohteittain = jarjestaHakemuksetHakukohteittain(kaikkiHakemukset);
         jarjestaValinnanVaiheenJarjestysluvunMukaan(valintaperusteet);
 
@@ -126,9 +125,9 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             valinnanvaiheDAO.saveOrUpdate(valinnanvaihe);
         }
 
-        poistaHaamuryhmat(hakijaryhmat, valintaperusteet.get(0).getHakukohdeOid(), auditUser);
+        poistaHaamuryhmat(hakijaryhmat, valintaperusteet.get(0).getHakukohdeOid());
         LOG.info("(Uuid={}) Hakijaryhmien määrä {} hakukohteessa {}", uuid, hakijaryhmat.size(), hakukohdeOid);
-        laskeHakijaryhmat(valintaperusteet, hakijaryhmat, hakukohdeOid, uuid, hakemuksetHakukohteittain, korkeakouluhaku, auditUser);
+        laskeHakijaryhmat(valintaperusteet, hakijaryhmat, hakukohdeOid, uuid, hakemuksetHakukohteittain, korkeakouluhaku);
     }
 
     private void searchForPassives(String etuliite, Valinnanvaihe uusi, List<HakemusWrapper> hakemukset) {
@@ -190,7 +189,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         return viimeisinVaihe;
     }
 
-    private void laskeHakijaryhmat(List<ValintaperusteetDTO> valintaperusteet, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat, String hakukohdeOid, String uuid, Map<String, Hakemukset> hakemuksetHakukohteittain, boolean korkeakouluhaku, User auditUser) {
+    private void laskeHakijaryhmat(List<ValintaperusteetDTO> valintaperusteet, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat, String hakukohdeOid, String uuid, Map<String, Hakemukset> hakemuksetHakukohteittain, boolean korkeakouluhaku) {
         if (!hakijaryhmat.isEmpty()) {
             hakijaryhmat.parallelStream().forEach(h -> {
                 if (!hakemuksetHakukohteittain.containsKey(hakukohdeOid)) {
@@ -248,7 +247,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                     hakijaryhma.getJonosijat().add(createJonosija(js));
                 }
                 LOG.info("(Uuid={}) Persistoidaan hakijaryhmä {}", uuid, hakijaryhma.getHakijaryhmaOid());
-                hakijaryhmaDAO.create(hakijaryhma, auditUser);
+                hakijaryhmaDAO.createWithoutAuditLogging(hakijaryhma);
             });
         }
     }
@@ -447,7 +446,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         poistettavat.forEach(valinnanvaiheDAO::poistaJono);
     }
 
-    private void poistaHaamuryhmat(List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat, String hakukohdeOid, User auditUser) {
+    private void poistaHaamuryhmat(List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat, String hakukohdeOid) {
         List<String> oidit = hakijaryhmat.stream().map(ValintaperusteetHakijaryhmaDTO::getOid).collect(Collectors.toList());
 
         hakijaryhmaDAO.haeHakijaryhmat(hakukohdeOid).stream()

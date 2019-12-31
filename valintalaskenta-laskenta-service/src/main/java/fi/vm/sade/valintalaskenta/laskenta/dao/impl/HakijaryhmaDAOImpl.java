@@ -77,7 +77,8 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
         datastore.save(hakijaryhma);
     }
 
-    private void createWithoutAuditLogging(Hakijaryhma hakijaryhma) {
+    @Override
+    public  void createWithoutAuditLogging(Hakijaryhma hakijaryhma) {
         saveJonosijatWithoutAuditLogging(hakijaryhma);
         datastore.save(hakijaryhma);
     }

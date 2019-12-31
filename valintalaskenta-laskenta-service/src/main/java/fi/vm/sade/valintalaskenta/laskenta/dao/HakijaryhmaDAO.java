@@ -16,5 +16,7 @@ public interface HakijaryhmaDAO {
 
     void create(Hakijaryhma hakijaryhma, User auditUser);
 
+    void createWithoutAuditLogging(Hakijaryhma hakijaryhma);
+
     void poistaHakijaryhma(Hakijaryhma hakijaryhma);
 }

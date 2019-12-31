@@ -24,7 +24,6 @@ import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 
 import co.unruly.matchers.StreamMatchers;
-import fi.vm.sade.auditlog.User;
 import fi.vm.sade.service.valintaperusteet.dto.FunktiokutsuDTO;
 import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
@@ -48,7 +47,6 @@ import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResou
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
-import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogMock;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -60,14 +58,12 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -96,8 +92,6 @@ public class ValintalaskentaResourceIntegrationTest {
 
     private static final FunktiokutsuDTO totuusarvoTrue;
     private static final FunktiokutsuDTO totuusarvoFalse;
-
-    private final User auditUser = null;
 
     static {
         totuusarvoTrue = new FunktiokutsuDTO();
@@ -132,7 +126,7 @@ public class ValintalaskentaResourceIntegrationTest {
     @Before
     public void initResource() {
         valintalaskentaResource = new ValintalaskentaResourceImpl(valintalaskentaService, valisijoitteluKasittelija,
-            mockValisijoitteluResource, erillisSijoitteluResource, mockValintatapajonoResource, new LaskentaAuditLogMock());
+            mockValisijoitteluResource, erillisSijoitteluResource, mockValintatapajonoResource);
     }
 
     @Test
@@ -141,7 +135,7 @@ public class ValintalaskentaResourceIntegrationTest {
         LaskeDTO laskeDtoYhdenKoekutsunKanssa = readJson("laskeDTOYhdenKoekutsuVaiheenKanssa.json", new TypeToken<LaskeDTO>() {});
         Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDtoYhdenKoekutsunKanssa);
         try {
-            valintalaskentaResource.toteutaLaskeKaikki(laskentakutsu, auditUser);
+            valintalaskentaResource.toteutaLaskeKaikki(laskentakutsu);
         } catch (Exception e) {
         }
 
@@ -167,7 +161,7 @@ public class ValintalaskentaResourceIntegrationTest {
         LaskeDTO laskeDtoUseammanKoekutsunKanssa = readJson("laskeDTOUseammanKoekutsuVaiheenKanssa.json", new TypeToken<LaskeDTO>() {});
         Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDtoUseammanKoekutsunKanssa);
 
-        valintalaskentaResource.toteutaLaskeKaikki(laskentakutsu, auditUser);
+        valintalaskentaResource.toteutaLaskeKaikki(laskentakutsu);
 
         ValintakoeOsallistuminen osallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid("1.2.246.562.29.14662042044", "1.2.246.562.11.00000003337");
 
@@ -226,10 +220,7 @@ public class ValintalaskentaResourceIntegrationTest {
         LaskeDTO laskeDto2 = new LaskeDTO("uuid2", true, false, hakukohdeOidJossaOmaKoe, Collections.singletonList(hakemus), perusteetKohde2);
         String returnValue;
         do {
-            HttpServletRequest mockedRequest = Mockito.mock(HttpServletRequest.class);
-            Mockito.when(mockedRequest.getHeader("User-Agent")).thenReturn("mock_user_agent");
-            Mockito.when(mockedRequest.getSession(false)).thenReturn(new MockHttpSession());
-            returnValue = valintalaskentaResource.laskeJaSijoittele(new Laskentakutsu(Arrays.asList(laskeDto1, laskeDto2)), mockedRequest);
+            returnValue = valintalaskentaResource.laskeJaSijoittele(new Laskentakutsu(Arrays.asList(laskeDto1, laskeDto2)));
             Thread.sleep(50);
         } while (!(returnValue.equals(HakukohteenLaskennanTila.VALMIS) || returnValue.equals(HakukohteenLaskennanTila.VIRHE)));
 

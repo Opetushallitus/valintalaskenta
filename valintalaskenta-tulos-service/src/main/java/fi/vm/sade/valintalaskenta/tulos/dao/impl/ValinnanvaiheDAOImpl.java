@@ -213,7 +213,8 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         return datastore.save(vaihe);
     }
 
-    private Key<Valinnanvaihe> saveVaiheWithoutAuditLogging(Valinnanvaihe vaihe) {
+    @Override
+    public Key<Valinnanvaihe> saveVaiheWithoutAuditLogging(Valinnanvaihe vaihe) {
         return datastore.save(vaihe);
     }
 
