@@ -32,6 +32,8 @@ import java.util.List;
 
 @Controller
 @Path("valintalaskentakoostepalvelu")
+// TBD: should there be @PreAuthorize("isAuthenticated()") here? Otherwise auditLog.getUser may throw a RuntimeException.
+// If this is meant to be called only by another service with no session (as is ValintalaskentaResourceImpl), then auditlogging can be removed.
 @Api(value = "/valintalaskentakoostepalvelu", description = "Resurssi tulosten hakemiseen hakukohteittain")
 public class ValintalaskentakoostepalveluResourceImpl {
     protected static final Logger LOGGER = LoggerFactory.getLogger(ValintalaskentakoostepalveluResourceImpl.class);
@@ -110,6 +112,7 @@ public class ValintalaskentakoostepalveluResourceImpl {
             @ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe,
             HttpServletRequest request) {
         try {
+            // this resource is not @PreAuthorize - can it be called without a session? If so, getUser will throw a RuntimeException.
             User user = auditLog.getUser(request);
 
             return tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid, user);
