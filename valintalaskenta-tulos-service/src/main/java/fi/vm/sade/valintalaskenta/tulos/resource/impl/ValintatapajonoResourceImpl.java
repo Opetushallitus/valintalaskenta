@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
@@ -53,7 +54,7 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
             @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid,
             @ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true) @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
             @ApiParam(value = "Järjestyskriteerin uusi arvo", required = true) MuokattuJonosijaArvoDTO arvo,
-            HttpServletRequest request) {
+            @Context HttpServletRequest request) {
         User user = auditLog.getUser(request);
 
         MuokattuJonosija muokattuJonosija = tulosService.muutaJarjestyskriteeri(valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, arvo, user);
@@ -75,7 +76,7 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
             @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
             @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid,
             @ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true) @PathParam("jarjestyskriteeriPrioriteetti") Integer jarjestyskriteeriPrioriteetti,
-            HttpServletRequest request) {
+            @Context HttpServletRequest request) {
         User user = auditLog.getUser(request);
 
         MuokattuJonosija muokattuJonosija = tulosService.poistaMuokattuJonosija(valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, user);
@@ -95,7 +96,7 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
     public Response muokkaaSijotteluStatusta(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String valintatapajonoOid,
                                              @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status,
                                              @ApiParam(value = "Valintatapajono", required = true) ValintatapajonoDTO valintatapajono,
-                                             HttpServletRequest request) {
+                                             @Context HttpServletRequest request) {
         User user = auditLog.getUser(request);
 
         Consumer<Valintatapajono> valintatapajonoMuokkausFunktio = jono -> {
