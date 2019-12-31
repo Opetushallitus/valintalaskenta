@@ -28,8 +28,7 @@ public interface HakukohdeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Hakee hakukohteen valinnan vaiheiden tulokset", response = ValinnanvaiheDTO.class)
     List<ValintatietoValinnanvaiheDTO> hakukohde(
-        @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid,
-        @Context HttpServletRequest request);
+        @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid);
 
     @POST
     @Path("{hakukohdeoid}/valinnanvaihe")
@@ -47,6 +46,5 @@ public interface HakukohdeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Hakee hakukohteen hakijaryhmien tulokset", response = HakijaryhmaDTO.class)
     List<HakijaryhmaDTO> hakijaryhmat(
-        @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid,
-        @Context HttpServletRequest request);
+        @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid);
 }

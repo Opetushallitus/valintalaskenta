@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl.rest;
 
 
+import fi.vm.sade.service.valintaperusteet.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.AvainArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;

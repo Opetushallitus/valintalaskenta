@@ -4,9 +4,8 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.HakemusOsallistuminenD
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.HakuDTO;
 
 
-import javax.servlet.http.HttpServletRequest;
+
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import java.util.List;
 
 @Path("valintatieto")
@@ -21,6 +20,5 @@ public interface ValintatietoResource {
     @GET
     @Path("haku/{hakuOid}")
     @Produces("application/json")
-    HakuDTO haeValintatiedot(@PathParam("hakuOid") String hakuOid,
-                             @Context HttpServletRequest request);
+    HakuDTO haeValintatiedot(@PathParam("hakuOid") String hakuOid);
 }
