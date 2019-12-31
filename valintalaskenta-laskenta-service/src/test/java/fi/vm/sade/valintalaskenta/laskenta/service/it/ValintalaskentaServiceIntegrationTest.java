@@ -88,12 +88,12 @@ public class ValintalaskentaServiceIntegrationTest {
         kutsuttavat.add(kutsuttavaHakemus);
         HakemusDTO hakemusJotaEiKuuluKutsua = luoHakemus(hakuOid, hakemusOidJotaEiKuuluKutsua, hakemusOidJotaEiKuuluKutsua, ylempiHakukohdeOidJossaYhteinenKoe, hakukohdeOidJossaOmaKoe);
         eiKutsuttavat.add(hakemusJotaEiKuuluKutsua);
-        valintalaskentaService.valintakokeetRinnakkain(kutsuttavat, perusteetKohde1, "uuid1", new ValintakoelaskennanKumulatiivisetTulokset(), true, auditUser);
-        valintalaskentaService.valintakokeetRinnakkain(kutsuttavat, perusteetKohde2, "uuid2", new ValintakoelaskennanKumulatiivisetTulokset(), true, auditUser);
-        valintalaskentaService.valintakokeetRinnakkain(kutsuttavat, perusteetKohde2, "uuid2", new ValintakoelaskennanKumulatiivisetTulokset(), true, auditUser);  // again, to get previous results in place...
-        valintalaskentaService.valintakokeetRinnakkain(eiKutsuttavat, perusteetKohde1, "uuid1", new ValintakoelaskennanKumulatiivisetTulokset(), true, auditUser);
-        valintalaskentaService.valintakokeetRinnakkain(eiKutsuttavat, perusteetKohde2, "uuid2", new ValintakoelaskennanKumulatiivisetTulokset(), true, auditUser);
-        valintalaskentaService.valintakokeetRinnakkain(eiKutsuttavat, perusteetKohde2, "uuid2", new ValintakoelaskennanKumulatiivisetTulokset(), true, auditUser);  // again, to get previous results in place...
+        valintalaskentaService.valintakokeetRinnakkain(kutsuttavat, perusteetKohde1, "uuid1", new ValintakoelaskennanKumulatiivisetTulokset(), true);
+        valintalaskentaService.valintakokeetRinnakkain(kutsuttavat, perusteetKohde2, "uuid2", new ValintakoelaskennanKumulatiivisetTulokset(), true);
+        valintalaskentaService.valintakokeetRinnakkain(kutsuttavat, perusteetKohde2, "uuid2", new ValintakoelaskennanKumulatiivisetTulokset(), true);  // again, to get previous results in place...
+        valintalaskentaService.valintakokeetRinnakkain(eiKutsuttavat, perusteetKohde1, "uuid1", new ValintakoelaskennanKumulatiivisetTulokset(), true);
+        valintalaskentaService.valintakokeetRinnakkain(eiKutsuttavat, perusteetKohde2, "uuid2", new ValintakoelaskennanKumulatiivisetTulokset(), true);
+        valintalaskentaService.valintakokeetRinnakkain(eiKutsuttavat, perusteetKohde2, "uuid2", new ValintakoelaskennanKumulatiivisetTulokset(), true);  // again, to get previous results in place...
 
         ValintakoeOsallistuminen kutsuttavaOsallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOidJokaKuuluuKutsua);
 

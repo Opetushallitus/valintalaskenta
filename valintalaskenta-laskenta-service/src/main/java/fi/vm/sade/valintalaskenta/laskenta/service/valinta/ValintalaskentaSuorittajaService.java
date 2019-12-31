@@ -1,6 +1,5 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.valinta;
 
-import fi.vm.sade.auditlog.User;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetHakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
@@ -13,6 +12,5 @@ public interface ValintalaskentaSuorittajaService {
                          List<ValintaperusteetDTO> valintaperusteet,
                          List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
                          String hakukohdeOid,
-                         String uuid, boolean korkeakouluhaku,
-                         User auditUser);
+                         String uuid, boolean korkeakouluhaku);
 }
