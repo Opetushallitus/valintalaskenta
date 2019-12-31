@@ -65,8 +65,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
     @PreAuthorize(READ_UPDATE_CRUD)
     @ApiOperation(value = "Hakee hakukohteen valinnan vaiheiden tulokset", response = ValinnanvaiheDTO.class)
     public List<ValintatietoValinnanvaiheDTO> hakukohde(
-            @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid,
-            HttpServletRequest request) {
+            @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid) {
         try {
             return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
         } catch (Exception e) {
@@ -144,8 +143,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
     @Path("{hakukohdeoid}/hakijaryhma")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Hakee hakukohteen hakijaryhmien tulokset", response = HakijaryhmaDTO.class)
-    public List<HakijaryhmaDTO> hakijaryhmat(@ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid,
-                                             HttpServletRequest request) {
+    public List<HakijaryhmaDTO> hakijaryhmat(@ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid) {
         try {
             return tulosService.haeHakijaryhmatHakukohteelle(hakukohdeoid);
         } catch (Exception e) {

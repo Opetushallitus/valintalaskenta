@@ -86,5 +86,4 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
             return migratedJono;
         }
     }
-
 }

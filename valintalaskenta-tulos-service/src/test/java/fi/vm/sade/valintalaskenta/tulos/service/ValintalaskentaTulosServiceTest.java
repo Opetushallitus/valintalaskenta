@@ -42,6 +42,7 @@ public class ValintalaskentaTulosServiceTest {
     @Rule
     public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
 
+
     @Test
     @UsingDataSet(locations = "initialData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void haeValintakoeOsallistumisetByOidTest() {

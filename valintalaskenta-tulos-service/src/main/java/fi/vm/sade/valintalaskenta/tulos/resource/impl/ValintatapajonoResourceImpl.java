@@ -117,11 +117,9 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
     @GET
     @Path("/{valintatapajonoOid}/valmissijoiteltavaksi")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response haeSijoitteluStatus(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String oid,
-                                        HttpServletRequest request) {
+    public Response haeSijoitteluStatus(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String oid) {
         HashMap object = new HashMap();
-        boolean status = tulosService.haeSijoitteluStatus(oid);
-        object.put("value", status);
+        object.put("value", tulosService.haeSijoitteluStatus(oid));
         return Response.status(Response.Status.ACCEPTED).entity(object).build();
     }
 }

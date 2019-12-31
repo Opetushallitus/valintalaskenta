@@ -53,6 +53,5 @@ public interface ValintatapajonoResource {
     @GET
     @Path("/{valintatapajonoOid}/valmissijoiteltavaksi")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response haeSijoitteluStatus(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String oid,
-                                        @Context HttpServletRequest request);
+    public Response haeSijoitteluStatus(@ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid") String oid);
 }

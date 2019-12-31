@@ -57,8 +57,7 @@ public class ValintalaskentakoostepalveluResourceImpl {
     @Path("jonotsijoittelussa/{hakuOid}")
     @Consumes("application/json")
     @Produces("application/json")
-    public List<JonoDto> jonotSijoittelussa(@PathParam("hakuOid") String hakuOid,
-                                            HttpServletRequest request) {
+    public List<JonoDto> jonotSijoittelussa(@PathParam("hakuOid") String hakuOid) {
         return tulosService.haeJonotSijoittelussa(hakuOid);
     }
 
@@ -96,8 +95,7 @@ public class ValintalaskentakoostepalveluResourceImpl {
     @ApiOperation(value = "Hakee hakukohteen valinnan vaiheiden tulokset", response = ValinnanvaiheDTO.class)
     public List<ValintatietoValinnanvaiheDTO> hakukohde(
             @ApiParam(value = "Hakukohteen OID", required = true)
-            @PathParam("hakukohdeoid") String hakukohdeoid,
-            @Context HttpServletRequest request) {
+            @PathParam("hakukohdeoid") String hakukohdeoid) {
         return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
     }
 
