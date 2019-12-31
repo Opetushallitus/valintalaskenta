@@ -18,7 +18,6 @@ import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 
 import co.unruly.matchers.StreamMatchers;
-import fi.vm.sade.auditlog.User;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
@@ -63,8 +62,6 @@ public class ValintalaskentaServiceIntegrationTest {
 
     @Autowired
     private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
-
-    private final User auditUser = null;
 
     private <T> T readJsonFromSamePackage(Class<?> clazz, String nameInSamePackage, TypeToken<T> typeToken) throws IOException {
         return new Gson().fromJson(IOUtils.toString(new ClassPathResource(nameInSamePackage, clazz).getInputStream(), "UTF-8"), typeToken.getType());
