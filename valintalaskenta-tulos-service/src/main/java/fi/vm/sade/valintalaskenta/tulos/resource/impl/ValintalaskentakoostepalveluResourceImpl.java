@@ -108,7 +108,7 @@ public class ValintalaskentakoostepalveluResourceImpl {
             @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid") String hakukohdeoid,
             @ApiParam(value = "Tarjoaja OID", required = true) @QueryParam("tarjoajaOid") String tarjoajaOid,
             @ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe,
-            HttpServletRequest request) {
+            @Context HttpServletRequest request) {
         try {
             // this resource is not @PreAuthorize - can it be called without a session? If so, getUser will throw a RuntimeException.
             User user = auditLog.getUser(request);
