@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -93,7 +94,6 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
     public void laske(HakemusDTO hakemus, List<ValintaperusteetDTO> valintaperusteet, String uuid,
                       ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset, boolean korkeakouluhaku) {
         LOG.info("(Uuid={}) (Thread={}) Laskentaan valintakoeosallistumiset hakemukselle {}", uuid, Thread.currentThread(), hakemus.getHakemusoid());
-        //LOG.info("Kumulatiiviset tulokset hakemukselle {}: {} ", hakemus.getHakemusoid(), kumulatiivisetTulokset.get(hakemus.getHakemusoid()));
         if (valintaperusteet.size() == 0) {
             return;
         }
@@ -162,6 +162,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
         }
 
         ValintakoeOsallistuminen osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset = kumulatiivisetTulokset.get(hakemus.getHakemusoid());
+
         if (osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset != null) {
             valintakoeOsallistuminenDAO.createOrUpdate(osallistuminenJohonOnYhdistettyKokoLaskentaAjonOsallistumiset);
         }
@@ -171,6 +172,45 @@ public class ValintakoelaskentaSuorittajaServiceImpl implements Valintakoelasken
             ValintakoeOsallistuminen tallennettuOsallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakemus.getHakuoid(), hakemus.getHakemusoid());
             debugLogitaKoetiedot(tallennettuOsallistuminen);
         }
+    }
+
+    //Siivotaan sellaiset valinnanvaiheet, jotka eivät löydy säästettävien listalta.
+    //Huom: VALINNANVAIHE_HAKIJAN_VALINTA on erikoistapaus, jossa luodaan keinotekoinen valinnanvaiheOid valintakoeosallistumiselle.
+    //Tämä oid ei siis tule valintaperusteista kuten muut vv-oidit, vaan syntyy tietyssä tilanteessa valintakoelaskennan aikana.
+    @Override
+    public void siivoaValintakoeOsallistumiset(List<HakemusDTO> hakemukset, String hakukohdeOid, List<String> saastettavienValinnanvaiheidenOidit) {
+        saastettavienValinnanvaiheidenOidit.add(VALINNANVAIHE_HAKIJAN_VALINTA);
+        LOG.info("Tutkitaan, löytyykö {} hakemuksen valintakoeOsallistumisista valinnanvaiheOideja, jotka eivät kuulu säästettäviin ({}) hakukohteessa {}",
+                hakemukset.size(), saastettavienValinnanvaiheidenOidit, hakukohdeOid);
+        hakemukset.parallelStream().forEach(hakemus -> {
+            ValintakoeOsallistuminen tallennettuOsallistuminen = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakemus.getHakuoid(), hakemus.getHakemusoid());
+            if (tallennettuOsallistuminen != null) {
+                tallennettuOsallistuminen.getHakutoiveet().forEach(ht -> {
+                    if (ht.getHakukohdeOid().equals(hakukohdeOid)) {
+                        List<ValintakoeValinnanvaihe> siivotutValinnanvaiheet =
+                                ht.getValinnanVaiheet().stream()
+                                        .filter(vv -> saastettavienValinnanvaiheidenOidit.contains(vv.getValinnanVaiheOid()))
+                                        .collect(Collectors.toList());
+                        int ennen = ht.getValinnanVaiheet().size();
+                        int jalkeen = siivotutValinnanvaiheet.size();
+                        if (ennen > jalkeen) {
+                            LOG.warn("Siivottiin hakemuksen {} valinnanvaiheet hakukohteessa {}. Ennen siivousta {} kpl, jälkeen {} kpl.",
+                                    hakemus.getHakemusoid(), hakukohdeOid, ennen, jalkeen);
+                            ht.getValinnanVaiheet().forEach(vv -> {
+                               if (!saastettavienValinnanvaiheidenOidit.contains(vv.getValinnanVaiheOid())) {
+                                   LOG.warn("Poistetaan hakemuksen {} hakutoiveen {} valintakoeosallistumisista valinnanvaihe oidilla {}, " +
+                                           "koska se vaikuttaa kadonneen valintaperusteista.", hakemus.getHakemusoid(), hakukohdeOid, vv.getValinnanVaiheOid());
+                               }
+                            });
+                            ht.setValinnanVaiheet(siivotutValinnanvaiheet);
+                            valintakoeOsallistuminenDAO.createOrUpdate(tallennettuOsallistuminen);
+                        }
+                    }
+                });
+            } else {
+                LOG.debug("Ilmeisesti hakemukselle {} ei ole vielä valintakoeosallistumisia.", hakemus.getHakemusoid());
+            }
+        });
     }
 
     private void debugLogitaKoetiedot(ValintakoeOsallistuminen osallistuminen) {
