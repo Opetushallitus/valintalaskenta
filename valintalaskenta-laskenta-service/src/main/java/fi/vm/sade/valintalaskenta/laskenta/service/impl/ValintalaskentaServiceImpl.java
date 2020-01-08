@@ -142,7 +142,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                                     });
                                 }
                             });
-                    valinnanvaiheDAO.saveVaiheWithoutAuditLogging(vaihe);
+                    valinnanvaiheDAO.saveVaihe(vaihe);
                 }
             });
         });
@@ -160,7 +160,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                                 jono.setSijoitteluajoId(ajo);
                             }
                         });
-                valinnanvaiheDAO.saveVaiheWithoutAuditLogging(vaihe);
+                valinnanvaiheDAO.saveVaihe(vaihe);
             });
         });
     }

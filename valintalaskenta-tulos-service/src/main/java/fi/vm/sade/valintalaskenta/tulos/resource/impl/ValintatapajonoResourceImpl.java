@@ -1,11 +1,15 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
+import fi.vm.sade.auditlog.Changes;
 import fi.vm.sade.auditlog.User;
 import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO;
+import fi.vm.sade.valinta.sharedutils.ValintaResource;
+import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
+import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.resource.ValintatapajonoResource;
@@ -23,6 +27,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -111,6 +116,17 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
             jono.setSiirretaanSijoitteluun(valintatapajono.getSiirretaanSijoitteluun());
             jono.setValmisSijoiteltavaksi(status);
         };
+
+        Map<String, String> additionalAuditFields = new HashMap<>();
+        additionalAuditFields.put("valmissijoiteltavaksi", String.valueOf(status));
+        auditLog.log(LaskentaAudit.AUDIT,
+                auditLog.getUser(request),
+                ValintaperusteetOperation.VALINTATAPAJONO_PAIVITYS,
+                ValintaResource.VALINTATAPAJONO,
+                valintatapajono.getOid(),
+                Changes.addedDto(valintatapajono),
+                additionalAuditFields);
+
         Optional<Valintatapajono> dto = tulosService.muokkaaValintatapajonoa(valintatapajonoOid, valintatapajonoMuokkausFunktio, user);
         return dto.map(jono -> Response.status(Response.Status.ACCEPTED).entity(modelMapper.map(jono, ValintatapajonoDTO.class)).build()).orElse(Response.status(Response.Status.NOT_FOUND).build());
     }

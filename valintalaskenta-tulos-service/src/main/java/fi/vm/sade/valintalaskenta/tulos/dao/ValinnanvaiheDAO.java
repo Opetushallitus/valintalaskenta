@@ -23,7 +23,7 @@ public interface ValinnanvaiheDAO {
 
     Valinnanvaihe haeValinnanvaihe(String valinnanvaiheOid);
 
-    void saveOrUpdate(Valinnanvaihe vaihe, User auditUser);
+    void saveOrUpdate(Valinnanvaihe vaihe);
 
-    Key<Valinnanvaihe> saveVaiheWithoutAuditLogging(Valinnanvaihe vaihe);
+    Key<Valinnanvaihe> saveVaihe(Valinnanvaihe vaihe);
 }

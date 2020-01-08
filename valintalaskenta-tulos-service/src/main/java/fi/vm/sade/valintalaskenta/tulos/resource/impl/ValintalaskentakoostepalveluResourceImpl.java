@@ -32,8 +32,6 @@ import java.util.List;
 
 @Controller
 @Path("valintalaskentakoostepalvelu")
-// TBD: should there be @PreAuthorize("isAuthenticated()") here? Otherwise auditLog.getUser may throw a RuntimeException.
-// If this is meant to be called only by another service with no session (as is ValintalaskentaResourceImpl), then auditlogging can be removed.
 @Api(value = "/valintalaskentakoostepalvelu", description = "Resurssi tulosten hakemiseen hakukohteittain")
 public class ValintalaskentakoostepalveluResourceImpl {
     protected static final Logger LOGGER = LoggerFactory.getLogger(ValintalaskentakoostepalveluResourceImpl.class);
@@ -45,9 +43,6 @@ public class ValintalaskentakoostepalveluResourceImpl {
     private ValintalaskentaModelMapper modelMapper;
     @Autowired
     private ValintatietoService valintatietoService;
-
-    @Autowired
-    private LaskentaAuditLog auditLog;
 
     /**
      * @param hakuOid
@@ -110,10 +105,8 @@ public class ValintalaskentakoostepalveluResourceImpl {
             @ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe,
             @Context HttpServletRequest request) {
         try {
-            // this resource is not @PreAuthorize - can it be called without a session? If so, getUser will throw a RuntimeException.
-            User user = auditLog.getUser(request);
-
-            return tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid, user);
+            //Tämä operaatio on tarkoitus auditlogittaa tätä rajapintaa kutsuvassa valintalaskentakoostepalvelussa.
+            return tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid);
         } catch (Exception e) {
             LOGGER.error("Valintatapajonon pisteitä ei saatu päivitettyä hakukohteelle " + hakukohdeoid, e);
             throw e;

@@ -111,7 +111,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         User user = auditLog.getUser(request);
-        ValinnanvaiheDTO valinnanvaihe = tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid, user);
+        ValinnanvaiheDTO valinnanvaihe = tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid);
         auditLog(hakukohdeoid, vaihe, user);
         return Response.status(Response.Status.ACCEPTED).entity(valinnanvaihe).build();
     }

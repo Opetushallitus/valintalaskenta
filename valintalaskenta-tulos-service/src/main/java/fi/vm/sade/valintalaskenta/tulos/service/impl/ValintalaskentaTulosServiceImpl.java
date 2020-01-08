@@ -501,12 +501,12 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
-    public ValinnanvaiheDTO lisaaTuloksia(ValinnanvaiheDTO vaihe, String hakukohdeoid, String tarjoajaOid, User auditUser) {
+    public ValinnanvaiheDTO lisaaTuloksia(ValinnanvaiheDTO vaihe, String hakukohdeoid, String tarjoajaOid) {
         Valinnanvaihe haettu = valinnanvaiheDAO.haeValinnanvaihe(vaihe.getValinnanvaiheoid());
         Valinnanvaihe annettu = modelMapper.map(vaihe, Valinnanvaihe.class);
         annettu.setHakukohdeOid(hakukohdeoid);
         if (haettu == null) {
-            valinnanvaiheDAO.saveOrUpdate(annettu, auditUser);
+            valinnanvaiheDAO.saveOrUpdate(annettu);
         } else {
             List<Valintatapajono> vanhat = new ArrayList<Valintatapajono>();
             for (Valintatapajono jono : haettu.getValintatapajonot()) {
@@ -525,7 +525,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             haettu.setHakuOid(vaihe.getHakuOid());
             haettu.setTarjoajaOid(tarjoajaOid);
             haettu.setValintatapajonot(annettu.getValintatapajonot());
-            valinnanvaiheDAO.saveOrUpdate(haettu, auditUser);
+            valinnanvaiheDAO.saveOrUpdate(haettu);
         }
         return vaihe;
     }
@@ -540,7 +540,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                 .stream()
                 .filter(j -> j.getValintatapajonoOid().equals(valintatapajonoOid))
                 .forEach(j -> muokkausFunktio.accept(j));
-        valinnanvaiheDAO.saveOrUpdate(vaihe, auditUser);
+        valinnanvaiheDAO.saveOrUpdate(vaihe);
         return vaihe
                 .getValintatapajonot()
                 .stream()
