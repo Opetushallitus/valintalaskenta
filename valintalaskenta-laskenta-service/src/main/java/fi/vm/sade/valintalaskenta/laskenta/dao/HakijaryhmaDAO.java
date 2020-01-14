@@ -1,7 +1,7 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao;
 
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +14,9 @@ public interface HakijaryhmaDAO {
 
     List<Hakijaryhma> haeHakijaryhmat(String hakukohdeOid);
 
-    void create(Hakijaryhma hakijaryhma);
+    void create(Hakijaryhma hakijaryhma, User auditUser);
+
+    void createWithoutAuditLogging(Hakijaryhma hakijaryhma);
 
     void poistaHakijaryhma(Hakijaryhma hakijaryhma);
 }

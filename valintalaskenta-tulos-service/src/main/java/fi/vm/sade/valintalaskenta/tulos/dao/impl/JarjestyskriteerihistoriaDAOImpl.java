@@ -1,17 +1,11 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.tulos.dao.util.JarjestyskriteeriKooderi;
-import org.apache.commons.io.IOUtils;
-import org.bson.types.BasicBSONList;
+
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,13 +14,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import org.mongodb.morphia.Datastore;
-import com.mongodb.AggregationOutput;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
 
 import fi.vm.sade.valintalaskenta.tulos.dao.JarjestyskriteerihistoriaDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.exception.DaoException;
 
 @Repository("jonosijaHistoriaTulosDAO")
 public class JarjestyskriteerihistoriaDAOImpl implements JarjestyskriteerihistoriaDAO {

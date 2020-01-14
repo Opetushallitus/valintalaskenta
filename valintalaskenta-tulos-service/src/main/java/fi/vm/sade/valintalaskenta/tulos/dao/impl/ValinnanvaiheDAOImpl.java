@@ -1,8 +1,8 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
-import com.google.common.collect.ImmutableList;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
+import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
@@ -24,9 +24,12 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     @Autowired
     private Datastore datastore;
 
+    @Autowired
+    private LaskentaAuditLog auditLog;
+
+
     @Override
-    public List<Valinnanvaihe> readByHakuOidAndHakemusOid(String hakuOid,
-                                                          String hakemusOid) {
+    public List<Valinnanvaihe> readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid) {
         List<ObjectId> hakemuksenJonosijaIdt = new LinkedList<>();
         datastore.find(Jonosija.class)
                 .field("hakemusOid").equal(hakemusOid)
@@ -97,7 +100,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         return Optional.ofNullable(datastore.find(ValinnanvaiheMigrationDTO.class)
                 .field("valinnanvaiheOid").equal(valinnanvaiheOid)
                 .get())
-                .map(this::migrate)
+                .map(vaihe -> migrate(vaihe))
                 .orElse(null);
     }
 
@@ -138,7 +141,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
             LOGGER.info("Migrating valintatapajono {}", jono.getValintatapajonoOid());
             Valintatapajono migratedJono = jono.migrate();
             saveJonosijat(migratedJono);
-            datastore.save(migratedJono);
+            saveJono(migratedJono);
             return migratedJono;
         }
     }
@@ -167,6 +170,20 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     }
 
     private List<Valinnanvaihe> migrate(List<ValinnanvaiheMigrationDTO> vaiheet) {
-        return vaiheet.stream().map(this::migrate).collect(Collectors.toList());
+        return vaiheet.stream().map(vaihe -> migrate(vaihe)).collect(Collectors.toList());
     }
+
+    private Key<Valintatapajono> saveJono(Valintatapajono valintatapajono) {
+        return datastore.save(valintatapajono);
+    }
+
+    @Override
+    public Key<Valinnanvaihe> saveVaihe(Valinnanvaihe vaihe) {
+        return datastore.save(vaihe);
+    }
+
+    private Key<Jonosija> saveJonosija(Jonosija jonosija) {
+        return datastore.save(jonosija);
+    }
+
 }

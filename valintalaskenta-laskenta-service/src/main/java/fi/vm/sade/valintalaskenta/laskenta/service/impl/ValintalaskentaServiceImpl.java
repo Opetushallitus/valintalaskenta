@@ -45,8 +45,12 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     private ValinnanvaiheDAO valinnanvaiheDAO;
 
     @Override
-    public String laske(List<HakemusDTO> hakemus, List<ValintaperusteetDTO> valintaperuste, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
-                        String hakukohdeOid, String uuid, boolean korkeakouluhaku) throws RuntimeException {
+    public String laske(List<HakemusDTO> hakemus,
+                        List<ValintaperusteetDTO> valintaperuste,
+                        List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
+                        String hakukohdeOid,
+                        String uuid,
+                        boolean korkeakouluhaku) throws RuntimeException {
         if (hakemus == null) {
             LOG.error("Hakemukset tuli nullina hakukohteelle {}", hakukohdeOid);
         }
@@ -138,7 +142,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                                     });
                                 }
                             });
-                    valinnanvaiheDAO.saveOrUpdate(vaihe);
+                    valinnanvaiheDAO.saveVaihe(vaihe);
                 }
             });
         });
@@ -156,7 +160,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                                 jono.setSijoitteluajoId(ajo);
                             }
                         });
-                valinnanvaiheDAO.saveOrUpdate(vaihe);
+                valinnanvaiheDAO.saveVaihe(vaihe);
             });
         });
     }

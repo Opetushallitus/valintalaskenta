@@ -5,13 +5,13 @@ import fi.vm.sade.auditlog.User;
 import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource;
-import fi.vm.sade.valinta.sharedutils.AuditLog;
 import fi.vm.sade.valinta.sharedutils.ValintaResource;
 import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
+import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import fi.vm.sade.valintalaskenta.tulos.resource.HakukohdeResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import io.swagger.annotations.Api;
@@ -51,6 +51,13 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
 
     @Autowired
     private ValintaperusteetResource valintaperusteetResource;
+
+    @Autowired
+    private LaskentaAuditLog auditLog;
+
+    public HakukohdeResourceImpl(LaskentaAuditLog auditLog) {
+        this.auditLog = auditLog;
+    }
 
     @GET
     @Path("{hakukohdeoid}/valinnanvaihe")
@@ -103,7 +110,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
             LOGGER.error("Valintatapajonon pisteitä ei saatu päivitettyä hakukohteelle " + hakukohdeoid,e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-        User user = AuditLog.getUser(request);
+        User user = auditLog.getUser(request);
         ValinnanvaiheDTO valinnanvaihe = tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid);
         auditLog(hakukohdeoid, vaihe, user);
         return Response.status(Response.Status.ACCEPTED).entity(valinnanvaihe).build();
@@ -120,7 +127,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
                                     additionalAuditFields.put("jonosija", Integer.toString(h.getJonosija()));
                                     additionalAuditFields.put("valintatapajonoOid", v.getValintatapajonooid());
                                     additionalAuditFields.put("hakukohdeOid", hakukohdeoid);
-                                    AuditLog.log(LaskentaAudit.AUDIT,
+                                    auditLog.log(LaskentaAudit.AUDIT,
                                             user,
                                             ValintaperusteetOperation.VALINNANVAIHE_TUONTI_KAYTTOLIITTYMA,
                                             ValintaResource.VALINNANVAIHE,

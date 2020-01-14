@@ -1,8 +1,10 @@
 package fi.vm.sade.valintalaskenta.tulos.dao;
 
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.ValintatapajonoMigrationDTO;
 import org.apache.commons.lang3.tuple.Pair;
+import org.mongodb.morphia.Key;
 
 import java.util.List;
 
@@ -22,4 +24,6 @@ public interface ValinnanvaiheDAO {
     Valinnanvaihe haeValinnanvaihe(String valinnanvaiheOid);
 
     void saveOrUpdate(Valinnanvaihe vaihe);
+
+    Key<Valinnanvaihe> saveVaihe(Valinnanvaihe vaihe);
 }
