@@ -26,7 +26,6 @@
         <flapdoodle.embed.mongo.version>2.2.0</flapdoodle.embed.mongo.version>
         <httpcomponents.core.version>4.4.4</httpcomponents.core.version>
         <httpcomponents.version>4.5.2</httpcomponents.version>
-        <jackson.version>1.9.13</jackson.version>
         <modelmapper.version>2.3.5</modelmapper.version>
         <spring.asm.version>3.1.4.RELEASE</spring.asm.version>
         <spring.version>5.1.5.RELEASE</spring.version>
@@ -233,11 +232,6 @@
                 <scope>compile</scope>
             </dependency>
             <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-core-asl</artifactId>
-                <version>1.9.13</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>3.4</version>
@@ -334,12 +328,6 @@
                 <groupId>org.scala-lang</groupId>
                 <artifactId>scala-library</artifactId>
                 <version>2.13.1</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-mapper-asl</artifactId>
-                <version>1.9.13</version>
             </dependency>
 
             <dependency>
