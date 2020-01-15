@@ -1,16 +1,16 @@
 package fi.vm.sade.valintalaskenta.tulos;
 
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.JsonSerializer;
-import org.codehaus.jackson.map.SerializerProvider;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 
 import java.io.IOException;
 import java.util.Collection;
 
 public class CollectionSerializer extends JsonSerializer<Collection> {
     @Override
-    public void serialize(Collection value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
+    public void serialize(Collection value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
         if (value == null) {
             jgen.writeNull();
             return;
