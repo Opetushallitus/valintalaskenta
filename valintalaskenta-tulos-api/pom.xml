@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>fi.vm.sade.valintaperusteet</groupId>
 		<artifactId>valintalaskenta</artifactId>
-		<version>5.10-VTKU-107-SNAPSHOT</version>
+		<version>5.11-VTKU-102-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>valintalaskenta-tulos-api</artifactId>
