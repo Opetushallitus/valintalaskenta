@@ -31,6 +31,7 @@
         <spring.version>5.1.5.RELEASE</spring.version>
         <spring.security.version>4.2.11.RELEASE</spring.security.version>
         <jackson.version>2.10.1</jackson.version>
+        <legacy-jackson.version>1.9.13</legacy-jackson.version>
         <swagger.version>1.5.17</swagger.version>
 
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -529,6 +530,16 @@
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-guava</artifactId>
                 <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-core-asl</artifactId>
+                <version>${legacy-jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-mapper-asl</artifactId>
+                <version>${legacy-jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>javax.annotation</groupId>
