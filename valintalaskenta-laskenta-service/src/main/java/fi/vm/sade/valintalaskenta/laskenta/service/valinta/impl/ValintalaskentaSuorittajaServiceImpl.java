@@ -40,12 +40,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -107,13 +102,15 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                 continue;
             }
             final Valinnanvaihe viimeisinVaihe = getViimeisinValinnanVaihe(hakukohdeOid, jarjestysnumero, hakuOid, edellinenVaihe);
-            Valinnanvaihe valinnanvaihe = haeTaiLuoValinnanvaihe(valinnanvaiheOid, hakuOid, hakukohdeOid, jarjestysnumero);
+            Valinnanvaihe valinnanvaihe = haeTaiLuoValinnanvaihe(valinnanvaiheOid, hakuOid, hakukohdeOid, jarjestysnumero, vaihe);
             valinnanvaihe.setHakukohdeOid(hakukohdeOid);
             valinnanvaihe.setHakuOid(hakuOid);
             valinnanvaihe.setJarjestysnumero(jarjestysnumero);
             valinnanvaihe.setValinnanvaiheOid(valinnanvaiheOid);
             valinnanvaihe.setTarjoajaOid(vp.getTarjoajaOid());
             valinnanvaihe.setNimi(vp.getValinnanVaihe().getNimi());
+
+            heitaPoikkeusJosValintatapajonoJaaIlmanTuloksia(uuid, vaihe, valinnanvaihe);
 
             ValintakoeOsallistuminen edellinenOsallistuminen = valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
 
@@ -128,6 +125,55 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         poistaHaamuryhmat(hakijaryhmat, valintaperusteet.get(0).getHakukohdeOid());
         LOG.info("(Uuid={}) Hakijaryhmien määrä {} hakukohteessa {}", uuid, hakijaryhmat.size(), hakukohdeOid);
         laskeHakijaryhmat(valintaperusteet, hakijaryhmat, hakukohdeOid, uuid, hakemuksetHakukohteittain, korkeakouluhaku);
+    }
+
+    private void heitaPoikkeusJosValintatapajonoJaaIlmanTuloksia(
+            String uuid,
+            ValintaperusteetValinnanVaiheDTO valinnanvaiheValintaperusteissa,
+            Valinnanvaihe valinnanvaiheValintalaskennassa) {
+        valinnanvaiheValintaperusteissa
+                .getValintatapajono()
+                .stream()
+                .filter(valintatapajonoValintaperusteissa ->
+                        valintatapajonoValintaperusteissa.getEiLasketaPaivamaaranJalkeen() != null
+                                && beforeDate(valintatapajonoValintaperusteissa.getEiLasketaPaivamaaranJalkeen(), new Date())
+                                && valintalaskennastaEiLoydyValintaperusteissaOlevaaJonoa(valintatapajonoValintaperusteissa, valinnanvaiheValintalaskennassa)
+                )
+                .findAny()
+                .ifPresent(valintatapajonoValintaperusteissa -> {
+                    final String message = String.format(
+                            "(Uuid=%s) Valintaperusteissa olevan valinnanvaiheen %s valintatapajono %s uhkaa jäädä kokonaan ilman tuloksia, koska jonoa ei ole laskettu aiemmin eikä sitä saa laskea päivämäärän %s jälkeen",
+                            uuid,
+                            valinnanvaiheValintaperusteissa.getValinnanVaiheOid(),
+                            valintatapajonoValintaperusteissa.getOid(),
+                            valintatapajonoValintaperusteissa.getEiLasketaPaivamaaranJalkeen()
+                    );
+                    LOG.error(message);
+                    throw new RuntimeException(message);
+                });
+    }
+
+    private boolean valintalaskennastaEiLoydyValintaperusteissaOlevaaJonoa(
+            ValintatapajonoJarjestyskriteereillaDTO valintatapajonoValintaperusteissa,
+            Valinnanvaihe valinnanvaiheValintalaskennassa) {
+        return valinnanvaiheValintalaskennassa
+                .getValintatapajonot()
+                .stream()
+                .noneMatch(valintatapajonoValintalaskennassa -> valintatapajonoValintalaskennassa.getValintatapajonoOid().equals(valintatapajonoValintaperusteissa.getOid()));
+    }
+
+    private Date removeTime(Date date) {
+        Calendar removed = Calendar.getInstance();
+        removed.setTime(date);
+        removed.set(Calendar.HOUR_OF_DAY, 0);
+        removed.set(Calendar.MINUTE, 0);
+        removed.set(Calendar.SECOND, 0);
+        removed.set(Calendar.MILLISECOND, 0);
+        return removed.getTime();
+    }
+
+    private boolean beforeDate(Date a, Date b) {
+        return removeTime(a).before(removeTime(b));
     }
 
     private void searchForPassives(String etuliite, Valinnanvaihe uusi, List<HakemusWrapper> hakemukset) {
@@ -279,6 +325,11 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
     private void laskeValintatapajonot(String hakukohdeOid, String uuid, List<HakemusWrapper> hakemukset, List<Hakemus> laskentahakemukset, Map<String, String> hakukohteenValintaperusteet, ValintaperusteetValinnanVaiheDTO vaihe, int jarjestysnumero, Valinnanvaihe edellinenVaihe, Valinnanvaihe viimeisinVaihe, Valinnanvaihe valinnanvaihe, ValintakoeOsallistuminen edellinenOsallistuminen, boolean korkeakouluhaku) {
         for (ValintatapajonoJarjestyskriteereillaDTO j : vaihe.getValintatapajono()) {
+            if (j.getEiLasketaPaivamaaranJalkeen() != null
+                    && beforeDate(j.getEiLasketaPaivamaaranJalkeen(), new Date())) {
+                LOG.info("(Uuid {}) Hakukohteen {} ja valinnanvaiheen {} valintatapajonoa {} tuloksia ei lasketa uudestaan, koska jonoa ei saa laskea päivämäärän {} jälkeen", uuid, hakukohdeOid, vaihe.getValinnanVaiheOid(), j.getOid(), j.getEiLasketaPaivamaaranJalkeen());
+                continue;
+            }
             if (j.getKaytetaanValintalaskentaa() == null || j.getKaytetaanValintalaskentaa()) {
                 Valintatapajono jono = createValintatapajono(j);
                 Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan = new HashMap<>();
@@ -405,30 +456,44 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         return hakukohdeHakemukset;
     }
 
-    private Valinnanvaihe haeTaiLuoValinnanvaihe(String valinnanvaiheOid, String hakuOid, String hakukohdeOid, int jarjestysnumero) {
+    private Valinnanvaihe haeTaiLuoValinnanvaihe(
+            String valinnanvaiheOid,
+            String hakuOid,
+            String hakukohdeOid,
+            int jarjestysnumero,
+            ValintaperusteetValinnanVaiheDTO valinnanvaiheValintaperusteissa) {
         Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanvaiheOid);
 
         // Tarkistetaan ettei jää haamuvaiheita OVT-7668
-        List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.haeValinnanvaiheetJarjestysnumerolla(hakuOid, hakukohdeOid, jarjestysnumero);
+        List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.haeValinnanvaiheetJarjestysnumerolla(
+                hakuOid,
+                hakukohdeOid,
+                jarjestysnumero
+        );
         for (Valinnanvaihe vaihe : vaiheet) {
-            if (!vaihe.getValinnanvaiheOid().equals(valinnanvaiheOid)) {
+            if (!vaihe
+                    .getValinnanvaiheOid()
+                    .equals(valinnanvaiheOid)) {
                 valinnanvaiheDAO.poistaValinnanvaihe(vaihe);
             }
         }
 
         if (valinnanvaihe != null) {
-            poistaVanhatJonotJaHistoriat(valinnanvaihe);
+            poistaVanhatJonotJaHistoriat(valinnanvaihe, valinnanvaiheValintaperusteissa);
         } else {
             valinnanvaihe = new Valinnanvaihe();
         }
         return valinnanvaihe;
     }
 
-    private void poistaVanhatJonotJaHistoriat(Valinnanvaihe valinnanvaihe) {
+    private void poistaVanhatJonotJaHistoriat(
+            Valinnanvaihe valinnanvaihe,
+            ValintaperusteetValinnanVaiheDTO valinnanvaiheValintaperusteissa) {
         List<Valintatapajono> saastettavat = new ArrayList<>();
         List<Valintatapajono> poistettavat = new ArrayList<>();
         for (Valintatapajono jono : valinnanvaihe.getValintatapajonot()) {
-            if (jono.getKaytetaanValintalaskentaa() == null || jono.getKaytetaanValintalaskentaa()) {
+            if (!jononTulostaEiSaaLaskeaUudestaan(jono, valinnanvaiheValintaperusteissa)
+                    && (jono.getKaytetaanValintalaskentaa() == null || jono.getKaytetaanValintalaskentaa())) {
                 for (Jonosija jonosija : jono.getJonosijat()) {
                     for (Jarjestyskriteeritulos tulos : jonosija.getJarjestyskriteeritulokset()) {
                         jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
@@ -444,6 +509,18 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         valinnanvaihe.getValintatapajonot().addAll(saastettavat);
         valinnanvaiheDAO.saveOrUpdate(valinnanvaihe);
         poistettavat.forEach(valinnanvaiheDAO::poistaJono);
+    }
+
+    private boolean jononTulostaEiSaaLaskeaUudestaan(
+            Valintatapajono valintatapajonoValintalaskennassa,
+            ValintaperusteetValinnanVaiheDTO valinnanvaiheValintaperusteissa) {
+        return valinnanvaiheValintaperusteissa
+                .getValintatapajono()
+                .stream()
+                .anyMatch(valintatapajonoValintaperusteissa ->
+                        valintatapajonoValintaperusteissa.getOid().equals(valintatapajonoValintalaskennassa.getValintatapajonoOid())
+                                && valintatapajonoValintaperusteissa.getEiLasketaPaivamaaranJalkeen() != null
+                                && beforeDate(valintatapajonoValintaperusteissa.getEiLasketaPaivamaaranJalkeen(), new Date()));
     }
 
     private void poistaHaamuryhmat(List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat, String hakukohdeOid) {

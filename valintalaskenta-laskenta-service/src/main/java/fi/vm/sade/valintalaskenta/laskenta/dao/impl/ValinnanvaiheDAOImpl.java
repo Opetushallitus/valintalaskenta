@@ -2,7 +2,6 @@ package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.AdvancedDatastore;
 import org.mongodb.morphia.Datastore;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import org.slf4j.Logger;
