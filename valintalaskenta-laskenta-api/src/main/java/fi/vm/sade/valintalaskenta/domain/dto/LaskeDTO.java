@@ -3,9 +3,11 @@ package fi.vm.sade.valintalaskenta.domain.dto;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetHakijaryhmaDTO;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 public class LaskeDTO {
     private final String uuid; // <- Käynnistetyn laskennan tunniste, referenssi logeihin
@@ -75,5 +77,32 @@ public class LaskeDTO {
 
     public boolean isKorkeakouluhaku() {
         return korkeakouluhaku;
+    }
+
+    public LaskeDTOSizes logSerializedSizes(Function<Object, Integer> sizeCounter) {
+        int hakemusSize = sizeCounter.apply(hakemus);
+        int valintaperusteSize = sizeCounter.apply(valintaperuste);
+        int hakijaryhmatSize = sizeCounter.apply(hakijaryhmat);
+        int ownSize = sizeCounter.apply(this);
+        return new LaskeDTOSizes(hakemusSize, valintaperusteSize, hakijaryhmatSize, ownSize);
+    }
+
+    public static class LaskeDTOSizes {
+        public final int hakemusSize;
+        public final int valintaperusteSize;
+        public final int hakijaryhmatSize;
+        public final int ownSize;
+
+        public LaskeDTOSizes(int hakemusSize, int valintaperusteSize, int hakijaryhmatSize, int ownSize) {
+            this.hakemusSize = hakemusSize;
+            this.valintaperusteSize = valintaperusteSize;
+            this.hakijaryhmatSize = hakijaryhmatSize;
+            this.ownSize = ownSize;
+        }
+
+        @Override
+        public String toString() {
+            return ToStringBuilder.reflectionToString(this);
+        }
     }
 }
