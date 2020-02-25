@@ -21,6 +21,10 @@
             <artifactId>validation-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-jaxrs</artifactId>
             <scope>provided</scope>
