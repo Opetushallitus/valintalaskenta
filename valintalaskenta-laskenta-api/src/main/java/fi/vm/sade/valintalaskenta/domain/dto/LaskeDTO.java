@@ -87,6 +87,11 @@ public class LaskeDTO {
         return new LaskeDTOSizes(hakemusSize, valintaperusteSize, hakijaryhmatSize, ownSize);
     }
 
+    public void populoiSuoritustiedotHakemuksille(SuoritustiedotDTO suoritustiedotDTO) {
+        getHakemus().forEach(h ->
+            h.setKoskiOpiskeluoikeudetJson(suoritustiedotDTO.haeKoskiOpiskeluoikeudetJson(h.getHakijaOid())));
+    }
+
     public static class LaskeDTOSizes {
         public final int hakemusSize;
         public final int valintaperusteSize;

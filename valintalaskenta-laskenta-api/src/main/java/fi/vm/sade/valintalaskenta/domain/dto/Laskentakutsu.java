@@ -6,6 +6,7 @@ public class Laskentakutsu {
     private boolean isValintaryhmalaskenta;
     private LaskeDTO laskeDTO; //Tavalliset laskennat
     private List<LaskeDTO> laskeDTOs; //Valintaryhmälaskennat
+    private SuoritustiedotDTO suoritustiedotDTO; // Koski-opiskeluoikeustiedot laskentoja varten. Sure-suoritukset täytyy asettaa hakemuksille jo valintalaskentakoostepalvelussa.
     private String uuid;
     private String pollKey;
 
@@ -15,7 +16,8 @@ public class Laskentakutsu {
     public Laskentakutsu() {
     }
 
-    public Laskentakutsu(LaskeDTO laskeDTO) {
+    public Laskentakutsu(LaskeDTO laskeDTO, SuoritustiedotDTO suoritustiedotDTO) {
+        this.suoritustiedotDTO = suoritustiedotDTO;
         this.isValintaryhmalaskenta = false;
         this.laskeDTO = laskeDTO;
         this.laskeDTOs = null;
@@ -24,7 +26,8 @@ public class Laskentakutsu {
     }
 
     //Tulkitaan laskentakutsu valintaryhmälaskennaksi aina, jos parametri on lista laskeDTO-arvoja
-    public Laskentakutsu(List<LaskeDTO> laskeDTOs) {
+    public Laskentakutsu(List<LaskeDTO> laskeDTOs, SuoritustiedotDTO suoritustiedotDTO) {
+        this.suoritustiedotDTO = suoritustiedotDTO;
         this.isValintaryhmalaskenta = true;
         this.laskeDTO = null;
         this.laskeDTOs = laskeDTOs;
@@ -52,4 +55,19 @@ public class Laskentakutsu {
         return uuid;
     }
 
+    /**
+     * Jackson-deserialisointi vaatii tämän
+     */
+    public SuoritustiedotDTO getSuoritustiedotDTO() {
+        return suoritustiedotDTO;
+    }
+
+    public void populoiSuoritustiedotLaskeDtoille() {
+        if (laskeDTOs != null) {
+            laskeDTOs.forEach(ldto -> ldto.populoiSuoritustiedotHakemuksille(suoritustiedotDTO));
+        }
+        if (laskeDTO != null) {
+            laskeDTO.populoiSuoritustiedotHakemuksille(suoritustiedotDTO);
+        }
+    }
 }
