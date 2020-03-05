@@ -29,7 +29,7 @@
         <modelmapper.version>2.3.5</modelmapper.version>
         <spring.asm.version>3.1.4.RELEASE</spring.asm.version>
         <spring.version>5.1.5.RELEASE</spring.version>
-        <spring.security.version>4.2.11.RELEASE</spring.security.version>
+        <spring.security.version>5.3.0.RELEASE</spring.security.version>
         <jackson.version>2.10.2</jackson.version>
         <legacy-jackson.version>1.9.13</legacy-jackson.version>
         <swagger.version>1.5.17</swagger.version>
