@@ -14,6 +14,7 @@ import fi.vm.sade.valintalaskenta.domain.HakukohteenLaskennanTila;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.Laskentakutsu;
+import fi.vm.sade.valintalaskenta.domain.dto.SuoritustiedotDTO;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija.ValisijoiteltavatJonot;
@@ -113,7 +114,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
     }
 
     private Laskentakutsu createLaskentakutsu(String uuid) {
-        return new Laskentakutsu(new LaskeDTO(uuid + System.currentTimeMillis(), false, false, "hakukohdeOid", Collections.emptyList(), Collections.emptyList()));
+        return new Laskentakutsu(new LaskeDTO(uuid + System.currentTimeMillis(), false, false, "hakukohdeOid", Collections.emptyList(), Collections.emptyList()), new SuoritustiedotDTO());
     }
 
     private String waitForEventualStatus(Laskentakutsu laskentakutsu, String expectedStatus) throws InterruptedException {

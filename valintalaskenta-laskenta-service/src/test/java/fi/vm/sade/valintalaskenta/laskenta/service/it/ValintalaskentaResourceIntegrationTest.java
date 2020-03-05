@@ -34,6 +34,7 @@ import fi.vm.sade.valintalaskenta.domain.HakukohteenLaskennanTila;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.Laskentakutsu;
+import fi.vm.sade.valintalaskenta.domain.dto.SuoritustiedotDTO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
@@ -133,7 +134,7 @@ public class ValintalaskentaResourceIntegrationTest {
     @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
     public void kielikokeeseenKutsutaanJosSuoritustaTaiTodennettuaKielitaitoaEiLoydyKunValintakoevaiheitaOnYksi() throws JsonSyntaxException, IOException {
         LaskeDTO laskeDtoYhdenKoekutsunKanssa = readJson("laskeDTOYhdenKoekutsuVaiheenKanssa.json", new TypeToken<LaskeDTO>() {});
-        Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDtoYhdenKoekutsunKanssa);
+        Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDtoYhdenKoekutsunKanssa, new SuoritustiedotDTO());
         try {
             valintalaskentaResource.toteutaLaskeKaikki(laskentakutsu);
         } catch (Exception e) {
@@ -159,7 +160,7 @@ public class ValintalaskentaResourceIntegrationTest {
     @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
     public void kielikokeeseenKutsutaanJosSuoritustaTaiTodennettuaKielitaitoaEiLoydyVaikkaValintakoevaiheitaOlisiUseampia() throws JsonSyntaxException, IOException {
         LaskeDTO laskeDtoUseammanKoekutsunKanssa = readJson("laskeDTOUseammanKoekutsuVaiheenKanssa.json", new TypeToken<LaskeDTO>() {});
-        Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDtoUseammanKoekutsunKanssa);
+        Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDtoUseammanKoekutsunKanssa, new SuoritustiedotDTO());
 
         valintalaskentaResource.toteutaLaskeKaikki(laskentakutsu);
 
@@ -220,7 +221,7 @@ public class ValintalaskentaResourceIntegrationTest {
         LaskeDTO laskeDto2 = new LaskeDTO("uuid2", true, false, hakukohdeOidJossaOmaKoe, Collections.singletonList(hakemus), perusteetKohde2);
         String returnValue;
         do {
-            returnValue = valintalaskentaResource.laskeJaSijoittele(new Laskentakutsu(Arrays.asList(laskeDto1, laskeDto2)));
+            returnValue = valintalaskentaResource.laskeJaSijoittele(new Laskentakutsu(Arrays.asList(laskeDto1, laskeDto2), new SuoritustiedotDTO()));
             Thread.sleep(50);
         } while (!(returnValue.equals(HakukohteenLaskennanTila.VALMIS) || returnValue.equals(HakukohteenLaskennanTila.VIRHE)));
 

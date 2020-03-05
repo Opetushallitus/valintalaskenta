@@ -88,7 +88,7 @@ public class ValintalaskentaResourceImpl {
     public String laske(Laskentakutsu laskentakutsu) throws Exception {
         try {
             String pollKey = laskentakutsu.getPollKey();
-
+            laskentakutsu.populoiSuoritustiedotLaskeDtoille();
             String status = pidaKirjaaMeneillaanOlevista(pollKey);
             if (!status.equals(HakukohteenLaskennanTila.UUSI)) {
                 return status;
@@ -115,7 +115,7 @@ public class ValintalaskentaResourceImpl {
     public String valintakokeet(Laskentakutsu laskentakutsu) throws Exception {
         try {
             String pollKey = laskentakutsu.getPollKey();
-
+            laskentakutsu.populoiSuoritustiedotLaskeDtoille();
             String status = pidaKirjaaMeneillaanOlevista(pollKey);
             if (!status.equals(HakukohteenLaskennanTila.UUSI)) {
                 return status;
@@ -142,7 +142,7 @@ public class ValintalaskentaResourceImpl {
     public String laskeKaikki(Laskentakutsu laskentakutsu) throws Exception {
         try {
             String pollKey = laskentakutsu.getPollKey();
-
+            laskentakutsu.populoiSuoritustiedotLaskeDtoille();
             String status = pidaKirjaaMeneillaanOlevista(pollKey);
             if (!status.equals(HakukohteenLaskennanTila.UUSI)) {
                 return status;
@@ -168,6 +168,7 @@ public class ValintalaskentaResourceImpl {
     @POST
     public String laskeJaSijoittele(Laskentakutsu laskentakutsu) {
         try {
+            laskentakutsu.populoiSuoritustiedotLaskeDtoille();
             List<LaskeDTO> lista = laskentakutsu.getLaskeDTOs();
             String pollKey = laskentakutsu.getPollKey();
             if (lista == null || lista.isEmpty()) {

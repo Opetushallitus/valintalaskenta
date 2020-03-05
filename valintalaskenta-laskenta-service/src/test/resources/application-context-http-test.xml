@@ -64,7 +64,7 @@
                        serviceClass="fi.vm.sade.valintalaskenta.laskenta.service.it.JaxRsClientIntegrationTest.ResourceForTesting"
                        inheritHeaders="true">
       <jaxrs-client:providers>
-          <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
+          <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
           <bean class="fi.vm.sade.valintalaskenta.laskenta.ObjectMapperProvider" />
       </jaxrs-client:providers>
   </jaxrs-client:client>
