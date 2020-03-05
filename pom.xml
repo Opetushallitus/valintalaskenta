@@ -33,6 +33,7 @@
         <jackson.version>2.10.2</jackson.version>
         <legacy-jackson.version>1.9.13</legacy-jackson.version>
         <swagger.version>1.5.17</swagger.version>
+        <jasig.cas.version>3.6.1</jasig.cas.version>
 
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -256,8 +257,13 @@
             </dependency>
             <dependency>
                 <groupId>org.jasig.cas.client</groupId>
+                <artifactId>cas-client-core</artifactId>
+                <version>${jasig.cas.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jasig.cas.client</groupId>
                 <artifactId>cas-client-support-distributed-ehcache</artifactId>
-                <version>3.4.1</version>
+                <version>${jasig.cas.version}</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>ehcache</artifactId>
