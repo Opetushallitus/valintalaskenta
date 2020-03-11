@@ -3,7 +3,7 @@
     <parent>
         <groupId>fi.vm.sade.valintaperusteet</groupId>
         <artifactId>valintalaskenta</artifactId>
-        <version>5.13-VTKU-147-SNAPSHOT</version>
+        <version>5.13-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
     <artifactId>valintalaskenta-domain</artifactId>
