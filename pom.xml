@@ -19,18 +19,18 @@
 
     <properties>
         <valintaperusteet.version>5.13-VTKU-110-SNAPSHOT</valintaperusteet.version>
-        <valinta-sharedutils.version>5.9-SNAPSHOT</valinta-sharedutils.version>
+        <valinta-sharedutils.version>5.11-SNAPSHOT</valinta-sharedutils.version>
         <sijoittelu.version>7.4.0-SNAPSHOT</sijoittelu.version>
 
-        <cxf.version>3.3.1</cxf.version>
+        <cxf.version>3.3.5</cxf.version>
         <flapdoodle.embed.mongo.version>2.2.0</flapdoodle.embed.mongo.version>
-        <httpcomponents.core.version>4.4.4</httpcomponents.core.version>
-        <httpcomponents.version>4.5.2</httpcomponents.version>
+        <httpcomponents.core.version>4.4.13</httpcomponents.core.version>
+        <httpcomponents.version>4.5.12</httpcomponents.version>
         <modelmapper.version>2.3.5</modelmapper.version>
         <spring.asm.version>3.1.4.RELEASE</spring.asm.version>
-        <spring.version>5.1.5.RELEASE</spring.version>
-        <spring.security.version>4.2.11.RELEASE</spring.security.version>
-        <jackson.version>2.10.2</jackson.version>
+        <spring.version>5.1.14.RELEASE</spring.version>
+        <spring.security.version>4.2.14.RELEASE</spring.security.version>
+        <jackson.version>2.10.3</jackson.version>
         <legacy-jackson.version>1.9.13</legacy-jackson.version>
         <swagger.version>1.5.17</swagger.version>
         <jasig.cas.version>3.4.1</jasig.cas.version>
@@ -44,7 +44,7 @@
         <maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
         <plugin.exec-maven-plugin.version>1.6.0</plugin.exec-maven-plugin.version>
 
-        <jetty.version>9.4.15.v20190215</jetty.version>
+        <jetty.version>9.4.27.v20200227</jetty.version>
     </properties>
 
     <dependencyManagement>
@@ -279,7 +279,7 @@
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
                 <artifactId>opintopolku-spring-security</artifactId>
-                <version>0.4.0-SNAPSHOT</version>
+                <version>0.5.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
@@ -306,6 +306,16 @@
                 <groupId>fi.vm.sade.java-utils</groupId>
                 <artifactId>java-cxf</artifactId>
                 <version>0.3.2-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>fi.vm.sade.java-utils</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>0.4.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>fi.vm.sade.java-utils</groupId>
+                <artifactId>opintopolku-user-details-service</artifactId>
+                <version>0.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.ow2.asm</groupId>
@@ -647,7 +657,7 @@
             <dependency>
                 <groupId>io.circe</groupId>
                 <artifactId>circe-core_2.13</artifactId>
-                <version>0.12.0</version>
+                <version>0.13.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
