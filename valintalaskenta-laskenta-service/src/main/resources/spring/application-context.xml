@@ -86,7 +86,7 @@
 
     <jaxrs-client:client id="ValintatapajonoClient"
                          serviceClass="fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource"
-                         address="${host.ilb}"
+                         address="${valintalaskentakoostepalvelu.valintaperusteet.ilb.host}"
                          inheritHeaders="true">
         <jaxrs-client:outInterceptors>
             <ref bean="ophRequestHeaders"/>

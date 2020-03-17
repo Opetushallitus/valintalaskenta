@@ -24,6 +24,7 @@ user.home.conf=${user.home}/oph-configuration
 web.url.cas=https\://${host.cas}/cas
 
 valintalaskentakoostepalvelu.sijoittelu.rest.url=https://${host.virkailija}/sijoittelu-service/resources
+valintalaskentakoostepalvelu.valintaperusteet.ilb.host={{host_ilb}}
 valintalaskentakoostepalvelu.valintaperusteet.ilb.url=${host.ilb}/valintaperusteet-service/resources
 valintalaskentakoostepalvelu.app.username.to.sijoittelu={{valintalaskentakoostepalvelu_app_username_to_sijoittelu}}
 valintalaskentakoostepalvelu.app.password.to.sijoittelu={{valintalaskentakoostepalvelu_app_password_to_sijoittelu}}
