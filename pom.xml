@@ -18,7 +18,7 @@
     </modules>
 
     <properties>
-        <valintaperusteet.version>5.14-SNAPSHOT</valintaperusteet.version>
+        <valintaperusteet.version>5.15-SNAPSHOT</valintaperusteet.version>
         <valinta-sharedutils.version>5.11-SNAPSHOT</valinta-sharedutils.version>
         <sijoittelu.version>7.4.0-SNAPSHOT</sijoittelu.version>
 
