@@ -428,6 +428,25 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
+    public List<HakukohdeDTO> haeLasketutValinnanvaiheetHakukohteille(String hakuOid, List<String> hakukohdeOids) {
+        LOGGER.info("Valintatietoja haetaan mongosta {}!", hakukohdeOids);
+        List<Valinnanvaihe> a = valinnanvaiheDAO.readByHakukohdeOids(hakukohdeOids);
+        LOGGER.info("Valintatietoja haettu mongosta {}!", hakukohdeOids);
+        List<HakukohdeDTO> b = valintatulosConverter.convertValinnanvaihe(a);
+        LOGGER.info("Valintatiedot kovertoitu DTO:iksi {}!", hakukohdeOids);
+        applyMuokatutJonosijatToHakukohde(hakuOid, b);
+        LOGGER.info("Muokatut jonosijat liitetty {}!", hakukohdeOids);
+        b.forEach(hakukohde -> hakukohde.getHakijaryhma().addAll(haeHakijaryhmatHakukohteelle(hakukohde.getOid())));
+        return b;
+    }
+
+    @Override
+    public List<String> haeHakukohdeOiditHaulle(String hakuOid) {
+        LOGGER.info("Haetaan hakukohdeOidit haulle {} mongosta!", hakuOid);
+        return haeHakukohdeOiditHaulle(hakuOid);
+    }
+
+    @Override
     public List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid) {
         LOGGER.info("Valintatietoja haetaan mongosta {}!", hakuOid);
         List<Valinnanvaihe> a = valinnanvaiheDAO.readByHakuOid(hakuOid);

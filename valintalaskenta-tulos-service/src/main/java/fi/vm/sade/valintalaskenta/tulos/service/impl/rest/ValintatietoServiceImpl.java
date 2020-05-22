@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -86,8 +87,50 @@ public class ValintatietoServiceImpl implements ValintatietoService {
         return osallistumiset;
     }
 
+    public HakuDTO haeValintatiedotPalasissa(String hakuOid) {
+
+        try {
+            final int chunkSize = 200;
+            final AtomicInteger counter = new AtomicInteger();
+
+            List<String> hakukohdeOidit = tulosService.haeHakukohdeOiditHaulle(hakuOid);
+
+
+            Collection<List<String>> hakukohdeOidsInChunks = hakukohdeOidit.stream()
+                    .collect(Collectors.groupingBy(it -> counter.getAndIncrement() / chunkSize))
+                    .values();
+
+            List<HakukohdeDTO> hakukohdeDTOs = hakukohdeOidsInChunks.stream()
+                    .flatMap(oids -> tulosService.haeLasketutValinnanvaiheetHakukohteille(hakuOid, oids).stream())
+                    .collect(Collectors.toList());
+
+            HakuDTO hakuDTO = new HakuDTO();
+            hakuDTO.setHakuOid(hakuOid);
+            hakuDTO.setHakukohteet(hakukohdeDTOs);
+
+            for (HakukohdeDTO v : hakukohdeDTOs) {
+                HakukohdeDTO ht = new HakukohdeDTO();
+                ht.setOid(v.getOid());
+                ht.setTarjoajaoid(v.getTarjoajaoid());
+                ht.getHakijaryhma().addAll(v.getHakijaryhma());
+
+                for (ValinnanvaiheDTO valinnanvaiheDTO : v.getValinnanvaihe()) {
+                    ht.getValinnanvaihe().add(
+                            createValinnanvaiheTyyppi(valinnanvaiheDTO, Optional.empty()));
+                }
+            }
+            return hakuDTO;
+        } catch (Exception e) {
+            LOG.error("Valintatietoja ei saatu haettua haulle {}!", hakuOid);
+            LOG.error("Virhe valintatietojen hakemisessa!", e);
+            throw new RuntimeException("Valintatietojen haku epäonnistui!", e);
+        }
+
+    }
+
     public HakuDTO haeValintatiedot(String hakuOid) {
         try {
+
             List<HakukohdeDTO> a = tulosService
                     .haeLasketutValinnanvaiheetHaulle(hakuOid);
 

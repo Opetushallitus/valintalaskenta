@@ -13,6 +13,10 @@ public interface ValinnanvaiheDAO {
 
     List<Valinnanvaihe> readByHakuOid(String hakuoid);
 
+    List<Valinnanvaihe> readByHakukohdeOids(List<String> hakukohdeOids);
+
+    List<String> readHakukohdeOidsByHakuOid(String hakuOid);
+
     List<ValintatapajonoMigrationDTO> valintatapajonotJotkaEivatKaytaLaskentaa();
 
     List<Pair<String, String>> hakuOidHakukohdeOidPairsForJonos(List<ValintatapajonoMigrationDTO> validValintatapajonos);

@@ -39,6 +39,10 @@ public interface ValintalaskentaTulosService {
 
     List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid);
 
+    List<String> haeHakukohdeOiditHaulle(String hakuOid);
+
+    List<HakukohdeDTO> haeLasketutValinnanvaiheetHakukohteille(String hakuOid, List<String> hakukohdeOids);
+
     MuokattuJonosija muutaJarjestyskriteeri(String valintatapajonoOid,
                                             String hakemusOid, Integer jarjestyskriteeriPrioriteetti,
                                             MuokattuJonosijaArvoDTO arvo,

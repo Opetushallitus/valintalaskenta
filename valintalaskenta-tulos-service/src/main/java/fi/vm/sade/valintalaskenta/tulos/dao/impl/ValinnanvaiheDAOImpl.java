@@ -70,6 +70,22 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     }
 
     @Override
+    public List<Valinnanvaihe> readByHakukohdeOids(List<String> hakukohdeOids) {
+        return migrate(datastore.createQuery(ValinnanvaiheMigrationDTO.class)
+                .field("hakukohdeOid").in(hakukohdeOids)
+                .asList());
+    }
+
+    @Override
+    public List<String> readHakukohdeOidsByHakuOid(String hakuOid) {
+        List<ValinnanvaiheMigrationDTO> valinnanvaiheMigrationDTOS = datastore.createQuery(ValinnanvaiheMigrationDTO.class)
+                .field("hakuOid").equal(hakuOid)
+                .project("hakukohdeOid", true)
+                .asList();
+        return valinnanvaiheMigrationDTOS.stream().map(dto -> dto.getHakukohdeOid()).collect(Collectors.toList());
+    }
+
+    @Override
     public List<Valinnanvaihe> readByHakuOid(String hakuoid) {
         return migrate(datastore.createQuery(ValinnanvaiheMigrationDTO.class)
                 .field("hakuOid").equal(hakuoid)
