@@ -7,6 +7,7 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Laskentakutsu {
@@ -34,18 +35,22 @@ public class Laskentakutsu {
         this.pollKey = String.format("%s_%s", uuid, laskeDTO.getHakukohdeOid());
     }
 
-    //Tulkitaan laskentakutsu valintaryhmälaskennaksi aina, jos parametri on lista laskeDTO-arvoja
-
-    public Laskentakutsu(List<LaskeDTO> laskeDTOs, SuoritustiedotDTO suoritustiedotDTO) {
-        this.suoritustiedotDtoBase64Gzip = toBase64Gzip(suoritustiedotDTO);
+    private Laskentakutsu(boolean isValintaryhmalaskenta, String uuid) {
         this.isValintaryhmalaskenta = true;
         this.laskeDTO = null;
-        this.laskeDTOs = laskeDTOs;
-        this.uuid = laskeDTOs.iterator().next().getUuid();
+        this.uuid = uuid;
         this.pollKey = uuid+"_valintaryhmalaskenta";
     }
 
-    private static String toBase64Gzip(SuoritustiedotDTO suoritustiedotDTO) {
+    //Tulkitaan laskentakutsu valintaryhmälaskennaksi aina, jos parametri on lista laskeDTO-arvoja
+
+    public Laskentakutsu(List<LaskeDTO> laskeDTOs, SuoritustiedotDTO suoritustiedotDTO) {
+        this(true, laskeDTOs.iterator().next().getUuid());
+        this.suoritustiedotDtoBase64Gzip = toBase64Gzip(suoritustiedotDTO);
+        this.laskeDTOs = laskeDTOs;
+    }
+
+    public static String toBase64Gzip(SuoritustiedotDTO suoritustiedotDTO) {
         try {
             return IOUtils.toString(Base64.getEncoder().encode(GzipUtil.enkoodaa(GSON.toJson(suoritustiedotDTO))));
         } catch (IOException e) {
@@ -84,6 +89,10 @@ public class Laskentakutsu {
         return suoritustiedotDtoBase64Gzip;
     }
 
+    public void setSuoritustiedotDtoBase64Gzip(String suoritustiedotDtoBase64Gzip) {
+        this.suoritustiedotDtoBase64Gzip = suoritustiedotDtoBase64Gzip;
+    }
+
     public void populoiSuoritustiedotLaskeDtoille() {
         SuoritustiedotDTO suoritustiedotDTO = fromBase64Gzip(suoritustiedotDtoBase64Gzip);
         if (laskeDTOs != null) {
@@ -92,5 +101,16 @@ public class Laskentakutsu {
         if (laskeDTO != null) {
             laskeDTO.populoiSuoritustiedotHakemuksille(suoritustiedotDTO);
         }
+    }
+
+    public synchronized void lisaaLaskeDto(LaskeDTO laskeDto) {
+        if (laskeDTOs == null) {
+            laskeDTOs = new LinkedList<>();
+        }
+        laskeDTOs.add(laskeDto);
+    }
+
+    public static Laskentakutsu luoTyhjaValintaryhmaLaskentaPalasissaSiirtoaVarten(String uuid) {
+        return new Laskentakutsu(true, uuid);
     }
 }
