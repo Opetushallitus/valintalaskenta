@@ -527,7 +527,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         List<String> oidit = hakijaryhmat.stream().map(ValintaperusteetHakijaryhmaDTO::getOid).collect(Collectors.toList());
 
         hakijaryhmaDAO.haeHakijaryhmat(hakukohdeOid).stream()
-                .filter(h -> oidit.indexOf(h.getHakijaryhmaOid()) == -1)
+                .filter(h -> oidit.contains(h.getHakijaryhmaOid()))
                 .forEach(h -> {
                     LOG.info("(Uuid={}) Poistetaan hakijaryhmä {}", uuid, h.getHakijaryhmaOid());
                     hakijaryhmaDAO.poistaHakijaryhma(h);
