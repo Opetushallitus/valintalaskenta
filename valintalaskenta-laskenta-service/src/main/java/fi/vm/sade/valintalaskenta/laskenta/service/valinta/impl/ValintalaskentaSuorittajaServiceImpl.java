@@ -122,7 +122,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             valinnanvaiheDAO.saveOrUpdate(valinnanvaihe);
         }
 
-        poistaHaamuryhmat(hakijaryhmat, valintaperusteet.get(0).getHakukohdeOid());
+        poistaHaamuryhmat(hakijaryhmat, valintaperusteet.get(0).getHakukohdeOid(), uuid);
         LOG.info("(Uuid={}) Hakijaryhmien määrä {} hakukohteessa {}", uuid, hakijaryhmat.size(), hakukohdeOid);
         laskeHakijaryhmat(valintaperusteet, hakijaryhmat, hakukohdeOid, uuid, hakemuksetHakukohteittain, korkeakouluhaku);
     }
@@ -523,12 +523,15 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                                 && beforeDate(valintatapajonoValintaperusteissa.getEiLasketaPaivamaaranJalkeen(), new Date()));
     }
 
-    private void poistaHaamuryhmat(List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat, String hakukohdeOid) {
+    private void poistaHaamuryhmat(List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat, String hakukohdeOid, String uuid) {
         List<String> oidit = hakijaryhmat.stream().map(ValintaperusteetHakijaryhmaDTO::getOid).collect(Collectors.toList());
 
         hakijaryhmaDAO.haeHakijaryhmat(hakukohdeOid).stream()
                 .filter(h -> oidit.indexOf(h.getHakijaryhmaOid()) == -1)
-                .forEach(hakijaryhmaDAO::poistaHakijaryhma);
+                .forEach(h -> {
+                    LOG.info("(Uuid={}) Poistetaan hakijaryhmä {}", uuid, h.getHakijaryhmaOid());
+                    hakijaryhmaDAO.poistaHakijaryhma(h);
+                });
     }
 
     private Hakijaryhma haeTaiLuoHakijaryhma(ValintaperusteetHakijaryhmaDTO dto) {
