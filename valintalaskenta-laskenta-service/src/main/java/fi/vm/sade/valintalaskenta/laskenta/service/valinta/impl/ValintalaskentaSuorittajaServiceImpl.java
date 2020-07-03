@@ -237,6 +237,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
     private void laskeHakijaryhmat(List<ValintaperusteetDTO> valintaperusteet, List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat, String hakukohdeOid, String uuid, Map<String, Hakemukset> hakemuksetHakukohteittain, boolean korkeakouluhaku) {
         if (!hakijaryhmat.isEmpty()) {
+            List<Hakijaryhma> vanhatHakijaryhmat = hakijaryhmaDAO.haeHakijaryhmat(hakukohdeOid);
             hakijaryhmat.parallelStream().forEach(h -> {
                 if (!hakemuksetHakukohteittain.containsKey(hakukohdeOid)) {
                     LOG.info("(Uuid={}) Hakukohteelle {} ei ole yhtään hakemusta. Hypätään yli.", uuid, hakukohdeOid);
@@ -292,7 +293,12 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                 for (JonosijaJaSyotetytArvot js : jonosijatHakemusOidinMukaan.values()) {
                     hakijaryhma.getJonosijat().add(createJonosija(js));
                 }
-                LOG.info("(Uuid={}) Persistoidaan hakijaryhmä {}", uuid, hakijaryhma.getHakijaryhmaOid());
+                List<Hakijaryhma> vanhatSamallaOidilla = vanhatHakijaryhmat.stream()
+                        .filter(vh -> vh.getHakijaryhmaOid().equals(hakijaryhma.getHakijaryhmaOid()))
+                        .collect(Collectors.toList());
+                LOG.info("(Uuid={}) Persistoidaan hakijaryhmä {} ja poistetaan sen aiemmat versiot ({} kpl).",
+                        uuid, hakijaryhma.getHakijaryhmaOid(), vanhatSamallaOidilla.size());
+                vanhatSamallaOidilla.forEach(hakijaryhmaDAO::poistaHakijaryhma);
                 hakijaryhmaDAO.createWithoutAuditLogging(hakijaryhma);
             });
         }
@@ -527,9 +533,10 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         List<String> oidit = hakijaryhmat.stream().map(ValintaperusteetHakijaryhmaDTO::getOid).collect(Collectors.toList());
 
         hakijaryhmaDAO.haeHakijaryhmat(hakukohdeOid).stream()
-                .filter(h -> oidit.contains(h.getHakijaryhmaOid()))
+                .filter(h -> !oidit.contains(h.getHakijaryhmaOid()))
                 .forEach(h -> {
-                    LOG.info("(Uuid={}) Poistetaan hakijaryhmä {}", uuid, h.getHakijaryhmaOid());
+                    LOG.info("(Uuid={}) Poistetaan hakukohteelta {} hakijaryhmä {}, jota ei löydy enää valintaperusteista.",
+                            uuid, hakukohdeOid, h.getHakijaryhmaOid());
                     hakijaryhmaDAO.poistaHakijaryhma(h);
                 });
     }
