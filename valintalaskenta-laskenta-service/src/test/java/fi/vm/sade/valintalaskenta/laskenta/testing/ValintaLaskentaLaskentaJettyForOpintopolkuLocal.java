@@ -16,6 +16,6 @@ public class ValintaLaskentaLaskentaJettyForOpintopolkuLocal extends Opintopolku
     }
 
     private void start() {
-        start(ValintaLaskentaLaskentaJetty.CONTEXT_PATH, port, 5, 10, Duration.ofMinutes(1));
+        start(ValintaLaskentaLaskentaJetty.CONTEXT_PATH, port, 5, 10, Duration.ofMinutes(1), Duration.ofSeconds(4000));
     }
 }
