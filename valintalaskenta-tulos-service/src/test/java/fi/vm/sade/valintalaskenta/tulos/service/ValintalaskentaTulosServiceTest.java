@@ -23,6 +23,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.junit.Assert.assertEquals;
@@ -59,6 +60,31 @@ public class ValintalaskentaTulosServiceTest {
         assertEquals(2, kaikki.size());
         kaikki = valintalaskentaTulosService.haeValintakoeOsallistumisetByHakutoive("oid2");
         assertEquals(1, kaikki.size());
+    }
+
+    @Test
+    @UsingDataSet(locations = "valinnanvaiheTasasija.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void haeLasketutuValintavaiheetHaulleAndConvertTest() {
+        final String hakuOid = "haku1";
+
+        List<HakukohdeDTO> hakukohdeDTOs = valintalaskentaTulosService.haeLasketutValinnanvaiheetHaulle(hakuOid);
+
+        assertEquals(1, hakukohdeDTOs.size());
+        HakukohdeDTO hakukohdeDTO = hakukohdeDTOs.get(0);
+        assertEquals(0, hakukohdeDTO.getPrioriteetti());
+
+        final int convertedPrioriteetti = 15;
+        Function<HakukohdeDTO, HakukohdeDTO> testConverter = (HakukohdeDTO source) -> {
+            HakukohdeDTO result = new HakukohdeDTO();
+            result.setPrioriteetti(convertedPrioriteetti);
+            return result;
+        };
+
+        List<HakukohdeDTO> convertedHakukohdeDTOs = valintalaskentaTulosService.haeLasketutValinnanvaiheetHaulle(hakuOid, testConverter);
+
+        assertEquals(1, convertedHakukohdeDTOs.size());
+        HakukohdeDTO convertedHakukohdeDTO = convertedHakukohdeDTOs.get(0);
+        assertEquals(convertedPrioriteetti, convertedHakukohdeDTO.getPrioriteetti());
     }
 
     @Test

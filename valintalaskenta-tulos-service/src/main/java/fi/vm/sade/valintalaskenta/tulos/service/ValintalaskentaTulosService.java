@@ -20,6 +20,7 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public interface ValintalaskentaTulosService {
 
@@ -38,6 +39,8 @@ public interface ValintalaskentaTulosService {
     List<HakukohdeDTO> haeVirheetHaulle(String hakuOid);
 
     List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid);
+
+    List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid, Function<HakukohdeDTO, HakukohdeDTO> convert);
 
     MuokattuJonosija muutaJarjestyskriteeri(String valintatapajonoOid,
                                             String hakemusOid, Integer jarjestyskriteeriPrioriteetti,
