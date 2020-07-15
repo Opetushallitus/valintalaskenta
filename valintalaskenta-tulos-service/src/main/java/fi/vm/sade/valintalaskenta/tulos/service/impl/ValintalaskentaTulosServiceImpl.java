@@ -429,10 +429,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
     @Override
     public List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid) {
-        LOGGER.info("Valintatietoja haetaan mongosta {}!", hakuOid);
-        List<Valinnanvaihe> a = valinnanvaiheDAO.readByHakuOid(hakuOid);
         LOGGER.info("Valintatietoja haettu mongosta {}!", hakuOid);
-        List<HakukohdeDTO> b = valintatulosConverter.convertValinnanvaihe(a);
+        List<HakukohdeDTO> b = valintatulosConverter.convertValinnanvaihe(getValinnanvaihes(hakuOid));
         LOGGER.info("Valintatiedot kovertoitu DTO:iksi {}!", hakuOid);
         applyMuokatutJonosijatToHakukohde(hakuOid, b);
         LOGGER.info("Muokatut jonosijat liitetty {}!", hakuOid);
@@ -443,16 +441,19 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     @Override
     public List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid,
                                                                Function<HakukohdeDTO, HakukohdeDTO> convert) {
-        LOGGER.info("Valintatietoja haetaan mongosta {}!", hakuOid);
-        List<Valinnanvaihe> a = valinnanvaiheDAO.readByHakuOid(hakuOid);
         LOGGER.info("Valintatietoja haettu mongosta {}!", hakuOid);
-        List<HakukohdeDTO> b = valintatulosConverter.convertValinnanvaihe(a);
+        List<HakukohdeDTO> b = valintatulosConverter.convertValinnanvaihe(getValinnanvaihes(hakuOid));
         LOGGER.info("Valintatiedot kovertoitu DTO:iksi {}!", hakuOid);
         applyMuokatutJonosijatToHakukohde(hakuOid, b);
         LOGGER.info("Muokatut jonosijat liitetty {}!", hakuOid);
         b.forEach(hakukohde -> hakukohde.getHakijaryhma().addAll(haeHakijaryhmatHakukohteelle(hakukohde.getOid())));
         List<HakukohdeDTO> convertedHakukohdeDTOs = b.stream().map(hakukohde -> convert.apply(hakukohde)).collect(Collectors.toList());
         return convertedHakukohdeDTOs;
+    }
+
+    private List<Valinnanvaihe> getValinnanvaihes(String hakuOid) {
+        LOGGER.info("Valintatietoja haetaan mongosta {}!", hakuOid);
+        return valinnanvaiheDAO.readByHakuOid(hakuOid);
     }
 
     @Override
