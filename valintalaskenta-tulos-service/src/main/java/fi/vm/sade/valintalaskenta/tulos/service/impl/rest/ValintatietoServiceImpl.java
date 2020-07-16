@@ -88,13 +88,10 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 
     public HakuDTO haeValintatiedot(String hakuOid) {
         try {
-            List<HakukohdeDTO> a = tulosService
-                    .haeLasketutValinnanvaiheetHaulle(hakuOid);
-
             HakuDTO hakuDTO = new HakuDTO();
             hakuDTO.setHakuOid(hakuOid);
 
-            for (HakukohdeDTO v : a) {
+            Function<HakukohdeDTO, HakukohdeDTO> convertor = (HakukohdeDTO hakukohdeDTO) -> {
                 HakukohdeDTO ht = new HakukohdeDTO();
                 ht.setOid(v.getOid());
                 ht.setTarjoajaoid(v.getTarjoajaoid());
@@ -105,7 +102,12 @@ public class ValintatietoServiceImpl implements ValintatietoService {
                     ht.getValinnanvaihe().add(
                             createValinnanvaiheTyyppi(valinnanvaiheDTO, Optional.empty()));
                 }
-            }
+                return ht;
+            };
+
+            List<HakukohdeDTO> a = tulosService
+                    .haeLasketutValinnanvaiheetHaulle(hakuOid, convertor);
+
             return hakuDTO;
         } catch (Exception e) {
             LOG.error("Valintatietoja ei saatu haettua haulle {}!", hakuOid);
