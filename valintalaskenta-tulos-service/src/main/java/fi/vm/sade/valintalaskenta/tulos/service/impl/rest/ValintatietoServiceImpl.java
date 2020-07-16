@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -88,15 +89,11 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 
     public HakuDTO haeValintatiedot(String hakuOid) {
         try {
-            HakuDTO hakuDTO = new HakuDTO();
-            hakuDTO.setHakuOid(hakuOid);
-
-            Function<HakukohdeDTO, HakukohdeDTO> convertor = (HakukohdeDTO hakukohdeDTO) -> {
+            Function<HakukohdeDTO, HakukohdeDTO> convertor = (HakukohdeDTO v) -> {
                 HakukohdeDTO ht = new HakukohdeDTO();
                 ht.setOid(v.getOid());
                 ht.setTarjoajaoid(v.getTarjoajaoid());
                 ht.getHakijaryhma().addAll(v.getHakijaryhma());
-                hakuDTO.getHakukohteet().add(ht);
 
                 for (ValinnanvaiheDTO valinnanvaiheDTO : v.getValinnanvaihe()) {
                     ht.getValinnanvaihe().add(
@@ -105,9 +102,12 @@ public class ValintatietoServiceImpl implements ValintatietoService {
                 return ht;
             };
 
-            List<HakukohdeDTO> a = tulosService
+            List<HakukohdeDTO> convertedHakukohdeDTOs = tulosService
                     .haeLasketutValinnanvaiheetHaulle(hakuOid, convertor);
 
+            HakuDTO hakuDTO = new HakuDTO();
+            hakuDTO.setHakuOid(hakuOid);
+            hakuDTO.getHakukohteet().addAll(convertedHakukohdeDTOs);
             return hakuDTO;
         } catch (Exception e) {
             LOG.error("Valintatietoja ei saatu haettua haulle {}!", hakuOid);
