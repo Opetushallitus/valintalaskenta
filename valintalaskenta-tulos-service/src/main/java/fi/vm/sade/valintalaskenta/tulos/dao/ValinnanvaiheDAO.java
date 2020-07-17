@@ -6,10 +6,14 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 import org.mongodb.morphia.Key;
 
+import java.util.stream.Stream;
+
 public interface ValinnanvaiheDAO {
   List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid);
 
   List<Valinnanvaihe> readByHakuOid(String hakuoid);
+
+  Stream<Valinnanvaihe> readByHakuOidStreaming(String hakuoid);
 
   List<ValintatapajonoMigrationDTO> valintatapajonotJotkaEivatKaytaLaskentaa();
 

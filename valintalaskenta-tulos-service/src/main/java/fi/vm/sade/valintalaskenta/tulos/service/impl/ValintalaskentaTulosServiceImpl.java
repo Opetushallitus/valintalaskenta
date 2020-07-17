@@ -430,7 +430,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     @Override
     public List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid) {
         LOGGER.info("Valintatietoja haettu mongosta {}!", hakuOid);
-        List<HakukohdeDTO> b = valintatulosConverter.convertValinnanvaihe(getValinnanvaihes(hakuOid));
+        List<HakukohdeDTO> b = getValinnanvaihesByHakukohteet(hakuOid);
         LOGGER.info("Valintatiedot kovertoitu DTO:iksi {}!", hakuOid);
         applyMuokatutJonosijatToHakukohde(hakuOid, b);
         LOGGER.info("Muokatut jonosijat liitetty {}!", hakuOid);
@@ -439,22 +439,43 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
 
     @Override
-    public List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid,
-                                                               Function<HakukohdeDTO, HakukohdeDTO> convertor) {
+    public Stream<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid,
+                                                                 Function<HakukohdeDTO, HakukohdeDTO> convertor) {
         LOGGER.info("Valintatietoja haettu mongosta {}!", hakuOid);
-        List<HakukohdeDTO> b = valintatulosConverter.convertValinnanvaihe(getValinnanvaihes(hakuOid));
+        return haeLasketutValinnanvaiheetHaulleStreamina(hakuOid).map(convertor);
+    }
+
+    private Stream<HakukohdeDTO> haeLasketutValinnanvaiheetHaulleStreamina(String hakuOid) {
+        List<HakukohdeDTO> b = getValinnanvaihesByHakukohteet(hakuOid);
         LOGGER.info("Valintatiedot kovertoitu DTO:iksi {}!", hakuOid);
         applyMuokatutJonosijatToHakukohde(hakuOid, b);
         LOGGER.info("Muokatut jonosijat liitetty {}!", hakuOid);
         b.forEach(hakukohde -> hakukohde.getHakijaryhma().addAll(haeHakijaryhmatHakukohteelle(hakukohde.getOid())));
-        List<HakukohdeDTO> convertedHakukohdeDTOs = b.stream().map(hakukohde -> convertor.apply(hakukohde)).collect(Collectors.toList());
-        return convertedHakukohdeDTOs;
+        return b.stream();
     }
 
-    private List<Valinnanvaihe> getValinnanvaihes(String hakuOid) {
+    private List<HakukohdeDTO> getValinnanvaihesByHakukohteet(String hakuOid) {
         LOGGER.info("Valintatietoja haetaan mongosta {}!", hakuOid);
-        return valinnanvaiheDAO.readByHakuOid(hakuOid);
+
+        Map<String, HakukohdeDTO> hakukohdeDTOtOidinMukaan = new HashMap<String, HakukohdeDTO>();
+
+        valinnanvaiheDAO.readByHakuOidStreaming(hakuOid).forEach(vv -> {
+            HakukohdeDTO hakukohdeDTO;
+            if (hakukohdeDTOtOidinMukaan.containsKey(vv.getHakukohdeOid())) {
+                hakukohdeDTO = hakukohdeDTOtOidinMukaan.get(vv.getHakukohdeOid());
+            } else {
+                hakukohdeDTO = new HakukohdeDTO();
+                hakukohdeDTO.setHakuoid(vv.getHakuOid());
+                hakukohdeDTO.setOid(vv.getHakukohdeOid());
+                hakukohdeDTO.setTarjoajaoid(vv.getTarjoajaOid());
+                hakukohdeDTOtOidinMukaan.put(vv.getHakukohdeOid(), hakukohdeDTO);
+            }
+            hakukohdeDTO.getValinnanvaihe().add(valintatulosConverter.convertValinnanvaihe(vv));
+        });
+        return new ArrayList<>(hakukohdeDTOtOidinMukaan.values());
     }
+
+
 
     @Override
     public ValintakoeOsallistuminen haeValintakoeOsallistumiset(String hakemusOid) {

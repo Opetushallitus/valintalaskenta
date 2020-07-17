@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public interface ValintalaskentaTulosService {
 
@@ -40,7 +41,7 @@ public interface ValintalaskentaTulosService {
 
     List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid);
 
-    List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid, Function<HakukohdeDTO, HakukohdeDTO> convert);
+    Stream<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid, Function<HakukohdeDTO, HakukohdeDTO> convert);
 
     MuokattuJonosija muutaJarjestyskriteeri(String valintatapajonoOid,
                                             String hakemusOid, Integer jarjestyskriteeriPrioriteetti,

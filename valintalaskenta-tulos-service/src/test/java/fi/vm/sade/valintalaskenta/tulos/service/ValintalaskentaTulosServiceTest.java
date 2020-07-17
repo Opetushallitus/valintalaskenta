@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.junit.Assert.assertEquals;
@@ -80,7 +81,7 @@ public class ValintalaskentaTulosServiceTest {
             return result;
         };
 
-        List<HakukohdeDTO> convertedHakukohdeDTOs = valintalaskentaTulosService.haeLasketutValinnanvaiheetHaulle(hakuOid, testConverter);
+        List<HakukohdeDTO> convertedHakukohdeDTOs = valintalaskentaTulosService.haeLasketutValinnanvaiheetHaulle(hakuOid, testConverter).collect(Collectors.toList());
 
         assertEquals(1, convertedHakukohdeDTOs.size());
         HakukohdeDTO convertedHakukohdeDTO = convertedHakukohdeDTOs.get(0);
