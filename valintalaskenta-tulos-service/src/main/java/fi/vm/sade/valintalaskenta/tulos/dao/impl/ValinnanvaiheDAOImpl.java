@@ -15,6 +15,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @Repository
 public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
@@ -74,6 +76,15 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         return migrate(datastore.createQuery(ValinnanvaiheMigrationDTO.class)
                 .field("hakuOid").equal(hakuoid)
                 .asList());
+    }
+
+    @Override
+    public Stream<Valinnanvaihe> readByHakuOidStreaming(String hakuoid) {
+        final Iterator<ValinnanvaiheMigrationDTO> mongoResultsIterator = datastore.createQuery(ValinnanvaiheMigrationDTO.class)
+            .field("hakuOid").equal(hakuoid).iterator();
+
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(mongoResultsIterator, Spliterator.ORDERED), false)
+            .map(this::migrate);
     }
 
     @Override
