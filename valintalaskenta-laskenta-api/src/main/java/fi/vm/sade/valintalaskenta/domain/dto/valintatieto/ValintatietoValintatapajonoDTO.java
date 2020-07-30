@@ -5,123 +5,168 @@ import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 import io.swagger.annotations.ApiModelProperty;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class ValintatietoValintatapajonoDTO extends ValintatapajonoDTO {
-    private List<HakijaDTO> hakija;
+  private List<HakijaDTO> hakija;
 
-    @ApiModelProperty(value = "Varasijojen lkm. 0 == pois päältä", required = true)
-    private Integer varasijat = 0;
+  @ApiModelProperty(value = "Varasijojen lkm. 0 == pois päältä", required = true)
+  private Integer varasijat = 0;
 
-    @ApiModelProperty(value = "Kuinka monta päivää varasijoja täytetään", required = true)
-    private Integer varasijaTayttoPaivat = 0;
+  @ApiModelProperty(value = "Kuinka monta päivää varasijoja täytetään", required = true)
+  private Integer varasijaTayttoPaivat = 0;
 
-    @ApiModelProperty(value = "Varasijasääntöjä käytetään alkaen")
-    private Date varasijojaKaytetaanAlkaen;
+  @ApiModelProperty(value = "Varasijasääntöjä käytetään alkaen")
+  private Date varasijojaKaytetaanAlkaen;
 
-    @ApiModelProperty(value = "Varasijoja täytetään asti")
-    private Date varasijojaTaytetaanAsti;
+  @ApiModelProperty(value = "Varasijoja täytetään asti")
+  private Date varasijojaTaytetaanAsti;
 
-    @ApiModelProperty(value = "Valintatapajono, josta vapaaksi jääneet paikat täytetään", required = false)
-    private String tayttojono;
+  @ApiModelProperty(
+      value = "Valintatapajono, josta vapaaksi jääneet paikat täytetään",
+      required = false)
+  private String tayttojono;
 
-    @ApiModelProperty(value = "Erillishaussa käytetty sijoitteluajo", required = false)
-    private Long sijoitteluajoId;
+  @ApiModelProperty(value = "Erillishaussa käytetty sijoitteluajo", required = false)
+  private Long sijoitteluajoId;
 
-    public ValintatietoValintatapajonoDTO() {
+  public ValintatietoValintatapajonoDTO() {}
+
+  public ValintatietoValintatapajonoDTO(
+      String valintatapajonooid,
+      String nimi,
+      int prioriteetti,
+      int aloituspaikat,
+      boolean siirretaanSijoitteluun,
+      Tasasijasaanto tasasijasaanto,
+      Boolean eiVarasijatayttoa,
+      Boolean kaikkiEhdonTayttavatHyvaksytaan,
+      Boolean poissaOlevaTaytto,
+      Boolean kaytetaanValintalaskentaa,
+      Boolean valmisSijoiteltavaksi,
+      List<JonosijaDTO> jonosijat,
+      Boolean aktiivinen,
+      List<HakijaDTO> hakija,
+      Integer varasijat,
+      Integer varasijaTayttoPaivat,
+      Date varasijojaKaytetaanAlkaen,
+      Date varasijojaTaytetaanAsti,
+      String tayttojono,
+      Long sijoitteluajoId) {
+    super(
+        valintatapajonooid,
+        nimi,
+        prioriteetti,
+        aloituspaikat,
+        siirretaanSijoitteluun,
+        tasasijasaanto,
+        eiVarasijatayttoa,
+        kaikkiEhdonTayttavatHyvaksytaan,
+        poissaOlevaTaytto,
+        kaytetaanValintalaskentaa,
+        valmisSijoiteltavaksi,
+        jonosijat,
+        aktiivinen);
+    this.hakija = hakija;
+    this.varasijat = varasijat;
+    this.varasijaTayttoPaivat = varasijaTayttoPaivat;
+    this.varasijojaKaytetaanAlkaen = varasijojaKaytetaanAlkaen;
+    this.varasijojaTaytetaanAsti = varasijojaTaytetaanAsti;
+    this.tayttojono = tayttojono;
+    this.sijoitteluajoId = sijoitteluajoId;
+  }
+
+  public List<HakijaDTO> getHakija() {
+    if (hakija == null) {
+      hakija = new ArrayList<HakijaDTO>();
     }
+    return hakija;
+  }
 
-    public ValintatietoValintatapajonoDTO(String valintatapajonooid, String nimi, int prioriteetti, int aloituspaikat, boolean siirretaanSijoitteluun, Tasasijasaanto tasasijasaanto, Boolean eiVarasijatayttoa, Boolean kaikkiEhdonTayttavatHyvaksytaan, Boolean poissaOlevaTaytto, Boolean kaytetaanValintalaskentaa, Boolean valmisSijoiteltavaksi, List<JonosijaDTO> jonosijat, Boolean aktiivinen, List<HakijaDTO> hakija, Integer varasijat, Integer varasijaTayttoPaivat, Date varasijojaKaytetaanAlkaen, Date varasijojaTaytetaanAsti, String tayttojono, Long sijoitteluajoId) {
-        super(valintatapajonooid, nimi, prioriteetti, aloituspaikat, siirretaanSijoitteluun, tasasijasaanto, eiVarasijatayttoa, kaikkiEhdonTayttavatHyvaksytaan, poissaOlevaTaytto, kaytetaanValintalaskentaa, valmisSijoiteltavaksi, jonosijat, aktiivinen);
-        this.hakija = hakija;
-        this.varasijat = varasijat;
-        this.varasijaTayttoPaivat = varasijaTayttoPaivat;
-        this.varasijojaKaytetaanAlkaen = varasijojaKaytetaanAlkaen;
-        this.varasijojaTaytetaanAsti = varasijojaTaytetaanAsti;
-        this.tayttojono = tayttojono;
-        this.sijoitteluajoId = sijoitteluajoId;
-    }
+  public void setHakija(List<HakijaDTO> hakija) {
+    this.hakija = hakija;
+  }
 
-    public List<HakijaDTO> getHakija() {
-        if (hakija == null) {
-            hakija = new ArrayList<HakijaDTO>();
-        }
-        return hakija;
-    }
+  public Integer getVarasijat() {
+    return varasijat;
+  }
 
-    public void setHakija(List<HakijaDTO> hakija) {
-        this.hakija = hakija;
-    }
+  public void setVarasijat(Integer varasijat) {
+    this.varasijat = varasijat;
+  }
 
-    public Integer getVarasijat() {
-        return varasijat;
-    }
+  public Integer getVarasijaTayttoPaivat() {
+    return varasijaTayttoPaivat;
+  }
 
-    public void setVarasijat(Integer varasijat) {
-        this.varasijat = varasijat;
-    }
+  public void setVarasijaTayttoPaivat(Integer varasijaTayttoPaivat) {
+    this.varasijaTayttoPaivat = varasijaTayttoPaivat;
+  }
 
-    public Integer getVarasijaTayttoPaivat() {
-        return varasijaTayttoPaivat;
-    }
+  public Date getVarasijojaKaytetaanAlkaen() {
+    return varasijojaKaytetaanAlkaen;
+  }
 
-    public void setVarasijaTayttoPaivat(Integer varasijaTayttoPaivat) {
-        this.varasijaTayttoPaivat = varasijaTayttoPaivat;
-    }
+  public void setVarasijojaKaytetaanAlkaen(Date varasijojaKaytetaanAlkaen) {
+    this.varasijojaKaytetaanAlkaen = varasijojaKaytetaanAlkaen;
+  }
 
-    public Date getVarasijojaKaytetaanAlkaen() {
-        return varasijojaKaytetaanAlkaen;
-    }
+  public Date getVarasijojaTaytetaanAsti() {
+    return varasijojaTaytetaanAsti;
+  }
 
-    public void setVarasijojaKaytetaanAlkaen(Date varasijojaKaytetaanAlkaen) {
-        this.varasijojaKaytetaanAlkaen = varasijojaKaytetaanAlkaen;
-    }
+  public void setVarasijojaTaytetaanAsti(Date varasijojaTaytetaanAsti) {
+    this.varasijojaTaytetaanAsti = varasijojaTaytetaanAsti;
+  }
 
-    public Date getVarasijojaTaytetaanAsti() {
-        return varasijojaTaytetaanAsti;
-    }
+  public String getTayttojono() {
+    return tayttojono;
+  }
 
-    public void setVarasijojaTaytetaanAsti(Date varasijojaTaytetaanAsti) {
-        this.varasijojaTaytetaanAsti = varasijojaTaytetaanAsti;
-    }
+  public void setTayttojono(String tayttojono) {
+    this.tayttojono = tayttojono;
+  }
 
-    public String getTayttojono() {
-        return tayttojono;
-    }
+  public Long getSijoitteluajoId() {
+    return sijoitteluajoId;
+  }
 
-    public void setTayttojono(String tayttojono) {
-        this.tayttojono = tayttojono;
-    }
+  public void setSijoitteluajoId(Long sijoitteluajoId) {
+    this.sijoitteluajoId = sijoitteluajoId;
+  }
 
-    public Long getSijoitteluajoId() {
-        return sijoitteluajoId;
-    }
+  public boolean empty() {
+    return getJonosijat() == null || getJonosijat().isEmpty();
+  }
 
-    public void setSijoitteluajoId(Long sijoitteluajoId) {
-        this.sijoitteluajoId = sijoitteluajoId;
-    }
-
-    public boolean empty() {
-        return getJonosijat() == null || getJonosijat().isEmpty();
-    }
-
-    @Override
-    public String toString() {
-        return "ValintatietoValintatapajonoDTO{" +
-            "oid=" + getOid() +
-            ", valintatapajonoOid=" + getValintatapajonooid() +
-            ", nimi=" + getNimi() +
-            ", jonosijat=" + getJonosijat() +
-            ", hakija=" + hakija +
-            ", varasijat=" + varasijat +
-            ", varasijaTayttoPaivat=" + varasijaTayttoPaivat +
-            ", varasijojaKaytetaanAlkaen=" + varasijojaKaytetaanAlkaen +
-            ", varasijojaTaytetaanAsti=" + varasijojaTaytetaanAsti +
-            ", tayttojono='" + tayttojono + '\'' +
-            ", sijoitteluajoId=" + sijoitteluajoId +
-            '}';
-    }
+  @Override
+  public String toString() {
+    return "ValintatietoValintatapajonoDTO{"
+        + "oid="
+        + getOid()
+        + ", valintatapajonoOid="
+        + getValintatapajonooid()
+        + ", nimi="
+        + getNimi()
+        + ", jonosijat="
+        + getJonosijat()
+        + ", hakija="
+        + hakija
+        + ", varasijat="
+        + varasijat
+        + ", varasijaTayttoPaivat="
+        + varasijaTayttoPaivat
+        + ", varasijojaKaytetaanAlkaen="
+        + varasijojaKaytetaanAlkaen
+        + ", varasijojaTaytetaanAsti="
+        + varasijojaTaytetaanAsti
+        + ", tayttojono='"
+        + tayttojono
+        + '\''
+        + ", sijoitteluajoId="
+        + sijoitteluajoId
+        + '}';
+  }
 }

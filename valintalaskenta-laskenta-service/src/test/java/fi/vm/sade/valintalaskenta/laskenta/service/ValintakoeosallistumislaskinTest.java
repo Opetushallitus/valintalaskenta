@@ -23,126 +23,141 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
 import fi.vm.sade.valintalaskenta.laskenta.service.impl.LaskentadomainkonvertteriWrapper;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoeosallistumislaskin;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.ValintakoeosallistumislaskinImpl;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-
-/**
- * User: wuoti Date: 6.5.2013 Time: 9.59
- */
+/** User: wuoti Date: 6.5.2013 Time: 9.59 */
 public class ValintakoeosallistumislaskinTest {
 
-    private Valintakoeosallistumislaskin valintakoeosallistumislaskin;
+  private Valintakoeosallistumislaskin valintakoeosallistumislaskin;
 
-    private LaskentaService laskentaServiceMock;
-    private LaskentadomainkonvertteriWrapper laskentadomainkonvertteriWrapperMock;
+  private LaskentaService laskentaServiceMock;
+  private LaskentadomainkonvertteriWrapper laskentadomainkonvertteriWrapperMock;
 
-    private final boolean korkeakouluhaku = false;
+  private final boolean korkeakouluhaku = false;
 
-    private Map<String, String> suomenkielinenMap(String teksti) {
-        Map<String, String> vastaus = new HashMap<>();
-        vastaus.put("FI", teksti);
-        return vastaus;
-    }
+  private Map<String, String> suomenkielinenMap(String teksti) {
+    Map<String, String> vastaus = new HashMap<>();
+    vastaus.put("FI", teksti);
+    return vastaus;
+  }
 
-    @Before
-    public void setUpt() {
-        laskentaServiceMock = mock(LaskentaService.class);
-        laskentadomainkonvertteriWrapperMock = mock(LaskentadomainkonvertteriWrapper.class);
+  @Before
+  public void setUpt() {
+    laskentaServiceMock = mock(LaskentaService.class);
+    laskentadomainkonvertteriWrapperMock = mock(LaskentadomainkonvertteriWrapper.class);
 
-        valintakoeosallistumislaskin = new ValintakoeosallistumislaskinImpl(laskentaServiceMock, laskentadomainkonvertteriWrapperMock);
-    }
+    valintakoeosallistumislaskin =
+        new ValintakoeosallistumislaskinImpl(
+            laskentaServiceMock, laskentadomainkonvertteriWrapperMock);
+  }
 
-    private void valmisteleStubit(final Hakukohde hakukohde, Tila tila, boolean tulos) {
-        Funktiokutsu funktiokutsu = new Funktiokutsu();
-        funktiokutsu.setFunktionimi(Funktionimi.TOTUUSARVO);
+  private void valmisteleStubit(final Hakukohde hakukohde, Tila tila, boolean tulos) {
+    Funktiokutsu funktiokutsu = new Funktiokutsu();
+    funktiokutsu.setFunktionimi(Funktionimi.TOTUUSARVO);
 
-        when(laskentadomainkonvertteriWrapperMock.muodostaTotuusarvolasku(funktiokutsu)).thenReturn(
-                any(Totuusarvofunktio.class));
+    when(laskentadomainkonvertteriWrapperMock.muodostaTotuusarvolasku(funktiokutsu))
+        .thenReturn(any(Totuusarvofunktio.class));
 
-        final Laskentatulos<Boolean> tulos1 = new Laskentatulos<>(tila, tulos, "", new HashMap<>(), new HashMap<>());
-        when(
-                laskentaServiceMock.suoritaValintakoelaskenta(hakukohde,
-                        any(Hakemus.class), any(Totuusarvofunktio.class))).thenReturn(tulos1);
-    }
+    final Laskentatulos<Boolean> tulos1 =
+        new Laskentatulos<>(tila, tulos, "", new HashMap<>(), new HashMap<>());
+    when(laskentaServiceMock.suoritaValintakoelaskenta(
+            hakukohde, any(Hakemus.class), any(Totuusarvofunktio.class)))
+        .thenReturn(tulos1);
+  }
 
-    private Hakemus emptyHakemus() {
-        return new Hakemus("hakemusOid", new HashMap<>(), new HashMap<>(), new HashMap<>());
-    }
+  private Hakemus emptyHakemus() {
+    return new Hakemus("hakemusOid", new HashMap<>(), new HashMap<>(), new HashMap<>());
+  }
 
-    private Funktiokutsu getKutsu() {
-        Funktiokutsu funktiokutsu = new Funktiokutsu();
-        funktiokutsu.setFunktionimi(Funktionimi.TOTUUSARVO);
-        return funktiokutsu;
-    }
+  private Funktiokutsu getKutsu() {
+    Funktiokutsu funktiokutsu = new Funktiokutsu();
+    funktiokutsu.setFunktionimi(Funktionimi.TOTUUSARVO);
+    return funktiokutsu;
+  }
 
-    @Test
-    public void testTilaHyvaksyttavissaTrue() {
-        final String hakukohdeOid = "hakukohdeOid1";
-        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>(), korkeakouluhaku);
+  @Test
+  public void testTilaHyvaksyttavissaTrue() {
+    final String hakukohdeOid = "hakukohdeOid1";
+    final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>(), korkeakouluhaku);
 
-        valmisteleStubit(hakukohde, new Hyvaksyttavissatila(), true);
+    valmisteleStubit(hakukohde, new Hyvaksyttavissatila(), true);
 
-        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
-                hakukohde, emptyHakemus(), getKutsu());
-        assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getOsallistuminen());
-    }
+    OsallistuminenTulos osallistuminen =
+        valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
+            hakukohde, emptyHakemus(), getKutsu());
+    assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getOsallistuminen());
+  }
 
-    @Test
-    public void testTilaHyvaksyttavissaFalse() {
-        final String hakukohdeOid = "hakukohdeOid1";
-        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>(), korkeakouluhaku);
+  @Test
+  public void testTilaHyvaksyttavissaFalse() {
+    final String hakukohdeOid = "hakukohdeOid1";
+    final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>(), korkeakouluhaku);
 
-        valmisteleStubit(hakukohde, new Hyvaksyttavissatila(), false);
-        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
-                hakukohde, emptyHakemus(), getKutsu());
-        assertEquals(Osallistuminen.EI_OSALLISTU, osallistuminen.getOsallistuminen());
-    }
+    valmisteleStubit(hakukohde, new Hyvaksyttavissatila(), false);
+    OsallistuminenTulos osallistuminen =
+        valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
+            hakukohde, emptyHakemus(), getKutsu());
+    assertEquals(Osallistuminen.EI_OSALLISTU, osallistuminen.getOsallistuminen());
+  }
 
-    @Test
-    public void testTilaHylattyFalse() {
-        final String hakukohdeOid = "hakukohdeOid1";
-        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>(), korkeakouluhaku);
+  @Test
+  public void testTilaHylattyFalse() {
+    final String hakukohdeOid = "hakukohdeOid1";
+    final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>(), korkeakouluhaku);
 
-        valmisteleStubit(hakukohde, new Hylattytila(suomenkielinenMap("kuvaus"), new PakollinenValintaperusteHylkays("")), false);
-        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
-                hakukohde, emptyHakemus(), getKutsu());
-        assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getOsallistuminen());
-    }
+    valmisteleStubit(
+        hakukohde,
+        new Hylattytila(suomenkielinenMap("kuvaus"), new PakollinenValintaperusteHylkays("")),
+        false);
+    OsallistuminenTulos osallistuminen =
+        valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
+            hakukohde, emptyHakemus(), getKutsu());
+    assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getOsallistuminen());
+  }
 
-    @Test
-    public void testTilaHylattyTrue() {
-        final String hakukohdeOid = "hakukohdeOid1";
-        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>(), korkeakouluhaku);
+  @Test
+  public void testTilaHylattyTrue() {
+    final String hakukohdeOid = "hakukohdeOid1";
+    final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>(), korkeakouluhaku);
 
-        valmisteleStubit(hakukohde, new Hylattytila(suomenkielinenMap("kuvaus"), new PakollinenValintaperusteHylkays("")), true);
-        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
-                hakukohde, emptyHakemus(), getKutsu());
-        assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getOsallistuminen());
-    }
+    valmisteleStubit(
+        hakukohde,
+        new Hylattytila(suomenkielinenMap("kuvaus"), new PakollinenValintaperusteHylkays("")),
+        true);
+    OsallistuminenTulos osallistuminen =
+        valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
+            hakukohde, emptyHakemus(), getKutsu());
+    assertEquals(Osallistuminen.OSALLISTUU, osallistuminen.getOsallistuminen());
+  }
 
-    @Test
-    public void testTilaVirheTrue() {
-        final String hakukohdeOid = "hakukohdeOid1";
-        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>(), korkeakouluhaku);
+  @Test
+  public void testTilaVirheTrue() {
+    final String hakukohdeOid = "hakukohdeOid1";
+    final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>(), korkeakouluhaku);
 
-        valmisteleStubit(hakukohde, new Virhetila(suomenkielinenMap("kuvaus"), new ArvokonvertointiVirhe("")), true);
-        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
-                hakukohde, emptyHakemus(), getKutsu());
-        assertEquals(Osallistuminen.VIRHE, osallistuminen.getOsallistuminen());
-    }
+    valmisteleStubit(
+        hakukohde, new Virhetila(suomenkielinenMap("kuvaus"), new ArvokonvertointiVirhe("")), true);
+    OsallistuminenTulos osallistuminen =
+        valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
+            hakukohde, emptyHakemus(), getKutsu());
+    assertEquals(Osallistuminen.VIRHE, osallistuminen.getOsallistuminen());
+  }
 
-    @Test
-    public void testTilaVirheFalse() {
-        final String hakukohdeOid = "hakukohdeOid1";
-        final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>(), korkeakouluhaku);
+  @Test
+  public void testTilaVirheFalse() {
+    final String hakukohdeOid = "hakukohdeOid1";
+    final Hakukohde hakukohde = new Hakukohde(hakukohdeOid, new HashMap<>(), korkeakouluhaku);
 
-        valmisteleStubit(hakukohde, new Virhetila(suomenkielinenMap("kuvaus"), new ArvokonvertointiVirhe("")), false);
-        OsallistuminenTulos osallistuminen = valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
-                hakukohde, emptyHakemus(), getKutsu());
-        assertEquals(Osallistuminen.VIRHE, osallistuminen.getOsallistuminen());
-    }
-
+    valmisteleStubit(
+        hakukohde,
+        new Virhetila(suomenkielinenMap("kuvaus"), new ArvokonvertointiVirhe("")),
+        false);
+    OsallistuminenTulos osallistuminen =
+        valintakoeosallistumislaskin.laskeOsallistuminenYhdelleHakukohteelle(
+            hakukohde, emptyHakemus(), getKutsu());
+    assertEquals(Osallistuminen.VIRHE, osallistuminen.getOsallistuminen());
+  }
 }

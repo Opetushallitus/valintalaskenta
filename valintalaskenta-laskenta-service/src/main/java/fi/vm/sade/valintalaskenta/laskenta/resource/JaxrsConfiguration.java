@@ -8,10 +8,10 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class JaxrsConfiguration {
-    @Bean(name="jsonProvider")
-    public JacksonJsonProvider getJacksonJsonProvider() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return new JacksonJsonProvider(objectMapper);
-    }
+  @Bean(name = "jsonProvider")
+  public JacksonJsonProvider getJacksonJsonProvider() {
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    return new JacksonJsonProvider(objectMapper);
+  }
 }

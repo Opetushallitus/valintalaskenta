@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class LaskentadomainkonvertteriWrapper {
 
-    public Totuusarvofunktio muodostaTotuusarvolasku(Funktiokutsu funktiokutsu) {
-        return Laskentadomainkonvertteri.muodostaTotuusarvolasku(funktiokutsu);
-    }
+  public Totuusarvofunktio muodostaTotuusarvolasku(Funktiokutsu funktiokutsu) {
+    return Laskentadomainkonvertteri.muodostaTotuusarvolasku(funktiokutsu);
+  }
 
-    public Lukuarvofunktio muodostaLukuarvolasku(Funktiokutsu funktiokutsu) {
-        return Laskentadomainkonvertteri.muodostaLukuarvolasku(funktiokutsu);
-    }
+  public Lukuarvofunktio muodostaLukuarvolasku(Funktiokutsu funktiokutsu) {
+    return Laskentadomainkonvertteri.muodostaLukuarvolasku(funktiokutsu);
+  }
 }

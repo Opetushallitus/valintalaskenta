@@ -1,29 +1,28 @@
 package fi.vm.sade.valintalaskenta.tulos.dao;
 
-import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.ValintatapajonoMigrationDTO;
+import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 import org.mongodb.morphia.Key;
 
-import java.util.List;
-
 public interface ValinnanvaiheDAO {
-    List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid);
+  List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid);
 
-    List<Valinnanvaihe> readByHakuOid(String hakuoid);
+  List<Valinnanvaihe> readByHakuOid(String hakuoid);
 
-    List<ValintatapajonoMigrationDTO> valintatapajonotJotkaEivatKaytaLaskentaa();
+  List<ValintatapajonoMigrationDTO> valintatapajonotJotkaEivatKaytaLaskentaa();
 
-    List<Pair<String, String>> hakuOidHakukohdeOidPairsForJonos(List<ValintatapajonoMigrationDTO> validValintatapajonos);
+  List<Pair<String, String>> hakuOidHakukohdeOidPairsForJonos(
+      List<ValintatapajonoMigrationDTO> validValintatapajonos);
 
-    List<Valinnanvaihe> readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid);
+  List<Valinnanvaihe> readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid);
 
-    Valinnanvaihe findByValintatapajonoOid(String valintatapajonoOid);
+  Valinnanvaihe findByValintatapajonoOid(String valintatapajonoOid);
 
-    Valinnanvaihe haeValinnanvaihe(String valinnanvaiheOid);
+  Valinnanvaihe haeValinnanvaihe(String valinnanvaiheOid);
 
-    void saveOrUpdate(Valinnanvaihe vaihe);
+  void saveOrUpdate(Valinnanvaihe vaihe);
 
-    Key<Valinnanvaihe> saveVaihe(Valinnanvaihe vaihe);
+  Key<Valinnanvaihe> saveVaihe(Valinnanvaihe vaihe);
 }

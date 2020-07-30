@@ -8,36 +8,46 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.HakemusWrapper;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.JonosijaJaSyotetytArvot;
-
 import java.util.List;
 import java.util.Map;
 
 public interface HakemuslaskinService {
 
-    void suoritaHakijaryhmaLaskentaHakemukselle(Hakukohde hakukohde, HakemusWrapper laskettavaHakemus,
-                                     List<Hakemus> kaikkiHakemukset,
-                                     Lukuarvofunktio lukuarvofunktio,
-                                     Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan);
+  void suoritaHakijaryhmaLaskentaHakemukselle(
+      Hakukohde hakukohde,
+      HakemusWrapper laskettavaHakemus,
+      List<Hakemus> kaikkiHakemukset,
+      Lukuarvofunktio lukuarvofunktio,
+      Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan);
 
-    void suoritaHakijaryhmaLaskentaHakemukselle(Hakukohde hakukohde, HakemusWrapper laskettavaHakemus,
-                                                List<Hakemus> kaikkiHakemukset,
-                                                Totuusarvofunktio totuusarvofunktio,
-                                                Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan);
+  void suoritaHakijaryhmaLaskentaHakemukselle(
+      Hakukohde hakukohde,
+      HakemusWrapper laskettavaHakemus,
+      List<Hakemus> kaikkiHakemukset,
+      Totuusarvofunktio totuusarvofunktio,
+      Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan);
 
+  void suoritaLaskentaHakemukselle(
+      Hakukohde hakukohde,
+      HakemusWrapper laskettavaHakemus,
+      List<Hakemus> kaikkiHakemukset,
+      Lukuarvofunktio lukuarvofunktio,
+      int jkPrioriteetti,
+      Valinnanvaihe edellinenVaihe,
+      Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan,
+      String jkNimi,
+      int jarjestysnumero,
+      ValintakoeOsallistuminen edellinenOsallistuminen);
 
-    void suoritaLaskentaHakemukselle(Hakukohde hakukohde, HakemusWrapper laskettavaHakemus,
-                                     List<Hakemus> kaikkiHakemukset,
-                                     Lukuarvofunktio lukuarvofunktio,
-                                     int jkPrioriteetti,
-                                     Valinnanvaihe edellinenVaihe,
-                                     Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan,
-                                     String jkNimi, int jarjestysnumero, ValintakoeOsallistuminen edellinenOsallistuminen);
-
-    void suoritaLaskentaHakemukselle(Hakukohde hakukohde, HakemusWrapper laskettavaHakemus,
-                                     List<Hakemus> kaikkiHakemukset,
-                                     Totuusarvofunktio lukuarvofunktio,
-                                     int jkPrioriteetti,
-                                     Valinnanvaihe edellinenVaihe,
-                                     Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan,
-                                     String jkNimi, int jarjestysnumero, ValintakoeOsallistuminen edellinenOsallistuminen);
+  void suoritaLaskentaHakemukselle(
+      Hakukohde hakukohde,
+      HakemusWrapper laskettavaHakemus,
+      List<Hakemus> kaikkiHakemukset,
+      Totuusarvofunktio lukuarvofunktio,
+      int jkPrioriteetti,
+      Valinnanvaihe edellinenVaihe,
+      Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan,
+      String jkNimi,
+      int jarjestysnumero,
+      ValintakoeOsallistuminen edellinenOsallistuminen);
 }

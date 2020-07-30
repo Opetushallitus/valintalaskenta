@@ -4,58 +4,58 @@ import org.mongodb.morphia.annotations.Embedded;
 
 @Embedded
 public class SyotettyArvo {
-    private String tunniste;
-    private String arvo;
-    private String laskennallinenArvo;
-    private String osallistuminen;
-    private String tyypinKoodiUri;
-    private boolean tilastoidaan;
+  private String tunniste;
+  private String arvo;
+  private String laskennallinenArvo;
+  private String osallistuminen;
+  private String tyypinKoodiUri;
+  private boolean tilastoidaan;
 
-    public String getTunniste() {
-        return tunniste;
-    }
+  public String getTunniste() {
+    return tunniste;
+  }
 
-    public void setTunniste(String tunniste) {
-        this.tunniste = tunniste;
-    }
+  public void setTunniste(String tunniste) {
+    this.tunniste = tunniste;
+  }
 
-    public String getArvo() {
-        return arvo;
-    }
+  public String getArvo() {
+    return arvo;
+  }
 
-    public void setArvo(String arvo) {
-        this.arvo = arvo;
-    }
+  public void setArvo(String arvo) {
+    this.arvo = arvo;
+  }
 
-    public String getLaskennallinenArvo() {
-        return laskennallinenArvo;
-    }
+  public String getLaskennallinenArvo() {
+    return laskennallinenArvo;
+  }
 
-    public void setLaskennallinenArvo(String laskennallinenArvo) {
-        this.laskennallinenArvo = laskennallinenArvo;
-    }
+  public void setLaskennallinenArvo(String laskennallinenArvo) {
+    this.laskennallinenArvo = laskennallinenArvo;
+  }
 
-    public String getOsallistuminen() {
-        return osallistuminen;
-    }
+  public String getOsallistuminen() {
+    return osallistuminen;
+  }
 
-    public void setOsallistuminen(String osallistuminen) {
-        this.osallistuminen = osallistuminen;
-    }
+  public void setOsallistuminen(String osallistuminen) {
+    this.osallistuminen = osallistuminen;
+  }
 
-    public String getTyypinKoodiUri() {
-        return tyypinKoodiUri;
-    }
+  public String getTyypinKoodiUri() {
+    return tyypinKoodiUri;
+  }
 
-    public void setTyypinKoodiUri(String tyypinKoodiUri) {
-        this.tyypinKoodiUri = tyypinKoodiUri;
-    }
+  public void setTyypinKoodiUri(String tyypinKoodiUri) {
+    this.tyypinKoodiUri = tyypinKoodiUri;
+  }
 
-    public boolean isTilastoidaan() {
-        return tilastoidaan;
-    }
+  public boolean isTilastoidaan() {
+    return tilastoidaan;
+  }
 
-    public void setTilastoidaan(boolean tilastoidaan) {
-        this.tilastoidaan = tilastoidaan;
-    }
+  public void setTilastoidaan(boolean tilastoidaan) {
+    this.tilastoidaan = tilastoidaan;
+  }
 }

@@ -6,90 +6,90 @@ import org.mongodb.morphia.annotations.Embedded;
 
 @Embedded
 public class Valintakoe {
-	private String valintakoeOid;
-	private String valintakoeTunniste;
-	private String nimi;
-	private boolean aktiivinen;
-	private OsallistuminenTulos osallistuminenTulos;
-    private boolean lahetetaankoKoekutsut;
-    private Integer kutsuttavienMaara;
-	private Koekutsu kutsunKohde = Koekutsu.YLIN_TOIVE;
-	private String kutsunKohdeAvain;
+  private String valintakoeOid;
+  private String valintakoeTunniste;
+  private String nimi;
+  private boolean aktiivinen;
+  private OsallistuminenTulos osallistuminenTulos;
+  private boolean lahetetaankoKoekutsut;
+  private Integer kutsuttavienMaara;
+  private Koekutsu kutsunKohde = Koekutsu.YLIN_TOIVE;
+  private String kutsunKohdeAvain;
 
-	public boolean isAktiivinen() {
-		return aktiivinen;
-	}
+  public boolean isAktiivinen() {
+    return aktiivinen;
+  }
 
-	public void setAktiivinen(boolean aktiivinen) {
-		this.aktiivinen = aktiivinen;
-	}
+  public void setAktiivinen(boolean aktiivinen) {
+    this.aktiivinen = aktiivinen;
+  }
 
-	public String getNimi() {
-		return nimi;
-	}
+  public String getNimi() {
+    return nimi;
+  }
 
-	public void setNimi(String nimi) {
-		this.nimi = nimi;
-	}
+  public void setNimi(String nimi) {
+    this.nimi = nimi;
+  }
 
-	public String getValintakoeOid() {
-		return valintakoeOid;
-	}
+  public String getValintakoeOid() {
+    return valintakoeOid;
+  }
 
-	public void setValintakoeOid(String valintakoeOid) {
-		this.valintakoeOid = valintakoeOid;
-	}
+  public void setValintakoeOid(String valintakoeOid) {
+    this.valintakoeOid = valintakoeOid;
+  }
 
-	public String getValintakoeTunniste() {
-		return valintakoeTunniste;
-	}
+  public String getValintakoeTunniste() {
+    return valintakoeTunniste;
+  }
 
-	public void setValintakoeTunniste(String valintakoeTunniste) {
-		this.valintakoeTunniste = valintakoeTunniste;
-	}
+  public void setValintakoeTunniste(String valintakoeTunniste) {
+    this.valintakoeTunniste = valintakoeTunniste;
+  }
 
-	public OsallistuminenTulos getOsallistuminenTulos() {
-		return osallistuminenTulos;
-	}
+  public OsallistuminenTulos getOsallistuminenTulos() {
+    return osallistuminenTulos;
+  }
 
-	public void setOsallistuminenTulos(OsallistuminenTulos osallistuminenTulos) {
-		this.osallistuminenTulos = osallistuminenTulos;
-	}
+  public void setOsallistuminenTulos(OsallistuminenTulos osallistuminenTulos) {
+    this.osallistuminenTulos = osallistuminenTulos;
+  }
 
-    public boolean isLahetetaankoKoekutsut() {
-        return lahetetaankoKoekutsut;
-    }
+  public boolean isLahetetaankoKoekutsut() {
+    return lahetetaankoKoekutsut;
+  }
 
-    public void setLahetetaankoKoekutsut(boolean lahetetaankoKoekutsut) {
-        this.lahetetaankoKoekutsut = lahetetaankoKoekutsut;
-    }
+  public void setLahetetaankoKoekutsut(boolean lahetetaankoKoekutsut) {
+    this.lahetetaankoKoekutsut = lahetetaankoKoekutsut;
+  }
 
-    public Integer getKutsuttavienMaara() {
-        return kutsuttavienMaara;
-    }
+  public Integer getKutsuttavienMaara() {
+    return kutsuttavienMaara;
+  }
 
-    public void setKutsuttavienMaara(final Integer kutsuttavienMaara) {
-        this.kutsuttavienMaara = kutsuttavienMaara;
-    }
+  public void setKutsuttavienMaara(final Integer kutsuttavienMaara) {
+    this.kutsuttavienMaara = kutsuttavienMaara;
+  }
 
-	public Koekutsu getKutsunKohde() {
-		return kutsunKohde;
-	}
+  public Koekutsu getKutsunKohde() {
+    return kutsunKohde;
+  }
 
-	public void setKutsunKohde(Koekutsu kutsunKohde) {
-		this.kutsunKohde = kutsunKohde;
-	}
+  public void setKutsunKohde(Koekutsu kutsunKohde) {
+    this.kutsunKohde = kutsunKohde;
+  }
 
-	public String getKutsunKohdeAvain() {
-		return kutsunKohdeAvain;
-	}
+  public String getKutsunKohdeAvain() {
+    return kutsunKohdeAvain;
+  }
 
-	public void setKutsunKohdeAvain(String kutsunKohdeAvain) {
-		this.kutsunKohdeAvain = kutsunKohdeAvain;
-	}
+  public void setKutsunKohdeAvain(String kutsunKohdeAvain) {
+    this.kutsunKohdeAvain = kutsunKohdeAvain;
+  }
 
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
-	}
+  @Override
+  public String toString() {
+    return ToStringBuilder.reflectionToString(this);
+  }
 }

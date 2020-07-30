@@ -5,9 +5,9 @@ import org.bson.types.ObjectId;
 
 public interface JarjestyskriteerihistoriaDAO {
 
-    void create(Jarjestyskriteerihistoria jarjestyskriteerihistoria);
+  void create(Jarjestyskriteerihistoria jarjestyskriteerihistoria);
 
-    void delete(ObjectId id);
+  void delete(ObjectId id);
 
-    Jarjestyskriteerihistoria hae(ObjectId id);
+  Jarjestyskriteerihistoria hae(ObjectId id);
 }

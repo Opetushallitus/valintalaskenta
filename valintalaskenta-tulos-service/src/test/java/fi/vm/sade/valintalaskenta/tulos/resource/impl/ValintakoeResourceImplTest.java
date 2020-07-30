@@ -12,33 +12,33 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminen
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
-import org.junit.Test;
-
 import java.util.Arrays;
 import java.util.List;
+import org.junit.Test;
 
 public class ValintakoeResourceImplTest {
-    private final ValintalaskentaTulosService serviceMock = mock(ValintalaskentaTulosService.class);
-    private ValintakoeResourceImpl resource = new ValintakoeResourceImpl(serviceMock, new ValintalaskentaModelMapper());
-    private final String hakukohdeOid = "1.2.this.is.hakukohde";
-    private ValintakoeOsallistuminen osallistuminen1 = mock(ValintakoeOsallistuminen.class, "MOCK-osallistuminen 1");
-    private ValintakoeOsallistuminen osallistuminen2 = mock(ValintakoeOsallistuminen.class, "MOCK-osallistuminen 2");
+  private final ValintalaskentaTulosService serviceMock = mock(ValintalaskentaTulosService.class);
+  private ValintakoeResourceImpl resource =
+      new ValintakoeResourceImpl(serviceMock, new ValintalaskentaModelMapper());
+  private final String hakukohdeOid = "1.2.this.is.hakukohde";
+  private ValintakoeOsallistuminen osallistuminen1 =
+      mock(ValintakoeOsallistuminen.class, "MOCK-osallistuminen 1");
+  private ValintakoeOsallistuminen osallistuminen2 =
+      mock(ValintakoeOsallistuminen.class, "MOCK-osallistuminen 2");
 
-    @Test
-    public void resourceRetrievesOsallistumisetByHakukohde() {
-        when(osallistuminen1.getHakemusOid()).thenReturn("hakemus1Oid");
-        when(osallistuminen2.getHakemusOid()).thenReturn("hakemus2Oid");
-        when(serviceMock.haeValintakoeOsallistumisetByHakutoive(hakukohdeOid)).thenReturn(Arrays.asList(
-            osallistuminen1,
-            osallistuminen2
-        ));
+  @Test
+  public void resourceRetrievesOsallistumisetByHakukohde() {
+    when(osallistuminen1.getHakemusOid()).thenReturn("hakemus1Oid");
+    when(osallistuminen2.getHakemusOid()).thenReturn("hakemus2Oid");
+    when(serviceMock.haeValintakoeOsallistumisetByHakutoive(hakukohdeOid))
+        .thenReturn(Arrays.asList(osallistuminen1, osallistuminen2));
 
-        List<ValintakoeOsallistuminenDTO> osallistumiset = resource.hakuByHakutoive(hakukohdeOid);
-        assertThat(osallistumiset, hasSize(2));
-        assertEquals("hakemus1Oid", osallistumiset.get(0).getHakemusOid());
-        assertEquals("hakemus2Oid", osallistumiset.get(1).getHakemusOid());
+    List<ValintakoeOsallistuminenDTO> osallistumiset = resource.hakuByHakutoive(hakukohdeOid);
+    assertThat(osallistumiset, hasSize(2));
+    assertEquals("hakemus1Oid", osallistumiset.get(0).getHakemusOid());
+    assertEquals("hakemus2Oid", osallistumiset.get(1).getHakemusOid());
 
-        verify(serviceMock).haeValintakoeOsallistumisetByHakutoive(hakukohdeOid);
-        verifyNoMoreInteractions(serviceMock);
-    }
+    verify(serviceMock).haeValintakoeOsallistumisetByHakutoive(hakukohdeOid);
+    verifyNoMoreInteractions(serviceMock);
+  }
 }

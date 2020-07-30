@@ -6,5 +6,6 @@ import fi.vm.sade.service.valintaperusteet.model.Funktiokutsu;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
 
 public interface Valintakoeosallistumislaskin {
-    OsallistuminenTulos laskeOsallistuminenYhdelleHakukohteelle(Hakukohde hakukohde, Hakemus hakemus, Funktiokutsu kaava);
+  OsallistuminenTulos laskeOsallistuminenYhdelleHakukohteelle(
+      Hakukohde hakukohde, Hakemus hakemus, Funktiokutsu kaava);
 }

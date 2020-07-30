@@ -30,95 +30,103 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.HakemuslaskinImp
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.JonosijaJaSyotetytArvot;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.TilaJaSelite;
 import fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.test.util.ReflectionTestUtils;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 public class HakemuslaskinServiceTest {
-    private HakemuslaskinService hakemuslaskinService;
+  private HakemuslaskinService hakemuslaskinService;
 
-    private LaskentaService laskentaServiceMock;
-    private JarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAOMock;
-    private EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelijaMock;
+  private LaskentaService laskentaServiceMock;
+  private JarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAOMock;
+  private EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelijaMock;
 
-    @Before
-    public void setUp() {
-        hakemuslaskinService = new HakemuslaskinImpl();
-        laskentaServiceMock = mock(LaskentaService.class);
-        jarjestyskriteerihistoriaDAOMock = mock(JarjestyskriteerihistoriaDAO.class);
-        edellinenValinnanvaiheKasittelijaMock = mock(EdellinenValinnanvaiheKasittelija.class);
+  @Before
+  public void setUp() {
+    hakemuslaskinService = new HakemuslaskinImpl();
+    laskentaServiceMock = mock(LaskentaService.class);
+    jarjestyskriteerihistoriaDAOMock = mock(JarjestyskriteerihistoriaDAO.class);
+    edellinenValinnanvaiheKasittelijaMock = mock(EdellinenValinnanvaiheKasittelija.class);
 
-        ReflectionTestUtils.setField(hakemuslaskinService, "laskentaService", laskentaServiceMock);
-        ReflectionTestUtils.setField(hakemuslaskinService, "jarjestyskriteerihistoriaDAO", jarjestyskriteerihistoriaDAOMock);
-        ReflectionTestUtils.setField(hakemuslaskinService, "edellinenValinnanvaiheKasittelija", edellinenValinnanvaiheKasittelijaMock);
-    }
+    ReflectionTestUtils.setField(hakemuslaskinService, "laskentaService", laskentaServiceMock);
+    ReflectionTestUtils.setField(
+        hakemuslaskinService, "jarjestyskriteerihistoriaDAO", jarjestyskriteerihistoriaDAOMock);
+    ReflectionTestUtils.setField(
+        hakemuslaskinService,
+        "edellinenValinnanvaiheKasittelija",
+        edellinenValinnanvaiheKasittelijaMock);
+  }
 
-    @Test
-    public void test() {
-        final String[] hakukohteet = {"hakukohdeOid1", "hakukohdeOid2", "hakukohdeOid3"};
-        final boolean korkeakouluhaku = false;
-        final Hakukohde laskettavaHakukohde = new Hakukohde(hakukohteet[0], new HashMap<>(), korkeakouluhaku);
-        final String hakemusOid = "hakemusOid1";
-        final String hakijaOid = "hakijaOid1";
-        final boolean harkinnanvaraisuus = false;
-        final int hakutoiveprioriteetti = 1;
+  @Test
+  public void test() {
+    final String[] hakukohteet = {"hakukohdeOid1", "hakukohdeOid2", "hakukohdeOid3"};
+    final boolean korkeakouluhaku = false;
+    final Hakukohde laskettavaHakukohde =
+        new Hakukohde(hakukohteet[0], new HashMap<>(), korkeakouluhaku);
+    final String hakemusOid = "hakemusOid1";
+    final String hakijaOid = "hakijaOid1";
+    final boolean harkinnanvaraisuus = false;
+    final int hakutoiveprioriteetti = 1;
 
-        Map<String, JonosijaJaSyotetytArvot> jonosijat = new HashMap<>();
+    Map<String, JonosijaJaSyotetytArvot> jonosijat = new HashMap<>();
 
-        HakemusWrapper hakemus = new HakemusWrapper();
-        hakemus.setHakutoiveprioriteetti(hakutoiveprioriteetti);
-        hakemus.setHakemusDTO(TestDataUtil.luoHakemus("hakuOid", hakemusOid, hakijaOid, hakukohteet));
-        hakemus.setHarkinnanvaraisuus(harkinnanvaraisuus);
-        hakemus.setLaskentahakemus(new Hakemus(hakemusOid, new HashMap<> (), new HashMap<>(), new HashMap<>()));
+    HakemusWrapper hakemus = new HakemusWrapper();
+    hakemus.setHakutoiveprioriteetti(hakutoiveprioriteetti);
+    hakemus.setHakemusDTO(TestDataUtil.luoHakemus("hakuOid", hakemusOid, hakijaOid, hakukohteet));
+    hakemus.setHarkinnanvaraisuus(harkinnanvaraisuus);
+    hakemus.setLaskentahakemus(
+        new Hakemus(hakemusOid, new HashMap<>(), new HashMap<>(), new HashMap<>()));
 
-        final Map<String, String> edellinenValinnanvaiheTilaSelite = new HashMap<>();
-        edellinenValinnanvaiheTilaSelite.put("FI", "selite");
-        TilaJaSelite tilaEdellisenVaiheenMukaan = new TilaJaSelite(
-                JarjestyskriteerituloksenTila.HYLATTY,
-                edellinenValinnanvaiheTilaSelite);
+    final Map<String, String> edellinenValinnanvaiheTilaSelite = new HashMap<>();
+    edellinenValinnanvaiheTilaSelite.put("FI", "selite");
+    TilaJaSelite tilaEdellisenVaiheenMukaan =
+        new TilaJaSelite(JarjestyskriteerituloksenTila.HYLATTY, edellinenValinnanvaiheTilaSelite);
 
-        final Tila laskettuTila = new Hyvaksyttavissatila();
-        final BigDecimal jarjestyskriteeriarvo = new BigDecimal("100.0");
-        Laskentatulos<BigDecimal> tulos = new Laskentatulos<>(
-            laskettuTila, jarjestyskriteeriarvo, "",
-            new HashMap<>(),
-            new HashMap<>());
-        when(
-                laskentaServiceMock.suoritaValintalaskenta(
-                        eq(laskettavaHakukohde), any(Hakemus.class),
-                        anyCollection(), any(Lukuarvofunktio.class)))
-                .thenReturn(tulos);
-        when(
-                edellinenValinnanvaiheKasittelijaMock
-                        .tilaEdellisenValinnanvaiheenMukaan(eq(hakemusOid),
-                                eq(laskettuTila), any(Valinnanvaihe.class)))
-                .thenReturn(tilaEdellisenVaiheenMukaan);
+    final Tila laskettuTila = new Hyvaksyttavissatila();
+    final BigDecimal jarjestyskriteeriarvo = new BigDecimal("100.0");
+    Laskentatulos<BigDecimal> tulos =
+        new Laskentatulos<>(
+            laskettuTila, jarjestyskriteeriarvo, "", new HashMap<>(), new HashMap<>());
+    when(laskentaServiceMock.suoritaValintalaskenta(
+            eq(laskettavaHakukohde), any(Hakemus.class),
+            anyCollection(), any(Lukuarvofunktio.class)))
+        .thenReturn(tulos);
+    when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(
+            eq(hakemusOid), eq(laskettuTila), any(Valinnanvaihe.class)))
+        .thenReturn(tilaEdellisenVaiheenMukaan);
 
-        hakemuslaskinService.suoritaLaskentaHakemukselle(laskettavaHakukohde,
-                hakemus, new ArrayList<>(), mock(Lukuarvofunktio.class),
-                1, new Valinnanvaihe(), jonosijat, "jkNimi", 1, new ValintakoeOsallistuminen());
+    hakemuslaskinService.suoritaLaskentaHakemukselle(
+        laskettavaHakukohde,
+        hakemus,
+        new ArrayList<>(),
+        mock(Lukuarvofunktio.class),
+        1,
+        new Valinnanvaihe(),
+        jonosijat,
+        "jkNimi",
+        1,
+        new ValintakoeOsallistuminen());
 
-        verify(jarjestyskriteerihistoriaDAOMock, times(1)).create(any(Jarjestyskriteerihistoria.class));
+    verify(jarjestyskriteerihistoriaDAOMock, times(1)).create(any(Jarjestyskriteerihistoria.class));
 
-        assertEquals(1, jonosijat.values().size());
-        Jonosija jonosija = jonosijat.values().iterator().next().getJonosija();
+    assertEquals(1, jonosijat.values().size());
+    Jonosija jonosija = jonosijat.values().iterator().next().getJonosija();
 
-        assertEquals(hakemusOid, jonosija.getHakemusOid());
-        assertEquals(hakijaOid, jonosija.getHakijaOid());
-        assertEquals(hakutoiveprioriteetti, jonosija.getHakutoiveprioriteetti());
-        assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
-        Jarjestyskriteeritulos jktulos = jonosija.getJarjestyskriteeritulokset().get(0);
+    assertEquals(hakemusOid, jonosija.getHakemusOid());
+    assertEquals(hakijaOid, jonosija.getHakijaOid());
+    assertEquals(hakutoiveprioriteetti, jonosija.getHakutoiveprioriteetti());
+    assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+    Jarjestyskriteeritulos jktulos = jonosija.getJarjestyskriteeritulokset().get(0);
 
-        // Laskennan arvoa ei enää tallenneta järjestyskriteeritulokseen jos
-        // hakemus on hylätty edellisessä valinnanvaiheessa
-        // assertEquals(jarjestyskriteeriarvo, jktulos.getArvo());
-        assertEquals(null, jktulos.getArvo());
-        assertEquals(tilaEdellisenVaiheenMukaan.getTila(), jktulos.getTila());
-        assertEquals(tilaEdellisenVaiheenMukaan.getSelite(), jktulos.getKuvaus());
-    }
+    // Laskennan arvoa ei enää tallenneta järjestyskriteeritulokseen jos
+    // hakemus on hylätty edellisessä valinnanvaiheessa
+    // assertEquals(jarjestyskriteeriarvo, jktulos.getArvo());
+    assertEquals(null, jktulos.getArvo());
+    assertEquals(tilaEdellisenVaiheenMukaan.getTila(), jktulos.getTila());
+    assertEquals(tilaEdellisenVaiheenMukaan.getSelite(), jktulos.getKuvaus());
+  }
 }

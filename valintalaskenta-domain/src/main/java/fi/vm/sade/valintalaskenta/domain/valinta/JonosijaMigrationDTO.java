@@ -1,141 +1,139 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.*;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import org.mongodb.morphia.annotations.*;
 
 @Embedded
 public class JonosijaMigrationDTO {
-    @Indexed
-    private String hakemusOid;
+  @Indexed private String hakemusOid;
 
-    private String hakijaOid;
+  private String hakijaOid;
 
-    private String etunimi;
+  private String etunimi;
 
-    private String sukunimi;
+  private String sukunimi;
 
-    private int hakutoiveprioriteetti; // hakutoive
+  private int hakutoiveprioriteetti; // hakutoive
 
-    private boolean harkinnanvarainen = false;
+  private boolean harkinnanvarainen = false;
 
-    private boolean hylattyValisijoittelussa = false;
+  private boolean hylattyValisijoittelussa = false;
 
-    @Embedded
-    private List<Jarjestyskriteeritulos> jarjestyskriteeritulokset = new ArrayList<Jarjestyskriteeritulos>();
+  @Embedded
+  private List<Jarjestyskriteeritulos> jarjestyskriteeritulokset =
+      new ArrayList<Jarjestyskriteeritulos>();
 
-    @Embedded
-    private List<SyotettyArvo> syotetytArvot = new ArrayList<SyotettyArvo>();
+  @Embedded private List<SyotettyArvo> syotetytArvot = new ArrayList<SyotettyArvo>();
 
-    @Embedded
-    private List<FunktioTulos> funktioTulokset = new ArrayList<FunktioTulos>();
+  @Embedded private List<FunktioTulos> funktioTulokset = new ArrayList<FunktioTulos>();
 
-    public String getHakemusOid() {
-        return hakemusOid;
-    }
+  public String getHakemusOid() {
+    return hakemusOid;
+  }
 
-    public void setHakemusOid(String hakemusOid) {
-        this.hakemusOid = hakemusOid;
-    }
+  public void setHakemusOid(String hakemusOid) {
+    this.hakemusOid = hakemusOid;
+  }
 
-    public String getHakijaOid() {
-        return hakijaOid;
-    }
+  public String getHakijaOid() {
+    return hakijaOid;
+  }
 
-    public void setHakijaOid(String hakijaOid) {
-        this.hakijaOid = hakijaOid;
-    }
+  public void setHakijaOid(String hakijaOid) {
+    this.hakijaOid = hakijaOid;
+  }
 
-    public String getEtunimi() {
-        return etunimi;
-    }
+  public String getEtunimi() {
+    return etunimi;
+  }
 
-    public void setEtunimi(String etunimi) {
-        this.etunimi = etunimi;
-    }
+  public void setEtunimi(String etunimi) {
+    this.etunimi = etunimi;
+  }
 
-    public String getSukunimi() {
-        return sukunimi;
-    }
+  public String getSukunimi() {
+    return sukunimi;
+  }
 
-    public void setSukunimi(String sukunimi) {
-        this.sukunimi = sukunimi;
-    }
+  public void setSukunimi(String sukunimi) {
+    this.sukunimi = sukunimi;
+  }
 
-    public int getHakutoiveprioriteetti() {
-        return hakutoiveprioriteetti;
-    }
+  public int getHakutoiveprioriteetti() {
+    return hakutoiveprioriteetti;
+  }
 
-    public void setHakutoiveprioriteetti(int hakutoiveprioriteetti) {
-        this.hakutoiveprioriteetti = hakutoiveprioriteetti;
-    }
+  public void setHakutoiveprioriteetti(int hakutoiveprioriteetti) {
+    this.hakutoiveprioriteetti = hakutoiveprioriteetti;
+  }
 
-    public boolean isHarkinnanvarainen() {
-        return harkinnanvarainen;
-    }
+  public boolean isHarkinnanvarainen() {
+    return harkinnanvarainen;
+  }
 
-    public void setHarkinnanvarainen(boolean harkinnanvarainen) {
-        this.harkinnanvarainen = harkinnanvarainen;
-    }
+  public void setHarkinnanvarainen(boolean harkinnanvarainen) {
+    this.harkinnanvarainen = harkinnanvarainen;
+  }
 
-    public List<Jarjestyskriteeritulos> getJarjestyskriteeritulokset() {
-        return jarjestyskriteeritulokset;
-    }
+  public List<Jarjestyskriteeritulos> getJarjestyskriteeritulokset() {
+    return jarjestyskriteeritulokset;
+  }
 
-    public void setJarjestyskriteeritulokset(List<Jarjestyskriteeritulos> jarjestyskriteeritulokset) {
-        this.jarjestyskriteeritulokset = jarjestyskriteeritulokset;
-    }
+  public void setJarjestyskriteeritulokset(List<Jarjestyskriteeritulos> jarjestyskriteeritulokset) {
+    this.jarjestyskriteeritulokset = jarjestyskriteeritulokset;
+  }
 
-    @PrePersist
-    private void jarjestaJarjestyskriteeritulokset() {
-        Collections.sort(jarjestyskriteeritulokset, new Comparator<Jarjestyskriteeritulos>() {
-            @Override
-            public int compare(Jarjestyskriteeritulos o1, Jarjestyskriteeritulos o2) {
-                return o1.getPrioriteetti() - o2.getPrioriteetti();
-            }
+  @PrePersist
+  private void jarjestaJarjestyskriteeritulokset() {
+    Collections.sort(
+        jarjestyskriteeritulokset,
+        new Comparator<Jarjestyskriteeritulos>() {
+          @Override
+          public int compare(Jarjestyskriteeritulos o1, Jarjestyskriteeritulos o2) {
+            return o1.getPrioriteetti() - o2.getPrioriteetti();
+          }
         });
-    }
+  }
 
-    public List<SyotettyArvo> getSyotetytArvot() {
-        return syotetytArvot;
-    }
+  public List<SyotettyArvo> getSyotetytArvot() {
+    return syotetytArvot;
+  }
 
-    public void setSyotetytArvot(List<SyotettyArvo> syotetytArvot) {
-        this.syotetytArvot = syotetytArvot;
-    }
+  public void setSyotetytArvot(List<SyotettyArvo> syotetytArvot) {
+    this.syotetytArvot = syotetytArvot;
+  }
 
-    public List<FunktioTulos> getFunktioTulokset() {
-        return funktioTulokset;
-    }
+  public List<FunktioTulos> getFunktioTulokset() {
+    return funktioTulokset;
+  }
 
-    public void setFunktioTulokset(List<FunktioTulos> funktioTulokset) {
-        this.funktioTulokset = funktioTulokset;
-    }
+  public void setFunktioTulokset(List<FunktioTulos> funktioTulokset) {
+    this.funktioTulokset = funktioTulokset;
+  }
 
-    public boolean isHylattyValisijoittelussa() {
-        return hylattyValisijoittelussa;
-    }
+  public boolean isHylattyValisijoittelussa() {
+    return hylattyValisijoittelussa;
+  }
 
-    public void setHylattyValisijoittelussa(boolean hylattyValisijoittelussa) {
-        this.hylattyValisijoittelussa = hylattyValisijoittelussa;
-    }
+  public void setHylattyValisijoittelussa(boolean hylattyValisijoittelussa) {
+    this.hylattyValisijoittelussa = hylattyValisijoittelussa;
+  }
 
-    public Jonosija migrate() {
-        Jonosija jonosija = new Jonosija();
-        jonosija.setHakemusOid(hakemusOid);
-        jonosija.setHakijaOid(hakijaOid);
-        jonosija.setEtunimi(etunimi);
-        jonosija.setSukunimi(sukunimi);
-        jonosija.setHakutoiveprioriteetti(hakutoiveprioriteetti);
-        jonosija.setHarkinnanvarainen(harkinnanvarainen);
-        jonosija.setHylattyValisijoittelussa(hylattyValisijoittelussa);
-        jonosija.setJarjestyskriteeritulokset(jarjestyskriteeritulokset);
-        jonosija.setSyotetytArvot(syotetytArvot);
-        jonosija.setFunktioTulokset(funktioTulokset);
-        return jonosija;
-    }
+  public Jonosija migrate() {
+    Jonosija jonosija = new Jonosija();
+    jonosija.setHakemusOid(hakemusOid);
+    jonosija.setHakijaOid(hakijaOid);
+    jonosija.setEtunimi(etunimi);
+    jonosija.setSukunimi(sukunimi);
+    jonosija.setHakutoiveprioriteetti(hakutoiveprioriteetti);
+    jonosija.setHarkinnanvarainen(harkinnanvarainen);
+    jonosija.setHylattyValisijoittelussa(hylattyValisijoittelussa);
+    jonosija.setJarjestyskriteeritulokset(jarjestyskriteeritulokset);
+    jonosija.setSyotetytArvot(syotetytArvot);
+    jonosija.setFunktioTulokset(funktioTulokset);
+    return jonosija;
+  }
 }
