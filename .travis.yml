@@ -1,10 +1,5 @@
 sudo: required
 
-language: java
-
-jdk:
-- openjdk8
-
 services:
 - docker
 
@@ -23,29 +18,33 @@ env:
   # AWS_SECRET_ACCESS_KEY
   - secure: "VD5cxdgSn3Dkez173JWARwsFjJg7TKByNPtJvQTfekn32qG4Ib/IAjOi/oRyZnd9BLWDB02zB5MqVC3cT7F9mrA9Ytf0C3u6RT1/iW9UR7/POze39FxwP9fytSVotqf0Agx0Z8buB3+KURq5J0jPV8resBdmcZ5wnTf9pPgjCiaNVi/C7AdYlaSO7zCvfnOMG/r/HOq174l0Z31gxPa+AbRxskKhhP5BizSPyLV+E/6mmqDxr1KIIuMnChoeuIm5TOj9KVEqFY03rYacPyOxJFVwIfZun8RndrbxKPtt9TqktQ/sbu1Zh/JuVvEoC8vxVvNBlqgwH8dTLMyq9nuYPXxqlfGyLc5QE+GdrZ66v3ahjul6rE7MPkdBOOfrDm9oOdKXwPwtqZ5J2n5kU6Z68tb3BFFoCnmlm9hb4at7K1OUxvQQCwJHGB57+tJJDVSFZe2I0uT0p9tYYrTaKc8WgFczddjC0IvPP+YUP7wGPhVUJKVVl8P9F+0jcl6WsRuaYGowsaVziONsEHIvxau41ZPPrKdtDDDTXY2ZhfDD+hVjEkjfwCVY297mKnR6LdbzfPHu5viAlsnURn6kwDGaO0MXDlUoviJ9qoVS7Mq2TtYwGP7eZ6dLDNnKoih/gMPBaXEiJDLO6mJfZAMvPNLdYZhTaAodpzOvVrHN4JNVNiU="
 
-install:
-- git clone https://github.com/Opetushallitus/ci-tools.git
-- source ci-tools/common/setup-tools.sh
-- sudo sh -c "printf '\n%s penaali.hard.ware.fi\n' $(dig +short artifactory.opintopolku.fi|head -n1) >> /etc/hosts"
-- export ARTIFACT_NAME="valintalaskenta"
-
-script:
-- mvn clean install -B -Dbranch=${TRAVIS_BRANCH} -Drevision=${TRAVIS_COMMIT} -DbuildNumber=${TRAVIS_BUILD_NUMBER}
-
-- mv valintalaskenta-laskenta-service/target/valintalaskenta-laskenta-service-*allinone.jar $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}.jar
-- cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
-
-- export BASE_IMAGE="baseimage-fatjar:master"
-- ./ci-tools/common/pull-image.sh
-- ./ci-tools/build/build-fatjar.sh $ARTIFACT_NAME
-
-deploy:
-- provider: script
-  script: mvn deploy -pl fi.vm.sade.valintaperusteet:valintalaskenta,valintalaskenta-laskenta-api,valintalaskenta-tulos-api,valintalaskenta-domain,valintalaskenta-tulos-service -DskipTests --settings ci-tools/common/maven-settings.xml
-  skip_cleanup: true
-  on:
-    branch: master
-- provider: script
-  script: ./ci-tools/build/upload-image.sh $ARTIFACT_NAME
-  on:
-    all_branches: true
+jobs:
+  include:
+    - language: java
+      jdk: openjdk8
+      install:
+        - git clone https://github.com/Opetushallitus/ci-tools.git
+        - source ci-tools/common/setup-tools.sh
+        - sudo sh -c "printf '\n%s penaali.hard.ware.fi\n' $(dig +short artifactory.opintopolku.fi|head -n1) >> /etc/hosts"
+        - export ARTIFACT_NAME="valintalaskenta"
+      script:
+        - mvn clean install -B -Dbranch=${TRAVIS_BRANCH} -Drevision=${TRAVIS_COMMIT} -DbuildNumber=${TRAVIS_BUILD_NUMBER}
+        - mv valintalaskenta-laskenta-service/target/valintalaskenta-laskenta-service-*allinone.jar $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}.jar
+        - cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
+        - export BASE_IMAGE="baseimage-fatjar:master"
+        - ./ci-tools/common/pull-image.sh
+        - ./ci-tools/build/build-fatjar.sh $ARTIFACT_NAME
+      deploy:
+        - provider: script
+          script: mvn deploy -pl fi.vm.sade.valintaperusteet:valintalaskenta,valintalaskenta-laskenta-api,valintalaskenta-tulos-api,valintalaskenta-domain,valintalaskenta-tulos-service -DskipTests --settings ci-tools/common/maven-settings.xml
+          skip_cleanup: true
+          on:
+            branch: master
+        - provider: script
+          script: ./ci-tools/build/upload-image.sh $ARTIFACT_NAME
+          on:
+            all_branches: true
+    - language: java
+      openjdk: openjdk11
+      script:
+        - ./bin/run-spotless-in-travis.sh

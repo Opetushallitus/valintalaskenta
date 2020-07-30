@@ -1,5 +1,8 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Embedded;
@@ -12,104 +15,101 @@ import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.annotations.PrePersist;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 @Entity("ValintakoeOsallistuminen")
 @Indexes({
-        @Index(fields = {@Field("hakuOid")}, options = @IndexOptions(name = "idx_haku"))
+  @Index(
+      fields = {@Field("hakuOid")},
+      options = @IndexOptions(name = "idx_haku"))
 })
 public class ValintakoeOsallistuminen {
-    @Id
-    private ObjectId id;
+  @Id private ObjectId id;
 
-    private String hakuOid;
-    @Indexed(unique = true)
-    private String hakemusOid;
+  private String hakuOid;
 
-    private String hakijaOid;
+  @Indexed(unique = true)
+  private String hakemusOid;
 
-    private String etunimi;
+  private String hakijaOid;
 
-    private String sukunimi;
+  private String etunimi;
 
-    private Date createdAt;
+  private String sukunimi;
 
-    @Embedded
-    private List<Hakutoive> hakutoiveet = new ArrayList<>();
+  private Date createdAt;
 
-    public ObjectId getId() {
-        return id;
-    }
+  @Embedded private List<Hakutoive> hakutoiveet = new ArrayList<>();
 
-    public void setId(ObjectId id) {
-        this.id = id;
-    }
+  public ObjectId getId() {
+    return id;
+  }
 
-    public String getHakuOid() {
-        return hakuOid;
-    }
+  public void setId(ObjectId id) {
+    this.id = id;
+  }
 
-    public void setHakuOid(String hakuOid) {
-        this.hakuOid = hakuOid;
-    }
+  public String getHakuOid() {
+    return hakuOid;
+  }
 
-    public String getHakemusOid() {
-        return hakemusOid;
-    }
+  public void setHakuOid(String hakuOid) {
+    this.hakuOid = hakuOid;
+  }
 
-    public void setHakemusOid(String hakemusOid) {
-        this.hakemusOid = hakemusOid;
-    }
+  public String getHakemusOid() {
+    return hakemusOid;
+  }
 
-    public String getHakijaOid() {
-        return hakijaOid;
-    }
+  public void setHakemusOid(String hakemusOid) {
+    this.hakemusOid = hakemusOid;
+  }
 
-    public void setHakijaOid(String hakijaOid) {
-        this.hakijaOid = hakijaOid;
-    }
+  public String getHakijaOid() {
+    return hakijaOid;
+  }
 
-    public List<Hakutoive> getHakutoiveet() {
-        return hakutoiveet;
-    }
+  public void setHakijaOid(String hakijaOid) {
+    this.hakijaOid = hakijaOid;
+  }
 
-    public void setHakutoiveet(List<Hakutoive> hakutoiveet) {
-        this.hakutoiveet = hakutoiveet;
-    }
+  public List<Hakutoive> getHakutoiveet() {
+    return hakutoiveet;
+  }
 
-    @PrePersist
-    private void prePersist() {
-        createdAt = new Date();
-    }
+  public void setHakutoiveet(List<Hakutoive> hakutoiveet) {
+    this.hakutoiveet = hakutoiveet;
+  }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
+  @PrePersist
+  private void prePersist() {
+    createdAt = new Date();
+  }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
+  public Date getCreatedAt() {
+    return createdAt;
+  }
 
-    public String getSukunimi() {
-        return sukunimi;
-    }
+  public void setCreatedAt(Date createdAt) {
+    this.createdAt = createdAt;
+  }
 
-    public void setSukunimi(String sukunimi) {
-        this.sukunimi = sukunimi;
-    }
+  public String getSukunimi() {
+    return sukunimi;
+  }
 
-    public String getEtunimi() {
-        return etunimi;
-    }
+  public void setSukunimi(String sukunimi) {
+    this.sukunimi = sukunimi;
+  }
 
-    public void setEtunimi(String etunimi) {
-        this.etunimi = etunimi;
-    }
+  public String getEtunimi() {
+    return etunimi;
+  }
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
+  public void setEtunimi(String etunimi) {
+    this.etunimi = etunimi;
+  }
+
+  @Override
+  public String toString() {
+    return ToStringBuilder.reflectionToString(this);
+  }
 }

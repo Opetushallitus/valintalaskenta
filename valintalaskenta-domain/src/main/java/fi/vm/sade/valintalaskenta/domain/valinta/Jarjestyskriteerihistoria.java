@@ -1,51 +1,46 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import org.apache.commons.io.IOUtils;
+import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
-import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.PrePersist;
-
-import java.io.ByteArrayInputStream;
-import java.util.zip.GZIPInputStream;
 
 @Entity("Jarjestyskriteerihistoria")
 public class Jarjestyskriteerihistoria {
-    @Id
-    private ObjectId id;
+  @Id private ObjectId id;
 
-    private String historia;
+  private String historia;
 
-    private byte[] historiaGzip;
+  private byte[] historiaGzip;
 
-    public ObjectId getId() {
-        return id;
+  public ObjectId getId() {
+    return id;
+  }
+
+  public void setId(ObjectId id) {
+    this.id = id;
+  }
+
+  public byte[] getHistoriaGzip() {
+    return historiaGzip;
+  }
+
+  public void setHistoriaGzip(byte[] historiaGzip) {
+    this.historiaGzip = historiaGzip;
+  }
+
+  public String getHistoria() {
+    return historia;
+  }
+
+  public void setHistoria(String historia) {
+    this.historia = historia;
+  }
+
+  @PrePersist
+  public void preventBothZipAndHistoryToBeSaved() {
+    if (historia != null && historiaGzip != null) {
+      historia = null;
     }
-
-    public void setId(ObjectId id) {
-        this.id = id;
-    }
-
-    public byte[] getHistoriaGzip() {
-        return historiaGzip;
-    }
-
-    public void setHistoriaGzip(byte[] historiaGzip) {
-        this.historiaGzip = historiaGzip;
-    }
-
-    public String getHistoria() {
-        return historia;
-    }
-
-    public void setHistoria(String historia) {
-        this.historia = historia;
-    }
-
-    @PrePersist
-    public void preventBothZipAndHistoryToBeSaved() {
-        if(historia != null && historiaGzip != null) {
-            historia = null;
-        }
-    }
+  }
 }

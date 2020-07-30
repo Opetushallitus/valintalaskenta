@@ -16,61 +16,69 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
 import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 public interface ValintalaskentaTulosService {
 
-    List<JonoDto> haeJonotSijoittelussa(String hakuOid);
+  List<JonoDto> haeJonotSijoittelussa(String hakuOid);
 
-    HakemusDTO haeTuloksetHakemukselle(String hakuoid, String hakemusoid);
+  HakemusDTO haeTuloksetHakemukselle(String hakuoid, String hakemusoid);
 
-    List<ValintatietoValinnanvaiheDTO> haeValinnanvaiheetHakukohteelle(String hakukohdeoid);
+  List<ValintatietoValinnanvaiheDTO> haeValinnanvaiheetHakukohteelle(String hakukohdeoid);
 
-    List<MinimalJonoDTO> haeSijoittelunKayttamatJonotIlmanValintalaskentaa();
+  List<MinimalJonoDTO> haeSijoittelunKayttamatJonotIlmanValintalaskentaa();
 
-    Optional<HakukohdeDTO> haeValinnanvaiheetHakukohteelleJaJonolle(String hakukohdeoid, List<String> valintatapajonot);
+  Optional<HakukohdeDTO> haeValinnanvaiheetHakukohteelleJaJonolle(
+      String hakukohdeoid, List<String> valintatapajonot);
 
-    List<HakijaryhmaDTO> haeHakijaryhmatHakukohteelle(String hakukohdeoid);
+  List<HakijaryhmaDTO> haeHakijaryhmatHakukohteelle(String hakukohdeoid);
 
-    List<HakukohdeDTO> haeVirheetHaulle(String hakuOid);
+  List<HakukohdeDTO> haeVirheetHaulle(String hakuOid);
 
-    List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid);
+  List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid);
 
-    MuokattuJonosija muutaJarjestyskriteeri(String valintatapajonoOid,
-                                            String hakemusOid, Integer jarjestyskriteeriPrioriteetti,
-                                            MuokattuJonosijaArvoDTO arvo,
-                                            User auditUser);
+  MuokattuJonosija muutaJarjestyskriteeri(
+      String valintatapajonoOid,
+      String hakemusOid,
+      Integer jarjestyskriteeriPrioriteetti,
+      MuokattuJonosijaArvoDTO arvo,
+      User auditUser);
 
-    MuokattuJonosija poistaMuokattuJonosija(String valintatapajonoOid,
-                                            String hakemusOid,
-                                            Integer jarjestyskriteeriPrioriteetti,
-                                            User auditUser);
+  MuokattuJonosija poistaMuokattuJonosija(
+      String valintatapajonoOid,
+      String hakemusOid,
+      Integer jarjestyskriteeriPrioriteetti,
+      User auditUser);
 
-    ValintakoeOsallistuminen haeValintakoeOsallistumiset(String hakemusOid);
+  ValintakoeOsallistuminen haeValintakoeOsallistumiset(String hakemusOid);
 
-    List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakutoive(String hakukohdeOid);
+  List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakutoive(String hakukohdeOid);
 
-    List<Jarjestyskriteerihistoria> haeJonosijaHistoria(String valintatapajonoOid, String hakemusOid);
+  List<Jarjestyskriteerihistoria> haeJonosijaHistoria(String valintatapajonoOid, String hakemusOid);
 
-    List<ValintakoeOsallistuminenDTO> haeValintakoevirheetHaulle(String hakuOid);
+  List<ValintakoeOsallistuminenDTO> haeValintakoevirheetHaulle(String hakuOid);
 
-    void asetaHarkinnanvaraisestiHyvaksymisenTila(String hakuoid,
-                                                  String hakukohdeoid, String hakemusoid,
-                                                  HarkinnanvaraisuusTila hyvaksyttyHarkinannvaraisesti,
-                                                  User auditUser);
+  void asetaHarkinnanvaraisestiHyvaksymisenTila(
+      String hakuoid,
+      String hakukohdeoid,
+      String hakemusoid,
+      HarkinnanvaraisuusTila hyvaksyttyHarkinannvaraisesti,
+      User auditUser);
 
-    List<HarkinnanvarainenHyvaksyminen> haeHarkinnanvaraisestiHyvaksymisenTila(String hakukohdeoid);
+  List<HarkinnanvarainenHyvaksyminen> haeHarkinnanvaraisestiHyvaksymisenTila(String hakukohdeoid);
 
-    List<HarkinnanvarainenHyvaksyminen> haeHakemuksenHarkinnanvaraisestiHyvaksymisenTilat(String hakuOid, String hakemusOid);
+  List<HarkinnanvarainenHyvaksyminen> haeHakemuksenHarkinnanvaraisestiHyvaksymisenTilat(
+      String hakuOid, String hakemusOid);
 
-    ValinnanvaiheDTO lisaaTuloksia(ValinnanvaiheDTO vaihe, String hakukohdeoid, String tarjoajaOid);
+  ValinnanvaiheDTO lisaaTuloksia(ValinnanvaiheDTO vaihe, String hakukohdeoid, String tarjoajaOid);
 
-    Optional<Valintatapajono> muokkaaValintatapajonoa(String valintatapajonoOid, Consumer<Valintatapajono> muokkausFunktio, User auditUser);
+  Optional<Valintatapajono> muokkaaValintatapajonoa(
+      String valintatapajonoOid, Consumer<Valintatapajono> muokkausFunktio, User auditUser);
 
-    boolean haeSijoitteluStatus(String valintatapajonoOid);
+  boolean haeSijoitteluStatus(String valintatapajonoOid);
 
-    List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakukohdes(List<String> hakukohdeOids);
+  List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakukohdes(
+      List<String> hakukohdeOids);
 }

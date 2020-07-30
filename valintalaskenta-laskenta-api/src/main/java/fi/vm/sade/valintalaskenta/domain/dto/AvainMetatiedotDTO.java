@@ -5,27 +5,28 @@ import java.util.List;
 import java.util.Map;
 
 public class AvainMetatiedotDTO {
-    private final String avain;
-    private final List<Map<String, String>> metatiedot;
+  private final String avain;
+  private final List<Map<String, String>> metatiedot;
 
-    public AvainMetatiedotDTO() {
-        this.avain = "";
-        this.metatiedot = Collections.emptyList();
-    }
-    public AvainMetatiedotDTO(String avain, List<Map<String, String>> metatiedot) {
-        if(avain == null) {
-            this.avain = "";
-        } else {
-            this.avain = avain;
-        }
-        this.metatiedot = metatiedot;
-    }
+  public AvainMetatiedotDTO() {
+    this.avain = "";
+    this.metatiedot = Collections.emptyList();
+  }
 
-    public List<Map<String, String>> getMetatiedot() {
-        return metatiedot;
+  public AvainMetatiedotDTO(String avain, List<Map<String, String>> metatiedot) {
+    if (avain == null) {
+      this.avain = "";
+    } else {
+      this.avain = avain;
     }
+    this.metatiedot = metatiedot;
+  }
 
-    public String getAvain() {
-        return avain;
-    }
+  public List<Map<String, String>> getMetatiedot() {
+    return metatiedot;
+  }
+
+  public String getAvain() {
+    return avain;
+  }
 }

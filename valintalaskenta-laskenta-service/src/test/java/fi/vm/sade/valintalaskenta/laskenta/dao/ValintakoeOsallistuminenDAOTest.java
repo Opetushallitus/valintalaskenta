@@ -1,5 +1,10 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao;
 
+import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
@@ -15,124 +20,130 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
-/**
- * User: wuoti
- * Date: 7.5.2013
- * Time: 9.19
- */
+/** User: wuoti Date: 7.5.2013 Time: 9.19 */
 @ContextConfiguration(locations = "classpath:application-context-test.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
-@TestExecutionListeners(listeners = {DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class})
+@TestExecutionListeners(
+    listeners = {
+      DependencyInjectionTestExecutionListener.class,
+      DirtiesContextTestExecutionListener.class
+    })
 public class ValintakoeOsallistuminenDAOTest {
 
-    @Rule
-    public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
+  @Rule public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
 
-    @Autowired
-    private ApplicationContext applicationContext;
+  @Autowired private ApplicationContext applicationContext;
 
-    @Autowired
-    private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
+  @Autowired private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
 
-    private static Valintakoe luoValintakoe(String valintakoeOid, String valintakoetunniste,
-                                            Osallistuminen osallistuminen) {
-        Valintakoe valintakoe = new Valintakoe();
-        valintakoe.setValintakoeOid(valintakoeOid);
-        valintakoe.setValintakoeTunniste(valintakoetunniste);
+  private static Valintakoe luoValintakoe(
+      String valintakoeOid, String valintakoetunniste, Osallistuminen osallistuminen) {
+    Valintakoe valintakoe = new Valintakoe();
+    valintakoe.setValintakoeOid(valintakoeOid);
+    valintakoe.setValintakoeTunniste(valintakoetunniste);
 
-        OsallistuminenTulos osallistuminenTulos = new OsallistuminenTulos();
-        osallistuminenTulos.setOsallistuminen(osallistuminen);
-        valintakoe.setOsallistuminenTulos(osallistuminenTulos);
+    OsallistuminenTulos osallistuminenTulos = new OsallistuminenTulos();
+    osallistuminenTulos.setOsallistuminen(osallistuminen);
+    valintakoe.setOsallistuminenTulos(osallistuminenTulos);
 
-        return valintakoe;
-    }
+    return valintakoe;
+  }
 
-    private static ValintakoeValinnanvaihe luoValinnanVaihe(String valinnanVaiheOid, int valinnanVaiheJarjestysluku) {
-        ValintakoeValinnanvaihe valinnanVaihe = new ValintakoeValinnanvaihe();
-        valinnanVaihe.setValinnanVaiheOid(valinnanVaiheOid);
-        valinnanVaihe.setValinnanVaiheJarjestysluku(valinnanVaiheJarjestysluku);
-        return valinnanVaihe;
-    }
+  private static ValintakoeValinnanvaihe luoValinnanVaihe(
+      String valinnanVaiheOid, int valinnanVaiheJarjestysluku) {
+    ValintakoeValinnanvaihe valinnanVaihe = new ValintakoeValinnanvaihe();
+    valinnanVaihe.setValinnanVaiheOid(valinnanVaiheOid);
+    valinnanVaihe.setValinnanVaiheJarjestysluku(valinnanVaiheJarjestysluku);
+    return valinnanVaihe;
+  }
 
-    private static Hakutoive luoHakutoive(String hakukohdeOid) {
-        Hakutoive hakutoive = new Hakutoive();
-        hakutoive.setHakukohdeOid(hakukohdeOid);
-        return hakutoive;
-    }
+  private static Hakutoive luoHakutoive(String hakukohdeOid) {
+    Hakutoive hakutoive = new Hakutoive();
+    hakutoive.setHakukohdeOid(hakukohdeOid);
+    return hakutoive;
+  }
 
-    private static ValintakoeOsallistuminen luoValintakoeOsallistuminen(String hakemusOid, String hakijaOid,
-                                                                        String hakuOid) {
-        ValintakoeOsallistuminen osallistuminen = new ValintakoeOsallistuminen();
-        osallistuminen.setHakemusOid(hakemusOid);
-        osallistuminen.setHakijaOid(hakijaOid);
-        osallistuminen.setHakuOid(hakuOid);
+  private static ValintakoeOsallistuminen luoValintakoeOsallistuminen(
+      String hakemusOid, String hakijaOid, String hakuOid) {
+    ValintakoeOsallistuminen osallistuminen = new ValintakoeOsallistuminen();
+    osallistuminen.setHakemusOid(hakemusOid);
+    osallistuminen.setHakijaOid(hakijaOid);
+    osallistuminen.setHakuOid(hakuOid);
 
-        return osallistuminen;
-    }
+    return osallistuminen;
+  }
 
-    private static ValintakoeOsallistuminen luoTestiOsallistuminen(String hakemusOid, String hakijaOid,
-                                                                   String hakuOid) {
-        ValintakoeOsallistuminen osallistuminen = luoValintakoeOsallistuminen(hakemusOid, hakijaOid, hakuOid);
+  private static ValintakoeOsallistuminen luoTestiOsallistuminen(
+      String hakemusOid, String hakijaOid, String hakuOid) {
+    ValintakoeOsallistuminen osallistuminen =
+        luoValintakoeOsallistuminen(hakemusOid, hakijaOid, hakuOid);
 
-        for (int i = 1; i <= 3; ++i) {
-            Hakutoive hakutoive = luoHakutoive("hakutoive" + i);
-            for (int j = 1; j <= 3; ++j) {
-                ValintakoeValinnanvaihe vaihe = luoValinnanVaihe("valinnanVaihe" + j, j);
-                for (int k = 1; k <= 3; ++k) {
-                    Valintakoe koe = luoValintakoe("" + i + j + k, "" + i + j + k,
-                            k % 2 == 0 ? Osallistuminen.EI_OSALLISTU : Osallistuminen.OSALLISTUU);
-                    vaihe.getValintakokeet().add(koe);
-                }
-                hakutoive.getValinnanVaiheet().add(vaihe);
-            }
-            osallistuminen.getHakutoiveet().add(hakutoive);
+    for (int i = 1; i <= 3; ++i) {
+      Hakutoive hakutoive = luoHakutoive("hakutoive" + i);
+      for (int j = 1; j <= 3; ++j) {
+        ValintakoeValinnanvaihe vaihe = luoValinnanVaihe("valinnanVaihe" + j, j);
+        for (int k = 1; k <= 3; ++k) {
+          Valintakoe koe =
+              luoValintakoe(
+                  "" + i + j + k,
+                  "" + i + j + k,
+                  k % 2 == 0 ? Osallistuminen.EI_OSALLISTU : Osallistuminen.OSALLISTUU);
+          vaihe.getValintakokeet().add(koe);
         }
-
-        return osallistuminen;
+        hakutoive.getValinnanVaiheet().add(vaihe);
+      }
+      osallistuminen.getHakutoiveet().add(hakutoive);
     }
 
-    @Test
-    @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
-    public void testCreateAndReadByHakuOidAndHakemusOid() {
-        assertEquals(0, valintakoeOsallistuminenDAO.readAll().size());
+    return osallistuminen;
+  }
 
-        String hakuOid = "hakuOid";
+  @Test
+  @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
+  public void testCreateAndReadByHakuOidAndHakemusOid() {
+    assertEquals(0, valintakoeOsallistuminenDAO.readAll().size());
 
-        String hakemusOid1 = "hakemusOid1";
-        String hakijaOid1 = "hakijaOid1";
+    String hakuOid = "hakuOid";
 
-        ValintakoeOsallistuminen osallistuminen1 = luoTestiOsallistuminen(hakemusOid1, hakijaOid1, hakuOid);
+    String hakemusOid1 = "hakemusOid1";
+    String hakijaOid1 = "hakijaOid1";
 
-        String hakemusOid2 = "hakemusOid2";
-        String hakijaOid2 = "hakijaOid2";
+    ValintakoeOsallistuminen osallistuminen1 =
+        luoTestiOsallistuminen(hakemusOid1, hakijaOid1, hakuOid);
 
-        ValintakoeOsallistuminen osallistuminen2 = luoTestiOsallistuminen(hakemusOid2, hakijaOid2, hakuOid);
+    String hakemusOid2 = "hakemusOid2";
+    String hakijaOid2 = "hakijaOid2";
 
-        valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen1);
-        valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen2);
-        assertEquals(2, valintakoeOsallistuminenDAO.readAll().size());
+    ValintakoeOsallistuminen osallistuminen2 =
+        luoTestiOsallistuminen(hakemusOid2, hakijaOid2, hakuOid);
 
-        ValintakoeOsallistuminen haettu1 = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid1);
-        assertEquals(osallistuminen1.getHakuOid(), haettu1.getHakuOid());
-        assertEquals(osallistuminen1.getHakemusOid(), haettu1.getHakemusOid());
+    valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen1);
+    valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen2);
+    assertEquals(2, valintakoeOsallistuminenDAO.readAll().size());
 
-        ValintakoeOsallistuminen haettu2 = valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid2);
-        assertEquals(osallistuminen2.getHakuOid(), haettu2.getHakuOid());
-        assertEquals(osallistuminen2.getHakemusOid(), haettu2.getHakemusOid());
-    }
+    ValintakoeOsallistuminen haettu1 =
+        valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid1);
+    assertEquals(osallistuminen1.getHakuOid(), haettu1.getHakuOid());
+    assertEquals(osallistuminen1.getHakemusOid(), haettu1.getHakemusOid());
 
-    @Test
-    @UsingDataSet(locations = "testEdellinenOsallistuminen.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-    public void testHaeEdeltavaValinnanvaihe() {
-        assertNotNull(valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid1", "hakuKohdeOid1", 1));
-        assertNull(valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid1", "hakuKohdeOid2", 1));
-        assertNotNull(valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid1", "hakuKohdeOid1", 6));
-        assertNotNull(valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid1", "hakuKohdeOid4", 3));
-    }
+    ValintakoeOsallistuminen haettu2 =
+        valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid2);
+    assertEquals(osallistuminen2.getHakuOid(), haettu2.getHakuOid());
+    assertEquals(osallistuminen2.getHakemusOid(), haettu2.getHakemusOid());
+  }
+
+  @Test
+  @UsingDataSet(
+      locations = "testEdellinenOsallistuminen.json",
+      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+  public void testHaeEdeltavaValinnanvaihe() {
+    assertNotNull(
+        valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid1", "hakuKohdeOid1", 1));
+    assertNull(
+        valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid1", "hakuKohdeOid2", 1));
+    assertNotNull(
+        valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid1", "hakuKohdeOid1", 6));
+    assertNotNull(
+        valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid1", "hakuKohdeOid4", 3));
+  }
 }
