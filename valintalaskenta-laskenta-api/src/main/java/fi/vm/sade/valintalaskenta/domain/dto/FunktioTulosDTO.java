@@ -26,8 +26,8 @@ public class FunktioTulosDTO {
   public FunktioTulosDTO() {}
 
   public FunktioTulosDTO(String tunniste, String arvo) {
-    this.tunniste = tunniste;
-    this.arvo = arvo;
+    this.tunniste = tunniste != null ? tunniste.intern() : null;
+    this.arvo = arvo != null ? arvo.intern() : null;
   }
 
   public String getTunniste() {
@@ -35,7 +35,7 @@ public class FunktioTulosDTO {
   }
 
   public void setTunniste(String tunniste) {
-    this.tunniste = tunniste;
+    this.tunniste = tunniste != null ? tunniste.intern() : null;
   }
 
   public String getArvo() {
@@ -43,7 +43,7 @@ public class FunktioTulosDTO {
   }
 
   public void setArvo(String arvo) {
-    this.arvo = arvo;
+    this.arvo = arvo != null ? arvo.intern() : null;
   }
 
   public String getNimiFi() {
@@ -51,7 +51,7 @@ public class FunktioTulosDTO {
   }
 
   public void setNimiFi(String nimiFi) {
-    this.nimiFi = nimiFi;
+    this.nimiFi = nimiFi != null ? nimiFi.intern() : null;
   }
 
   public String getNimiSv() {
@@ -59,7 +59,7 @@ public class FunktioTulosDTO {
   }
 
   public void setNimiSv(String nimiSv) {
-    this.nimiSv = nimiSv;
+    this.nimiSv = nimiSv != null ? nimiSv.intern() : null;
   }
 
   public String getNimiEn() {
@@ -67,7 +67,7 @@ public class FunktioTulosDTO {
   }
 
   public void setNimiEn(String nimiEn) {
-    this.nimiEn = nimiEn;
+    this.nimiEn = nimiEn != null ? nimiEn.intern() : null;
   }
 
   public boolean isOmaopintopolku() {

@@ -28,12 +28,12 @@ public class JonosijaDTO {
       final boolean muokattu,
       final boolean hylattyValisijoittelussa) {
     this.jonosija = jonosija;
-    this.hakemusOid = hakemusOid;
-    this.hakijaOid = hakijaOid;
+    this.hakemusOid = hakemusOid != null ? hakemusOid.intern() : null;
+    this.hakijaOid = hakijaOid != null ? hakijaOid.intern() : null;
     this.jarjestyskriteerit = jarjestyskriteerit;
     this.prioriteetti = prioriteetti;
-    this.sukunimi = sukunimi;
-    this.etunimi = etunimi;
+    this.sukunimi = sukunimi != null ? sukunimi.intern() : null;
+    this.etunimi = etunimi != null ? etunimi.intern() : null;
     this.harkinnanvarainen = harkinnanvarainen;
     this.tuloksenTila = tuloksenTila;
     this.historiat = historiat;
@@ -107,7 +107,7 @@ public class JonosijaDTO {
   }
 
   public void setHakijaOid(String hakijaOid) {
-    this.hakijaOid = hakijaOid;
+    this.hakijaOid = hakijaOid != null ? hakijaOid.intern() : null;
   }
 
   public String getHakemusOid() {
@@ -115,7 +115,7 @@ public class JonosijaDTO {
   }
 
   public void setHakemusOid(String hakemusOid) {
-    this.hakemusOid = hakemusOid;
+    this.hakemusOid = hakemusOid != null ? hakemusOid.intern() : null;
   }
 
   public int getJonosija() {
@@ -127,11 +127,11 @@ public class JonosijaDTO {
   }
 
   public void setEtunimi(String etunimi) {
-    this.etunimi = etunimi;
+    this.etunimi = etunimi != null ? etunimi.intern() : null;
   }
 
   public void setSukunimi(String sukunimi) {
-    this.sukunimi = sukunimi;
+    this.sukunimi = sukunimi != null ? sukunimi.intern() : null;
   }
 
   public void setPrioriteetti(int prioriteetti) {

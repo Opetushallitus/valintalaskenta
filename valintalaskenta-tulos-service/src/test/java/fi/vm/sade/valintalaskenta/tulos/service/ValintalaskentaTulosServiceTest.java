@@ -19,6 +19,8 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,6 +57,38 @@ public class ValintalaskentaTulosServiceTest {
     assertEquals(2, kaikki.size());
     kaikki = valintalaskentaTulosService.haeValintakoeOsallistumisetByHakutoive("oid2");
     assertEquals(1, kaikki.size());
+  }
+
+  @Test
+  @UsingDataSet(
+      locations = "valinnanvaiheTasasija.json",
+      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+  public void haeLasketutuValintavaiheetHaulleAndConvertTest() {
+    final String hakuOid = "haku1";
+
+    List<HakukohdeDTO> hakukohdeDTOs =
+        valintalaskentaTulosService.haeLasketutValinnanvaiheetHaulle(hakuOid);
+
+    assertEquals(1, hakukohdeDTOs.size());
+    HakukohdeDTO hakukohdeDTO = hakukohdeDTOs.get(0);
+    assertEquals(0, hakukohdeDTO.getPrioriteetti());
+
+    final int convertedPrioriteetti = 15;
+    Function<HakukohdeDTO, HakukohdeDTO> testConverter =
+        (HakukohdeDTO source) -> {
+          HakukohdeDTO result = new HakukohdeDTO();
+          result.setPrioriteetti(convertedPrioriteetti);
+          return result;
+        };
+
+    List<HakukohdeDTO> convertedHakukohdeDTOs =
+        valintalaskentaTulosService
+            .haeLasketutValinnanvaiheetHaulle(hakuOid, testConverter)
+            .collect(Collectors.toList());
+
+    assertEquals(1, convertedHakukohdeDTOs.size());
+    HakukohdeDTO convertedHakukohdeDTO = convertedHakukohdeDTOs.get(0);
+    assertEquals(convertedPrioriteetti, convertedHakukohdeDTO.getPrioriteetti());
   }
 
   @Test

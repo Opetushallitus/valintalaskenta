@@ -20,7 +20,7 @@ public class JarjestyskriteeritulosDTO implements Comparable<Jarjestyskriteeritu
     this.tila = tila;
     this.kuvaus = kuvaus;
     this.prioriteetti = prioriteetti;
-    this.nimi = nimi;
+    this.nimi = nimi != null ? nimi.intern() : null;
   }
 
   @ApiModelProperty(value = "Järjestyskriteerin lukuarvo", required = true)
@@ -72,7 +72,7 @@ public class JarjestyskriteeritulosDTO implements Comparable<Jarjestyskriteeritu
   }
 
   public void setNimi(String nimi) {
-    this.nimi = nimi;
+    this.nimi = nimi != null ? nimi.intern() : null;
   }
 
   public Map<String, String> getKuvaus() {

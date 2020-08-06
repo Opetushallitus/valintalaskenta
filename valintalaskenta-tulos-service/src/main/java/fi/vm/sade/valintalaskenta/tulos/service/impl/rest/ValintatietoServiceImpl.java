@@ -13,7 +13,9 @@ import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.ValintatietoService;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,22 +77,26 @@ public class ValintatietoServiceImpl implements ValintatietoService {
 
   public HakuDTO haeValintatiedot(String hakuOid) {
     try {
-      List<HakukohdeDTO> a = tulosService.haeLasketutValinnanvaiheetHaulle(hakuOid);
+      Function<HakukohdeDTO, HakukohdeDTO> convertor =
+          (HakukohdeDTO v) -> {
+            HakukohdeDTO ht = new HakukohdeDTO();
+            ht.setOid(v.getOid());
+            ht.setTarjoajaoid(v.getTarjoajaoid());
+            ht.getHakijaryhma().addAll(v.getHakijaryhma());
+
+            for (ValinnanvaiheDTO valinnanvaiheDTO : v.getValinnanvaihe()) {
+              ht.getValinnanvaihe()
+                  .add(createValinnanvaiheTyyppi(valinnanvaiheDTO, Optional.empty()));
+            }
+            return ht;
+          };
+
+      Stream<HakukohdeDTO> convertedHakukohdeDTOs =
+          tulosService.haeLasketutValinnanvaiheetHaulle(hakuOid, convertor);
 
       HakuDTO hakuDTO = new HakuDTO();
       hakuDTO.setHakuOid(hakuOid);
-
-      for (HakukohdeDTO v : a) {
-        HakukohdeDTO ht = new HakukohdeDTO();
-        ht.setOid(v.getOid());
-        ht.setTarjoajaoid(v.getTarjoajaoid());
-        ht.getHakijaryhma().addAll(v.getHakijaryhma());
-        hakuDTO.getHakukohteet().add(ht);
-
-        for (ValinnanvaiheDTO valinnanvaiheDTO : v.getValinnanvaihe()) {
-          ht.getValinnanvaihe().add(createValinnanvaiheTyyppi(valinnanvaiheDTO, Optional.empty()));
-        }
-      }
+      convertedHakukohdeDTOs.forEach(hakukohdeDTO -> hakuDTO.getHakukohteet().add(hakukohdeDTO));
       return hakuDTO;
     } catch (Exception e) {
       LOG.error("Valintatietoja ei saatu haettua haulle {}!", hakuOid);

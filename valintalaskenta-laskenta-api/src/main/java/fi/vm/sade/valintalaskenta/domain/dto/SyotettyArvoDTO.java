@@ -32,7 +32,7 @@ public class SyotettyArvoDTO {
   }
 
   public void setTunniste(String tunniste) {
-    this.tunniste = tunniste;
+    this.tunniste = tunniste != null ? tunniste.intern() : null;
   }
 
   public String getArvo() {
@@ -40,7 +40,7 @@ public class SyotettyArvoDTO {
   }
 
   public void setArvo(String arvo) {
-    this.arvo = arvo;
+    this.arvo = arvo != null ? arvo.intern() : null;
   }
 
   public String getLaskennallinenArvo() {
@@ -48,7 +48,7 @@ public class SyotettyArvoDTO {
   }
 
   public void setLaskennallinenArvo(String laskennallinenArvo) {
-    this.laskennallinenArvo = laskennallinenArvo;
+    this.laskennallinenArvo = laskennallinenArvo != null ? laskennallinenArvo.intern() : null;
   }
 
   public String getOsallistuminen() {
@@ -56,7 +56,7 @@ public class SyotettyArvoDTO {
   }
 
   public void setOsallistuminen(String osallistuminen) {
-    this.osallistuminen = osallistuminen;
+    this.osallistuminen = osallistuminen != null ? osallistuminen.intern() : null;
   }
 
   public String getTyypinKoodiUri() {
@@ -64,7 +64,7 @@ public class SyotettyArvoDTO {
   }
 
   public void setTyypinKoodiUri(String tyypinKoodiUri) {
-    this.tyypinKoodiUri = tyypinKoodiUri;
+    this.tyypinKoodiUri = tyypinKoodiUri != null ? tyypinKoodiUri.intern() : null;
   }
 
   public boolean isTilastoidaan() {

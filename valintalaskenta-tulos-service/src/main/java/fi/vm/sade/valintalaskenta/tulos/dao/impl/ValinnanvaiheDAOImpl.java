@@ -5,6 +5,8 @@ import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
@@ -93,6 +95,20 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
             .field("hakuOid")
             .equal(hakuoid)
             .asList());
+  }
+
+  @Override
+  public Stream<Valinnanvaihe> readByHakuOidStreaming(String hakuoid) {
+    final Iterator<ValinnanvaiheMigrationDTO> mongoResultsIterator =
+        datastore
+            .createQuery(ValinnanvaiheMigrationDTO.class)
+            .field("hakuOid")
+            .equal(hakuoid)
+            .iterator();
+
+    return StreamSupport.stream(
+            Spliterators.spliteratorUnknownSize(mongoResultsIterator, Spliterator.ORDERED), false)
+        .map(this::migrate);
   }
 
   @Override
