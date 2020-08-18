@@ -16,9 +16,11 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import org.joda.time.LocalDate;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,7 +76,7 @@ public class ValintakoeOsallistuminenDAOTest {
   public void testFindAmmatillisenKielikoeOsallistumiset() {
     List<ValintakoeOsallistuminen> osallistumiset =
         valintakoeOsallistuminenDAO.findAmmatillisenKielikoeOsallistumiset(
-            new LocalDate(2010, 1, 1).toDate());
+            date(LocalDate.of(2010, 1, 1)));
     assertEquals(1, osallistumiset.size());
     ValintakoeOsallistuminen vko = osallistumiset.get(0);
 
@@ -102,7 +104,11 @@ public class ValintakoeOsallistuminenDAOTest {
 
     assertThat(
         valintakoeOsallistuminenDAO.findAmmatillisenKielikoeOsallistumiset(
-            new LocalDate(2020, 1, 1).toDate()),
+            date(LocalDate.of(2020, 1, 1))),
         hasSize(0));
+  }
+
+  private Date date(LocalDate from) {
+    return Date.from(from.atTime(0, 0).toInstant(ZoneOffset.UTC));
   }
 }
