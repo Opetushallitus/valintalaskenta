@@ -18,7 +18,7 @@
     </modules>
 
     <properties>
-        <valintaperusteet.version>5.15-SNAPSHOT</valintaperusteet.version>
+        <valintaperusteet.version>5.16-SNAPSHOT</valintaperusteet.version>
         <valinta-sharedutils.version>5.11-SNAPSHOT</valinta-sharedutils.version>
         <sijoittelu.version>7.4.0-SNAPSHOT</sijoittelu.version>
 
@@ -110,19 +110,19 @@
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
-                <version>3.1.0</version>
+                <version>4.0.1</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>com.lordofthejars</groupId>
                 <artifactId>nosqlunit-mongodb</artifactId>
-                <version>0.7.6</version>
+                <version>0.7.9</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>20.0</version>
+                <version>29.0-jre</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.cxf</groupId>
@@ -222,7 +222,7 @@
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
-                <version>2.7</version>
+                <version>2.8.6</version>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade</groupId>
@@ -232,23 +232,23 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.7.5</version>
+                <version>2.0.0-alpha1</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.4</version>
+                <version>3.11</version>
             </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
-                <version>1.11</version>
+                <version>1.14</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.ehcache</groupId>
                 <artifactId>ehcache-core</artifactId>
-                <version>2.5.0</version>
+                <version>2.6.11</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
@@ -320,17 +320,17 @@
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>7.0</version>
+                <version>9.0-beta</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.5</version>
+                <version>2.7</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
-                <version>1.7.5</version>
+                <version>2.0.0-alpha1</version>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade.valintaperusteet</groupId>
@@ -340,13 +340,13 @@
             <dependency>
                 <groupId>javax.validation</groupId>
                 <artifactId>validation-api</artifactId>
-                <version>1.1.0.Final</version>
+                <version>2.0.1.Final</version>
             </dependency>
 
             <dependency>
                 <groupId>org.scala-lang</groupId>
                 <artifactId>scala-library</artifactId>
-                <version>2.13.1</version>
+                <version>2.13.3</version>
             </dependency>
 
             <dependency>
@@ -435,28 +435,23 @@
             <dependency>
                 <groupId>cglib</groupId>
                 <artifactId>cglib-nodep</artifactId>
-                <version>2.2.2</version>
+                <version>3.3.0</version>
             </dependency>
 
             <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>42.2.4</version>
-            </dependency>
-            <dependency>
                 <groupId>org.mongodb</groupId>
                 <artifactId>mongo-java-driver</artifactId>
-                <version>3.4.2</version>
+                <version>3.12.7</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>5.1.3.Final</version>
+                <version>7.0.0.Alpha6</version>
             </dependency>
             <dependency>
                 <groupId>javax.el</groupId>
                 <artifactId>javax.el-api</artifactId>
-                <version>3.0.0</version>
+                <version>3.0.1-b06</version>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.web</groupId>
@@ -471,7 +466,7 @@
             <dependency>
                 <groupId>org.jboss.logging</groupId>
                 <artifactId>jboss-logging</artifactId>
-                <version>3.1.3.GA</version>
+                <version>3.4.1.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
@@ -486,7 +481,7 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-access</artifactId>
-                <version>1.2.3</version>
+                <version>1.3.0-alpha5</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
@@ -566,12 +561,12 @@
             <dependency>
                 <groupId>org.apache.ws.xmlschema</groupId>
                 <artifactId>xmlschema-core</artifactId>
-                <version>2.2.3</version>
+                <version>2.2.5</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.woodstox</groupId>
                 <artifactId>stax2-api</artifactId>
-                <version>3.1.4</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.neethi</groupId>
@@ -586,7 +581,7 @@
             <dependency>
                 <groupId>org.jvnet.staxex</groupId>
                 <artifactId>stax-ex</artifactId>
-                <version>1.8.1</version>
+                <version>2.0.0-M2</version>
             </dependency>
             <dependency>
                 <groupId>javax.xml.soap</groupId>
@@ -598,22 +593,12 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.12</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-all</artifactId>
-                <version>1.10.19</version>
+                <version>4.13</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
                 <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.hsqldb</groupId>
-                <artifactId>hsqldb</artifactId>
-                <version>2.3.4</version>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
@@ -623,7 +608,7 @@
             <dependency>
                 <groupId>org.objenesis</groupId>
                 <artifactId>objenesis</artifactId>
-                <version>2.6</version>
+                <version>3.1</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -641,23 +626,38 @@
             <dependency>
                 <groupId>co.unruly</groupId>
                 <artifactId>java-8-matchers</artifactId>
-                <version>1.5</version>
+                <version>1.6</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
-                <version>3.24.1-GA</version>
+                <version>3.27.0-GA</version>
             </dependency>
             <dependency>
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>
-                <version>0.9.10</version>
+                <version>0.9.12</version>
             </dependency>
             <dependency>
                 <groupId>io.circe</groupId>
                 <artifactId>circe-core_2.13</artifactId>
-                <version>0.13.0</version>
+                <version>0.14.0-M1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>jsr305</artifactId>
+                <version>3.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.typelevel</groupId>
+                <artifactId>cats-core_2.13</artifactId>
+                <version>2.1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.typelevel</groupId>
+                <artifactId>cats-macros_2.13</artifactId>
+                <version>2.1.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
