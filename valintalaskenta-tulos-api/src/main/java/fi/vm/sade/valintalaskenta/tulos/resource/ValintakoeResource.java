@@ -40,9 +40,8 @@ public interface ValintakoeResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Path("hakutoive")
   @ApiOperation(
-          value = "Hakee valintakoeosallistumiset hakukohteille OID:n perusteella",
-          response = ValintakoeOsallistuminenDTO.class)
+      value = "Hakee valintakoeosallistumiset hakukohteille OID:n perusteella",
+      response = ValintakoeOsallistuminenDTO.class)
   List<ValintakoeOsallistuminenDTO> hakuByOids(
-          @ApiParam(value = "Hakukohde OIDS", required = true)
-                  List<String> hakukohdeOids);
+      @ApiParam(value = "Hakukohde OIDS", required = true) List<String> hakukohdeOids);
 }

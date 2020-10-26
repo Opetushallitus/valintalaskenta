@@ -71,11 +71,11 @@ public class ValintakoeResourceImpl implements ValintakoeResource {
   @PreAuthorize(READ_UPDATE_CRUD)
   @Path("hakutoive")
   @ApiOperation(
-          value = "Hakee valintakoeosallistumiset hakukohteille OID:n perusteella",
-          response = ValintakoeOsallistuminenDTO.class)
+      value = "Hakee valintakoeosallistumiset hakukohteille OID:n perusteella",
+      response = ValintakoeOsallistuminenDTO.class)
   public List<ValintakoeOsallistuminenDTO> hakuByOids(List<String> hakukohdeOids) {
     return modelMapper.mapList(
-            tulosService.haeValintakoeOsallistumisetByHakukohdes(hakukohdeOids),
-            ValintakoeOsallistuminenDTO.class);
+        tulosService.haeValintakoeOsallistumisetByHakukohdes(hakukohdeOids),
+        ValintakoeOsallistuminenDTO.class);
   }
 }
