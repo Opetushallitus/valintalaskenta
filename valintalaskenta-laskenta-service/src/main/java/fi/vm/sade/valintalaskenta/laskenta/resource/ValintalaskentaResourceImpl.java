@@ -37,11 +37,15 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StopWatch;
 
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.OPH_CRUD;
+
 @Controller
 @Path("valintalaskenta")
+@PreAuthorize("isAuthenticated()")
 public class ValintalaskentaResourceImpl {
   private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaResourceImpl.class);
 
@@ -73,6 +77,7 @@ public class ValintalaskentaResourceImpl {
 
   @Path("status/{key}")
   @Produces("text/plain")
+  @PreAuthorize(OPH_CRUD)
   @GET
   public String status(@PathParam("key") String pollKey) throws Exception {
     try {
@@ -86,6 +91,7 @@ public class ValintalaskentaResourceImpl {
   @Path("laske")
   @Consumes("application/json")
   @Produces("text/plain")
+  @PreAuthorize(OPH_CRUD)
   @POST
   public String laske(Laskentakutsu laskentakutsu) throws Exception {
     try {
@@ -115,6 +121,7 @@ public class ValintalaskentaResourceImpl {
   @Path("valintakokeet")
   @Consumes("application/json")
   @Produces("text/plain")
+  @PreAuthorize(OPH_CRUD)
   @POST
   public String valintakokeet(Laskentakutsu laskentakutsu) throws Exception {
     try {
@@ -145,6 +152,7 @@ public class ValintalaskentaResourceImpl {
   @Path("laskekaikki")
   @Consumes("application/json")
   @Produces("text/plain")
+  @PreAuthorize(OPH_CRUD)
   @POST
   public String laskeKaikki(Laskentakutsu laskentakutsu) throws Exception {
     try {
@@ -174,6 +182,7 @@ public class ValintalaskentaResourceImpl {
   @Path("laskejasijoittele")
   @Consumes("application/json")
   @Produces("text/plain")
+  @PreAuthorize(OPH_CRUD)
   @POST
   public String laskeJaSijoittele(Laskentakutsu laskentakutsu) {
     try {
