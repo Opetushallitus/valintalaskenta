@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
+import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ_UPDATE_CRUD;
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.UPDATE_CRUD;
 
 import fi.vm.sade.auditlog.Changes;
@@ -7,6 +8,7 @@ import fi.vm.sade.auditlog.User;
 import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO;
 import fi.vm.sade.valinta.sharedutils.ValintaResource;
 import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
+import fi.vm.sade.valintalaskenta.domain.dto.JonoDto;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
@@ -20,6 +22,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -103,6 +106,7 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
   }
 
   @PUT
+  @PreAuthorize(UPDATE_CRUD)
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Path("{valintatapajonoOid}/valmissijoiteltavaksi")
@@ -155,6 +159,7 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
   }
 
   @GET
+  @PreAuthorize(READ_UPDATE_CRUD)
   @Path("/{valintatapajonoOid}/valmissijoiteltavaksi")
   @Produces(MediaType.APPLICATION_JSON)
   public Response haeSijoitteluStatus(
@@ -163,5 +168,13 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
     HashMap object = new HashMap();
     object.put("value", tulosService.haeSijoitteluStatus(oid));
     return Response.status(Response.Status.ACCEPTED).entity(object).build();
+  }
+
+  @GET
+  @PreAuthorize(READ_UPDATE_CRUD)
+  @Path("/jonotsijoittelussa/{hakuOid}")
+  @Produces("application/json")
+  public List<JonoDto> jonotSijoittelussa(String hakuOid) {
+    return tulosService.haeJonotSijoittelussa(hakuOid);
   }
 }
