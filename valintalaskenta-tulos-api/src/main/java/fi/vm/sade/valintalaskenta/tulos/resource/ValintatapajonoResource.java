@@ -1,11 +1,13 @@
 package fi.vm.sade.valintalaskenta.tulos.resource;
 
 import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.JonoDto;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -65,4 +67,9 @@ public interface ValintatapajonoResource {
   public Response haeSijoitteluStatus(
       @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid")
           String oid);
+
+  @GET
+  @Path("/jonotsijoittelussa/{hakuOid}")
+  @Produces("application/json")
+  public List<JonoDto> jonotSijoittelussa(@PathParam("hakuOid") String hakuOid);
 }
