@@ -1,5 +1,8 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
+import com.mongodb.DBObject;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
@@ -9,6 +12,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.AdvancedDatastore;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Key;
 import org.slf4j.Logger;
@@ -39,23 +43,26 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     if (hakemuksenJonosijaIdt.isEmpty()) {
       return new ArrayList<>();
     }
-    List<Key<Valintatapajono>> hakemuksenJonot =
-        datastore
-            .find(Valintatapajono.class)
-            .field("jonosijaIdt")
-            .in(hakemuksenJonosijaIdt)
-            .asKeyList();
-    if (hakemuksenJonot.isEmpty()) {
+    List<ObjectId> hakemuksenValintatapajonoIdt = new LinkedList<>();
+    datastore
+        .find(Valintatapajono.class)
+        .field("jonosijaIdt")
+        .in(hakemuksenJonosijaIdt)
+        .fetchKeys()
+        .forEach(key -> hakemuksenValintatapajonoIdt.add((ObjectId) key.getId()));
+    if (hakemuksenValintatapajonoIdt.isEmpty()) {
       return new ArrayList<>();
     }
-    return migrate(
-        datastore
-            .createQuery(ValinnanvaiheMigrationDTO.class)
-            .field("hakuOid")
-            .equal(hakuOid)
-            .field("valintatapajonot")
-            .in(hakemuksenJonot)
-            .asList());
+    DBObject valinnanvaiheQuery =
+        BasicDBObjectBuilder.start()
+            .add("hakuOid", hakuOid)
+            .add("valintatapajonot.$id", new BasicDBObject("$in", hakemuksenValintatapajonoIdt))
+            .get();
+    List<ValinnanvaiheMigrationDTO> valinnanvaiheet =
+        ((AdvancedDatastore) datastore)
+            .createQuery(ValinnanvaiheMigrationDTO.class, valinnanvaiheQuery)
+            .asList();
+    return migrate(valinnanvaiheet);
   }
 
   @Override
