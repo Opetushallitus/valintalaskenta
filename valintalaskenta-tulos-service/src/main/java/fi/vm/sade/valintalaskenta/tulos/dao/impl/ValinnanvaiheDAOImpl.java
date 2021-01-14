@@ -67,17 +67,6 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 
   @Override
   public Valinnanvaihe findByValintatapajonoOid(String valintatapajonoOid) {
-    /*
-    List<Key<Valintatapajono>> keys =
-        datastore
-            .find(Valintatapajono.class)
-            .field("valintatapajonoOid")
-            .equal(valintatapajonoOid)
-            .asKeyList();
-    if (keys.isEmpty()) {
-      return null;
-    }
-     */
     List<ObjectId> valintatapajonoIdt = new LinkedList<>();
     datastore
         .find(Valintatapajono.class)
@@ -88,14 +77,6 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     if (valintatapajonoIdt.isEmpty()) {
       return null;
     }
-    /*
-    return migrate(
-        datastore
-            .createQuery(ValinnanvaiheMigrationDTO.class)
-            .field("valintatapajonot")
-            .in(keys)
-            .get());
-     */
     DBObject valinnanvaiheQuery =
         BasicDBObjectBuilder.start()
             .add("valintatapajonot.$id", new BasicDBObject("$in", valintatapajonoIdt))
