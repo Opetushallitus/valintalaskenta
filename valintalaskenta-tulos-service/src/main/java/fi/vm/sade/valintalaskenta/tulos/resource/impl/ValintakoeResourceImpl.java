@@ -78,4 +78,18 @@ public class ValintakoeResourceImpl implements ValintakoeResource {
         tulosService.haeValintakoeOsallistumisetByHakukohdes(hakukohdeOids),
         ValintakoeOsallistuminenDTO.class);
   }
+
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @PreAuthorize(READ_UPDATE_CRUD)
+  @Path("hakutoive")
+  @ApiOperation(
+      value = "Hakee valintakoeosallistumiset hakijoille OID:n perusteella",
+      response = ValintakoeOsallistuminenDTO.class)
+  public List<ValintakoeOsallistuminenDTO> hakijatByOids(List<String> hakijaOids) {
+      return modelMapper.mapList(
+          tulosService.haeValintakoeOsallistumisetByHakijas(hakijaOids),
+          ValintakoeOsallistuminenDTO.class);
+  }
 }

@@ -8,6 +8,8 @@ import java.util.List;
 public interface ValintakoeOsallistuminenDAO {
   ValintakoeOsallistuminen findByHakemusOid(String hakemusOid);
 
+  List<ValintakoeOsallistuminen> findByHakijaOids(List<String> hakijaOids);
+
   List<ValintakoeOsallistuminen> findByHakutoive(String hakukohdeOid);
 
   List<ValintakoeOsallistuminen> findByHakutoiveet(List<String> hakukohdeOids);
