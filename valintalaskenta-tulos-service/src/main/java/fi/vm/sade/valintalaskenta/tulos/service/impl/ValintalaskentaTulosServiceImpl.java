@@ -543,10 +543,10 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
   @Override
   public List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakijas(
-    List<String> hakijaOids) {
+      List<String> hakijaOids) {
     return valintakoeOsallistuminenDAO.findByHakijaOids(hakijaOids).stream()
-      .filter(Objects::nonNull)
-      .collect(Collectors.toList());
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
   }
 
   @Override

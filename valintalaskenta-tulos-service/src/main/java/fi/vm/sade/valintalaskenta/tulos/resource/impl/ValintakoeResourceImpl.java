@@ -88,8 +88,8 @@ public class ValintakoeResourceImpl implements ValintakoeResource {
       value = "Hakee valintakoeosallistumiset hakijoille OID:n perusteella",
       response = ValintakoeOsallistuminenDTO.class)
   public List<ValintakoeOsallistuminenDTO> hakijatByOids(List<String> hakijaOids) {
-      return modelMapper.mapList(
-          tulosService.haeValintakoeOsallistumisetByHakijas(hakijaOids),
-          ValintakoeOsallistuminenDTO.class);
+    return modelMapper.mapList(
+        tulosService.haeValintakoeOsallistumisetByHakijas(hakijaOids),
+        ValintakoeOsallistuminenDTO.class);
   }
 }

@@ -45,10 +45,10 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
   @Override
   public List<ValintakoeOsallistuminen> findByHakijaOids(List<String> hakijaOids) {
     return datastore
-      .find(ValintakoeOsallistuminen.class)
-      .field("hakijaOid")
-      .in(hakijaOids)
-      .asList();
+        .find(ValintakoeOsallistuminen.class)
+        .field("hakijaOid")
+        .in(hakijaOids)
+        .asList();
   }
 
   @Override
