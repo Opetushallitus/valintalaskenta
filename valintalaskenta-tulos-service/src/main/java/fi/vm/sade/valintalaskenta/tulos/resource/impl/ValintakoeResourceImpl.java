@@ -83,7 +83,7 @@ public class ValintakoeResourceImpl implements ValintakoeResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @PreAuthorize(READ_UPDATE_CRUD)
-  @Path("hakutoive")
+  @Path("hakijat")
   @ApiOperation(
       value = "Hakee valintakoeosallistumiset hakijoille OID:n perusteella",
       response = ValintakoeOsallistuminenDTO.class)
