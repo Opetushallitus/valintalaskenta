@@ -86,4 +86,6 @@ public interface ValintalaskentaTulosService {
 
   List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakukohdes(
       List<String> hakukohdeOids);
+
+  List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakijas(List<String> hakijaOids);
 }

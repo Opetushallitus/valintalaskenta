@@ -29,6 +29,7 @@ public class ValintakoeOsallistuminen {
   @Indexed(unique = true)
   private String hakemusOid;
 
+  @Indexed(unique = false)
   private String hakijaOid;
 
   private String etunimi;
