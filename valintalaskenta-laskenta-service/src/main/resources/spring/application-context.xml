@@ -54,6 +54,7 @@
                          inheritHeaders="true">
         <jaxrs-client:outInterceptors>
             <ref bean="ophRequestHeaders"/>
+            <ref bean="sijoitteluServiceCasInterceptor" />
         </jaxrs-client:outInterceptors>
         <jaxrs-client:providers>
             <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
@@ -67,16 +68,7 @@
                          inheritHeaders="true">
         <jaxrs-client:outInterceptors>
             <ref bean="ophRequestHeaders"/>
-            <bean
-                    class="fi.vm.sade.javautils.legacy_cxf_cas.authentication.cas.CasApplicationAsAUserInterceptor">
-                <property name="webCasUrl" value="${web.url.cas}" />
-                <property name="targetService"
-                          value="${cas.service.sijoittelu-service}/j_spring_cas_security_check" />
-                <property name="appClientUsername"
-                          value="${valintalaskentakoostepalvelu.app.username.to.sijoittelu}" />
-                <property name="appClientPassword"
-                          value="${valintalaskentakoostepalvelu.app.password.to.sijoittelu}" />
-            </bean>
+            <ref bean="sijoitteluServiceCasInterceptor" />
         </jaxrs-client:outInterceptors>
         <jaxrs-client:providers>
             <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
@@ -106,6 +98,17 @@
             <bean class="fi.vm.sade.valintalaskenta.laskenta.ObjectMapperProvider" />
         </jaxrs-client:providers>
     </jaxrs-client:client>
+
+    <bean id="sijoitteluServiceCasInterceptor"
+          class="fi.vm.sade.javautils.legacy_cxf_cas.authentication.cas.CasApplicationAsAUserInterceptor">
+        <property name="webCasUrl" value="${web.url.cas}" />
+        <property name="targetService"
+                  value="${cas.service.sijoittelu-service}/j_spring_cas_security_check" />
+        <property name="appClientUsername"
+                  value="${valintalaskentakoostepalvelu.app.username.to.sijoittelu}" />
+        <property name="appClientPassword"
+                  value="${valintalaskentakoostepalvelu.app.password.to.sijoittelu}" />
+    </bean>
 
     <!-- CXF Swagger2Feature -->
     <bean id="swagger2Feature" class="org.apache.cxf.jaxrs.swagger.Swagger2Feature">
