@@ -72,7 +72,12 @@ public class ValintalaskentaResourceImpl {
     this.valintatapajonoResource = valintatapajonoResource;
 
     hakukohteetLaskettavina = new ConcurrentHashMap<>();
-    this.executorService = Executors.newWorkStealingPool();
+    int parallelism = Runtime.getRuntime().availableProcessors();
+    if (parallelism == 1) {
+      parallelism = 2;
+    }
+    LoggerFactory.getLogger(ValintalaskentaResourceImpl.class).info("Using parallelism " + parallelism);
+    this.executorService = Executors.newWorkStealingPool(parallelism);
   }
 
   @Path("status/{key}")
