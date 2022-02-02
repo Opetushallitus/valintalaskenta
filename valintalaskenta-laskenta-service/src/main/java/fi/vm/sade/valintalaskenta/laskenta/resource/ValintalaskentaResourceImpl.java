@@ -27,6 +27,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import javax.ws.rs.Consumes;
@@ -76,7 +77,6 @@ public class ValintalaskentaResourceImpl {
     if (parallelism == 1) {
       parallelism = 2;
     }
-    LoggerFactory.getLogger(ValintalaskentaResourceImpl.class).info("Using parallelism " + parallelism);
     this.executorService = Executors.newWorkStealingPool(parallelism);
   }
 
@@ -314,6 +314,8 @@ public class ValintalaskentaResourceImpl {
     if (!hakukohteetLaskettavina.containsKey(pollKey)) {
       if (luoJosPuuttuu) {
         LOG.info(String.format("Luodaan uusi laskettava hakukohde. %s", pollKey));
+        ForkJoinPool forkJoinPool = (ForkJoinPool) this.executorService;
+        LOG.info(String.format("Parallelism %d, pool size %d", forkJoinPool.getParallelism(), forkJoinPool.getPoolSize()));
         hakukohteetLaskettavina.put(pollKey, HakukohteenLaskennanTila.KESKEN);
         return HakukohteenLaskennanTila.UUSI;
       } else {
