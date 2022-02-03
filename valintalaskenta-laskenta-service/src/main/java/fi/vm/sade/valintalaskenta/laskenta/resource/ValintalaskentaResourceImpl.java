@@ -315,7 +315,10 @@ public class ValintalaskentaResourceImpl {
       if (luoJosPuuttuu) {
         LOG.info(String.format("Luodaan uusi laskettava hakukohde. %s", pollKey));
         ForkJoinPool forkJoinPool = (ForkJoinPool) this.executorService;
-        LOG.info(String.format("Parallelism %d, pool size %d", forkJoinPool.getParallelism(), forkJoinPool.getPoolSize()));
+        LOG.info(
+            String.format(
+                "Parallelism %d, pool size %d",
+                forkJoinPool.getParallelism(), forkJoinPool.getPoolSize()));
         hakukohteetLaskettavina.put(pollKey, HakukohteenLaskennanTila.KESKEN);
         return HakukohteenLaskennanTila.UUSI;
       } else {
