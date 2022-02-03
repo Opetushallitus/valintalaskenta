@@ -40,6 +40,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StopWatch;
@@ -65,7 +66,8 @@ public class ValintalaskentaResourceImpl {
       ValisijoitteluKasittelija valisijoitteluKasittelija,
       ValiSijoitteluResource valiSijoitteluResource,
       ErillisSijoitteluResource erillisSijoitteluResource,
-      ValintaperusteetValintatapajonoResource valintatapajonoResource) {
+      ValintaperusteetValintatapajonoResource valintatapajonoResource,
+      @Value("${valintalaskenta-laskenta-service.parallelism:-1}") int parallelism) {
     this.valintalaskentaService = valintalaskentaService;
     this.valisijoitteluKasittelija = valisijoitteluKasittelija;
     this.valiSijoitteluResource = valiSijoitteluResource;
@@ -73,9 +75,8 @@ public class ValintalaskentaResourceImpl {
     this.valintatapajonoResource = valintatapajonoResource;
 
     hakukohteetLaskettavina = new ConcurrentHashMap<>();
-    int parallelism = Runtime.getRuntime().availableProcessors();
-    if (parallelism == 1) {
-      parallelism = 2;
+    if (parallelism < 1) {
+      parallelism = Runtime.getRuntime().availableProcessors();
     }
     this.executorService = Executors.newWorkStealingPool(parallelism);
   }

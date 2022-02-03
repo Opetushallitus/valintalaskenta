@@ -31,6 +31,7 @@
                 <prop key="cas_service">${cas.service.valintalaskenta-service}</prop>
                 <prop key="cas_callback_url">${cas.callback.valintalaskenta-service}</prop>
                 <prop key="spring_security_default_access">isAuthenticated()</prop>
+                <prop key="valintalaskenta-laskenta-service.parallelism">-1</prop>
             </util:properties>
         </property>
     </bean>

@@ -131,7 +131,8 @@ public class ValintalaskentaResourceIntegrationTest {
             valisijoitteluKasittelija,
             mockValisijoitteluResource,
             erillisSijoitteluResource,
-            mockValintatapajonoResource);
+            mockValintatapajonoResource,
+            -1);
   }
 
   @Test
