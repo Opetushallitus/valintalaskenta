@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion;
 
+import com.google.common.collect.Lists;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakutoive;
 import fi.vm.sade.valintalaskenta.domain.dto.AvainArvoDTO;
@@ -11,10 +12,8 @@ import io.circe.Encoder$;
 import io.circe.Json;
 import io.circe.ParsingFailure;
 import io.circe.jawn.JawnParser;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
@@ -32,26 +31,36 @@ public class HakemusDTOToHakemusConverter implements Converter<HakemusDTO, Hakem
 
   private static Function<HakukohdeDTO, Integer> getPrioriteetti = HakukohdeDTO::getPrioriteetti;
 
+  public boolean isValidAvainArvo(AvainArvoDTO a) {
+    return a != null && a.getArvo() != null && a.getAvain() != null;
+  }
+  public boolean isValidAvainMetatiedot(AvainMetatiedotDTO a) {
+    return a != null && a.getMetatiedot() != null && a.getAvain() != null;
+  }
+
   public Hakemus convert(HakemusDTO dto) {
     try {
       Map<Integer, Hakutoive> prioriteettiHakukohde =
-          Optional.ofNullable(dto.getHakukohteet()).orElse(Collections.emptyList()).stream()
-              .collect(Collectors.toMap(getPrioriteetti, getHakutoive));
+        Optional.ofNullable(dto.getHakukohteet()).orElse(Collections.emptyList()).stream()
+          .filter(Objects::nonNull)
+          .collect(Collectors.toMap(getPrioriteetti, getHakutoive));
       Map<String, String> target =
-          Optional.ofNullable(dto.getAvaimet()).orElse(Collections.emptyList()).stream()
-              .collect(
-                  Collectors.toMap(
-                      AvainArvoDTO::getAvain, AvainArvoDTO::getArvo, (s, a) -> s + ", " + a));
+        Optional.ofNullable(dto.getAvaimet()).orElse(Collections.emptyList()).stream()
+          .filter(this::isValidAvainArvo)
+          .collect(
+            Collectors.toMap(
+              AvainArvoDTO::getAvain, AvainArvoDTO::getArvo, (s, a) -> s + ", " + a));
       Map<String, List<Map<String, String>>> metatiedot =
-          Optional.ofNullable(dto.getAvainMetatiedotDTO()).orElse(Collections.emptyList()).stream()
-              .collect(
-                  Collectors.toMap(
-                      AvainMetatiedotDTO::getAvain,
-                      AvainMetatiedotDTO::getMetatiedot,
-                      (s, a) -> {
-                        s.addAll(a);
-                        return s;
-                      }));
+        Optional.ofNullable(dto.getAvainMetatiedotDTO()).orElse(Collections.emptyList()).stream()
+          .filter(this::isValidAvainMetatiedot)
+          .collect(
+            Collectors.toMap(
+              AvainMetatiedotDTO::getAvain,
+              AvainMetatiedotDTO::getMetatiedot,
+              (s, a) -> {
+                s.addAll(a);
+                return s;
+              }));
       return new Hakemus(
           dto.getHakemusoid(),
           prioriteettiHakukohde,
