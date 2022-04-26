@@ -34,29 +34,33 @@ public class HakemusDTOToHakemusConverter implements Converter<HakemusDTO, Hakem
   private static Function<HakukohdeDTO, Integer> getPrioriteetti = HakukohdeDTO::getPrioriteetti;
 
   public Hakemus convert(HakemusDTO dto) {
-    Map<Integer, Hakutoive> prioriteettiHakukohde =
-      Optional.ofNullable(dto.getHakukohteet()).orElse(Collections.emptyList()).stream().collect(Collectors.toMap(getPrioriteetti, getHakutoive));
-    Map<String, String> target =
-      Optional.ofNullable(dto.getAvaimet()).orElse(Collections.emptyList()).stream()
-            .collect(
-                Collectors.toMap(
-                    AvainArvoDTO::getAvain, AvainArvoDTO::getArvo, (s, a) -> s + ", " + a));
-    Map<String, List<Map<String, String>>> metatiedot =
-      Optional.ofNullable(dto.getAvainMetatiedotDTO()).orElse(Collections.emptyList()).stream()
-            .collect(
-                Collectors.toMap(
-                    AvainMetatiedotDTO::getAvain,
-                    AvainMetatiedotDTO::getMetatiedot,
-                    (s, a) -> {
-                      s.addAll(a);
-                      return s;
-                    }));
-    return new Hakemus(
+    try {
+      Map<Integer, Hakutoive> prioriteettiHakukohde =
+        Optional.ofNullable(dto.getHakukohteet()).orElse(Collections.emptyList()).stream().collect(Collectors.toMap(getPrioriteetti, getHakutoive));
+      Map<String, String> target =
+        Optional.ofNullable(dto.getAvaimet()).orElse(Collections.emptyList()).stream()
+          .collect(
+            Collectors.toMap(
+              AvainArvoDTO::getAvain, AvainArvoDTO::getArvo, (s, a) -> s + ", " + a));
+      Map<String, List<Map<String, String>>> metatiedot =
+        Optional.ofNullable(dto.getAvainMetatiedotDTO()).orElse(Collections.emptyList()).stream()
+          .collect(
+            Collectors.toMap(
+              AvainMetatiedotDTO::getAvain,
+              AvainMetatiedotDTO::getMetatiedot,
+              (s, a) -> {
+                s.addAll(a);
+                return s;
+              }));
+      return new Hakemus(
         dto.getHakemusoid(),
         prioriteettiHakukohde,
         target,
         metatiedot,
         stringToCirceJson(dto.getKoskiOpiskeluoikeudetJson()));
+    } catch (Exception e) {
+      throw new RuntimeException("Hakemuksen " + dto.getHakemusoid() + " avainten käsittely epäonnistui!", e);
+    }
   }
 
   private Json stringToCirceJson(String koskiOpiskeluoikeudetJson) {
