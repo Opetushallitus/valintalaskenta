@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import scala.collection.immutable.List$;
@@ -25,6 +27,7 @@ import scala.util.Either;
 
 @Component("HakemusDTOKonvertteri")
 public class HakemusDTOToHakemusConverter implements Converter<HakemusDTO, Hakemus> {
+  private static final Logger LOGGER = LoggerFactory.getLogger(HakemusDTOToHakemusConverter.class);
   private final JawnParser circeParser = new JawnParser();
 
   private static Function<HakukohdeDTO, Hakutoive> getHakutoive =
@@ -33,29 +36,42 @@ public class HakemusDTOToHakemusConverter implements Converter<HakemusDTO, Hakem
   private static Function<HakukohdeDTO, Integer> getPrioriteetti = HakukohdeDTO::getPrioriteetti;
 
   public Hakemus convert(HakemusDTO dto) {
-    Map<Integer, Hakutoive> prioriteettiHakukohde =
-        dto.getHakukohteet().stream().collect(Collectors.toMap(getPrioriteetti, getHakutoive));
-    Map<String, String> target =
-        dto.getAvaimet().stream()
-            .collect(
-                Collectors.toMap(
-                    AvainArvoDTO::getAvain, AvainArvoDTO::getArvo, (s, a) -> s + ", " + a));
-    Map<String, List<Map<String, String>>> metatiedot =
-        dto.getAvainMetatiedotDTO().stream()
-            .collect(
-                Collectors.toMap(
-                    AvainMetatiedotDTO::getAvain,
-                    AvainMetatiedotDTO::getMetatiedot,
-                    (s, a) -> {
-                      s.addAll(a);
-                      return s;
-                    }));
-    return new Hakemus(
-        dto.getHakemusoid(),
-        prioriteettiHakukohde,
-        target,
-        metatiedot,
-        stringToCirceJson(dto.getKoskiOpiskeluoikeudetJson()));
+    try {
+      Map<Integer, Hakutoive> prioriteettiHakukohde =
+          dto.getHakukohteet().stream().collect(Collectors.toMap(getPrioriteetti, getHakutoive));
+      Map<String, String> target =
+          dto.getAvaimet().stream()
+              .collect(
+                  Collectors.toMap(
+                      AvainArvoDTO::getAvain, AvainArvoDTO::getArvo, (s, a) -> s + ", " + a));
+      Map<String, List<Map<String, String>>> metatiedot =
+          dto.getAvainMetatiedotDTO().stream()
+              .collect(
+                  Collectors.toMap(
+                      AvainMetatiedotDTO::getAvain,
+                      AvainMetatiedotDTO::getMetatiedot,
+                      (s, a) -> {
+                        s.addAll(a);
+                        return s;
+                      }));
+      return new Hakemus(
+          dto.getHakemusoid(),
+          prioriteettiHakukohde,
+          target,
+          metatiedot,
+          stringToCirceJson(dto.getKoskiOpiskeluoikeudetJson()));
+    } catch (Exception e) {
+      LOGGER.error(
+          "Converting HakemusDTO to Hakemus failed for hakemus: {}", dto.getHakemusoid(), e);
+      dto.getAvaimet()
+          .forEach(
+              avain -> {
+                LOGGER.error(
+                    "Hakemus: {}, avain: {}, arvo: {}",
+                    dto.getHakemusoid(), avain.getAvain(), avain.getArvo());
+              });
+      throw e;
+    }
   }
 
   private Json stringToCirceJson(String koskiOpiskeluoikeudetJson) {
