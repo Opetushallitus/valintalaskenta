@@ -11,8 +11,11 @@ import io.circe.Encoder$;
 import io.circe.Json;
 import io.circe.ParsingFailure;
 import io.circe.jawn.JawnParser;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
@@ -20,8 +23,6 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import scala.collection.immutable.List$;
 import scala.util.Either;
-
-;
 
 @Component("HakemusDTOKonvertteri")
 public class HakemusDTOToHakemusConverter implements Converter<HakemusDTO, Hakemus> {
@@ -34,14 +35,14 @@ public class HakemusDTOToHakemusConverter implements Converter<HakemusDTO, Hakem
 
   public Hakemus convert(HakemusDTO dto) {
     Map<Integer, Hakutoive> prioriteettiHakukohde =
-        dto.getHakukohteet().stream().collect(Collectors.toMap(getPrioriteetti, getHakutoive));
+      Optional.ofNullable(dto.getHakukohteet()).orElse(Collections.emptyList()).stream().collect(Collectors.toMap(getPrioriteetti, getHakutoive));
     Map<String, String> target =
-        dto.getAvaimet().stream()
+      Optional.ofNullable(dto.getAvaimet()).orElse(Collections.emptyList()).stream()
             .collect(
                 Collectors.toMap(
                     AvainArvoDTO::getAvain, AvainArvoDTO::getArvo, (s, a) -> s + ", " + a));
     Map<String, List<Map<String, String>>> metatiedot =
-        dto.getAvainMetatiedotDTO().stream()
+      Optional.ofNullable(dto.getAvainMetatiedotDTO()).orElse(Collections.emptyList()).stream()
             .collect(
                 Collectors.toMap(
                     AvainMetatiedotDTO::getAvain,
