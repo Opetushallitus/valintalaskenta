@@ -67,7 +67,7 @@ public class ValintalaskentaResourceImpl {
       ValiSijoitteluResource valiSijoitteluResource,
       ErillisSijoitteluResource erillisSijoitteluResource,
       ValintaperusteetValintatapajonoResource valintatapajonoResource,
-      @Value("${valintalaskenta-laskenta-service.parallelism:-1}") int parallelism) {
+      @Value("${valintalaskenta-laskenta-service.parallelism:1}") int parallelismFromConfig) {
     this.valintalaskentaService = valintalaskentaService;
     this.valisijoitteluKasittelija = valisijoitteluKasittelija;
     this.valiSijoitteluResource = valiSijoitteluResource;
@@ -75,10 +75,10 @@ public class ValintalaskentaResourceImpl {
     this.valintatapajonoResource = valintatapajonoResource;
 
     hakukohteetLaskettavina = new ConcurrentHashMap<>();
-    if (parallelism < 1) {
-      parallelism = Runtime.getRuntime().availableProcessors();
-    }
-    this.executorService = Executors.newWorkStealingPool(parallelism);
+
+    this.executorService =
+        Executors.newWorkStealingPool(
+            Math.max(Runtime.getRuntime().availableProcessors(), parallelismFromConfig));
   }
 
   @Path("status/{key}")
