@@ -24,6 +24,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,20 +84,32 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
       ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset,
       boolean korkeakouluhaku)
       throws RuntimeException {
+    ExecutorService executor = Executors.newFixedThreadPool(10);
     try {
-      hakemukset.parallelStream()
-          .forEach(
-              hakemus ->
-                  valintakoelaskentaSuorittajaService.laske(
-                      hakemus, valintaperuste, uuid, kumulatiivisetTulokset, korkeakouluhaku));
-      LOG.info(
-          "(Uuid={}) Valintakoeosallistumisten laskenta {} hakemukselle valmis",
-          uuid,
-          hakemukset.size());
+      executor
+          .submit(
+              () -> {
+                hakemukset.parallelStream()
+                    .forEach(
+                        hakemus ->
+                            valintakoelaskentaSuorittajaService.laske(
+                                hakemus,
+                                valintaperuste,
+                                uuid,
+                                kumulatiivisetTulokset,
+                                korkeakouluhaku));
+                LOG.info(
+                    "(Uuid={}) Valintakoeosallistumisten laskenta {} hakemukselle valmis",
+                    uuid,
+                    hakemukset.size());
+              })
+          .get();
       return "Onnistui!";
     } catch (Exception e) {
       LOG.error("Valintakoevaihe epäonnistui", e);
       throw new RuntimeException(e);
+    } finally {
+      executor.shutdown();
     }
   }
 
