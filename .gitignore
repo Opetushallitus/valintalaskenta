@@ -16,5 +16,4 @@ target
 bower_components
 .DS_Store
 .~lock*
-.java-version
 .opintopolku-local
