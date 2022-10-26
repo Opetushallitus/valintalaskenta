@@ -97,6 +97,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl
   public void laske(
       HakemusDTO hakemus,
       List<ValintaperusteetDTO> valintaperusteet,
+      Map<String, Valinnanvaihe> valinnanvaiheidenEsihaetutTulokset,
       String uuid,
       ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset,
       boolean korkeakouluhaku) {
@@ -128,6 +129,16 @@ public class ValintakoelaskentaSuorittajaServiceImpl
       if (hakutoiveetByOid.containsKey(vp.getHakukohdeOid())
           && !vp.getValinnanVaihe().getValintakoe().isEmpty()) {
         ValintaperusteetValinnanVaiheDTO vaihe = vp.getValinnanVaihe();
+        int edellisenVaiheenJarjestysluku = vaihe.getValinnanVaiheJarjestysluku() - 1;
+        String edellisenValinnanvaiheenOid =
+            valintaperusteet.stream()
+                .filter(
+                    valintaperuste ->
+                        valintaperuste.getValinnanVaihe().getValinnanVaiheJarjestysluku()
+                            == edellisenVaiheenJarjestysluku)
+                .findFirst()
+                .map(v -> v.getValinnanVaihe().getOid())
+                .orElse("not found");
         for (ValintakoeDTO koe : vaihe.getValintakoe()) {
           if (koe.getAktiivinen()) {
             String tunniste = haeTunniste(koe.getTunniste(), hakukohteenValintaperusteet);
@@ -140,10 +151,29 @@ public class ValintakoelaskentaSuorittajaServiceImpl
               continue;
             }
             valintakoeData.putIfAbsent(tunniste, new ArrayList<>());
-            Valinnanvaihe edellinenVaihe =
-                valinnanvaiheDAO.haeEdeltavaValinnanvaihe(
-                    vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku());
-            if (invalidEdellinenValinnanVaine(uuid, vp, vaihe, edellinenVaihe)) {
+            Valinnanvaihe edellinenVaihe = null;
+            if (edellisenVaiheenJarjestysluku >= 0) {
+              LOG.info(
+                  "Esihaetut tulokset edelliselle valinnanvaiheelle "
+                      + edellisenValinnanvaiheenOid);
+              edellinenVaihe = valinnanvaiheidenEsihaetutTulokset.get(edellisenValinnanvaiheenOid);
+              if (edellinenVaihe == null) {
+                LOG.error(
+                    "FIXME Aiempia tuloksia ei löytynyt, vaikka pitäisi! "
+                        + edellisenValinnanvaiheenOid);
+                edellinenVaihe =
+                    valinnanvaiheDAO.haeEdeltavaValinnanvaihe(
+                        vp.getHakuOid(),
+                        vp.getHakukohdeOid(),
+                        vaihe.getValinnanVaiheJarjestysluku());
+              }
+            }
+            if (invalidEdellinenValinnanVaihe(uuid, vp, vaihe, edellinenVaihe)) {
+              LOG.warn(
+                  "Invalid edellinen valinnan vaihe! "
+                      + edellisenVaiheenJarjestysluku
+                      + ", "
+                      + edellisenValinnanvaiheenOid);
               continue;
             }
             Valinnanvaihe viimeisinValinnanVaihe =
@@ -218,6 +248,17 @@ public class ValintakoelaskentaSuorittajaServiceImpl
               hakemus.getHakuoid(), hakemus.getHakemusoid());
       debugLogitaKoetiedot(tallennettuOsallistuminen);
     }
+  }
+
+  @Override
+  public void laske(
+      HakemusDTO hakemus,
+      List<ValintaperusteetDTO> valintaperusteet,
+      String uuid,
+      ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset,
+      boolean korkeakouluhaku) {
+    Map<String, Valinnanvaihe> tulokset = new HashMap<>(); // fixme, testit käyttävät tätä vielä.
+    laske(hakemus, valintaperusteet, tulokset, uuid, kumulatiivisetTulokset, korkeakouluhaku);
   }
 
   // Siivotaan sellaiset valinnanvaiheet, jotka eivät löydy säästettävien listalta.
@@ -360,7 +401,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl
                                     })));
   }
 
-  private boolean invalidEdellinenValinnanVaine(
+  private boolean invalidEdellinenValinnanVaihe(
       String uuid,
       ValintaperusteetDTO vp,
       ValintaperusteetValinnanVaiheDTO vaihe,
