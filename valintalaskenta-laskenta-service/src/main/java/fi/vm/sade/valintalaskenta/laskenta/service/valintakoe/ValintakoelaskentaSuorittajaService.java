@@ -11,7 +11,7 @@ public interface ValintakoelaskentaSuorittajaService {
   void laske(
       HakemusDTO hakemus,
       List<ValintaperusteetDTO> valintaperusteet,
-      Map<String, Valinnanvaihe> vaiheidentulokset,
+      Map<Integer, Valinnanvaihe> vaiheidentulokset,
       String uuid,
       ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset,
       boolean korkeakouluhaku);

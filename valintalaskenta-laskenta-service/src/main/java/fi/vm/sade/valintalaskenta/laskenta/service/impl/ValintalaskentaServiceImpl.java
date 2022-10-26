@@ -85,21 +85,24 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
       boolean korkeakouluhaku)
       throws RuntimeException {
     ExecutorService executor = Executors.newFixedThreadPool(10);
-    List<String> valinnanvaiheidenOidit =
-        valintaperuste.stream()
-            .map(vp -> vp.getValinnanVaihe().getOid())
-            .collect(Collectors.toList());
-    Map<String, Valinnanvaihe> valintakoevaiheidenTulokset = new HashMap<>();
-    valinnanvaiheidenOidit.forEach(
-        oid -> {
-          Valinnanvaihe vv = valinnanvaiheDAO.haeValinnanvaihe(oid);
-          if (vv != null) {
-            LOG.info("Adding tulokset for valinnanvaihe " + oid);
-            valintakoevaiheidenTulokset.put(oid, valinnanvaiheDAO.haeValinnanvaihe(oid));
-          } else {
-            LOG.warn("Ei löydetty tuloksia valinnanvaiheelle " + oid);
-          }
+    Map<Integer, Valinnanvaihe> valintakoevaiheidenTulokset = new HashMap<>();
+    String hakukohdeOid =
+        valintaperuste.stream().findAny().map(ValintaperusteetDTO::getHakukohdeOid).get();
+    List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid);
+    vaiheet.forEach(
+        vaihe -> {
+          LOG.info(
+              "Adding vaihe "
+                  + vaihe.getJarjestysnumero()
+                  + " for hakukohde "
+                  + vaihe.getHakukohdeOid());
+          valintakoevaiheidenTulokset.put(vaihe.getJarjestysnumero(), vaihe);
         });
+    LOG.info(
+        "Haettiin valmiiksi "
+            + vaiheet.size()
+            + " valinnanvaiheen tulokset hakukohteelle "
+            + hakukohdeOid);
     try {
       executor
           .submit(

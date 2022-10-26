@@ -97,7 +97,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl
   public void laske(
       HakemusDTO hakemus,
       List<ValintaperusteetDTO> valintaperusteet,
-      Map<String, Valinnanvaihe> valinnanvaiheidenEsihaetutTulokset,
+      Map<Integer, Valinnanvaihe> valinnanvaiheidenEsihaetutTulokset,
       String uuid,
       ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset,
       boolean korkeakouluhaku) {
@@ -130,15 +130,6 @@ public class ValintakoelaskentaSuorittajaServiceImpl
           && !vp.getValinnanVaihe().getValintakoe().isEmpty()) {
         ValintaperusteetValinnanVaiheDTO vaihe = vp.getValinnanVaihe();
         int edellisenVaiheenJarjestysluku = vaihe.getValinnanVaiheJarjestysluku() - 1;
-        String edellisenValinnanvaiheenOid =
-            valintaperusteet.stream()
-                .filter(
-                    valintaperuste ->
-                        valintaperuste.getValinnanVaihe().getValinnanVaiheJarjestysluku()
-                            == edellisenVaiheenJarjestysluku)
-                .findFirst()
-                .map(v -> v.getValinnanVaihe().getOid())
-                .orElse("not found");
         for (ValintakoeDTO koe : vaihe.getValintakoe()) {
           if (koe.getAktiivinen()) {
             String tunniste = haeTunniste(koe.getTunniste(), hakukohteenValintaperusteet);
@@ -155,12 +146,13 @@ public class ValintakoelaskentaSuorittajaServiceImpl
             if (edellisenVaiheenJarjestysluku >= 0) {
               LOG.info(
                   "Esihaetut tulokset edelliselle valinnanvaiheelle "
-                      + edellisenValinnanvaiheenOid);
-              edellinenVaihe = valinnanvaiheidenEsihaetutTulokset.get(edellisenValinnanvaiheenOid);
+                      + edellisenVaiheenJarjestysluku);
+              edellinenVaihe =
+                  valinnanvaiheidenEsihaetutTulokset.get(edellisenVaiheenJarjestysluku);
               if (edellinenVaihe == null) {
                 LOG.error(
                     "FIXME Aiempia tuloksia ei löytynyt, vaikka pitäisi! "
-                        + edellisenValinnanvaiheenOid);
+                        + edellisenVaiheenJarjestysluku);
                 edellinenVaihe =
                     valinnanvaiheDAO.haeEdeltavaValinnanvaihe(
                         vp.getHakuOid(),
@@ -172,8 +164,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl
               LOG.warn(
                   "Invalid edellinen valinnan vaihe! "
                       + edellisenVaiheenJarjestysluku
-                      + ", "
-                      + edellisenValinnanvaiheenOid);
+                      + " hakukohteessa "
+                      + vp.getHakukohdeOid());
               continue;
             }
             Valinnanvaihe viimeisinValinnanVaihe =
@@ -257,7 +249,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl
       String uuid,
       ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset,
       boolean korkeakouluhaku) {
-    Map<String, Valinnanvaihe> tulokset = new HashMap<>(); // fixme, testit käyttävät tätä vielä.
+    Map<Integer, Valinnanvaihe> tulokset = new HashMap<>(); // fixme, testit käyttävät tätä vielä.
     laske(hakemus, valintaperusteet, tulokset, uuid, kumulatiivisetTulokset, korkeakouluhaku);
   }
 
