@@ -149,14 +149,11 @@ public class ValintakoelaskentaSuorittajaServiceImpl
 
             Valinnanvaihe edellinenVaihe = null;
             if (edellisenVaiheenJarjestysluku >= 0) {
-              LOG.info(
-                  "Esihaetut tulokset edelliselle valinnanvaiheelle "
-                      + edellisenVaiheenJarjestysluku);
               edellinenVaihe = hakukohteenTulokset.get(edellisenVaiheenJarjestysluku);
               if (edellinenVaihe == null) {
                 LOG.error(
-                    "FIXME Aiempia tuloksia ei löytynyt, vaikka pitäisi! "
-                        + edellisenVaiheenJarjestysluku);
+                    "FIXME Aiempia tuloksia ei löytynyt, vaikka oletettavasti pitäisi! "
+                        + "Yritetään vielä hakea vanhalla tavalla edellisen vaiheen tulokset.");
                 edellinenVaihe =
                     valinnanvaiheDAO.haeEdeltavaValinnanvaihe(
                         vp.getHakuOid(),

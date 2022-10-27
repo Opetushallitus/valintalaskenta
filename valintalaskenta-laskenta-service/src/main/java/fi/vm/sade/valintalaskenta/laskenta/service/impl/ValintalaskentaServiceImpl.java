@@ -99,9 +99,9 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
           vaiheet.forEach(
               vaihe -> {
                 LOG.info(
-                    "Adding vaihe "
+                    "Lisätään vaihe "
                         + vaihe.getJarjestysnumero()
-                        + " for hakukohde "
+                        + " valintakoelaskentaa varten esihaettuihin tuloksiin hakukohteelle "
                         + vaihe.getHakukohdeOid());
                 jarjestysnumeroToValinnanvaiheMap.put(vaihe.getJarjestysnumero(), vaihe);
               });
