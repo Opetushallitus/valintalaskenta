@@ -97,7 +97,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl
   public void laske(
       HakemusDTO hakemus,
       List<ValintaperusteetDTO> valintaperusteet,
-      Map<Integer, Valinnanvaihe> valinnanvaiheidenEsihaetutTulokset,
+      Map<String, Map<Integer, Valinnanvaihe>> valinnanvaiheidenEsihaetutTulokset,
       String uuid,
       ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset,
       boolean korkeakouluhaku) {
@@ -142,13 +142,17 @@ public class ValintakoelaskentaSuorittajaServiceImpl
               continue;
             }
             valintakoeData.putIfAbsent(tunniste, new ArrayList<>());
+
+            Map<Integer, Valinnanvaihe> hakukohteenTulokset =
+                valinnanvaiheidenEsihaetutTulokset.getOrDefault(
+                    vp.getHakukohdeOid(), new HashMap<>());
+
             Valinnanvaihe edellinenVaihe = null;
             if (edellisenVaiheenJarjestysluku >= 0) {
               LOG.info(
                   "Esihaetut tulokset edelliselle valinnanvaiheelle "
                       + edellisenVaiheenJarjestysluku);
-              edellinenVaihe =
-                  valinnanvaiheidenEsihaetutTulokset.get(edellisenVaiheenJarjestysluku);
+              edellinenVaihe = hakukohteenTulokset.get(edellisenVaiheenJarjestysluku);
               if (edellinenVaihe == null) {
                 LOG.error(
                     "FIXME Aiempia tuloksia ei löytynyt, vaikka pitäisi! "
@@ -249,7 +253,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl
       String uuid,
       ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset,
       boolean korkeakouluhaku) {
-    Map<Integer, Valinnanvaihe> tulokset = new HashMap<>(); // fixme, testit käyttävät tätä vielä.
+    Map<String, Map<Integer, Valinnanvaihe>> tulokset =
+        new HashMap<>(); // fixme, testit käyttävät tätä vielä.
     laske(hakemus, valintaperusteet, tulokset, uuid, kumulatiivisetTulokset, korkeakouluhaku);
   }
 

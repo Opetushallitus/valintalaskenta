@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -85,24 +86,27 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
       boolean korkeakouluhaku)
       throws RuntimeException {
     ExecutorService executor = Executors.newFixedThreadPool(10);
-    Map<Integer, Valinnanvaihe> valintakoevaiheidenTulokset = new HashMap<>();
-    String hakukohdeOid =
-        valintaperuste.stream().findAny().map(ValintaperusteetDTO::getHakukohdeOid).get();
-    List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid);
-    vaiheet.forEach(
-        vaihe -> {
-          LOG.info(
-              "Adding vaihe "
-                  + vaihe.getJarjestysnumero()
-                  + " for hakukohde "
-                  + vaihe.getHakukohdeOid());
-          valintakoevaiheidenTulokset.put(vaihe.getJarjestysnumero(), vaihe);
+
+    Map<String, Map<Integer, Valinnanvaihe>> hakukohdeToValinnanvaiheet = new HashMap<>();
+    Set<String> hakukohdeOids =
+        valintaperuste.stream()
+            .map(ValintaperusteetDTO::getHakukohdeOid)
+            .collect(Collectors.toSet());
+    hakukohdeOids.forEach(
+        hakukohdeOid -> {
+          Map<Integer, Valinnanvaihe> jarjestysnumeroToValinnanvaiheMap = new HashMap<>();
+          List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid);
+          vaiheet.forEach(
+              vaihe -> {
+                LOG.info(
+                    "Adding vaihe "
+                        + vaihe.getJarjestysnumero()
+                        + " for hakukohde "
+                        + vaihe.getHakukohdeOid());
+                jarjestysnumeroToValinnanvaiheMap.put(vaihe.getJarjestysnumero(), vaihe);
+              });
+          hakukohdeToValinnanvaiheet.put(hakukohdeOid, jarjestysnumeroToValinnanvaiheMap);
         });
-    LOG.info(
-        "Haettiin valmiiksi "
-            + vaiheet.size()
-            + " valinnanvaiheen tulokset hakukohteelle "
-            + hakukohdeOid);
     try {
       executor
           .submit(
@@ -113,7 +117,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                             valintakoelaskentaSuorittajaService.laske(
                                 hakemus,
                                 valintaperuste,
-                                valintakoevaiheidenTulokset,
+                                hakukohdeToValinnanvaiheet,
                                 uuid,
                                 kumulatiivisetTulokset,
                                 korkeakouluhaku));
