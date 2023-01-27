@@ -17,6 +17,7 @@ import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
@@ -148,6 +149,78 @@ public class ValintalaskentaTulosServiceTest {
     {
       HakemusDTO hakemus =
           valintalaskentaTulosService.haeTuloksetHakemukselle("hakuOid1", "hakemusOid2");
+      assertEquals(1, hakemus.getHakukohteet().size());
+      HakukohdeDTO hakukohde = hakemus.getHakukohteet().get(0);
+      assertEquals(1, hakukohde.getValinnanvaihe().size());
+      ValinnanvaiheDTO vv = hakukohde.getValinnanvaihe().get(0);
+      assertEquals(1, vv.getValintatapajonot().size());
+      ValintatapajonoDTO valintatapajono = vv.getValintatapajonot().get(0);
+      assertEquals(1, valintatapajono.getJonosijat().size());
+      JonosijaDTO jonosija = valintatapajono.getJonosijat().get(0);
+      assertEquals(2, jonosija.getJarjestyskriteerit().size());
+      assertEquals(
+          JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI, jonosija.getTuloksenTila());
+
+      Iterator<JarjestyskriteeritulosDTO> i = jonosija.getJarjestyskriteerit().iterator();
+      JarjestyskriteeritulosDTO kriteeri1 = i.next();
+      assertEquals(0, kriteeri1.getPrioriteetti());
+      assertEquals(new BigDecimal("20.0"), kriteeri1.getArvo());
+      assertEquals(
+          JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI, kriteeri1.getTila());
+
+      JarjestyskriteeritulosDTO kriteeri2 = i.next();
+      assertEquals(1, kriteeri2.getPrioriteetti());
+      assertEquals(new BigDecimal("10.0"), kriteeri2.getArvo());
+      assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, kriteeri2.getTila());
+    }
+  }
+
+  @Test
+  @UsingDataSet(
+      locations = "testHaeTuloksetHakemukselle.json",
+      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+  public void testHaeTuloksetUsealleHakemukselle() {
+    List<String> hakemusOids = new ArrayList<>();
+    hakemusOids.add("hakemusOid1");
+    hakemusOids.add("hakemusOid2");
+    List<HakemusDTO> hakemukset =
+        valintalaskentaTulosService.haeTuloksetHakemuksille("hakuOid1", hakemusOids);
+
+    {
+      HakemusDTO hakemus =
+          hakemukset.stream()
+              .filter(h -> h.getHakemusoid().equals("hakemusOid1"))
+              .findFirst()
+              .get();
+      assertEquals(1, hakemus.getHakukohteet().size());
+      HakukohdeDTO hakukohde = hakemus.getHakukohteet().get(0);
+      assertEquals(1, hakukohde.getValinnanvaihe().size());
+      ValinnanvaiheDTO vv = hakukohde.getValinnanvaihe().get(0);
+      assertEquals(1, vv.getValintatapajonot().size());
+      ValintatapajonoDTO valintatapajono = vv.getValintatapajonot().get(0);
+      assertEquals(1, valintatapajono.getJonosijat().size());
+      JonosijaDTO jonosija = valintatapajono.getJonosijat().get(0);
+      assertEquals(2, jonosija.getJarjestyskriteerit().size());
+      assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jonosija.getTuloksenTila());
+
+      Iterator<JarjestyskriteeritulosDTO> i = jonosija.getJarjestyskriteerit().iterator();
+      JarjestyskriteeritulosDTO kriteeri1 = i.next();
+      assertEquals(0, kriteeri1.getPrioriteetti());
+      assertEquals(new BigDecimal("100.0"), kriteeri1.getArvo());
+      assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, kriteeri1.getTila());
+
+      JarjestyskriteeritulosDTO kriteeri2 = i.next();
+      assertEquals(1, kriteeri2.getPrioriteetti());
+      assertEquals(new BigDecimal("5.0"), kriteeri2.getArvo());
+      assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, kriteeri2.getTila());
+    }
+
+    {
+      HakemusDTO hakemus =
+          hakemukset.stream()
+              .filter(h -> h.getHakemusoid().equals("hakemusOid2"))
+              .findFirst()
+              .get();
       assertEquals(1, hakemus.getHakukohteet().size());
       HakukohdeDTO hakukohde = hakemus.getHakukohteet().get(0);
       assertEquals(1, hakukohde.getValinnanvaihe().size());

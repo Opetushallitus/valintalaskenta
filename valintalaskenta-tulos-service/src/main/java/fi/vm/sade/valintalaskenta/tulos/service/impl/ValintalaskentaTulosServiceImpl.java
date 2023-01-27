@@ -168,6 +168,15 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     return new HakemusDTO(hakuOid, hakemusOid, new ArrayList<>(hakukohdeDTOtOidinMukaan.values()));
   }
 
+  @Override
+  public List<HakemusDTO> haeTuloksetHakemuksille(String hakuOid, List<String> hakemusOids) {
+    // Todo, implement a more efficient way to get tulokset for multiple hakemukses
+    LOGGER.info("Haetaan tuloket usealle hakemukselle (ei järin tehokkaasti): {}", hakemusOids);
+    return hakemusOids.stream()
+        .map(hakemusOid -> haeTuloksetHakemukselle(hakuOid, hakemusOid))
+        .collect(Collectors.toList());
+  }
+
   private ValintatietoValinnanvaiheDTO createValintatietoValinnanvaiheDTO(
       String hakuOid, Date createdAt, String valinnanvaiheOid, int jarjestysnumero) {
     ValintatietoValinnanvaiheDTO vvdto = new ValintatietoValinnanvaiheDTO();

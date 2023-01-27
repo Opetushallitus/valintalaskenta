@@ -8,7 +8,10 @@ import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.util.List;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -36,5 +39,19 @@ public class HakemusResourceImpl implements HakemusResource {
       @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusoid")
           String hakemusoid) {
     return tulosService.haeTuloksetHakemukselle(hakuoid, hakemusoid);
+  }
+
+  @POST
+  @Path("{hakuoid}/hakemusOids")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @PreAuthorize(READ_UPDATE_CRUD)
+  @ApiOperation(
+      value = "Hakee hakemuksen tulokset hakuOidin ja hakemusOids-listan perusteella",
+      response = HakemusDTO.class)
+  public List<HakemusDTO> hakemukset(
+      @ApiParam(value = "Haku OID", required = true) @PathParam("hakuoid") String hakuoid,
+      @ApiParam(value = "HakemusOids", required = true) List<String> hakemusOids) {
+    return tulosService.haeTuloksetHakemuksille(hakuoid, hakemusOids);
   }
 }

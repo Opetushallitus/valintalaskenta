@@ -28,6 +28,8 @@ public interface ValintalaskentaTulosService {
 
   HakemusDTO haeTuloksetHakemukselle(String hakuoid, String hakemusoid);
 
+  List<HakemusDTO> haeTuloksetHakemuksille(String hakuoid, List<String> hakemusOids);
+
   List<ValintatietoValinnanvaiheDTO> haeValinnanvaiheetHakukohteelle(String hakukohdeoid);
 
   List<MinimalJonoDTO> haeSijoittelunKayttamatJonotIlmanValintalaskentaa();
