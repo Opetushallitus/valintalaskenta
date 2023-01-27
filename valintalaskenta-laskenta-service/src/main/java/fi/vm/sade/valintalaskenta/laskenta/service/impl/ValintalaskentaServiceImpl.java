@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -85,6 +86,27 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
       boolean korkeakouluhaku)
       throws RuntimeException {
     ExecutorService executor = Executors.newFixedThreadPool(10);
+
+    Map<String, Map<Integer, Valinnanvaihe>> hakukohdeToValinnanvaiheet = new HashMap<>();
+    Set<String> hakukohdeOids =
+        valintaperuste.stream()
+            .map(ValintaperusteetDTO::getHakukohdeOid)
+            .collect(Collectors.toSet());
+    hakukohdeOids.forEach(
+        hakukohdeOid -> {
+          Map<Integer, Valinnanvaihe> jarjestysnumeroToValinnanvaiheMap = new HashMap<>();
+          List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid);
+          vaiheet.forEach(
+              vaihe -> {
+                LOG.info(
+                    "Lisätään vaihe "
+                        + vaihe.getJarjestysnumero()
+                        + " valintakoelaskentaa varten esihaettuihin tuloksiin hakukohteelle "
+                        + vaihe.getHakukohdeOid());
+                jarjestysnumeroToValinnanvaiheMap.put(vaihe.getJarjestysnumero(), vaihe);
+              });
+          hakukohdeToValinnanvaiheet.put(hakukohdeOid, jarjestysnumeroToValinnanvaiheMap);
+        });
     try {
       executor
           .submit(
@@ -95,6 +117,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                             valintakoelaskentaSuorittajaService.laske(
                                 hakemus,
                                 valintaperuste,
+                                hakukohdeToValinnanvaiheet,
                                 uuid,
                                 kumulatiivisetTulokset,
                                 korkeakouluhaku));
