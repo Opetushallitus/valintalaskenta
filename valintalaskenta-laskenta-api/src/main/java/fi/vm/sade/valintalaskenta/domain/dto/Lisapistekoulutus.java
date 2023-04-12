@@ -10,8 +10,8 @@ public enum Lisapistekoulutus {
   LISAKOULUTUS_MAAHANMUUTTO_LUKIO("1.2.246.562.5.2013112814572429142840"),
   LISAKOULUTUS_VALMA("valma"),
   LISAKOULUTUS_TELMA("telma"),
-  LISAKOULUTUS_OPISTOVUOSI("vstoppivelvollisillesuunnattukoulutus");
-
+  LISAKOULUTUS_OPISTOVUOSI("vstoppivelvollisillesuunnattukoulutus"),
+  LISAKOULUTUS_TUVA("tuvakoulutuksensuoritus");
   public String komoOid;
 
   Lisapistekoulutus(String komoOid) {
