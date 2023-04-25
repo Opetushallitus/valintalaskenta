@@ -36,7 +36,7 @@
     ignore-resource-not-found="true" properties-ref="defaultProps"/>
 
   <bean id="defaultProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean"/>
-  <bean id="mongodFactory" class="de.flapdoodle.embed.mongo.tests.MongodForTestsFactory" destroy-method="shutdown"/>
+  <bean id="mongodFactory" class="fi.vm.sade.valintalaskenta.laskenta.testing.ValintalaskentaMongodForTestsFactory" destroy-method="shutdown"/>
   <bean id="mongo" class="com.mongodb.MongoClient" factory-bean="mongodFactory" factory-method="newMongo"/>
 
   <bean id="morphia" class="org.mongodb.morphia.Morphia"/>

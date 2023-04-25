@@ -9,7 +9,7 @@
 
   <bean id="embeddedMongodFactory" class="fi.vm.sade.valintalaskenta.laskenta.testing.ValintalaskentaMongodForTestsFactory" destroy-method="shutdown" lazy-init="true"/>
   <bean id="switchingMongoFactory" class="fi.vm.sade.valintalaskenta.laskenta.service.it.ValintalaskentaDbDumpingTest$SwitchingMongoFactory" destroy-method="shutdown"/>
-  <bean id="mongo" class="com.mongodb.MongoClient" factory-bean="switchingMongoFactory" factory-method="newMongo"/>
+  <bean id="mongo" factory-bean="switchingMongoFactory" factory-method="newMongo"/>
 
   <bean id="morphia2" class="org.mongodb.morphia.Morphia"/>
   <bean id="datastore2" factory-bean="morphia2" factory-method="createDatastore">

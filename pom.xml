@@ -23,7 +23,7 @@
         <sijoittelu.version>7.6.0-SNAPSHOT</sijoittelu.version>
 
         <cxf.version>3.3.5</cxf.version>
-        <flapdoodle.embed.mongo.version>2.2.0</flapdoodle.embed.mongo.version>
+        <flapdoodle.embed.mongo.version>4.6.2</flapdoodle.embed.mongo.version>
         <httpcomponents.core.version>4.4.13</httpcomponents.core.version>
         <httpcomponents.version>4.5.12</httpcomponents.version>
         <modelmapper.version>2.3.5</modelmapper.version>
@@ -441,7 +441,7 @@
             <dependency>
                 <groupId>org.mongodb</groupId>
                 <artifactId>mongo-java-driver</artifactId>
-                <version>3.12.7</version>
+                <version>3.12.13</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
