@@ -18,7 +18,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.SuoritustiedotDTO;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija.ValisijoiteltavatJonot;
-import fi.vm.sade.valintalaskenta.laskenta.testing.ValintaLaskentaLaskentaJettyForTesting;
+import fi.vm.sade.valintalaskenta.laskenta.testing.ValintaLaskentaLaskentaAppForTesting;
 import java.util.Collections;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.junit.Before;
@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Matchers;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 
 @RunWith(JUnit4.class)
@@ -37,9 +38,9 @@ public class ValintalaskentaResourceHttpIntegrationTest {
 
   @Before
   public void setUp() {
-    ValintaLaskentaLaskentaJettyForTesting.startShared();
+    ValintaLaskentaLaskentaAppForTesting.main(new String[]{});
     applicationContext =
-        ValintaLaskentaLaskentaJettyForTesting.ApplicationContextGetter.applicationContext;
+        ValintaLaskentaLaskentaAppForTesting.ApplicationContextGetter.applicationContext;
   }
 
   @Test
@@ -191,9 +192,13 @@ public class ValintalaskentaResourceHttpIntegrationTest {
     return applicationContext.getBean(requiredType);
   }
 
+  @Value("${local.server.port}")
+  private String serverPort;
+
   private WebClient createHttpClient(String path) {
+    String rootUrl = "http://localhost:" + serverPort + "/valintalaskenta-laskenta-service/resources";
     return new HttpResourceBuilder("valintalaskenta.valintalaskenta-laskenta-service")
-        .address(ValintaLaskentaLaskentaJettyForTesting.rootUrl + path)
+        .address(rootUrl + path)
         .buildExposingWebClientDangerously()
         .getWebClient()
         .type(APPLICATION_JSON_TYPE);
