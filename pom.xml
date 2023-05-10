@@ -67,6 +67,10 @@
                         <groupId>org.apache.httpcomponents</groupId>
                         <artifactId>httpclient-cache</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>fi.vm.sade.java-utils</groupId>
+                        <artifactId>java-http</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -91,6 +95,10 @@
                     <exclusion>
                         <groupId>org.apache.httpcomponents</groupId>
                         <artifactId>httpclient-cache</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>fi.vm.sade.java-utils</groupId>
+                        <artifactId>java-http</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -245,18 +253,18 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>2.0.0-alpha1</version>
+                <version>2.0.7</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.11</version>
+                <version>3.12.0</version>
             </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
-                <version>1.14</version>
+                <version>1.15</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.ehcache</groupId>
@@ -309,7 +317,7 @@
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
                 <artifactId>opintopolku-cas-servlet-filter</artifactId>
-                <version>0.1.2-SNAPSHOT</version>
+                <version>0.2.0-SNAPSHOT</version>
                 <exclusions>
                     <exclusion>
                         <groupId>commons-logging</groupId>
@@ -325,22 +333,32 @@
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
                 <artifactId>legacy-cxf-cas</artifactId>
-                <version>0.5.0-SNAPSHOT</version>
+                <version>0.6.0-SNAPSHOT</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.httpcomponents</groupId>
+                        <artifactId>httpclient-cache</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.httpcomponents</groupId>
+                        <artifactId>httpclient</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
                 <artifactId>java-cxf</artifactId>
-                <version>0.3.2-SNAPSHOT</version>
+                <version>0.4.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
                 <artifactId>httpclient</artifactId>
-                <version>0.4.0-SNAPSHOT</version>
+                <version>0.4.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
                 <artifactId>opintopolku-user-details-service</artifactId>
-                <version>0.3.0-SNAPSHOT</version>
+                <version>0.4.0-SNAPSHOT</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.apache.httpcomponents</groupId>
