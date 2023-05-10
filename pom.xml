@@ -25,13 +25,12 @@
         <cxf.version>3.6.0</cxf.version>
         <flapdoodle.embed.mongo.version>4.6.2</flapdoodle.embed.mongo.version>
         <httpcomponents.version>4.5.14</httpcomponents.version>
-        <modelmapper.version>2.3.5</modelmapper.version>
-        <spring.asm.version>3.1.4.RELEASE</spring.asm.version>
+        <modelmapper.version>3.1.1</modelmapper.version>
         <spring.version>5.3.27</spring.version>
         <spring.security.version>5.8.3</spring.security.version>
         <jackson.version>2.15.0</jackson.version>
         <legacy-jackson.version>1.9.13</legacy-jackson.version>
-        <swagger.version>1.5.17</swagger.version>
+        <swagger.version>1.6.10</swagger.version>
         <jasig.cas.version>3.4.1</jasig.cas.version>
 
         <maven.compiler.source>11</maven.compiler.source>
