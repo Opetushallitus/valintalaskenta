@@ -22,7 +22,7 @@
         <valinta-sharedutils.version>5.11-SNAPSHOT</valinta-sharedutils.version>
         <sijoittelu.version>7.6.0-SNAPSHOT</sijoittelu.version>
 
-        <cxf.version>3.3.5</cxf.version>
+        <cxf.version>3.6.0</cxf.version>
         <flapdoodle.embed.mongo.version>4.6.2</flapdoodle.embed.mongo.version>
         <httpcomponents.core.version>4.4.13</httpcomponents.core.version>
         <httpcomponents.version>4.5.12</httpcomponents.version>
@@ -30,7 +30,7 @@
         <spring.asm.version>3.1.4.RELEASE</spring.asm.version>
         <spring.version>5.3.27</spring.version>
         <spring.security.version>5.8.3</spring.security.version>
-        <jackson.version>2.10.3</jackson.version>
+        <jackson.version>2.15.0</jackson.version>
         <legacy-jackson.version>1.9.13</legacy-jackson.version>
         <swagger.version>1.5.17</swagger.version>
         <jasig.cas.version>3.4.1</jasig.cas.version>
