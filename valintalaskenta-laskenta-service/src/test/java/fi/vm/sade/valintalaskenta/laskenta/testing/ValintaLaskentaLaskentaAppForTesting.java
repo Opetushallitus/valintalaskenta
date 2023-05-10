@@ -5,10 +5,10 @@ import org.springframework.beans.BeansException;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.test.context.ContextConfiguration;
 
 @SpringBootApplication
-@ImportResource({"classpath:application-context-http-test.xml"})
+@ContextConfiguration(locations = "classpath:application-context-http-test.xml")
 public class ValintaLaskentaLaskentaAppForTesting {
   public static void main(String[] args) {
     ValintaLaskentaLaskentaApplication.main(args);
