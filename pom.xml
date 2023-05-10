@@ -35,8 +35,8 @@
         <swagger.version>1.5.17</swagger.version>
         <jasig.cas.version>3.4.1</jasig.cas.version>
 
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -728,7 +728,7 @@
                 <configuration>
                     <java>
                         <googleJavaFormat>
-                            <version>1.8</version>
+                            <version>1.11.0</version>
                             <style>GOOGLE</style>
                         </googleJavaFormat>
                     </java>
@@ -744,12 +744,13 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>3.11.0</version>
                 <inherited>true</inherited>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>11</source>
+                    <target>11</target>
                     <debug>false</debug>
                 </configuration>
             </plugin>

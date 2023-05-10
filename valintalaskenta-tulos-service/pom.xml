@@ -262,9 +262,7 @@
                 </includes>
             </resource>
         </resources>
-
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -273,16 +271,6 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-
-          <plugin>
-              <artifactId>maven-compiler-plugin</artifactId>
-              <configuration>
-                  <source>1.8</source>
-                  <target>1.8</target>
-              </configuration>
-          </plugin>
-
         </plugins>
-
     </build>
 </project>
