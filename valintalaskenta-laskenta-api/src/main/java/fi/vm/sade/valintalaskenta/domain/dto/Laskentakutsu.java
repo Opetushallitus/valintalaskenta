@@ -2,11 +2,9 @@ package fi.vm.sade.valintalaskenta.domain.dto;
 
 import com.google.gson.Gson;
 import fi.vm.sade.valintalaskenta.domain.GzipUtil;
-import java.io.IOException;
 import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.commons.io.IOUtils;
 
 public class Laskentakutsu {
   private static final Gson GSON = new Gson();
@@ -49,12 +47,8 @@ public class Laskentakutsu {
   }
 
   public static String toBase64Gzip(SuoritustiedotDTO suoritustiedotDTO) {
-    try {
-      return IOUtils.toString(
-          Base64.getEncoder().encode(GzipUtil.enkoodaa(GSON.toJson(suoritustiedotDTO))));
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    return new String(
+        Base64.getEncoder().encode(GzipUtil.enkoodaa(GSON.toJson(suoritustiedotDTO))));
   }
 
   private static SuoritustiedotDTO fromBase64Gzip(String suoritustiedotDtoBase64Gzip) {
