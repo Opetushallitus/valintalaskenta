@@ -17,7 +17,7 @@ public class JaxRsClientIntegrationTest {
 
   @Before
   public void setUp() {
-    ValintaLaskentaLaskentaAppForTesting.main(new String[]{});
+    ValintaLaskentaLaskentaAppForTesting.main(new String[] {});
     applicationContext =
         ValintaLaskentaLaskentaAppForTesting.ApplicationContextGetter.applicationContext;
   }

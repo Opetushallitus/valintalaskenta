@@ -38,7 +38,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
 
   @Before
   public void setUp() {
-    ValintaLaskentaLaskentaAppForTesting.main(new String[]{});
+    ValintaLaskentaLaskentaAppForTesting.main(new String[] {});
     applicationContext =
         ValintaLaskentaLaskentaAppForTesting.ApplicationContextGetter.applicationContext;
   }
@@ -196,7 +196,8 @@ public class ValintalaskentaResourceHttpIntegrationTest {
   private String serverPort;
 
   private WebClient createHttpClient(String path) {
-    String rootUrl = "http://localhost:" + serverPort + "/valintalaskenta-laskenta-service/resources";
+    String rootUrl =
+        "http://localhost:" + serverPort + "/valintalaskenta-laskenta-service/resources";
     return new HttpResourceBuilder("valintalaskenta.valintalaskenta-laskenta-service")
         .address(rootUrl + path)
         .buildExposingWebClientDangerously()

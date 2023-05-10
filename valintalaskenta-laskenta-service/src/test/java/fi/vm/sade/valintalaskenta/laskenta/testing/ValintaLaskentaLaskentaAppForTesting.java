@@ -1,6 +1,5 @@
 package fi.vm.sade.valintalaskenta.laskenta.testing;
 
-import fi.vm.sade.integrationtest.util.ProjectRootFinder;
 import fi.vm.sade.valintalaskenta.laskenta.ValintaLaskentaLaskentaApplication;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
