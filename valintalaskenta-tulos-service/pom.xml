@@ -4,7 +4,7 @@
         <groupId>fi.vm.sade.valintaperusteet</groupId>
         <artifactId>valintalaskenta</artifactId>
         <version>5.17.2-SNAPSHOT</version>
-        <relativePath>..</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>valintalaskenta-tulos-service</artifactId>
     <packaging>jar</packaging>
@@ -260,7 +260,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.3.1</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
                 </configuration>

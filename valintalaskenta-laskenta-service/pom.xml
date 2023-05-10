@@ -5,7 +5,7 @@
         <groupId>fi.vm.sade.valintaperusteet</groupId>
         <artifactId>valintalaskenta</artifactId>
         <version>5.17.2-SNAPSHOT</version>
-        <relativePath>..</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>valintalaskenta-laskenta-service</artifactId>
     <name>Valintalaskenta :: Laskenta Service</name>
@@ -357,6 +357,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.2</version>
                 <configuration>
                     <webResources>
                         <resource>
@@ -376,7 +377,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.3.1</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
                 </configuration>
@@ -416,7 +417,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
+                <version>3.4.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>

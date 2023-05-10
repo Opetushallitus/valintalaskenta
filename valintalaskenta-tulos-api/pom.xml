@@ -4,7 +4,7 @@
 		<groupId>fi.vm.sade.valintaperusteet</groupId>
 		<artifactId>valintalaskenta</artifactId>
 		<version>5.17.2-SNAPSHOT</version>
-		<relativePath>..</relativePath>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>valintalaskenta-tulos-api</artifactId>
 	<name>Valintalaskenta :: Tulos :: API</name>
