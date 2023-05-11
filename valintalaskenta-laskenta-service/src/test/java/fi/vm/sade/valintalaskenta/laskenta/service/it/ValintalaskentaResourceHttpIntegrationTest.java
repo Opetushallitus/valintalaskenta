@@ -18,17 +18,14 @@ import fi.vm.sade.valintalaskenta.domain.dto.SuoritustiedotDTO;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija.ValisijoiteltavatJonot;
-import fi.vm.sade.valintalaskenta.laskenta.testing.ValintaLaskentaLaskentaJettyForTesting;
+import fi.vm.sade.valintalaskenta.laskenta.testing.TestApp;
 import java.util.Collections;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.mockito.Matchers;
 import org.springframework.context.ApplicationContext;
 
-@RunWith(JUnit4.class)
 public class ValintalaskentaResourceHttpIntegrationTest {
   private final String hakukohdeOid = "hakukohdeOid";
   private ApplicationContext applicationContext;
@@ -37,9 +34,8 @@ public class ValintalaskentaResourceHttpIntegrationTest {
 
   @Before
   public void setUp() {
-    ValintaLaskentaLaskentaJettyForTesting.startShared();
-    applicationContext =
-        ValintaLaskentaLaskentaJettyForTesting.ApplicationContextGetter.applicationContext;
+    TestApp.startTestApp();
+    applicationContext = TestApp.ApplicationContextGetter.applicationContext;
   }
 
   @Test
@@ -193,7 +189,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
 
   private WebClient createHttpClient(String path) {
     return new HttpResourceBuilder("valintalaskenta.valintalaskenta-laskenta-service")
-        .address(ValintaLaskentaLaskentaJettyForTesting.rootUrl + path)
+        .address(TestApp.ROOT_URL + path)
         .buildExposingWebClientDangerously()
         .getWebClient()
         .type(APPLICATION_JSON_TYPE);

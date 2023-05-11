@@ -1,0 +1,24 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+management:
+  endpoints:
+    enabled-by-default: false
+  endpoint:
+    health:
+      enabled: true
+server:
+  servlet:
+    context-path: /valintalaskenta-laskenta-service
+  port: 8080
+  tomcat:
+    threads:
+      max: 20
+cxf:
+  path: /resources
+  servlet:
+    loadOnStartup: 1
+    enabled: true
+  jaxrs:
+    component-scan: true
+    classes-scan-packages: org.apache.cxf.jaxrs.swagger

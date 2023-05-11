@@ -9,7 +9,7 @@ import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("tulosObjectModelMapper")
 @Provider
 public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
   private final ObjectMapper objectMapper;
