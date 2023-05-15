@@ -10,19 +10,16 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
-@Path("jonosijahistoria")
 @PreAuthorize("isAuthenticated()")
 @Api(value = "/jonosijahistoria", description = "Resurssi jonosijahistoriatiedon hakemiseen")
 public class JonosijaHistoriaResourceImpl implements JonosijaHistoriaResource {
@@ -33,17 +30,15 @@ public class JonosijaHistoriaResourceImpl implements JonosijaHistoriaResource {
 
   @Autowired private ValintalaskentaModelMapper modelMapper;
 
-  @GET
-  @Path("{valintatapajonoOid}/{hakemusOid}")
-  @Produces(MediaType.APPLICATION_JSON)
   @PreAuthorize(READ_UPDATE_CRUD)
   @ApiOperation(
       value = "Hakee jonosijahistoriat valintatapajono OID:n ja hakemus OID:n perusteella",
       response = JarjestyskriteerihistoriaDTO.class)
+  @GetMapping(value = "{valintatapajonoOid}/{hakemusOid}", produces = MediaType.APPLICATION_JSON_VALUE)
   public List<JarjestyskriteerihistoriaDTO> listJonosijaHistoria(
-      @ApiParam(value = "Valintatapajono OID", required = true) @PathParam("valintatapajonoOid")
+      @ApiParam(value = "Valintatapajono OID", required = true) @PathVariable("valintatapajonoOid")
           String valintatapajonoOid,
-      @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid")
+      @ApiParam(value = "Hakemus OID", required = true) @PathVariable("hakemusOid")
           String hakemusOid) {
     return modelMapper.mapList(
         tulosService.haeJonosijaHistoria(valintatapajonoOid, hakemusOid),
