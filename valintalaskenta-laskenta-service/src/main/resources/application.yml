@@ -17,8 +17,7 @@ server:
 cxf:
   path: /resources
   servlet:
-    loadOnStartup: 1
-    enabled: true
+    enabled: false
   jaxrs:
     component-scan: true
     classes-scan-packages: org.apache.cxf.jaxrs.swagger

@@ -4,57 +4,61 @@ import fi.vm.sade.valintalaskenta.domain.dto.HarkinnanvarainenHyvaksyminenDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.stereotype.Controller;
-
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-@Path("harkinnanvarainenhyvaksynta")
 @Api(
     value = "/harkinnanvarainenhyvaksynta",
     description = "Resurssi harkinnanvaraisesti hakeneiden hakijoiden käsittelyyn")
 @Controller()
+@RequestMapping(value = "/harkinnanvarainenhyvaksynta")
 public interface HarkinnanvaraisuusResource {
-  @POST
-  @Path("/haku/{hakuOid}/hakukohde/{hakukohdeOid}/hakemus/{hakemusOid}")
-  @Produces(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Asettaa tilan harkinnanvaraisesti hakeneelle hakijalle")
-  public void asetaTila(
-      @ApiParam(value = "Haun OID", required = true) @PathParam("hakuOid") String hakuOid,
-      @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeOid")
+  @PostMapping(
+      value = "/haku/{hakuOid}/hakukohde/{hakukohdeOid}/hakemus/{hakemusOid}",
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  void asetaTila(
+      @ApiParam(value = "Haun OID", required = true) @PathVariable("hakuOid") String hakuOid,
+      @ApiParam(value = "Hakukohteen OID", required = true) @PathVariable("hakukohdeOid")
           String hakukohdeOid,
-      @ApiParam(value = "Hakemuksen OID", required = true) @PathParam("hakemusOid")
+      @ApiParam(value = "Hakemuksen OID", required = true) @PathVariable("hakemusOid")
           String hakemusOid,
       @ApiParam(value = "Asetettava tila", required = true)
           HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen,
-      @Context HttpServletRequest request);
+      final HttpServletRequest request);
 
-  @POST
-  @Produces(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Asettaa tilan harkinnanvaraisesti hakeneelle hakijalle")
-  public void asetaTilat(
+  @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  void asetaTilat(
       @ApiParam(value = "Asetettava tila", required = true)
           List<HarkinnanvarainenHyvaksyminenDTO> harkinnanvaraisetHyvaksymiset,
-      @Context HttpServletRequest request);
+      final HttpServletRequest request);
 
-  @GET
-  @Path("/haku/{hakuOid}/hakukohde/{hakukohdeOid}")
-  @Produces(MediaType.APPLICATION_JSON)
   @ApiOperation(
       value = "Hakee hakukohteen harkinnanvaraisesti hakeneiden hakijoiden tilat",
       response = HarkinnanvarainenHyvaksyminenDTO.class)
-  public List<HarkinnanvarainenHyvaksyminenDTO> hakukohde(
-      @ApiParam(value = "Haku OID", required = true) @PathParam("hakuOid") String hakuOid,
-      @ApiParam(value = "Hakukohde OID", required = true) @PathParam("hakukohdeOid")
+  @GetMapping(
+      value = "/haku/{hakuOid}/hakukohde/{hakukohdeOid}",
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  List<HarkinnanvarainenHyvaksyminenDTO> hakukohde(
+      @ApiParam(value = "Haku OID", required = true) @PathVariable("hakuOid") String hakuOid,
+      @ApiParam(value = "Hakukohde OID", required = true) @PathVariable("hakukohdeOid")
           String hakukohdeOid);
 
-  @GET
-  @Path("/haku/{hakuOid}/hakemus/{hakemusOid}")
-  @Produces(MediaType.APPLICATION_JSON)
   @ApiOperation(
       value = "Hakee hakemuksen harkinnanvaraisesti tilat",
       response = HarkinnanvarainenHyvaksyminenDTO.class)
-  public List<HarkinnanvarainenHyvaksyminenDTO> hakemus(
-      @ApiParam(value = "Haku OID", required = true) @PathParam("hakuOid") String hakuOid,
-      @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid);
+  @GetMapping(
+      value = "/haku/{hakuOid}/hakemus/{hakemusOid}",
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  List<HarkinnanvarainenHyvaksyminenDTO> hakemus(
+      @ApiParam(value = "Haku OID", required = true) @PathVariable("hakuOid") String hakuOid,
+      @ApiParam(value = "Hakemus OID", required = true) @PathVariable("hakemusOid")
+          String hakemusOid);
 }

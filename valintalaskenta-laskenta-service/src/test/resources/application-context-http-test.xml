@@ -29,9 +29,6 @@
   <mockito:mock id="mockValisijoitteluKasittelija" class="fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija"/>
   <bean id="laskentaAuditLogMock" class="fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogMock"/>
 
-  <bean id="valintalaskentaLaskentaResource"
-        class="fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl"/>
-
   <context:property-placeholder
     ignore-resource-not-found="true" properties-ref="defaultProps"/>
 
@@ -47,16 +44,6 @@
 
   <bean id="jaxrsconfig" class="fi.vm.sade.valintalaskenta.laskenta.resource.JaxrsConfiguration"/>
 
-  <jaxrs:server id="valintalaskentaResourcesForTest">
-    <jaxrs:serviceBeans>
-      <ref bean="valintalaskentaLaskentaResource"/>
-    </jaxrs:serviceBeans>
-    <jaxrs:providers>
-      <ref bean="jsonProvider"/>
-      <ref bean="cxfExceptionLogger"/>
-    </jaxrs:providers>
-
-  </jaxrs:server>
   <bean id="cxfExceptionLogger" class="fi.vm.sade.valinta.sharedutils.http.CxfExceptionLogger"/>
 
   <jaxrs-client:client id="jaxRsClientIntegrationTestClient"

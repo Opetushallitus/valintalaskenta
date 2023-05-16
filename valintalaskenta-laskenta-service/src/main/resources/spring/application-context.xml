@@ -139,7 +139,7 @@
             <ref bean="harkinnanvaraisuusResourceImpl"/>
             <ref bean="jonosijaHistoriaResourceImpl"/>
             <ref bean="valintakoeResourceImpl"/>
-            <ref bean="valintatapajonoResourceImpl"/>
+            <ref bean="valintalaskentaResourceImpl"/>
             <ref bean="valintatietoResourceImpl"/>
             <ref bean="valintalaskentaResourceImpl"/>
             <ref bean="valintalaskentaPaloissaResourceImpl"/>

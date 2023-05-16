@@ -25,45 +25,47 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
-@Path("hakukohde")
 @PreAuthorize("isAuthenticated()")
 @Api(value = "/hakukohde", description = "Resurssi tulosten hakemiseen hakukohteittain")
+@RequestMapping(value = "/hakukohde")
 public class HakukohdeResourceImpl implements HakukohdeResource {
   protected static final Logger LOGGER = LoggerFactory.getLogger(HakukohdeResourceImpl.class);
+  private final ValintalaskentaTulosService tulosService;
+  private final Authorizer authorizer;
+  private final ValintaperusteetResource valintaperusteetResource;
+  private final LaskentaAuditLog auditLog;
 
-  @Autowired private ValintalaskentaTulosService tulosService;
-
-  @Autowired private Authorizer authorizer;
-
-  @Autowired private ValintaperusteetResource valintaperusteetResource;
-
-  @Autowired private LaskentaAuditLog auditLog;
-
-  public HakukohdeResourceImpl(LaskentaAuditLog auditLog) {
+  @Autowired
+  public HakukohdeResourceImpl(
+      final LaskentaAuditLog auditLog,
+      final ValintalaskentaTulosService tulosService,
+      final Authorizer authorizer,
+      final ValintaperusteetResource valintaperusteetResource) {
     this.auditLog = auditLog;
+    this.tulosService = tulosService;
+    this.authorizer = authorizer;
+    this.valintaperusteetResource = valintaperusteetResource;
   }
 
-  @GET
-  @Path("{hakukohdeoid}/valinnanvaihe")
-  @Produces(MediaType.APPLICATION_JSON)
   @PreAuthorize(READ_UPDATE_CRUD)
   @ApiOperation(
       value = "Hakee hakukohteen valinnan vaiheiden tulokset",
       response = ValinnanvaiheDTO.class)
+  @GetMapping(value = "/{hakukohdeoid}/valinnanvaihe", produces = MediaType.APPLICATION_JSON_VALUE)
   public List<ValintatietoValinnanvaiheDTO> hakukohde(
-      @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid")
-          String hakukohdeoid) {
+      @ApiParam(value = "Hakukohteen OID", required = true) @PathVariable("hakukohdeoid")
+          final String hakukohdeoid) {
     try {
       return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
     } catch (Exception e) {
@@ -72,19 +74,19 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
     }
   }
 
-  @POST
-  @Path("{hakukohdeoid}/valinnanvaihe")
-  @Produces(MediaType.APPLICATION_JSON)
-  @Consumes(MediaType.APPLICATION_JSON)
   @PreAuthorize(READ_UPDATE_CRUD)
   @ApiOperation(value = "Lisää tuloksia valinnanvaiheelle", response = ValinnanvaiheDTO.class)
-  public Response lisaaTuloksia(
-      @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid")
-          String hakukohdeoid,
-      @ApiParam(value = "Tarjoaja OID", required = true) @QueryParam("tarjoajaOid")
-          String tarjoajaOid,
-      @ApiParam(value = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe,
-      @Context HttpServletRequest request) {
+  @PostMapping(
+      value = "/{hakukohdeoid}/valinnanvaihe",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Object> lisaaTuloksia(
+      @ApiParam(value = "Hakukohteen OID", required = true) @PathVariable("hakukohdeoid")
+          final String hakukohdeoid,
+      @ApiParam(value = "Tarjoaja OID", required = true) @RequestParam("tarjoajaOid")
+          final String tarjoajaOid,
+      @ApiParam(value = "Muokattava valinnanvaihe", required = true) final ValinnanvaiheDTO vaihe,
+      final HttpServletRequest request) {
     try {
       authorizer.checkOrganisationAccess(tarjoajaOid, ROLE_VALINTOJENTOTEUTTAMINEN_TULOSTENTUONTI);
 
@@ -98,7 +100,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
                     + "tarjoajaOid = %s, hakukohdeOid = %s , syöte: %s",
                 tarjoajaOid, hakukohdeoid, vaihe));
         message.put("error", "Saatiin tyhjä data käyttöliittymältä; ei tallenneta.");
-        return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
       }
 
       Optional<ValintaperusteetDTO> valinnanVaiheValintaperusteissa =
@@ -116,17 +118,17 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
             "Päivitettävää valinnanvaihetta ei löytynyt valintaperusteista, hakukohde {}, valinnanvaihe {}",
             hakukohdeoid,
             vaihe.getValinnanvaiheoid());
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        return ResponseEntity.internalServerError().build();
       }
     } catch (Exception e) {
       LOGGER.error(
           "Valintatapajonon pisteitä ei saatu päivitettyä hakukohteelle " + hakukohdeoid, e);
-      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+      return ResponseEntity.internalServerError().build();
     }
     User user = auditLog.getUser(request);
     ValinnanvaiheDTO valinnanvaihe = tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid);
     auditLog(hakukohdeoid, vaihe, user);
-    return Response.status(Response.Status.ACCEPTED).entity(valinnanvaihe).build();
+    return ResponseEntity.accepted().body(valinnanvaihe);
   }
 
   private void auditLog(String hakukohdeoid, ValinnanvaiheDTO vaihe, User user) {
@@ -155,13 +157,11 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
             });
   }
 
-  @GET
-  @Path("{hakukohdeoid}/hakijaryhma")
-  @Produces(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Hakee hakukohteen hakijaryhmien tulokset", response = HakijaryhmaDTO.class)
+  @GetMapping(value = "/{hakukohdeoid}/hakijaryhma", produces = MediaType.APPLICATION_JSON_VALUE)
   public List<HakijaryhmaDTO> hakijaryhmat(
-      @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeoid")
-          String hakukohdeoid) {
+      @ApiParam(value = "Hakukohteen OID", required = true) @PathVariable("hakukohdeoid")
+          final String hakukohdeoid) {
     try {
       return tulosService.haeHakijaryhmatHakukohteelle(hakukohdeoid);
     } catch (Exception e) {

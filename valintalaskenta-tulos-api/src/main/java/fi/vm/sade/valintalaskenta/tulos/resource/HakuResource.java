@@ -6,34 +6,28 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminen
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-@Path("haku")
 @Api(value = "/haku", description = "Resurssi haun valintalaskennan virhetilanteiden hakemiseen")
+@RequestMapping(value = "/haku")
 public interface HakuResource {
-
-  @GET
-  @Path("{hakuOid}/virheet")
-  @Produces(MediaType.APPLICATION_JSON)
   @ApiOperation(
       value = "Hakee haun valintalaskennan virhetilanteet OID:n perusteella",
       response = HakukohdeDTO.class)
-  List<HakukohdeDTO> virheet(@PathParam("hakuOid") String hakuOid);
+  @GetMapping(value = "/{hakuOid}/virheet", produces = MediaType.APPLICATION_JSON_VALUE)
+  List<HakukohdeDTO> virheet(@PathVariable("hakuOid") String hakuOid);
 
-  @GET
-  @Path("{hakuOid}/valintakoevirheet")
-  @Produces(MediaType.APPLICATION_JSON)
-  List<ValintakoeOsallistuminenDTO> valintakoevirheet(@PathParam("hakuOid") String hakuOid);
+  @GetMapping(value = "/{hakuOid}/valintakoevirheet", produces = MediaType.APPLICATION_JSON_VALUE)
+  List<ValintakoeOsallistuminenDTO> valintakoevirheet(@PathVariable("hakuOid") String hakuOid);
 
-  @GET
-  @Path("/ilmanvalintalaskentaasijoitteluun")
-  @Produces(MediaType.APPLICATION_JSON)
   @ApiOperation(
       value = "Hakee sijoitteluun siirretyt valintalaskennattomat valintatapajonot ODWlle",
       response = MinimalJonoDTO.class)
+  @GetMapping(
+      value = "/ilmanvalintalaskentaasijoitteluun",
+      produces = MediaType.APPLICATION_JSON_VALUE)
   List<MinimalJonoDTO> jonotSijoitteluun();
 }

@@ -9,67 +9,67 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Path("valintatapajono")
 @Api(
     value = "/valintatapajono",
     description = "Resurssi valintatapajonon jonosijojen muokkaamiseen manuaalisesti")
+@RequestMapping("/valintatapajono")
 public interface ValintatapajonoResource {
-  @POST
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  @Path("{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/jonosija")
   @ApiOperation(value = "Muokkaa jonosijaa", response = MuokattuJonosijaDTO.class)
-  public Response muutaJonosija(
-      @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid")
-          String valintatapajonoOid,
-      @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid,
+  @PostMapping(
+      value = "/{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/jonosija",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  ResponseEntity<Object> muutaJonosija(
+      @ApiParam(value = "Valintatapajonon OID", required = true) @PathVariable("valintatapajonoOid")
+          final String valintatapajonoOid,
+      @ApiParam(value = "Hakemus OID", required = true) @PathVariable("hakemusOid")
+          final String hakemusOid,
       @ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true)
-          @PathParam("jarjestyskriteeriPrioriteetti")
-          Integer jarjestyskriteeriPrioriteetti,
-      @ApiParam(value = "Järjestyskriteerin uusi arvo", required = true)
-          MuokattuJonosijaArvoDTO arvo,
-      @Context HttpServletRequest request);
+          @PathVariable("jarjestyskriteeriPrioriteetti")
+          final Integer jarjestyskriteeriPrioriteetti,
+      @ApiParam(value = "Järjestyskriteerin uusi arvo", required = true) @RequestBody
+          final MuokattuJonosijaArvoDTO arvo,
+      final HttpServletRequest request);
 
-  @DELETE
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  @Path("{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/jonosija")
   @ApiOperation(value = "Poista muokattu jonosijaa", response = MuokattuJonosijaDTO.class)
-  public Response poistaMuokattuJonosija(
-      @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid")
-          String valintatapajonoOid,
-      @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid,
+  @DeleteMapping(
+      value = "/{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/jonosija",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  ResponseEntity<Object> poistaMuokattuJonosija(
+      @ApiParam(value = "Valintatapajonon OID", required = true) @PathVariable("valintatapajonoOid")
+          final String valintatapajonoOid,
+      @ApiParam(value = "Hakemus OID", required = true) @PathVariable("hakemusOid")
+          final String hakemusOid,
       @ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true)
-          @PathParam("jarjestyskriteeriPrioriteetti")
-          Integer jarjestyskriteeriPrioriteetti,
-      @Context HttpServletRequest request);
+          @PathVariable("jarjestyskriteeriPrioriteetti")
+          final Integer jarjestyskriteeriPrioriteetti,
+      final HttpServletRequest request);
 
-  @PUT
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  @Path("{valintatapajonoOid}/valmissijoiteltavaksi")
   @ApiOperation(value = "Tallentaa/muokkaa valintatapajonoa", response = ValintatapajonoDTO.class)
-  public Response muokkaaSijotteluStatusta(
-      @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid")
-          String valintatapajonoOid,
-      @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status,
-      @ApiParam(value = "Valintatapajono", required = true) ValintatapajonoDTO valintapajono,
-      @Context HttpServletRequest request);
+  @PutMapping(
+      value = "/{valintatapajonoOid}/valmissijoiteltavaksi",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  ResponseEntity<ValintatapajonoDTO> muokkaaSijotteluStatusta(
+      @ApiParam(value = "Valintatapajonon OID", required = true) @PathVariable("valintatapajonoOid")
+          final String valintatapajonoOid,
+      @ApiParam(value = "Sijoittelustatus", required = true) @RequestParam("status")
+          final boolean status,
+      @ApiParam(value = "Valintatapajono", required = true) final ValintatapajonoDTO valintapajono,
+      final HttpServletRequest request);
 
-  @GET
-  @Path("/{valintatapajonoOid}/valmissijoiteltavaksi")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response haeSijoitteluStatus(
-      @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid")
-          String oid);
+  @GetMapping(
+      value = "/{valintatapajonoOid}/valmissijoiteltavaksi",
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  ResponseEntity<Object> haeSijoitteluStatus(
+      @ApiParam(value = "Valintatapajonon OID", required = true) @PathVariable("valintatapajonoOid")
+          final String oid);
 
-  @GET
-  @Path("/jonotsijoittelussa/{hakuOid}")
-  @Produces("application/json")
-  public List<JonoDto> jonotSijoittelussa(@PathParam("hakuOid") String hakuOid);
+  @GetMapping(value = "/jonotsijoittelussa/{hakuOid}", produces = MediaType.APPLICATION_JSON_VALUE)
+  List<JonoDto> jonotSijoittelussa(@PathVariable("hakuOid") final String hakuOid);
 }

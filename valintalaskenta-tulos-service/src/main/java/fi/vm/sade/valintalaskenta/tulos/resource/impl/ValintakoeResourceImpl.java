@@ -10,84 +10,78 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
-@Path("valintakoe")
 @PreAuthorize("isAuthenticated()")
 @Api(value = "/valintakoe", description = "Resurssi valintakoeosallistumistulosten hakemiseen")
+@RequestMapping("/valintakoe")
 public class ValintakoeResourceImpl implements ValintakoeResource {
   private final ValintalaskentaTulosService tulosService;
   private final ValintalaskentaModelMapper modelMapper;
 
   @Autowired
   public ValintakoeResourceImpl(
-      ValintalaskentaTulosService tulosService, ValintalaskentaModelMapper modelMapper) {
+      final ValintalaskentaTulosService tulosService,
+      final ValintalaskentaModelMapper modelMapper) {
     this.tulosService = tulosService;
     this.modelMapper = modelMapper;
   }
 
-  @GET
-  @Produces(MediaType.APPLICATION_JSON)
-  @Path("hakemus/{hakemusOid}")
   @PreAuthorize(READ_UPDATE_CRUD)
   @ApiOperation(
       value = "Hakee valintakoeosallistumiset hakemukselle OID:n perusteella",
       response = ValintakoeOsallistuminenDTO.class)
+  @GetMapping(value = "/hakemus/{hakemusOid}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ValintakoeOsallistuminenDTO haku(
-      @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid")
-          String hakemusOid) {
+      @ApiParam(value = "Hakemus OID", required = true) @PathVariable("hakemusOid")
+          final String hakemusOid) {
     return modelMapper.map(
         tulosService.haeValintakoeOsallistumiset(hakemusOid), ValintakoeOsallistuminenDTO.class);
   }
 
-  @GET
-  @Produces(MediaType.APPLICATION_JSON)
-  @Path("hakutoive/{hakukohdeOid}")
   @PreAuthorize(READ_UPDATE_CRUD)
   @ApiOperation(
       value = "Hakee valintakoeosallistumiset hakukohteelle OID:n perusteella",
       response = ValintakoeOsallistuminenDTO.class)
+  @GetMapping(value = "/hakutoive/{hakukohdeOid}", produces = MediaType.APPLICATION_JSON_VALUE)
   public List<ValintakoeOsallistuminenDTO> hakuByHakutoive(
-      @ApiParam(value = "Hakukohde OID", required = true) @PathParam("hakukohdeOid")
-          String hakukohdeOid) {
+      @ApiParam(value = "Hakukohde OID", required = true) @PathVariable("hakukohdeOid")
+          final String hakukohdeOid) {
     return modelMapper.mapList(
         tulosService.haeValintakoeOsallistumisetByHakutoive(hakukohdeOid),
         ValintakoeOsallistuminenDTO.class);
   }
 
-  @POST
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
   @PreAuthorize(READ_UPDATE_CRUD)
-  @Path("hakutoive")
   @ApiOperation(
       value = "Hakee valintakoeosallistumiset hakukohteille OID:n perusteella",
       response = ValintakoeOsallistuminenDTO.class)
-  public List<ValintakoeOsallistuminenDTO> hakuByOids(List<String> hakukohdeOids) {
+  @PostMapping(
+      value = "/hakutoive",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  public List<ValintakoeOsallistuminenDTO> hakuByOids(
+      @RequestBody final List<String> hakukohdeOids) {
     return modelMapper.mapList(
         tulosService.haeValintakoeOsallistumisetByHakukohdes(hakukohdeOids),
         ValintakoeOsallistuminenDTO.class);
   }
 
-  @POST
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
   @PreAuthorize(READ_UPDATE_CRUD)
-  @Path("hakijat")
   @ApiOperation(
       value = "Hakee valintakoeosallistumiset hakijoille OID:n perusteella",
       response = ValintakoeOsallistuminenDTO.class)
-  public List<ValintakoeOsallistuminenDTO> hakijatByOids(List<String> hakijaOids) {
+  @PostMapping(
+      value = "/hakijat",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  public List<ValintakoeOsallistuminenDTO> hakijatByOids(
+      @RequestBody final List<String> hakijaOids) {
     return modelMapper.mapList(
         tulosService.haeValintakoeOsallistumisetByHakijas(hakijaOids),
         ValintakoeOsallistuminenDTO.class);

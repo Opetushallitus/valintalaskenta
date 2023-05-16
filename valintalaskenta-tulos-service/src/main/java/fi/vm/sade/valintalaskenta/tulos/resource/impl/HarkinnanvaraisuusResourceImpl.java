@@ -14,44 +14,50 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@Path("/harkinnanvarainenhyvaksynta")
 @PreAuthorize("isAuthenticated()")
 @Api(
     value = "/harkinnanvarainenhyvaksynta",
     description = "Resurssi harkinnanvaraisesti hakeneiden hakijoiden käsittelyyn")
+@RequestMapping(value = "/harkinnanvarainenhyvaksynta")
 public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResource {
-  @Autowired private ValintalaskentaTulosService tulosService;
+  private final ValintalaskentaTulosService tulosService;
+  private final ValintalaskentaModelMapper modelMapper;
+  private final LaskentaAuditLog auditLog;
 
-  @Autowired private ValintalaskentaModelMapper modelMapper;
+  @Autowired
+  public HarkinnanvaraisuusResourceImpl(
+      final ValintalaskentaTulosService tulosService,
+      final ValintalaskentaModelMapper modelMapper,
+      final LaskentaAuditLog auditLog) {
+    this.tulosService = tulosService;
+    this.modelMapper = modelMapper;
+    this.auditLog = auditLog;
+  }
 
-  @Autowired private LaskentaAuditLog auditLog;
-
-  @POST
-  @Path("/haku/{hakuOid}/hakukohde/{hakukohdeOid}/hakemus/{hakemusOid}")
-  @Produces(MediaType.APPLICATION_JSON)
   @PreAuthorize(UPDATE_CRUD)
   @ApiOperation(value = "Asettaa tilan harkinnanvaraisesti hakeneelle hakijalle")
+  @PostMapping(
+      value = "/haku/{hakuOid}/hakukohde/{hakukohdeOid}/hakemus/{hakemusOid}",
+      produces = MediaType.APPLICATION_JSON_VALUE)
   public void asetaTila(
-      @ApiParam(value = "Haun OID", required = true) @PathParam("hakuOid") String hakuOid,
-      @ApiParam(value = "Hakukohteen OID", required = true) @PathParam("hakukohdeOid")
-          String hakukohdeOid,
-      @ApiParam(value = "Hakemuksen OID", required = true) @PathParam("hakemusOid")
-          String hakemusOid,
+      @ApiParam(value = "Haun OID", required = true) @PathVariable("hakuOid") final String hakuOid,
+      @ApiParam(value = "Hakukohteen OID", required = true) @PathVariable("hakukohdeOid")
+          final String hakukohdeOid,
+      @ApiParam(value = "Hakemuksen OID", required = true) @PathVariable("hakemusOid")
+          final String hakemusOid,
       @ApiParam(value = "Asetettava tila", required = true)
-          HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen,
-      @Context HttpServletRequest request) {
+          final HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen,
+      final HttpServletRequest request) {
     User user = auditLog.getUser(request);
 
     tulosService.asetaHarkinnanvaraisestiHyvaksymisenTila(
@@ -62,14 +68,13 @@ public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResourc
         user);
   }
 
-  @POST
-  @Produces(MediaType.APPLICATION_JSON)
   @PreAuthorize(UPDATE_CRUD)
   @ApiOperation(value = "Asettaa tilan harkinnanvaraisesti hakeneelle hakijalle")
+  @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public void asetaTilat(
       @ApiParam(value = "Asetettava tila", required = true)
-          List<HarkinnanvarainenHyvaksyminenDTO> harkinnanvaraisetHyvaksymiset,
-      @Context HttpServletRequest request) {
+          final List<HarkinnanvarainenHyvaksyminenDTO> harkinnanvaraisetHyvaksymiset,
+      final HttpServletRequest request) {
     User user = auditLog.getUser(request);
 
     for (HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen :
@@ -83,33 +88,33 @@ public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResourc
     }
   }
 
-  @GET
-  @Path("/haku/{hakuOid}/hakukohde/{hakukohdeOid}")
-  @Produces(MediaType.APPLICATION_JSON)
   @PreAuthorize(READ_UPDATE_CRUD)
   @ApiOperation(
       value = "Hakee hakukohteen harkinnanvaraisesti hakeneiden hakijoiden tilat",
       response = HarkinnanvarainenHyvaksyminenDTO.class)
+  @GetMapping(
+      value = "/haku/{hakuOid}/hakukohde/{hakukohdeOid}",
+      produces = MediaType.APPLICATION_JSON_VALUE)
   public List<HarkinnanvarainenHyvaksyminenDTO> hakukohde(
-      @ApiParam(value = "Haku OID", required = true) @PathParam("hakuOid") String hakuOid,
-      @ApiParam(value = "Hakukohde OID", required = true) @PathParam("hakukohdeOid")
-          String hakukohdeOid) {
+      @ApiParam(value = "Haku OID", required = true) @PathVariable("hakuOid") final String hakuOid,
+      @ApiParam(value = "Hakukohde OID", required = true) @PathVariable("hakukohdeOid")
+          final String hakukohdeOid) {
     return modelMapper.mapList(
         tulosService.haeHarkinnanvaraisestiHyvaksymisenTila(hakukohdeOid),
         HarkinnanvarainenHyvaksyminenDTO.class);
   }
 
-  @GET
-  @Path("/haku/{hakuOid}/hakemus/{hakemusOid}")
-  @Produces(MediaType.APPLICATION_JSON)
   @PreAuthorize(READ_UPDATE_CRUD)
   @ApiOperation(
       value = "Hakee hakemuksen harkinnanvaraisesti tilat",
       response = HarkinnanvarainenHyvaksyminenDTO.class)
+  @GetMapping(
+      value = "/haku/{hakuOid}/hakemus/{hakemusOid}",
+      produces = MediaType.APPLICATION_JSON_VALUE)
   public List<HarkinnanvarainenHyvaksyminenDTO> hakemus(
-      @ApiParam(value = "Haku OID", required = true) @PathParam("hakuOid") String hakuOid,
-      @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid")
-          String hakemusOid) {
+      @ApiParam(value = "Haku OID", required = true) @PathVariable("hakuOid") final String hakuOid,
+      @ApiParam(value = "Hakemus OID", required = true) @PathVariable("hakemusOid")
+          final String hakemusOid) {
     return modelMapper.mapList(
         tulosService.haeHakemuksenHarkinnanvaraisestiHyvaksymisenTilat(hakuOid, hakemusOid),
         HarkinnanvarainenHyvaksyminenDTO.class);

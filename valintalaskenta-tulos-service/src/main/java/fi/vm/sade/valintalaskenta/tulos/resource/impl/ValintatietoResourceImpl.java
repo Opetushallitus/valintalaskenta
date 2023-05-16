@@ -7,34 +7,34 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.HakuDTO;
 import fi.vm.sade.valintalaskenta.tulos.resource.ValintatietoResource;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.ValintatietoService;
 import java.util.List;
-import javax.ws.rs.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
-@Path("valintatieto")
 @PreAuthorize("isAuthenticated()")
+@RequestMapping("/valintatieto")
 public class ValintatietoResourceImpl implements ValintatietoResource {
   @Autowired private ValintatietoService valintatietoService;
 
   @Override
-  @POST
-  @Path("hakukohde/{hakukohdeOid}")
-  @Consumes("application/json")
-  @Produces("application/json")
   @PreAuthorize(READ_UPDATE_CRUD)
+  @PostMapping(
+      value = "/hakukohde/{hakukohdeOid}",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE)
   public List<HakemusOsallistuminenDTO> haeValintatiedotHakukohteelle(
-      @PathParam("hakukohdeOid") String hakukohdeOid, List<String> valintakoeTunnisteet) {
+      @PathVariable("hakukohdeOid") final String hakukohdeOid,
+      @RequestBody final List<String> valintakoeTunnisteet) {
     return valintatietoService.haeValintatiedotHakukohteelle(valintakoeTunnisteet, hakukohdeOid);
   }
 
   @Override
-  @GET
-  @Path("haku/{hakuOid}")
-  @Produces("application/json")
   @PreAuthorize(READ_UPDATE_CRUD)
-  public HakuDTO haeValintatiedot(@PathParam("hakuOid") String hakuOid) {
+  @GetMapping(value = "/haku/{hakuOid}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public HakuDTO haeValintatiedot(@PathVariable("hakuOid") final String hakuOid) {
     return valintatietoService.haeValintatiedot(hakuOid);
   }
 }

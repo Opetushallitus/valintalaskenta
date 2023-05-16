@@ -27,44 +27,51 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
-@Path("valintatapajono")
 @PreAuthorize("isAuthenticated()")
 @Api(
     value = "/valintatapajono",
     description = "Resurssi valintatapajonon jonosijojen muokkaamiseen manuaalisesti")
+@RequestMapping("/valintatapajono")
 public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
+  private final ValintalaskentaTulosService tulosService;
+  private final ValintalaskentaModelMapper modelMapper;
+  private final LaskentaAuditLog auditLog;
 
-  @Autowired private ValintalaskentaTulosService tulosService;
+  @Autowired
+  public ValintatapajonoResourceImpl(
+      final ValintalaskentaTulosService tulosService,
+      final ValintalaskentaModelMapper modelMapper,
+      final LaskentaAuditLog auditLog) {
+    this.tulosService = tulosService;
+    this.modelMapper = modelMapper;
+    this.auditLog = auditLog;
+  }
 
-  @Autowired private ValintalaskentaModelMapper modelMapper;
-
-  @Autowired private LaskentaAuditLog auditLog;
-
-  @POST
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  @Path("{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/jonosija")
   @PreAuthorize(UPDATE_CRUD)
   @ApiOperation(value = "Muokkaa jonosijaa", response = MuokattuJonosijaDTO.class)
-  public Response muutaJonosija(
-      @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid")
-          String valintatapajonoOid,
-      @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid,
+  @PostMapping(
+      value = "/{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/jonosija",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Object> muutaJonosija(
+      @ApiParam(value = "Valintatapajonon OID", required = true) @PathVariable("valintatapajonoOid")
+          final String valintatapajonoOid,
+      @ApiParam(value = "Hakemus OID", required = true) @PathVariable("hakemusOid")
+          final String hakemusOid,
       @ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true)
-          @PathParam("jarjestyskriteeriPrioriteetti")
-          Integer jarjestyskriteeriPrioriteetti,
-      @ApiParam(value = "Järjestyskriteerin uusi arvo", required = true)
-          MuokattuJonosijaArvoDTO arvo,
-      @Context HttpServletRequest request) {
+          @PathVariable("jarjestyskriteeriPrioriteetti")
+          final Integer jarjestyskriteeriPrioriteetti,
+      @ApiParam(value = "Järjestyskriteerin uusi arvo", required = true) @RequestBody
+          final MuokattuJonosijaArvoDTO arvo,
+      final HttpServletRequest request) {
     User user = auditLog.getUser(request);
 
     MuokattuJonosija muokattuJonosija =
@@ -72,26 +79,27 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
             valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, arvo, user);
     if (muokattuJonosija != null) {
       MuokattuJonosijaDTO map = modelMapper.map(muokattuJonosija, MuokattuJonosijaDTO.class);
-      return Response.status(Response.Status.ACCEPTED).entity(map).build();
+      return ResponseEntity.accepted().body(map);
     } else {
-      return Response.status(Response.Status.NOT_FOUND).build();
+      return ResponseEntity.notFound().build();
     }
   }
 
-  @DELETE
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  @Path("{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/jonosija")
   @PreAuthorize(UPDATE_CRUD)
   @ApiOperation(value = "Muokkaa jonosijaa", response = MuokattuJonosijaDTO.class)
-  public Response poistaMuokattuJonosija(
-      @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid")
-          String valintatapajonoOid,
-      @ApiParam(value = "Hakemus OID", required = true) @PathParam("hakemusOid") String hakemusOid,
+  @DeleteMapping(
+      value = "/{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/jonosija",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Object> poistaMuokattuJonosija(
+      @ApiParam(value = "Valintatapajonon OID", required = true) @PathVariable("valintatapajonoOid")
+          final String valintatapajonoOid,
+      @ApiParam(value = "Hakemus OID", required = true) @PathVariable("hakemusOid")
+          final String hakemusOid,
       @ApiParam(value = "Muokattavan järjestyskriteerin prioriteetti", required = true)
-          @PathParam("jarjestyskriteeriPrioriteetti")
-          Integer jarjestyskriteeriPrioriteetti,
-      @Context HttpServletRequest request) {
+          @PathVariable("jarjestyskriteeriPrioriteetti")
+          final Integer jarjestyskriteeriPrioriteetti,
+      final HttpServletRequest request) {
     User user = auditLog.getUser(request);
 
     MuokattuJonosija muokattuJonosija =
@@ -99,24 +107,26 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
             valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, user);
     if (muokattuJonosija != null) {
       MuokattuJonosijaDTO map = modelMapper.map(muokattuJonosija, MuokattuJonosijaDTO.class);
-      return Response.status(Response.Status.ACCEPTED).entity(map).build();
+      return ResponseEntity.accepted().body(map);
     } else {
-      return Response.status(Response.Status.NOT_FOUND).build();
+      return ResponseEntity.notFound().build();
     }
   }
 
-  @PUT
   @PreAuthorize(UPDATE_CRUD)
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  @Path("{valintatapajonoOid}/valmissijoiteltavaksi")
   @ApiOperation(value = "Tallentaa/muokkaa valintatapajonoa", response = ValintatapajonoDTO.class)
-  public Response muokkaaSijotteluStatusta(
-      @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid")
-          String valintatapajonoOid,
-      @ApiParam(value = "Sijoittelustatus", required = true) @QueryParam("status") boolean status,
-      @ApiParam(value = "Valintatapajono", required = true) ValintatapajonoDTO valintatapajono,
-      @Context HttpServletRequest request) {
+  @PutMapping(
+      value = "/{valintatapajonoOid}/valmissijoiteltavaksi",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<ValintatapajonoDTO> muokkaaSijotteluStatusta(
+      @ApiParam(value = "Valintatapajonon OID", required = true) @PathVariable("valintatapajonoOid")
+          final String valintatapajonoOid,
+      @ApiParam(value = "Sijoittelustatus", required = true) @RequestParam("status")
+          final boolean status,
+      @ApiParam(value = "Valintatapajono", required = true)
+          final ValintatapajonoDTO valintatapajono,
+      final HttpServletRequest request) {
     User user = auditLog.getUser(request);
 
     Consumer<Valintatapajono> valintatapajonoMuokkausFunktio =
@@ -151,30 +161,25 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
         tulosService.muokkaaValintatapajonoa(
             valintatapajonoOid, valintatapajonoMuokkausFunktio, user);
     return dto.map(
-            jono ->
-                Response.status(Response.Status.ACCEPTED)
-                    .entity(modelMapper.map(jono, ValintatapajonoDTO.class))
-                    .build())
-        .orElse(Response.status(Response.Status.NOT_FOUND).build());
+            jono -> ResponseEntity.accepted().body(modelMapper.map(jono, ValintatapajonoDTO.class)))
+        .orElse(ResponseEntity.notFound().build());
   }
 
-  @GET
   @PreAuthorize(READ_UPDATE_CRUD)
-  @Path("/{valintatapajonoOid}/valmissijoiteltavaksi")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response haeSijoitteluStatus(
-      @ApiParam(value = "Valintatapajonon OID", required = true) @PathParam("valintatapajonoOid")
+  @GetMapping(
+      value = "/{valintatapajonoOid}/valmissijoiteltavaksi",
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Object> haeSijoitteluStatus(
+      @ApiParam(value = "Valintatapajonon OID", required = true) @PathVariable("valintatapajonoOid")
           String oid) {
     HashMap object = new HashMap();
     object.put("value", tulosService.haeSijoitteluStatus(oid));
-    return Response.status(Response.Status.ACCEPTED).entity(object).build();
+    return ResponseEntity.accepted().body(object);
   }
 
-  @GET
   @PreAuthorize(READ_UPDATE_CRUD)
-  @Path("/jonotsijoittelussa/{hakuOid}")
-  @Produces("application/json")
-  public List<JonoDto> jonotSijoittelussa(String hakuOid) {
+  @GetMapping(value = "/jonotsijoittelussa/{hakuOid}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public List<JonoDto> jonotSijoittelussa(@PathVariable("hakuOid") String hakuOid) {
     return tulosService.haeJonotSijoittelussa(hakuOid);
   }
 }

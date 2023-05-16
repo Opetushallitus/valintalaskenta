@@ -25,21 +25,29 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class JonosijaHistoriaResourceImpl implements JonosijaHistoriaResource {
   protected static final Logger logger =
       LoggerFactory.getLogger(JonosijaHistoriaResourceImpl.class);
+  private final ValintalaskentaTulosService tulosService;
+  private final ValintalaskentaModelMapper modelMapper;
 
-  @Autowired private ValintalaskentaTulosService tulosService;
-
-  @Autowired private ValintalaskentaModelMapper modelMapper;
+  @Autowired
+  public JonosijaHistoriaResourceImpl(
+      final ValintalaskentaTulosService tulosService,
+      final ValintalaskentaModelMapper modelMapper) {
+    this.tulosService = tulosService;
+    this.modelMapper = modelMapper;
+  }
 
   @PreAuthorize(READ_UPDATE_CRUD)
   @ApiOperation(
       value = "Hakee jonosijahistoriat valintatapajono OID:n ja hakemus OID:n perusteella",
       response = JarjestyskriteerihistoriaDTO.class)
-  @GetMapping(value = "{valintatapajonoOid}/{hakemusOid}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(
+      value = "{valintatapajonoOid}/{hakemusOid}",
+      produces = MediaType.APPLICATION_JSON_VALUE)
   public List<JarjestyskriteerihistoriaDTO> listJonosijaHistoria(
       @ApiParam(value = "Valintatapajono OID", required = true) @PathVariable("valintatapajonoOid")
-          String valintatapajonoOid,
+          final String valintatapajonoOid,
       @ApiParam(value = "Hakemus OID", required = true) @PathVariable("hakemusOid")
-          String hakemusOid) {
+          final String hakemusOid) {
     return modelMapper.mapList(
         tulosService.haeJonosijaHistoria(valintatapajonoOid, hakemusOid),
         JarjestyskriteerihistoriaDTO.class);

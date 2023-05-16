@@ -10,45 +10,45 @@ import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@Path("haku")
 @PreAuthorize("isAuthenticated()")
 @Api(
     value = "/haku",
     description =
         "Resurssi haun valintalaskennan virhetilanteiden ja hakukohtaisten tietojen hakemiseen")
+@RequestMapping(value = "/haku")
 public class HakuResourceImpl implements HakuResource {
   protected static final Logger LOGGER = LoggerFactory.getLogger(HakuResourceImpl.class);
+  private final ValintalaskentaTulosService tulosService;
 
-  @Autowired private ValintalaskentaTulosService tulosService;
+  @Autowired
+  public HakuResourceImpl(final ValintalaskentaTulosService tulosService) {
+    this.tulosService = tulosService;
+  }
 
-  @GET
-  @Path("{hakuOid}/virheet")
-  @Produces(MediaType.APPLICATION_JSON)
   @PreAuthorize(READ_UPDATE_CRUD)
   @ApiOperation(
       value = "Hakee haun valintalaskennan virhetilanteet OID:n perusteella",
       response = HakukohdeDTO.class)
-  public List<HakukohdeDTO> virheet(@PathParam("hakuOid") String hakuOid) {
+  @GetMapping(value = "/{hakuOid}/virheet", produces = MediaType.APPLICATION_JSON_VALUE)
+  public List<HakukohdeDTO> virheet(@PathVariable("hakuOid") final String hakuOid) {
     return tulosService.haeVirheetHaulle(hakuOid);
   }
 
-  @GET
-  @Path("{hakuOid}/valintakoevirheet")
-  @Produces(MediaType.APPLICATION_JSON)
   @PreAuthorize(READ_UPDATE_CRUD)
-  public List<ValintakoeOsallistuminenDTO> valintakoevirheet(@PathParam("hakuOid") String hakuOid) {
+  @GetMapping(value = "/{hakuOid}/valintakoevirheet", produces = MediaType.APPLICATION_JSON_VALUE)
+  public List<ValintakoeOsallistuminenDTO> valintakoevirheet(
+      @PathVariable("hakuOid") final String hakuOid) {
     return tulosService.haeValintakoevirheetHaulle(hakuOid);
   }
 
@@ -57,10 +57,10 @@ public class HakuResourceImpl implements HakuResource {
    * is too slow. Added an API which returns only minimal information for haku and contains a list
    * of valintatulos from those valinnanvaihe, which are siirretty sijoitteluun.
    */
-  @GET
-  @Path("/ilmanvalintalaskentaasijoitteluun")
-  @Produces(MediaType.APPLICATION_JSON)
   @PreAuthorize(READ_UPDATE_CRUD)
+  @GetMapping(
+      value = "/ilmanvalintalaskentaasijoitteluun",
+      produces = MediaType.APPLICATION_JSON_VALUE)
   public List<MinimalJonoDTO> jonotSijoitteluun() {
     return tulosService.haeSijoittelunKayttamatJonotIlmanValintalaskentaa();
   }

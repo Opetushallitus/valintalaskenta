@@ -3,18 +3,18 @@ package fi.vm.sade.valintalaskenta.laskenta.resource;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.Laskentakutsu;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@Path("valintalaskentaPaloissa")
+@RequestMapping(value = "/valintalaskentaPaloissa")
 public class ValintalaskentaPaloissaResourceImpl {
   private static final Logger LOG =
       LoggerFactory.getLogger(ValintalaskentaPaloissaResourceImpl.class);
@@ -29,11 +29,12 @@ public class ValintalaskentaPaloissaResourceImpl {
     siirrettavanaOlevatLaskentakutsut = new ConcurrentHashMap<>();
   }
 
-  @Path("aloita/{key}")
-  @Consumes("application/json")
-  @Produces("text/plain")
-  @POST
-  public String aloita(@PathParam("key") String pollKey, Laskentakutsu laskentakutsu) {
+  @PostMapping(
+      value = "/aloita/{key}",
+      produces = MediaType.TEXT_PLAIN_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  public String aloita(
+      @PathVariable("key") final String pollKey, @RequestBody final Laskentakutsu laskentakutsu) {
     LOG.info(
         String.format(
             "Saatiin pyyntö aloittaa laskentakutsu %s. Merkitään se muistiin.",
@@ -53,11 +54,12 @@ public class ValintalaskentaPaloissaResourceImpl {
         + " siirtäminen paloissa alkaa.";
   }
 
-  @Path("lisaaHakukohde/{key}")
-  @Consumes("application/json")
-  @Produces("text/plain")
-  @POST
-  public String lisaaHakukohde(@PathParam("key") String pollKey, LaskeDTO laskeDto) {
+  @PostMapping(
+      value = "/lisaaHakukohde/{key}",
+      produces = MediaType.TEXT_PLAIN_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  public String lisaaHakukohde(
+      @PathVariable("key") final String pollKey, @RequestBody final LaskeDTO laskeDto) {
     LOG.info(
         String.format(
             "Saatiin pyyntö lisätä hakukohde %s laskentakutsuun %s.",
@@ -81,12 +83,13 @@ public class ValintalaskentaPaloissaResourceImpl {
         + " laskentaresurssit.";
   }
 
-  @Path("lisaaSuoritustiedot/{key}")
-  @Consumes("text/plain")
-  @Produces("text/plain")
-  @POST
+  @PostMapping(
+      value = "/lisaaSuoritustiedot/{key}",
+      produces = MediaType.TEXT_PLAIN_VALUE,
+      consumes = MediaType.TEXT_PLAIN_VALUE)
   public String lisaaSuoritustiedot(
-      @PathParam("key") String pollKey, String suoritustiedotDtoBase64Gzip) {
+      @PathVariable("key") final String pollKey,
+      @RequestBody final String suoritustiedotDtoBase64Gzip) {
     LOG.info(String.format("Saatiin pyyntö lisätä suoritustiedot laskentakutsuun %s.", pollKey));
     siirrettavanaOlevatLaskentakutsut.compute(
         pollKey,
@@ -103,11 +106,12 @@ public class ValintalaskentaPaloissaResourceImpl {
     return String.format("Lisättiin laskentakutsuun %s suoritustiedot.", pollKey);
   }
 
-  @Path("kaynnista/{key}")
-  @Consumes("application/json")
-  @Produces("text/plain")
-  @POST
-  public String kaynnista(@PathParam("key") String pollKey, Laskentakutsu laskentakutsu) {
+  @PostMapping(
+      value = "/kaynnista/{key}",
+      produces = MediaType.TEXT_PLAIN_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  public String kaynnista(
+      @PathVariable("key") final String pollKey, @RequestBody final Laskentakutsu laskentakutsu) {
     LOG.info(String.format("Saatiin pyyntö aloittaa laskenta %s.", pollKey));
     final Laskentakutsu populoituKutsu = siirrettavanaOlevatLaskentakutsut.remove(pollKey);
 

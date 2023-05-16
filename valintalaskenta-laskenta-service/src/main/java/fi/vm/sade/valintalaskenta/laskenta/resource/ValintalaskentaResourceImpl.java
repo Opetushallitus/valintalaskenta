@@ -30,24 +30,20 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StopWatch;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
-@Path("valintalaskenta")
 @PreAuthorize("isAuthenticated()")
+@RequestMapping(value = "/valintalaskenta")
 public class ValintalaskentaResourceImpl {
   private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaResourceImpl.class);
 
@@ -81,11 +77,9 @@ public class ValintalaskentaResourceImpl {
             Math.max(Runtime.getRuntime().availableProcessors(), parallelismFromConfig));
   }
 
-  @Path("status/{key}")
-  @Produces("text/plain")
   @PreAuthorize(OPH_CRUD)
-  @GET
-  public String status(@PathParam("key") String pollKey) throws Exception {
+  @GetMapping(value = "/status/{key}", produces = MediaType.TEXT_PLAIN_VALUE)
+  public String status(@PathVariable("key") final String pollKey) throws Exception {
     try {
       return pidaKirjaaMeneillaanOlevista(pollKey, false);
     } catch (Exception e) {
@@ -94,12 +88,12 @@ public class ValintalaskentaResourceImpl {
     }
   }
 
-  @Path("laske")
-  @Consumes("application/json")
-  @Produces("text/plain")
   @PreAuthorize(OPH_CRUD)
-  @POST
-  public String laske(Laskentakutsu laskentakutsu) throws Exception {
+  @PostMapping(
+      value = "/laske",
+      produces = MediaType.TEXT_PLAIN_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  public String laske(@RequestBody final Laskentakutsu laskentakutsu) throws Exception {
     try {
       String pollKey = laskentakutsu.getPollKey();
       laskentakutsu.populoiSuoritustiedotLaskeDtoille();
@@ -124,12 +118,12 @@ public class ValintalaskentaResourceImpl {
     }
   }
 
-  @Path("valintakokeet")
-  @Consumes("application/json")
-  @Produces("text/plain")
   @PreAuthorize(OPH_CRUD)
-  @POST
-  public String valintakokeet(Laskentakutsu laskentakutsu) throws Exception {
+  @PostMapping(
+      value = "/valintakokeet",
+      produces = MediaType.TEXT_PLAIN_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  public String valintakokeet(@RequestBody final Laskentakutsu laskentakutsu) throws Exception {
     try {
       String pollKey = laskentakutsu.getPollKey();
       laskentakutsu.populoiSuoritustiedotLaskeDtoille();
@@ -155,12 +149,12 @@ public class ValintalaskentaResourceImpl {
     }
   }
 
-  @Path("laskekaikki")
-  @Consumes("application/json")
-  @Produces("text/plain")
   @PreAuthorize(OPH_CRUD)
-  @POST
-  public String laskeKaikki(Laskentakutsu laskentakutsu) throws Exception {
+  @PostMapping(
+      value = "/laskekaikki",
+      produces = MediaType.TEXT_PLAIN_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  public String laskeKaikki(@RequestBody final Laskentakutsu laskentakutsu) throws Exception {
     try {
       String pollKey = laskentakutsu.getPollKey();
       laskentakutsu.populoiSuoritustiedotLaskeDtoille();
@@ -185,12 +179,12 @@ public class ValintalaskentaResourceImpl {
     }
   }
 
-  @Path("laskejasijoittele")
-  @Consumes("application/json")
-  @Produces("text/plain")
   @PreAuthorize(OPH_CRUD)
-  @POST
-  public String laskeJaSijoittele(Laskentakutsu laskentakutsu) {
+  @PostMapping(
+      value = "/laskejasijoittele",
+      produces = MediaType.TEXT_PLAIN_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  public String laskeJaSijoittele(@RequestBody final Laskentakutsu laskentakutsu) {
     try {
       laskentakutsu.populoiSuoritustiedotLaskeDtoille();
       List<LaskeDTO> lista = laskentakutsu.getLaskeDTOs();
