@@ -1,3 +1,20 @@
 spring:
   main:
     allow-bean-definition-overriding: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+management:
+  endpoints:
+    enabled-by-default: false
+  endpoint:
+    health:
+      enabled: true
+server:
+  servlet:
+    context-path: /valintalaskenta-laskenta-service
+  port: 8080
+  tomcat:
+    threads:
+      max: 20
+

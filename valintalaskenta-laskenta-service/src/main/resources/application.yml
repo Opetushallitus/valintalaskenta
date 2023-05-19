@@ -1,6 +1,9 @@
 spring:
   main:
     allow-bean-definition-overriding: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
 management:
   endpoints:
     enabled-by-default: false
@@ -14,10 +17,3 @@ server:
   tomcat:
     threads:
       max: 20
-cxf:
-  path: /resources
-  servlet:
-    enabled: false
-  jaxrs:
-    component-scan: true
-    classes-scan-packages: org.apache.cxf.jaxrs.swagger
