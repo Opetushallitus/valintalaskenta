@@ -5,7 +5,6 @@ import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,9 +24,7 @@ public class ValintatietoValintatapajonoDTO extends ValintatapajonoDTO {
   @Schema(name = "Varasijoja täytetään asti")
   private Date varasijojaTaytetaanAsti;
 
-  @Schema(
-      name = "Valintatapajono, josta vapaaksi jääneet paikat täytetään",
-      required = false)
+  @Schema(name = "Valintatapajono, josta vapaaksi jääneet paikat täytetään", required = false)
   private String tayttojono;
 
   @Schema(name = "Erillishaussa käytetty sijoitteluajo", required = false)

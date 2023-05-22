@@ -6,11 +6,10 @@ import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteerihistoriaDTO;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.resource.JonosijaHistoriaResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
-import java.util.List;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +37,7 @@ public class JonosijaHistoriaResourceImpl implements JonosijaHistoriaResource {
   }
 
   @PreAuthorize(READ_UPDATE_CRUD)
-  @Operation(
-      summary = "Hakee jonosijahistoriat valintatapajono OID:n ja hakemus OID:n perusteella")
+  @Operation(summary = "Hakee jonosijahistoriat valintatapajono OID:n ja hakemus OID:n perusteella")
   @GetMapping(
       value = "{valintatapajonoOid}/{hakemusOid}",
       produces = MediaType.APPLICATION_JSON_VALUE)

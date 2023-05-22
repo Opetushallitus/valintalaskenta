@@ -17,15 +17,14 @@ import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import fi.vm.sade.valintalaskenta.tulos.resource.HakukohdeResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,8 +59,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
   }
 
   @PreAuthorize(READ_UPDATE_CRUD)
-  @Operation(
-      summary = "Hakee hakukohteen valinnan vaiheiden tulokset")
+  @Operation(summary = "Hakee hakukohteen valinnan vaiheiden tulokset")
   @GetMapping(value = "/{hakukohdeoid}/valinnanvaihe", produces = MediaType.APPLICATION_JSON_VALUE)
   public List<ValintatietoValinnanvaiheDTO> hakukohde(
       @Parameter(name = "Hakukohteen OID", required = true) @PathVariable("hakukohdeoid")

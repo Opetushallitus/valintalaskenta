@@ -1,9 +1,8 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
 import com.google.common.base.Preconditions;
-import java.util.List;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

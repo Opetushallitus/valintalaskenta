@@ -3,9 +3,7 @@ package fi.vm.sade.valintalaskenta.domain.dto;
 import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvaraisuusTila;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(
-    name = "HarkinnanvarainenHyvaksyminenDTO",
-    description = "Harkinnanvarainen hyväksyminen")
+@Schema(name = "HarkinnanvarainenHyvaksyminenDTO", description = "Harkinnanvarainen hyväksyminen")
 public class HarkinnanvarainenHyvaksyminenDTO {
 
   @Schema(name = "Tila", required = true)

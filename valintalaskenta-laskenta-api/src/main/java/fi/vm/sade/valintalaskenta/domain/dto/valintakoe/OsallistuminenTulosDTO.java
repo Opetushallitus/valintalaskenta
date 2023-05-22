@@ -2,7 +2,6 @@ package fi.vm.sade.valintalaskenta.domain.dto.valintakoe;
 
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.util.Map;
 
 @Schema(

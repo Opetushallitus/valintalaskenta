@@ -3,12 +3,11 @@ package fi.vm.sade.valintalaskenta.tulos.resource;
 import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "/hakukohde", description = "Resurssi tulosten hakemiseen hakukohteittain")
 @RequestMapping(value = "/hakukohde")
 public interface HakukohdeResource {
-  @Operation(
-      summary = "Hakee hakukohteen valinnan vaiheiden tulokset")
+  @Operation(summary = "Hakee hakukohteen valinnan vaiheiden tulokset")
   @GetMapping(value = "/{hakukohdeoid}/valinnanvaihe", produces = MediaType.APPLICATION_JSON_VALUE)
   List<ValintatietoValinnanvaiheDTO> hakukohde(
       @Parameter(name = "Hakukohteen OID", required = true) @PathVariable("hakukohdeoid")

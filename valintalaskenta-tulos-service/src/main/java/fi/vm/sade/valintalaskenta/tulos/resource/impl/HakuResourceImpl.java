@@ -7,10 +7,9 @@ import fi.vm.sade.valintalaskenta.domain.dto.MinimalJonoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.tulos.resource.HakuResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
-import java.util.List;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +37,7 @@ public class HakuResourceImpl implements HakuResource {
   }
 
   @PreAuthorize(READ_UPDATE_CRUD)
-  @Operation(
-      summary = "Hakee haun valintalaskennan virhetilanteet OID:n perusteella")
+  @Operation(summary = "Hakee haun valintalaskennan virhetilanteet OID:n perusteella")
   @GetMapping(value = "/{hakuOid}/virheet", produces = MediaType.APPLICATION_JSON_VALUE)
   public List<HakukohdeDTO> virheet(@PathVariable("hakuOid") final String hakuOid) {
     return tulosService.haeVirheetHaulle(hakuOid);

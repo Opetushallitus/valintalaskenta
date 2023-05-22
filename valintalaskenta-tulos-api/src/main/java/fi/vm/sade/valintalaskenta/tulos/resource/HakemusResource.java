@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Tag(name = "/hakemus", description = "Resurssi hakemuskohtaisten tulosten hakemiseen")
 @RequestMapping(value = "/hakemus")
 public interface HakemusResource {
-  @Operation(
-      summary = "Hakee hakemuksen tulokset haku OID:n ja hakemuksen OID:n perustella")
+  @Operation(summary = "Hakee hakemuksen tulokset haku OID:n ja hakemuksen OID:n perustella")
   @GetMapping(value = "/{hakuoid}/{hakemusoid}", produces = MediaType.APPLICATION_JSON_VALUE)
   HakemusDTO hakemus(
       @Parameter(name = "Haku OID", required = true) @PathVariable("hakuoid") String hakuoid,

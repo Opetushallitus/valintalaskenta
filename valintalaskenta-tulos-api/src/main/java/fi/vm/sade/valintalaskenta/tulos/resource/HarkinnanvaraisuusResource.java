@@ -1,12 +1,11 @@
 package fi.vm.sade.valintalaskenta.tulos.resource;
 
 import fi.vm.sade.valintalaskenta.domain.dto.HarkinnanvarainenHyvaksyminenDTO;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,8 +40,7 @@ public interface HarkinnanvaraisuusResource {
           List<HarkinnanvarainenHyvaksyminenDTO> harkinnanvaraisetHyvaksymiset,
       final HttpServletRequest request);
 
-  @Operation(
-      summary = "Hakee hakukohteen harkinnanvaraisesti hakeneiden hakijoiden tilat")
+  @Operation(summary = "Hakee hakukohteen harkinnanvaraisesti hakeneiden hakijoiden tilat")
   @GetMapping(
       value = "/haku/{hakuOid}/hakukohde/{hakukohdeOid}",
       produces = MediaType.APPLICATION_JSON_VALUE)
@@ -51,8 +49,7 @@ public interface HarkinnanvaraisuusResource {
       @Parameter(name = "Hakukohde OID", required = true) @PathVariable("hakukohdeOid")
           String hakukohdeOid);
 
-  @Operation(
-      summary = "Hakee hakemuksen harkinnanvaraisesti tilat")
+  @Operation(summary = "Hakee hakemuksen harkinnanvaraisesti tilat")
   @GetMapping(
       value = "/haku/{hakuOid}/hakemus/{hakemusOid}",
       produces = MediaType.APPLICATION_JSON_VALUE)

@@ -6,11 +6,10 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminen
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.resource.ValintakoeResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
-import java.util.List;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,8 +33,7 @@ public class ValintakoeResourceImpl implements ValintakoeResource {
   }
 
   @PreAuthorize(READ_UPDATE_CRUD)
-  @Operation(
-      summary = "Hakee valintakoeosallistumiset hakemukselle OID:n perusteella")
+  @Operation(summary = "Hakee valintakoeosallistumiset hakemukselle OID:n perusteella")
   @GetMapping(value = "/hakemus/{hakemusOid}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ValintakoeOsallistuminenDTO haku(
       @Parameter(name = "Hakemus OID", required = true) @PathVariable("hakemusOid")
@@ -45,8 +43,7 @@ public class ValintakoeResourceImpl implements ValintakoeResource {
   }
 
   @PreAuthorize(READ_UPDATE_CRUD)
-  @Operation(
-      summary = "Hakee valintakoeosallistumiset hakukohteelle OID:n perusteella")
+  @Operation(summary = "Hakee valintakoeosallistumiset hakukohteelle OID:n perusteella")
   @GetMapping(value = "/hakutoive/{hakukohdeOid}", produces = MediaType.APPLICATION_JSON_VALUE)
   public List<ValintakoeOsallistuminenDTO> hakuByHakutoive(
       @Parameter(name = "Hakukohde OID", required = true) @PathVariable("hakukohdeOid")
@@ -57,8 +54,7 @@ public class ValintakoeResourceImpl implements ValintakoeResource {
   }
 
   @PreAuthorize(READ_UPDATE_CRUD)
-  @Operation(
-      summary = "Hakee valintakoeosallistumiset hakukohteille OID:n perusteella")
+  @Operation(summary = "Hakee valintakoeosallistumiset hakukohteille OID:n perusteella")
   @PostMapping(
       value = "/hakutoive",
       produces = MediaType.APPLICATION_JSON_VALUE,
@@ -71,8 +67,7 @@ public class ValintakoeResourceImpl implements ValintakoeResource {
   }
 
   @PreAuthorize(READ_UPDATE_CRUD)
-  @Operation(
-      summary = "Hakee valintakoeosallistumiset hakijoille OID:n perusteella")
+  @Operation(summary = "Hakee valintakoeosallistumiset hakijoille OID:n perusteella")
   @PostMapping(
       value = "/hakijat",
       produces = MediaType.APPLICATION_JSON_VALUE,

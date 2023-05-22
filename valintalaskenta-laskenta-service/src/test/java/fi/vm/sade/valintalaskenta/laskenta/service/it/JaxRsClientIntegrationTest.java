@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.laskenta.service.it;
 import static org.junit.Assert.assertEquals;
 
 import fi.vm.sade.valintalaskenta.laskenta.testing.TestApp;
+import java.util.Map;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -10,8 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
-
-import java.util.Map;
 
 public class JaxRsClientIntegrationTest {
   private ApplicationContext applicationContext;
