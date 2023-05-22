@@ -67,6 +67,10 @@ public class TestApp {
     SpringApplication.run(TestApp.class);
   }
 
+  public static void main(String[] args) {
+    TestApp.startTestApp();
+  }
+
   public static class ApplicationContextGetter implements ApplicationContextAware {
     public static ApplicationContext applicationContext;
 

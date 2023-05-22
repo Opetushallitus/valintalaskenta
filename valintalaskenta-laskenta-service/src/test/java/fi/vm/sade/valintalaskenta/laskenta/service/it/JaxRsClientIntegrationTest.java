@@ -1,7 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.it;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import fi.vm.sade.valintalaskenta.laskenta.testing.TestApp;
 import javax.ws.rs.GET;
@@ -11,6 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
+
+import java.util.Map;
 
 public class JaxRsClientIntegrationTest {
   private ApplicationContext applicationContext;
@@ -24,7 +25,7 @@ public class JaxRsClientIntegrationTest {
   @Test
   public void testJaxrsClient() {
     ResourceForTesting jaxrsClient = applicationContext.getBean(ResourceForTesting.class);
-    assertThat(jaxrsClient.root(), containsString("valintalaskenta-laskenta-service"));
+    assertEquals(jaxrsClient.root(), Map.of("status", "UP"));
   }
 
   @Controller
@@ -33,7 +34,7 @@ public class JaxRsClientIntegrationTest {
 
     @GET
     @Path("../actuator/health")
-    @Produces("text/plain")
-    String root();
+    @Produces("application/json")
+    Map<String, String> root();
   }
 }
