@@ -3,13 +3,19 @@ spring:
     allow-bean-definition-overriding: true
   mvc:
     pathmatch:
-      matching-strategy: ant-path-matcher
+      matching-strategy: ANT_PATH_MATCHER
 management:
   endpoints:
     enabled-by-default: false
   endpoint:
     health:
       enabled: true
+  metrics:
+    mongo:
+      command:
+        enabled: false
+      connectionpool:
+        enabled: false
 server:
   servlet:
     context-path: /valintalaskenta-laskenta-service

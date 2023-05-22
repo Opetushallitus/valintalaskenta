@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.11</version>
+        <version>2.7.12</version>
     </parent>
 
     <groupId>fi.vm.sade.valintaperusteet</groupId>
@@ -32,7 +32,7 @@
         <flapdoodle.embed.mongo.version>4.6.2</flapdoodle.embed.mongo.version>
         <httpcomponents.version>4.5.14</httpcomponents.version>
         <modelmapper.version>3.1.1</modelmapper.version>
-        <spring.boot.version>2.7.11</spring.boot.version>
+        <spring.boot.version>2.7.12</spring.boot.version>
         <spring.version>5.3.27</spring.version>
         <spring.security.version>5.8.3</spring.security.version>
         <jackson.version>2.15.0</jackson.version>
@@ -408,6 +408,11 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
+                <version>${spring.boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-actuator</artifactId>
                 <version>${spring.boot.version}</version>
             </dependency>
             <dependency>
