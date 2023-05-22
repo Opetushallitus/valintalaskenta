@@ -1,22 +1,22 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.Date;
 
-@ApiModel(value = "LogEntryDTO", description = "Lokiviesti")
+@Schema(name = "LogEntryDTO", description = "Lokiviesti")
 public class LogEntryDTO {
 
-  @ApiModelProperty(value = "Luomisajankohta", required = true)
+  @Schema(name = "Luomisajankohta", required = true)
   private Date luotu;
 
-  @ApiModelProperty(value = "Muokkaaja", required = true)
+  @Schema(name = "Muokkaaja", required = true)
   private String muokkaaja;
 
-  @ApiModelProperty(value = "Muutos", required = true)
+  @Schema(name = "Muutos", required = true)
   private String muutos;
 
-  @ApiModelProperty(value = "Selite", required = true)
+  @Schema(name = "Selite", required = true)
   private String selite;
 
   public Date getLuotu() {

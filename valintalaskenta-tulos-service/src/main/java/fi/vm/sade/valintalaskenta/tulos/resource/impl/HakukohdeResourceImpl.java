@@ -17,14 +17,15 @@ import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import fi.vm.sade.valintalaskenta.tulos.resource.HakukohdeResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @PreAuthorize("isAuthenticated()")
-@Api(value = "/hakukohde", description = "Resurssi tulosten hakemiseen hakukohteittain")
+@Tag(name = "/hakukohde", description = "Resurssi tulosten hakemiseen hakukohteittain")
 @RequestMapping(value = "/hakukohde")
 public class HakukohdeResourceImpl implements HakukohdeResource {
   protected static final Logger LOGGER = LoggerFactory.getLogger(HakukohdeResourceImpl.class);
@@ -59,12 +60,11 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
   }
 
   @PreAuthorize(READ_UPDATE_CRUD)
-  @ApiOperation(
-      value = "Hakee hakukohteen valinnan vaiheiden tulokset",
-      response = ValinnanvaiheDTO.class)
+  @Operation(
+      summary = "Hakee hakukohteen valinnan vaiheiden tulokset")
   @GetMapping(value = "/{hakukohdeoid}/valinnanvaihe", produces = MediaType.APPLICATION_JSON_VALUE)
   public List<ValintatietoValinnanvaiheDTO> hakukohde(
-      @ApiParam(value = "Hakukohteen OID", required = true) @PathVariable("hakukohdeoid")
+      @Parameter(name = "Hakukohteen OID", required = true) @PathVariable("hakukohdeoid")
           final String hakukohdeoid) {
     try {
       return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
@@ -75,17 +75,17 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
   }
 
   @PreAuthorize(READ_UPDATE_CRUD)
-  @ApiOperation(value = "Lisää tuloksia valinnanvaiheelle", response = ValinnanvaiheDTO.class)
+  @Operation(summary = "Lisää tuloksia valinnanvaiheelle")
   @PostMapping(
       value = "/{hakukohdeoid}/valinnanvaihe",
       produces = MediaType.APPLICATION_JSON_VALUE,
       consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Object> lisaaTuloksia(
-      @ApiParam(value = "Hakukohteen OID", required = true) @PathVariable("hakukohdeoid")
+      @Parameter(name = "Hakukohteen OID", required = true) @PathVariable("hakukohdeoid")
           final String hakukohdeoid,
-      @ApiParam(value = "Tarjoaja OID", required = true) @RequestParam("tarjoajaOid")
+      @Parameter(name = "Tarjoaja OID", required = true) @RequestParam("tarjoajaOid")
           final String tarjoajaOid,
-      @ApiParam(value = "Muokattava valinnanvaihe", required = true) final ValinnanvaiheDTO vaihe,
+      @Parameter(name = "Muokattava valinnanvaihe", required = true) final ValinnanvaiheDTO vaihe,
       final HttpServletRequest request) {
     try {
       authorizer.checkOrganisationAccess(tarjoajaOid, ROLE_VALINTOJENTOTEUTTAMINEN_TULOSTENTUONTI);
@@ -157,10 +157,10 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
             });
   }
 
-  @ApiOperation(value = "Hakee hakukohteen hakijaryhmien tulokset", response = HakijaryhmaDTO.class)
+  @Operation(summary = "Hakee hakukohteen hakijaryhmien tulokset")
   @GetMapping(value = "/{hakukohdeoid}/hakijaryhma", produces = MediaType.APPLICATION_JSON_VALUE)
   public List<HakijaryhmaDTO> hakijaryhmat(
-      @ApiParam(value = "Hakukohteen OID", required = true) @PathVariable("hakukohdeoid")
+      @Parameter(name = "Hakukohteen OID", required = true) @PathVariable("hakukohdeoid")
           final String hakukohdeoid) {
     try {
       return tulosService.haeHakijaryhmatHakukohteelle(hakukohdeoid);

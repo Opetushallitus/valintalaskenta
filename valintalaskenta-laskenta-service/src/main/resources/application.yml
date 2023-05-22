@@ -1,9 +1,9 @@
 spring:
   main:
     allow-bean-definition-overriding: true
-  mvc:
-    pathmatch:
-      matching-strategy: ANT_PATH_MATCHER
+springdoc:
+  packagesToScan: fi.vm.sade.valintalaskenta
+  pathsToMatch: /**
 management:
   endpoints:
     enabled-by-default: false

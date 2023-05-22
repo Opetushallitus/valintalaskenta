@@ -1,30 +1,29 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@ApiModel(value = "SyotettyArvoDTO", description = "Laskennassa käytetty syötettävä arvo")
+@Schema(name = "SyotettyArvoDTO", description = "Laskennassa käytetty syötettävä arvo")
 public class SyotettyArvoDTO {
-  @ApiModelProperty(value = "Tunniste", required = true)
+  @Schema(name = "Tunniste", required = true)
   private String tunniste;
 
-  @ApiModelProperty(value = "Varsinainen arvo, joka hakemukselle on syötetty", required = true)
+  @Schema(name = "Varsinainen arvo, joka hakemukselle on syötetty", required = true)
   private String arvo;
 
-  @ApiModelProperty(
-      value =
+  @Schema(
+      name =
           "Laskennassa käytetty arvo eli esim. jos "
               + "hakemuksen arvo on laskennassa konvertoitu toiseksi arvoksi",
       required = true)
   private String laskennallinenArvo;
 
-  @ApiModelProperty(value = "Arvon osallistumistieto", required = true)
+  @Schema(name = "Arvon osallistumistieto", required = true)
   private String osallistuminen;
 
-  @ApiModelProperty(value = "Arvon tyypin koodisto uri", required = true)
+  @Schema(name = "Arvon tyypin koodisto uri", required = true)
   private String tyypinKoodiUri;
 
-  @ApiModelProperty(value = "Tilastoidaanko tieto vai", required = true)
+  @Schema(name = "Tilastoidaanko tieto vai", required = true)
   private boolean tilastoidaan;
 
   public String getTunniste() {

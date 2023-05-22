@@ -7,9 +7,10 @@ import fi.vm.sade.valintalaskenta.domain.dto.MinimalJonoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.tulos.resource.HakuResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import java.util.List;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @PreAuthorize("isAuthenticated()")
-@Api(
-    value = "/haku",
+@Tag(
+    name = "/haku",
     description =
         "Resurssi haun valintalaskennan virhetilanteiden ja hakukohtaisten tietojen hakemiseen")
 @RequestMapping(value = "/haku")
@@ -37,9 +38,8 @@ public class HakuResourceImpl implements HakuResource {
   }
 
   @PreAuthorize(READ_UPDATE_CRUD)
-  @ApiOperation(
-      value = "Hakee haun valintalaskennan virhetilanteet OID:n perusteella",
-      response = HakukohdeDTO.class)
+  @Operation(
+      summary = "Hakee haun valintalaskennan virhetilanteet OID:n perusteella")
   @GetMapping(value = "/{hakuOid}/virheet", produces = MediaType.APPLICATION_JSON_VALUE)
   public List<HakukohdeDTO> virheet(@PathVariable("hakuOid") final String hakuOid) {
     return tulosService.haeVirheetHaulle(hakuOid);

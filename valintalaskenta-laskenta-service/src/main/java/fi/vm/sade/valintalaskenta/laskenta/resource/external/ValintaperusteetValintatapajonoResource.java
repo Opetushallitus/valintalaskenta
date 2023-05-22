@@ -1,6 +1,5 @@
 package fi.vm.sade.valintalaskenta.laskenta.resource.external;
 
-import fi.vm.sade.service.valintaperusteet.dto.*;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.*;

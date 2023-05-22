@@ -1,35 +1,34 @@
 package fi.vm.sade.valintalaskenta.domain.dto.valintakoe;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@ApiModel(value = "valintalaskenta.domain.dto.valintakoe.ValintakoeDTO", description = "Valintakoe")
+@Schema(name = "valintalaskenta.domain.dto.valintakoe.ValintakoeDTO", description = "Valintakoe")
 public class ValintakoeDTO {
 
-  @ApiModelProperty(value = "OID", required = true)
+  @Schema(name = "OID", required = true)
   private String valintakoeOid;
 
-  @ApiModelProperty(value = "Kokeen tunniste", required = true)
+  @Schema(name = "Kokeen tunniste", required = true)
   private String valintakoeTunniste;
 
-  @ApiModelProperty(value = "Kokeen nimi", required = true)
+  @Schema(name = "Kokeen nimi", required = true)
   private String nimi;
 
-  @ApiModelProperty(value = "Kokeen aktiivisuus", required = true)
+  @Schema(name = "Kokeen aktiivisuus", required = true)
   private boolean aktiivinen;
 
-  @ApiModelProperty(
-      value = "Osallistumistulos (pitääkö hakija osallistua ko. kokeeseen)",
+  @Schema(
+      name = "Osallistumistulos (pitääkö hakija osallistua ko. kokeeseen)",
       required = true)
   private OsallistuminenTulosDTO osallistuminenTulos;
 
-  @ApiModelProperty(value = "Lähetetäänkö kokeesta kutsuja", required = true)
+  @Schema(name = "Lähetetäänkö kokeesta kutsuja", required = true)
   private boolean lahetetaankoKoekutsut;
 
-  @ApiModelProperty(value = "Kutsutaanko kaikki kokeeseen", required = true)
+  @Schema(name = "Kutsutaanko kaikki kokeeseen", required = true)
   private Boolean kutsutaankoKaikki;
 
-  @ApiModelProperty(value = "Kutsuttavien määrä", required = true)
+  @Schema(name = "Kutsuttavien määrä", required = true)
   private Integer kutsuttavienMaara;
 
   public Boolean getKutsutaankoKaikki() {

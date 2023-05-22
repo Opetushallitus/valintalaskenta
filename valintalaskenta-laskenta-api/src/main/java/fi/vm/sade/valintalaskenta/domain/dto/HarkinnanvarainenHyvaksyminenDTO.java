@@ -1,24 +1,23 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvaraisuusTila;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@ApiModel(
-    value = "HarkinnanvarainenHyvaksyminenDTO",
+@Schema(
+    name = "HarkinnanvarainenHyvaksyminenDTO",
     description = "Harkinnanvarainen hyväksyminen")
 public class HarkinnanvarainenHyvaksyminenDTO {
 
-  @ApiModelProperty(value = "Tila", required = true)
+  @Schema(name = "Tila", required = true)
   private HarkinnanvaraisuusTila harkinnanvaraisuusTila;
 
-  @ApiModelProperty(value = "Hakukohde OID", required = true)
+  @Schema(name = "Hakukohde OID", required = true)
   private String hakukohdeOid;
 
-  @ApiModelProperty(value = "Hakemus OID", required = true)
+  @Schema(name = "Hakemus OID", required = true)
   private String hakemusOid;
 
-  @ApiModelProperty(value = "Haku OID", required = true)
+  @Schema(name = "Haku OID", required = true)
   private String hakuOid;
 
   public String getHakemusOid() {

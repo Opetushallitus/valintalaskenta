@@ -1,10 +1,10 @@
 package fi.vm.sade.valintalaskenta.domain.dto.valintatieto;
 
 import fi.vm.sade.valintalaskenta.domain.dto.OsallistuminenDTO;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@ApiModel(
-    value = "valintalaskenta.domain.dto.valintatieto.ValintakoeOsallistuminenDTO",
+@Schema(
+    name = "valintalaskenta.domain.dto.valintatieto.ValintakoeOsallistuminenDTO",
     description = "Valintakoeosallistuminen")
 public class ValintakoeOsallistuminenDTO {
   private OsallistuminenDTO osallistuminen;

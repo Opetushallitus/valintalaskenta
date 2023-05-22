@@ -1,26 +1,25 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@ApiModel(value = "FunktioTulosDTO", description = "Laskennassa saatu funktio tulos")
+@Schema(name = "FunktioTulosDTO", description = "Laskennassa saatu funktio tulos")
 public class FunktioTulosDTO {
-  @ApiModelProperty(value = "Tunniste", required = true)
+  @Schema(name = "Tunniste", required = true)
   private String tunniste;
 
-  @ApiModelProperty(value = "Varsinainen arvo, joka laskennassa on saatu", required = true)
+  @Schema(name = "Varsinainen arvo, joka laskennassa on saatu", required = true)
   private String arvo;
 
-  @ApiModelProperty(value = "Suomenkielinen nimi", required = false)
+  @Schema(name = "Suomenkielinen nimi", required = false)
   private String nimiFi;
 
-  @ApiModelProperty(value = "Ruotsinkielinen nimi", required = false)
+  @Schema(name = "Ruotsinkielinen nimi", required = false)
   private String nimiSv;
 
-  @ApiModelProperty(value = "Englanninkielinen nimi", required = false)
+  @Schema(name = "Englanninkielinen nimi", required = false)
   private String nimiEn;
 
-  @ApiModelProperty(value = "Näytetäänkö Omassa Opintopolussa", required = false)
+  @Schema(name = "Näytetäänkö Omassa Opintopolussa", required = false)
   private boolean omaopintopolku;
 
   public FunktioTulosDTO() {}

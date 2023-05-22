@@ -32,7 +32,7 @@ public class JaxRsClientIntegrationTest {
   public interface ResourceForTesting {
 
     @GET
-    @Path("../")
+    @Path("../actuator/health")
     @Produces("text/plain")
     String root();
   }

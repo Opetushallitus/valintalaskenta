@@ -1,15 +1,15 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@ApiModel(value = "valintalaskenta.domain.dto.HakemusDTO", description = "Yhden hakemuksen tiedot")
+@Schema(name = "valintalaskenta.domain.dto.HakemusDTO", description = "Yhden hakemuksen tiedot")
 public class HakemusDTO {
 
-  @ApiModelProperty(value = "Haku OID", required = true)
+  @Schema(name = "Haku OID", required = true)
   private String hakuoid; // mika haku
 
   public void setHakuoid(String hakuoid) {
@@ -24,30 +24,30 @@ public class HakemusDTO {
     this.hakukohteet = hakukohteet;
   }
 
-  @ApiModelProperty(value = "Hakemus OID", required = true)
+  @Schema(name = "Hakemus OID", required = true)
   private String hakemusoid;
 
-  @ApiModelProperty(value = "Hakutoiveet", required = true)
+  @Schema(name = "Hakutoiveet", required = true)
   private List<HakukohdeDTO> hakukohteet;
 
-  @ApiModelProperty(value = "Hakija OID", required = false)
+  @Schema(name = "Hakija OID", required = false)
   private String hakijaOid;
 
-  @ApiModelProperty(value = "Hakija etunimi", required = false)
+  @Schema(name = "Hakija etunimi", required = false)
   private String etunimi;
 
-  @ApiModelProperty(value = "Hakijan sukunimi", required = false)
+  @Schema(name = "Hakijan sukunimi", required = false)
   private String sukunimi;
 
-  @ApiModelProperty(value = "Hakijan Koski-opiskeluoikeudet", required = false)
+  @Schema(name = "Hakijan Koski-opiskeluoikeudet", required = false)
   private String koskiOpiskeluoikeudetJson;
 
   /** @Deprecated Jatkossa käytetään avainSuoritusTiedot -kenttää */
   @Deprecated
-  @ApiModelProperty(value = "Hakemuksen avain/arvo map", required = false)
+  @Schema(name = "Hakemuksen avain/arvo map", required = false)
   private List<AvainArvoDTO> avaimet = new ArrayList<AvainArvoDTO>();
 
-  @ApiModelProperty(value = "Hakemuksen avain/arvo map", required = false)
+  @Schema(name = "Hakemuksen avain/arvo map", required = false)
   private List<AvainMetatiedotDTO> avainMetatiedotDTO = Collections.emptyList();
 
   public HakemusDTO(String hakuoid, String hakemusoid, List<HakukohdeDTO> hakukohteet) {

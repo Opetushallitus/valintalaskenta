@@ -6,10 +6,11 @@ import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteerihistoriaDTO;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.resource.JonosijaHistoriaResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import java.util.List;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 @PreAuthorize("isAuthenticated()")
-@Api(value = "/jonosijahistoria", description = "Resurssi jonosijahistoriatiedon hakemiseen")
+@Tag(name = "/jonosijahistoria", description = "Resurssi jonosijahistoriatiedon hakemiseen")
 public class JonosijaHistoriaResourceImpl implements JonosijaHistoriaResource {
   protected static final Logger logger =
       LoggerFactory.getLogger(JonosijaHistoriaResourceImpl.class);
@@ -37,16 +38,15 @@ public class JonosijaHistoriaResourceImpl implements JonosijaHistoriaResource {
   }
 
   @PreAuthorize(READ_UPDATE_CRUD)
-  @ApiOperation(
-      value = "Hakee jonosijahistoriat valintatapajono OID:n ja hakemus OID:n perusteella",
-      response = JarjestyskriteerihistoriaDTO.class)
+  @Operation(
+      summary = "Hakee jonosijahistoriat valintatapajono OID:n ja hakemus OID:n perusteella")
   @GetMapping(
       value = "{valintatapajonoOid}/{hakemusOid}",
       produces = MediaType.APPLICATION_JSON_VALUE)
   public List<JarjestyskriteerihistoriaDTO> listJonosijaHistoria(
-      @ApiParam(value = "Valintatapajono OID", required = true) @PathVariable("valintatapajonoOid")
+      @Parameter(name = "Valintatapajono OID", required = true) @PathVariable("valintatapajonoOid")
           final String valintatapajonoOid,
-      @ApiParam(value = "Hakemus OID", required = true) @PathVariable("hakemusOid")
+      @Parameter(name = "Hakemus OID", required = true) @PathVariable("hakemusOid")
           final String hakemusOid) {
     return modelMapper.mapList(
         tulosService.haeJonosijaHistoria(valintatapajonoOid, hakemusOid),

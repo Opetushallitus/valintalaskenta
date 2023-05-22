@@ -1,12 +1,11 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@ApiModel(value = "JarjestyskriteerihistoriaDTO", description = "Järjestyskriteerihistoria")
+@Schema(name = "JarjestyskriteerihistoriaDTO", description = "Järjestyskriteerihistoria")
 public class JarjestyskriteerihistoriaDTO {
 
-  @ApiModelProperty(value = "Historia JSON", required = true)
+  @Schema(name = "Historia JSON", required = true)
   private String historia;
 
   public String getHistoria() {

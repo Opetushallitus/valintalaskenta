@@ -1,27 +1,27 @@
 package fi.vm.sade.valintalaskenta.tulos.resource;
 
 import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteerihistoriaDTO;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import java.util.List;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Api(value = "/jonosijahistoria", description = "Resurssi jonosijahistoriatiedon hakemiseen")
+@Tag(name = "/jonosijahistoria", description = "Resurssi jonosijahistoriatiedon hakemiseen")
 @RequestMapping("/jonosijahistoria")
 public interface JonosijaHistoriaResource {
-  @ApiOperation(
-      value = "Hakee jonosijahistoriat valintatapajono OID:n ja hakemus OID:n perusteella",
-      response = JarjestyskriteerihistoriaDTO.class)
+  @Operation(
+      summary = "Hakee jonosijahistoriat valintatapajono OID:n ja hakemus OID:n perusteella")
   @GetMapping(
       value = "/{valintatapajonoOid}/{hakemusOid}",
       produces = MediaType.APPLICATION_JSON_VALUE)
   List<JarjestyskriteerihistoriaDTO> listJonosijaHistoria(
-      @ApiParam(value = "Valintatapajono OID", required = true) @PathVariable("valintatapajonoOid")
+      @Parameter(name = "Valintatapajono OID", required = true) @PathVariable("valintatapajonoOid")
           String valintatapajonoOid,
-      @ApiParam(value = "Hakemus OID", required = true) @PathVariable("hakemusOid")
+      @Parameter(name = "Hakemus OID", required = true) @PathVariable("hakemusOid")
           String hakemusOid);
 }

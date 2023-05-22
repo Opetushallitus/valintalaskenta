@@ -1,24 +1,24 @@
 package fi.vm.sade.valintalaskenta.domain.dto.valintakoe;
 
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.Map;
 
-@ApiModel(
-    value = "OsallistuminenTulosDTO",
+@Schema(
+    name = "OsallistuminenTulosDTO",
     description = "Osallitumistulos - kertoo, pitääkö hakijan osallistua valintakokeeseen")
 public class OsallistuminenTulosDTO {
-  @ApiModelProperty(value = "Varsinainen tulos", required = true)
+  @Schema(name = "Varsinainen tulos", required = true)
   private Osallistuminen osallistuminen;
 
-  @ApiModelProperty(value = "Monikielinen kuvaus, esim. virheviesti")
+  @Schema(name = "Monikielinen kuvaus, esim. virheviesti")
   private Map<String, String> kuvaus;
 
-  @ApiModelProperty(value = "Laskennan palauttama tila")
+  @Schema(name = "Laskennan palauttama tila")
   private String laskentaTila;
 
-  @ApiModelProperty(value = "Laskennan palauttama tulos")
+  @Schema(name = "Laskennan palauttama tulos")
   private Boolean laskentaTulos;
 
   public Osallistuminen getOsallistuminen() {

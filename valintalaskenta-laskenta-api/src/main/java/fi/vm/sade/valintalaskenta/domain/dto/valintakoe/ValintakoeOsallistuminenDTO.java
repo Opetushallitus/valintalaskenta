@@ -1,36 +1,36 @@
 package fi.vm.sade.valintalaskenta.domain.dto.valintakoe;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /** User: wuoti Date: 29.8.2013 Time: 8.28 */
-@ApiModel(
-    value = "valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO",
+@Schema(
+    name = "valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO",
     description = "Valintakoeosallistuminen")
 public class ValintakoeOsallistuminenDTO {
 
-  @ApiModelProperty(value = "Haku OID", required = true)
+  @Schema(name = "Haku OID", required = true)
   private String hakuOid;
 
-  @ApiModelProperty(value = "Hakemus OID", required = true)
+  @Schema(name = "Hakemus OID", required = true)
   private String hakemusOid;
 
-  @ApiModelProperty(value = "Hakija OID")
+  @Schema(name = "Hakija OID")
   private String hakijaOid;
 
-  @ApiModelProperty(value = "Etunimi")
+  @Schema(name = "Etunimi")
   private String etunimi;
 
-  @ApiModelProperty(value = "Sukunimi")
+  @Schema(name = "Sukunimi")
   private String sukunimi;
 
-  @ApiModelProperty(value = "Luontiajankohta")
+  @Schema(name = "Luontiajankohta")
   private Date createdAt;
 
-  @ApiModelProperty(value = "Hakutoiveet")
+  @Schema(name = "Hakutoiveet")
   private List<HakutoiveDTO> hakutoiveet = new ArrayList<HakutoiveDTO>();
 
   public String getHakuOid() {

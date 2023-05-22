@@ -1,19 +1,19 @@
 package fi.vm.sade.valintalaskenta.domain.dto.valintakoe;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.ArrayList;
 import java.util.List;
 
-@ApiModel(value = "ValintakoeValinnanvaiheDTO", description = "Valintakoevalinnanvaihe")
+@Schema(name = "ValintakoeValinnanvaiheDTO", description = "Valintakoevalinnanvaihe")
 public class ValintakoeValinnanvaiheDTO {
-  @ApiModelProperty(value = "OID", required = true)
+  @Schema(name = "OID", required = true)
   private String valinnanVaiheOid;
 
-  @ApiModelProperty(value = "Vaiheen järjestysluku", required = true)
+  @Schema(name = "Vaiheen järjestysluku", required = true)
   private Integer valinnanVaiheJarjestysluku;
 
-  @ApiModelProperty(value = "Valintakokeet")
+  @Schema(name = "Valintakokeet")
   private List<ValintakoeDTO> valintakokeet = new ArrayList<ValintakoeDTO>();
 
   public String getValinnanVaiheOid() {
