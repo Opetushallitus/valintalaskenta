@@ -1,19 +1,11 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
+import dev.morphia.annotations.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Field;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Index;
-import org.mongodb.morphia.annotations.IndexOptions;
-import org.mongodb.morphia.annotations.Indexed;
-import org.mongodb.morphia.annotations.Indexes;
-import org.mongodb.morphia.annotations.PrePersist;
 
 @Entity("ValintakoeOsallistuminen")
 @Indexes({
@@ -26,11 +18,10 @@ public class ValintakoeOsallistuminen {
 
   private String hakuOid;
 
-  @Indexed(unique = true)
+  @Indexed(options = @IndexOptions(unique = true))
   private String hakemusOid;
 
-  @Indexed(unique = false)
-  private String hakijaOid;
+  @Indexed private String hakijaOid;
 
   private String etunimi;
 
@@ -38,7 +29,7 @@ public class ValintakoeOsallistuminen {
 
   private Date createdAt;
 
-  @Embedded private List<Hakutoive> hakutoiveet = new ArrayList<>();
+  private List<Hakutoive> hakutoiveet = new ArrayList<>();
 
   public ObjectId getId() {
     return id;

@@ -63,8 +63,14 @@
             <artifactId>valintaperusteet-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.mongodb.morphia</groupId>
-            <artifactId>morphia</artifactId>
+            <groupId>dev.morphia.morphia</groupId>
+            <artifactId>morphia-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jetbrains</groupId>
+                    <artifactId>annotations</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>cglib</groupId>
@@ -140,25 +146,29 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-migrationsupport</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.kubek2k.mockito.spring</groupId>
-            <artifactId>springockito</artifactId>
-            <version>1.0.0</version>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.mockito</groupId>
-                    <artifactId>mockito-all</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -213,13 +223,12 @@
 
         <dependency>
             <groupId>org.mongodb</groupId>
-            <artifactId>mongo-java-driver</artifactId>
+            <artifactId>mongodb-driver-sync</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>de.flapdoodle.embed</groupId>
-            <artifactId>de.flapdoodle.embed.mongo</artifactId>
-            <version>${flapdoodle.embed.mongo.version}</version>
+            <groupId>com.github.fakemongo</groupId>
+            <artifactId>fongo</artifactId>
             <scope>test</scope>
         </dependency>
 

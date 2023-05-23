@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import dev.morphia.annotations.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -9,20 +10,10 @@ import java.util.List;
 import java.util.Set;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Field;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Index;
-import org.mongodb.morphia.annotations.IndexOptions;
-import org.mongodb.morphia.annotations.Indexed;
-import org.mongodb.morphia.annotations.Indexes;
-import org.mongodb.morphia.annotations.PostLoad;
-import org.mongodb.morphia.annotations.PrePersist;
-import org.mongodb.morphia.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Entity(value = "Valinnanvaihe", noClassnameStored = true)
+@Entity(value = "Valinnanvaihe")
 @Indexes(
     @Index(
         fields = {@Field("hakuOid"), @Field("valinnanvaiheOid")},
@@ -36,14 +27,11 @@ public class Valinnanvaihe {
 
   private Date createdAt;
 
-  @Indexed(unique = false, dropDups = false)
-  private String hakuOid;
+  @Indexed private String hakuOid;
 
-  @Indexed(unique = false, dropDups = false)
-  private String hakukohdeOid;
+  @Indexed private String hakukohdeOid;
 
-  @Indexed(unique = false, dropDups = false)
-  private String valinnanvaiheOid;
+  @Indexed private String valinnanvaiheOid;
 
   private String tarjoajaOid;
 

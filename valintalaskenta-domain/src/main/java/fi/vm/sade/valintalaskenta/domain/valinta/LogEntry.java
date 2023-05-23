@@ -1,11 +1,11 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
 import java.util.Date;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Id;
 
-@Embedded("LogEntry")
+@Entity("LogEntry")
 public class LogEntry {
   @Id private ObjectId id;
 

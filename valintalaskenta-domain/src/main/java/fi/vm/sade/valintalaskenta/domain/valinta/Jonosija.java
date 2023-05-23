@@ -1,13 +1,16 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
+import dev.morphia.annotations.Indexed;
+import dev.morphia.annotations.PrePersist;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.*;
 
-@Entity(value = "Jonosija", noClassnameStored = true)
+@Entity(value = "Jonosija")
 public class Jonosija {
   @Id private ObjectId id;
 
@@ -25,13 +28,12 @@ public class Jonosija {
 
   private boolean hylattyValisijoittelussa = false;
 
-  @Embedded
   private List<Jarjestyskriteeritulos> jarjestyskriteeritulokset =
       new ArrayList<Jarjestyskriteeritulos>();
 
-  @Embedded private List<SyotettyArvo> syotetytArvot = new ArrayList<SyotettyArvo>();
+  private List<SyotettyArvo> syotetytArvot = new ArrayList<SyotettyArvo>();
 
-  @Embedded private List<FunktioTulos> funktioTulokset = new ArrayList<FunktioTulos>();
+  private List<FunktioTulos> funktioTulokset = new ArrayList<FunktioTulos>();
 
   public ObjectId getId() {
     return this.id;

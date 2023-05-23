@@ -1,14 +1,21 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
+import dev.morphia.annotations.Indexed;
+import dev.morphia.annotations.Transient;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 import java.util.ArrayList;
 import java.util.List;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.*;
 
-@Entity(value = "Valintatapajono", noClassnameStored = true)
+@Entity(value = "Valintatapajono")
 public class Valintatapajono {
   public static final int CURRENT_SCHEMA_VERSION = 2;
+
+  public ObjectId getId() {
+    return id;
+  }
 
   @Id private ObjectId id;
 

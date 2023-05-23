@@ -3,8 +3,8 @@ package fi.vm.sade.valintalaskenta.laskenta.dao;
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
@@ -118,11 +118,11 @@ public class HakijaryhmaDAOTest {
     List<Hakijaryhma> sorted = new ArrayList<>(fetched);
     sorted.sort(Comparator.comparing(Hakijaryhma::getPrioriteetti));
 
-    assertEquals("Hakijaryhma entries are not sorted based on priority!", sorted, fetched);
+    assertEquals(sorted, fetched, "Hakijaryhma entries are not sorted based on priority!");
 
     assertEquals(
-        "lowest numeric priority should come first meaning it is the most important",
         asList("highestPriorityOid", "middlePriorityOid", "lowestPriorityOid"),
-        sorted.stream().map(Hakijaryhma::getHakijaryhmaOid).collect(toList()));
+        sorted.stream().map(Hakijaryhma::getHakijaryhmaOid).collect(toList()),
+        "lowest numeric priority should come first meaning it is the most important");
   }
 }

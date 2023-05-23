@@ -1,12 +1,13 @@
 package fi.vm.sade.valintalaskenta.tulos.dao;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.google.gson.Gson;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import java.io.InputStreamReader;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ValinnanvaiheMappingTest {
 
@@ -30,6 +31,6 @@ public class ValinnanvaiheMappingTest {
     // System.err.println(new GsonBuilder().setPrettyPrinting().create()
     // .toJson(v1));
 
-    Assert.assertEquals("Oidit ei ole samoja!", v.getValinnanvaiheoid(), v1.getValinnanvaiheOid());
+    assertEquals(v.getValinnanvaiheoid(), v1.getValinnanvaiheOid(), "Oidit ei ole samoja!");
   }
 }

@@ -1,16 +1,22 @@
 package fi.vm.sade.valintalaskenta.tulos.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverter;
 import java.util.List;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * Created with IntelliJ IDEA. User: kkammone
@@ -18,11 +24,16 @@ import org.springframework.test.context.ContextConfiguration;
  * <p>Date: 7.6.2013 Time: 9:18 To change this template use File | Settings | File Templates.
  */
 @ContextConfiguration(locations = "classpath:application-context-test.xml")
-@RunWith(org.springframework.test.context.junit4.SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @UsingDataSet
 public class JonosijaComparatorTest {
 
   @Autowired private ValintatulosConverter valintatulosConverter;
+
+  @Bean
+  public Authorizer authorizer() {
+    return Mockito.mock(Authorizer.class);
+  }
 
   @Test
   public void testComparator() {
@@ -117,9 +128,9 @@ public class JonosijaComparatorTest {
       System.out.println("After sort: " + j.getHakemusOid());
     }
 
-    org.junit.Assert.assertEquals(a.get(0).getHakemusOid(), sija0.getHakemusOid());
-    org.junit.Assert.assertEquals(a.get(1).getHakemusOid(), sija3.getHakemusOid());
-    org.junit.Assert.assertEquals(a.get(2).getHakemusOid(), sija4.getHakemusOid());
-    org.junit.Assert.assertEquals(a.get(5).getHakemusOid(), sija5.getHakemusOid());
+    assertEquals(a.get(0).getHakemusOid(), sija0.getHakemusOid());
+    assertEquals(a.get(1).getHakemusOid(), sija3.getHakemusOid());
+    assertEquals(a.get(2).getHakemusOid(), sija4.getHakemusOid());
+    assertEquals(a.get(5).getHakemusOid(), sija5.getHakemusOid());
   }
 }

@@ -1,17 +1,17 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
+import dev.morphia.annotations.Entity;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.mongodb.morphia.annotations.Embedded;
 
-@Embedded
+@Entity
 public class ValintakoeValinnanvaihe {
   private String valinnanVaiheOid;
   private Integer valinnanVaiheJarjestysluku;
   private Integer laskettavaJarjestysluku;
 
-  @Embedded private List<Valintakoe> valintakokeet = new ArrayList<>();
+  private List<Valintakoe> valintakokeet = new ArrayList<>();
 
   public String getValinnanVaiheOid() {
     return valinnanVaiheOid;

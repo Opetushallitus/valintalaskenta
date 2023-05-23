@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:mockito="http://www.mockito.org/spring/mockito"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
        xmlns:jaxrs-client="http://cxf.apache.org/jaxrs-client"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-            http://www.mockito.org/spring/mockito http://www.mockito.org/spring/mockito.xsd
-            http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
             http://cxf.apache.org/jaxrs-client http://cxf.apache.org/schemas/jaxrs-client.xsd
             http://www.springframework.org/schema/context
             http://www.springframework.org/schema/context/spring-context.xsd">
@@ -19,24 +15,16 @@
   <import resource="classpath:META-INF/cxf/cxf.xml"/>
   <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
 
-  <mockito:mock id="mockValiSijoitteluResource"
-                class="fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource"/>
-  <mockito:mock id="mockErillisSijoitteluResource"
-                class="fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource"/>
-  <mockito:mock id="mockValintaperusteetValintatapajonoResource"
-                class="fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource"/>
-  <mockito:mock id="mockValintalaskentaService" class="fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService"/>
-  <mockito:mock id="mockValisijoitteluKasittelija" class="fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija"/>
   <bean id="laskentaAuditLogMock" class="fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogMock"/>
 
   <context:property-placeholder
     ignore-resource-not-found="true" properties-ref="defaultProps"/>
 
   <bean id="defaultProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean"/>
-  <bean id="mongodFactory" class="fi.vm.sade.valintalaskenta.laskenta.testing.ValintalaskentaMongodForTestsFactory" destroy-method="shutdown"/>
+  <bean id="mongodFactory" class="fi.vm.sade.valintalaskenta.laskenta.testing.ValintalaskentaMongodForTestsFactory"/>
   <bean id="mongo" class="com.mongodb.MongoClient" factory-bean="mongodFactory" factory-method="newMongo"/>
 
-  <bean id="morphia" class="org.mongodb.morphia.Morphia"/>
+  <bean id="morphia" class="dev.morphia.Morphia"/>
   <bean id="datastore2" factory-bean="morphia" factory-method="createDatastore">
     <constructor-arg type="com.mongodb.MongoClient" ref="mongo"/>
     <constructor-arg type="java.lang.String" value="test"/>

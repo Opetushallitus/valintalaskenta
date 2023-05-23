@@ -1,13 +1,15 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
+import dev.morphia.annotations.Indexed;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.*;
 
-@Entity(value = "Valintatapajono", noClassnameStored = true)
+@Entity(value = "Valintatapajono")
 public class ValintatapajonoMigrationDTO {
   @Id private ObjectId id;
 
@@ -37,7 +39,7 @@ public class ValintatapajonoMigrationDTO {
 
   private Boolean kaytetaanKokonaispisteita;
 
-  @Embedded private List<JonosijaMigrationDTO> jonosijat;
+  private List<JonosijaMigrationDTO> jonosijat;
 
   private Long sijoitteluajoId;
 

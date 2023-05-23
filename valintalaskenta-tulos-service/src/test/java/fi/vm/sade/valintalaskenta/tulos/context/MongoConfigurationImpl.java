@@ -1,43 +1,34 @@
 package fi.vm.sade.valintalaskenta.tulos.context;
 
-import com.mongodb.MongoClient;
-import de.flapdoodle.embed.mongo.distribution.Version;
-import de.flapdoodle.embed.mongo.transitions.Mongod;
-import de.flapdoodle.embed.mongo.transitions.RunningMongodProcess;
-import de.flapdoodle.reverse.TransitionWalker;
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.Morphia;
+import com.github.fakemongo.Fongo;
+import com.github.fakemongo.junit.FongoRule;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.connection.ServerVersion;
+import dev.morphia.Datastore;
+import dev.morphia.Morphia;
+import org.junit.Rule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /** @author Jussi Jartamo */
 @Configuration
 public class MongoConfigurationImpl {
+  @Rule public FongoRule fongoRule = new FongoRule(new ServerVersion(3, 6));
   public static final String DATABASE_NAME = "test";
 
   @Bean
-  public Mongod mongoExecutable() {
-    return Mongod.builder().build();
-  }
-
-  @Bean(destroyMethod = "close")
-  public TransitionWalker.ReachedState<RunningMongodProcess> mongodProcess(Mongod mongoExecutable) {
-    return mongoExecutable.start(Version.Main.V3_6);
+  public Fongo mongoExecutable() {
+    return new Fongo("mongo server 1");
   }
 
   @Bean
-  public MongoClient mongoClient(
-      TransitionWalker.ReachedState<RunningMongodProcess> mongodProcess) {
-    return new MongoClient("127.0.0.1", mongodProcess.current().getServerAddress().getPort());
-  }
-
-  @Bean(name = "morphia2")
-  public Morphia getMorphia() {
-    return new Morphia();
+  public MongoClient mongoClient(final Fongo mongo) {
+    return MongoClients.create(mongo.getServerAddress().toString());
   }
 
   @Bean(name = "datastore2")
-  public Datastore getDatastore(Morphia morphia, MongoClient mongo) {
-    return morphia.createDatastore(mongo, DATABASE_NAME);
+  public Datastore getDatastore(MongoClient mongo) {
+    return Morphia.createDatastore(mongo, DATABASE_NAME);
   }
 }

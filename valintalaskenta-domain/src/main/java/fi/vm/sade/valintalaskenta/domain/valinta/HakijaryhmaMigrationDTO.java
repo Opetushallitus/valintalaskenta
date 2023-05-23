@@ -1,13 +1,16 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
+import dev.morphia.annotations.Indexed;
+import dev.morphia.annotations.PrePersist;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.*;
 
-@Entity(value = "Hakijaryhma", noClassnameStored = true)
+@Entity(value = "Hakijaryhma")
 public class HakijaryhmaMigrationDTO {
   @Id private ObjectId id;
 
@@ -19,8 +22,7 @@ public class HakijaryhmaMigrationDTO {
 
   private Date createdAt;
 
-  @Indexed(unique = false, dropDups = false)
-  private String hakukohdeOid;
+  @Indexed private String hakukohdeOid;
 
   private String nimi;
 
@@ -36,7 +38,7 @@ public class HakijaryhmaMigrationDTO {
 
   private String valintatapajonoOid;
 
-  @Embedded private List<JonosijaMigrationDTO> jonosijat;
+  private List<JonosijaMigrationDTO> jonosijat;
 
   @PrePersist
   private void prePersist() {

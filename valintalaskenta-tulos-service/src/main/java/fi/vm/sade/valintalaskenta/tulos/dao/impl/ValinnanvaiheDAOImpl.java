@@ -1,8 +1,9 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.BasicDBObjectBuilder;
-import com.mongodb.DBObject;
+import static dev.morphia.query.filters.Filters.*;
+
+import dev.morphia.Datastore;
+import dev.morphia.query.FindOptions;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
@@ -12,9 +13,6 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.AdvancedDatastore;
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.Key;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,34 +32,26 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
   @Override
   public List<Valinnanvaihe> readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid) {
     List<ObjectId> hakemuksenJonosijaIdt = new LinkedList<>();
-    datastore
-        .find(Jonosija.class)
-        .field("hakemusOid")
-        .equal(hakemusOid)
-        .fetchKeys()
-        .forEach(key -> hakemuksenJonosijaIdt.add((ObjectId) key.getId()));
+    datastore.find(Jonosija.class).filter(eq("hakemusOid", hakemusOid)).stream()
+        .forEach(key -> hakemuksenJonosijaIdt.add(key.getId()));
     if (hakemuksenJonosijaIdt.isEmpty()) {
       return new ArrayList<>();
     }
     List<ObjectId> hakemuksenValintatapajonoIdt = new LinkedList<>();
-    datastore
-        .find(Valintatapajono.class)
-        .field("jonosijaIdt")
-        .in(hakemuksenJonosijaIdt)
-        .fetchKeys()
-        .forEach(key -> hakemuksenValintatapajonoIdt.add((ObjectId) key.getId()));
+    datastore.find(Valintatapajono.class).filter(in("jonosijaIdt", hakemuksenJonosijaIdt)).stream()
+        .forEach(key -> hakemuksenValintatapajonoIdt.add(key.getId()));
     if (hakemuksenValintatapajonoIdt.isEmpty()) {
       return new ArrayList<>();
     }
-    DBObject valinnanvaiheQuery =
-        BasicDBObjectBuilder.start()
-            .add("hakuOid", hakuOid)
-            .add("valintatapajonot.$id", new BasicDBObject("$in", hakemuksenValintatapajonoIdt))
-            .get();
     List<ValinnanvaiheMigrationDTO> valinnanvaiheet =
-        ((AdvancedDatastore) datastore)
-            .createQuery(ValinnanvaiheMigrationDTO.class, valinnanvaiheQuery)
-            .asList();
+        datastore
+            .find(ValinnanvaiheMigrationDTO.class)
+            .filter(
+                and(
+                    eq("hakuOid", hakuOid),
+                    in("valintatapajonot.id", hakemuksenValintatapajonoIdt)))
+            .stream()
+            .collect(Collectors.toList());
     return migrate(valinnanvaiheet);
   }
 
@@ -70,21 +60,17 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     List<ObjectId> valintatapajonoIdt = new LinkedList<>();
     datastore
         .find(Valintatapajono.class)
-        .field("valintatapajonoOid")
-        .equal(valintatapajonoOid)
-        .fetchKeys()
-        .forEach(key -> valintatapajonoIdt.add((ObjectId) key.getId()));
+        .filter(eq("valintatapajonoOid", valintatapajonoOid))
+        .stream()
+        .forEach(key -> valintatapajonoIdt.add(key.getId()));
     if (valintatapajonoIdt.isEmpty()) {
       return null;
     }
-    DBObject valinnanvaiheQuery =
-        BasicDBObjectBuilder.start()
-            .add("valintatapajonot.$id", new BasicDBObject("$in", valintatapajonoIdt))
-            .get();
     ValinnanvaiheMigrationDTO valinnanvaihe =
-        ((AdvancedDatastore) datastore)
-            .createQuery(ValinnanvaiheMigrationDTO.class, valinnanvaiheQuery)
-            .get();
+        datastore
+            .find(ValinnanvaiheMigrationDTO.class)
+            .filter(in("valintatapajonot.id", valintatapajonoIdt))
+            .first();
     return migrate(valinnanvaihe);
   }
 
@@ -92,30 +78,23 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
   public List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid) {
     return migrate(
         datastore
-            .createQuery(ValinnanvaiheMigrationDTO.class)
-            .field("hakukohdeOid")
-            .equal(hakukohdeoid)
-            .asList());
+            .find(ValinnanvaiheMigrationDTO.class)
+            .filter(eq("hakukohdeOid", hakukohdeoid))
+            .stream()
+            .collect(Collectors.toList()));
   }
 
   @Override
   public List<Valinnanvaihe> readByHakuOid(String hakuoid) {
     return migrate(
-        datastore
-            .createQuery(ValinnanvaiheMigrationDTO.class)
-            .field("hakuOid")
-            .equal(hakuoid)
-            .asList());
+        datastore.find(ValinnanvaiheMigrationDTO.class).filter(eq("hakuOid", hakuoid)).stream()
+            .collect(Collectors.toList()));
   }
 
   @Override
   public Stream<Valinnanvaihe> readByHakuOidStreaming(String hakuoid) {
     final Iterator<ValinnanvaiheMigrationDTO> mongoResultsIterator =
-        datastore
-            .createQuery(ValinnanvaiheMigrationDTO.class)
-            .field("hakuOid")
-            .equal(hakuoid)
-            .iterator();
+        datastore.find(ValinnanvaiheMigrationDTO.class).filter(eq("hakuOid", hakuoid)).iterator();
 
     return StreamSupport.stream(
             Spliterators.spliteratorUnknownSize(mongoResultsIterator, Spliterator.ORDERED), false)
@@ -125,22 +104,20 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
   @Override
   public List<ValintatapajonoMigrationDTO> valintatapajonotJotkaEivatKaytaLaskentaa() {
     return datastore
-        .createQuery(ValintatapajonoMigrationDTO.class)
-        .field("kaytetaanValintalaskentaa")
-        .notEqual(true)
-        .retrievedFields(true, "_id")
-        .asList();
+        .find(ValintatapajonoMigrationDTO.class)
+        .filter(ne("kaytetaanValintalaskentaa", true))
+        .iterator(new FindOptions().projection().include("_id"))
+        .toList();
   }
 
   @Override
   public List<Pair<String, String>> hakuOidHakukohdeOidPairsForJonos(
       List<ValintatapajonoMigrationDTO> validValintatapajonos) {
     return datastore
-        .createQuery(ValinnanvaiheMigrationDTO.class)
-        .field("valintatapajonot")
-        .in(validValintatapajonos)
-        .retrievedFields(true, "hakukohdeOid", "hakuOid")
-        .asList()
+        .find(ValinnanvaiheMigrationDTO.class)
+        .filter(in("valintatapajonot", validValintatapajonos))
+        .iterator(new FindOptions().projection().include("hakukohdeOid", "hakuOid"))
+        .toList()
         .stream()
         .map(vv -> Pair.of(vv.getHakuOid(), vv.getHakukohdeOid()))
         .distinct()
@@ -152,10 +129,9 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     return Optional.ofNullable(
             datastore
                 .find(ValinnanvaiheMigrationDTO.class)
-                .field("valinnanvaiheOid")
-                .equal(valinnanvaiheOid)
-                .get())
-        .map(vaihe -> migrate(vaihe))
+                .filter(eq("valinnanvaiheOid", valinnanvaiheOid))
+                .first())
+        .map(this::migrate)
         .orElse(null);
   }
 
@@ -179,19 +155,21 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
   }
 
   private void populateJonosijat(Valintatapajono valintatapajono) {
-    List<ObjectId> jonosijaIdt = valintatapajono.getJonosijaIdt();
+    List<ObjectId> jonosijaIdt =
+        valintatapajono != null ? valintatapajono.getJonosijaIdt() : new ArrayList<>();
     if (jonosijaIdt.isEmpty()) {
       valintatapajono.setJonosijat(new ArrayList<>());
     } else {
       valintatapajono.setJonosijat(
-          datastore.createQuery(Jonosija.class).field("_id").in(jonosijaIdt).asList());
+          datastore.find(Jonosija.class).filter(in("_id", jonosijaIdt)).stream()
+              .collect(Collectors.toList()));
     }
   }
 
   private Valintatapajono migrate(ValintatapajonoMigrationDTO jono) {
     if (jono.getSchemaVersion() == Valintatapajono.CURRENT_SCHEMA_VERSION) {
       Valintatapajono alreadyMigrated =
-          datastore.find(Valintatapajono.class).field("_id").equal(jono.getId()).get();
+          datastore.find(Valintatapajono.class).filter(eq("_id", jono.getId())).first();
       populateJonosijat(alreadyMigrated);
       return alreadyMigrated;
     } else {
@@ -236,16 +214,16 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     return vaiheet.stream().map(vaihe -> migrate(vaihe)).collect(Collectors.toList());
   }
 
-  private Key<Valintatapajono> saveJono(Valintatapajono valintatapajono) {
+  private Valintatapajono saveJono(Valintatapajono valintatapajono) {
     return datastore.save(valintatapajono);
   }
 
   @Override
-  public Key<Valinnanvaihe> saveVaihe(Valinnanvaihe vaihe) {
+  public Valinnanvaihe saveVaihe(Valinnanvaihe vaihe) {
     return datastore.save(vaihe);
   }
 
-  private Key<Jonosija> saveJonosija(Jonosija jonosija) {
+  private Jonosija saveJonosija(Jonosija jonosija) {
     return datastore.save(jonosija);
   }
 }

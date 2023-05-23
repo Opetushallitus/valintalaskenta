@@ -5,7 +5,6 @@ import fi.vm.sade.valintalaskenta.domain.valinta.ValintatapajonoMigrationDTO;
 import java.util.List;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.tuple.Pair;
-import org.mongodb.morphia.Key;
 
 public interface ValinnanvaiheDAO {
   List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid);
@@ -27,5 +26,5 @@ public interface ValinnanvaiheDAO {
 
   void saveOrUpdate(Valinnanvaihe vaihe);
 
-  Key<Valinnanvaihe> saveVaihe(Valinnanvaihe vaihe);
+  Valinnanvaihe saveVaihe(Valinnanvaihe vaihe);
 }

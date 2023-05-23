@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.laskenta.testing;
 
 import fi.vm.sade.integrationtest.util.PortChecker;
+import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.valintalaskenta.laskenta.App;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource;
@@ -8,6 +9,7 @@ import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResou
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
+import org.mockito.Mockito;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +30,37 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class TestApp {
   @Configuration
   @ImportResource("classpath:application-context-http-test.xml")
-  public static class TestConfiguration {}
+  public static class TestConfiguration {
+    @Bean
+    public ValiSijoitteluResource mockValiSijoitteluResource() {
+      return Mockito.mock(ValiSijoitteluResource.class);
+    }
+
+    @Bean
+    public ErillisSijoitteluResource mockErillisSijoitteluResource() {
+      return Mockito.mock(ErillisSijoitteluResource.class);
+    }
+
+    @Bean
+    public ValintaperusteetValintatapajonoResource mockValintaperusteetValintatapajonoResource() {
+      return Mockito.mock(ValintaperusteetValintatapajonoResource.class);
+    }
+
+    @Bean
+    public ValintalaskentaService mockValintalaskentaService() {
+      return Mockito.mock(ValintalaskentaService.class);
+    }
+
+    @Bean
+    public ValisijoitteluKasittelija mockValisijoitteluKasittelija() {
+      return Mockito.mock(ValisijoitteluKasittelija.class);
+    }
+
+    @Bean
+    public Authorizer authorizer() {
+      return Mockito.mock(Authorizer.class);
+    }
+  }
 
   @Bean("valintalaskentaResourceImpl")
   @Autowired

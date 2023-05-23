@@ -1,12 +1,14 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Indexed;
+import dev.morphia.annotations.PrePersist;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import org.mongodb.morphia.annotations.*;
 
-@Embedded
+@Entity
 public class JonosijaMigrationDTO {
   @Indexed private String hakemusOid;
 
@@ -22,13 +24,12 @@ public class JonosijaMigrationDTO {
 
   private boolean hylattyValisijoittelussa = false;
 
-  @Embedded
   private List<Jarjestyskriteeritulos> jarjestyskriteeritulokset =
       new ArrayList<Jarjestyskriteeritulos>();
 
-  @Embedded private List<SyotettyArvo> syotetytArvot = new ArrayList<SyotettyArvo>();
+  private List<SyotettyArvo> syotetytArvot = new ArrayList<SyotettyArvo>();
 
-  @Embedded private List<FunktioTulos> funktioTulokset = new ArrayList<FunktioTulos>();
+  private List<FunktioTulos> funktioTulokset = new ArrayList<FunktioTulos>();
 
   public String getHakemusOid() {
     return hakemusOid;

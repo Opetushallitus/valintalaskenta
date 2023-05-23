@@ -1,9 +1,13 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
+import static dev.morphia.query.filters.Filters.and;
+import static dev.morphia.query.filters.Filters.eq;
+
+import dev.morphia.Datastore;
 import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvarainenHyvaksyminen;
 import fi.vm.sade.valintalaskenta.tulos.dao.HarkinnanvarainenHyvaksyminenDAO;
 import java.util.List;
-import org.mongodb.morphia.Datastore;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -19,11 +23,8 @@ public class HarkinnanvarainenHyvaksyminenDAOImpl implements HarkinnanvarainenHy
       String hakukohdeOid, String hakemusOid) {
     return datastore
         .find(HarkinnanvarainenHyvaksyminen.class)
-        .field("hakukohdeOid")
-        .equal(hakukohdeOid)
-        .field("hakemusOid")
-        .equal(hakemusOid)
-        .get();
+        .filter(and(eq("hakukohdeOid", hakukohdeOid), eq("hakemusOid", hakemusOid)))
+        .first();
   }
 
   @Override
@@ -36,9 +37,9 @@ public class HarkinnanvarainenHyvaksyminenDAOImpl implements HarkinnanvarainenHy
   public List<HarkinnanvarainenHyvaksyminen> haeHarkinnanvarainenHyvaksyminen(String hakukohdeOid) {
     return datastore
         .find(HarkinnanvarainenHyvaksyminen.class)
-        .field("hakukohdeOid")
-        .equal(hakukohdeOid)
-        .asList();
+        .filter(eq("hakukohdeOid", hakukohdeOid))
+        .stream()
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -46,9 +47,9 @@ public class HarkinnanvarainenHyvaksyminenDAOImpl implements HarkinnanvarainenHy
       String hakuOid) {
     return datastore
         .find(HarkinnanvarainenHyvaksyminen.class)
-        .field("hakuOid")
-        .equal(hakuOid)
-        .asList();
+        .filter(eq("hakuOid", hakuOid))
+        .stream()
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -56,10 +57,8 @@ public class HarkinnanvarainenHyvaksyminenDAOImpl implements HarkinnanvarainenHy
       String hakuOid, String hakemusOid) {
     return datastore
         .find(HarkinnanvarainenHyvaksyminen.class)
-        .field("hakuOid")
-        .equal(hakuOid)
-        .field("hakemusOid")
-        .equal(hakemusOid)
-        .asList();
+        .filter(and(eq("hakuOid", hakuOid), eq("hakemusOid", hakemusOid)))
+        .stream()
+        .collect(Collectors.toList());
   }
 }

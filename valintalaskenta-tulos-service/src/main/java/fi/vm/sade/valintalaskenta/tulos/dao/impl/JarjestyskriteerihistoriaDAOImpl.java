@@ -1,12 +1,14 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
+import static dev.morphia.query.filters.Filters.*;
+
+import dev.morphia.Datastore;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.tulos.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.util.JarjestyskriteeriKooderi;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.Datastore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,18 +29,14 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
     List<ObjectId> jononJonosijaIdt = new LinkedList<>();
     datastore
         .find(ValintatapajonoMigrationDTO.class)
-        .field("valintatapajonoOid")
-        .equal(valintatapajonoOid)
+        .filter(eq("valintatapajonoOid", valintatapajonoOid))
         .forEach(
             valintatapajono -> jononJonosijaIdt.addAll(migrate(valintatapajono).getJonosijaIdt()));
     List<ObjectId> historiaIdt = new LinkedList<>();
     if (!jononJonosijaIdt.isEmpty()) {
       datastore
           .find(Jonosija.class)
-          .field("hakemusOid")
-          .equal(hakemusOid)
-          .field("_id")
-          .in(jononJonosijaIdt)
+          .filter(and(eq("hakemusOid", hakemusOid), in("_id", jononJonosijaIdt)))
           .forEach(
               jonosija -> {
                 jonosija
@@ -57,11 +55,8 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
       return new ArrayList<>();
     }
     List<Jarjestyskriteerihistoria> historiat =
-        datastore
-            .createQuery(Jarjestyskriteerihistoria.class)
-            .field("_id")
-            .hasAnyOf(historiaIds)
-            .asList();
+        datastore.find(Jarjestyskriteerihistoria.class).filter(in("_id", historiaIds)).stream()
+            .collect(Collectors.toList());
     historiat.stream()
         .filter(JarjestyskriteeriKooderi::tarvitseekoEnkoodata)
         .map(JarjestyskriteeriKooderi::enkoodaa)
@@ -77,19 +72,21 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
   }
 
   private void populateJonosijat(Valintatapajono valintatapajono) {
-    List<ObjectId> jonosijaIdt = valintatapajono.getJonosijaIdt();
+    List<ObjectId> jonosijaIdt =
+        valintatapajono != null ? valintatapajono.getJonosijaIdt() : new ArrayList<>();
     if (jonosijaIdt.isEmpty()) {
       valintatapajono.setJonosijat(new ArrayList<>());
     } else {
       valintatapajono.setJonosijat(
-          datastore.createQuery(Jonosija.class).field("_id").in(jonosijaIdt).asList());
+          datastore.find(Jonosija.class).filter(in("_id", jonosijaIdt)).stream()
+              .collect(Collectors.toList()));
     }
   }
 
   private Valintatapajono migrate(ValintatapajonoMigrationDTO jono) {
     if (jono.getSchemaVersion() == Valintatapajono.CURRENT_SCHEMA_VERSION) {
       Valintatapajono alreadyMigrated =
-          datastore.find(Valintatapajono.class).field("_id").equal(jono.getId()).get();
+          datastore.find(Valintatapajono.class).filter(eq("_id", jono.getId())).first();
       populateJonosijat(alreadyMigrated);
       return alreadyMigrated;
     } else {

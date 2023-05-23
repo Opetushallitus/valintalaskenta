@@ -1,10 +1,10 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import dev.morphia.annotations.*;
 import java.util.*;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.*;
 
-@Entity(value = "Hakijaryhma", noClassnameStored = true)
+@Entity(value = "Hakijaryhma")
 public class Hakijaryhma {
   public static final int CURRENT_SCHEMA_VERSION = 2;
 
@@ -18,8 +18,7 @@ public class Hakijaryhma {
 
   private Date createdAt;
 
-  @Indexed(unique = false, dropDups = false)
-  private String hakukohdeOid;
+  @Indexed private String hakukohdeOid;
 
   private String nimi;
 

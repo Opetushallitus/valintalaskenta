@@ -1,10 +1,10 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
+import dev.morphia.annotations.Entity;
 import java.util.Map;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.mongodb.morphia.annotations.Embedded;
 
-@Embedded
+@Entity
 public class OsallistuminenTulos {
   private Osallistuminen osallistuminen;
   private Map<String, String> kuvaus;

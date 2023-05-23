@@ -12,10 +12,10 @@
             ignore-resource-not-found="true" properties-ref="defaultProps" />
 
     <bean id="defaultProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean" />
-    <bean id="mongodFactory" class="fi.vm.sade.valintalaskenta.laskenta.testing.ValintalaskentaMongodForTestsFactory" destroy-method="shutdown"/>
+    <bean id="mongodFactory" class="fi.vm.sade.valintalaskenta.laskenta.testing.ValintalaskentaMongodForTestsFactory"/>
     <bean id="mongo" factory-bean="mongodFactory" factory-method="newMongo"/>
 
-    <bean id="morphia" class="org.mongodb.morphia.Morphia" />
+    <bean id="morphia" class="dev.morphia.Morphia" />
     <bean id="datastore2" factory-bean="morphia" factory-method="createDatastore">
         <constructor-arg type="com.mongodb.MongoClient" ref="mongo" />
         <constructor-arg type="java.lang.String" value="test" />

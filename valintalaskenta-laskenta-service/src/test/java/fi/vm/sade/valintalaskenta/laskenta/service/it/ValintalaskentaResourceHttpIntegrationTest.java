@@ -2,16 +2,11 @@ package fi.vm.sade.valintalaskenta.laskenta.service.it;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyListOf;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
-import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
-import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetHakijaryhmaDTO;
 import fi.vm.sade.valinta.sharedutils.http.HttpResourceBuilder;
 import fi.vm.sade.valintalaskenta.domain.HakukohteenLaskennanTila;
-import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.Laskentakutsu;
 import fi.vm.sade.valintalaskenta.domain.dto.SuoritustiedotDTO;
@@ -23,7 +18,6 @@ import java.util.Collections;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.springframework.context.ApplicationContext;
 
 public class ValintalaskentaResourceHttpIntegrationTest {
@@ -43,12 +37,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
     mockValisijoiteltavatJonotCall();
     when(getBean(ValintalaskentaService.class)
             .laskeKaikki(
-                anyListOf(HakemusDTO.class),
-                anyListOf(ValintaperusteetDTO.class),
-                anyListOf(ValintaperusteetHakijaryhmaDTO.class),
-                Matchers.eq(hakukohdeOid),
-                any(String.class),
-                anyBoolean()))
+                anyList(), anyList(), anyList(), eq(hakukohdeOid), any(String.class), anyBoolean()))
         .thenReturn("Onnistui!");
 
     Laskentakutsu laskentakutsu = createLaskentakutsu("successfulUuid");
@@ -66,12 +55,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
     mockValisijoiteltavatJonotCall();
     when(getBean(ValintalaskentaService.class)
             .laskeKaikki(
-                anyListOf(HakemusDTO.class),
-                anyListOf(ValintaperusteetDTO.class),
-                anyListOf(ValintaperusteetHakijaryhmaDTO.class),
-                Matchers.eq(hakukohdeOid),
-                any(String.class),
-                anyBoolean()))
+                anyList(), anyList(), anyList(), eq(hakukohdeOid), any(String.class), anyBoolean()))
         .thenThrow(new RuntimeException(getClass().getSimpleName() + "-failure"));
 
     Laskentakutsu laskentakutsu = createLaskentakutsu("failingUuid");
@@ -89,12 +73,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
     mockValisijoiteltavatJonotCall();
     when(getBean(ValintalaskentaService.class)
             .laskeKaikki(
-                anyListOf(HakemusDTO.class),
-                anyListOf(ValintaperusteetDTO.class),
-                anyListOf(ValintaperusteetHakijaryhmaDTO.class),
-                Matchers.eq(hakukohdeOid),
-                any(String.class),
-                anyBoolean()))
+                anyList(), anyList(), anyList(), eq(hakukohdeOid), any(String.class), anyBoolean()))
         .thenAnswer(
             invocation -> {
               waitWhileMayFinishIsNotSet();
@@ -118,8 +97,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
 
   @Test
   public void crashingLaskenta() throws InterruptedException {
-    when(getBean(ValisijoitteluKasittelija.class)
-            .valisijoiteltavatJonot(anyListOf(LaskeDTO.class), any()))
+    when(getBean(ValisijoitteluKasittelija.class).valisijoiteltavatJonot(anyList(), any()))
         .thenThrow(
             new RuntimeException(
                 ValisijoitteluKasittelija.class.getSimpleName()
@@ -148,8 +126,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
   }
 
   private void mockValisijoiteltavatJonotCall() {
-    when(getBean(ValisijoitteluKasittelija.class)
-            .valisijoiteltavatJonot(anyListOf(LaskeDTO.class), any()))
+    when(getBean(ValisijoitteluKasittelija.class).valisijoiteltavatJonot(anyList(), any()))
         .thenReturn(new ValisijoiteltavatJonot(Collections.emptySet(), Collections.emptyMap()));
   }
 

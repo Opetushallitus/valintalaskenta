@@ -1,7 +1,10 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
+import static dev.morphia.query.filters.Filters.eq;
+import static dev.morphia.query.filters.Filters.in;
 import static java.util.Comparator.comparing;
 
+import dev.morphia.Datastore;
 import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
 import fi.vm.sade.valintalaskenta.domain.valinta.HakijaryhmaMigrationDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
@@ -10,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.Datastore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +31,10 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
   public List<Hakijaryhma> readByHakukohdeOid(String hakukohdeoid) {
     List<HakijaryhmaMigrationDTO> ryhmat =
         datastore
-            .createQuery(HakijaryhmaMigrationDTO.class)
-            .field("hakukohdeOid")
-            .equal(hakukohdeoid)
-            .asList();
+            .find(HakijaryhmaMigrationDTO.class)
+            .filter(eq("hakukohdeOid", hakukohdeoid))
+            .stream()
+            .collect(Collectors.toList());
     List<Hakijaryhma> migratedRyhmat =
         ryhmat.stream()
             .map(ryhma -> migrate(ryhma))
@@ -44,13 +46,15 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
   private Hakijaryhma migrate(HakijaryhmaMigrationDTO ryhma) {
     if (ryhma.getSchemaVersion() == Hakijaryhma.CURRENT_SCHEMA_VERSION) {
       Hakijaryhma alreadyMigratedRyhma =
-          datastore.createQuery(Hakijaryhma.class).field("_id").equal(ryhma.getId()).get();
-      List<ObjectId> jonosijaIdt = alreadyMigratedRyhma.getJonosijaIdt();
+          datastore.find(Hakijaryhma.class).filter(eq("_id", ryhma.getId())).first();
+      List<ObjectId> jonosijaIdt =
+          alreadyMigratedRyhma != null ? alreadyMigratedRyhma.getJonosijaIdt() : new ArrayList<>();
       if (jonosijaIdt.isEmpty()) {
         alreadyMigratedRyhma.setJonosijat(new ArrayList<>());
       } else {
         alreadyMigratedRyhma.setJonosijat(
-            datastore.createQuery(Jonosija.class).field("_id").in(jonosijaIdt).asList());
+            datastore.find(Jonosija.class).filter(in("_id", jonosijaIdt)).stream()
+                .collect(Collectors.toList()));
       }
       return alreadyMigratedRyhma;
     } else {

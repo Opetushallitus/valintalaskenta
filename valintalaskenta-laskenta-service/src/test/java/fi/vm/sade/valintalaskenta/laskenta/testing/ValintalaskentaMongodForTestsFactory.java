@@ -1,29 +1,25 @@
 package fi.vm.sade.valintalaskenta.laskenta.testing;
 
+import com.github.fakemongo.Fongo;
+import com.github.fakemongo.junit.FongoRule;
 import com.mongodb.MongoClient;
-import de.flapdoodle.embed.mongo.distribution.Version;
-import de.flapdoodle.embed.mongo.transitions.Mongod;
-import de.flapdoodle.embed.mongo.transitions.RunningMongodProcess;
-import de.flapdoodle.reverse.TransitionWalker;
+import com.mongodb.connection.ServerVersion;
+import org.junit.Rule;
 
 /**
  * A kludge to work around the problem that the mongo client tries to access mongodb with an
  * external interface, but the testing mongo only binds to localhost.
  */
 public class ValintalaskentaMongodForTestsFactory {
-  private final TransitionWalker.ReachedState<RunningMongodProcess> mongoProcess;
+  @Rule public FongoRule fongoRule = new FongoRule(new ServerVersion(3, 6));
+
+  private final Fongo mongo;
 
   public ValintalaskentaMongodForTestsFactory() {
-    mongoProcess = Mongod.builder().build().start(Version.Main.V3_6);
-  }
-
-  public void shutdown() {
-    if (mongoProcess != null) {
-      mongoProcess.close();
-    }
+    mongo = new Fongo("mongo server 2");
   }
 
   public MongoClient newMongo() {
-    return new MongoClient("127.0.0.1", mongoProcess.current().getServerAddress().getPort());
+    return mongo.getMongo();
   }
 }

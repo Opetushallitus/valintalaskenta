@@ -1,9 +1,9 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
+import dev.morphia.annotations.PrePersist;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.PrePersist;
 
 @Entity("Jarjestyskriteerihistoria")
 public class Jarjestyskriteerihistoria {

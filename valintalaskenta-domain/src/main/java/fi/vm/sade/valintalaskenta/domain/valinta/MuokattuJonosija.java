@@ -1,35 +1,30 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
+import dev.morphia.annotations.Indexed;
 import java.util.ArrayList;
 import java.util.List;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Indexed;
 
 @Entity("MuokattuJonosija")
 public class MuokattuJonosija {
 
   @Id private ObjectId id;
 
-  @Indexed(unique = false, dropDups = false)
-  private String hakukohdeOid;
+  @Indexed private String hakukohdeOid;
 
-  @Indexed(unique = false, dropDups = false)
-  private String hakuOid;
+  @Indexed private String hakuOid;
 
-  @Indexed(unique = false, dropDups = false)
-  private String valintatapajonoOid;
+  @Indexed private String valintatapajonoOid;
 
   private String hakemusOid;
 
   private Integer prioriteetti; // hakutoive
 
-  @Embedded
   private List<Jarjestyskriteeritulos> jarjestyskriteerit = new ArrayList<Jarjestyskriteeritulos>();
 
-  @Embedded private List<LogEntry> logEntries = new ArrayList<LogEntry>();
+  private List<LogEntry> logEntries = new ArrayList<LogEntry>();
 
   public List<Jarjestyskriteeritulos> getJarjestyskriteerit() {
     return jarjestyskriteerit;

@@ -1,6 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Lists;
@@ -17,33 +17,34 @@ import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import java.util.Collections;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class HakukohdeResourceImplTest {
-  @Mock private ValintalaskentaTulosService tulosService;
-
-  @Mock private Authorizer authorizer;
-
-  @Mock private ValintaperusteetResource valintaperusteetResource;
-
-  @InjectMocks
-  HakukohdeResourceImpl hakukohdeResource =
-      new HakukohdeResourceImpl(
-          new LaskentaAuditLogMock(), tulosService, authorizer, valintaperusteetResource);
+  private ValintalaskentaTulosService tulosService;
+  private ValintaperusteetResource valintaperusteetResource;
+  private Authorizer authorizer;
+  private HakukohdeResourceImpl hakukohdeResource;
 
   private final ValinnanvaiheDTO valinnanvaiheFromUi = new ValinnanvaiheDTO();
 
-  @Before
+  @BeforeEach
   public void setup() {
+    tulosService = Mockito.mock(ValintalaskentaTulosService.class);
+    valintaperusteetResource = Mockito.mock(ValintaperusteetResource.class);
+    authorizer = Mockito.mock(Authorizer.class);
+    hakukohdeResource =
+        new HakukohdeResourceImpl(
+            new LaskentaAuditLogMock(), tulosService, authorizer, valintaperusteetResource);
     valinnanvaiheFromUi.setValintatapajonot(
         Collections.singletonList(new ValintatietoValintatapajonoDTO()));
     valinnanvaiheFromUi

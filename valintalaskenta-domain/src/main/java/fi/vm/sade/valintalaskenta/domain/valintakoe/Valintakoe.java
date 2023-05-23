@@ -1,10 +1,10 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
+import dev.morphia.annotations.Entity;
 import fi.vm.sade.service.valintaperusteet.dto.model.Koekutsu;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.mongodb.morphia.annotations.Embedded;
 
-@Embedded
+@Entity
 public class Valintakoe {
   private String valintakoeOid;
   private String valintakoeTunniste;

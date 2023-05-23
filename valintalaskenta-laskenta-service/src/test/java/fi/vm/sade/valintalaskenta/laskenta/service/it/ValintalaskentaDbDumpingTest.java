@@ -18,6 +18,7 @@ import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
+import dev.morphia.annotations.Entity;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
@@ -38,7 +39,6 @@ import org.bson.types.ObjectId;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mongodb.morphia.annotations.Entity;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -214,10 +214,6 @@ public class ValintalaskentaDbDumpingTest {
       embeddedMongoFactory =
           Optional.of(applicationContext.getBean(ValintalaskentaMongodForTestsFactory.class));
       return embeddedMongoFactory.get().newMongo();
-    }
-
-    private void shutdown() {
-      embeddedMongoFactory.ifPresent(ValintalaskentaMongodForTestsFactory::shutdown);
     }
 
     @Override

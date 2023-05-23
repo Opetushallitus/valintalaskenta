@@ -7,11 +7,11 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
 public class JarjestyskriteeriKooderi {
 
   public static boolean tarvitseekoEnkoodata(Jarjestyskriteerihistoria j) {
-    return j.getHistoria() != null;
+    return j != null && j.getHistoria() != null;
   }
 
   public static Jarjestyskriteerihistoria dekoodaa(Jarjestyskriteerihistoria j) {
-    if (j.getHistoriaGzip() != null && j.getHistoria() == null) {
+    if (j != null && j.getHistoriaGzip() != null && j.getHistoria() == null) {
       try {
         j.setHistoria(GzipUtil.dekoodaa(j.getHistoriaGzip()));
       } catch (Throwable t) {

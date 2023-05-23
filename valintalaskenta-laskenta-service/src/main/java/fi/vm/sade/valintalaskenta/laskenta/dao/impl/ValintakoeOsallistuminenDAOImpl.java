@@ -1,13 +1,17 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 
+import static dev.morphia.query.filters.Filters.and;
+import static dev.morphia.query.filters.Filters.eq;
+
+import dev.morphia.Datastore;
+import dev.morphia.aggregation.stages.Projection;
+import dev.morphia.aggregation.stages.Unwind;
+import dev.morphia.query.filters.Filter;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import java.util.Iterator;
 import java.util.List;
-import javax.annotation.PostConstruct;
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.aggregation.Projection;
-import org.mongodb.morphia.query.Query;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -19,22 +23,17 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
 
   @Autowired private Datastore morphiaDS;
 
-  @PostConstruct
-  public void ensureIndexes() {
-    morphiaDS.ensureIndexes(ValintakoeOsallistuminen.class);
-  }
-
   @Override
   public List<ValintakoeOsallistuminen> readAll() {
-    return morphiaDS.find(ValintakoeOsallistuminen.class).asList();
+    return morphiaDS.find(ValintakoeOsallistuminen.class).stream().collect(Collectors.toList());
   }
 
   @Override
   public ValintakoeOsallistuminen readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid) {
     return morphiaDS
-        .find(ValintakoeOsallistuminen.class, "hakuOid", hakuOid)
-        .filter("hakemusOid", hakemusOid)
-        .get();
+        .find(ValintakoeOsallistuminen.class)
+        .filter(and(eq("hakuOid", hakuOid), eq("hakemusOid", hakemusOid)))
+        .first();
   }
 
   @Override
@@ -64,55 +63,39 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
   // Olemassaolevat laskennat (kevat 2015) vaatii tämän, uudet laskennat eivät.
   private Iterator<ValintakoeOsallistuminen> lasketutValintakoeOsallistumiset(
       String hakuOid, String hakukohdeOid, int jarjestysnumero) {
-    final Query<ValintakoeOsallistuminen> query =
-        morphiaDS.createQuery(ValintakoeOsallistuminen.class);
-    query
-        .field("hakuOid")
-        .equal(hakuOid)
-        .field("hakutoiveet.hakukohdeOid")
-        .equal(hakukohdeOid)
-        .field("hakutoiveet.valinnanVaiheet.valinnanVaiheJarjestysluku")
-        .equal(jarjestysnumero - 1);
+    final Filter filter =
+        and(
+            eq("hakuOid", hakuOid),
+            eq("hakutoiveet.hakukohdeOid", hakukohdeOid),
+            eq("hakutoiveet.valinnanVaiheet.valinnanVaiheJarjestysluku", jarjestysnumero - 1));
     return morphiaDS
-        .<ValintakoeOsallistuminen, ValintakoeOsallistuminen>createAggregation(
-            ValintakoeOsallistuminen.class)
-        .match(query)
-        .project(
-            Projection.projection("_id").suppress(),
-            Projection.projection("hakutoiveet"),
-            Projection.projection("hakuOid"))
-        .unwind("hakutoiveet")
-        .match(query)
-        .unwind("hakutoiveet.valinnanVaiheet")
-        .match(query)
+        .aggregate(ValintakoeOsallistuminen.class)
+        .match(filter)
+        .project(Projection.project().exclude("_id").include("hakutoiveet").include("hakuOid"))
+        .unwind(Unwind.unwind("hakutoiveet"))
+        .match(filter)
+        .unwind(Unwind.unwind("hakutoiveet.valinnanVaiheet"))
+        .match(filter)
         .limit(1)
-        .aggregate(ValintakoeOsallistuminen.class);
+        .execute(ValintakoeOsallistuminen.class);
   }
 
   private Iterator<ValintakoeOsallistuminen> hakijanValintaValintakoeOsallistumiset(
       String hakuOid, String hakukohdeOid, int jarjestysnumero) {
-    final Query<ValintakoeOsallistuminen> query =
-        morphiaDS.createQuery(ValintakoeOsallistuminen.class);
-    query
-        .field("hakuOid")
-        .equal(hakuOid)
-        .field("hakutoiveet.laskettavaHakukohdeOid")
-        .equal(hakukohdeOid)
-        .field("hakutoiveet.valinnanVaiheet.laskettavaJarjestysluku")
-        .equal(jarjestysnumero - 1);
+    final Filter filter =
+        and(
+            eq("hakuOid", hakuOid),
+            eq("hakutoiveet.laskettavaHakukohdeOid", hakukohdeOid),
+            eq("hakutoiveet.valinnanVaiheet.laskettavaJarjestysluku", jarjestysnumero - 1));
     return morphiaDS
-        .<ValintakoeOsallistuminen, ValintakoeOsallistuminen>createAggregation(
-            ValintakoeOsallistuminen.class)
-        .match(query)
-        .project(
-            Projection.projection("_id").suppress(),
-            Projection.projection("hakutoiveet"),
-            Projection.projection("hakuOid"))
-        .unwind("hakutoiveet")
-        .match(query)
-        .unwind("hakutoiveet.valinnanVaiheet")
-        .match(query)
+        .aggregate(ValintakoeOsallistuminen.class)
+        .match(filter)
+        .project(Projection.project().exclude("_id").include("hakutoiveet").include("hakuOid"))
+        .unwind(Unwind.unwind("hakutoiveet"))
+        .match(filter)
+        .unwind(Unwind.unwind("hakutoiveet.valinnanVaiheet"))
+        .match(filter)
         .limit(1)
-        .aggregate(ValintakoeOsallistuminen.class);
+        .execute(ValintakoeOsallistuminen.class);
   }
 }

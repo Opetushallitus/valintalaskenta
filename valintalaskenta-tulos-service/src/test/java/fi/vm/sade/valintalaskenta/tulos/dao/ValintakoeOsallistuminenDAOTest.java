@@ -1,14 +1,15 @@
 package fi.vm.sade.valintalaskenta.tulos.dao;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.github.npathai.hamcrestopt.OptionalMatchers;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
@@ -22,18 +23,30 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** User: wuoti Date: 28.8.2013 Time: 15.47 */
 @ContextConfiguration(locations = "classpath:application-context-test.xml")
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @UsingDataSet
+@EnableRuleMigrationSupport
 public class ValintakoeOsallistuminenDAOTest {
+  @Configuration
+  public static class TestConfig {
+    @Bean
+    public Authorizer authorizer() {
+      return Mockito.mock(Authorizer.class);
+    }
+  }
 
   @Autowired private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
 

@@ -1,8 +1,8 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
 
 @Entity("HarkinnanvarainenHyvaksyminen")
 public class HarkinnanvarainenHyvaksyminen {

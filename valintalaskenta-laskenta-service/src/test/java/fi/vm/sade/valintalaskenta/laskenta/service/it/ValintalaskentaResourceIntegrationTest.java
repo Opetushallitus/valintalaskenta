@@ -9,13 +9,14 @@ import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.EI_OSA
 import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.OSALLISTUU;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakemus;
 import static java.util.stream.Collectors.groupingBy;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.hasValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.*;
 
 import co.unruly.matchers.StreamMatchers;
 import com.google.common.reflect.TypeToken;
@@ -282,13 +283,9 @@ public class ValintalaskentaResourceIntegrationTest {
         Arrays.asList("14871500433118662321562230733453", "1487149910926-5198215752602272243"));
     valisijoiteltavatJonotHakukohteittain.put(
         hakukohdeOidJossaOmaKoe, Collections.singletonList("14871499108842038936225826786200"));
-    Mockito.when(
-            mockValintatapajonoResource.findKopiot(org.mockito.Matchers.anyListOf(String.class)))
+    Mockito.when(mockValintatapajonoResource.findKopiot(anyList()))
         .thenReturn(valisijoiteltavatJonotHakukohteittain);
-    Mockito.when(
-            mockValisijoitteluResource.sijoittele(
-                org.mockito.Matchers.eq(hakuOid),
-                org.mockito.Matchers.any(ValisijoitteluDTO.class)))
+    Mockito.when(mockValisijoitteluResource.sijoittele(eq(hakuOid), any(ValisijoitteluDTO.class)))
         .thenReturn(
             readJsonFromSamePackage(
                 getClass(),

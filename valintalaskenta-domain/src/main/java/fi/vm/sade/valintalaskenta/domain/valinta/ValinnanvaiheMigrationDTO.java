@@ -1,13 +1,13 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import dev.morphia.annotations.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.*;
 
-@Entity(value = "Valinnanvaihe", noClassnameStored = true)
+@Entity(value = "Valinnanvaihe")
 @Indexes(
     @Index(
         fields = {@Field("hakuOid"), @Field("valinnanvaiheOid")},
@@ -19,14 +19,11 @@ public class ValinnanvaiheMigrationDTO {
 
   private Date createdAt;
 
-  @Indexed(unique = false, dropDups = false)
-  private String hakuOid;
+  @Indexed private String hakuOid;
 
-  @Indexed(unique = false, dropDups = false)
-  private String hakukohdeOid;
+  @Indexed private String hakukohdeOid;
 
-  @Indexed(unique = false, dropDups = false)
-  private String valinnanvaiheOid;
+  @Indexed private String valinnanvaiheOid;
 
   private String tarjoajaOid;
 

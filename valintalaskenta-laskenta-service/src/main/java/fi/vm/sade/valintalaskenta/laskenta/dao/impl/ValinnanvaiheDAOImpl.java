@@ -1,14 +1,17 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 
+import static dev.morphia.query.Sort.descending;
+import static dev.morphia.query.filters.Filters.*;
+
+import dev.morphia.Datastore;
+import dev.morphia.query.FindOptions;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.Datastore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +23,6 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 
   @Autowired private Datastore datastore;
 
-  @PostConstruct
-  public void ensureIndexes() {
-    datastore.ensureIndexes(Valinnanvaihe.class);
-    datastore.ensureIndexes(Valintatapajono.class);
-    datastore.ensureIndexes(Jonosija.class);
-  }
-
   @Override
   public Valinnanvaihe haeEdeltavaValinnanvaihe(
       String hakuOid, String hakukohdeOid, int jarjestysnumero) {
@@ -34,14 +30,12 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
       return Optional.ofNullable(
               datastore
                   .find(ValinnanvaiheMigrationDTO.class)
-                  .field("hakuOid")
-                  .equal(hakuOid)
-                  .field("hakukohdeOid")
-                  .equal(hakukohdeOid)
-                  .field("jarjestysnumero")
-                  .equal(jarjestysnumero - 1)
-                  .limit(1)
-                  .get())
+                  .filter(
+                      and(
+                          eq("hakuOid", hakuOid),
+                          eq("hakukohdeOid", hakukohdeOid),
+                          eq("jarjestysnumero", jarjestysnumero - 1)))
+                  .first())
           .map(this::migrate)
           .orElse(null);
     } else {
@@ -56,15 +50,13 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
       return Optional.ofNullable(
               datastore
                   .find(ValinnanvaiheMigrationDTO.class)
-                  .field("hakuOid")
-                  .equal(hakuOid)
-                  .field("hakukohdeOid")
-                  .equal(hakukohdeOid)
-                  .field("jarjestysnumero")
-                  .lessThan(jarjestysnumero)
-                  .order("-jarjestysnumero")
-                  .limit(1)
-                  .get())
+                  .filter(
+                      and(
+                          eq("hakuOid", hakuOid),
+                          eq("hakukohdeOid", hakukohdeOid),
+                          lt("jarjestysnumero", jarjestysnumero)))
+                  .iterator(new FindOptions().sort(descending("jarjestysnumero")).limit(1))
+                  .tryNext())
           .map(this::migrate)
           .orElse(null);
     } else {
@@ -77,9 +69,8 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     return Optional.ofNullable(
             datastore
                 .find(ValinnanvaiheMigrationDTO.class)
-                .field("valinnanvaiheOid")
-                .equal(valinnanvaiheOid)
-                .get())
+                .filter(eq("valinnanvaiheOid", valinnanvaiheOid))
+                .first())
         .map(this::migrate)
         .orElse(null);
   }
@@ -90,13 +81,13 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     return migrate(
         datastore
             .find(ValinnanvaiheMigrationDTO.class)
-            .field("hakuOid")
-            .equal(hakuOid)
-            .field("hakukohdeOid")
-            .equal(hakukohdeOid)
-            .field("jarjestysnumero")
-            .equal(jarjestysnumero)
-            .asList());
+            .filter(
+                and(
+                    eq("hakuOid", hakuOid),
+                    eq("hakukohdeOid", hakukohdeOid),
+                    eq("jarjestysnumero", jarjestysnumero)))
+            .stream()
+            .collect(Collectors.toList()));
   }
 
   @Override
@@ -122,7 +113,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
   public void poistaJono(Valintatapajono jono) {
     List<ObjectId> jonosijaIdt = jono.getJonosijaIdt();
     if (!jonosijaIdt.isEmpty()) {
-      datastore.delete(datastore.createQuery(Jonosija.class).field("_id").in(jonosijaIdt));
+      datastore.find(Jonosija.class).filter(in("_id", jonosijaIdt)).delete();
     }
     datastore.delete(jono);
   }
@@ -137,12 +128,10 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
       List<ObjectId> tamanJononJonosijaIdt = jono.getJonosijaIdt();
       List<Jonosija> poistettavatJonosijat =
           datastore
-              .createQuery(Jonosija.class)
-              .field("_id")
-              .in(tamanJononJonosijaIdt)
-              .field("hakemusOid")
-              .in(hakemusOidsToRemove)
-              .asList();
+              .find(Jonosija.class)
+              .filter(and(in("_id", tamanJononJonosijaIdt), in("hakemusOid", hakemusOidsToRemove)))
+              .stream()
+              .collect(Collectors.toList());
 
       for (Jonosija j : poistettavatJonosijat) {
         LOGGER.warn(
@@ -161,19 +150,21 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
   }
 
   private void populateJonosijat(Valintatapajono valintatapajono) {
-    List<ObjectId> jonosijaIdt = valintatapajono.getJonosijaIdt();
+    List<ObjectId> jonosijaIdt =
+        valintatapajono != null ? valintatapajono.getJonosijaIdt() : new ArrayList<>();
     if (jonosijaIdt.isEmpty()) {
       valintatapajono.setJonosijat(new ArrayList<>());
     } else {
       valintatapajono.setJonosijat(
-          datastore.createQuery(Jonosija.class).field("_id").in(jonosijaIdt).asList());
+          datastore.find(Jonosija.class).filter(in("_id", jonosijaIdt)).stream()
+              .collect(Collectors.toList()));
     }
   }
 
   private Valintatapajono migrate(ValintatapajonoMigrationDTO jono) {
     if (jono.getSchemaVersion() == Valintatapajono.CURRENT_SCHEMA_VERSION) {
       Valintatapajono alreadyMigrated =
-          datastore.find(Valintatapajono.class).field("_id").equal(jono.getId()).get();
+          datastore.find(Valintatapajono.class).filter(eq("_id", jono.getId())).first();
       populateJonosijat(alreadyMigrated);
       return alreadyMigrated;
     } else {

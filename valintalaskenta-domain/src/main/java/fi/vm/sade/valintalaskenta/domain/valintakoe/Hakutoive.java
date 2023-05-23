@@ -1,18 +1,18 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Indexed;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Indexed;
 
-@Embedded("Hakutoive")
+@Entity("Hakutoive")
 public class Hakutoive {
   @Indexed private String hakukohdeOid;
 
   @Indexed private String laskettavaHakukohdeOid;
 
-  @Embedded private List<ValintakoeValinnanvaihe> valinnanVaiheet = new ArrayList<>();
+  private List<ValintakoeValinnanvaihe> valinnanVaiheet = new ArrayList<>();
 
   public String getHakukohdeOid() {
     return hakukohdeOid;

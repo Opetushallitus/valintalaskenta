@@ -1,28 +1,42 @@
 package fi.vm.sade.valintalaskenta.tulos.dao;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
 import java.util.Collections;
 import java.util.List;
 import org.bson.types.ObjectId;
 import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** User: wuoti Date: 20.8.2013 Time: 19.30 */
 @ContextConfiguration(locations = "classpath:application-context-test.xml")
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @UsingDataSet
+@EnableRuleMigrationSupport
 public class JonosijaHistoriaTulosDAOTest {
+  @Configuration
+  public static class TestConfig {
+    @Bean("authorizer")
+    public Authorizer authorizer() {
+      return Mockito.mock(Authorizer.class);
+    }
+  }
+
   @Autowired private JarjestyskriteerihistoriaDAO jonosijaHistoriaTulosDAO;
 
   @Autowired private ApplicationContext applicationContext;
