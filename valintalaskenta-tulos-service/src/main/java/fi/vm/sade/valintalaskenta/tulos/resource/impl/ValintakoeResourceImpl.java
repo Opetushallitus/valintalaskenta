@@ -13,13 +13,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @PreAuthorize("isAuthenticated()")
-@Tag(name = "/valintakoe", description = "Resurssi valintakoeosallistumistulosten hakemiseen")
-@RequestMapping("/valintakoe")
+@Tag(
+    name = "/resources/valintakoe",
+    description = "Resurssi valintakoeosallistumistulosten hakemiseen")
+@RequestMapping("/resources/valintakoe")
 public class ValintakoeResourceImpl implements ValintakoeResource {
   private final ValintalaskentaTulosService tulosService;
   private final ValintalaskentaModelMapper modelMapper;

@@ -216,7 +216,7 @@ public class ValintalaskentaDbDumpingTest {
       return embeddedMongoFactory.get().newMongo();
     }
 
-    private void shutdown() {
+    public void shutdown() {
       embeddedMongoFactory.ifPresent(ValintalaskentaMongodForTestsFactory::shutdown);
     }
 

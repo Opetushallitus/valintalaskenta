@@ -3,11 +3,10 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:util="http://www.springframework.org/schema/util"
-       xmlns:jaxrs-client="http://cxf.apache.org/jaxrs-client" xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+       xmlns:jaxrs-client="http://cxf.apache.org/jaxrs-client"
        xmlns:http="http://cxf.apache.org/transports/http/configuration"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-         http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
          http://cxf.apache.org/jaxrs-client http://cxf.apache.org/schemas/jaxrs-client.xsd
          http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schemas/configuration/http-conf.xsd
 		 http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
@@ -111,48 +110,12 @@
                   value="${valintalaskentakoostepalvelu.app.password.to.sijoittelu}" />
     </bean>
 
-    <!-- CXF Swagger2Feature -->
-    <bean id="swagger2Feature" class="org.apache.cxf.jaxrs.swagger.Swagger2Feature">
-        <property name="resourcePackage" value="fi.vm.sade.valintalaskenta.tulos.resource.impl"/>
-        <property name="version" value="1.0"/>
-        <property name="basePath" value="${valintalaskenta-laskenta-service.swagger.basepath}"/>
-
-        <property name="title" value="Swagger API documentation"/>
-        <property name="scan" value="true"/>
-    </bean>
-
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta"/>
 
     <import resource="application-context-db.xml" />
 	<import resource="application-context-service.xml" />
 	<import resource="application-context-tulos.xml" />
 
-    <bean id="jaxrsConfig" class="fi.vm.sade.valintalaskenta.laskenta.resource.JaxrsConfiguration" />
     <bean id="cors-filter" class="fi.vm.sade.valintalaskenta.laskenta.resource.filter.CorsResponseFilter"/>
-    <bean id="cxfExceptionLogger" class="fi.vm.sade.valinta.sharedutils.http.CxfExceptionLogger"/>
-
-    <jaxrs:server id="valintalaskennanResurssit">
-        <jaxrs:serviceBeans>
-            <ref bean="hakemusResourceImpl"/>
-            <ref bean="hakukohdeResourceImpl"/>
-            <ref bean="hakuResourceImpl"/>
-            <ref bean="harkinnanvaraisuusResourceImpl"/>
-            <ref bean="jonosijaHistoriaResourceImpl"/>
-            <ref bean="valintakoeResourceImpl"/>
-            <ref bean="valintalaskentaResourceImpl"/>
-            <ref bean="valintatietoResourceImpl"/>
-            <ref bean="valintalaskentaResourceImpl"/>
-            <ref bean="valintalaskentaPaloissaResourceImpl"/>
-            <ref bean="sessionResourceImpl"/>
-        </jaxrs:serviceBeans>
-        <jaxrs:providers>
-            <ref bean="jsonProvider" />
-            <ref bean="cors-filter" />
-            <ref bean="cxfExceptionLogger" />
-        </jaxrs:providers>
-        <jaxrs:features>
-            <ref bean="swagger2Feature" />
-        </jaxrs:features>
-    </jaxrs:server>
 
 </beans>

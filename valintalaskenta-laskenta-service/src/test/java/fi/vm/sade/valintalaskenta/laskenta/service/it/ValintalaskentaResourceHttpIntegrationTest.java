@@ -21,6 +21,7 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKa
 import fi.vm.sade.valintalaskenta.laskenta.testing.TestApp;
 import java.util.Collections;
 import org.apache.cxf.jaxrs.client.WebClient;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -36,6 +37,11 @@ public class ValintalaskentaResourceHttpIntegrationTest {
   public void setUp() {
     TestApp.startTestApp();
     applicationContext = TestApp.ApplicationContextGetter.applicationContext;
+  }
+
+  @After
+  public void tearDown() {
+    TestApp.stopTestApp();
   }
 
   @Test

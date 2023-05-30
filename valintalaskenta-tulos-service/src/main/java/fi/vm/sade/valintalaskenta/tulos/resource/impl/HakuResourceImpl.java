@@ -15,18 +15,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @PreAuthorize("isAuthenticated()")
 @Tag(
-    name = "/haku",
+    name = "/resources/haku",
     description =
         "Resurssi haun valintalaskennan virhetilanteiden ja hakukohtaisten tietojen hakemiseen")
-@RequestMapping(value = "/haku")
+@RequestMapping(value = "/resources/haku")
 public class HakuResourceImpl implements HakuResource {
   protected static final Logger LOGGER = LoggerFactory.getLogger(HakuResourceImpl.class);
   private final ValintalaskentaTulosService tulosService;

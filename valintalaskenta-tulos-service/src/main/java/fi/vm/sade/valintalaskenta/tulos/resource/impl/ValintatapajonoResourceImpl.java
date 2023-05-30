@@ -31,15 +31,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @PreAuthorize("isAuthenticated()")
 @Tag(
-    name = "/valintatapajono",
+    name = "/resources/valintatapajono",
     description = "Resurssi valintatapajonon jonosijojen muokkaamiseen manuaalisesti")
-@RequestMapping("/valintatapajono")
+@RequestMapping("/resources/valintatapajono")
 public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
   private final ValintalaskentaTulosService tulosService;
   private final ValintalaskentaModelMapper modelMapper;

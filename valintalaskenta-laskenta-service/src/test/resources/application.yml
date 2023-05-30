@@ -1,9 +1,15 @@
 spring:
   main:
     allow-bean-definition-overriding: true
+  autoconfigure:
+    exclude: org.spring
 springdoc:
-  packagesToScan: fi.vm.sade.valintalaskenta
-  pathsToMatch: /**
+  show-actuator: false
+  paths-to-match: /resources/**
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
 management:
   endpoints:
     enabled-by-default: false
@@ -16,11 +22,10 @@ management:
         enabled: false
       connectionpool:
         enabled: false
-server:
-  servlet:
-    context-path: /valintalaskenta-laskenta-service
-  port: 8080
-  tomcat:
-    threads:
-      max: 20
-
+host:
+  host-cas: localhost
+  host-virkailija: localhost
+cas:
+  service: http://localhost:${server.port}/valintalaskenta-laskenta-service
+  send-renew: false
+  key: valintalaskenta-laskenta-service

@@ -17,18 +17,14 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @PreAuthorize("isAuthenticated()")
 @Tag(
-    name = "/harkinnanvarainenhyvaksynta",
+    name = "/resources/harkinnanvarainenhyvaksynta",
     description = "Resurssi harkinnanvaraisesti hakeneiden hakijoiden käsittelyyn")
-@RequestMapping(value = "/harkinnanvarainenhyvaksynta")
+@RequestMapping(value = "/resources/harkinnanvarainenhyvaksynta")
 public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResource {
   private final ValintalaskentaTulosService tulosService;
   private final ValintalaskentaModelMapper modelMapper;

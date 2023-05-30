@@ -37,13 +37,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @PreAuthorize("isAuthenticated()")
-@RequestMapping(value = "/valintalaskenta")
+@RequestMapping(value = "/resources/valintalaskenta")
 public class ValintalaskentaResourceImpl {
   private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaResourceImpl.class);
 

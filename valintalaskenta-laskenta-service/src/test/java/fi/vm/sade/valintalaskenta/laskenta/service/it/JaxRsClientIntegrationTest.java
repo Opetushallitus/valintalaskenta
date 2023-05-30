@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -19,6 +20,11 @@ public class JaxRsClientIntegrationTest {
   public void setUp() {
     TestApp.startTestApp();
     applicationContext = TestApp.ApplicationContextGetter.applicationContext;
+  }
+
+  @After
+  public void tearDown() {
+    TestApp.stopTestApp();
   }
 
   @Test

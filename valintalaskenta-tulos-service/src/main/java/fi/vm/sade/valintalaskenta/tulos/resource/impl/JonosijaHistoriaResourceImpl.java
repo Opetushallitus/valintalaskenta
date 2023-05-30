@@ -15,13 +15,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @PreAuthorize("isAuthenticated()")
-@Tag(name = "/jonosijahistoria", description = "Resurssi jonosijahistoriatiedon hakemiseen")
+@Tag(
+    name = "/resources/jonosijahistoria",
+    description = "Resurssi jonosijahistoriatiedon hakemiseen")
+@RequestMapping(value = "/resources/jonosijahistoria")
 public class JonosijaHistoriaResourceImpl implements JonosijaHistoriaResource {
   protected static final Logger logger =
       LoggerFactory.getLogger(JonosijaHistoriaResourceImpl.class);

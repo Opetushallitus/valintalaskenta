@@ -7,17 +7,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(
-    name = "/harkinnanvarainenhyvaksynta",
+    name = "/resources/harkinnanvarainenhyvaksynta",
     description = "Resurssi harkinnanvaraisesti hakeneiden hakijoiden käsittelyyn")
-@Controller()
-@RequestMapping(value = "/harkinnanvarainenhyvaksynta")
+@RestController
+@RequestMapping(value = "/resources/harkinnanvarainenhyvaksynta")
 public interface HarkinnanvaraisuusResource {
   @Operation(summary = "Asettaa tilan harkinnanvaraisesti hakeneelle hakijalle")
   @PostMapping(

@@ -3,21 +3,21 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:mockito="http://www.mockito.org/spring/mockito"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
        xmlns:jaxrs-client="http://cxf.apache.org/jaxrs-client"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
             http://www.mockito.org/spring/mockito http://www.mockito.org/spring/mockito.xsd
-            http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
             http://cxf.apache.org/jaxrs-client http://cxf.apache.org/schemas/jaxrs-client.xsd
-            http://www.springframework.org/schema/context
-            http://www.springframework.org/schema/context/spring-context.xsd">
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
   <bean class="fi.vm.sade.valintalaskenta.laskenta.testing.TestApp$ApplicationContextGetter"/>
+  <bean class="fi.vm.sade.valintalaskenta.laskenta.config.properties.CasProperties"/>
+  <bean class="fi.vm.sade.valintalaskenta.laskenta.config.properties.UrlConfiguration"/>
+  <bean class="fi.vm.sade.valintalaskenta.laskenta.config.SecurityConfiguration"/>
 
+  <mvc:annotation-driven />
   <context:annotation-config/>
-
-  <import resource="classpath:META-INF/cxf/cxf.xml"/>
-  <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
 
   <mockito:mock id="mockValiSijoitteluResource"
                 class="fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource"/>
@@ -47,7 +47,7 @@
   <bean id="cxfExceptionLogger" class="fi.vm.sade.valinta.sharedutils.http.CxfExceptionLogger"/>
 
   <jaxrs-client:client id="jaxRsClientIntegrationTestClient"
-                       address="${TestApplication.server.rootUrl}"
+                       address="${TestApp.server.rootUrl}"
                        serviceClass="fi.vm.sade.valintalaskenta.laskenta.service.it.JaxRsClientIntegrationTest.ResourceForTesting"
                        inheritHeaders="true">
       <jaxrs-client:providers>

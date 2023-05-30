@@ -5,11 +5,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@Tag(name = "/session", description = "Sessionhallinta")
+@RestController
+@Tag(name = "/resources/session", description = "Sessionhallinta")
+@RequestMapping(value = "/resources/session")
 public class SessionResourceImpl {
 
   @PreAuthorize("isAuthenticated()")

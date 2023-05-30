@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Lists;
@@ -19,26 +20,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-@RunWith(MockitoJUnitRunner.class)
 public class HakukohdeResourceImplTest {
-  @Mock private ValintalaskentaTulosService tulosService;
+  private final ValintalaskentaTulosService tulosService = mock(ValintalaskentaTulosService.class);
 
-  @Mock private Authorizer authorizer;
+  private final Authorizer authorizer = mock(Authorizer.class);
 
-  @Mock private ValintaperusteetResource valintaperusteetResource;
+  private final ValintaperusteetResource valintaperusteetResource =
+      mock(ValintaperusteetResource.class);
 
-  @InjectMocks
-  HakukohdeResourceImpl hakukohdeResource =
+  private final HakukohdeResourceImpl hakukohdeResource =
       new HakukohdeResourceImpl(
           new LaskentaAuditLogMock(), tulosService, authorizer, valintaperusteetResource);
+  ;
 
   private final ValinnanvaiheDTO valinnanvaiheFromUi = new ValinnanvaiheDTO();
 
@@ -65,8 +62,8 @@ public class HakukohdeResourceImplTest {
 
   @Test
   public void whenValinnanvaiheIsFoundFromValintaperusteet200IsReturned() {
-    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-    HttpSession session = Mockito.mock(HttpSession.class);
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    HttpSession session = mock(HttpSession.class);
     Mockito.when(request.getSession(false)).thenReturn(session);
 
     valinnanvaiheFromUi.setValinnanvaiheoid("valinnanVaiheFoundId");
@@ -87,8 +84,8 @@ public class HakukohdeResourceImplTest {
 
   @Test
   public void emptyInputIsNotAllowed() {
-    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-    HttpSession session = Mockito.mock(HttpSession.class);
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    HttpSession session = mock(HttpSession.class);
     Mockito.when(request.getSession(false)).thenReturn(session);
     valinnanvaiheFromUi.setValintatapajonot(null);
     assertEquals(

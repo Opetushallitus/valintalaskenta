@@ -38,7 +38,7 @@
 
     <bean id="modelMapper" class="fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper"/>
 
-    <bean id="ophRequestHeaders" class="fi.vm.sade.javautils.cxf.OphRequestHeadersCxfInterceptor">
+    <bean id="tulosOphRequestHeaders" class="fi.vm.sade.javautils.cxf.OphRequestHeadersCxfInterceptor">
         <constructor-arg index="0"  name="callerId" value="1.2.246.562.10.00000000001.valintalaskenta.valintalaskenta-tulos-service"/>
     </bean>
 
@@ -47,7 +47,7 @@
                          address="${valintalaskentakoostepalvelu.valintaperusteet.ilb.url}"
                          inheritHeaders="true">
         <jaxrs-client:outInterceptors>
-            <ref bean="ophRequestHeaders"/>
+            <ref bean="tulosOphRequestHeaders"/>
             <bean
                     class="fi.vm.sade.javautils.legacy_cxf_cas.authentication.cas.CasApplicationAsAUserInterceptor">
                 <property name="webCasUrl" value="${web.url.cas}" />
@@ -69,8 +69,5 @@
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.service.impl"/>
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.resource.impl"/>
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.service.impl.converters"/>
-
-    <import resource="application-context-tulos-ws.xml"/>
-
 
 </beans>

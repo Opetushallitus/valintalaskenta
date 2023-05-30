@@ -32,13 +32,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @PreAuthorize("isAuthenticated()")
-@Tag(name = "/hakukohde", description = "Resurssi tulosten hakemiseen hakukohteittain")
-@RequestMapping(value = "/hakukohde")
+@Tag(name = "/resources/hakukohde", description = "Resurssi tulosten hakemiseen hakukohteittain")
+@RequestMapping(value = "/resources/hakukohde")
 public class HakukohdeResourceImpl implements HakukohdeResource {
   protected static final Logger LOGGER = LoggerFactory.getLogger(HakukohdeResourceImpl.class);
   private final ValintalaskentaTulosService tulosService;
