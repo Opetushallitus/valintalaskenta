@@ -16,9 +16,6 @@
 	<mvc:annotation-driven />
 	<context:annotation-config />
 
-    <bean id="LaskentaAudit" class="fi.vm.sade.valintalaskenta.tulos.LaskentaAudit"/>
-    <bean id="LaskentaAuditLog" class="fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogImpl"/>
-
 	<context:property-placeholder
 		location="classpath:valintalaskenta-laskenta-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/valinta.properties, file:///${user.home:''}/oph-configuration/valintalaskenta-laskenta-service.properties, file:///${user.home:''}/oph-configuration/override.properties"
 		ignore-resource-not-found="true" properties-ref="defaultProps" />
@@ -34,88 +31,9 @@
             </util:properties>
         </property>
     </bean>
-    <import resource="file:///${user.home:''}/oph-configuration/security-context-backend.xml"/>
-
-    <http:conduit name="*.http-conduit">
-        <!-- AllowChunking="false" Nginx fails without this -->
-        <http:client Connection="Keep-Alive" ConnectionTimeout="${valintalaskenta-laskenta-service.global.http.connectionTimeoutMillis:59999}"
-                     ReceiveTimeout="${valintalaskenta-laskenta-service.global.http.receiveTimeoutMillis:1799999}" AllowChunking="false" />
-    </http:conduit>
-
-    <bean id="jacksonMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
-
-    <bean id="ophRequestHeaders" class="fi.vm.sade.javautils.cxf.OphRequestHeadersCxfInterceptor">
-        <constructor-arg index="0"  name="callerId" value="1.2.246.562.10.00000000001.valintalaskenta.valintalaskenta-laskenta-service"/>
-    </bean>
-
-    <jaxrs-client:client id="sijoitteluRestClient"
-                         address="${host.ilb}"
-                         serviceClass="fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource"
-                         inheritHeaders="true">
-        <jaxrs-client:outInterceptors>
-            <ref bean="ophRequestHeaders"/>
-            <ref bean="sijoitteluServiceCasInterceptor" />
-        </jaxrs-client:outInterceptors>
-        <jaxrs-client:providers>
-            <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
-            <bean class="fi.vm.sade.valintalaskenta.laskenta.ObjectMapperProvider" />
-        </jaxrs-client:providers>
-    </jaxrs-client:client>
-
-    <jaxrs-client:client id="erillissijoitteluRestClient"
-                         address="${valintalaskentakoostepalvelu.sijoittelu.rest.url}"
-                         serviceClass="fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource"
-                         inheritHeaders="true">
-        <jaxrs-client:outInterceptors>
-            <ref bean="ophRequestHeaders"/>
-            <ref bean="sijoitteluServiceCasInterceptor" />
-        </jaxrs-client:outInterceptors>
-        <jaxrs-client:providers>
-            <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
-            <bean class="fi.vm.sade.valintalaskenta.laskenta.ObjectMapperProvider" />
-        </jaxrs-client:providers>
-    </jaxrs-client:client>
-
-    <jaxrs-client:client id="ValintatapajonoClient"
-                         serviceClass="fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource"
-                         address="${valintalaskentakoostepalvelu.valintaperusteet.ilb.host}"
-                         inheritHeaders="true">
-        <jaxrs-client:outInterceptors>
-            <ref bean="ophRequestHeaders"/>
-            <bean
-                    class="fi.vm.sade.javautils.legacy_cxf_cas.authentication.cas.CasApplicationAsAUserInterceptor">
-                <property name="webCasUrl" value="${web.url.cas}" />
-                <property name="targetService"
-                          value="${cas.service.valintaperusteet-service}/j_spring_cas_security_check" />
-                <property name="appClientUsername"
-                          value="${valintalaskentakoostepalvelu.app.username.to.sijoittelu}" />
-                <property name="appClientPassword"
-                          value="${valintalaskentakoostepalvelu.app.password.to.sijoittelu}" />
-            </bean>
-        </jaxrs-client:outInterceptors>
-        <jaxrs-client:providers>
-            <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
-            <bean class="fi.vm.sade.valintalaskenta.laskenta.ObjectMapperProvider" />
-        </jaxrs-client:providers>
-    </jaxrs-client:client>
-
-    <bean id="sijoitteluServiceCasInterceptor"
-          class="fi.vm.sade.javautils.legacy_cxf_cas.authentication.cas.CasApplicationAsAUserInterceptor">
-        <property name="webCasUrl" value="${web.url.cas}" />
-        <property name="targetService"
-                  value="${cas.service.sijoittelu-service}/j_spring_cas_security_check" />
-        <property name="appClientUsername"
-                  value="${valintalaskentakoostepalvelu.app.username.to.sijoittelu}" />
-        <property name="appClientPassword"
-                  value="${valintalaskentakoostepalvelu.app.password.to.sijoittelu}" />
-    </bean>
-
-    <context:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta"/>
 
     <import resource="application-context-db.xml" />
 	<import resource="application-context-service.xml" />
 	<import resource="application-context-tulos.xml" />
-
-    <bean id="cors-filter" class="fi.vm.sade.valintalaskenta.laskenta.resource.filter.CorsResponseFilter"/>
 
 </beans>
