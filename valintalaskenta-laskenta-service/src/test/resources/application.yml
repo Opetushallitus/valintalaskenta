@@ -2,7 +2,8 @@ spring:
   main:
     allow-bean-definition-overriding: true
   autoconfigure:
-    exclude: org.spring
+    exclude:
+      - org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
   profiles:
     active: dev
 springdoc:

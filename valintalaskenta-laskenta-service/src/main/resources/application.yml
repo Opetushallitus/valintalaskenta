@@ -1,8 +1,6 @@
 spring:
   main:
     allow-bean-definition-overriding: true
-  autoconfigure:
-    exclude: org.spring
 springdoc:
   show-actuator: false
   paths-to-match: /resources/**

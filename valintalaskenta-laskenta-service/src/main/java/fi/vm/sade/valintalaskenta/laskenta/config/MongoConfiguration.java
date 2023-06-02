@@ -10,6 +10,8 @@ import org.mongodb.morphia.mapping.DefaultCreator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 
 /**
  * <bean id="mongoUri" class="com.mongodb.MongoClientURI"> <constructor-arg type="java.lang.String"
@@ -21,7 +23,9 @@ import org.springframework.context.annotation.Configuration;
  * <constructor-arg type="java.lang.String"
  * value="${valintalaskenta-laskenta-service.mongodb.dbname}" /> </bean>
  */
+@Profile("!dev")
 @Configuration
+@Order(2)
 public class MongoConfiguration {
   @Bean(name = "mongoUri")
   public MongoClientURI getMongoUri(

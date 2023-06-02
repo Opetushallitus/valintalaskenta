@@ -5,13 +5,13 @@ import de.flapdoodle.embed.mongo.commands.ServerAddress;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.mongo.transitions.Mongod;
 import de.flapdoodle.embed.mongo.transitions.RunningMongodProcess;
-import de.flapdoodle.reverse.TransitionWalker;
+import de.flapdoodle.reverse.TransitionWalker.ReachedState;
 
 public class ValintalaskentaMongodForTestsFactory {
-  private final TransitionWalker.ReachedState<RunningMongodProcess> mongodProcess;
+  private final ReachedState<RunningMongodProcess> mongodProcess;
 
   public ValintalaskentaMongodForTestsFactory() {
-    mongodProcess = new Mongod().start(Version.Main.V3_6);
+    mongodProcess = Mongod.instance().start(Version.Main.V3_6);
   }
 
   public void shutdown() {
