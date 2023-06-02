@@ -195,7 +195,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
 
   private WebClient createHttpClient(String path) {
     return new HttpResourceBuilder("valintalaskenta.valintalaskenta-laskenta-service")
-        .address(TestApp.ROOT_URL + path)
+        .address(System.getProperty("TestApp.server.rootUrl") + path)
         .buildExposingWebClientDangerously()
         .getWebClient()
         .type(APPLICATION_JSON_TYPE);

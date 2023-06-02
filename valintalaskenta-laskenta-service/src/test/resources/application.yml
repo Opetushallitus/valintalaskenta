@@ -3,6 +3,8 @@ spring:
     allow-bean-definition-overriding: true
   autoconfigure:
     exclude: org.spring
+  profiles:
+    active: dev
 springdoc:
   show-actuator: false
   paths-to-match: /resources/**
