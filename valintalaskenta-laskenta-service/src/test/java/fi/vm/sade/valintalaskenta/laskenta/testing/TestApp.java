@@ -20,8 +20,8 @@ public class TestApp {
 
   private static void startTestApp(final int port) {
     System.setProperty("TestApp.server.port", String.valueOf(port));
-    final String rootUrl = String
-        .format("http://localhost:%d/valintalaskenta-laskenta-service/resources", port);
+    final String rootUrl =
+        String.format("http://localhost:%d/valintalaskenta-laskenta-service/resources", port);
     System.setProperty("TestApp.server.rootUrl", rootUrl);
     SpringApplication.run(TestApp.class);
   }

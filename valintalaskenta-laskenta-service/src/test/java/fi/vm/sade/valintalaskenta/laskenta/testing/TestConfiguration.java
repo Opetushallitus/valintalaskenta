@@ -1,5 +1,7 @@
 package fi.vm.sade.valintalaskenta.laskenta.testing;
 
+import static java.lang.Integer.parseInt;
+
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.google.common.collect.Lists;
 import com.mongodb.MongoClient;
@@ -16,13 +18,10 @@ import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluRe
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
-import fi.vm.sade.valintalaskenta.laskenta.service.it.JaxRsClientIntegrationTest;
 import fi.vm.sade.valintalaskenta.laskenta.service.it.JaxRsClientIntegrationTest.ResourceForTesting;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogMock;
 import io.swagger.v3.oas.models.OpenAPI;
-import org.apache.cxf.endpoint.Server;
-import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
 import org.mockito.Mockito;
 import org.mongodb.morphia.Datastore;
@@ -39,165 +38,157 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.client.ClientBuilder;
-
-import static java.lang.Integer.parseInt;
-
 @Configuration
 public class TestConfiguration extends WebSecurityConfigurerAdapter {
 
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http.headers().disable().csrf().disable().authorizeHttpRequests().anyRequest().permitAll();
+  }
+
+  @Bean
+  public Authorizer authorizer() {
+    return Mockito.mock(Authorizer.class);
+  }
+
+  @Bean
+  public CasAuthenticationProvider casAuthenticationProvider() {
+    return Mockito.mock(CasAuthenticationProvider.class);
+  }
+
+  @Bean("valintalaskentaResourceImpl")
+  public ValintalaskentaResourceImpl valintalaskentaResourceImpl(
+      final ValintalaskentaService valintalaskentaService,
+      final ValisijoitteluKasittelija valisijoitteluKasittelija,
+      final ValiSijoitteluResource valiSijoitteluResource,
+      final ErillisSijoitteluResource erillisSijoitteluResource,
+      final ValintaperusteetValintatapajonoResource valintatapajonoResource,
+      @Value("${valintalaskenta-laskenta-service.parallelism:1}") final int parallelismFromConfig) {
+    return new ValintalaskentaResourceImpl(
+        valintalaskentaService,
+        valisijoitteluKasittelija,
+        valiSijoitteluResource,
+        erillisSijoitteluResource,
+        valintatapajonoResource,
+        parallelismFromConfig);
+  }
+
+  @Bean
+  public ValintalaskentaPaloissaResourceImpl valintalaskentaPaloissaResource(
+      ValintalaskentaResourceImpl valintalaskentaResource) {
+    return new ValintalaskentaPaloissaResourceImpl(valintalaskentaResource);
+  }
+
+  @Bean
+  public OpenAPI openAPI() {
+    return new SwaggerConfiguration().valintalaskentaAPI();
+  }
+
+  @Component
+  public static class CustomContainer
+      implements WebServerFactoryCustomizer<TomcatServletWebServerFactory> {
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.headers()
-            .disable()
-            .csrf()
-            .disable()
-            .authorizeHttpRequests()
-            .anyRequest()
-            .permitAll();
+    public void customize(TomcatServletWebServerFactory factory) {
+      factory.setContextPath(App.CONTEXT_PATH);
+      factory.setPort(parseInt(System.getProperty("TestApp.server.port")));
     }
+  }
 
-    @Bean
-    public Authorizer authorizer() {
-        return Mockito.mock(Authorizer.class);
-    }
+  @Bean
+  public TestApp.ApplicationContextGetter applicationContextGetter() {
+    return new TestApp.ApplicationContextGetter();
+  }
 
-    @Bean
-    public CasAuthenticationProvider casAuthenticationProvider() {
-        return Mockito.mock(CasAuthenticationProvider.class);
-    }
+  @Bean
+  public ValiSijoitteluResource mockValiSijoitteluResource() {
+    return Mockito.mock(ValiSijoitteluResource.class);
+  }
 
-    @Bean("valintalaskentaResourceImpl")
-    public ValintalaskentaResourceImpl valintalaskentaResourceImpl(
-            final ValintalaskentaService valintalaskentaService,
-            final ValisijoitteluKasittelija valisijoitteluKasittelija,
-            final ValiSijoitteluResource valiSijoitteluResource,
-            final ErillisSijoitteluResource erillisSijoitteluResource,
-            final ValintaperusteetValintatapajonoResource valintatapajonoResource,
-            @Value("${valintalaskenta-laskenta-service.parallelism:1}") final int parallelismFromConfig) {
-        return new ValintalaskentaResourceImpl(
-                valintalaskentaService,
-                valisijoitteluKasittelija,
-                valiSijoitteluResource,
-                erillisSijoitteluResource,
-                valintatapajonoResource,
-                parallelismFromConfig);
-    }
+  @Bean
+  public ErillisSijoitteluResource mockErillisSijoitteluResource() {
+    return Mockito.mock(ErillisSijoitteluResource.class);
+  }
 
-    @Bean
-    public ValintalaskentaPaloissaResourceImpl valintalaskentaPaloissaResource(
-            ValintalaskentaResourceImpl valintalaskentaResource) {
-        return new ValintalaskentaPaloissaResourceImpl(valintalaskentaResource);
-    }
+  @Bean
+  public ValintaperusteetValintatapajonoResource mockValintaperusteetValintatapajonoResource() {
+    return Mockito.mock(ValintaperusteetValintatapajonoResource.class);
+  }
 
-    @Bean
-    public OpenAPI openAPI() {
-        return new SwaggerConfiguration().valintalaskentaAPI();
-    }
+  @Bean
+  public ValintalaskentaService mockValintalaskentaService() {
+    return Mockito.mock(ValintalaskentaService.class);
+  }
 
-    @Component
-    public static class CustomContainer
-            implements WebServerFactoryCustomizer<TomcatServletWebServerFactory> {
-        @Override
-        public void customize(TomcatServletWebServerFactory factory) {
-            factory.setContextPath(App.CONTEXT_PATH);
-            factory.setPort(parseInt(System.getProperty("TestApp.server.port")));
-        }
-    }
+  @Bean
+  public ValisijoitteluKasittelija mockValisijoitteluKasittelija() {
+    return Mockito.mock(ValisijoitteluKasittelija.class);
+  }
 
-    @Bean
-    public TestApp.ApplicationContextGetter applicationContextGetter() {
-        return new TestApp.ApplicationContextGetter();
-    }
+  @Bean
+  public LaskentaAuditLogMock laskentaAuditLogMock() {
+    return new LaskentaAuditLogMock();
+  }
 
-    @Bean
-    public ValiSijoitteluResource mockValiSijoitteluResource() {
-        return Mockito.mock(ValiSijoitteluResource.class);
-    }
+  @Bean(name = "mongodFactory", destroyMethod = "shutdown")
+  public ValintalaskentaMongodForTestsFactory mongodFactory() {
+    return new ValintalaskentaMongodForTestsFactory();
+  }
 
-    @Bean
-    public ErillisSijoitteluResource mockErillisSijoitteluResource() {
-        return Mockito.mock(ErillisSijoitteluResource.class);
-    }
+  @Bean(name = "mongo")
+  public MongoClient mongo(
+      @Qualifier("mongodFactory") final ValintalaskentaMongodForTestsFactory mongodFactory) {
+    return mongodFactory.newMongo();
+  }
 
-    @Bean
-    public ValintaperusteetValintatapajonoResource mockValintaperusteetValintatapajonoResource() {
-        return Mockito.mock(ValintaperusteetValintatapajonoResource.class);
-    }
+  @Bean(name = "morphia")
+  public Morphia morphia() {
+    Morphia morphia = new Morphia();
+    morphia
+        .getMapper()
+        .getOptions()
+        .setObjectFactory(
+            new DefaultCreator() {
+              @Override
+              protected ClassLoader getClassLoaderForClass() {
+                return MongoConfiguration.class.getClassLoader();
+              }
+            });
+    return morphia;
+  }
 
-    @Bean
-    public ValintalaskentaService mockValintalaskentaService() {
-        return Mockito.mock(ValintalaskentaService.class);
-    }
+  @Bean(name = "datastore2")
+  public Datastore datastore2(
+      @Qualifier("morphia") final Morphia morphia, @Qualifier("mongo") final MongoClient mongo) {
+    return morphia.createDatastore(mongo, "test");
+  }
 
-    @Bean
-    public ValisijoitteluKasittelija mockValisijoitteluKasittelija() {
-        return Mockito.mock(ValisijoitteluKasittelija.class);
-    }
+  @Bean
+  public CxfExceptionLogger cxfExceptionLogger() {
+    return new CxfExceptionLogger();
+  }
 
-    @Bean
-    public LaskentaAuditLogMock laskentaAuditLogMock() {
-        return new LaskentaAuditLogMock();
-    }
+  @Bean
+  public JaxrsConfiguration jaxrsConfiguration() {
+    return new JaxrsConfiguration();
+  }
 
-    @Bean(name = "mongodFactory", destroyMethod = "shutdown")
-    public ValintalaskentaMongodForTestsFactory mongodFactory() {
-        return new ValintalaskentaMongodForTestsFactory();
-    }
+  @Bean
+  public JacksonJsonProvider jacksonJsonProvider() {
+    return new JacksonJsonProvider();
+  }
 
-    @Bean(name = "mongo")
-    public MongoClient mongo(
-            @Qualifier("mongodFactory") final ValintalaskentaMongodForTestsFactory mongodFactory) {
-        return mongodFactory.newMongo();
-    }
+  @Bean
+  public ObjectMapperProvider objectMapperProvider() {
+    return new ObjectMapperProvider();
+  }
 
-    @Bean(name = "morphia")
-    public Morphia morphia() {
-        Morphia morphia = new Morphia();
-        morphia
-                .getMapper()
-                .getOptions()
-                .setObjectFactory(
-                        new DefaultCreator() {
-                            @Override
-                            protected ClassLoader getClassLoaderForClass() {
-                                return MongoConfiguration.class.getClassLoader();
-                            }
-                        });
-        return morphia;
-    }
-
-    @Bean(name = "datastore2")
-    public Datastore datastore2(@Qualifier("morphia") final Morphia morphia,
-                                @Qualifier("mongo") final MongoClient mongo) {
-        return morphia.createDatastore(mongo, "test");
-    }
-
-    @Bean
-    public CxfExceptionLogger cxfExceptionLogger() {
-        return new CxfExceptionLogger();
-    }
-
-    @Bean
-    public JaxrsConfiguration jaxrsConfiguration() {
-        return new JaxrsConfiguration();
-    }
-
-    @Bean
-    public JacksonJsonProvider jacksonJsonProvider() {
-        return new JacksonJsonProvider();
-    }
-
-    @Bean
-    public ObjectMapperProvider objectMapperProvider() {
-        return new ObjectMapperProvider();
-    }
-
-    @Bean
-    public ResourceForTesting resourceForTesting(final JacksonJsonProvider jacksonJsonProvider,
-                                                 final ObjectMapperProvider objectMapperProvider) {
+  @Bean
+  public ResourceForTesting resourceForTesting(
+      final JacksonJsonProvider jacksonJsonProvider,
+      final ObjectMapperProvider objectMapperProvider) {
     return JAXRSClientFactory.create(
-        System.getProperty("TestApp.server.rootUrl"), ResourceForTesting.class,
-            Lists.newArrayList(jacksonJsonProvider, objectMapperProvider));
-    }
+        System.getProperty("TestApp.server.rootUrl"),
+        ResourceForTesting.class,
+        Lists.newArrayList(jacksonJsonProvider, objectMapperProvider));
+  }
 }
