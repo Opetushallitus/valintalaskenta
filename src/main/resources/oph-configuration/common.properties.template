@@ -19,7 +19,6 @@ cas.sendRenew=false
 cas.service.sijoittelu-service=https://${host.virkailija}/sijoittelu-service
 cas.service.valintaperusteet-service=https://${host.virkailija}/valintaperusteet-service
 cas.service.valintalaskenta-service=https://${host.virkailija}/valintalaskenta-laskenta-service
-log4j.properties.file=${user.home.conf}/log4j.properties
 root.organisaatio.oid=1.2.246.562.10.00000000001
 user.home.conf=${user.home}/oph-configuration
 web.url.cas=https\://${host.cas}/cas
