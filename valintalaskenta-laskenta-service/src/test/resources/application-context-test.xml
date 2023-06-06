@@ -31,6 +31,11 @@
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.dao.impl"/>
 
     <bean id="laskentaModelMapper" class="fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper"/>
-	
-    <import resource="spring/application-context-service.xml" />
+
+    <context:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion"/>
+    <context:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.dao.impl"/>
+    <context:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.service.impl"/>
+    <context:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl"/>
+    <context:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl"/>
+    <bean id="laskentaService" class="fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaServiceImpl"/>
 </beans>

@@ -1,9 +1,14 @@
 package fi.vm.sade.valintalaskenta.laskenta.config;
 
+import static fi.vm.sade.valintalaskenta.tulos.CxfUtil.casInterceptor;
+import static fi.vm.sade.valintalaskenta.tulos.CxfUtil.createClient;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import fi.vm.sade.javautils.cxf.OphRequestHeadersCxfInterceptor;
 import fi.vm.sade.javautils.legacy_cxf_cas.authentication.cas.CasApplicationAsAUserInterceptor;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaServiceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.ObjectMapperProvider;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource;
@@ -14,24 +19,18 @@ import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
 import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogImpl;
-import java.util.List;
-import org.apache.cxf.endpoint.Client;
-import org.apache.cxf.frontend.ClientProxy;
-import org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean;
 import org.apache.cxf.message.Message;
-import org.apache.cxf.transport.http.HTTPConduit;
-import org.apache.cxf.transports.http.configuration.ConnectionType;
-import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 
 @Configuration
-@ImportResource("classpath:spring/application-context.xml")
-public class ValintaLaskentaLaskentaConfiguration {
+@ComponentScan(
+    basePackages = {"fi.vm.sade.valintalaskenta.laskenta", "fi.vm.sade.valintalaskenta.tulos"})
+public class ValintalaskentaLaskentaConfiguration {
   @Bean("valintalaskentaResourceImpl")
   @Autowired
   public ValintalaskentaResourceImpl valintalaskentaResourceImpl(
@@ -65,7 +64,7 @@ public class ValintaLaskentaLaskentaConfiguration {
     return new ObjectMapper();
   }
 
-  @Bean
+  @Bean(name = "laskentaOphRequestHeaders")
   public OphRequestHeadersCxfInterceptor<Message> ophRequestHeaders() {
     return new OphRequestHeadersCxfInterceptor<>(
         "1.2.246.562.10.00000000001.valintalaskenta.valintalaskenta-laskenta-service");
@@ -79,16 +78,6 @@ public class ValintaLaskentaLaskentaConfiguration {
   @Bean
   public ObjectMapperProvider laskentaObjectMapperProvider() {
     return new ObjectMapperProvider();
-  }
-
-  private CasApplicationAsAUserInterceptor casInterceptor(
-      final String casUrl, final String targetUrl, final String username, final String password) {
-    final CasApplicationAsAUserInterceptor interceptor = new CasApplicationAsAUserInterceptor();
-    interceptor.setWebCasUrl(casUrl);
-    interceptor.setTargetService(targetUrl);
-    interceptor.setAppClientUsername(username);
-    interceptor.setAppClientPassword(password);
-    return interceptor;
   }
 
   @Bean(name = "sijoitteluServiceCasInterceptor")
@@ -117,49 +106,24 @@ public class ValintaLaskentaLaskentaConfiguration {
   @Value("${valintalaskenta-laskenta-service.global.http.receiveTimeoutMillis:1799999}")
   private long clientReceiveTimeout;
 
-  private <T> T restClient(
-      final JacksonJsonProvider jacksonJsonProvider,
-      final ObjectMapperProvider objectMapperProvider,
-      final String address,
-      final OphRequestHeadersCxfInterceptor<Message> ophRequestHeaders,
-      final CasApplicationAsAUserInterceptor casInterceptor,
-      final Class<T> cls) {
-    // Create rest client
-    JAXRSClientFactoryBean bean = new JAXRSClientFactoryBean();
-    bean.setInheritHeaders(true);
-    bean.setAddress(address);
-    bean.setProviders(List.of(jacksonJsonProvider, objectMapperProvider));
-    bean.setOutInterceptors(List.of(ophRequestHeaders, casInterceptor));
-
-    // Set http conduit settings
-    HTTPClientPolicy policy = new HTTPClientPolicy();
-    policy.setConnection(ConnectionType.KEEP_ALIVE);
-    policy.setConnectionTimeout(clientConnectionTimeout);
-    policy.setReceiveTimeout(clientReceiveTimeout);
-    policy.setAllowChunking(false);
-    final T restClient = bean.create(cls);
-    Client client = ClientProxy.getClient(restClient);
-    HTTPConduit conduit = (HTTPConduit) client.getConduit();
-    conduit.setClient(policy);
-
-    return restClient;
-  }
-
   @Bean(name = "sijoitteluRestClient")
   public ValiSijoitteluResource sijoitteluRestClient(
       final JacksonJsonProvider jacksonJsonProvider,
       final ObjectMapperProvider laskentaObjectMapperProvider,
       @Value("${host.ilb}") final String address,
-      final OphRequestHeadersCxfInterceptor<Message> ophRequestHeaders,
+      @Qualifier("laskentaOphRequestHeaders")
+          final OphRequestHeadersCxfInterceptor<Message> laskentaOphRequestHeaders,
       @Qualifier("sijoitteluServiceCasInterceptor")
           final CasApplicationAsAUserInterceptor casInterceptor) {
-    return restClient(
+    return createClient(
         jacksonJsonProvider,
         laskentaObjectMapperProvider,
         address,
-        ophRequestHeaders,
+        laskentaOphRequestHeaders,
         casInterceptor,
-        ValiSijoitteluResource.class);
+        ValiSijoitteluResource.class,
+        clientConnectionTimeout,
+        clientReceiveTimeout);
   }
 
   @Bean(name = "erillissijoitteluRestClient")
@@ -167,16 +131,19 @@ public class ValintaLaskentaLaskentaConfiguration {
       final JacksonJsonProvider jacksonJsonProvider,
       final ObjectMapperProvider laskentaObjectMapperProvider,
       @Value("${valintalaskentakoostepalvelu.sijoittelu.rest.url}") final String address,
-      final OphRequestHeadersCxfInterceptor<Message> ophRequestHeaders,
+      @Qualifier("laskentaOphRequestHeaders")
+          final OphRequestHeadersCxfInterceptor<Message> laskentaOphRequestHeaders,
       @Qualifier("sijoitteluServiceCasInterceptor")
           final CasApplicationAsAUserInterceptor casInterceptor) {
-    return restClient(
+    return createClient(
         jacksonJsonProvider,
         laskentaObjectMapperProvider,
         address,
-        ophRequestHeaders,
+        laskentaOphRequestHeaders,
         casInterceptor,
-        ErillisSijoitteluResource.class);
+        ErillisSijoitteluResource.class,
+        clientConnectionTimeout,
+        clientReceiveTimeout);
   }
 
   @Bean(name = "valintatapajonoClient")
@@ -184,20 +151,28 @@ public class ValintaLaskentaLaskentaConfiguration {
       final JacksonJsonProvider jacksonJsonProvider,
       final ObjectMapperProvider laskentaObjectMapperProvider,
       @Value("${valintalaskentakoostepalvelu.valintaperusteet.ilb.host}") final String address,
-      final OphRequestHeadersCxfInterceptor<Message> ophRequestHeaders,
+      @Qualifier("laskentaOphRequestHeaders")
+          final OphRequestHeadersCxfInterceptor<Message> laskentaOphRequestHeaders,
       @Qualifier("valintaperusteetServiceCasInterceptor")
           final CasApplicationAsAUserInterceptor casInterceptor) {
-    return restClient(
+    return createClient(
         jacksonJsonProvider,
         laskentaObjectMapperProvider,
         address,
-        ophRequestHeaders,
+        laskentaOphRequestHeaders,
         casInterceptor,
-        ValintaperusteetValintatapajonoResource.class);
+        ValintaperusteetValintatapajonoResource.class,
+        clientConnectionTimeout,
+        clientReceiveTimeout);
   }
 
   @Bean
   public CorsResponseFilter corsResponseFilter() {
     return new CorsResponseFilter();
+  }
+
+  @Bean
+  public LaskentaService laskentaService() {
+    return new LaskentaServiceImpl();
   }
 }

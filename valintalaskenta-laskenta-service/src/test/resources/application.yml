@@ -6,6 +6,7 @@ spring:
       - org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
   profiles:
     active: dev
+
 springdoc:
   show-actuator: false
   paths-to-match: /resources/**
@@ -13,6 +14,7 @@ springdoc:
     enabled: true
   swagger-ui:
     enabled: true
+
 management:
   endpoints:
     enabled-by-default: false
@@ -25,9 +27,11 @@ management:
         enabled: false
       connectionpool:
         enabled: false
+
 host:
   host-cas: localhost
   host-virkailija: localhost
+
 cas:
   service: http://localhost:${server.port}/valintalaskenta-laskenta-service
   send-renew: false

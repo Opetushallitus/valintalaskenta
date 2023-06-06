@@ -1,10 +1,11 @@
 package fi.vm.sade.valintalaskenta.tulos.context;
 
 import com.mongodb.MongoClient;
+import de.flapdoodle.embed.mongo.commands.ServerAddress;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.mongo.transitions.Mongod;
 import de.flapdoodle.embed.mongo.transitions.RunningMongodProcess;
-import de.flapdoodle.reverse.TransitionWalker;
+import de.flapdoodle.reverse.TransitionWalker.ReachedState;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.springframework.context.annotation.Bean;
@@ -15,20 +16,15 @@ import org.springframework.context.annotation.Configuration;
 public class MongoConfigurationImpl {
   public static final String DATABASE_NAME = "test";
 
-  @Bean
-  public Mongod mongoExecutable() {
-    return Mongod.builder().build();
-  }
-
   @Bean(destroyMethod = "close")
-  public TransitionWalker.ReachedState<RunningMongodProcess> mongodProcess(Mongod mongoExecutable) {
-    return mongoExecutable.start(Version.Main.V3_6);
+  public ReachedState<RunningMongodProcess> mongodProcess() {
+    return Mongod.instance().start(Version.Main.V3_6);
   }
 
   @Bean
-  public MongoClient mongoClient(
-      TransitionWalker.ReachedState<RunningMongodProcess> mongodProcess) {
-    return new MongoClient("127.0.0.1", mongodProcess.current().getServerAddress().getPort());
+  public MongoClient mongoClient(final ReachedState<RunningMongodProcess> mongodProcess) {
+    final ServerAddress serverAddress = mongodProcess.current().getServerAddress();
+    return new MongoClient(serverAddress.getHost(), serverAddress.getPort());
   }
 
   @Bean(name = "morphia2")
@@ -37,7 +33,7 @@ public class MongoConfigurationImpl {
   }
 
   @Bean(name = "datastore2")
-  public Datastore getDatastore(Morphia morphia, MongoClient mongo) {
+  public Datastore getDatastore(final Morphia morphia, final MongoClient mongo) {
     return morphia.createDatastore(mongo, DATABASE_NAME);
   }
 }
