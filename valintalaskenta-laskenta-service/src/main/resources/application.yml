@@ -24,7 +24,12 @@ management:
         enabled: false
 
 server:
+  servlet:
+    context-path: /valintalaskenta-laskenta-service
   port: 8080
+  tomcat:
+    threads:
+      max: 20
 
 cas:
   service: http://localhost:${server.port}/valintalaskenta-laskenta-service

@@ -22,8 +22,8 @@ public class UrlConfiguration extends OphProperties {
         "file:///${user.home:''}/oph-configuration/valinta.properties",
         "file:///${user.home:''}/oph-configuration/valintalaskenta-laskenta-service.properties",
         "file:///${user.home:''}/oph-configuration/override.properties");
-    addOverride("host-cas", environment.getRequiredProperty("host.host-cas"));
-    addOverride("host-virkailija", environment.getRequiredProperty("host.host-virkailija"));
+    addOverride("host-cas", environment.getProperty("host.cas", "localhost"));
+    addOverride("host-virkailija", environment.getRequiredProperty("host.virkailija"));
     addOverride("cas_key", "valintalaskenta-service");
     addOverride("cas_service", casService);
     addOverride("cas_callback_url", casCallback);
