@@ -23,6 +23,9 @@ management:
       connectionpool:
         enabled: false
 
+server:
+  port: 8080
+
 cas:
   service: http://localhost:${server.port}/valintalaskenta-laskenta-service
   send-renew: false
