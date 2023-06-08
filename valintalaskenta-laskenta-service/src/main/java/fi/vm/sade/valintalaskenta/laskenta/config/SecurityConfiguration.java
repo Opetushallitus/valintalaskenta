@@ -38,7 +38,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Autowired
   public SecurityConfiguration(
-      final CasProperties casProperties, final OphProperties ophProperties,
+      final CasProperties casProperties,
+      final OphProperties ophProperties,
       final Environment environment) {
     this.casProperties = casProperties;
     this.ophProperties = ophProperties;
@@ -61,8 +62,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Bean
   public CasAuthenticationProvider casAuthenticationProvider() {
-    final String host = environment.getProperty("host.host-alb",
-            environment.getRequiredProperty("host.host-virkailija"));
+    final String host =
+        environment.getProperty(
+            "host.host-alb", environment.getRequiredProperty("host.host-virkailija"));
     CasAuthenticationProvider casAuthenticationProvider = new CasAuthenticationProvider();
     casAuthenticationProvider.setUserDetailsService(
         new OphUserDetailsServiceImpl(host, ConfigEnums.CALLER_ID.value()));

@@ -66,8 +66,7 @@ public class ValintalaskentaLaskentaConfiguration {
 
   @Bean(name = "laskentaOphRequestHeaders")
   public OphRequestHeadersCxfInterceptor<Message> ophRequestHeaders() {
-    return new OphRequestHeadersCxfInterceptor<>(
-            ConfigEnums.CALLER_ID.value());
+    return new OphRequestHeadersCxfInterceptor<>(ConfigEnums.CALLER_ID.value());
   }
 
   @Bean
