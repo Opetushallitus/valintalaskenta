@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class UrlConfiguration extends OphProperties {
   public UrlConfiguration() {
-    addOptionalFiles("file:///${user.home:''}/oph-configuration/common.properties");
+    addOptionalFiles("file:///home/oph/oph-configuration/common.properties");
   }
 }

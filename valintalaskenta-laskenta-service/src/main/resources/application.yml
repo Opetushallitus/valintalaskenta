@@ -35,3 +35,16 @@ cas:
   service: http://localhost:${server.port}/valintalaskenta-laskenta-service
   send-renew: false
   key: valintalaskenta-laskenta-service
+
+logging:
+  level:
+    root: info
+    org.springframework: warn
+    org.springframework.security: warn
+    org.springframework.boot.autoconfigure.security.AuthenticationManagerConfiguration: warn
+    fi.vm.sade.auditlog.Audit: info
+    fi.vm.sade.java_utils.security.OpintopolkuCasAuthenticationFilter: warn
+    org.apache.http.client.protocol.ResponseProcessCookies: error
+    org.springframework.web: info
+    org.hibernate: info
+    com.github.dockerjava: info
