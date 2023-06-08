@@ -4,7 +4,6 @@ import fi.vm.sade.properties.OphProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 
 @Configuration
 public class UrlConfiguration extends OphProperties {
@@ -14,16 +13,22 @@ public class UrlConfiguration extends OphProperties {
   @Value("${cas.callback.valintalaskenta-service}")
   private String casCallback;
 
+  @Value("${host.virkailija}")
+  private String hostVirkailija;
+
+  @Value("${host.cas}")
+  private String hostCas;
+
   @Autowired
-  public UrlConfiguration(final Environment environment) {
+  public UrlConfiguration() {
     addOptionalFiles(
         "classpath:valintalaskenta-laskenta-service-oph.properties",
         "file:///${user.home:''}/oph-configuration/common.properties",
         "file:///${user.home:''}/oph-configuration/valinta.properties",
         "file:///${user.home:''}/oph-configuration/valintalaskenta-laskenta-service.properties",
         "file:///${user.home:''}/oph-configuration/override.properties");
-    addOverride("host-cas", environment.getProperty("host.cas", "localhost"));
-    addOverride("host-virkailija", environment.getRequiredProperty("host.virkailija"));
+    addOverride("host-cas", hostCas);
+    addOverride("host-virkailija", hostVirkailija);
     addOverride("cas_key", "valintalaskenta-service");
     addOverride("cas_service", casService);
     addOverride("cas_callback_url", casCallback);
