@@ -1,0 +1,17 @@
+#
+# TÄHÄN TIEDOSTOON EI SAA TALLENTAA YMPÄRISTÖKOHTAISIA ARVOJA MUUTOIN KUIN MUUTTUJINA!!!
+#
+# Tämä tiedosto toimii pohjana oph-configuration/common.properties tiedostolle,
+# joka asettaa tomcatin ympäristökohtaiset arvot.
+#
+
+cas:
+  service: https://{{host_virkailija}}/valintalaskenta-laskenta-service
+
+host:
+  host-virkailija: {{host_virkailija}}
+  host-cas: {{host_cas}}
+  host-alb: {{host_alb}}
+
+valintalaskenta:
+  uses-ssl-proxy: true

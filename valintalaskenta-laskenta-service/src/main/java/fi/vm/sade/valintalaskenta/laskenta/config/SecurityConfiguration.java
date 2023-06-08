@@ -10,11 +10,11 @@ import org.jasig.cas.client.validation.TicketValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 import org.springframework.security.cas.ServiceProperties;
 import org.springframework.security.cas.authentication.CasAuthenticationProvider;
 import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
@@ -34,12 +34,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   private static final Logger LOG = LoggerFactory.getLogger(SecurityConfiguration.class);
   private CasProperties casProperties;
   private OphProperties ophProperties;
+  private Environment environment;
 
   @Autowired
   public SecurityConfiguration(
-      final CasProperties casProperties, final OphProperties ophProperties) {
+      final CasProperties casProperties, final OphProperties ophProperties,
+      final Environment environment) {
     this.casProperties = casProperties;
     this.ophProperties = ophProperties;
+    this.environment = environment;
     LOG.info("CAS props: " + casProperties);
   }
 
@@ -56,18 +59,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   // CAS authentication provider (authentication manager)
   //
 
-  @Value("${host.alb}")
-  private String hostAlb;
-
-  @Value("${host.virkailija}")
-  private String hostVirkailija;
-
   @Bean
   public CasAuthenticationProvider casAuthenticationProvider() {
+    final String host = environment.getProperty("host.host-alb",
+            environment.getRequiredProperty("host.host-virkailija"));
     CasAuthenticationProvider casAuthenticationProvider = new CasAuthenticationProvider();
     casAuthenticationProvider.setUserDetailsService(
-        new OphUserDetailsServiceImpl(
-            hostAlb != null ? hostAlb : hostVirkailija, ConfigEnums.CALLER_ID.value()));
+        new OphUserDetailsServiceImpl(host, ConfigEnums.CALLER_ID.value()));
     casAuthenticationProvider.setServiceProperties(serviceProperties());
     casAuthenticationProvider.setTicketValidator(ticketValidator());
     casAuthenticationProvider.setKey(casProperties.getKey());

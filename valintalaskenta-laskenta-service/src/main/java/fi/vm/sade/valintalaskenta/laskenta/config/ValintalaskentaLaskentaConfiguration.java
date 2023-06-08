@@ -67,7 +67,7 @@ public class ValintalaskentaLaskentaConfiguration {
   @Bean(name = "laskentaOphRequestHeaders")
   public OphRequestHeadersCxfInterceptor<Message> ophRequestHeaders() {
     return new OphRequestHeadersCxfInterceptor<>(
-        "1.2.246.562.10.00000000001.valintalaskenta.valintalaskenta-laskenta-service");
+            ConfigEnums.CALLER_ID.value());
   }
 
   @Bean
