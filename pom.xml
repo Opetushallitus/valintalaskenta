@@ -508,7 +508,12 @@
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-parent</artifactId>
+                <artifactId>logback-access</artifactId>
+                <version>1.2.12</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
                 <version>1.2.12</version>
             </dependency>
             <dependency>
