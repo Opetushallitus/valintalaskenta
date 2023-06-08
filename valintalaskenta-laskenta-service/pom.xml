@@ -321,7 +321,7 @@
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-access</artifactId>
+            <artifactId>logback-parent</artifactId>
         </dependency>
 
         <dependency>

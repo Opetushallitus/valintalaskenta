@@ -508,8 +508,8 @@
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-access</artifactId>
-                <version>1.3.7</version>
+                <artifactId>logback-parent</artifactId>
+                <version>1.2.12</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
