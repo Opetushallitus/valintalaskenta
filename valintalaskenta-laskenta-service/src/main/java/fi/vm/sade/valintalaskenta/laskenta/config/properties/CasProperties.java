@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "cas")
+@ConfigurationProperties(prefix = "cas-service")
 public class CasProperties {
   private String service;
   private Boolean sendRenew;

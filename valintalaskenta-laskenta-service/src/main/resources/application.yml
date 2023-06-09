@@ -31,7 +31,7 @@ server:
     threads:
       max: 20
 
-cas:
+cas-service:
   service: http://localhost:${server.port}/valintalaskenta-laskenta-service
   send-renew: false
   key: valintalaskenta-laskenta-service
