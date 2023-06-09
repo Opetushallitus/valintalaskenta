@@ -2,7 +2,6 @@ package fi.vm.sade.valintalaskenta.laskenta.config;
 
 import fi.vm.sade.java_utils.security.OpintopolkuCasAuthenticationFilter;
 import fi.vm.sade.javautils.kayttooikeusclient.OphUserDetailsServiceImpl;
-import fi.vm.sade.properties.OphProperties;
 import fi.vm.sade.valintalaskenta.laskenta.config.properties.CasProperties;
 import org.jasig.cas.client.session.SingleSignOutFilter;
 import org.jasig.cas.client.validation.Cas20ProxyTicketValidator;
@@ -33,16 +32,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   private static final Logger LOG = LoggerFactory.getLogger(SecurityConfiguration.class);
   private CasProperties casProperties;
-  private OphProperties ophProperties;
   private Environment environment;
 
   @Autowired
-  public SecurityConfiguration(
-      final CasProperties casProperties,
-      final OphProperties ophProperties,
-      final Environment environment) {
+  public SecurityConfiguration(final CasProperties casProperties, final Environment environment) {
     this.casProperties = casProperties;
-    this.ophProperties = ophProperties;
     this.environment = environment;
     LOG.info("CAS props: " + casProperties);
   }
@@ -77,7 +71,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Bean
   public TicketValidator ticketValidator() {
     Cas20ProxyTicketValidator ticketValidator =
-        new Cas20ProxyTicketValidator(ophProperties.url("cas.url"));
+        new Cas20ProxyTicketValidator(environment.getRequiredProperty("cas.url"));
     ticketValidator.setAcceptAnyProxy(true);
     return ticketValidator;
   }
@@ -118,7 +112,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Bean
   public CasAuthenticationEntryPoint casAuthenticationEntryPoint() {
     CasAuthenticationEntryPoint casAuthenticationEntryPoint = new CasAuthenticationEntryPoint();
-    casAuthenticationEntryPoint.setLoginUrl(ophProperties.url("cas.login"));
+    casAuthenticationEntryPoint.setLoginUrl(environment.getRequiredProperty("cas.login"));
     casAuthenticationEntryPoint.setServiceProperties(serviceProperties());
     return casAuthenticationEntryPoint;
   }
