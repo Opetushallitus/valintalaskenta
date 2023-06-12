@@ -24,7 +24,7 @@ public class AccessLogConfiguration {
             .addContextCustomizers(
                 context -> {
                   LogbackValve logbackValve = new LogbackValve();
-                  logbackValve.setFilename(file.getAbsolutePath());
+                  logbackValve.setFilename("logback-access.xml");
                   context.getPipeline().addValve(logbackValve);
                 });
       }
