@@ -1,6 +1,9 @@
 spring:
   main:
     allow-bean-definition-overriding: true
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
 
 springdoc:
   show-actuator: false
