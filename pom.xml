@@ -247,10 +247,6 @@
                         <groupId>net.sf.ehcache</groupId>
                     </exclusion>
                     <exclusion>
-                        <artifactId>commons-logging</artifactId>
-                        <groupId>commons-logging</groupId>
-                    </exclusion>
-                    <exclusion>
                         <groupId>javax.xml.bind</groupId>
                         <artifactId>jaxb-api</artifactId>
                     </exclusion>
@@ -273,12 +269,6 @@
                 <groupId>fi.vm.sade.java-utils</groupId>
                 <artifactId>opintopolku-cas-servlet-filter</artifactId>
                 <version>0.2.0-SNAPSHOT</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
@@ -473,12 +463,6 @@
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-cas</artifactId>
                 <version>${spring.security.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>commons-logging</artifactId>
-                        <groupId>commons-logging</groupId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>cglib</groupId>
