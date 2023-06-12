@@ -326,18 +326,20 @@
                         </goals>
                         <configuration>
                             <target>
-                                <echo message="writing ${project.build.outputDirectory}/webapp/buildversion.txt"/>
-                                <echo file="${project.build.outputDirectory}/webapp/buildversion.txt">
+                                <echo message="writing target/${project.build.finalName}/${buildversion_prefix}buildversion.txt"/>
+                                <!--suppress UnresolvedMavenProperty -->
+                                <echo file="target/${project.build.finalName}/${buildversion_prefix}buildversion.txt">
                                     <![CDATA[artifactId=${project.artifactId}
-    version=${project.version}
-    buildNumber=${project.build}
-    branchName=${branch}
-    vcsRevision=${revision}
-    buildTtime=${maven.build.timestamp}
-    ]]>
+version=${project.version}
+buildNumber=${build}
+branchName=${branch}
+vcsRevision=${revision}
+buildTtime=${maven.build.timestamp}
+]]>
                                 </echo>
                                 <loadfile property="buildversiontxt"
-                                          srcFile="${project.build.outputDirectory}/webapp/buildversion.txt"/>
+                                          srcFile="target/${project.build.finalName}/${buildversion_prefix}buildversion.txt"/>
+                                <!--suppress UnresolvedMavenProperty -->
                                 <echo message="${buildversiontxt}"/>
                                 <echo file="target/mavenversion.txt">${project.version}</echo>
                             </target>

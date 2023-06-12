@@ -46,6 +46,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
+        <buildversion_prefix/>
     </properties>
 
     <dependencyManagement>
