@@ -7,6 +7,8 @@ import java.net.UnknownHostException;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.mapping.DefaultCreator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,8 +27,17 @@ import org.springframework.core.annotation.Order;
  */
 @Profile("!dev")
 @Configuration
-@Order(2)
 public class MongoConfiguration {
+  private static final Logger LOG = LoggerFactory.getLogger(MongoConfiguration.class);
+
+  public MongoConfiguration(
+      @Value("${valintalaskenta-laskenta-service.mongodb.uri}") final String uri,
+      @Value("${valintalaskenta-laskenta-service.mongodb.dbname}") String dbname
+  ) {
+    LOG.info("Mongo uri: " + uri);
+    LOG.info("Mongo dbname: " + dbname);
+  }
+
   @Bean(name = "mongoUri")
   public MongoClientURI getMongoUri(
       @Value("${valintalaskenta-laskenta-service.mongodb.uri}") String uri) throws IOException {

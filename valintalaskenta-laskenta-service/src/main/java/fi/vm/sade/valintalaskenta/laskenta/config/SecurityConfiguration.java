@@ -39,7 +39,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     this.casProperties = casProperties;
     this.environment = environment;
     LOG.info("CAS props: " + casProperties);
-    System.out.println("System properties: " + System.getProperties().toString());
   }
 
   @Bean
