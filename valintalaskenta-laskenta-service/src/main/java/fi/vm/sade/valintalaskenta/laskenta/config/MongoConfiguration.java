@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.annotation.Order;
 
 /**
  * <bean id="mongoUri" class="com.mongodb.MongoClientURI"> <constructor-arg type="java.lang.String"
@@ -32,8 +31,7 @@ public class MongoConfiguration {
 
   public MongoConfiguration(
       @Value("${valintalaskenta-laskenta-service.mongodb.uri}") final String uri,
-      @Value("${valintalaskenta-laskenta-service.mongodb.dbname}") String dbname
-  ) {
+      @Value("${valintalaskenta-laskenta-service.mongodb.dbname}") String dbname) {
     LOG.info("Mongo uri: " + uri);
     LOG.info("Mongo dbname: " + dbname);
   }
