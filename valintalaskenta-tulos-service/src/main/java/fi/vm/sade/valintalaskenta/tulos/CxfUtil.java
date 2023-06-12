@@ -38,6 +38,7 @@ public class CxfUtil {
     bean.setAddress(address);
     bean.setProviders(List.of(jacksonJsonProvider, objectMapperProvider));
     bean.setOutInterceptors(List.of(ophRequestHeaders, casInterceptor));
+    bean.setResourceClass(cls);
 
     return bean.create(cls);
   }
