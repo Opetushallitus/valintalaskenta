@@ -20,8 +20,7 @@ public class MongoConfiguration {
 
   @Bean(name = "mongoClient")
   public MongoClient mongoClient(
-      @Value("${valintalaskenta-laskenta-service.mongodb.uri}") String uri
-  ) {
+      @Value("${valintalaskenta-laskenta-service.mongodb.uri}") String uri) {
     LOG.info("Creating bean mongoClient with uri " + uri);
     return new MongoClient(new MongoClientURI(uri));
   }
