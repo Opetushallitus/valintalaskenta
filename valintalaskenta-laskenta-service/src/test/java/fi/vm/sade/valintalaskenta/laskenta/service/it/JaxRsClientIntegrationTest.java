@@ -11,7 +11,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Controller;
 
 public class JaxRsClientIntegrationTest {
   private ApplicationContext applicationContext;
@@ -33,7 +32,6 @@ public class JaxRsClientIntegrationTest {
     assertEquals(jaxrsClient.root(), Map.of("status", "UP"));
   }
 
-  @Controller
   @Path("/")
   public interface ResourceForTesting {
 
