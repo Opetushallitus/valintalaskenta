@@ -28,7 +28,7 @@
         <valinta-sharedutils.version>5.11-SNAPSHOT</valinta-sharedutils.version>
         <sijoittelu.version>7.6.0-SNAPSHOT</sijoittelu.version>
 
-        <cxf.version>3.6.0</cxf.version>
+        <cxf.version>3.6.1</cxf.version>
         <flapdoodle.embed.mongo.version>4.6.2</flapdoodle.embed.mongo.version>
         <httpcomponents.version>4.5.14</httpcomponents.version>
         <modelmapper.version>3.1.1</modelmapper.version>
@@ -83,6 +83,10 @@
                         <groupId>org.apache.cxf</groupId>
                         <artifactId>cxf-rt-transports-http</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.cxf</groupId>
+                        <artifactId>cxf-rt-frontend-jaxws</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -119,6 +123,10 @@
                     <exclusion>
                         <groupId>org.apache.cxf</groupId>
                         <artifactId>cxf-rt-transports-http</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.cxf</groupId>
+                        <artifactId>cxf-rt-frontend-jaxws</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -169,22 +177,6 @@
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-spring-boot-starter-jaxrs</artifactId>
                 <version>${cxf.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-frontend-jaxws</artifactId>
-                <version>${cxf.version}</version>
-                <scope>compile</scope>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>jaxb-impl</artifactId>
-                        <groupId>com.sun.xml.bind</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.sun.activation</groupId>
-                        <artifactId>javax.activation</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springdoc</groupId>
