@@ -17,7 +17,9 @@ public class ValintakoeDTO {
   @Schema(description = "Kokeen aktiivisuus", required = true)
   private boolean aktiivinen;
 
-  @Schema(description = "Osallistumistulos (pitääkö hakija osallistua ko. kokeeseen)", required = true)
+  @Schema(
+      description = "Osallistumistulos (pitääkö hakija osallistua ko. kokeeseen)",
+      required = true)
   private OsallistuminenTulosDTO osallistuminenTulos;
 
   @Schema(description = "Lähetetäänkö kokeesta kutsuja", required = true)

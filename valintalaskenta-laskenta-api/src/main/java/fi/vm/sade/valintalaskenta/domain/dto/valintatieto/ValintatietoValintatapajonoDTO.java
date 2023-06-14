@@ -24,7 +24,9 @@ public class ValintatietoValintatapajonoDTO extends ValintatapajonoDTO {
   @Schema(description = "Varasijoja täytetään asti")
   private Date varasijojaTaytetaanAsti;
 
-  @Schema(description = "Valintatapajono, josta vapaaksi jääneet paikat täytetään", required = false)
+  @Schema(
+      description = "Valintatapajono, josta vapaaksi jääneet paikat täytetään",
+      required = false)
   private String tayttojono;
 
   @Schema(description = "Erillishaussa käytetty sijoitteluajo", required = false)
