@@ -61,7 +61,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
   @Operation(summary = "Hakee hakukohteen valinnan vaiheiden tulokset")
   @GetMapping(value = "/{hakukohdeoid}/valinnanvaihe", produces = MediaType.APPLICATION_JSON_VALUE)
   public List<ValintatietoValinnanvaiheDTO> hakukohde(
-      @Parameter(name = "Hakukohteen OID", required = true) @PathVariable("hakukohdeoid")
+      @Parameter(name = "hakukohdeoid", required = true) @PathVariable("hakukohdeoid")
           final String hakukohdeoid) {
     try {
       return tulosService.haeValinnanvaiheetHakukohteelle(hakukohdeoid);
@@ -78,12 +78,11 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
       produces = MediaType.APPLICATION_JSON_VALUE,
       consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Object> lisaaTuloksia(
-      @Parameter(name = "Hakukohteen OID", required = true) @PathVariable("hakukohdeoid")
+      @Parameter(name = "hakukohdeoid", required = true) @PathVariable("hakukohdeoid")
           final String hakukohdeoid,
-      @Parameter(name = "Tarjoaja OID", required = true) @RequestParam("tarjoajaOid")
+      @Parameter(name = "tarjoajaOid", required = true) @RequestParam("tarjoajaOid")
           final String tarjoajaOid,
-      @Parameter(name = "Muokattava valinnanvaihe", required = true) @RequestBody
-          final ValinnanvaiheDTO vaihe,
+      @RequestBody final ValinnanvaiheDTO vaihe,
       final HttpServletRequest request) {
     try {
       authorizer.checkOrganisationAccess(tarjoajaOid, ROLE_VALINTOJENTOTEUTTAMINEN_TULOSTENTUONTI);
@@ -158,7 +157,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
   @Operation(summary = "Hakee hakukohteen hakijaryhmien tulokset")
   @GetMapping(value = "/{hakukohdeoid}/hakijaryhma", produces = MediaType.APPLICATION_JSON_VALUE)
   public List<HakijaryhmaDTO> hakijaryhmat(
-      @Parameter(name = "Hakukohteen OID", required = true) @PathVariable("hakukohdeoid")
+      @Parameter(name = "hakukohdeoid", required = true) @PathVariable("hakukohdeoid")
           final String hakukohdeoid) {
     try {
       return tulosService.haeHakijaryhmatHakukohteelle(hakukohdeoid);

@@ -46,13 +46,12 @@ public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResourc
       value = "/haku/{hakuOid}/hakukohde/{hakukohdeOid}/hakemus/{hakemusOid}",
       produces = MediaType.APPLICATION_JSON_VALUE)
   public void asetaTila(
-      @Parameter(name = "Haun OID", required = true) @PathVariable("hakuOid") final String hakuOid,
-      @Parameter(name = "Hakukohteen OID", required = true) @PathVariable("hakukohdeOid")
+      @Parameter(name = "hakuOid", required = true) @PathVariable("hakuOid") final String hakuOid,
+      @Parameter(name = "hakukohdeOid", required = true) @PathVariable("hakukohdeOid")
           final String hakukohdeOid,
-      @Parameter(name = "Hakemuksen OID", required = true) @PathVariable("hakemusOid")
+      @Parameter(name = "hakemusOid", required = true) @PathVariable("hakemusOid")
           final String hakemusOid,
-      @Parameter(name = "Asetettava tila", required = true) @RequestBody
-          final HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen,
+      @RequestBody final HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen,
       final HttpServletRequest request) {
     User user = auditLog.getUser(request);
 
@@ -68,8 +67,7 @@ public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResourc
   @Operation(summary = "Asettaa tilan harkinnanvaraisesti hakeneelle hakijalle")
   @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public void asetaTilat(
-      @Parameter(name = "Asetettava tila", required = true) @RequestBody
-          final List<HarkinnanvarainenHyvaksyminenDTO> harkinnanvaraisetHyvaksymiset,
+      @RequestBody final List<HarkinnanvarainenHyvaksyminenDTO> harkinnanvaraisetHyvaksymiset,
       final HttpServletRequest request) {
     User user = auditLog.getUser(request);
 
@@ -90,8 +88,8 @@ public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResourc
       value = "/haku/{hakuOid}/hakukohde/{hakukohdeOid}",
       produces = MediaType.APPLICATION_JSON_VALUE)
   public List<HarkinnanvarainenHyvaksyminenDTO> hakukohde(
-      @Parameter(name = "Haku OID", required = true) @PathVariable("hakuOid") final String hakuOid,
-      @Parameter(name = "Hakukohde OID", required = true) @PathVariable("hakukohdeOid")
+      @Parameter(name = "hakuOid", required = true) @PathVariable("hakuOid") final String hakuOid,
+      @Parameter(name = "hakukohdeOid", required = true) @PathVariable("hakukohdeOid")
           final String hakukohdeOid) {
     return modelMapper.mapList(
         tulosService.haeHarkinnanvaraisestiHyvaksymisenTila(hakukohdeOid),
@@ -104,8 +102,8 @@ public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResourc
       value = "/haku/{hakuOid}/hakemus/{hakemusOid}",
       produces = MediaType.APPLICATION_JSON_VALUE)
   public List<HarkinnanvarainenHyvaksyminenDTO> hakemus(
-      @Parameter(name = "Haku OID", required = true) @PathVariable("hakuOid") final String hakuOid,
-      @Parameter(name = "Hakemus OID", required = true) @PathVariable("hakemusOid")
+      @Parameter(name = "hakuOid", required = true) @PathVariable("hakuOid") final String hakuOid,
+      @Parameter(name = "hakemusOid", required = true) @PathVariable("hakemusOid")
           final String hakemusOid) {
     return modelMapper.mapList(
         tulosService.haeHakemuksenHarkinnanvaraisestiHyvaksymisenTilat(hakuOid, hakemusOid),

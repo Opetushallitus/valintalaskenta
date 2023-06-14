@@ -46,9 +46,9 @@ public class JonosijaHistoriaResourceImpl implements JonosijaHistoriaResource {
       value = "{valintatapajonoOid}/{hakemusOid}",
       produces = MediaType.APPLICATION_JSON_VALUE)
   public List<JarjestyskriteerihistoriaDTO> listJonosijaHistoria(
-      @Parameter(name = "Valintatapajono OID", required = true) @PathVariable("valintatapajonoOid")
+      @Parameter(name = "valintatapajonoOid", required = true) @PathVariable("valintatapajonoOid")
           final String valintatapajonoOid,
-      @Parameter(name = "Hakemus OID", required = true) @PathVariable("hakemusOid")
+      @Parameter(name = "hakemusOid", required = true) @PathVariable("hakemusOid")
           final String hakemusOid) {
     return modelMapper.mapList(
         tulosService.haeJonosijaHistoria(valintatapajonoOid, hakemusOid),

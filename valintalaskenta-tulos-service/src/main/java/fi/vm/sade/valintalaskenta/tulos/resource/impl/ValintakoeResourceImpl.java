@@ -37,7 +37,7 @@ public class ValintakoeResourceImpl implements ValintakoeResource {
   @Operation(summary = "Hakee valintakoeosallistumiset hakemukselle OID:n perusteella")
   @GetMapping(value = "/hakemus/{hakemusOid}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ValintakoeOsallistuminenDTO haku(
-      @Parameter(name = "Hakemus OID", required = true) @PathVariable("hakemusOid")
+      @Parameter(name = "hakemusOid", required = true) @PathVariable("hakemusOid")
           final String hakemusOid) {
     return modelMapper.map(
         tulosService.haeValintakoeOsallistumiset(hakemusOid), ValintakoeOsallistuminenDTO.class);
@@ -47,7 +47,7 @@ public class ValintakoeResourceImpl implements ValintakoeResource {
   @Operation(summary = "Hakee valintakoeosallistumiset hakukohteelle OID:n perusteella")
   @GetMapping(value = "/hakutoive/{hakukohdeOid}", produces = MediaType.APPLICATION_JSON_VALUE)
   public List<ValintakoeOsallistuminenDTO> hakuByHakutoive(
-      @Parameter(name = "Hakukohde OID", required = true) @PathVariable("hakukohdeOid")
+      @Parameter(name = "hakukohdeOid", required = true) @PathVariable("hakukohdeOid")
           final String hakukohdeOid) {
     return modelMapper.mapList(
         tulosService.haeValintakoeOsallistumisetByHakutoive(hakukohdeOid),

@@ -61,15 +61,14 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
       produces = MediaType.APPLICATION_JSON_VALUE,
       consumes = MediaType.APPLICATION_JSON_VALUE)
   public Response muutaJonosija(
-      @Parameter(name = "Valintatapajonon OID", required = true) @PathVariable("valintatapajonoOid")
+      @Parameter(name = "valintatapajonoOid", required = true) @PathVariable("valintatapajonoOid")
           final String valintatapajonoOid,
-      @Parameter(name = "Hakemus OID", required = true) @PathVariable("hakemusOid")
+      @Parameter(name = "hakemusOid", required = true) @PathVariable("hakemusOid")
           final String hakemusOid,
-      @Parameter(name = "Muokattavan järjestyskriteerin prioriteetti", required = true)
+      @Parameter(name = "jarjestyskriteeriPrioriteetti", required = true)
           @PathVariable("jarjestyskriteeriPrioriteetti")
           final Integer jarjestyskriteeriPrioriteetti,
-      @Parameter(name = "Järjestyskriteerin uusi arvo", required = true) @RequestBody
-          final MuokattuJonosijaArvoDTO arvo,
+      @RequestBody final MuokattuJonosijaArvoDTO arvo,
       final HttpServletRequest request) {
     User user = auditLog.getUser(request);
 
@@ -91,11 +90,11 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
       produces = MediaType.APPLICATION_JSON_VALUE,
       consumes = MediaType.APPLICATION_JSON_VALUE)
   public Response poistaMuokattuJonosija(
-      @Parameter(name = "Valintatapajonon OID", required = true) @PathVariable("valintatapajonoOid")
+      @Parameter(name = "valintatapajonoOid", required = true) @PathVariable("valintatapajonoOid")
           final String valintatapajonoOid,
-      @Parameter(name = "Hakemus OID", required = true) @PathVariable("hakemusOid")
+      @Parameter(name = "hakemusOid", required = true) @PathVariable("hakemusOid")
           final String hakemusOid,
-      @Parameter(name = "Muokattavan järjestyskriteerin prioriteetti", required = true)
+      @Parameter(name = "jarjestyskriteeriPrioriteetti", required = true)
           @PathVariable("jarjestyskriteeriPrioriteetti")
           final Integer jarjestyskriteeriPrioriteetti,
       final HttpServletRequest request) {
@@ -119,12 +118,10 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
       produces = MediaType.APPLICATION_JSON_VALUE,
       consumes = MediaType.APPLICATION_JSON_VALUE)
   public Response muokkaaSijotteluStatusta(
-      @Parameter(name = "Valintatapajonon OID", required = true) @PathVariable("valintatapajonoOid")
+      @Parameter(name = "valintatapajonoOid", required = true) @PathVariable("valintatapajonoOid")
           final String valintatapajonoOid,
-      @Parameter(name = "Sijoittelustatus", required = true) @RequestParam("status")
-          final boolean status,
-      @Parameter(name = "Valintatapajono", required = true)
-          final ValintatapajonoDTO valintatapajono,
+      @Parameter(name = "status", required = true) @RequestParam("status") final boolean status,
+      @RequestBody final ValintatapajonoDTO valintatapajono,
       final HttpServletRequest request) {
     User user = auditLog.getUser(request);
 
@@ -172,7 +169,7 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
       value = "/{valintatapajonoOid}/valmissijoiteltavaksi",
       produces = MediaType.APPLICATION_JSON_VALUE)
   public Response haeSijoitteluStatus(
-      @Parameter(name = "Valintatapajonon OID", required = true) @PathVariable("valintatapajonoOid")
+      @Parameter(name = "valintatapajonoOid", required = true) @PathVariable("valintatapajonoOid")
           String oid) {
     HashMap object = new HashMap();
     object.put("value", tulosService.haeSijoitteluStatus(oid));
