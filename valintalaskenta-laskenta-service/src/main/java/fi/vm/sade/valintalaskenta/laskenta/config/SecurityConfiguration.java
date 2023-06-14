@@ -23,6 +23,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Profile("!dev")
 @Configuration
@@ -124,13 +125,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .csrf()
         .disable()
         .authorizeHttpRequests()
-        .requestMatchers("/buildversion.txt")
+        .requestMatchers(new AntPathRequestMatcher("/buildversion.txt"))
         .permitAll()
-        .requestMatchers("/actuator/health")
+        .requestMatchers(new AntPathRequestMatcher("/actuator/health"))
         .permitAll()
-        .requestMatchers("/swagger-ui")
+        .requestMatchers("/swagger-ui")  // loose matching for swagger resources
         .permitAll()
-        .requestMatchers("/v3/api-docs")
+        .requestMatchers(new AntPathRequestMatcher("/v3/api-docs"))
         .permitAll()
         .anyRequest()
         .authenticated()
