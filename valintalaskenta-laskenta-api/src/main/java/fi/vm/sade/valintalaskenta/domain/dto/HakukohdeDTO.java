@@ -5,25 +5,25 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.List;
 
-@Schema(name = "valintalaskenta.domain.dto.Hakukohde", description = "Hakukohde")
+@Schema(name = "HakukohdeDTO", description = "Hakukohde")
 public class HakukohdeDTO {
-  @Schema(name = "Haku OID", required = true)
+  @Schema(title = "Haku OID", required = true)
   private String hakuoid;
 
-  @Schema(name = "Tarjoaja OID", required = true)
+  @Schema(title = "Tarjoaja OID", required = true)
   private String tarjoajaoid;
 
-  @Schema(name = "Hakukohde OID", required = true)
+  @Schema(title = "Hakukohde OID", required = true)
   private String oid;
 
-  @Schema(name = "Valinnan vaiheet", required = true)
+  @Schema(title = "Valinnan vaiheet", required = true)
   private List<ValintatietoValinnanvaiheDTO> valinnanvaihe =
       new ArrayList<ValintatietoValinnanvaiheDTO>();
 
-  @Schema(name = "Hakukohderyhmäoidit", required = true)
+  @Schema(title = "Hakukohderyhmäoidit", required = true)
   private List<String> hakukohdeRyhmatOids = new ArrayList<>();
 
-  @Schema(name = "Prioriteetti", required = true)
+  @Schema(title = "Prioriteetti", required = true)
   private int prioriteetti;
 
   private boolean kaikkiJonotSijoiteltu = true;

@@ -4,13 +4,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.List;
 
-@Schema(name = "valintalaskenta.domain.dto.valintakoe.HakutoiveDTO", description = "Hakutoive")
+@Schema(name = "HakutoiveDTO", description = "Hakutoive")
 public class HakutoiveDTO {
 
-  @Schema(name = "Hakutoiveen OID", required = true)
+  @Schema(title = "Hakutoiveen OID", required = true)
   private String hakukohdeOid;
 
-  @Schema(name = "Valintakoevalinnan vaiheet")
+  @Schema(title = "Valintakoevalinnan vaiheet")
   private List<ValintakoeValinnanvaiheDTO> valinnanVaiheet =
       new ArrayList<ValintakoeValinnanvaiheDTO>();
 

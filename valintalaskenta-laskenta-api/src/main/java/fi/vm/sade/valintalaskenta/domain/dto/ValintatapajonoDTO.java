@@ -5,58 +5,58 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.List;
 
-@Schema(name = "valintalaskenta.domain.dto.ValintatapajonoDTO", description = "Valintatapajono")
+@Schema(name = "ValintatapajonoDTO", description = "Valintatapajono")
 public class ValintatapajonoDTO {
 
-  @Schema(name = "OID", required = true)
+  @Schema(title = "OID", required = true)
   private String valintatapajonooid;
 
-  @Schema(name = "Nimi", required = true)
+  @Schema(title = "Nimi", required = true)
   private String nimi;
 
-  @Schema(name = "Prioriteetti", required = true)
+  @Schema(title = "Prioriteetti", required = true)
   private int prioriteetti;
 
-  @Schema(name = "Aloituspaikat", required = true)
+  @Schema(title = "Aloituspaikat", required = true)
   private int aloituspaikat;
 
   @Schema(
-      name =
+      title =
           "Valintaperusteissa ylläpidettävä tieto siitä, onko jono tarkoitus joskus sijoitella vai ei",
       required = true)
   private boolean siirretaanSijoitteluun;
 
-  @Schema(name = "Tasasijasääntö", required = true)
+  @Schema(title = "Tasasijasääntö", required = true)
   private Tasasijasaanto tasasijasaanto;
 
-  @Schema(name = "Onko varasijatäyttö käytössä", required = true)
+  @Schema(title = "Onko varasijatäyttö käytössä", required = true)
   private Boolean eiVarasijatayttoa;
 
   @Schema(
-      name = "Hyväksytäänkö kaikki hyväksyttävissä olevat aloituspaikoista riippumatta",
+      title = "Hyväksytäänkö kaikki hyväksyttävissä olevat aloituspaikoista riippumatta",
       required = true)
   private Boolean kaikkiEhdonTayttavatHyvaksytaan = false;
 
-  @Schema(name = "Täytetäänkö poissaolevaksi ilmottautuneiden tilalle", required = true)
+  @Schema(title = "Täytetäänkö poissaolevaksi ilmottautuneiden tilalle", required = true)
   private Boolean poissaOlevaTaytto = false;
 
-  @Schema(name = "Käytetäänkö valintalaskentaa", required = true)
+  @Schema(title = "Käytetäänkö valintalaskentaa", required = true)
   private Boolean kaytetaanValintalaskentaa = true;
 
   @Schema(
-      name =
+      title =
           "Valintalaskennan tuloksissa ylläpidettävä tieto siitä, otetaanko jono mukaan sijoitteluajoon",
       required = false)
   private Boolean valmisSijoiteltavaksi = true;
 
-  @Schema(name = "Jonosijat", required = true)
+  @Schema(title = "Jonosijat", required = true)
   private List<JonosijaDTO> jonosijat = new ArrayList<JonosijaDTO>();
 
-  @Schema(name = "Onko valintatapajono aktiivinen", required = false)
+  @Schema(title = "Onko valintatapajono aktiivinen", required = false)
   private Boolean aktiivinen = true;
 
   @Schema(
-      name = "Käytetäänkö kokonaispisteitä jonosijojen sijaan, jos laskenta ei ole käytössä",
+      title = "Käytetäänkö kokonaispisteitä jonosijojen sijaan, jos laskenta ei ole käytössä",
       required = false)
   private Boolean kaytetaanKokonaispisteita;
 

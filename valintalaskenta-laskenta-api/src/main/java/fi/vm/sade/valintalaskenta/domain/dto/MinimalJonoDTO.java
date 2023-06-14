@@ -12,22 +12,22 @@ import org.slf4j.LoggerFactory;
 public class MinimalJonoDTO {
   private static final Logger LOGGER = LoggerFactory.getLogger(MinimalJonoDTO.class);
 
-  @Schema(name = "Haku OID")
+  @Schema(title = "Haku OID")
   private String hakuOid;
 
-  @Schema(name = "Hakukohde OID")
+  @Schema(title = "Hakukohde OID")
   private String hakukohdeOid;
 
-  @Schema(name = "Valintatapajono OID")
+  @Schema(title = "Valintatapajono OID")
   private String valintatapajonoOid;
 
-  @Schema(name = "Hakemusten määrä jonossa")
+  @Schema(title = "Hakemusten määrä jonossa")
   private int hakemusCount;
 
-  @Schema(name = "Jono käyttää valintalaskentaa")
+  @Schema(title = "Jono käyttää valintalaskentaa")
   private final boolean kaytetaanValintalaskentaa;
 
-  @Schema(name = "Jono on siirretty sijoitteluun")
+  @Schema(title = "Jono on siirretty sijoitteluun")
   private final boolean siirretaanSijoitteluun;
 
   public MinimalJonoDTO(

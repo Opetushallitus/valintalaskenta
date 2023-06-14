@@ -22,19 +22,19 @@ public class JarjestyskriteeritulosDTO implements Comparable<Jarjestyskriteeritu
     this.nimi = nimi != null ? nimi.intern() : null;
   }
 
-  @Schema(name = "Järjestyskriteerin lukuarvo", required = true)
+  @Schema(title = "Järjestyskriteerin lukuarvo", required = true)
   private BigDecimal arvo;
 
-  @Schema(name = "Järjestyskriteerin tila", required = true)
+  @Schema(title = "Järjestyskriteerin tila", required = true)
   private JarjestyskriteerituloksenTila tila;
 
-  @Schema(name = "Monikielinen kuvaus (esim. hylkäyksen syy)")
+  @Schema(title = "Monikielinen kuvaus (esim. hylkäyksen syy)")
   private Map<String, String> kuvaus;
 
-  @Schema(name = "Järjestyskriteerin prioriteetti", required = true)
+  @Schema(title = "Järjestyskriteerin prioriteetti", required = true)
   private int prioriteetti;
 
-  @Schema(name = "Järjestyskriteerin nimi")
+  @Schema(title = "Järjestyskriteerin nimi")
   private String nimi;
 
   @Override

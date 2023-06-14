@@ -4,26 +4,26 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "SyotettyArvoDTO", description = "Laskennassa käytetty syötettävä arvo")
 public class SyotettyArvoDTO {
-  @Schema(name = "Tunniste", required = true)
+  @Schema(title = "Tunniste", required = true)
   private String tunniste;
 
-  @Schema(name = "Varsinainen arvo, joka hakemukselle on syötetty", required = true)
+  @Schema(title = "Varsinainen arvo, joka hakemukselle on syötetty", required = true)
   private String arvo;
 
   @Schema(
-      name =
+      title =
           "Laskennassa käytetty arvo eli esim. jos "
               + "hakemuksen arvo on laskennassa konvertoitu toiseksi arvoksi",
       required = true)
   private String laskennallinenArvo;
 
-  @Schema(name = "Arvon osallistumistieto", required = true)
+  @Schema(title = "Arvon osallistumistieto", required = true)
   private String osallistuminen;
 
-  @Schema(name = "Arvon tyypin koodisto uri", required = true)
+  @Schema(title = "Arvon tyypin koodisto uri", required = true)
   private String tyypinKoodiUri;
 
-  @Schema(name = "Tilastoidaanko tieto vai", required = true)
+  @Schema(title = "Tilastoidaanko tieto vai", required = true)
   private boolean tilastoidaan;
 
   public String getTunniste() {

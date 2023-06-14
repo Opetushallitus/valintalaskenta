@@ -11,25 +11,25 @@ import java.util.List;
     description = "Valintakoeosallistuminen")
 public class ValintakoeOsallistuminenDTO {
 
-  @Schema(name = "Haku OID", required = true)
+  @Schema(title = "Haku OID", required = true)
   private String hakuOid;
 
-  @Schema(name = "Hakemus OID", required = true)
+  @Schema(title = "Hakemus OID", required = true)
   private String hakemusOid;
 
-  @Schema(name = "Hakija OID")
+  @Schema(title = "Hakija OID")
   private String hakijaOid;
 
-  @Schema(name = "Etunimi")
+  @Schema(title = "Etunimi")
   private String etunimi;
 
-  @Schema(name = "Sukunimi")
+  @Schema(title = "Sukunimi")
   private String sukunimi;
 
-  @Schema(name = "Luontiajankohta")
+  @Schema(title = "Luontiajankohta")
   private Date createdAt;
 
-  @Schema(name = "Hakutoiveet")
+  @Schema(title = "Hakutoiveet")
   private List<HakutoiveDTO> hakutoiveet = new ArrayList<HakutoiveDTO>();
 
   public String getHakuOid() {

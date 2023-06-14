@@ -4,22 +4,22 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "FunktioTulosDTO", description = "Laskennassa saatu funktio tulos")
 public class FunktioTulosDTO {
-  @Schema(name = "Tunniste", required = true)
+  @Schema(title = "Tunniste", required = true)
   private String tunniste;
 
-  @Schema(name = "Varsinainen arvo, joka laskennassa on saatu", required = true)
+  @Schema(title = "Varsinainen arvo, joka laskennassa on saatu", required = true)
   private String arvo;
 
-  @Schema(name = "Suomenkielinen nimi", required = false)
+  @Schema(title = "Suomenkielinen nimi", required = false)
   private String nimiFi;
 
-  @Schema(name = "Ruotsinkielinen nimi", required = false)
+  @Schema(title = "Ruotsinkielinen nimi", required = false)
   private String nimiSv;
 
-  @Schema(name = "Englanninkielinen nimi", required = false)
+  @Schema(title = "Englanninkielinen nimi", required = false)
   private String nimiEn;
 
-  @Schema(name = "Näytetäänkö Omassa Opintopolussa", required = false)
+  @Schema(title = "Näytetäänkö Omassa Opintopolussa", required = false)
   private boolean omaopintopolku;
 
   public FunktioTulosDTO() {}

@@ -7,13 +7,13 @@ import java.math.BigDecimal;
 @Schema(name = "MuokattuJonosijaArvoDTO", description = "Muokattu jonosija")
 public class MuokattuJonosijaArvoDTO {
 
-  @Schema(name = "Tila", required = true)
+  @Schema(title = "Tila", required = true)
   private JarjestyskriteerituloksenTila tila;
 
-  @Schema(name = "Arvo", required = true)
+  @Schema(title = "Arvo", required = true)
   private BigDecimal arvo;
 
-  @Schema(name = "Selite", required = true)
+  @Schema(title = "Selite", required = true)
   private String selite;
 
   public JarjestyskriteerituloksenTila getTila() {

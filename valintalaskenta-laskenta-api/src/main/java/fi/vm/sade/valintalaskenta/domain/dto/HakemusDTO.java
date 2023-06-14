@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Schema(name = "valintalaskenta.domain.dto.HakemusDTO", description = "Yhden hakemuksen tiedot")
+@Schema(name = "HakemusDTO", description = "Yhden hakemuksen tiedot")
 public class HakemusDTO {
 
-  @Schema(name = "Haku OID", required = true)
+  @Schema(title = "Haku OID", required = true)
   private String hakuoid; // mika haku
 
   public void setHakuoid(String hakuoid) {
@@ -23,30 +23,30 @@ public class HakemusDTO {
     this.hakukohteet = hakukohteet;
   }
 
-  @Schema(name = "Hakemus OID", required = true)
+  @Schema(title = "Hakemus OID", required = true)
   private String hakemusoid;
 
-  @Schema(name = "Hakutoiveet", required = true)
+  @Schema(title = "Hakutoiveet", required = true)
   private List<HakukohdeDTO> hakukohteet;
 
-  @Schema(name = "Hakija OID", required = false)
+  @Schema(title = "Hakija OID", required = false)
   private String hakijaOid;
 
-  @Schema(name = "Hakija etunimi", required = false)
+  @Schema(title = "Hakija etunimi", required = false)
   private String etunimi;
 
-  @Schema(name = "Hakijan sukunimi", required = false)
+  @Schema(title = "Hakijan sukunimi", required = false)
   private String sukunimi;
 
-  @Schema(name = "Hakijan Koski-opiskeluoikeudet", required = false)
+  @Schema(title = "Hakijan Koski-opiskeluoikeudet", required = false)
   private String koskiOpiskeluoikeudetJson;
 
   /** @Deprecated Jatkossa käytetään avainSuoritusTiedot -kenttää */
   @Deprecated
-  @Schema(name = "Hakemuksen avain/arvo map", required = false)
+  @Schema(title = "Hakemuksen avain/arvo map", required = false)
   private List<AvainArvoDTO> avaimet = new ArrayList<AvainArvoDTO>();
 
-  @Schema(name = "Hakemuksen avain/arvo map", required = false)
+  @Schema(title = "Hakemuksen avain/arvo map", required = false)
   private List<AvainMetatiedotDTO> avainMetatiedotDTO = Collections.emptyList();
 
   public HakemusDTO(String hakuoid, String hakemusoid, List<HakukohdeDTO> hakukohteet) {
