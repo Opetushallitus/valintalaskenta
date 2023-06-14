@@ -18,10 +18,10 @@ import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import java.util.Collections;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.Response;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 public class HakukohdeResourceImplTest {
@@ -67,19 +67,19 @@ public class HakukohdeResourceImplTest {
     Mockito.when(request.getSession(false)).thenReturn(session);
 
     valinnanvaiheFromUi.setValinnanvaiheoid("valinnanVaiheFoundId");
-    ResponseEntity<Object> response =
+    Response response =
         hakukohdeResource.lisaaTuloksia(
             "hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi, request);
-    assertEquals(202, response.getStatusCodeValue());
+    assertEquals(202, response.getStatus());
   }
 
   @Test
   public void whenValinnanvaiheIsNotFoundFromValintaperusteet500IsReturned() {
     valinnanvaiheFromUi.setValinnanvaiheoid("valinnanVaiheNotFoundId");
-    ResponseEntity<Object> response =
+    Response response =
         hakukohdeResource.lisaaTuloksia(
             "hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi, new MockHttpServletRequest());
-    assertEquals(500, response.getStatusCodeValue());
+    assertEquals(500, response.getStatus());
   }
 
   @Test
@@ -92,14 +92,14 @@ public class HakukohdeResourceImplTest {
         400,
         hakukohdeResource
             .lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi, request)
-            .getStatusCodeValue());
+            .getStatus());
 
     valinnanvaiheFromUi.setValintatapajonot(Collections.emptyList());
     assertEquals(
         400,
         hakukohdeResource
             .lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi, request)
-            .getStatusCodeValue());
+            .getStatus());
 
     valinnanvaiheFromUi.setValintatapajonot(
         Collections.singletonList(new ValintatietoValintatapajonoDTO()));
@@ -107,7 +107,7 @@ public class HakukohdeResourceImplTest {
         400,
         hakukohdeResource
             .lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi, request)
-            .getStatusCodeValue());
+            .getStatus());
 
     valinnanvaiheFromUi
         .getValintatapajonot()
@@ -117,6 +117,6 @@ public class HakukohdeResourceImplTest {
         202,
         hakukohdeResource
             .lisaaTuloksia("hakukohdeoid", "tarjoajaoid", valinnanvaiheFromUi, request)
-            .getStatusCodeValue());
+            .getStatus());
   }
 }

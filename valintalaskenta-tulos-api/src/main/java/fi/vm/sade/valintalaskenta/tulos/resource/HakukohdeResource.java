@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import org.springframework.http.ResponseEntity;
+import javax.ws.rs.core.Response;
 
 @Path("resources/hakukohde")
 public interface HakukohdeResource {
@@ -22,7 +22,7 @@ public interface HakukohdeResource {
   @Path("{hakukohdeoid}/valinnanvaihe")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  ResponseEntity<Object> lisaaTuloksia(
+  Response lisaaTuloksia(
       @PathParam("hakukohdeoid") final String hakukohdeoid,
       @QueryParam("tarjoajaOid") final String tarjoajaOid,
       final ValinnanvaiheDTO vaihe,

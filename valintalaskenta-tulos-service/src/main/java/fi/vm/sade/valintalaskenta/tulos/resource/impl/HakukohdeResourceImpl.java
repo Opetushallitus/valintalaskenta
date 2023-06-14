@@ -25,12 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -77,7 +76,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
       value = "/{hakukohdeoid}/valinnanvaihe",
       produces = MediaType.APPLICATION_JSON_VALUE,
       consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Object> lisaaTuloksia(
+  public Response lisaaTuloksia(
       @Parameter(name = "hakukohdeoid", required = true) @PathVariable("hakukohdeoid")
           final String hakukohdeoid,
       @Parameter(name = "tarjoajaOid", required = true) @RequestParam("tarjoajaOid")
@@ -97,7 +96,7 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
                     + "tarjoajaOid = %s, hakukohdeOid = %s , syöte: %s",
                 tarjoajaOid, hakukohdeoid, vaihe));
         message.put("error", "Saatiin tyhjä data käyttöliittymältä; ei tallenneta.");
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+        return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
       }
 
       Optional<ValintaperusteetDTO> valinnanVaiheValintaperusteissa =
@@ -115,17 +114,17 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
             "Päivitettävää valinnanvaihetta ei löytynyt valintaperusteista, hakukohde {}, valinnanvaihe {}",
             hakukohdeoid,
             vaihe.getValinnanvaiheoid());
-        return ResponseEntity.internalServerError().build();
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
       }
     } catch (Exception e) {
       LOGGER.error(
           "Valintatapajonon pisteitä ei saatu päivitettyä hakukohteelle " + hakukohdeoid, e);
-      return ResponseEntity.internalServerError().build();
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
     User user = auditLog.getUser(request);
     ValinnanvaiheDTO valinnanvaihe = tulosService.lisaaTuloksia(vaihe, hakukohdeoid, tarjoajaOid);
     auditLog(hakukohdeoid, vaihe, user);
-    return ResponseEntity.accepted().body(valinnanvaihe);
+    return Response.status(Response.Status.ACCEPTED).entity(valinnanvaihe).build();
   }
 
   private void auditLog(String hakukohdeoid, ValinnanvaiheDTO vaihe, User user) {
