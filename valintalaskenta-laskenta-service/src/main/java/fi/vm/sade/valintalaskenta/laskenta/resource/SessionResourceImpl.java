@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta.resource;
 
+import fi.vm.sade.valintalaskenta.domain.resource.SessionResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.servlet.http.HttpServletRequest;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Tag(name = "/resources/session", description = "Sessionhallinta")
 @RequestMapping(value = "/resources/session")
-public class SessionResourceImpl {
+public class SessionResourceImpl implements SessionResource {
 
   @PreAuthorize("isAuthenticated()")
   @Operation(
