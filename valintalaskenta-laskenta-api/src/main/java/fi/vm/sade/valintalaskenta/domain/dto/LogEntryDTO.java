@@ -6,16 +6,16 @@ import java.util.Date;
 @Schema(name = "LogEntryDTO", description = "Lokiviesti")
 public class LogEntryDTO {
 
-  @Schema(title = "Luomisajankohta", required = true)
+  @Schema(description = "Luomisajankohta", required = true)
   private Date luotu;
 
-  @Schema(title = "Muokkaaja", required = true)
+  @Schema(description = "Muokkaaja", required = true)
   private String muokkaaja;
 
-  @Schema(title = "Muutos", required = true)
+  @Schema(description = "Muutos", required = true)
   private String muutos;
 
-  @Schema(title = "Selite", required = true)
+  @Schema(description = "Selite", required = true)
   private String selite;
 
   public Date getLuotu() {

@@ -7,27 +7,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Schema(
-    name = "valintalaskenta.domain.dto.MinimalJonoDTO",
+    name = "valintalaskenta.MinimalJonoDTO",
     description = "Valintatapajono, jossa vain pakolliset kentät ODWlle")
 public class MinimalJonoDTO {
   private static final Logger LOGGER = LoggerFactory.getLogger(MinimalJonoDTO.class);
 
-  @Schema(title = "Haku OID")
+  @Schema(description = "Haku OID")
   private String hakuOid;
 
-  @Schema(title = "Hakukohde OID")
+  @Schema(description = "Hakukohde OID")
   private String hakukohdeOid;
 
-  @Schema(title = "Valintatapajono OID")
+  @Schema(description = "Valintatapajono OID")
   private String valintatapajonoOid;
 
-  @Schema(title = "Hakemusten määrä jonossa")
+  @Schema(description = "Hakemusten määrä jonossa")
   private int hakemusCount;
 
-  @Schema(title = "Jono käyttää valintalaskentaa")
+  @Schema(description = "Jono käyttää valintalaskentaa")
   private final boolean kaytetaanValintalaskentaa;
 
-  @Schema(title = "Jono on siirretty sijoitteluun")
+  @Schema(description = "Jono on siirretty sijoitteluun")
   private final boolean siirretaanSijoitteluun;
 
   public MinimalJonoDTO(

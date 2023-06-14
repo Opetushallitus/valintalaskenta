@@ -2,31 +2,31 @@ package fi.vm.sade.valintalaskenta.domain.dto.valintakoe;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "ValintakoeDTO", description = "Valintakoe")
+@Schema(name = "valintalaskenta.valintakoe.ValintakoeDTO", description = "Valintakoe")
 public class ValintakoeDTO {
 
-  @Schema(title = "OID", required = true)
+  @Schema(description = "OID", required = true)
   private String valintakoeOid;
 
-  @Schema(title = "Kokeen tunniste", required = true)
+  @Schema(description = "Kokeen tunniste", required = true)
   private String valintakoeTunniste;
 
-  @Schema(title = "Kokeen nimi", required = true)
+  @Schema(description = "Kokeen nimi", required = true)
   private String nimi;
 
-  @Schema(title = "Kokeen aktiivisuus", required = true)
+  @Schema(description = "Kokeen aktiivisuus", required = true)
   private boolean aktiivinen;
 
-  @Schema(title = "Osallistumistulos (pitääkö hakija osallistua ko. kokeeseen)", required = true)
+  @Schema(description = "Osallistumistulos (pitääkö hakija osallistua ko. kokeeseen)", required = true)
   private OsallistuminenTulosDTO osallistuminenTulos;
 
-  @Schema(title = "Lähetetäänkö kokeesta kutsuja", required = true)
+  @Schema(description = "Lähetetäänkö kokeesta kutsuja", required = true)
   private boolean lahetetaankoKoekutsut;
 
-  @Schema(title = "Kutsutaanko kaikki kokeeseen", required = true)
+  @Schema(description = "Kutsutaanko kaikki kokeeseen", required = true)
   private Boolean kutsutaankoKaikki;
 
-  @Schema(title = "Kutsuttavien määrä", required = true)
+  @Schema(description = "Kutsuttavien määrä", required = true)
   private Integer kutsuttavienMaara;
 
   public Boolean getKutsutaankoKaikki() {

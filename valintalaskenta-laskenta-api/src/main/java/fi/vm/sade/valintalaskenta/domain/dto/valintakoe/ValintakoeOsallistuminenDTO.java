@@ -7,29 +7,29 @@ import java.util.List;
 
 /** User: wuoti Date: 29.8.2013 Time: 8.28 */
 @Schema(
-    name = "valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO",
+    name = "valintalaskenta.valintakoe.ValintakoeOsallistuminenDTO",
     description = "Valintakoeosallistuminen")
 public class ValintakoeOsallistuminenDTO {
 
-  @Schema(title = "Haku OID", required = true)
+  @Schema(description = "Haku OID", required = true)
   private String hakuOid;
 
-  @Schema(title = "Hakemus OID", required = true)
+  @Schema(description = "Hakemus OID", required = true)
   private String hakemusOid;
 
-  @Schema(title = "Hakija OID")
+  @Schema(description = "Hakija OID")
   private String hakijaOid;
 
-  @Schema(title = "Etunimi")
+  @Schema(description = "Etunimi")
   private String etunimi;
 
-  @Schema(title = "Sukunimi")
+  @Schema(description = "Sukunimi")
   private String sukunimi;
 
-  @Schema(title = "Luontiajankohta")
+  @Schema(description = "Luontiajankohta")
   private Date createdAt;
 
-  @Schema(title = "Hakutoiveet")
+  @Schema(description = "Hakutoiveet")
   private List<HakutoiveDTO> hakutoiveet = new ArrayList<HakutoiveDTO>();
 
   public String getHakuOid() {

@@ -6,13 +6,13 @@ import java.util.List;
 
 @Schema(name = "ValintakoeValinnanvaiheDTO", description = "Valintakoevalinnanvaihe")
 public class ValintakoeValinnanvaiheDTO {
-  @Schema(title = "OID", required = true)
+  @Schema(description = "OID", required = true)
   private String valinnanVaiheOid;
 
-  @Schema(title = "Vaiheen järjestysluku", required = true)
+  @Schema(description = "Vaiheen järjestysluku", required = true)
   private Integer valinnanVaiheJarjestysluku;
 
-  @Schema(title = "Valintakokeet")
+  @Schema(description = "Valintakokeet")
   private List<ValintakoeDTO> valintakokeet = new ArrayList<ValintakoeDTO>();
 
   public String getValinnanVaiheOid() {

@@ -7,29 +7,29 @@ import java.util.List;
 @Schema(name = "MuokattuJonosijaDTO", description = "Muokattu jonosija")
 public class MuokattuJonosijaDTO {
 
-  @Schema(title = "Hakukohde OID", required = true)
+  @Schema(description = "Hakukohde OID", required = true)
   private String hakukohdeOid;
 
-  @Schema(title = "Haku OID", required = true)
+  @Schema(description = "Haku OID", required = true)
   private String hakuOid;
 
-  @Schema(title = "Valintatapajono OID", required = true)
+  @Schema(description = "Valintatapajono OID", required = true)
   private String valintatapajonoOid;
 
-  @Schema(title = "Hakukohde OID", required = true)
+  @Schema(description = "Hakukohde OID", required = true)
   private String hakemusOid;
 
-  @Schema(title = "Prioriteetti", required = true)
+  @Schema(description = "Prioriteetti", required = true)
   private Integer prioriteetti; // hakutoive
 
-  @Schema(title = "Harkinnanvaraisuus")
+  @Schema(description = "Harkinnanvaraisuus")
   private Boolean harkinnanvarainen;
 
-  @Schema(title = "Järjestyskriteeritulokset", required = true)
+  @Schema(description = "Järjestyskriteeritulokset", required = true)
   private List<JarjestyskriteeritulosDTO> jarjestyskriteerit =
       new ArrayList<JarjestyskriteeritulosDTO>();
 
-  @Schema(title = "Lokiviestit", required = true)
+  @Schema(description = "Lokiviestit", required = true)
   private List<LogEntryDTO> logEntries = new ArrayList<LogEntryDTO>();
 
   public String getHakukohdeOid() {

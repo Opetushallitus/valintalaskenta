@@ -4,7 +4,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.OsallistuminenDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(
-    name = "valintalaskenta.domain.dto.valintatieto.ValintakoeOsallistuminenDTO",
+    name = "valintalaskenta.valintatieto.ValintakoeOsallistuminenDTO",
     description = "Valintakoeosallistuminen")
 public class ValintakoeOsallistuminenDTO {
   private OsallistuminenDTO osallistuminen;

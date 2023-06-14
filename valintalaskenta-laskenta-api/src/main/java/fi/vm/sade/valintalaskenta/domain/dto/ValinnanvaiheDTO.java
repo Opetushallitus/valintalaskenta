@@ -7,29 +7,29 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Schema(name = "ValinnanvaiheDTO", description = "Valinnan vaihe")
+@Schema(name = "valintalaskenta.ValinnanvaiheDTO", description = "Valinnan vaihe")
 public class ValinnanvaiheDTO {
 
-  @Schema(title = "Järjestysnumero", required = true)
+  @Schema(description = "Järjestysnumero", required = true)
   private int jarjestysnumero;
 
-  @Schema(title = "Valinnan vaiheen OID", required = true)
+  @Schema(description = "Valinnan vaiheen OID", required = true)
   private String valinnanvaiheoid;
 
-  @Schema(title = "Haun OID", required = true)
+  @Schema(description = "Haun OID", required = true)
   private String hakuOid;
 
-  @Schema(title = "Valinnan vaiheen nimi")
+  @Schema(description = "Valinnan vaiheen nimi")
   private String nimi;
 
-  @Schema(title = "Luomisajankohta", required = true)
+  @Schema(description = "Luomisajankohta", required = true)
   private Date createdAt;
 
-  @Schema(title = "Valintatapajonot", required = true)
+  @Schema(description = "Valintatapajonot", required = true)
   private List<ValintatietoValintatapajonoDTO> valintatapajonot =
       new ArrayList<ValintatietoValintatapajonoDTO>();
 
-  @Schema(title = "Valintakokeet")
+  @Schema(description = "Valintakokeet")
   private List<ValintakoeDTO> valintakokeet = new ArrayList<ValintakoeDTO>();
 
   public ValinnanvaiheDTO() {}

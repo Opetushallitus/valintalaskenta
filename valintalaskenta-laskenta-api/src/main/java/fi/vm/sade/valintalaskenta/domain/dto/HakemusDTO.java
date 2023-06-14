@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Schema(name = "HakemusDTO", description = "Yhden hakemuksen tiedot")
+@Schema(name = "valintalaskenta.HakemusDTO", description = "Yhden hakemuksen tiedot")
 public class HakemusDTO {
 
-  @Schema(title = "Haku OID", required = true)
+  @Schema(description = "Haku OID", required = true)
   private String hakuoid; // mika haku
 
   public void setHakuoid(String hakuoid) {
@@ -23,30 +23,30 @@ public class HakemusDTO {
     this.hakukohteet = hakukohteet;
   }
 
-  @Schema(title = "Hakemus OID", required = true)
+  @Schema(description = "Hakemus OID", required = true)
   private String hakemusoid;
 
-  @Schema(title = "Hakutoiveet", required = true)
+  @Schema(description = "Hakutoiveet", required = true)
   private List<HakukohdeDTO> hakukohteet;
 
-  @Schema(title = "Hakija OID", required = false)
+  @Schema(description = "Hakija OID", required = false)
   private String hakijaOid;
 
-  @Schema(title = "Hakija etunimi", required = false)
+  @Schema(description = "Hakija etunimi", required = false)
   private String etunimi;
 
-  @Schema(title = "Hakijan sukunimi", required = false)
+  @Schema(description = "Hakijan sukunimi", required = false)
   private String sukunimi;
 
-  @Schema(title = "Hakijan Koski-opiskeluoikeudet", required = false)
+  @Schema(description = "Hakijan Koski-opiskeluoikeudet", required = false)
   private String koskiOpiskeluoikeudetJson;
 
   /** @Deprecated Jatkossa käytetään avainSuoritusTiedot -kenttää */
   @Deprecated
-  @Schema(title = "Hakemuksen avain/arvo map", required = false)
+  @Schema(description = "Hakemuksen avain/arvo map", required = false)
   private List<AvainArvoDTO> avaimet = new ArrayList<AvainArvoDTO>();
 
-  @Schema(title = "Hakemuksen avain/arvo map", required = false)
+  @Schema(description = "Hakemuksen avain/arvo map", required = false)
   private List<AvainMetatiedotDTO> avainMetatiedotDTO = Collections.emptyList();
 
   public HakemusDTO(String hakuoid, String hakemusoid, List<HakukohdeDTO> hakukohteet) {

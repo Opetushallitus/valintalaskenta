@@ -42,47 +42,47 @@ public class JonosijaDTO {
     this.hylattyValisijoittelussa = hylattyValisijoittelussa;
   }
 
-  @Schema(title = "Jonosijanumero", required = true)
+  @Schema(description = "Jonosijanumero", required = true)
   private int jonosija;
 
-  @Schema(title = "Hakemus OID", required = true)
+  @Schema(description = "Hakemus OID", required = true)
   private String hakemusOid;
 
-  @Schema(title = "Hakija OID")
+  @Schema(description = "Hakija OID")
   private String hakijaOid;
 
-  @Schema(title = "Järjestyskriteerit", required = true)
+  @Schema(description = "Järjestyskriteerit", required = true)
   private SortedSet<JarjestyskriteeritulosDTO> jarjestyskriteerit =
       new TreeSet<JarjestyskriteeritulosDTO>();
 
-  @Schema(title = "Prioriteetti", required = true)
+  @Schema(description = "Prioriteetti", required = true)
   private int prioriteetti;
 
-  @Schema(title = "Sukunimi")
+  @Schema(description = "Sukunimi")
   private String sukunimi;
 
-  @Schema(title = "Etunimi")
+  @Schema(description = "Etunimi")
   private String etunimi;
 
-  @Schema(title = "Onko hakija hakenut harkinnanvaraisesti")
+  @Schema(description = "Onko hakija hakenut harkinnanvaraisesti")
   private boolean harkinnanvarainen = false;
 
-  @Schema(title = "Jonosijan tila", required = true)
+  @Schema(description = "Jonosijan tila", required = true)
   private JarjestyskriteerituloksenTila tuloksenTila;
 
-  @Schema(title = "Jonosijan historiat")
+  @Schema(description = "Jonosijan historiat")
   private List<String> historiat;
 
-  @Schema(title = "Jonosijan syötetyt arvot")
+  @Schema(description = "Jonosijan syötetyt arvot")
   private List<SyotettyArvoDTO> syotetytArvot = new ArrayList<SyotettyArvoDTO>();
 
-  @Schema(title = "Jonosijan tallennetut funktiotulokset")
+  @Schema(description = "Jonosijan tallennetut funktiotulokset")
   private List<FunktioTulosDTO> funktioTulokset = new ArrayList<FunktioTulosDTO>();
 
-  @Schema(title = "Onko jonosijaa muokattu manuaalisesti")
+  @Schema(description = "Onko jonosijaa muokattu manuaalisesti")
   private boolean muokattu = false;
 
-  @Schema(title = "Onko hakemus hylätty välisijoittelussa")
+  @Schema(description = "Onko hakemus hylätty välisijoittelussa")
   private boolean hylattyValisijoittelussa = false;
 
   public List<String> getHistoriat() {

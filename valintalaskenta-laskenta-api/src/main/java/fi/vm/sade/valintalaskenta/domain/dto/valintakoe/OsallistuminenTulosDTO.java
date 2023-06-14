@@ -8,16 +8,16 @@ import java.util.Map;
     name = "OsallistuminenTulosDTO",
     description = "Osallitumistulos - kertoo, pitääkö hakijan osallistua valintakokeeseen")
 public class OsallistuminenTulosDTO {
-  @Schema(title = "Varsinainen tulos", required = true)
+  @Schema(description = "Varsinainen tulos", required = true)
   private Osallistuminen osallistuminen;
 
-  @Schema(title = "Monikielinen kuvaus, esim. virheviesti")
+  @Schema(description = "Monikielinen kuvaus, esim. virheviesti")
   private Map<String, String> kuvaus;
 
-  @Schema(title = "Laskennan palauttama tila")
+  @Schema(description = "Laskennan palauttama tila")
   private String laskentaTila;
 
-  @Schema(title = "Laskennan palauttama tulos")
+  @Schema(description = "Laskennan palauttama tulos")
   private Boolean laskentaTulos;
 
   public Osallistuminen getOsallistuminen() {

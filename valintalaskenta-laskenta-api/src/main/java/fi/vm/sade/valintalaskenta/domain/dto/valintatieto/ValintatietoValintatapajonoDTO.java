@@ -12,22 +12,22 @@ import java.util.List;
 public class ValintatietoValintatapajonoDTO extends ValintatapajonoDTO {
   private List<HakijaDTO> hakija;
 
-  @Schema(title = "Varasijojen lkm. 0 == pois päältä", required = true)
+  @Schema(description = "Varasijojen lkm. 0 == pois päältä", required = true)
   private Integer varasijat = 0;
 
-  @Schema(title = "Kuinka monta päivää varasijoja täytetään", required = true)
+  @Schema(description = "Kuinka monta päivää varasijoja täytetään", required = true)
   private Integer varasijaTayttoPaivat = 0;
 
-  @Schema(title = "Varasijasääntöjä käytetään alkaen")
+  @Schema(description = "Varasijasääntöjä käytetään alkaen")
   private Date varasijojaKaytetaanAlkaen;
 
-  @Schema(title = "Varasijoja täytetään asti")
+  @Schema(description = "Varasijoja täytetään asti")
   private Date varasijojaTaytetaanAsti;
 
-  @Schema(title = "Valintatapajono, josta vapaaksi jääneet paikat täytetään", required = false)
+  @Schema(description = "Valintatapajono, josta vapaaksi jääneet paikat täytetään", required = false)
   private String tayttojono;
 
-  @Schema(title = "Erillishaussa käytetty sijoitteluajo", required = false)
+  @Schema(description = "Erillishaussa käytetty sijoitteluajo", required = false)
   private Long sijoitteluajoId;
 
   public ValintatietoValintatapajonoDTO() {}

@@ -6,16 +6,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "HarkinnanvarainenHyvaksyminenDTO", description = "Harkinnanvarainen hyväksyminen")
 public class HarkinnanvarainenHyvaksyminenDTO {
 
-  @Schema(title = "Tila", required = true)
+  @Schema(description = "Tila", required = true)
   private HarkinnanvaraisuusTila harkinnanvaraisuusTila;
 
-  @Schema(title = "Hakukohde OID", required = true)
+  @Schema(description = "Hakukohde OID", required = true)
   private String hakukohdeOid;
 
-  @Schema(title = "Hakemus OID", required = true)
+  @Schema(description = "Hakemus OID", required = true)
   private String hakemusOid;
 
-  @Schema(title = "Haku OID", required = true)
+  @Schema(description = "Haku OID", required = true)
   private String hakuOid;
 
   public String getHakemusOid() {
