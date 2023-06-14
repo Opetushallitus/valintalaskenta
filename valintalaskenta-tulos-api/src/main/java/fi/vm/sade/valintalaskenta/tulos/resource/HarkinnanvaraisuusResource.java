@@ -1,56 +1,40 @@
 package fi.vm.sade.valintalaskenta.tulos.resource;
 
 import fi.vm.sade.valintalaskenta.domain.dto.HarkinnanvarainenHyvaksyminenDTO;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 
-@Tag(
-    name = "/resources/harkinnanvarainenhyvaksynta",
-    description = "Resurssi harkinnanvaraisesti hakeneiden hakijoiden käsittelyyn")
-@RestController
-@RequestMapping(value = "/resources/harkinnanvarainenhyvaksynta")
+@Path("resources/harkinnanvarainenhyvaksynta")
 public interface HarkinnanvaraisuusResource {
-  @Operation(summary = "Asettaa tilan harkinnanvaraisesti hakeneelle hakijalle")
-  @PostMapping(
-      value = "/haku/{hakuOid}/hakukohde/{hakukohdeOid}/hakemus/{hakemusOid}",
-      produces = MediaType.APPLICATION_JSON_VALUE)
+  @POST
+  @Path("/haku/{hakuOid}/hakukohde/{hakukohdeOid}/hakemus/{hakemusOid}")
+  @Produces(MediaType.APPLICATION_JSON)
   void asetaTila(
-      @Parameter(name = "Haun OID", required = true) @PathVariable("hakuOid") String hakuOid,
-      @Parameter(name = "Hakukohteen OID", required = true) @PathVariable("hakukohdeOid")
-          String hakukohdeOid,
-      @Parameter(name = "Hakemuksen OID", required = true) @PathVariable("hakemusOid")
-          String hakemusOid,
-      @Parameter(name = "Asetettava tila", required = true)
-          HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen,
-      final HttpServletRequest request);
+      @PathParam("hakuOid") final String hakuOid,
+      @PathParam("hakukohdeOid") final String hakukohdeOid,
+      @PathParam("hakemusOid") final String hakemusOid,
+      final HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen,
+      @Context final HttpServletRequest request);
 
-  @Operation(summary = "Asettaa tilan harkinnanvaraisesti hakeneelle hakijalle")
-  @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  @POST
+  @Produces(MediaType.APPLICATION_JSON)
   void asetaTilat(
-      @Parameter(name = "Asetettava tila", required = true)
-          List<HarkinnanvarainenHyvaksyminenDTO> harkinnanvaraisetHyvaksymiset,
-      final HttpServletRequest request);
+      final List<HarkinnanvarainenHyvaksyminenDTO> harkinnanvaraisetHyvaksymiset,
+      @Context final HttpServletRequest request);
 
-  @Operation(summary = "Hakee hakukohteen harkinnanvaraisesti hakeneiden hakijoiden tilat")
-  @GetMapping(
-      value = "/haku/{hakuOid}/hakukohde/{hakukohdeOid}",
-      produces = MediaType.APPLICATION_JSON_VALUE)
+  @GET
+  @Path("/haku/{hakuOid}/hakukohde/{hakukohdeOid}")
+  @Produces(MediaType.APPLICATION_JSON)
   List<HarkinnanvarainenHyvaksyminenDTO> hakukohde(
-      @Parameter(name = "Haku OID", required = true) @PathVariable("hakuOid") String hakuOid,
-      @Parameter(name = "Hakukohde OID", required = true) @PathVariable("hakukohdeOid")
-          String hakukohdeOid);
+      @PathParam("hakuOid") final String hakuOid,
+      @PathParam("hakukohdeOid") final String hakukohdeOid);
 
-  @Operation(summary = "Hakee hakemuksen harkinnanvaraisesti tilat")
-  @GetMapping(
-      value = "/haku/{hakuOid}/hakemus/{hakemusOid}",
-      produces = MediaType.APPLICATION_JSON_VALUE)
+  @GET
+  @Path("/haku/{hakuOid}/hakemus/{hakemusOid}")
+  @Produces(MediaType.APPLICATION_JSON)
   List<HarkinnanvarainenHyvaksyminenDTO> hakemus(
-      @Parameter(name = "Haku OID", required = true) @PathVariable("hakuOid") String hakuOid,
-      @Parameter(name = "Hakemus OID", required = true) @PathVariable("hakemusOid")
-          String hakemusOid);
+      @PathParam("hakuOid") final String hakuOid, @PathParam("hakemusOid") final String hakemusOid);
 }

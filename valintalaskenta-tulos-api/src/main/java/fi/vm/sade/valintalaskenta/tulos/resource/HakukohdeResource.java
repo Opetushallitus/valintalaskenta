@@ -3,40 +3,33 @@ package fi.vm.sade.valintalaskenta.tulos.resource;
 import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import org.springframework.http.MediaType;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "/hakukohde", description = "Resurssi tulosten hakemiseen hakukohteittain")
-@RequestMapping(value = "/hakukohde")
+@Path("resources/hakukohde")
 public interface HakukohdeResource {
-  @Operation(summary = "Hakee hakukohteen valinnan vaiheiden tulokset")
-  @GetMapping(value = "/{hakukohdeoid}/valinnanvaihe", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GET
+  @Path("{hakukohdeoid}/valinnanvaihe")
+  @Produces(MediaType.APPLICATION_JSON)
   List<ValintatietoValinnanvaiheDTO> hakukohde(
-      @Parameter(name = "Hakukohteen OID", required = true) @PathVariable("hakukohdeoid")
-          String hakukohdeoid);
+      @PathParam("hakukohdeoid") final String hakukohdeoid);
 
-  @Operation(summary = "Lisää tuloksia valinnanvaiheelle")
-  @PostMapping(
-      value = "/{hakukohdeoid}/valinnanvaihe",
-      produces = MediaType.APPLICATION_JSON_VALUE,
-      consumes = MediaType.APPLICATION_JSON_VALUE)
+  @POST
+  @Path("{hakukohdeoid}/valinnanvaihe")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
   ResponseEntity<Object> lisaaTuloksia(
-      @Parameter(name = "Hakukohteen OID", required = true) @PathVariable("hakukohdeoid")
-          String hakukohdeoid,
-      @Parameter(name = "Tarjoaja OID", required = true) @RequestParam("tarjoajaOid")
-          String tarjoajaOid,
-      @Parameter(name = "Muokattava valinnanvaihe", required = true) ValinnanvaiheDTO vaihe,
-      final HttpServletRequest request);
+      @PathParam("hakukohdeoid") final String hakukohdeoid,
+      @QueryParam("tarjoajaOid") final String tarjoajaOid,
+      final ValinnanvaiheDTO vaihe,
+      @Context final HttpServletRequest request);
 
-  @Operation(summary = "Hakee hakukohteen hakijaryhmien tulokset")
-  @GetMapping(value = "/{hakukohdeoid}/hakijaryhma", produces = MediaType.APPLICATION_JSON_VALUE)
-  List<HakijaryhmaDTO> hakijaryhmat(
-      @Parameter(name = "Hakukohteen OID", required = true) @PathVariable("hakukohdeoid")
-          String hakukohdeoid);
+  @GET
+  @Path("{hakukohdeoid}/hakijaryhma")
+  @Produces(MediaType.APPLICATION_JSON)
+  List<HakijaryhmaDTO> hakijaryhmat(@PathParam("hakukohdeoid") final String hakukohdeoid);
 }

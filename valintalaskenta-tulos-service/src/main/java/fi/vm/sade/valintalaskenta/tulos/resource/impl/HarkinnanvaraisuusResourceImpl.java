@@ -51,7 +51,7 @@ public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResourc
           final String hakukohdeOid,
       @Parameter(name = "Hakemuksen OID", required = true) @PathVariable("hakemusOid")
           final String hakemusOid,
-      @Parameter(name = "Asetettava tila", required = true)
+      @Parameter(name = "Asetettava tila", required = true) @RequestBody
           final HarkinnanvarainenHyvaksyminenDTO harkinnanvarainenHyvaksyminen,
       final HttpServletRequest request) {
     User user = auditLog.getUser(request);
@@ -68,7 +68,7 @@ public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResourc
   @Operation(summary = "Asettaa tilan harkinnanvaraisesti hakeneelle hakijalle")
   @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public void asetaTilat(
-      @Parameter(name = "Asetettava tila", required = true)
+      @Parameter(name = "Asetettava tila", required = true) @RequestBody
           final List<HarkinnanvarainenHyvaksyminenDTO> harkinnanvaraisetHyvaksymiset,
       final HttpServletRequest request) {
     User user = auditLog.getUser(request);

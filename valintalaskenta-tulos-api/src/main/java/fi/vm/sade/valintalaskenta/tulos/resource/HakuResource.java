@@ -3,27 +3,27 @@ package fi.vm.sade.valintalaskenta.tulos.resource;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.MinimalJonoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
-@Tag(name = "/haku", description = "Resurssi haun valintalaskennan virhetilanteiden hakemiseen")
-@RequestMapping(value = "/haku")
+@Path("resources/haku")
 public interface HakuResource {
-  @Operation(summary = "Hakee haun valintalaskennan virhetilanteet OID:n perusteella")
-  @GetMapping(value = "/{hakuOid}/virheet", produces = MediaType.APPLICATION_JSON_VALUE)
-  List<HakukohdeDTO> virheet(@PathVariable("hakuOid") String hakuOid);
+  @GET
+  @Path("{hakuOid}/virheet")
+  @Produces(MediaType.APPLICATION_JSON)
+  List<HakukohdeDTO> virheet(@PathParam("hakuOid") final String hakuOid);
 
-  @GetMapping(value = "/{hakuOid}/valintakoevirheet", produces = MediaType.APPLICATION_JSON_VALUE)
-  List<ValintakoeOsallistuminenDTO> valintakoevirheet(@PathVariable("hakuOid") String hakuOid);
+  @GET
+  @Path("{hakuOid}/valintakoevirheet")
+  @Produces(MediaType.APPLICATION_JSON)
+  List<ValintakoeOsallistuminenDTO> valintakoevirheet(@PathParam("hakuOid") final String hakuOid);
 
-  @Operation(summary = "Hakee sijoitteluun siirretyt valintalaskennattomat valintatapajonot ODWlle")
-  @GetMapping(
-      value = "/ilmanvalintalaskentaasijoitteluun",
-      produces = MediaType.APPLICATION_JSON_VALUE)
+  @GET
+  @Path("/ilmanvalintalaskentaasijoitteluun")
+  @Produces(MediaType.APPLICATION_JSON)
   List<MinimalJonoDTO> jonotSijoitteluun();
 }

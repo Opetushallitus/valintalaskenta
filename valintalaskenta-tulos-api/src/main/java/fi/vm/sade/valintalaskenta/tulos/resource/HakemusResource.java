@@ -1,21 +1,17 @@
 package fi.vm.sade.valintalaskenta.tulos.resource;
 
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
-@Tag(name = "/hakemus", description = "Resurssi hakemuskohtaisten tulosten hakemiseen")
-@RequestMapping(value = "/hakemus")
+@Path("resources/hakemus")
 public interface HakemusResource {
-  @Operation(summary = "Hakee hakemuksen tulokset haku OID:n ja hakemuksen OID:n perustella")
-  @GetMapping(value = "/{hakuoid}/{hakemusoid}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GET
+  @Path("{hakuoid}/{hakemusoid}")
+  @Produces(MediaType.APPLICATION_JSON)
   HakemusDTO hakemus(
-      @Parameter(name = "Haku OID", required = true) @PathVariable("hakuoid") String hakuoid,
-      @Parameter(name = "Hakemus OID", required = true) @PathVariable("hakemusoid")
-          String hakemusoid);
+      @PathParam("hakuoid") final String hakuoid, @PathParam("hakemusoid") final String hakemusoid);
 }

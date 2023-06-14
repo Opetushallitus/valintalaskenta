@@ -3,19 +3,20 @@ package fi.vm.sade.valintalaskenta.tulos.resource;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.HakemusOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.HakuDTO;
 import java.util.List;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import javax.ws.rs.*;
 
-@RequestMapping("/valintatieto")
+@Path("resources/valintatieto")
 public interface ValintatietoResource {
-  @PostMapping(
-      value = "/hakukohde/{hakukohdeOid}",
-      produces = MediaType.APPLICATION_JSON_VALUE,
-      consumes = MediaType.APPLICATION_JSON_VALUE)
+  @POST
+  @Path("hakukohde/{hakukohdeOid}")
+  @Consumes("application/json")
+  @Produces("application/json")
   List<HakemusOsallistuminenDTO> haeValintatiedotHakukohteelle(
-      @PathVariable("hakukohdeOid") final String hakukohdeOid,
-      @RequestBody final List<String> valintakoeTunnisteet);
+      @PathParam("hakukohdeOid") final String hakukohdeOid,
+      final List<String> valintakoeTunnisteet);
 
-  @GetMapping(value = "/haku/{hakuOid}", produces = MediaType.APPLICATION_JSON_VALUE)
-  HakuDTO haeValintatiedot(@PathVariable("hakuOid") final String hakuOid);
+  @GET
+  @Path("haku/{hakuOid}")
+  @Produces("application/json")
+  HakuDTO haeValintatiedot(@PathParam("hakuOid") final String hakuOid);
 }

@@ -1,40 +1,32 @@
 package fi.vm.sade.valintalaskenta.tulos.resource;
 
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 
-@Tag(name = "/valintakoe", description = "Resurssi valintakoeosallistumistulosten hakemiseen")
-@RequestMapping("/valintakoe")
+@Path("resources/valintakoe")
 public interface ValintakoeResource {
-  @Operation(summary = "Hakee valintakoeosallistumiset hakemukselle OID:n perusteella")
-  @GetMapping(value = "/hakemus/{hakemusOid}", produces = MediaType.APPLICATION_JSON_VALUE)
-  ValintakoeOsallistuminenDTO haku(
-      @Parameter(name = "Hakemus OID", required = true) @PathVariable("hakemusOid")
-          final String hakemusOid);
+  @GET
+  @Produces(javax.ws.rs.core.MediaType.APPLICATION_JSON)
+  @Path("hakemus/{hakemusOid}")
+  ValintakoeOsallistuminenDTO haku(@PathParam("hakemusOid") final String hakemusOid);
 
-  @Operation(summary = "Hakee valintakoeosallistumiset hakukohteelle OID:n perusteella")
-  @GetMapping(value = "/hakutoive/{hakukohdeOid}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GET
+  @Produces(javax.ws.rs.core.MediaType.APPLICATION_JSON)
+  @Path("hakutoive/{hakukohdeOid}")
   List<ValintakoeOsallistuminenDTO> hakuByHakutoive(
-      @Parameter(name = "Hakukohde OID", required = true) @PathVariable("hakukohdeOid")
-          final String hakukohdeOid);
+      @PathParam("hakukohdeOid") final String hakukohdeOid);
 
-  @Operation(summary = "Hakee valintakoeosallistumiset hakukohteille OID:n perusteella")
-  @PostMapping(
-      value = "/hakutoive",
-      produces = MediaType.APPLICATION_JSON_VALUE,
-      consumes = MediaType.APPLICATION_JSON_VALUE)
-  List<ValintakoeOsallistuminenDTO> hakuByOids(
-      @Parameter(name = "Hakukohde OIDS", required = true) final List<String> hakukohdeOids);
+  @POST
+  @Consumes(javax.ws.rs.core.MediaType.APPLICATION_JSON)
+  @Produces(javax.ws.rs.core.MediaType.APPLICATION_JSON)
+  @Path("hakutoive")
+  List<ValintakoeOsallistuminenDTO> hakuByOids(final List<String> hakukohdeOids);
 
-  @Operation(summary = "Hakee valintakoeosallistumiset hakijoille OID:n perusteella")
-  @PostMapping(
-      value = "/hakijat",
-      produces = MediaType.APPLICATION_JSON_VALUE,
-      consumes = MediaType.APPLICATION_JSON_VALUE)
-  List<ValintakoeOsallistuminenDTO> hakijatByOids(@RequestBody final List<String> hakijaOids);
+  @POST
+  @Consumes(javax.ws.rs.core.MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Path("hakijat")
+  List<ValintakoeOsallistuminenDTO> hakijatByOids(final List<String> hakijaOids);
 }

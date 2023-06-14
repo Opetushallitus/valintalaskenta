@@ -82,7 +82,8 @@ public class HakukohdeResourceImpl implements HakukohdeResource {
           final String hakukohdeoid,
       @Parameter(name = "Tarjoaja OID", required = true) @RequestParam("tarjoajaOid")
           final String tarjoajaOid,
-      @Parameter(name = "Muokattava valinnanvaihe", required = true) final ValinnanvaiheDTO vaihe,
+      @Parameter(name = "Muokattava valinnanvaihe", required = true) @RequestBody
+          final ValinnanvaiheDTO vaihe,
       final HttpServletRequest request) {
     try {
       authorizer.checkOrganisationAccess(tarjoajaOid, ROLE_VALINTOJENTOTEUTTAMINEN_TULOSTENTUONTI);
