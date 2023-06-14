@@ -8,24 +8,24 @@ import javax.ws.rs.core.MediaType;
 @Path("resources/valintakoe")
 public interface ValintakoeResource {
   @GET
-  @Produces(javax.ws.rs.core.MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
   @Path("hakemus/{hakemusOid}")
   ValintakoeOsallistuminenDTO haku(@PathParam("hakemusOid") final String hakemusOid);
 
   @GET
-  @Produces(javax.ws.rs.core.MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
   @Path("hakutoive/{hakukohdeOid}")
   List<ValintakoeOsallistuminenDTO> hakuByHakutoive(
       @PathParam("hakukohdeOid") final String hakukohdeOid);
 
   @POST
-  @Consumes(javax.ws.rs.core.MediaType.APPLICATION_JSON)
-  @Produces(javax.ws.rs.core.MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
   @Path("hakutoive")
   List<ValintakoeOsallistuminenDTO> hakuByOids(final List<String> hakukohdeOids);
 
   @POST
-  @Consumes(javax.ws.rs.core.MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Path("hakijat")
   List<ValintakoeOsallistuminenDTO> hakijatByOids(final List<String> hakijaOids);
