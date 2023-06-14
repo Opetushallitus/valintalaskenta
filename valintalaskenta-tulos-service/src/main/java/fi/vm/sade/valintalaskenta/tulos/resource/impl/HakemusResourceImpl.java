@@ -32,8 +32,8 @@ public class HakemusResourceImpl implements HakemusResource {
   @Operation(summary = "Hakee hakemuksen tulokset haku OID:n ja hakemuksen OID:n perustella")
   @GetMapping(value = "/{hakuoid}/{hakemusoid}", produces = MediaType.APPLICATION_JSON_VALUE)
   public HakemusDTO hakemus(
-      @Parameter(name = "Haku OID", required = true) @PathVariable("hakuoid") final String hakuoid,
-      @Parameter(name = "Hakemus OID", required = true) @PathVariable("hakemusoid")
+      @Parameter(name = "hakuoid", required = true) @PathVariable("hakuoid") final String hakuoid,
+      @Parameter(name = "hakemusoid", required = true) @PathVariable("hakemusoid")
           final String hakemusoid) {
     return tulosService.haeTuloksetHakemukselle(hakuoid, hakemusoid);
   }
