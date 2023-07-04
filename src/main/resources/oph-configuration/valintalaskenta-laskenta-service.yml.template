@@ -48,7 +48,7 @@ user:
 
 web:
   url:
-    cas: https\://${host.cas}/cas
+    cas: https://${host.cas}/cas
 
 valintalaskentakoostepalvelu:
   sijoittelu:
