@@ -20,6 +20,8 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKa
 import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogImpl;
 import org.apache.cxf.message.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +33,9 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan(
     basePackages = {"fi.vm.sade.valintalaskenta.laskenta", "fi.vm.sade.valintalaskenta.tulos"})
 public class ValintalaskentaLaskentaConfiguration {
+  private static final Logger LOG =
+      LoggerFactory.getLogger(ValintalaskentaLaskentaConfiguration.class);
+
   @Bean("valintalaskentaResourceImpl")
   @Autowired
   public ValintalaskentaResourceImpl valintalaskentaResourceImpl(
@@ -86,6 +91,10 @@ public class ValintalaskentaLaskentaConfiguration {
           final String targetUrl,
       @Value("${valintalaskentakoostepalvelu.app.username.to.sijoittelu}") final String username,
       @Value("${valintalaskentakoostepalvelu.app.password.to.sijoittelu}") final String password) {
+    LOG.info(
+        String.format(
+            "Creating sijoittelu cas interceptor: casUrl=%s, targetUrl=%s, username=%s, pw length=%d",
+            casUrl, targetUrl, username, password.length()));
     return casInterceptor(casUrl, targetUrl, username, password);
   }
 
@@ -96,6 +105,10 @@ public class ValintalaskentaLaskentaConfiguration {
           final String targetUrl,
       @Value("${valintalaskentakoostepalvelu.app.username.to.sijoittelu}") final String username,
       @Value("${valintalaskentakoostepalvelu.app.password.to.sijoittelu}") final String password) {
+    LOG.info(
+        String.format(
+            "Creating valintaperusteet cas interceptor: casUrl=%s, targetUrl=%s, username=%s, pw length=%d",
+            casUrl, targetUrl, username, password.length()));
     return casInterceptor(casUrl, targetUrl, username, password);
   }
 
@@ -114,6 +127,7 @@ public class ValintalaskentaLaskentaConfiguration {
           final OphRequestHeadersCxfInterceptor<Message> laskentaOphRequestHeaders,
       @Qualifier("sijoitteluServiceCasInterceptor")
           final CasApplicationAsAUserInterceptor casInterceptor) {
+    LOG.info(String.format("Creating sijoittelu rest client: address=%s", address));
     return createClient(
         jacksonJsonProvider,
         laskentaObjectMapperProvider,
@@ -134,6 +148,7 @@ public class ValintalaskentaLaskentaConfiguration {
           final OphRequestHeadersCxfInterceptor<Message> laskentaOphRequestHeaders,
       @Qualifier("sijoitteluServiceCasInterceptor")
           final CasApplicationAsAUserInterceptor casInterceptor) {
+    LOG.info(String.format("Creating erillissijoittelu rest client: address=%s", address));
     return createClient(
         jacksonJsonProvider,
         laskentaObjectMapperProvider,
@@ -154,6 +169,7 @@ public class ValintalaskentaLaskentaConfiguration {
           final OphRequestHeadersCxfInterceptor<Message> laskentaOphRequestHeaders,
       @Qualifier("valintaperusteetServiceCasInterceptor")
           final CasApplicationAsAUserInterceptor casInterceptor) {
+    LOG.info(String.format("Creating valintaperusteet rest client: address=%s", address));
     return createClient(
         jacksonJsonProvider,
         laskentaObjectMapperProvider,
