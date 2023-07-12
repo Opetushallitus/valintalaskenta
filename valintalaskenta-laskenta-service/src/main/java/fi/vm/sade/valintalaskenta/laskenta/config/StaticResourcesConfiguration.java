@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.laskenta.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 
@@ -14,5 +15,10 @@ public class StaticResourcesConfiguration implements WebMvcConfigurer {
         .addResourceLocations("classpath:/static/")
         .resourceChain(true)
         .addResolver(new PathResourceResolver());
+  }
+
+  @Override
+  public void addViewControllers(final ViewControllerRegistry registry) {
+    registry.addViewController("/").setViewName("forward:/index.html");
   }
 }
