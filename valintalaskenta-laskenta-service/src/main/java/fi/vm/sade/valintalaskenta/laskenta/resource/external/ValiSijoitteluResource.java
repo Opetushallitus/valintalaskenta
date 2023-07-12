@@ -9,7 +9,7 @@ import javax.ws.rs.*;
 public interface ValiSijoitteluResource {
 
   @POST
-  @Path("{hakuOid}")
+  @Path("/{hakuOid}")
   @Consumes("application/json")
   @Produces("application/json")
   public List<HakukohdeDTO> sijoittele(

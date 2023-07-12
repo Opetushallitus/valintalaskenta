@@ -7,11 +7,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-@Path("erillissijoittele")
+@Path("/erillissijoittele")
 public interface ErillisSijoitteluResource {
 
   @POST
-  @Path("{hakuOid}")
+  @Path("/{hakuOid}")
   @Consumes("application/json")
   @Produces("application/json")
   Long sijoittele(@PathParam("hakuOid") String hakuOid, ValisijoitteluDTO hakukohteet);
