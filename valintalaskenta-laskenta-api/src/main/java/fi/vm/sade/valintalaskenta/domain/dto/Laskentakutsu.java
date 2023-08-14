@@ -1,11 +1,13 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.gson.Gson;
 import fi.vm.sade.valintalaskenta.domain.GzipUtil;
 import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Laskentakutsu {
   private static final Gson GSON = new Gson();
 
