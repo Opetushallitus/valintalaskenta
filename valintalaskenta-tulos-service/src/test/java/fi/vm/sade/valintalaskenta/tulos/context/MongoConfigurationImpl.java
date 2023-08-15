@@ -1,6 +1,8 @@
 package fi.vm.sade.valintalaskenta.tulos.context;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.internal.connection.ServerAddressHelper;
 import de.flapdoodle.embed.mongo.commands.ServerAddress;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.mongo.transitions.Mongod;
@@ -24,7 +26,10 @@ public class MongoConfigurationImpl {
   @Bean
   public MongoClient mongoClient(final ReachedState<RunningMongodProcess> mongodProcess) {
     final ServerAddress serverAddress = mongodProcess.current().getServerAddress();
-    return new MongoClient(serverAddress.getHost(), serverAddress.getPort());
+    MongoClientOptions options = MongoClientOptions.builder().retryWrites(false).build();
+    return new MongoClient(
+        ServerAddressHelper.createServerAddress(serverAddress.getHost(), serverAddress.getPort()),
+        options);
   }
 
   @Bean(name = "morphia2")

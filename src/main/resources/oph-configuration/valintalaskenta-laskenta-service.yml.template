@@ -69,7 +69,7 @@ valintalaskentakoostepalvelu:
 valintalaskenta-laskenta-service:
   mongodb:
     dbname: valintalaskentadb
-    uri: {{ mongodb_valintalaskentadb_uri | default("${mongodb.virkailija.uri}") }}/${valintalaskenta-laskenta-service.mongodb.dbname}
+    uri: {{ mongodb_valintalaskentadb_uri | default("${mongodb.virkailija.uri}") }}/${valintalaskenta-laskenta-service.mongodb.dbname}?retryWrites=false
     useIndexQueries: true
   global:
     http:
