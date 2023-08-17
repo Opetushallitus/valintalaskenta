@@ -3,7 +3,6 @@ package fi.vm.sade.valintalaskenta.laskenta.testing;
 import static java.lang.Integer.parseInt;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import com.google.common.collect.Lists;
 import com.mongodb.MongoClient;
 import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.valinta.sharedutils.http.CxfExceptionLogger;
@@ -18,11 +17,9 @@ import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluRe
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
-import fi.vm.sade.valintalaskenta.laskenta.service.it.JaxRsClientIntegrationTest.ResourceForTesting;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogMock;
 import io.swagger.v3.oas.models.OpenAPI;
-import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
 import org.mockito.Mockito;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
@@ -180,15 +177,5 @@ public class TestConfiguration extends WebSecurityConfigurerAdapter {
   @Bean
   public ObjectMapperProvider objectMapperProvider() {
     return new ObjectMapperProvider();
-  }
-
-  @Bean
-  public ResourceForTesting resourceForTesting(
-      final JacksonJsonProvider jacksonJsonProvider,
-      final ObjectMapperProvider objectMapperProvider) {
-    return JAXRSClientFactory.create(
-        System.getProperty("TestApp.server.rootUrl"),
-        ResourceForTesting.class,
-        Lists.newArrayList(jacksonJsonProvider, objectMapperProvider));
   }
 }

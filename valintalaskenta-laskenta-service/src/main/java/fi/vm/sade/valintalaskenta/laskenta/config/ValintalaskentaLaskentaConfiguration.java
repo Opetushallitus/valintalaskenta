@@ -1,15 +1,15 @@
 package fi.vm.sade.valintalaskenta.laskenta.config;
 
-import static fi.vm.sade.valintalaskenta.tulos.CxfUtil.casInterceptor;
-import static fi.vm.sade.valintalaskenta.tulos.CxfUtil.createClient;
+import static fi.vm.sade.valintalaskenta.laskenta.config.ConfigEnums.CALLER_ID;
+import static fi.vm.sade.valintalaskenta.tulos.RestClientUtil.get;
+import static fi.vm.sade.valintalaskenta.tulos.RestClientUtil.post;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import fi.vm.sade.javautils.cxf.OphRequestHeadersCxfInterceptor;
-import fi.vm.sade.javautils.legacy_cxf_cas.authentication.cas.CasApplicationAsAUserInterceptor;
+import com.google.gson.reflect.TypeToken;
+import fi.vm.sade.javautils.nio.cas.CasClient;
+import fi.vm.sade.javautils.nio.cas.CasConfig;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaServiceImpl;
-import fi.vm.sade.valintalaskenta.laskenta.ObjectMapperProvider;
+import fi.vm.sade.sijoittelu.tulos.dto.HakukohdeDTO;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource;
@@ -19,7 +19,8 @@ import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
 import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogImpl;
-import org.apache.cxf.message.Message;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,52 +65,42 @@ public class ValintalaskentaLaskentaConfiguration {
     return new LaskentaAuditLogImpl();
   }
 
-  @Bean
-  public ObjectMapper jacksonMapper() {
-    return new ObjectMapper();
-  }
-
-  @Bean(name = "laskentaOphRequestHeaders")
-  public OphRequestHeadersCxfInterceptor<Message> ophRequestHeaders() {
-    return new OphRequestHeadersCxfInterceptor<>(ConfigEnums.CALLER_ID.value());
-  }
-
-  @Bean
-  public JacksonJsonProvider jacksonJsonProvider() {
-    return new JacksonJsonProvider();
-  }
-
-  @Bean
-  public ObjectMapperProvider laskentaObjectMapperProvider() {
-    return new ObjectMapperProvider();
-  }
-
-  @Bean(name = "sijoitteluServiceCasInterceptor")
-  public CasApplicationAsAUserInterceptor sijoitteluServiceCasInterceptor(
+  @Bean(name = "sijoitteluCasClient")
+  public CasClient sijoitteluCasClient(
       @Value("${web.url.cas}") final String casUrl,
-      @Value("${cas.service.sijoittelu-service}/j_spring_cas_security_check")
-          final String targetUrl,
+      @Value("${cas.service.sijoittelu-service}") final String targetUrl,
       @Value("${valintalaskentakoostepalvelu.app.username.to.sijoittelu}") final String username,
       @Value("${valintalaskentakoostepalvelu.app.password.to.sijoittelu}") final String password) {
-    LOG.info(
-        String.format(
-            "Creating sijoittelu cas interceptor: casUrl=%s, targetUrl=%s, username=%s, pw length=%d",
-            casUrl, targetUrl, username, password.length()));
-    return casInterceptor(casUrl, targetUrl, username, password);
+    return new CasClient(
+        CasConfig.CustomServiceTicketHeaderCasConfig(
+            username,
+            password,
+            casUrl,
+            targetUrl,
+            "CSRF",
+            CALLER_ID.value(),
+            "JSESSIONID",
+            "/j_spring_cas_security_check",
+            "CasSecurityTicket"));
   }
 
-  @Bean(name = "valintaperusteetServiceCasInterceptor")
-  public CasApplicationAsAUserInterceptor valintaperusteetServiceCasInterceptor(
+  @Bean(name = "valintaperusteetServiceCasClient")
+  public CasClient valintaperusteetServiceCasClient(
       @Value("${web.url.cas}") final String casUrl,
-      @Value("${cas.service.valintaperusteet-service}/j_spring_cas_security_check")
-          final String targetUrl,
+      @Value("${cas.service.valintaperusteet-service}") final String targetUrl,
       @Value("${valintalaskentakoostepalvelu.app.username.to.sijoittelu}") final String username,
       @Value("${valintalaskentakoostepalvelu.app.password.to.sijoittelu}") final String password) {
-    LOG.info(
-        String.format(
-            "Creating valintaperusteet cas interceptor: casUrl=%s, targetUrl=%s, username=%s, pw length=%d",
-            casUrl, targetUrl, username, password.length()));
-    return casInterceptor(casUrl, targetUrl, username, password);
+    return new CasClient(
+        CasConfig.CustomServiceTicketHeaderCasConfig(
+            username,
+            password,
+            casUrl,
+            targetUrl,
+            "CSRF",
+            CALLER_ID.value(),
+            "JSESSIONID",
+            "/j_spring_cas_security_check",
+            "CasSecurityTicket"));
   }
 
   @Value("${valintalaskenta-laskenta-service.global.http.connectionTimeoutMillis:59999}")
@@ -120,65 +111,48 @@ public class ValintalaskentaLaskentaConfiguration {
 
   @Bean(name = "sijoitteluRestClient")
   public ValiSijoitteluResource sijoitteluRestClient(
-      final JacksonJsonProvider jacksonJsonProvider,
-      final ObjectMapperProvider laskentaObjectMapperProvider,
-      @Value("${host.ilb}") final String address,
-      @Qualifier("laskentaOphRequestHeaders")
-          final OphRequestHeadersCxfInterceptor<Message> laskentaOphRequestHeaders,
-      @Qualifier("sijoitteluServiceCasInterceptor")
-          final CasApplicationAsAUserInterceptor casInterceptor) {
-    LOG.info(String.format("Creating sijoittelu rest client: address=%s", address));
-    return createClient(
-        jacksonJsonProvider,
-        laskentaObjectMapperProvider,
-        address,
-        laskentaOphRequestHeaders,
-        casInterceptor,
-        ValiSijoitteluResource.class,
-        clientConnectionTimeout,
-        clientReceiveTimeout);
+      @Qualifier("sijoitteluCasClient") final CasClient sijoitteluCasClient,
+      @Value("${valintalaskentakoostepalvelu.sijoittelu.rest.url}")
+          final String sijoitteluBaseUrl) {
+    return (hakuOid, hakukohteet) -> {
+      final TypeToken<List<HakukohdeDTO>> typeToken = new TypeToken<>() {};
+      return post(
+          sijoitteluCasClient,
+          String.format("%s/valisijoittele/%s", sijoitteluBaseUrl, hakuOid),
+          typeToken,
+          hakukohteet);
+    };
   }
 
   @Bean(name = "erillissijoitteluRestClient")
   public ErillisSijoitteluResource erillissijoitteluRestClient(
-      final JacksonJsonProvider jacksonJsonProvider,
-      final ObjectMapperProvider laskentaObjectMapperProvider,
-      @Value("${valintalaskentakoostepalvelu.sijoittelu.rest.url}") final String address,
-      @Qualifier("laskentaOphRequestHeaders")
-          final OphRequestHeadersCxfInterceptor<Message> laskentaOphRequestHeaders,
-      @Qualifier("sijoitteluServiceCasInterceptor")
-          final CasApplicationAsAUserInterceptor casInterceptor) {
-    LOG.info(String.format("Creating erillissijoittelu rest client: address=%s", address));
-    return createClient(
-        jacksonJsonProvider,
-        laskentaObjectMapperProvider,
-        address,
-        laskentaOphRequestHeaders,
-        casInterceptor,
-        ErillisSijoitteluResource.class,
-        clientConnectionTimeout,
-        clientReceiveTimeout);
+      @Qualifier("sijoitteluCasClient") final CasClient sijoitteluCasClient,
+      @Value("${valintalaskentakoostepalvelu.sijoittelu.rest.url}")
+          final String sijoitteluBaseUrl) {
+    return (hakuOid, hakukohteet) -> {
+      final TypeToken<Long> typeToken = new TypeToken<>() {};
+      return post(
+          sijoitteluCasClient,
+          String.format("%s/erillissijoittele/%s", sijoitteluBaseUrl, hakuOid),
+          typeToken,
+          hakukohteet);
+    };
   }
 
   @Bean(name = "valintatapajonoClient")
   public ValintaperusteetValintatapajonoResource valintatapajonoClient(
-      final JacksonJsonProvider jacksonJsonProvider,
-      final ObjectMapperProvider laskentaObjectMapperProvider,
-      @Value("${valintalaskentakoostepalvelu.valintaperusteet.ilb.host}") final String address,
-      @Qualifier("laskentaOphRequestHeaders")
-          final OphRequestHeadersCxfInterceptor<Message> laskentaOphRequestHeaders,
-      @Qualifier("valintaperusteetServiceCasInterceptor")
-          final CasApplicationAsAUserInterceptor casInterceptor) {
-    LOG.info(String.format("Creating valintaperusteet rest client: address=%s", address));
-    return createClient(
-        jacksonJsonProvider,
-        laskentaObjectMapperProvider,
-        address,
-        laskentaOphRequestHeaders,
-        casInterceptor,
-        ValintaperusteetValintatapajonoResource.class,
-        clientConnectionTimeout,
-        clientReceiveTimeout);
+      @Qualifier("valintaperusteetServiceCasClient") final CasClient valintaperusteetCasClient,
+      @Value("${cas.service.valintaperusteet-service}") final String valintaperusteetBaseUrl) {
+    return oid -> {
+      final TypeToken<Map<String, List<String>>> typeToken = new TypeToken<>() {};
+      return get(
+          valintaperusteetCasClient,
+          String.format(
+              "%s/resources/valintalaskentakoostepalvelu/valintatapajono/kopiot",
+              valintaperusteetBaseUrl),
+          typeToken,
+          null);
+    };
   }
 
   @Bean

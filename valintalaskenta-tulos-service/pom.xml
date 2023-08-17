@@ -198,6 +198,11 @@
             <groupId>fi.vm.sade.java-utils</groupId>
             <artifactId>legacy-cxf-cas</artifactId>
         </dependency>
+        <dependency>
+            <groupId>fi.vm.sade.java-utils</groupId>
+            <artifactId>java-cas</artifactId>
+        </dependency>
+
 
         <dependency>
         <groupId>org.hibernate</groupId>
