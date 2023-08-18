@@ -14,6 +14,7 @@ import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetHakijaryhmaDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoDTO;
 import fi.vm.sade.service.valintaperusteet.resource.ValintaperusteetResource;
+import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -45,6 +46,17 @@ public class ValintalaskentaTulosConfiguration {
   public Authorizer authorizer() {
     return new ThreadLocalAuthorizer();
   }
+
+  @Bean(name = "modelMapper")
+  public ValintalaskentaModelMapper modelMapper() {
+    return new ValintalaskentaModelMapper();
+  }
+
+  @Value("${valintalaskenta-laskenta-service.global.http.connectionTimeoutMillis:59999}")
+  private Integer clientConnectionTimeout;
+
+  @Value("${valintalaskenta-laskenta-service.global.http.receiveTimeoutMillis:1799999}")
+  private Integer clientReceiveTimeout;
 
   @Bean(name = "valintaperusteetCasClient")
   public CasClient valintaperusteetCasClient(
@@ -78,7 +90,9 @@ public class ValintalaskentaTulosConfiguration {
             String.format(
                 "%s/valintaperusteet/valintatapajono/%s", valintaperusteetBaseUrl, hakukohdeOid),
             typeToken,
-            null);
+            null,
+            clientConnectionTimeout,
+            clientReceiveTimeout);
       }
 
       @Override
@@ -89,7 +103,9 @@ public class ValintalaskentaTulosConfiguration {
             valintaperusteetCasClient,
             String.format("%s/valintaperusteet/valintatapajono", valintaperusteetBaseUrl),
             typeToken,
-            oids);
+            oids,
+            clientConnectionTimeout,
+            clientReceiveTimeout);
       }
 
       @Override
@@ -102,7 +118,9 @@ public class ValintalaskentaTulosConfiguration {
             valintaperusteetCasClient,
             String.format("%s/valintaperusteet/%s", valintaperusteetBaseUrl, hakukohdeOid),
             typeToken,
-            queryParams);
+            queryParams,
+            clientConnectionTimeout,
+            clientReceiveTimeout);
       }
 
       @Override
@@ -113,7 +131,9 @@ public class ValintalaskentaTulosConfiguration {
             String.format(
                 "%s/valintaperusteet/hakijaryhma/%s", valintaperusteetBaseUrl, hakukohdeOid),
             typeToken,
-            null);
+            null,
+            clientConnectionTimeout,
+            clientReceiveTimeout);
       }
 
       @Override
@@ -126,7 +146,9 @@ public class ValintalaskentaTulosConfiguration {
                         "POST",
                         null)
                     .setBody(RestClientUtil.GSON.toJson(hakukohde))
-                    .addHeader("Content-type", "application/json")
+                    .addHeader("Content-Type", "application/json")
+                    .setRequestTimeout(clientConnectionTimeout)
+                    .setReadTimeout(clientReceiveTimeout)
                     .build());
         return Response.status(response.getStatusCode()).entity(response.getResponseBody()).build();
       }
@@ -139,7 +161,9 @@ public class ValintalaskentaTulosConfiguration {
             String.format(
                 "%s/valintaperusteet/%s/automaattinenSiirto", valintaperusteetBaseUrl, oid),
             typeToken,
-            null);
+            null,
+            clientConnectionTimeout,
+            clientReceiveTimeout);
       }
 
       @Override
@@ -151,7 +175,9 @@ public class ValintalaskentaTulosConfiguration {
             String.format(
                 "%s/valintaperusteet/%s/automaattinenSiirto", valintaperusteetBaseUrl, oid),
             typeToken,
-            value);
+            value,
+            clientConnectionTimeout,
+            clientReceiveTimeout);
       }
     };
   }

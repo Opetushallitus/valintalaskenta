@@ -2,15 +2,11 @@ package fi.vm.sade.valintalaskenta.laskenta.testing;
 
 import static java.lang.Integer.parseInt;
 
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.mongodb.MongoClient;
 import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
-import fi.vm.sade.valinta.sharedutils.http.CxfExceptionLogger;
 import fi.vm.sade.valintalaskenta.laskenta.App;
-import fi.vm.sade.valintalaskenta.laskenta.ObjectMapperProvider;
 import fi.vm.sade.valintalaskenta.laskenta.config.MongoConfiguration;
 import fi.vm.sade.valintalaskenta.laskenta.config.SwaggerConfiguration;
-import fi.vm.sade.valintalaskenta.laskenta.resource.JaxrsConfiguration;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaPaloissaResourceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource;
@@ -157,25 +153,5 @@ public class TestConfiguration extends WebSecurityConfigurerAdapter {
   public Datastore datastore2(
       @Qualifier("morphia") final Morphia morphia, @Qualifier("mongo") final MongoClient mongo) {
     return morphia.createDatastore(mongo, "test");
-  }
-
-  @Bean
-  public CxfExceptionLogger cxfExceptionLogger() {
-    return new CxfExceptionLogger();
-  }
-
-  @Bean
-  public JaxrsConfiguration jaxrsConfiguration() {
-    return new JaxrsConfiguration();
-  }
-
-  @Bean
-  public JacksonJsonProvider jacksonJsonProvider() {
-    return new JacksonJsonProvider();
-  }
-
-  @Bean
-  public ObjectMapperProvider objectMapperProvider() {
-    return new ObjectMapperProvider();
   }
 }

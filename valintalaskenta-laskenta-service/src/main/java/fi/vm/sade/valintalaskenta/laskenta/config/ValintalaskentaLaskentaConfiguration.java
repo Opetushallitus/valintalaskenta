@@ -21,8 +21,6 @@ import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogImpl;
 import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,9 +32,6 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan(
     basePackages = {"fi.vm.sade.valintalaskenta.laskenta", "fi.vm.sade.valintalaskenta.tulos"})
 public class ValintalaskentaLaskentaConfiguration {
-  private static final Logger LOG =
-      LoggerFactory.getLogger(ValintalaskentaLaskentaConfiguration.class);
-
   @Bean("valintalaskentaResourceImpl")
   @Autowired
   public ValintalaskentaResourceImpl valintalaskentaResourceImpl(
@@ -104,10 +99,10 @@ public class ValintalaskentaLaskentaConfiguration {
   }
 
   @Value("${valintalaskenta-laskenta-service.global.http.connectionTimeoutMillis:59999}")
-  private long clientConnectionTimeout;
+  private Integer clientConnectionTimeout;
 
   @Value("${valintalaskenta-laskenta-service.global.http.receiveTimeoutMillis:1799999}")
-  private long clientReceiveTimeout;
+  private Integer clientReceiveTimeout;
 
   @Bean(name = "sijoitteluRestClient")
   public ValiSijoitteluResource sijoitteluRestClient(
@@ -120,7 +115,9 @@ public class ValintalaskentaLaskentaConfiguration {
           sijoitteluCasClient,
           String.format("%s/valisijoittele/%s", sijoitteluBaseUrl, hakuOid),
           typeToken,
-          hakukohteet);
+          hakukohteet,
+          clientConnectionTimeout,
+          clientReceiveTimeout);
     };
   }
 
@@ -131,11 +128,15 @@ public class ValintalaskentaLaskentaConfiguration {
           final String sijoitteluBaseUrl) {
     return (hakuOid, hakukohteet) -> {
       final TypeToken<Long> typeToken = new TypeToken<>() {};
-      return post(
-          sijoitteluCasClient,
-          String.format("%s/erillissijoittele/%s", sijoitteluBaseUrl, hakuOid),
-          typeToken,
-          hakukohteet);
+      final Long result =
+          post(
+              sijoitteluCasClient,
+              String.format("%s/erillissijoittele/%s", sijoitteluBaseUrl, hakuOid),
+              typeToken,
+              hakukohteet,
+              clientConnectionTimeout,
+              clientReceiveTimeout);
+      return result;
     };
   }
 
@@ -145,13 +146,17 @@ public class ValintalaskentaLaskentaConfiguration {
       @Value("${cas.service.valintaperusteet-service}") final String valintaperusteetBaseUrl) {
     return oid -> {
       final TypeToken<Map<String, List<String>>> typeToken = new TypeToken<>() {};
-      return get(
-          valintaperusteetCasClient,
-          String.format(
-              "%s/resources/valintalaskentakoostepalvelu/valintatapajono/kopiot",
-              valintaperusteetBaseUrl),
-          typeToken,
-          null);
+      final Map<String, List<String>> result =
+          get(
+              valintaperusteetCasClient,
+              String.format(
+                  "%s/resources/valintalaskentakoostepalvelu/valintatapajono/kopiot",
+                  valintaperusteetBaseUrl),
+              typeToken,
+              null,
+              clientConnectionTimeout,
+              clientReceiveTimeout);
+      return result;
     };
   }
 

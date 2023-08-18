@@ -17,7 +17,6 @@
 
     <modules>
         <module>valintalaskenta-domain</module>
-        <module>valintalaskenta-tulos-api</module>
         <module>valintalaskenta-tulos-service</module>
         <module>valintalaskenta-laskenta-api</module>
         <module>valintalaskenta-laskenta-service</module>
@@ -28,7 +27,6 @@
         <valinta-sharedutils.version>5.11-SNAPSHOT</valinta-sharedutils.version>
         <sijoittelu.version>7.6.0-SNAPSHOT</sijoittelu.version>
 
-        <cxf.version>3.6.1</cxf.version>
         <flapdoodle.embed.mongo.version>4.6.2</flapdoodle.embed.mongo.version>
         <httpcomponents.version>4.5.14</httpcomponents.version>
         <modelmapper.version>3.1.1</modelmapper.version>
@@ -75,18 +73,6 @@
                         <groupId>fi.vm.sade.java-utils</groupId>
                         <artifactId>java-http</artifactId>
                     </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.cxf</groupId>
-                        <artifactId>cxf-rt-rs-client</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.cxf</groupId>
-                        <artifactId>cxf-rt-transports-http</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.cxf</groupId>
-                        <artifactId>cxf-rt-frontend-jaxws</artifactId>
-                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -115,18 +101,6 @@
                     <exclusion>
                         <groupId>fi.vm.sade.java-utils</groupId>
                         <artifactId>java-http</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.cxf</groupId>
-                        <artifactId>cxf-rt-rs-client</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.cxf</groupId>
-                        <artifactId>cxf-rt-transports-http</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.cxf</groupId>
-                        <artifactId>cxf-rt-frontend-jaxws</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -172,11 +146,6 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>31.1-jre</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-spring-boot-starter-jaxrs</artifactId>
-                <version>${cxf.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springdoc</groupId>
@@ -266,40 +235,6 @@
                 <groupId>fi.vm.sade.java-utils</groupId>
                 <artifactId>java-cache</artifactId>
                 <version>0.1.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>fi.vm.sade.java-utils</groupId>
-                <artifactId>legacy-cxf-cas</artifactId>
-                <version>0.6.0-SNAPSHOT</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.httpcomponents</groupId>
-                        <artifactId>httpclient-cache</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.httpcomponents</groupId>
-                        <artifactId>httpclient</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.cxf</groupId>
-                        <artifactId>cxf-core</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>fi.vm.sade.java-utils</groupId>
-                <artifactId>java-cxf</artifactId>
-                <version>0.4.1-SNAPSHOT</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.cxf</groupId>
-                        <artifactId>cxf-rt-rs-client</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.cxf</groupId>
-                        <artifactId>cxf-core</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
@@ -536,16 +471,6 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.jaxrs</groupId>
-                <artifactId>jackson-jaxrs-base</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.jaxrs</groupId>
-                <artifactId>jackson-jaxrs-json-provider</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
             <dependency>

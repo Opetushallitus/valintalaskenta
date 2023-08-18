@@ -16,7 +16,6 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
-import fi.vm.sade.valintalaskenta.tulos.resource.ValintatapajonoResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,9 +26,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +38,7 @@ import org.springframework.web.bind.annotation.*;
     name = "/resources/valintatapajono",
     description = "Resurssi valintatapajonon jonosijojen muokkaamiseen manuaalisesti")
 @RequestMapping("/resources/valintatapajono")
-public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
+public class ValintatapajonoResourceImpl {
   private final ValintalaskentaTulosService tulosService;
   private final ValintalaskentaModelMapper modelMapper;
   private final LaskentaAuditLog auditLog;
@@ -60,7 +59,7 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
       value = "/{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/jonosija",
       produces = MediaType.APPLICATION_JSON_VALUE,
       consumes = MediaType.APPLICATION_JSON_VALUE)
-  public Response muutaJonosija(
+  public ResponseEntity<MuokattuJonosijaDTO> muutaJonosija(
       @Parameter(name = "valintatapajonoOid", required = true) @PathVariable("valintatapajonoOid")
           final String valintatapajonoOid,
       @Parameter(name = "hakemusOid", required = true) @PathVariable("hakemusOid")
@@ -77,9 +76,9 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
             valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, arvo, user);
     if (muokattuJonosija != null) {
       MuokattuJonosijaDTO map = modelMapper.map(muokattuJonosija, MuokattuJonosijaDTO.class);
-      return Response.status(Response.Status.ACCEPTED).entity(map).build();
+      return ResponseEntity.accepted().body(map);
     } else {
-      return Response.status(Response.Status.NOT_FOUND).build();
+      return ResponseEntity.notFound().build();
     }
   }
 
@@ -89,7 +88,7 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
       value = "/{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/jonosija",
       produces = MediaType.APPLICATION_JSON_VALUE,
       consumes = MediaType.APPLICATION_JSON_VALUE)
-  public Response poistaMuokattuJonosija(
+  public ResponseEntity<MuokattuJonosijaDTO> poistaMuokattuJonosija(
       @Parameter(name = "valintatapajonoOid", required = true) @PathVariable("valintatapajonoOid")
           final String valintatapajonoOid,
       @Parameter(name = "hakemusOid", required = true) @PathVariable("hakemusOid")
@@ -105,9 +104,9 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
             valintatapajonoOid, hakemusOid, jarjestyskriteeriPrioriteetti, user);
     if (muokattuJonosija != null) {
       MuokattuJonosijaDTO map = modelMapper.map(muokattuJonosija, MuokattuJonosijaDTO.class);
-      return Response.status(Response.Status.ACCEPTED).entity(map).build();
+      return ResponseEntity.accepted().body(map);
     } else {
-      return Response.status(Response.Status.NOT_FOUND).build();
+      return ResponseEntity.notFound().build();
     }
   }
 
@@ -117,7 +116,7 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
       value = "/{valintatapajonoOid}/valmissijoiteltavaksi",
       produces = MediaType.APPLICATION_JSON_VALUE,
       consumes = MediaType.APPLICATION_JSON_VALUE)
-  public Response muokkaaSijotteluStatusta(
+  public ResponseEntity<ValintatapajonoDTO> muokkaaSijotteluStatusta(
       @Parameter(name = "valintatapajonoOid", required = true) @PathVariable("valintatapajonoOid")
           final String valintatapajonoOid,
       @Parameter(name = "status", required = true) @RequestParam("status") final boolean status,
@@ -157,23 +156,20 @@ public class ValintatapajonoResourceImpl implements ValintatapajonoResource {
         tulosService.muokkaaValintatapajonoa(
             valintatapajonoOid, valintatapajonoMuokkausFunktio, user);
     return dto.map(
-            jono ->
-                Response.status(Response.Status.ACCEPTED)
-                    .entity(modelMapper.map(jono, ValintatapajonoDTO.class))
-                    .build())
-        .orElse(Response.status(Response.Status.NOT_FOUND).build());
+            jono -> ResponseEntity.accepted().body(modelMapper.map(jono, ValintatapajonoDTO.class)))
+        .orElse(ResponseEntity.notFound().build());
   }
 
   @PreAuthorize(READ_UPDATE_CRUD)
   @GetMapping(
       value = "/{valintatapajonoOid}/valmissijoiteltavaksi",
       produces = MediaType.APPLICATION_JSON_VALUE)
-  public Response haeSijoitteluStatus(
+  public ResponseEntity<Map<String, Boolean>> haeSijoitteluStatus(
       @Parameter(name = "valintatapajonoOid", required = true) @PathVariable("valintatapajonoOid")
           String oid) {
-    HashMap object = new HashMap();
+    HashMap<String, Boolean> object = new HashMap<>();
     object.put("value", tulosService.haeSijoitteluStatus(oid));
-    return Response.status(Response.Status.ACCEPTED).entity(object).build();
+    return ResponseEntity.accepted().body(object);
   }
 
   @PreAuthorize(READ_UPDATE_CRUD)

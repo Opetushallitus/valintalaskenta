@@ -5,7 +5,6 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.MinimalJonoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
-import fi.vm.sade.valintalaskenta.tulos.resource.HakuResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
     description =
         "Resurssi haun valintalaskennan virhetilanteiden ja hakukohtaisten tietojen hakemiseen")
 @RequestMapping(value = "/resources/haku")
-public class HakuResourceImpl implements HakuResource {
+public class HakuResourceImpl {
   protected static final Logger LOGGER = LoggerFactory.getLogger(HakuResourceImpl.class);
   private final ValintalaskentaTulosService tulosService;
 

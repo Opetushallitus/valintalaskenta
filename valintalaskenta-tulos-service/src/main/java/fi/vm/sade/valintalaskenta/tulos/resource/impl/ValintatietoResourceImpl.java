@@ -4,7 +4,6 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.HakemusOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.HakuDTO;
-import fi.vm.sade.valintalaskenta.tulos.resource.ValintatietoResource;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.ValintatietoService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +14,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @PreAuthorize("isAuthenticated()")
 @RequestMapping("/resources/valintatieto")
-public class ValintatietoResourceImpl implements ValintatietoResource {
+public class ValintatietoResourceImpl {
   @Autowired private ValintatietoService valintatietoService;
 
-  @Override
   @PreAuthorize(READ_UPDATE_CRUD)
   @PostMapping(
       value = "/hakukohde/{hakukohdeOid}",
@@ -30,7 +28,6 @@ public class ValintatietoResourceImpl implements ValintatietoResource {
     return valintatietoService.haeValintatiedotHakukohteelle(valintakoeTunnisteet, hakukohdeOid);
   }
 
-  @Override
   @PreAuthorize(READ_UPDATE_CRUD)
   @GetMapping(value = "/haku/{hakuOid}", produces = MediaType.APPLICATION_JSON_VALUE)
   public HakuDTO haeValintatiedot(@PathVariable("hakuOid") final String hakuOid) {

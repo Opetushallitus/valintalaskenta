@@ -3,7 +3,6 @@ package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ_UPDATE_CRUD;
 
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
-import fi.vm.sade.valintalaskenta.tulos.resource.HakemusResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @PreAuthorize("isAuthenticated()")
 @Tag(name = "/resources/hakemus", description = "Resurssi hakemuskohtaisten tulosten hakemiseen")
 @RequestMapping(value = "/resources/hakemus")
-public class HakemusResourceImpl implements HakemusResource {
+public class HakemusResourceImpl {
   private final ValintalaskentaTulosService tulosService;
 
   @Autowired

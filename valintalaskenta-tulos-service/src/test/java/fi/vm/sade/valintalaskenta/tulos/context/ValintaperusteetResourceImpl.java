@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 public class ValintaperusteetResourceImpl implements ValintaperusteetResource {
@@ -49,7 +48,7 @@ public class ValintaperusteetResourceImpl implements ValintaperusteetResource {
 
   @Override
   public ValintatapajonoDTO updateAutomaattinenSijoitteluunSiirto(
-      String oid, Boolean arvo, @Context HttpServletRequest request) {
+      String oid, Boolean arvo, HttpServletRequest request) {
     return new ValintatapajonoDTO();
   }
 }

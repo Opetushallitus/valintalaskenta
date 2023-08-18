@@ -156,30 +156,6 @@
             <artifactId>java-8-matchers</artifactId>
         </dependency>
 
-        <!-- CXF -->
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-spring-boot-starter-jaxrs</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-rs-security-cors</artifactId>
-            <version>${cxf.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>spring-web</artifactId>
-                    <groupId>org.springframework</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>spring-beans</artifactId>
-                    <groupId>org.springframework</groupId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sun.activation</groupId>
-                    <artifactId>javax.activation</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
@@ -254,14 +230,6 @@
 
         <dependency>
             <groupId>fi.vm.sade.java-utils</groupId>
-            <artifactId>legacy-cxf-cas</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fi.vm.sade.java-utils</groupId>
-            <artifactId>java-cxf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fi.vm.sade.java-utils</groupId>
             <artifactId>java-cas</artifactId>
         </dependency>
 
@@ -301,12 +269,6 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.jaxrs</groupId>
-            <artifactId>jackson-jaxrs-json-provider</artifactId>
-        </dependency>
-
 
     </dependencies>
 

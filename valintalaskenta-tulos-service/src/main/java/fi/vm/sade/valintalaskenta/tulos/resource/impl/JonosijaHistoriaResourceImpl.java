@@ -4,7 +4,6 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 
 import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteerihistoriaDTO;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
-import fi.vm.sade.valintalaskenta.tulos.resource.JonosijaHistoriaResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
     name = "/resources/jonosijahistoria",
     description = "Resurssi jonosijahistoriatiedon hakemiseen")
 @RequestMapping(value = "/resources/jonosijahistoria")
-public class JonosijaHistoriaResourceImpl implements JonosijaHistoriaResource {
+public class JonosijaHistoriaResourceImpl {
   protected static final Logger logger =
       LoggerFactory.getLogger(JonosijaHistoriaResourceImpl.class);
   private final ValintalaskentaTulosService tulosService;

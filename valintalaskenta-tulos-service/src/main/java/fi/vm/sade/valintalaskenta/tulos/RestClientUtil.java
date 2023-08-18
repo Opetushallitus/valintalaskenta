@@ -50,8 +50,16 @@ public class RestClientUtil {
       final CasClient casClient,
       final String url,
       final TypeToken<T> typeToken,
-      final Map<String, List<String>> queryParams) {
-    final Response response = execute(casClient, request(url, "GET", queryParams).build());
+      final Map<String, List<String>> queryParams,
+      final Integer requestTimeout,
+      final Integer readTimeout) {
+    final Response response =
+        execute(
+            casClient,
+            request(url, "GET", queryParams)
+                .setRequestTimeout(requestTimeout != null ? requestTimeout : 0)
+                .setReadTimeout(readTimeout != null ? readTimeout : 0)
+                .build());
     if (response.getStatusCode() == 200) {
       return GSON.fromJson(response.getResponseBody(), typeToken.getType());
     } else {
@@ -64,13 +72,17 @@ public class RestClientUtil {
       final CasClient casClient,
       final String url,
       final TypeToken<T> typeToken,
-      final Object body) {
+      final Object body,
+      final Integer requestTimeout,
+      final Integer readTimeout) {
     final Response response =
         execute(
             casClient,
             request(url, "POST", null)
                 .setBody(GSON.toJson(body))
-                .addHeader("Content-type", "application/json")
+                .addHeader("Content-Type", "application/json")
+                .setRequestTimeout(requestTimeout != null ? requestTimeout : 0)
+                .setReadTimeout(readTimeout != null ? readTimeout : 0)
                 .build());
     if (response.getStatusCode() == 200) {
       return GSON.fromJson(response.getResponseBody(), typeToken.getType());

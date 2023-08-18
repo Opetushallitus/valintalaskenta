@@ -4,7 +4,6 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
-import fi.vm.sade.valintalaskenta.tulos.resource.ValintakoeResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
     name = "/resources/valintakoe",
     description = "Resurssi valintakoeosallistumistulosten hakemiseen")
 @RequestMapping("/resources/valintakoe")
-public class ValintakoeResourceImpl implements ValintakoeResource {
+public class ValintakoeResourceImpl {
   private final ValintalaskentaTulosService tulosService;
   private final ValintalaskentaModelMapper modelMapper;
 

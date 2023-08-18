@@ -7,7 +7,6 @@ import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.dto.HarkinnanvarainenHyvaksyminenDTO;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
-import fi.vm.sade.valintalaskenta.tulos.resource.HarkinnanvaraisuusResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
     name = "/resources/harkinnanvarainenhyvaksynta",
     description = "Resurssi harkinnanvaraisesti hakeneiden hakijoiden käsittelyyn")
 @RequestMapping(value = "/resources/harkinnanvarainenhyvaksynta")
-public class HarkinnanvaraisuusResourceImpl implements HarkinnanvaraisuusResource {
+public class HarkinnanvaraisuusResourceImpl {
   private final ValintalaskentaTulosService tulosService;
   private final ValintalaskentaModelMapper modelMapper;
   private final LaskentaAuditLog auditLog;
