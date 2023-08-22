@@ -13,7 +13,9 @@ import org.mongodb.morphia.Morphia;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/** @author Jussi Jartamo */
+/**
+ * @author Jussi Jartamo
+ */
 @Configuration
 public class MongoConfigurationImpl {
   public static final String DATABASE_NAME = "test";

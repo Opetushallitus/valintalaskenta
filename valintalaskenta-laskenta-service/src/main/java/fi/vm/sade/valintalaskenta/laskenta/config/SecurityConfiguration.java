@@ -129,7 +129,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .permitAll()
         .requestMatchers(new AntPathRequestMatcher("/actuator/health"))
         .permitAll()
-        .requestMatchers("/swagger-ui") // loose matching for swagger resources
+        .requestMatchers(new AntPathRequestMatcher("/swagger-ui**"))
         .permitAll()
         .requestMatchers(new AntPathRequestMatcher("/v3/api-docs"))
         .permitAll()

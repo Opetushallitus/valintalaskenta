@@ -41,7 +41,9 @@ public class HakemusDTO {
   @Schema(description = "Hakijan Koski-opiskeluoikeudet", required = false)
   private String koskiOpiskeluoikeudetJson;
 
-  /** @Deprecated Jatkossa käytetään avainSuoritusTiedot -kenttää */
+  /**
+   * @Deprecated Jatkossa käytetään avainSuoritusTiedot -kenttää
+   */
   @Deprecated
   @Schema(description = "Hakemuksen avain/arvo map", required = false)
   private List<AvainArvoDTO> avaimet = new ArrayList<AvainArvoDTO>();
