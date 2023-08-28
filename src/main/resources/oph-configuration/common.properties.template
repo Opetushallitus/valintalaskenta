@@ -32,7 +32,7 @@ valintalaskentakoostepalvelu.app.password.to.sijoittelu={{valintalaskentakoostep
 
 #VALINTALASKENTA-SERVICE
 valintalaskenta-laskenta-service.mongodb.dbname=valintalaskentadb
-valintalaskenta-laskenta-service.mongodb.uri={{ mongodb_valintalaskentadb_uri | default("${mongodb.virkailija.uri}") }}/${valintalaskenta-laskenta-service.mongodb.dbname}
+valintalaskenta-laskenta-service.mongodb.uri={{ mongodb_valintalaskentadb_uri | default("${mongodb.virkailija.uri}") }}/${valintalaskenta-laskenta-service.mongodb.dbname}?retryWrites=false
 valintalaskenta-laskenta-service.mongodb.useIndexQueries=true
 valintalaskenta-laskenta-service.swagger.basepath=/valintalaskenta-laskenta-service/resources
 valintalaskenta-laskenta-service.global.http.connectionTimeoutMillis={{valintalaskentalaskentaservice_global_http_connectiontimeoutmillis}}
