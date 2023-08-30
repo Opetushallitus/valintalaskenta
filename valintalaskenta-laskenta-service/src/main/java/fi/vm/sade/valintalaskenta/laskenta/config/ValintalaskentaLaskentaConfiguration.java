@@ -144,7 +144,7 @@ public class ValintalaskentaLaskentaConfiguration {
   public ValintaperusteetValintatapajonoResource valintatapajonoClient(
       @Qualifier("valintaperusteetServiceCasClient") final CasClient valintaperusteetCasClient,
       @Value("${cas.service.valintaperusteet-service}") final String valintaperusteetBaseUrl) {
-    return oid -> {
+    return oids -> {
       final TypeToken<Map<String, List<String>>> typeToken = new TypeToken<>() {};
       final Map<String, List<String>> result =
           get(
@@ -153,7 +153,7 @@ public class ValintalaskentaLaskentaConfiguration {
                   "%s/resources/valintalaskentakoostepalvelu/valintatapajono/kopiot",
                   valintaperusteetBaseUrl),
               typeToken,
-              null,
+              Map.of("oid", oids),
               clientConnectionTimeout,
               clientReceiveTimeout);
       return result;
