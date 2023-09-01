@@ -2,24 +2,24 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Indexed;
 
-@Entity("MuokattuJonosija")
+import javax.persistence.*;
+
+@Entity
+@Table(name = "muokattujonosija")
 public class MuokattuJonosija {
 
-  @Id private ObjectId id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-  @Indexed(unique = false, dropDups = false)
+  //@Indexed(unique = false, dropDups = false)
   private String hakukohdeOid;
 
-  @Indexed(unique = false, dropDups = false)
+  //@Indexed(unique = false, dropDups = false)
   private String hakuOid;
 
-  @Indexed(unique = false, dropDups = false)
+  // @Indexed(unique = false, dropDups = false)
   private String valintatapajonoOid;
 
   private String hakemusOid;

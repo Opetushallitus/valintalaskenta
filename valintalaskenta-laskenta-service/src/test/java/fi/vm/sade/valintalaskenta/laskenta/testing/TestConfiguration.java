@@ -5,7 +5,6 @@ import static java.lang.Integer.parseInt;
 import com.mongodb.MongoClient;
 import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.valintalaskenta.laskenta.App;
-import fi.vm.sade.valintalaskenta.laskenta.config.MongoConfiguration;
 import fi.vm.sade.valintalaskenta.laskenta.config.SwaggerConfiguration;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaPaloissaResourceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
@@ -120,38 +119,5 @@ public class TestConfiguration extends WebSecurityConfigurerAdapter {
   @Bean
   public LaskentaAuditLogMock laskentaAuditLogMock() {
     return new LaskentaAuditLogMock();
-  }
-
-  @Bean(name = "mongodFactory", destroyMethod = "shutdown")
-  public ValintalaskentaMongodForTestsFactory mongodFactory() {
-    return new ValintalaskentaMongodForTestsFactory();
-  }
-
-  @Bean(name = "mongo")
-  public MongoClient mongo(
-      @Qualifier("mongodFactory") final ValintalaskentaMongodForTestsFactory mongodFactory) {
-    return mongodFactory.newMongo();
-  }
-
-  @Bean(name = "morphia")
-  public Morphia morphia() {
-    Morphia morphia = new Morphia();
-    morphia
-        .getMapper()
-        .getOptions()
-        .setObjectFactory(
-            new DefaultCreator() {
-              @Override
-              protected ClassLoader getClassLoaderForClass() {
-                return MongoConfiguration.class.getClassLoader();
-              }
-            });
-    return morphia;
-  }
-
-  @Bean(name = "datastore2")
-  public Datastore datastore2(
-      @Qualifier("morphia") final Morphia morphia, @Qualifier("mongo") final MongoClient mongo) {
-    return morphia.createDatastore(mongo, "test");
   }
 }

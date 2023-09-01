@@ -3,18 +3,22 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 import java.util.ArrayList;
 import java.util.List;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.*;
 
-@Entity(value = "Valintatapajono", noClassnameStored = true)
+import javax.persistence.*;
+
+@Entity
+@Table(name = "Valintatapajono")
 public class Valintatapajono {
   public static final int CURRENT_SCHEMA_VERSION = 2;
 
-  @Id private ObjectId id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
   private int schemaVersion = CURRENT_SCHEMA_VERSION;
 
-  @Indexed private String valintatapajonoOid;
+  //@Indexed
+  private String valintatapajonoOid;
 
   private String nimi;
 
@@ -45,13 +49,13 @@ public class Valintatapajono {
 
   private Boolean kaytetaanKokonaispisteita;
 
-  private List<ObjectId> jonosijaIdt;
+  private List<Long> jonosijaIdt;
 
   @Transient private List<Jonosija> jonosijat;
 
   private Long sijoitteluajoId;
 
-  public void setId(ObjectId id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
@@ -119,11 +123,11 @@ public class Valintatapajono {
     this.eiVarasijatayttoa = eiVarasijatayttoa;
   }
 
-  public List<ObjectId> getJonosijaIdt() {
+  public List<Long> getJonosijaIdt() {
     return jonosijaIdt == null ? new ArrayList<>() : jonosijaIdt;
   }
 
-  public void setJonosijaIdt(List<ObjectId> jonosijaIdt) {
+  public void setJonosijaIdt(List<Long> jonosijaIdt) {
     this.jonosijaIdt = jonosijaIdt;
   }
 

@@ -4,14 +4,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.*;
 
-@Entity(value = "Jonosija", noClassnameStored = true)
+import javax.persistence.*;
+
+@Entity
+@Table(name = "jonosija")
 public class Jonosija {
-  @Id private ObjectId id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-  @Indexed private String hakemusOid;
+  //@Indexed
+  private String hakemusOid;
 
   private String hakijaOid;
 
@@ -33,7 +37,7 @@ public class Jonosija {
 
   @Embedded private List<FunktioTulos> funktioTulokset = new ArrayList<FunktioTulos>();
 
-  public ObjectId getId() {
+  public Long getId() {
     return this.id;
   }
 

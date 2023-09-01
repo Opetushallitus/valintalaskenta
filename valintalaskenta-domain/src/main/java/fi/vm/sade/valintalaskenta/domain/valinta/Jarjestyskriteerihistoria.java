@@ -1,23 +1,24 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.PrePersist;
 
-@Entity("Jarjestyskriteerihistoria")
+import javax.persistence.*;
+
+@Entity
+@Table(name = "jarjestyskriteerihistoria")
 public class Jarjestyskriteerihistoria {
-  @Id private ObjectId id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
   private String historia;
 
   private byte[] historiaGzip;
 
-  public ObjectId getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(ObjectId id) {
+  public void setId(Long id) {
     this.id = id;
   }
 

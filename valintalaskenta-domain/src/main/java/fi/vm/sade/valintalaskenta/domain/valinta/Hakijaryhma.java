@@ -1,24 +1,27 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import java.util.*;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.*;
+import javax.persistence.*;
 
-@Entity(value = "Hakijaryhma", noClassnameStored = true)
+@Entity
+@Table(name = "hakijaryhma")
 public class Hakijaryhma {
   public static final int CURRENT_SCHEMA_VERSION = 2;
 
-  @Id private ObjectId id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
   private int schemaVersion = CURRENT_SCHEMA_VERSION;
 
-  @Indexed private String hakijaryhmaOid;
+  //@Indexed
+  private String hakijaryhmaOid;
 
   private int prioriteetti;
 
   private Date createdAt;
 
-  @Indexed(unique = false, dropDups = false)
+  //@Indexed(unique = false, dropDups = false)
   private String hakukohdeOid;
 
   private String nimi;
@@ -37,16 +40,17 @@ public class Hakijaryhma {
 
   private String valintatapajonoOid;
 
-  private List<ObjectId> jonosijaIdt;
+  private List<String> jonosijaIdt;
 
-  @Transient private List<Jonosija> jonosijat = new ArrayList<>();
+  @Transient
+  private List<Jonosija> jonosijat = new ArrayList<>();
 
   @PrePersist
   private void prePersist() {
     createdAt = new Date();
   }
 
-  public void setId(ObjectId id) {
+  public void setId(Integer id) {
     this.id = id;
   }
 
@@ -146,11 +150,11 @@ public class Hakijaryhma {
     this.valintatapajonoOid = valintatapajonoOid;
   }
 
-  public List<ObjectId> getJonosijaIdt() {
+  public List<String> getJonosijaIdt() {
     return jonosijaIdt == null ? new ArrayList<>() : jonosijaIdt;
   }
 
-  public void setJonosijaIdt(List<ObjectId> jonosijaIdt) {
+  public void setJonosijaIdt(List<String> jonosijaIdt) {
     this.jonosijaIdt = jonosijaIdt;
   }
 
@@ -174,5 +178,13 @@ public class Hakijaryhma {
 
   public void setHakijaryhmatyyppikoodiUri(String hakijaryhmatyyppikoodiUri) {
     this.hakijaryhmatyyppikoodiUri = hakijaryhmatyyppikoodiUri;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public Long getId() {
+    return id;
   }
 }

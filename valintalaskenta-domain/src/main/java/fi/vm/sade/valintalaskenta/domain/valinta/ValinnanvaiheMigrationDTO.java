@@ -1,31 +1,35 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import org.springframework.data.annotation.Reference;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.*;
 
-@Entity(value = "Valinnanvaihe", noClassnameStored = true)
+@Entity
+@Table(name = "Valinnanvaihe")
 @Indexes(
     @Index(
         fields = {@Field("hakuOid"), @Field("valinnanvaiheOid")},
         options = @IndexOptions(name = "idx_hakuoid_valinnanvaihe_oid", unique = true)))
 public class ValinnanvaiheMigrationDTO {
-  @Id private ObjectId id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
   private int jarjestysnumero;
 
   private Date createdAt;
 
-  @Indexed(unique = false, dropDups = false)
+  //@Indexed(unique = false, dropDups = false)
   private String hakuOid;
 
-  @Indexed(unique = false, dropDups = false)
+  //@Indexed(unique = false, dropDups = false)
   private String hakukohdeOid;
 
-  @Indexed(unique = false, dropDups = false)
+  //@Indexed(unique = false, dropDups = false)
   private String valinnanvaiheOid;
 
   private String tarjoajaOid;
@@ -46,7 +50,7 @@ public class ValinnanvaiheMigrationDTO {
     Collections.sort(valintatapajonot, (o1, o2) -> o1.getPrioriteetti() - o2.getPrioriteetti());
   }
 
-  public ObjectId getId() {
+  public Long getId() {
     return this.id;
   }
 

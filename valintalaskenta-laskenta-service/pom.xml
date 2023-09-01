@@ -40,10 +40,6 @@
             <artifactId>valintaperusteet-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.mongodb.morphia</groupId>
-            <artifactId>morphia</artifactId>
-        </dependency>
-        <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
             <type>jar</type>
@@ -186,10 +182,22 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- database -->
+
         <dependency>
-            <artifactId>nosqlunit-mongodb</artifactId>
-            <groupId>com.lordofthejars</groupId>
-            <scope>test</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>9.21.2</version>
         </dependency>
 
 

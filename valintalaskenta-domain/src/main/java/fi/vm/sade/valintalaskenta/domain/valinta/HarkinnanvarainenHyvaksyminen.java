@@ -1,12 +1,13 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
+import javax.persistence.*;
 
-@Entity("HarkinnanvarainenHyvaksyminen")
+@Entity
+@Table(name = "HarkinnanvarainenHyvaksyminen")
 public class HarkinnanvarainenHyvaksyminen {
-  @Id private ObjectId id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
   private HarkinnanvaraisuusTila harkinnanvaraisuusTila;
 

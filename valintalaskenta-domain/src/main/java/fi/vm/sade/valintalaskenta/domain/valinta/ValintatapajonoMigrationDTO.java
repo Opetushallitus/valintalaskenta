@@ -4,16 +4,20 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.*;
 
-@Entity(value = "Valintatapajono", noClassnameStored = true)
+import javax.persistence.*;
+
+@Entity
+@Table(name = "valintatapajono")
 public class ValintatapajonoMigrationDTO {
-  @Id private ObjectId id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
   private int schemaVersion;
 
-  @Indexed private String valintatapajonoOid;
+  //@Indexed
+  private String valintatapajonoOid;
 
   private String nimi;
 
@@ -41,7 +45,7 @@ public class ValintatapajonoMigrationDTO {
 
   private Long sijoitteluajoId;
 
-  public ObjectId getId() {
+  public Long getId() {
     return this.id;
   }
 
