@@ -8,21 +8,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Field;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Index;
-import org.mongodb.morphia.annotations.IndexOptions;
-import org.mongodb.morphia.annotations.Indexed;
-import org.mongodb.morphia.annotations.Indexes;
-import org.mongodb.morphia.annotations.PostLoad;
-import org.mongodb.morphia.annotations.PrePersist;
-import org.mongodb.morphia.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.annotation.Reference;
 
-@Entity(value = "Valinnanvaihe", noClassnameStored = true)
+import javax.persistence.*;
+
+@Entity
+@Table(name = "Valinnanvaihe")
 @Indexes(
     @Index(
         fields = {@Field("hakuOid"), @Field("valinnanvaiheOid")},
@@ -30,26 +23,29 @@ import org.slf4j.LoggerFactory;
 public class Valinnanvaihe {
   private static final Logger LOGGER = LoggerFactory.getLogger(Valinnanvaihe.class);
 
-  @Id private ObjectId id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
   private int jarjestysnumero;
 
   private Date createdAt;
 
-  @Indexed(unique = false, dropDups = false)
+  //@Indexed(unique = false, dropDups = false)
   private String hakuOid;
 
-  @Indexed(unique = false, dropDups = false)
+  //@Indexed(unique = false, dropDups = false)
   private String hakukohdeOid;
 
-  @Indexed(unique = false, dropDups = false)
+  // @Indexed(unique = false, dropDups = false)
   private String valinnanvaiheOid;
 
   private String tarjoajaOid;
 
   private String nimi;
 
-  @Reference private List<Valintatapajono> valintatapajonot = new ArrayList<>();
+  @Reference
+  private List<Valintatapajono> valintatapajonot = new ArrayList<>();
 
   @PrePersist
   private void prePersist() {
@@ -61,7 +57,7 @@ public class Valinnanvaihe {
     Collections.sort(valintatapajonot, Comparator.comparingInt(Valintatapajono::getPrioriteetti));
   }
 
-  public void setId(ObjectId id) {
+  public void setId(Long id) {
     this.id = id;
   }
 

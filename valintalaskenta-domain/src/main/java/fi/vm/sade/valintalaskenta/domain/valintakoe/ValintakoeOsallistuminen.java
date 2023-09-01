@@ -4,32 +4,27 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Field;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Index;
-import org.mongodb.morphia.annotations.IndexOptions;
-import org.mongodb.morphia.annotations.Indexed;
-import org.mongodb.morphia.annotations.Indexes;
-import org.mongodb.morphia.annotations.PrePersist;
 
-@Entity("ValintakoeOsallistuminen")
+import javax.persistence.*;
+
+@Entity
+@Table(name = "valintakoeosallistuminen")
 @Indexes({
   @Index(
       fields = {@Field("hakuOid")},
       options = @IndexOptions(name = "idx_haku"))
 })
 public class ValintakoeOsallistuminen {
-  @Id private ObjectId id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
   private String hakuOid;
 
-  @Indexed(unique = true)
+  //@Indexed(unique = true)
   private String hakemusOid;
 
-  @Indexed(unique = false)
+  //@Indexed(unique = false)
   private String hakijaOid;
 
   private String etunimi;
@@ -40,11 +35,11 @@ public class ValintakoeOsallistuminen {
 
   @Embedded private List<Hakutoive> hakutoiveet = new ArrayList<>();
 
-  public ObjectId getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(ObjectId id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
