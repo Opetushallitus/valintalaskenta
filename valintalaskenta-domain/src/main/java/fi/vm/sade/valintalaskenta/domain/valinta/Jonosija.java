@@ -29,6 +29,9 @@ public class Jonosija {
 
   private boolean hylattyValisijoittelussa = false;
 
+  @ManyToOne
+  private Hakijaryhma hakijaryhma;
+
   @Embedded
   private List<Jarjestyskriteeritulos> jarjestyskriteeritulokset =
       new ArrayList<Jarjestyskriteeritulos>();
@@ -89,6 +92,7 @@ public class Jonosija {
     this.harkinnanvarainen = harkinnanvarainen;
   }
 
+  @OneToMany(mappedBy = "")
   public List<Jarjestyskriteeritulos> getJarjestyskriteeritulokset() {
     return jarjestyskriteeritulokset;
   }
@@ -131,5 +135,13 @@ public class Jonosija {
 
   public void setHylattyValisijoittelussa(boolean hylattyValisijoittelussa) {
     this.hylattyValisijoittelussa = hylattyValisijoittelussa;
+  }
+
+  public Hakijaryhma getHakijaryhma() {
+    return hakijaryhma;
+  }
+
+  public void setHakijaryhma(Hakijaryhma hakijaryhma) {
+    this.hakijaryhma = hakijaryhma;
   }
 }
