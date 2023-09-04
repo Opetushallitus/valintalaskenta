@@ -3,11 +3,8 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "jarjestyskriteerihistoria")
 public class Jarjestyskriteerihistoria {
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+
   private Long id;
 
   private String historia;
@@ -38,7 +35,6 @@ public class Jarjestyskriteerihistoria {
     this.historia = historia;
   }
 
-  @PrePersist
   public void preventBothZipAndHistoryToBeSaved() {
     if (historia != null && historiaGzip != null) {
       historia = null;

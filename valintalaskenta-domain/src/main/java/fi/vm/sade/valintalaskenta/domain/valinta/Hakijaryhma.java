@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import javax.persistence.*;
 
 @Entity
@@ -40,7 +41,8 @@ public class Hakijaryhma {
 
   private String valintatapajonoOid;
 
-  private List<String> jonosijaIdt;
+  @OneToMany
+  private List<Jonosija> jonosija;
 
   @Transient
   private List<Jonosija> jonosijat = new ArrayList<>();
@@ -48,10 +50,6 @@ public class Hakijaryhma {
   @PrePersist
   private void prePersist() {
     createdAt = new Date();
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
   }
 
   public int getSchemaVersion() {
@@ -150,8 +148,8 @@ public class Hakijaryhma {
     this.valintatapajonoOid = valintatapajonoOid;
   }
 
-  public List<String> getJonosijaIdt() {
-    return jonosijaIdt == null ? new ArrayList<>() : jonosijaIdt;
+  public List<Long> getJonosijaIdt() {
+    return jonosijat == null ? new ArrayList<>() : jonosijat.stream().map(Jonosija::getId).collect(Collectors.toList());
   }
 
   public void setJonosijaIdt(List<String> jonosijaIdt) {
@@ -186,5 +184,13 @@ public class Hakijaryhma {
 
   public Long getId() {
     return id;
+  }
+
+  public void setJonosija(List<Jonosija> jonosija) {
+    this.jonosija = jonosija;
+  }
+
+  public List<Jonosija> getJonosija() {
+    return jonosija;
   }
 }
