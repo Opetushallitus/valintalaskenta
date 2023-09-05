@@ -1,15 +1,9 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import fi.vm.sade.valintalaskenta.domain.converter.BigDecimalConverter;
 import java.math.BigDecimal;
 import java.util.Map;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Converters;
-import org.mongodb.morphia.annotations.Embedded;
 
-@Embedded
-@Converters(BigDecimalConverter.class)
 public class Jarjestyskriteeritulos {
 
   private int prioriteetti;
@@ -24,7 +18,7 @@ public class Jarjestyskriteeritulos {
 
   private String tekninenKuvaus;
 
-  private ObjectId historia;
+  private String historia;
 
   public int getPrioriteetti() {
     return prioriteetti;
@@ -50,11 +44,11 @@ public class Jarjestyskriteeritulos {
     this.tila = tila;
   }
 
-  public ObjectId getHistoria() {
+  public String getHistoria() {
     return historia;
   }
 
-  public void setHistoria(ObjectId historia) {
+  public void setHistoria(String historia) {
     this.historia = historia;
   }
 

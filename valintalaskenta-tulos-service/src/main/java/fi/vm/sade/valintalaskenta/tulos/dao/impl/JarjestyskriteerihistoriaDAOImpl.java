@@ -2,29 +2,19 @@ package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.tulos.dao.JarjestyskriteerihistoriaDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.util.JarjestyskriteeriKooderi;
 import java.util.*;
-import java.util.stream.Collectors;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.Datastore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 @Repository("jonosijaHistoriaTulosDAO")
 public class JarjestyskriteerihistoriaDAOImpl implements JarjestyskriteerihistoriaDAO {
   private static final Logger LOG = LoggerFactory.getLogger(JarjestyskriteerihistoriaDAOImpl.class);
 
-  @Qualifier("datastore2")
-  @Autowired
-  private Datastore datastore;
-
   @Override
   public List<Jarjestyskriteerihistoria> findByValintatapajonoAndHakemusOid(
       String valintatapajonoOid, String hakemusOid) {
-    List<ObjectId> jononJonosijaIdt = new LinkedList<>();
+/*    List<ObjectId> jononJonosijaIdt = new LinkedList<>();
     datastore
         .find(ValintatapajonoMigrationDTO.class)
         .field("valintatapajonoOid")
@@ -49,11 +39,12 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
                         });
               });
     }
-    return hae(historiaIdt);
+    return hae(historiaIdt);*/
+    return null;
   }
 
-  private List<Jarjestyskriteerihistoria> hae(List<ObjectId> historiaIds) {
-    if (historiaIds.isEmpty()) {
+  private List<Jarjestyskriteerihistoria> hae(List<String> historiaIds) {
+/*    if (historiaIds.isEmpty()) {
       return new ArrayList<>();
     }
     List<Jarjestyskriteerihistoria> historiat =
@@ -66,38 +57,24 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
         .filter(JarjestyskriteeriKooderi::tarvitseekoEnkoodata)
         .map(JarjestyskriteeriKooderi::enkoodaa)
         .forEach(datastore::save);
-    return historiat.stream().map(JarjestyskriteeriKooderi::dekoodaa).collect(Collectors.toList());
+    return historiat.stream().map(JarjestyskriteeriKooderi::dekoodaa).collect(Collectors.toList());*/
+    return null;
   }
 
   private void saveJonosijat(Valintatapajono valintatapajono) {
-    valintatapajono.setJonosijaIdt(
+/*    valintatapajono.setJonosijaIdt(
         valintatapajono.getJonosijat().stream()
             .map(jonosija -> (ObjectId) datastore.save(jonosija).getId())
-            .collect(Collectors.toList()));
+            .collect(Collectors.toList()));*/
   }
 
   private void populateJonosijat(Valintatapajono valintatapajono) {
-    List<ObjectId> jonosijaIdt = valintatapajono.getJonosijaIdt();
+/*    List<ObjectId> jonosijaIdt = valintatapajono.getJonosijaIdt();
     if (jonosijaIdt.isEmpty()) {
       valintatapajono.setJonosijat(new ArrayList<>());
     } else {
       valintatapajono.setJonosijat(
           datastore.createQuery(Jonosija.class).field("_id").in(jonosijaIdt).asList());
-    }
-  }
-
-  private Valintatapajono migrate(ValintatapajonoMigrationDTO jono) {
-    if (jono.getSchemaVersion() == Valintatapajono.CURRENT_SCHEMA_VERSION) {
-      Valintatapajono alreadyMigrated =
-          datastore.find(Valintatapajono.class).field("_id").equal(jono.getId()).get();
-      populateJonosijat(alreadyMigrated);
-      return alreadyMigrated;
-    } else {
-      LOG.info("Migrating valintatapajono {}", jono.getValintatapajonoOid());
-      Valintatapajono migratedJono = jono.migrate();
-      saveJonosijat(migratedJono);
-      datastore.save(migratedJono);
-      return migratedJono;
-    }
+    }*/
   }
 }

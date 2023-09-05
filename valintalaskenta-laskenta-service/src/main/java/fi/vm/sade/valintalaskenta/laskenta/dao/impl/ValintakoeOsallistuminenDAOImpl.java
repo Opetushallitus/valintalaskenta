@@ -5,9 +5,6 @@ import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import java.util.Iterator;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.aggregation.Projection;
-import org.mongodb.morphia.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -17,29 +14,23 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
   @Value("${valintalaskenta-laskenta-service.mongodb.useIndexQueries:false}")
   private boolean useIndexQueries;
 
-  @Autowired private Datastore morphiaDS;
-
-  @PostConstruct
-  public void ensureIndexes() {
-    morphiaDS.ensureIndexes(ValintakoeOsallistuminen.class);
-  }
-
   @Override
   public List<ValintakoeOsallistuminen> readAll() {
-    return morphiaDS.find(ValintakoeOsallistuminen.class).asList();
+    return null;//return morphiaDS.find(ValintakoeOsallistuminen.class).asList();
   }
 
   @Override
   public ValintakoeOsallistuminen readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid) {
-    return morphiaDS
+    return null;
+/*    return morphiaDS
         .find(ValintakoeOsallistuminen.class, "hakuOid", hakuOid)
         .filter("hakemusOid", hakemusOid)
-        .get();
+        .get();*/
   }
 
   @Override
   public void createOrUpdate(ValintakoeOsallistuminen v) {
-    morphiaDS.save(v);
+    /*morphiaDS.save(v);*/
   }
 
   @Override
@@ -64,7 +55,8 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
   // Olemassaolevat laskennat (kevat 2015) vaatii tämän, uudet laskennat eivät.
   private Iterator<ValintakoeOsallistuminen> lasketutValintakoeOsallistumiset(
       String hakuOid, String hakukohdeOid, int jarjestysnumero) {
-    final Query<ValintakoeOsallistuminen> query =
+    return null;
+/*    final Query<ValintakoeOsallistuminen> query =
         morphiaDS.createQuery(ValintakoeOsallistuminen.class);
     query
         .field("hakuOid")
@@ -86,12 +78,13 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
         .unwind("hakutoiveet.valinnanVaiheet")
         .match(query)
         .limit(1)
-        .aggregate(ValintakoeOsallistuminen.class);
+        .aggregate(ValintakoeOsallistuminen.class);*/
   }
 
   private Iterator<ValintakoeOsallistuminen> hakijanValintaValintakoeOsallistumiset(
       String hakuOid, String hakukohdeOid, int jarjestysnumero) {
-    final Query<ValintakoeOsallistuminen> query =
+    return null;
+/*    final Query<ValintakoeOsallistuminen> query =
         morphiaDS.createQuery(ValintakoeOsallistuminen.class);
     query
         .field("hakuOid")
@@ -113,6 +106,6 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
         .unwind("hakutoiveet.valinnanVaiheet")
         .match(query)
         .limit(1)
-        .aggregate(ValintakoeOsallistuminen.class);
+        .aggregate(ValintakoeOsallistuminen.class);*/
   }
 }

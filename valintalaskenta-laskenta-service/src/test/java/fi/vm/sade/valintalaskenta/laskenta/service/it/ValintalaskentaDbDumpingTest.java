@@ -1,52 +1,36 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.it;
 
-import static com.lordofthejars.nosqlunit.core.LoadStrategyEnum.CLEAN_INSERT;
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializer;
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
-import fi.vm.sade.valintalaskenta.laskenta.testing.ValintalaskentaMongodForTestsFactory;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import org.apache.commons.lang.StringUtils;
-import org.bson.types.ObjectId;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mongodb.morphia.annotations.Entity;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.stereotype.Service;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.persistence.Entity;
 
 /**
  * A little utility for dumping valintalaskentadb contents to a form that can be easily used for
@@ -56,26 +40,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @ContextConfiguration(locations = ValintalaskentaDbDumpingTest.SPRING_CONFIG_XML)
 @RunWith(SpringJUnit4ClassRunner.class)
-@UsingDataSet
 public class ValintalaskentaDbDumpingTest {
   protected static final String SPRING_CONFIG_XML =
       "classpath:fi/vm/sade/valintalaskenta/laskenta/service/it/test-valintalaskentadb-access.xml";
 
-  private final Gson gson;
+  private final Gson gson = new Gson();
 
   @Autowired private ApplicationContext applicationContext;
 
   @Autowired private ValinnanvaiheDAO valinnanvaiheDAO;
-
-  /**
-   * For some reason, the presence of this rule creates "INFO at
-   * org.mongodb.driver.cluster(SLF4JLogger.java:76) Exception in monitor thread while connecting to
-   * server localhost:27017" If it bothers you, you can remove the rule when running the main
-   * method.
-   */
-  @Rule public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("valintalaskentadb");
-
-  private static final String MONGO_SYSTEM_PROPERTY_NAME = "VIRKAILIJAMONGO_URL";
 
   /** The real method used for dumping the data */
   public static void main(String... args) {
@@ -99,18 +72,7 @@ public class ValintalaskentaDbDumpingTest {
     System.out.println(dumper.dumpToJson(oidsToDump));
   }
 
-  public ValintalaskentaDbDumpingTest() {
-    JsonSerializer<ObjectId> objectIdJsonSerializer =
-        (src, typeOfSrc, context) -> {
-          JsonObject jsonObject = new JsonObject();
-          jsonObject.add("$oid", new JsonPrimitive(src.toHexString()));
-          return jsonObject;
-        };
-    gson = new GsonBuilder().registerTypeAdapter(ObjectId.class, objectIdJsonSerializer).create();
-  }
-
   @Test
-  @UsingDataSet(locations = "voidaanHyvaksya.json", loadStrategy = CLEAN_INSERT)
   public void smokeTest() {
     OidsToDump oidsInVoidaanHyvaksyaJson =
         OidsToDump.withHakuOid("1.2.246.562.29.173465377510")
@@ -164,7 +126,7 @@ public class ValintalaskentaDbDumpingTest {
   }
 
   private String collectionName(Class<?> clazz) {
-    return clazz.getAnnotation(Entity.class).value();
+    return clazz.getAnnotation(Entity.class).name();
   }
 
   private void cleanUpForPrinting(List<Valinnanvaihe> valinnanvaihes, List<String> hakemusOids) {
@@ -177,7 +139,7 @@ public class ValintalaskentaDbDumpingTest {
               .forEach(
                   jono -> {
                     List<Jonosija> sailytettavatJonosijat = new LinkedList<>();
-                    List<ObjectId> sailytettavatJonosijaIdt = new LinkedList<>();
+                    List<String> sailytettavatJonosijaIdt = new LinkedList<>();
                     jono.getJonosijat()
                         .forEach(
                             jonosija -> {
@@ -199,31 +161,6 @@ public class ValintalaskentaDbDumpingTest {
                   });
           vaihe.setValintatapajonot(new ArrayList<>(sailytettavatJonot));
         });
-  }
-
-  @Service
-  public static class SwitchingMongoFactory implements ApplicationContextAware {
-    private ApplicationContext applicationContext;
-    private Optional<ValintalaskentaMongodForTestsFactory> embeddedMongoFactory;
-
-    public MongoClient newMongo() throws UnknownHostException {
-      if (StringUtils.isNotBlank(System.getProperty(MONGO_SYSTEM_PROPERTY_NAME))) {
-        embeddedMongoFactory = Optional.empty();
-        return new MongoClient(new MongoClientURI(System.getProperty(MONGO_SYSTEM_PROPERTY_NAME)));
-      }
-      embeddedMongoFactory =
-          Optional.of(applicationContext.getBean(ValintalaskentaMongodForTestsFactory.class));
-      return embeddedMongoFactory.get().newMongo();
-    }
-
-    public void shutdown() {
-      embeddedMongoFactory.ifPresent(ValintalaskentaMongodForTestsFactory::shutdown);
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-      this.applicationContext = applicationContext;
-    }
   }
 
   public class DumpContents {

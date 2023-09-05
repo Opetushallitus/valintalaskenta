@@ -2,8 +2,6 @@ package fi.vm.sade.valintalaskenta.laskenta.service.it;
 
 import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
-import static com.lordofthejars.nosqlunit.core.LoadStrategyEnum.CLEAN_INSERT;
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA;
 import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.EI_OSALLISTU;
 import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.OSALLISTUU;
@@ -21,9 +19,6 @@ import co.unruly.matchers.StreamMatchers;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import fi.vm.sade.service.valintaperusteet.dto.FunktiokutsuDTO;
 import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
@@ -61,7 +56,6 @@ import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -82,7 +76,6 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
       DirtiesContextTestExecutionListener.class
     })
 public class ValintalaskentaResourceIntegrationTest {
-  @Rule public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
 
   @Autowired private ApplicationContext applicationContextThatNeedsToBeAutowiredToBeIntialised;
 
@@ -136,7 +129,6 @@ public class ValintalaskentaResourceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
   public void
       kielikokeeseenKutsutaanJosSuoritustaTaiTodennettuaKielitaitoaEiLoydyKunValintakoevaiheitaOnYksi()
           throws JsonSyntaxException, IOException {
@@ -175,7 +167,6 @@ public class ValintalaskentaResourceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
   public void
       kielikokeeseenKutsutaanJosSuoritustaTaiTodennettuaKielitaitoaEiLoydyVaikkaValintakoevaiheitaOlisiUseampia()
           throws JsonSyntaxException, IOException {
@@ -245,7 +236,6 @@ public class ValintalaskentaResourceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(locations = "bug1564.json", loadStrategy = CLEAN_INSERT)
   @Ignore(
       "Valitettavasti tämä testi ei suostu menemään läpi. "
           + "Hakukohteen 1.2.246.562.20.80972757381 edellisen vaiheen jonoista ei löydy tuloksia EdellinenValinnanVaiheKasittelija :ssa.")

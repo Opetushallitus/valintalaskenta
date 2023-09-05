@@ -7,12 +7,8 @@ import java.util.List;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "jonosija")
 public class Jonosija {
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
+  private String id;
 
   //@Indexed
   private String hakemusOid;
@@ -40,7 +36,7 @@ public class Jonosija {
 
   @Embedded private List<FunktioTulos> funktioTulokset = new ArrayList<FunktioTulos>();
 
-  public Long getId() {
+  public String getId() {
     return this.id;
   }
 

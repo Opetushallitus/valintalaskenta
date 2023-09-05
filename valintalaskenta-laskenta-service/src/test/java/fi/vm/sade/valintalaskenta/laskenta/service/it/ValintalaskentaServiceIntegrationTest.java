@@ -1,7 +1,5 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.it;
 
-import static com.lordofthejars.nosqlunit.core.LoadStrategyEnum.CLEAN_INSERT;
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.EI_OSALLISTU;
 import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.OSALLISTUU;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakemus;
@@ -16,8 +14,6 @@ import static org.junit.Assert.assertThat;
 import co.unruly.matchers.StreamMatchers;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
@@ -33,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +48,6 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
       DirtiesContextTestExecutionListener.class
     })
 public class ValintalaskentaServiceIntegrationTest {
-  @Rule public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
 
   @Autowired private ApplicationContext applicationContext;
 
@@ -71,7 +65,6 @@ public class ValintalaskentaServiceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(locations = "bug1564.json", loadStrategy = CLEAN_INSERT)
   public void bug1564KutsuttavaKohdekohtaiseenKokeeseen() throws IOException {
     final String hakemusOidJokaKuuluuKutsua = "1.2.246.562.11.00009176948";
     final String hakemusOidJotaEiKuuluKutsua = "1.2.246.562.11.00009584734";

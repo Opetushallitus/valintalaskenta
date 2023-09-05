@@ -2,9 +2,6 @@ package fi.vm.sade.valintalaskenta.laskenta.service.it;
 
 import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
-import static com.lordofthejars.nosqlunit.core.LoadStrategyEnum.CLEAN_INSERT;
-import static com.lordofthejars.nosqlunit.core.LoadStrategyEnum.DELETE_ALL;
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA;
 import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.EI_OSALLISTU;
 import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.OSALLISTUU;
@@ -27,8 +24,6 @@ import co.unruly.matchers.StreamMatchers;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import fi.vm.sade.service.valintaperusteet.dto.FunktiokutsuDTO;
 import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
@@ -81,7 +76,6 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
     })
 public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
   private final String uuid = null;
-  @Rule public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
 
   @Autowired private ApplicationContext applicationContext;
 
@@ -121,7 +115,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
       new ValintakoelaskennanKumulatiivisetTulokset();
 
   @Test
-  @UsingDataSet(loadStrategy = DELETE_ALL)
   public void test() {
     final String hakukohdeOid1 = "hakukohdeOid1";
     final String hakukohdeOid2 = "hakukohdeOid2";
@@ -199,7 +192,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(locations = "testVanhaTulos.json", loadStrategy = CLEAN_INSERT)
   public void testKoekutsuHakijanValinta() {
     final String hakukohdeOid1 = "hakukohdeOid1";
     final String hakukohdeOid2 = "hakukohdeOid2";
@@ -260,7 +252,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(loadStrategy = DELETE_ALL)
   public void test1() {
     final String hakukohdeOid1 = "hakukohdeOid1";
     final String hakukohdeOid2 = "hakukohdeOid2";
@@ -459,7 +450,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(loadStrategy = DELETE_ALL)
   public void test2() {
     final String hakukohdeOid1 = "hakukohdeOid1";
     final String hakukohdeOid2 = "hakukohdeOid2";
@@ -672,7 +662,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(loadStrategy = DELETE_ALL)
   public void test3() {
     final String hakukohdeOid1 = "hakukohdeOid1";
     final String hakukohdeOid2 = "hakukohdeOid2";
@@ -842,7 +831,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(loadStrategy = DELETE_ALL)
   public void test4() {
     final String hakukohdeOid1 = "hakukohdeOid1";
     final String hakukohdeOid2 = "hakukohdeOid2";
@@ -983,7 +971,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(locations = "testEsivalinnassaHylatty.json", loadStrategy = CLEAN_INSERT)
   public void testEiKoekutsujaAikaisemminHylatyilleHakijanValinnoille() {
     final String hakemusOid = "1.2.246.562.11.00000072753";
     final String hakukohdeOid = "1.2.246.562.5.91937845484";
@@ -1022,7 +1009,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(locations = "testViimeisinValinnanVaihe.json", loadStrategy = CLEAN_INSERT)
   public void testViimeisinValinnanVaihe() {
     final String hakemusOid = "1.2.246.562.11.00000072753";
     final String hakukohdeOid = "1.2.246.562.5.91937845484";
@@ -1060,9 +1046,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(
-      locations = "testViimeisinValinnanVaiheEkaHylatty.json",
-      loadStrategy = CLEAN_INSERT)
   public void testViimeisinValinnanVaiheEnsimmainenHakutoiveHylatty() {
     // Testa
     final String hakemusOid = "1.2.246.562.11.00000072753";
@@ -1144,7 +1127,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(locations = "osallistuminen.json", loadStrategy = CLEAN_INSERT)
   public void testOlemassaolevatKokoeet() throws JsonSyntaxException, IOException {
 
     LaskeDTO dto = readJson("laskeDTO.json", new TypeToken<LaskeDTO>() {});
@@ -1211,7 +1193,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(loadStrategy = DELETE_ALL)
   public void kielikokeeseenKutsutaanJosSuoritustaTaiTodennettuaKielitaitoaEiLoydy()
       throws JsonSyntaxException, IOException {
     LaskeDTO laskeDTOIlmanKielikoetulosta =
@@ -1250,7 +1231,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(loadStrategy = DELETE_ALL)
   public void kielikokeeseenKutsutaanJosOsallistuminenLoytyyKyseiseltaHakemukselta()
       throws JsonSyntaxException, IOException {
     LaskeDTO laskeDTOIlmanKielikoetulosta =
@@ -1292,7 +1272,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(loadStrategy = DELETE_ALL)
   public void kielikokeeseenEiKutsutaJosSuoritusLoytyyEriHakemukselta()
       throws JsonSyntaxException, IOException {
     LaskeDTO laskeDTOIlmanKielikoetulosta =
@@ -1350,7 +1329,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(locations = "voidaanHyvaksya.json", loadStrategy = CLEAN_INSERT)
   public void testMukanaKokeessaToisessaKohteessa() {
     final String hakemusOid = "1.2.246.562.11.00001212279";
     final String hakukohdeOid = "1.2.246.562.20.66128426039";
@@ -1397,9 +1375,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(
-      locations = "toisessaKohteessaKoeJohonEiOsallistuta.json",
-      loadStrategy = CLEAN_INSERT)
   public void testMukanaYhdessaMutteiKaikissaKokeissaToisessaKohteessa() {
     final String hakemusOid = "1.2.246.562.11.00001212279";
     final String hakukohdeOid = "1.2.246.562.20.66128426039";
@@ -1460,7 +1435,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(locations = "bug1564.json", loadStrategy = CLEAN_INSERT)
   public void bug1564KutsuttavaKohdekohtaiseenKokeeseen() throws IOException {
     final String hakemusOid = "1.2.246.562.11.00009176948";
     final String hakukohdeOidJossaOmaKoe = "1.2.246.562.20.80972757381";

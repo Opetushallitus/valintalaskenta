@@ -10,22 +10,13 @@ import java.util.Set;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.annotation.Reference;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "Valinnanvaihe")
-@Indexes(
-    @Index(
-        fields = {@Field("hakuOid"), @Field("valinnanvaiheOid")},
-        options = @IndexOptions(name = "idx_hakuoid_valinnanvaihe_oid", unique = true)))
 public class Valinnanvaihe {
   private static final Logger LOGGER = LoggerFactory.getLogger(Valinnanvaihe.class);
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
+  private String id;
 
   private int jarjestysnumero;
 
@@ -44,7 +35,6 @@ public class Valinnanvaihe {
 
   private String nimi;
 
-  @Reference
   private List<Valintatapajono> valintatapajonot = new ArrayList<>();
 
   @PrePersist
@@ -57,8 +47,12 @@ public class Valinnanvaihe {
     Collections.sort(valintatapajonot, Comparator.comparingInt(Valintatapajono::getPrioriteetti));
   }
 
-  public void setId(Long id) {
+  public void setId(String id) {
     this.id = id;
+  }
+
+  public String getId() {
+    return id;
   }
 
   public int getJarjestysnumero() {

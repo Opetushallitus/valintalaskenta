@@ -6,14 +6,10 @@ import java.util.List;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "Valintatapajono")
 public class Valintatapajono {
   public static final int CURRENT_SCHEMA_VERSION = 2;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
+  private String id;
 
   private int schemaVersion = CURRENT_SCHEMA_VERSION;
 
@@ -49,14 +45,18 @@ public class Valintatapajono {
 
   private Boolean kaytetaanKokonaispisteita;
 
-  private List<Long> jonosijaIdt;
+  private List<String> jonosijaIdt;
 
   @Transient private List<Jonosija> jonosijat;
 
   private Long sijoitteluajoId;
 
-  public void setId(Long id) {
+  public void setId(String id) {
     this.id = id;
+  }
+
+  public String getId() {
+    return id;
   }
 
   public int getSchemaVersion() {
@@ -123,11 +123,11 @@ public class Valintatapajono {
     this.eiVarasijatayttoa = eiVarasijatayttoa;
   }
 
-  public List<Long> getJonosijaIdt() {
+  public List<String> getJonosijaIdt() {
     return jonosijaIdt == null ? new ArrayList<>() : jonosijaIdt;
   }
 
-  public void setJonosijaIdt(List<Long> jonosijaIdt) {
+  public void setJonosijaIdt(List<String> jonosijaIdt) {
     this.jonosijaIdt = jonosijaIdt;
   }
 

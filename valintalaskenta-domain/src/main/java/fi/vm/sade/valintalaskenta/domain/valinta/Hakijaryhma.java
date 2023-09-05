@@ -2,15 +2,10 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import javax.persistence.*;
 
-@Entity
-@Table(name = "hakijaryhma")
 public class Hakijaryhma {
   public static final int CURRENT_SCHEMA_VERSION = 2;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
   private int schemaVersion = CURRENT_SCHEMA_VERSION;
@@ -41,13 +36,8 @@ public class Hakijaryhma {
 
   private String valintatapajonoOid;
 
-  @OneToMany
-  private List<Jonosija> jonosija;
-
-  @Transient
   private List<Jonosija> jonosijat = new ArrayList<>();
 
-  @PrePersist
   private void prePersist() {
     createdAt = new Date();
   }
@@ -148,12 +138,8 @@ public class Hakijaryhma {
     this.valintatapajonoOid = valintatapajonoOid;
   }
 
-  public List<Long> getJonosijaIdt() {
+  public List<String> getJonosijaIdt() {
     return jonosijat == null ? new ArrayList<>() : jonosijat.stream().map(Jonosija::getId).collect(Collectors.toList());
-  }
-
-  public void setJonosijaIdt(List<String> jonosijaIdt) {
-    this.jonosijaIdt = jonosijaIdt;
   }
 
   public List<Jonosija> getJonosijat() {
@@ -161,7 +147,7 @@ public class Hakijaryhma {
       throw new IllegalStateException(
           String.format(
               "Jonosijat not loaded for hakijaryhma %s with jonosijaids %s",
-              hakijaryhmaOid, jonosijaIdt));
+              hakijaryhmaOid, jonosijat));
     }
     return jonosijat;
   }
@@ -184,13 +170,5 @@ public class Hakijaryhma {
 
   public Long getId() {
     return id;
-  }
-
-  public void setJonosija(List<Jonosija> jonosija) {
-    this.jonosija = jonosija;
-  }
-
-  public List<Jonosija> getJonosija() {
-    return jonosija;
   }
 }

@@ -1,6 +1,5 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-@Embedded
 public class FunktioTulos {
   private String tunniste;
   private String arvo;

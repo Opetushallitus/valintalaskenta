@@ -1,14 +1,10 @@
 package fi.vm.sade.valintalaskenta.tulos.dao;
 
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import com.github.npathai.hamcrestopt.OptionalMatchers;
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
@@ -32,21 +28,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 /** User: wuoti Date: 28.8.2013 Time: 15.47 */
 @ContextConfiguration(locations = "classpath:application-context-test.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
-@UsingDataSet
 public class ValintakoeOsallistuminenDAOTest {
 
   @Autowired private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
 
   @Autowired private ApplicationContext applicationContext;
 
-  @Rule public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
-
   @Autowired private ValintalaskentaModelMapper modelMapper;
 
   @Test
-  @UsingDataSet(
-      locations = "valintakoeOsallistuminenDAOInitialData.json",
-      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
   public void testFindByHakuAndOsallistuminen() {
     final String hakuOid = "hakuOid1";
     final Osallistuminen osallistuminen = Osallistuminen.VIRHE;
@@ -70,9 +60,6 @@ public class ValintakoeOsallistuminenDAOTest {
   }
 
   @Test
-  @UsingDataSet(
-      locations = "ammatillisenKielikoeValintakoeOsallistuminen.json",
-      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
   public void testFindAmmatillisenKielikoeOsallistumiset() {
     List<ValintakoeOsallistuminen> osallistumiset =
         valintakoeOsallistuminenDAO.findAmmatillisenKielikoeOsallistumiset(
