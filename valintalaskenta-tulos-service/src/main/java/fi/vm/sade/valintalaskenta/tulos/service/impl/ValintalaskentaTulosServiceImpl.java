@@ -30,7 +30,6 @@ import fi.vm.sade.valintalaskenta.domain.valinta.LogEntry;
 import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
-import fi.vm.sade.valintalaskenta.domain.valinta.ValintatapajonoMigrationDTO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
@@ -65,6 +64,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -92,6 +92,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
   @Autowired private ValintalaskentaModelMapper modelMapper;
 
+  @Qualifier("LaskentaAuditLog")
   @Autowired private LaskentaAuditLog auditLog;
 
   @Value("${root.organisaatio.oid}")
@@ -313,14 +314,15 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
    */
   @Override
   public List<MinimalJonoDTO> haeSijoittelunKayttamatJonotIlmanValintalaskentaa() {
-    List<ValintatapajonoMigrationDTO> validValintatapajonos =
+    return null;
+/*    List<ValintatapajonoMigrationDTO> validValintatapajonos =
         valinnanvaiheDAO.valintatapajonotJotkaEivatKaytaLaskentaa();
     return valinnanvaiheDAO.hakuOidHakukohdeOidPairsForJonos(validValintatapajonos).stream()
         .flatMap(
             hakuHakukohdePair ->
                 minimalJonoListForHakukohde(
                     hakuHakukohdePair.getLeft(), hakuHakukohdePair.getRight()))
-        .collect(Collectors.toList());
+        .collect(Collectors.toList());*/
   }
 
   private Stream<MinimalJonoDTO> minimalJonoListForHakukohde(String haku, String hakukohde) {

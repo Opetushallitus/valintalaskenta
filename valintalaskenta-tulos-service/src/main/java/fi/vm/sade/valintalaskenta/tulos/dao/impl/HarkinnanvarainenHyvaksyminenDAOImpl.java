@@ -3,63 +3,61 @@ package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvarainenHyvaksyminen;
 import fi.vm.sade.valintalaskenta.tulos.dao.HarkinnanvarainenHyvaksyminenDAO;
 import java.util.List;
-import org.mongodb.morphia.Datastore;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 @Repository("HarkinnanvarainenHyvaksyminenDAO")
 public class HarkinnanvarainenHyvaksyminenDAOImpl implements HarkinnanvarainenHyvaksyminenDAO {
-  @Qualifier("datastore2")
-  @Autowired
-  private Datastore datastore;
 
   @Override
   public HarkinnanvarainenHyvaksyminen haeHarkinnanvarainenHyvaksyminen(
       String hakukohdeOid, String hakemusOid) {
-    return datastore
+    return null;
+ /*   return datastore
         .find(HarkinnanvarainenHyvaksyminen.class)
         .field("hakukohdeOid")
         .equal(hakukohdeOid)
         .field("hakemusOid")
         .equal(hakemusOid)
-        .get();
+        .get();*/
   }
 
   @Override
   public void tallennaHarkinnanvarainenHyvaksyminen(
       HarkinnanvarainenHyvaksyminen harkinnanvarainenHyvaksyminen) {
-    datastore.save(harkinnanvarainenHyvaksyminen);
+    //datastore.save(harkinnanvarainenHyvaksyminen);
   }
 
   @Override
   public List<HarkinnanvarainenHyvaksyminen> haeHarkinnanvarainenHyvaksyminen(String hakukohdeOid) {
-    return datastore
+    return null;
+/*    return datastore
         .find(HarkinnanvarainenHyvaksyminen.class)
         .field("hakukohdeOid")
         .equal(hakukohdeOid)
-        .asList();
+        .asList();*/
   }
 
   @Override
   public List<HarkinnanvarainenHyvaksyminen> haeHarkinnanvaraisetHyvaksymisetHaulle(
       String hakuOid) {
-    return datastore
+    return null;
+/*    return datastore
         .find(HarkinnanvarainenHyvaksyminen.class)
         .field("hakuOid")
         .equal(hakuOid)
-        .asList();
+        .asList();*/
   }
 
   @Override
   public List<HarkinnanvarainenHyvaksyminen> readByHakuOidAndHakemusOid(
       String hakuOid, String hakemusOid) {
-    return datastore
+    return null;
+/*    return datastore
         .find(HarkinnanvarainenHyvaksyminen.class)
         .field("hakuOid")
         .equal(hakuOid)
         .field("hakemusOid")
         .equal(hakemusOid)
-        .asList();
+        .asList();*/
   }
 }

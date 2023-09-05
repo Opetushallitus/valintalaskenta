@@ -9,11 +9,6 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "valintakoeosallistuminen")
-@Indexes({
-  @Index(
-      fields = {@Field("hakuOid")},
-      options = @IndexOptions(name = "idx_haku"))
-})
 public class ValintakoeOsallistuminen {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,7 +28,7 @@ public class ValintakoeOsallistuminen {
 
   private Date createdAt;
 
-  @Embedded private List<Hakutoive> hakutoiveet = new ArrayList<>();
+  @Transient private List<Hakutoive> hakutoiveet = new ArrayList<>();
 
   public Long getId() {
     return id;

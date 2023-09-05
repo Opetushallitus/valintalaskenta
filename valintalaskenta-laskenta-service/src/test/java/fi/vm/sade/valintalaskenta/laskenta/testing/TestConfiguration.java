@@ -2,7 +2,6 @@ package fi.vm.sade.valintalaskenta.laskenta.testing;
 
 import static java.lang.Integer.parseInt;
 
-import com.mongodb.MongoClient;
 import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.valintalaskenta.laskenta.App;
 import fi.vm.sade.valintalaskenta.laskenta.config.SwaggerConfiguration;
@@ -16,9 +15,6 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKa
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogMock;
 import io.swagger.v3.oas.models.OpenAPI;
 import org.mockito.Mockito;
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.Morphia;
-import org.mongodb.morphia.mapping.DefaultCreator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
@@ -50,12 +46,12 @@ public class TestConfiguration extends WebSecurityConfigurerAdapter {
 
   @Bean("valintalaskentaResourceImpl")
   public ValintalaskentaResourceImpl valintalaskentaResourceImpl(
-      final ValintalaskentaService valintalaskentaService,
-      final ValisijoitteluKasittelija valisijoitteluKasittelija,
-      final ValiSijoitteluResource valiSijoitteluResource,
-      final ErillisSijoitteluResource erillisSijoitteluResource,
-      final ValintaperusteetValintatapajonoResource valintatapajonoResource,
-      @Value("${valintalaskenta-laskenta-service.parallelism:1}") final int parallelismFromConfig) {
+          final ValintalaskentaService valintalaskentaService,
+          final ValisijoitteluKasittelija valisijoitteluKasittelija,
+          @Qualifier("mockValiSijoitteluResource") final ValiSijoitteluResource valiSijoitteluResource,
+          @Qualifier("mockErillisSijoitteluResource") final ErillisSijoitteluResource erillisSijoitteluResource,
+          @Qualifier("mockValintaperusteetValintatapajonoResource") final ValintaperusteetValintatapajonoResource valintatapajonoResource,
+          @Value("${valintalaskenta-laskenta-service.parallelism:1}") final int parallelismFromConfig) {
     return new ValintalaskentaResourceImpl(
         valintalaskentaService,
         valisijoitteluKasittelija,

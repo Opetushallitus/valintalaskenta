@@ -1,12 +1,8 @@
 package fi.vm.sade.valintalaskenta.tulos.service;
 
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.HakutoiveDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeDTO;
@@ -31,17 +27,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @ContextConfiguration(locations = "classpath:application-context-test.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
-@UsingDataSet
 public class ValintalaskentaTulosServiceTest {
 
   @Autowired private ValintalaskentaTulosService valintalaskentaTulosService;
 
   @Autowired private ApplicationContext applicationContext;
 
-  @Rule public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
-
   @Test
-  @UsingDataSet(locations = "initialData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
   public void haeValintakoeOsallistumisetByOidTest() {
     ValintakoeOsallistuminen kaikki =
         valintalaskentaTulosService.haeValintakoeOsallistumiset("oid1");
@@ -50,7 +42,6 @@ public class ValintalaskentaTulosServiceTest {
   }
 
   @Test
-  @UsingDataSet(locations = "initialData.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
   public void haeValintakoeOsallistumisetByHakutoiveTest() {
     List<ValintakoeOsallistuminen> kaikki =
         valintalaskentaTulosService.haeValintakoeOsallistumisetByHakutoive("oid1");
@@ -60,9 +51,6 @@ public class ValintalaskentaTulosServiceTest {
   }
 
   @Test
-  @UsingDataSet(
-      locations = "valinnanvaiheTasasija.json",
-      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
   public void haeLasketutuValintavaiheetHaulleAndConvertTest() {
     final String hakuOid = "haku1";
 
@@ -92,9 +80,6 @@ public class ValintalaskentaTulosServiceTest {
   }
 
   @Test
-  @UsingDataSet(
-      locations = "testHaeValintakoevirheetHaulle.json",
-      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
   public void testHaeValintakoevirheetHaulle() {
     final String hakuOid = "hakuOid1";
     List<ValintakoeOsallistuminenDTO> osallistumiset =
@@ -115,9 +100,6 @@ public class ValintalaskentaTulosServiceTest {
   }
 
   @Test
-  @UsingDataSet(
-      locations = "testHaeTuloksetHakemukselle.json",
-      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
   public void testHaeTuloksetHakemukselle() {
     {
       HakemusDTO hakemus =
@@ -175,9 +157,6 @@ public class ValintalaskentaTulosServiceTest {
   }
 
   @Test
-  @UsingDataSet(
-      locations = "valinnanvaiheTasasija.json",
-      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
   public void testHaeTuloksetHakukohteelle() {
     {
       List<ValintatietoValinnanvaiheDTO> hakukohde =
@@ -198,9 +177,6 @@ public class ValintalaskentaTulosServiceTest {
   }
 
   @Test
-  @UsingDataSet(
-      locations = "testHaeTuloksetHakemukselle.json",
-      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
   public void testHaeTuloksetHaulle() {
     List<MinimalJonoDTO> list =
         valintalaskentaTulosService.haeSijoittelunKayttamatJonotIlmanValintalaskentaa();

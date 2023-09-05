@@ -1,15 +1,10 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao;
 
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +24,6 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
       DirtiesContextTestExecutionListener.class
     })
 public class ValintakoeOsallistuminenDAOTest {
-
-  @Rule public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
 
   @Autowired private ApplicationContext applicationContext;
 
@@ -99,7 +92,6 @@ public class ValintakoeOsallistuminenDAOTest {
   }
 
   @Test
-  @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
   public void testCreateAndReadByHakuOidAndHakemusOid() {
     assertEquals(0, valintakoeOsallistuminenDAO.readAll().size());
 
@@ -133,9 +125,6 @@ public class ValintakoeOsallistuminenDAOTest {
   }
 
   @Test
-  @UsingDataSet(
-      locations = "testEdellinenOsallistuminen.json",
-      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
   public void testHaeEdeltavaValinnanvaihe() {
     assertNotNull(
         valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid1", "hakuKohdeOid1", 1));

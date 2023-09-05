@@ -1,6 +1,5 @@
 package fi.vm.sade.valintalaskenta.tulos.service;
 
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
@@ -19,7 +18,6 @@ import org.springframework.test.context.ContextConfiguration;
  */
 @ContextConfiguration(locations = "classpath:application-context-test.xml")
 @RunWith(org.springframework.test.context.junit4.SpringJUnit4ClassRunner.class)
-@UsingDataSet
 public class JonosijaComparatorTest {
 
   @Autowired private ValintatulosConverter valintatulosConverter;

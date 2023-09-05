@@ -1,8 +1,5 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import org.mongodb.morphia.annotations.Embedded;
-
-@Embedded
 public class SyotettyArvo {
   private String tunniste;
   private String arvo;

@@ -1,13 +1,9 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import java.util.Date;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Id;
 
-@Embedded("LogEntry")
 public class LogEntry {
-  @Id private ObjectId id;
+  private String id;
 
   private Date luotu;
   private String muokkaaja;
@@ -38,11 +34,11 @@ public class LogEntry {
     this.selite = selite;
   }
 
-  public ObjectId getId() {
+  public String getId() {
     return id;
   }
 
-  public void setId(ObjectId id) {
+  public void setId(String id) {
     this.id = id;
   }
 

@@ -1,8 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.it;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
-import static com.lordofthejars.nosqlunit.core.LoadStrategyEnum.CLEAN_INSERT;
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi.LUKUARVO;
 import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakemus;
@@ -16,8 +14,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetFunktiokutsuDTO;
@@ -39,7 +35,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +54,6 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
     })
 public class ValintalaskentaSuorittajaServiceIntegrationTest {
   private final String uuid = null;
-  @Rule public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
 
   @Autowired private ApplicationContext applicationContext;
 
@@ -660,7 +654,6 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(locations = "testViimeisinValinnanVaihe.json", loadStrategy = CLEAN_INSERT)
   public void testViimeisinValinnanVaihe() {
     final String hakemusOid = "1.2.246.562.11.00000072753";
     final String hakukohdeOid = "1.2.246.562.5.91937845484";
@@ -699,7 +692,6 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(locations = "testViimeisinValinnanVaihe.json", loadStrategy = CLEAN_INSERT)
   public void testPoistaHylatyt() {
     final String hakemusOid = "1.2.246.562.11.00000072753"; // Hylätty edellisessä vaiheessa
     final String hakemusOid2 = "1.2.246.562.11.00000072672";
@@ -742,7 +734,6 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(locations = "voidaanHyvaksya.json", loadStrategy = CLEAN_INSERT)
   public void testValisijoitteluHylkaysHyvaksytty() {
 
     final String valinnanVaiheOid = "vv3";
@@ -801,9 +792,6 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(
-      locations = "toisessaKohteessaKoeJohonEiOsallistuta.json",
-      loadStrategy = CLEAN_INSERT)
   public void
       valisijoittelussaVoiTullaHyvaksytyksiVaikkaToiseltaKohteeltaEiLoytyisiKutsujaKaikkiinKohteenKokeisiin() {
     final String valinnanVaiheOid = "vv4";
