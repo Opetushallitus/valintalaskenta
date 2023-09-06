@@ -14,18 +14,18 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
 
   @Override
   public void create(Jarjestyskriteerihistoria jarjestyskriteerihistoria) {
-    //datastore.save(JarjestyskriteeriKooderi.enkoodaa(jarjestyskriteerihistoria));
+    // datastore.save(JarjestyskriteeriKooderi.enkoodaa(jarjestyskriteerihistoria));
   }
 
   @Override
   public void delete(String id) {
-    //datastore.delete(Jarjestyskriteerihistoria.class, id);
+    // datastore.delete(Jarjestyskriteerihistoria.class, id);
   }
 
   @Override
   public Jarjestyskriteerihistoria hae(String id) {
     Jarjestyskriteerihistoria h = new Jarjestyskriteerihistoria();
-        //datastore.find(Jarjestyskriteerihistoria.class).field("_id").equal(id).get();
+    // datastore.find(Jarjestyskriteerihistoria.class).field("_id").equal(id).get();
     Stream.of(h).filter(JarjestyskriteeriKooderi::tarvitseekoEnkoodata).forEach(this::create);
     return JarjestyskriteeriKooderi.dekoodaa(h);
   }

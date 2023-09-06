@@ -23,8 +23,8 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
   private static final Logger LOGGER = LoggerFactory.getLogger(HakijaryhmaDAOImpl.class);
 
   @Qualifier("LaskentaAuditLog")
-  @Autowired private LaskentaAuditLog auditLog;
-
+  @Autowired
+  private LaskentaAuditLog auditLog;
 
   @Override
   public Optional<Hakijaryhma> haeHakijaryhma(String hakijaryhmaOid) {
@@ -46,22 +46,22 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
         ValintaResource.HAKIJARYHMA,
         hakijaryhma.getHakijaryhmatyyppikoodiUri(),
         Changes.addedDto(hakijaryhma));
-    //datastore.save(hakijaryhma);
+    // datastore.save(hakijaryhma);
   }
 
   @Override
   public void createWithoutAuditLogging(Hakijaryhma hakijaryhma) {
     saveJonosijatWithoutAuditLogging(hakijaryhma);
-    //datastore.save(hakijaryhma);
+    // datastore.save(hakijaryhma);
   }
 
   @Override
   public void poistaHakijaryhma(Hakijaryhma hakijaryhma) {
     List<String> jonosijaIdt = hakijaryhma.getJonosijaIdt();
     if (!jonosijaIdt.isEmpty()) {
-      //datastore.delete(datastore.createQuery(Jonosija.class).field("_id").in(jonosijaIdt));
+      // datastore.delete(datastore.createQuery(Jonosija.class).field("_id").in(jonosijaIdt));
     }
-    //datastore.delete(hakijaryhma);
+    // datastore.delete(hakijaryhma);
   }
 
   private void saveJonosijat(Hakijaryhma ryhma, User auditUser) {
@@ -72,10 +72,10 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
   }
 
   private void saveJonosijatWithoutAuditLogging(Hakijaryhma ryhma) {
-    /**ryhma.setJonosijaIdt(
-        ryhma.getJonosijat().stream()
-            .map(jonosija -> (ObjectId) saveJonosijaWithoutAuditLogging(jonosija).getId())
-            .collect(Collectors.toList()));**/
+    /**
+     * ryhma.setJonosijaIdt( ryhma.getJonosijat().stream() .map(jonosija -> (ObjectId)
+     * saveJonosijaWithoutAuditLogging(jonosija).getId()) .collect(Collectors.toList()));*
+     */
   }
 
   private Jonosija saveJonosija(Jonosija jonosija, User auditUser) {
@@ -86,11 +86,10 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
         ValintaResource.JONOSIJA,
         jonosija.getHakemusOid(),
         Changes.addedDto(jonosija));
-    return jonosija; //datastore.save(jonosija);
+    return jonosija; // datastore.save(jonosija);
   }
 
   private Jonosija saveJonosijaWithoutAuditLogging(Jonosija jonosija) {
-    return jonosija; //datastore.save(jonosija);
+    return jonosija; // datastore.save(jonosija);
   }
-
 }
