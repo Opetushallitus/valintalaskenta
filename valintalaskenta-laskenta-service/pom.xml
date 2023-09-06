@@ -185,8 +185,16 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <version>9.21.2</version>
+            <version>9.22.0</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.flywaydb/flyway-maven-plugin -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-maven-plugin</artifactId>
+            <version>9.22.0</version>
+        </dependency>
+
 
 
         <!-- spring security -->
