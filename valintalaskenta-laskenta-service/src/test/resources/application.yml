@@ -1,11 +1,13 @@
 spring:
   main:
     allow-bean-definition-overriding: true
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
   profiles:
     active: dev
+  datasource:
+    url: jdbc:postgresql://localhost:5432/valintalaskentadb
+    username: oph
+    password: 
+    driver-class-name: org.postgresql.Driver
 
 springdoc:
   show-actuator: false
