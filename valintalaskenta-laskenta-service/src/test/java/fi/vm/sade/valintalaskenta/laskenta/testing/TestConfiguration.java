@@ -46,12 +46,14 @@ public class TestConfiguration extends WebSecurityConfigurerAdapter {
 
   @Bean("valintalaskentaResourceImpl")
   public ValintalaskentaResourceImpl valintalaskentaResourceImpl(
-          final ValintalaskentaService valintalaskentaService,
-          final ValisijoitteluKasittelija valisijoitteluKasittelija,
-          @Qualifier("mockValiSijoitteluResource") final ValiSijoitteluResource valiSijoitteluResource,
-          @Qualifier("mockErillisSijoitteluResource") final ErillisSijoitteluResource erillisSijoitteluResource,
-          @Qualifier("mockValintaperusteetValintatapajonoResource") final ValintaperusteetValintatapajonoResource valintatapajonoResource,
-          @Value("${valintalaskenta-laskenta-service.parallelism:1}") final int parallelismFromConfig) {
+      final ValintalaskentaService valintalaskentaService,
+      final ValisijoitteluKasittelija valisijoitteluKasittelija,
+      @Qualifier("mockValiSijoitteluResource") final ValiSijoitteluResource valiSijoitteluResource,
+      @Qualifier("mockErillisSijoitteluResource")
+          final ErillisSijoitteluResource erillisSijoitteluResource,
+      @Qualifier("mockValintaperusteetValintatapajonoResource")
+          final ValintaperusteetValintatapajonoResource valintatapajonoResource,
+      @Value("${valintalaskenta-laskenta-service.parallelism:1}") final int parallelismFromConfig) {
     return new ValintalaskentaResourceImpl(
         valintalaskentaService,
         valisijoitteluKasittelija,

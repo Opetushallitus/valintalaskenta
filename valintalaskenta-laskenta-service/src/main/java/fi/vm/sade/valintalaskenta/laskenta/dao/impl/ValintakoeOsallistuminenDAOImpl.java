@@ -4,8 +4,6 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import java.util.Iterator;
 import java.util.List;
-import javax.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -16,16 +14,16 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
 
   @Override
   public List<ValintakoeOsallistuminen> readAll() {
-    return null;//return morphiaDS.find(ValintakoeOsallistuminen.class).asList();
+    return null; // return morphiaDS.find(ValintakoeOsallistuminen.class).asList();
   }
 
   @Override
   public ValintakoeOsallistuminen readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid) {
     return null;
-/*    return morphiaDS
-        .find(ValintakoeOsallistuminen.class, "hakuOid", hakuOid)
-        .filter("hakemusOid", hakemusOid)
-        .get();*/
+    /*    return morphiaDS
+    .find(ValintakoeOsallistuminen.class, "hakuOid", hakuOid)
+    .filter("hakemusOid", hakemusOid)
+    .get();*/
   }
 
   @Override
@@ -56,7 +54,7 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
   private Iterator<ValintakoeOsallistuminen> lasketutValintakoeOsallistumiset(
       String hakuOid, String hakukohdeOid, int jarjestysnumero) {
     return null;
-/*    final Query<ValintakoeOsallistuminen> query =
+    /*    final Query<ValintakoeOsallistuminen> query =
         morphiaDS.createQuery(ValintakoeOsallistuminen.class);
     query
         .field("hakuOid")
@@ -84,7 +82,7 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
   private Iterator<ValintakoeOsallistuminen> hakijanValintaValintakoeOsallistumiset(
       String hakuOid, String hakukohdeOid, int jarjestysnumero) {
     return null;
-/*    final Query<ValintakoeOsallistuminen> query =
+    /*    final Query<ValintakoeOsallistuminen> query =
         morphiaDS.createQuery(ValintakoeOsallistuminen.class);
     query
         .field("hakuOid")

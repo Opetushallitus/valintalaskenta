@@ -2,14 +2,9 @@ package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository("valinnanvaiheDAO")
@@ -20,7 +15,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
   public Valinnanvaihe haeEdeltavaValinnanvaihe(
       String hakuOid, String hakukohdeOid, int jarjestysnumero) {
     return null;
-/*    if (jarjestysnumero > 0) {
+    /*    if (jarjestysnumero > 0) {
       return Optional.ofNullable(
               datastore
                   .find(ValinnanvaiheMigrationDTO.class)
@@ -43,7 +38,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
   public Valinnanvaihe haeViimeisinValinnanvaihe(
       String hakuOid, String hakukohdeOid, int jarjestysnumero) {
     return null;
-/*    if (jarjestysnumero > 0) {
+    /*    if (jarjestysnumero > 0) {
       return Optional.ofNullable(
               datastore
                   .find(ValinnanvaiheMigrationDTO.class)
@@ -66,35 +61,35 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
   @Override
   public Valinnanvaihe haeValinnanvaihe(String valinnanvaiheOid) {
     return null;
-/*    return Optional.ofNullable(
-            datastore
-                .find(ValinnanvaiheMigrationDTO.class)
-                .field("valinnanvaiheOid")
-                .equal(valinnanvaiheOid)
-                .get())
-        .map(this::migrate)
-        .orElse(null);*/
+    /*    return Optional.ofNullable(
+        datastore
+            .find(ValinnanvaiheMigrationDTO.class)
+            .field("valinnanvaiheOid")
+            .equal(valinnanvaiheOid)
+            .get())
+    .map(this::migrate)
+    .orElse(null);*/
   }
 
   @Override
   public List<Valinnanvaihe> haeValinnanvaiheetJarjestysnumerolla(
       String hakuOid, String hakukohdeOid, int jarjestysnumero) {
     return null;
-/*    return migrate(
-        datastore
-            .find(ValinnanvaiheMigrationDTO.class)
-            .field("hakuOid")
-            .equal(hakuOid)
-            .field("hakukohdeOid")
-            .equal(hakukohdeOid)
-            .field("jarjestysnumero")
-            .equal(jarjestysnumero)
-            .asList());*/
+    /*    return migrate(
+    datastore
+        .find(ValinnanvaiheMigrationDTO.class)
+        .field("hakuOid")
+        .equal(hakuOid)
+        .field("hakukohdeOid")
+        .equal(hakukohdeOid)
+        .field("jarjestysnumero")
+        .equal(jarjestysnumero)
+        .asList());*/
   }
 
   @Override
   public void saveOrUpdate(Valinnanvaihe valinnanvaihe) {
-/*    valinnanvaihe.reportDuplicateValintatapajonoOids();
+    /*    valinnanvaihe.reportDuplicateValintatapajonoOids();
     valinnanvaihe
         .getValintatapajonot()
         .forEach(
@@ -108,12 +103,12 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
   @Override
   public void poistaValinnanvaihe(Valinnanvaihe valinnanvaihe) {
     valinnanvaihe.getValintatapajonot().forEach(this::poistaJono);
-    //datastore.delete(valinnanvaihe);
+    // datastore.delete(valinnanvaihe);
   }
 
   @Override
   public void poistaJono(Valintatapajono jono) {
-/*    List<ObjectId> jonosijaIdt = jono.getJonosijaIdt();
+    /*    List<ObjectId> jonosijaIdt = jono.getJonosijaIdt();
     if (!jonosijaIdt.isEmpty()) {
       datastore.delete(datastore.createQuery(Jonosija.class).field("_id").in(jonosijaIdt));
     }
@@ -125,7 +120,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
   @Override
   public void poistaJononJonosijatHakemusOideilla(
       Valintatapajono jono, List<String> hakemusOidsToRemove) {
-/*    if (!hakemusOidsToRemove.isEmpty()) {
+    /*    if (!hakemusOidsToRemove.isEmpty()) {
       LOGGER.warn("Poistetaan jonosijoja hakemuksille {}", hakemusOidsToRemove);
       List<ObjectId> tamanJononJonosijaIdt = jono.getJonosijaIdt();
       List<Jonosija> poistettavatJonosijat =
@@ -147,14 +142,14 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
   }
 
   private void saveJonosijat(Valintatapajono valintatapajono) {
-/*    valintatapajono.setJonosijaIdt(
-        valintatapajono.getJonosijat().stream()
-            .map(jonosija -> (ObjectId) datastore.save(jonosija).getId())
-            .collect(Collectors.toList()));*/
+    /*    valintatapajono.setJonosijaIdt(
+    valintatapajono.getJonosijat().stream()
+        .map(jonosija -> (ObjectId) datastore.save(jonosija).getId())
+        .collect(Collectors.toList()));*/
   }
 
   private void populateJonosijat(Valintatapajono valintatapajono) {
-/*    List<ObjectId> jonosijaIdt = valintatapajono.getJonosijaIdt();
+    /*    List<ObjectId> jonosijaIdt = valintatapajono.getJonosijaIdt();
     if (jonosijaIdt.isEmpty()) {
       valintatapajono.setJonosijat(new ArrayList<>());
     } else {
