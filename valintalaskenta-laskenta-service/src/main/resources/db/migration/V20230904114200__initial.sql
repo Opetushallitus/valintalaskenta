@@ -42,8 +42,7 @@ CREATE TABLE ValintakoeOsallistuminen (
     hakuOid varchar(127) NOT NULL,
     hakemusOid varchar(127) UNIQUE,
     hakijaOid varchar(127) NOT NULL,
-    createdAt timestamp with time zone default now(),
-    hakutoiveet jsonb
+    createdAt timestamp with time zone default now()
 );
 
 CREATE INDEX valintakoeosallistuminen_haku ON ValintakoeOsallistuminen(hakuOid);
@@ -66,17 +65,17 @@ CREATE INDEX hakutoive_laskettavahakukohde ON Hakutoive(laskettavahakukohdeOid);
 
 CREATE TABLE HakijanValinnanVaihe (
     id uuid PRIMARY KEY,
-    valinnanVaiheOid varchar(127) NOT NULL,
+    valinnanVaihe uuid NOT NULL,
     valinnanVaiheJarjestysluku int,
     laskettavaJarjestysluku int,
-    hakutoive uuid,
+    hakutoive uuid not null,
     CONSTRAINT fk_hakutoive
         FOREIGN KEY(hakutoive)
             REFERENCES Hakutoive(id)
             ON DELETE CASCADE,
     CONSTRAINT fk_valinnanvaihe
-        FOREIGN KEY(valinnanVaiheOid)
-        REFERENCES Valinnanvaihe(valinnanvaiheOid)
+        FOREIGN KEY(valinnanVaihe)
+        REFERENCES Valinnanvaihe(id)
         ON DELETE CASCADE
 );
 
@@ -91,7 +90,7 @@ CREATE TABLE Hakijankoe (
     kutsunKohde varchar(255),
     CONSTRAINT fk_valinnanvaihe
         FOREIGN KEY(valinnanvaihe)
-            REFERENCES Valinnanvaihe(id)
+            REFERENCES HakijanValinnanVaihe(id)
             ON DELETE CASCADE
 );
 
@@ -121,10 +120,10 @@ CREATE TABLE Valintatapajono (
     kaikkiEhdonTayttavatHyvaksytaan boolean DEFAULT NULL,
     kaytetaanValintalaskentaa boolean DEFAULT NULL,
     valmisSijoiteltavaksi boolean DEFAULT NULL,
-    valinnanvaiheOid varchar(127) NOT NULL,
+    valinnanvaihe uuid NOT NULL,
     CONSTRAINT fk_valinnanvaihe
-        FOREIGN KEY(valinnanvaiheOid)
-            REFERENCES Valinnanvaihe(valinnanvaiheOid)
+        FOREIGN KEY(valinnanvaihe)
+            REFERENCES Valinnanvaihe(id)
 );
 
 CREATE TABLE Jonosija (
@@ -135,16 +134,16 @@ CREATE TABLE Jonosija (
     hakutoiveprioriteetti int,
     harkinnanvarainen boolean DEFAULT NULL,
     hylattyValisijoittelussa boolean DEFAULT NULL,
-    valintatapajonoOid varchar(127) NOT NULL,
-    hakijaryhmaOid varchar(127) NOT NULL,
+    valintatapajono uuid NOT NULL,
+    hakijaryhma uuid NOT NULL,
     funktioTulokset jsonb,
     syotetytArvot jsonb,
     CONSTRAINT fk_valintatapajono
-        FOREIGN KEY(valintatapajonoOid)
-            REFERENCES Valintatapajono(valintatapajonoOid),
+        FOREIGN KEY(valintatapajono)
+            REFERENCES Valintatapajono(id),
     CONSTRAINT fk_hakijaryhma
-        FOREIGN KEY(hakijaryhmaOid)
-            REFERENCES Hakijaryhma(hakijaryhmaOid)
+        FOREIGN KEY(hakijaryhma)
+            REFERENCES Hakijaryhma(id)
 );
 
 CREATE INDEX jonosija_hakemus ON Jonosija(hakemusOid);
@@ -154,14 +153,14 @@ CREATE TABLE MuokattuJonosija (
     createdAt timestamp with time zone default now(),
     hakukohdeOid varchar(127) NOT NULL,
     hakuOid varchar(127) NOT NULL,
-    valintatapajonoOid varchar(127) NOT NULL,
+    valintatapajono uuid NOT NULL,
     hakemusOid varchar(127) NOT NULL,
     selite varchar(255),
     muokkaaja varchar(127) NOT NULL,
     muutos varchar(255),
     CONSTRAINT fk_valintatapajono
-      FOREIGN KEY(valintatapajonoOid)
-          REFERENCES Valintatapajono(valintatapajonoOid)
+      FOREIGN KEY(valintatapajono)
+          REFERENCES Valintatapajono(id)
 );
 
 CREATE INDEX muokattujonosija_hakukohde ON MuokattuJonosija(hakukohdeOid);
