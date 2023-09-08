@@ -2,35 +2,34 @@ package fi.vm.sade.valintalaskenta.domain.dto;
 
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValintatapajonoDTO;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@ApiModel(value = "valintalaskenta.domain.dto.ValinnanvaiheDTO", description = "Valinnan vaihe")
+@Schema(name = "valintalaskenta.ValinnanvaiheDTO", description = "Valinnan vaihe")
 public class ValinnanvaiheDTO {
 
-  @ApiModelProperty(value = "Järjestysnumero", required = true)
+  @Schema(description = "Järjestysnumero", required = true)
   private int jarjestysnumero;
 
-  @ApiModelProperty(value = "Valinnan vaiheen OID", required = true)
+  @Schema(description = "Valinnan vaiheen OID", required = true)
   private String valinnanvaiheoid;
 
-  @ApiModelProperty(value = "Haun OID", required = true)
+  @Schema(description = "Haun OID", required = true)
   private String hakuOid;
 
-  @ApiModelProperty(value = "Valinnan vaiheen nimi")
+  @Schema(description = "Valinnan vaiheen nimi")
   private String nimi;
 
-  @ApiModelProperty(value = "Luomisajankohta", required = true)
+  @Schema(description = "Luomisajankohta", required = true)
   private Date createdAt;
 
-  @ApiModelProperty(value = "Valintatapajonot", required = true)
+  @Schema(description = "Valintatapajonot", required = true)
   private List<ValintatietoValintatapajonoDTO> valintatapajonot =
       new ArrayList<ValintatietoValintatapajonoDTO>();
 
-  @ApiModelProperty(value = "Valintakokeet")
+  @Schema(description = "Valintakokeet")
   private List<ValintakoeDTO> valintakokeet = new ArrayList<ValintakoeDTO>();
 
   public ValinnanvaiheDTO() {}

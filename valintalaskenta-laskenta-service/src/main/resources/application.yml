@@ -1,0 +1,56 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
+
+springdoc:
+  show-actuator: false
+  paths-to-match: /resources/**
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+management:
+  endpoints:
+    enabled-by-default: false
+  endpoint:
+    health:
+      enabled: true
+  metrics:
+    mongo:
+      command:
+        enabled: false
+      connectionpool:
+        enabled: false
+
+server:
+  servlet:
+    context-path: /valintalaskenta-laskenta-service
+  port: 8080
+  tomcat:
+    threads:
+      max: 20
+
+valintalaskenta:
+  uses-ssl-proxy: false
+
+cas-service:
+  service: http://localhost:${server.port}/valintalaskenta-laskenta-service
+  send-renew: false
+  key: valintalaskenta-laskenta-service
+
+logging:
+  level:
+    root: info
+    org.springframework: warn
+    org.springframework.security: warn
+    org.springframework.boot.autoconfigure.security.AuthenticationManagerConfiguration: warn
+    fi.vm.sade.auditlog.Audit: info
+    fi.vm.sade.java_utils.security.OpintopolkuCasAuthenticationFilter: warn
+    org.apache.http.client.protocol.ResponseProcessCookies: error
+    org.springframework.web: info
+    org.hibernate: info
+    com.github.dockerjava: info

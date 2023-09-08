@@ -1,63 +1,62 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.List;
 
-@ApiModel(value = "valintalaskenta.domain.dto.ValintatapajonoDTO", description = "Valintatapajono")
+@Schema(name = "valintalaskenta.ValintatapajonoDTO", description = "Valintatapajono")
 public class ValintatapajonoDTO {
 
-  @ApiModelProperty(value = "OID", required = true)
+  @Schema(description = "OID", required = true)
   private String valintatapajonooid;
 
-  @ApiModelProperty(value = "Nimi", required = true)
+  @Schema(description = "Nimi", required = true)
   private String nimi;
 
-  @ApiModelProperty(value = "Prioriteetti", required = true)
+  @Schema(description = "Prioriteetti", required = true)
   private int prioriteetti;
 
-  @ApiModelProperty(value = "Aloituspaikat", required = true)
+  @Schema(description = "Aloituspaikat", required = true)
   private int aloituspaikat;
 
-  @ApiModelProperty(
-      value =
+  @Schema(
+      description =
           "Valintaperusteissa ylläpidettävä tieto siitä, onko jono tarkoitus joskus sijoitella vai ei",
       required = true)
   private boolean siirretaanSijoitteluun;
 
-  @ApiModelProperty(value = "Tasasijasääntö", required = true)
+  @Schema(description = "Tasasijasääntö", required = true)
   private Tasasijasaanto tasasijasaanto;
 
-  @ApiModelProperty(value = "Onko varasijatäyttö käytössä", required = true)
+  @Schema(description = "Onko varasijatäyttö käytössä", required = true)
   private Boolean eiVarasijatayttoa;
 
-  @ApiModelProperty(
-      value = "Hyväksytäänkö kaikki hyväksyttävissä olevat aloituspaikoista riippumatta",
+  @Schema(
+      description = "Hyväksytäänkö kaikki hyväksyttävissä olevat aloituspaikoista riippumatta",
       required = true)
   private Boolean kaikkiEhdonTayttavatHyvaksytaan = false;
 
-  @ApiModelProperty(value = "Täytetäänkö poissaolevaksi ilmottautuneiden tilalle", required = true)
+  @Schema(description = "Täytetäänkö poissaolevaksi ilmottautuneiden tilalle", required = true)
   private Boolean poissaOlevaTaytto = false;
 
-  @ApiModelProperty(value = "Käytetäänkö valintalaskentaa", required = true)
+  @Schema(description = "Käytetäänkö valintalaskentaa", required = true)
   private Boolean kaytetaanValintalaskentaa = true;
 
-  @ApiModelProperty(
-      value =
+  @Schema(
+      title =
           "Valintalaskennan tuloksissa ylläpidettävä tieto siitä, otetaanko jono mukaan sijoitteluajoon",
       required = false)
   private Boolean valmisSijoiteltavaksi = true;
 
-  @ApiModelProperty(value = "Jonosijat", required = true)
+  @Schema(description = "Jonosijat", required = true)
   private List<JonosijaDTO> jonosijat = new ArrayList<JonosijaDTO>();
 
-  @ApiModelProperty(value = "Onko valintatapajono aktiivinen", required = false)
+  @Schema(description = "Onko valintatapajono aktiivinen", required = false)
   private Boolean aktiivinen = true;
 
-  @ApiModelProperty(
-      value = "Käytetäänkö kokonaispisteitä jonosijojen sijaan, jos laskenta ei ole käytössä",
+  @Schema(
+      title = "Käytetäänkö kokonaispisteitä jonosijojen sijaan, jos laskenta ei ole käytössä",
       required = false)
   private Boolean kaytetaanKokonaispisteita;
 

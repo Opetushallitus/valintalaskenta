@@ -45,7 +45,6 @@ jobs:
             valintalaskenta-domain/target
             valintalaskenta-laskenta-api/target
             valintalaskenta-laskenta-service/target
-            valintalaskenta-tulos-api/target
             valintalaskenta-tulos-service/target
           key: ${{ github.sha }}
 
@@ -64,7 +63,6 @@ jobs:
             valintalaskenta-domain/target
             valintalaskenta-laskenta-api/target
             valintalaskenta-laskenta-service/target
-            valintalaskenta-tulos-api/target
             valintalaskenta-tulos-service/target
           key: ${{ github.sha }}
 
@@ -77,9 +75,9 @@ jobs:
           git clone https://github.com/Opetushallitus/ci-tools.git
           source ci-tools/common/setup-tools.sh
           export ARTIFACT_NAME="valintalaskenta"
-          mv valintalaskenta-laskenta-service/target/valintalaskenta-laskenta-service-*allinone.jar $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}.jar
+          mv valintalaskenta-laskenta-service/target/valintalaskenta-laskenta-service.jar $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}.jar
           cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
-          export BASE_IMAGE="baseimage-fatjar-openjdk8:master"
+          export BASE_IMAGE="baseimage-fatjar-openjdk11:master"
           ./ci-tools/common/pull-image.sh
           ./ci-tools/github-build/build-fatjar.sh $ARTIFACT_NAME
           ./ci-tools/github-build/upload-image.sh $ARTIFACT_NAME
@@ -99,7 +97,6 @@ jobs:
             valintalaskenta-domain/target
             valintalaskenta-laskenta-api/target
             valintalaskenta-laskenta-service/target
-            valintalaskenta-tulos-api/target
             valintalaskenta-tulos-service/target
           key: ${{ github.sha }}
 
@@ -118,4 +115,4 @@ jobs:
         run: |
           git clone https://github.com/Opetushallitus/ci-tools.git
           source ci-tools/common/setup-tools.sh
-          mvn deploy -B -pl fi.vm.sade.valintaperusteet:valintalaskenta,valintalaskenta-laskenta-api,valintalaskenta-tulos-api,valintalaskenta-domain,valintalaskenta-tulos-service -DskipTests --settings ci-tools/common/maven-settings.xml
+          mvn deploy -B -pl fi.vm.sade.valintaperusteet:valintalaskenta,valintalaskenta-laskenta-api,valintalaskenta-domain,valintalaskenta-tulos-service -DskipTests --settings ci-tools/common/maven-settings.xml

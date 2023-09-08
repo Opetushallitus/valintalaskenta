@@ -1,36 +1,35 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.List;
 
-@ApiModel(value = "MuokattuJonosijaDTO", description = "Muokattu jonosija")
+@Schema(name = "MuokattuJonosijaDTO", description = "Muokattu jonosija")
 public class MuokattuJonosijaDTO {
 
-  @ApiModelProperty(value = "Hakukohde OID", required = true)
+  @Schema(description = "Hakukohde OID", required = true)
   private String hakukohdeOid;
 
-  @ApiModelProperty(value = "Haku OID", required = true)
+  @Schema(description = "Haku OID", required = true)
   private String hakuOid;
 
-  @ApiModelProperty(value = "Valintatapajono OID", required = true)
+  @Schema(description = "Valintatapajono OID", required = true)
   private String valintatapajonoOid;
 
-  @ApiModelProperty(value = "Hakukohde OID", required = true)
+  @Schema(description = "Hakukohde OID", required = true)
   private String hakemusOid;
 
-  @ApiModelProperty(value = "Prioriteetti", required = true)
+  @Schema(description = "Prioriteetti", required = true)
   private Integer prioriteetti; // hakutoive
 
-  @ApiModelProperty(value = "Harkinnanvaraisuus")
+  @Schema(description = "Harkinnanvaraisuus")
   private Boolean harkinnanvarainen;
 
-  @ApiModelProperty(value = "Järjestyskriteeritulokset", required = true)
+  @Schema(description = "Järjestyskriteeritulokset", required = true)
   private List<JarjestyskriteeritulosDTO> jarjestyskriteerit =
       new ArrayList<JarjestyskriteeritulosDTO>();
 
-  @ApiModelProperty(value = "Lokiviestit", required = true)
+  @Schema(description = "Lokiviestit", required = true)
   private List<LogEntryDTO> logEntries = new ArrayList<LogEntryDTO>();
 
   public String getHakukohdeOid() {

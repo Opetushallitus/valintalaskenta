@@ -4,7 +4,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.HakijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValintatapajonoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,24 +12,24 @@ import java.util.List;
 public class ValintatietoValintatapajonoDTO extends ValintatapajonoDTO {
   private List<HakijaDTO> hakija;
 
-  @ApiModelProperty(value = "Varasijojen lkm. 0 == pois päältä", required = true)
+  @Schema(description = "Varasijojen lkm. 0 == pois päältä", required = true)
   private Integer varasijat = 0;
 
-  @ApiModelProperty(value = "Kuinka monta päivää varasijoja täytetään", required = true)
+  @Schema(description = "Kuinka monta päivää varasijoja täytetään", required = true)
   private Integer varasijaTayttoPaivat = 0;
 
-  @ApiModelProperty(value = "Varasijasääntöjä käytetään alkaen")
+  @Schema(description = "Varasijasääntöjä käytetään alkaen")
   private Date varasijojaKaytetaanAlkaen;
 
-  @ApiModelProperty(value = "Varasijoja täytetään asti")
+  @Schema(description = "Varasijoja täytetään asti")
   private Date varasijojaTaytetaanAsti;
 
-  @ApiModelProperty(
-      value = "Valintatapajono, josta vapaaksi jääneet paikat täytetään",
+  @Schema(
+      description = "Valintatapajono, josta vapaaksi jääneet paikat täytetään",
       required = false)
   private String tayttojono;
 
-  @ApiModelProperty(value = "Erillishaussa käytetty sijoitteluajo", required = false)
+  @Schema(description = "Erillishaussa käytetty sijoitteluajo", required = false)
   private Long sijoitteluajoId;
 
   public ValintatietoValintatapajonoDTO() {}

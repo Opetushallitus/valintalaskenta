@@ -1,34 +1,33 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
 import com.google.common.base.Preconditions;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ApiModel(
-    value = "valintalaskenta.domain.dto.MinimalJonoDTO",
+@Schema(
+    name = "valintalaskenta.MinimalJonoDTO",
     description = "Valintatapajono, jossa vain pakolliset kentät ODWlle")
 public class MinimalJonoDTO {
   private static final Logger LOGGER = LoggerFactory.getLogger(MinimalJonoDTO.class);
 
-  @ApiModelProperty(value = "Haku OID")
+  @Schema(description = "Haku OID")
   private String hakuOid;
 
-  @ApiModelProperty(value = "Hakukohde OID")
+  @Schema(description = "Hakukohde OID")
   private String hakukohdeOid;
 
-  @ApiModelProperty(value = "Valintatapajono OID")
+  @Schema(description = "Valintatapajono OID")
   private String valintatapajonoOid;
 
-  @ApiModelProperty(value = "Hakemusten määrä jonossa")
+  @Schema(description = "Hakemusten määrä jonossa")
   private int hakemusCount;
 
-  @ApiModelProperty(value = "Jono käyttää valintalaskentaa")
+  @Schema(description = "Jono käyttää valintalaskentaa")
   private final boolean kaytetaanValintalaskentaa;
 
-  @ApiModelProperty(value = "Jono on siirretty sijoitteluun")
+  @Schema(description = "Jono on siirretty sijoitteluun")
   private final boolean siirretaanSijoitteluun;
 
   public MinimalJonoDTO(

@@ -13,7 +13,7 @@
 
     <bean id="defaultProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean" />
     <bean id="mongodFactory" class="fi.vm.sade.valintalaskenta.laskenta.testing.ValintalaskentaMongodForTestsFactory" destroy-method="shutdown"/>
-    <bean id="mongo" class="com.mongodb.MongoClient" factory-bean="mongodFactory" factory-method="newMongo"/>
+    <bean id="mongo" factory-bean="mongodFactory" factory-method="newMongo"/>
 
     <bean id="morphia" class="org.mongodb.morphia.Morphia" />
     <bean id="datastore2" factory-bean="morphia" factory-method="createDatastore">
@@ -30,7 +30,12 @@
 
     <context:component-scan base-package="fi.vm.sade.valintalaskenta.tulos.dao.impl"/>
 
-    <bean id="modelMapper" class="fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper"/>
-	
-    <import resource="spring/application-context-service.xml" />
+    <bean id="laskentaModelMapper" class="fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper"/>
+
+    <context:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.service.impl.conversion"/>
+    <context:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.dao.impl"/>
+    <context:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.service.impl"/>
+    <context:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl"/>
+    <context:component-scan base-package="fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl"/>
+    <bean id="laskentaService" class="fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaServiceImpl"/>
 </beans>

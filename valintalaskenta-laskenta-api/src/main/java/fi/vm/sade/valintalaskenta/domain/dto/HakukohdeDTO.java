@@ -1,30 +1,29 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.List;
 
-@ApiModel(value = "valintalaskenta.domain.dto.Hakukohde", description = "Hakukohde")
+@Schema(name = "valintalaskenta.HakukohdeDTO", description = "Hakukohde")
 public class HakukohdeDTO {
-  @ApiModelProperty(value = "Haku OID", required = true)
+  @Schema(description = "Haku OID", required = true)
   private String hakuoid;
 
-  @ApiModelProperty(value = "Tarjoaja OID", required = true)
+  @Schema(description = "Tarjoaja OID", required = true)
   private String tarjoajaoid;
 
-  @ApiModelProperty(value = "Hakukohde OID", required = true)
+  @Schema(description = "Hakukohde OID", required = true)
   private String oid;
 
-  @ApiModelProperty(value = "Valinnan vaiheet", required = true)
+  @Schema(description = "Valinnan vaiheet", required = true)
   private List<ValintatietoValinnanvaiheDTO> valinnanvaihe =
       new ArrayList<ValintatietoValinnanvaiheDTO>();
 
-  @ApiModelProperty(value = "Hakukohderyhmäoidit", required = true)
+  @Schema(description = "Hakukohderyhmäoidit", required = true)
   private List<String> hakukohdeRyhmatOids = new ArrayList<>();
 
-  @ApiModelProperty(value = "Prioriteetti", required = true)
+  @Schema(description = "Prioriteetti", required = true)
   private int prioriteetti;
 
   private boolean kaikkiJonotSijoiteltu = true;

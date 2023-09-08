@@ -1,0 +1,38 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
+  profiles:
+    active: dev
+
+springdoc:
+  show-actuator: false
+  paths-to-match: /resources/**
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+management:
+  endpoints:
+    enabled-by-default: false
+  endpoint:
+    health:
+      enabled: true
+  metrics:
+    mongo:
+      command:
+        enabled: false
+      connectionpool:
+        enabled: false
+
+host:
+  host-cas: localhost
+  host-virkailija: localhost
+
+cas-service:
+  service: http://localhost:${server.port}/valintalaskenta-laskenta-service
+  send-renew: false
+  key: valintalaskenta-laskenta-service

@@ -1,30 +1,25 @@
 package fi.vm.sade.valintalaskenta.laskenta.resource;
 
-import fi.vm.sade.valintalaskenta.domain.resource.SessionResource;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@Api(value = "/session", description = "Sessionhallinta")
-public class SessionResourceImpl implements SessionResource {
+@RestController
+@Tag(name = "/resources/session", description = "Sessionhallinta")
+@RequestMapping(value = "/resources/session")
+public class SessionResourceImpl {
 
-  @GET
-  @Path("/maxinactiveinterval")
   @PreAuthorize("isAuthenticated()")
-  @Produces(MediaType.TEXT_PLAIN)
-  @ApiOperation(
-      value = "Palauttaa session erääntymisen aikarajan sekunteina",
-      notes = "Tarvitsee HTTP kutsun, jossa on session id",
-      response = String.class)
-  public String maxInactiveInterval(@Context HttpServletRequest req) {
+  @Operation(
+      summary = "Palauttaa session erääntymisen aikarajan sekunteina",
+      description = "Tarvitsee HTTP kutsun, jossa on session id")
+  @GetMapping(value = "/maxinactiveinterval", produces = MediaType.TEXT_PLAIN_VALUE)
+  public String maxInactiveInterval(final HttpServletRequest req) {
     return Integer.toString(req.getSession().getMaxInactiveInterval());
   }
 }

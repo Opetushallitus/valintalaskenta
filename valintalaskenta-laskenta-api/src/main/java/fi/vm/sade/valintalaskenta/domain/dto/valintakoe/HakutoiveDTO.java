@@ -1,17 +1,16 @@
 package fi.vm.sade.valintalaskenta.domain.dto.valintakoe;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.List;
 
-@ApiModel(value = "valintalaskenta.domain.dto.valintakoe.HakutoiveDTO", description = "Hakutoive")
+@Schema(name = "valintalaskenta.HakutoiveDTO", description = "Hakutoive")
 public class HakutoiveDTO {
 
-  @ApiModelProperty(value = "Hakutoiveen OID", required = true)
+  @Schema(description = "Hakutoiveen OID", required = true)
   private String hakukohdeOid;
 
-  @ApiModelProperty(value = "Valintakoevalinnan vaiheet")
+  @Schema(description = "Valintakoevalinnan vaiheet")
   private List<ValintakoeValinnanvaiheDTO> valinnanVaiheet =
       new ArrayList<ValintakoeValinnanvaiheDTO>();
 

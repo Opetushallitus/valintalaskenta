@@ -1,20 +1,19 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 
-@ApiModel(value = "MuokattuJonosijaArvoDTO", description = "Muokattu jonosija")
+@Schema(name = "MuokattuJonosijaArvoDTO", description = "Muokattu jonosija")
 public class MuokattuJonosijaArvoDTO {
 
-  @ApiModelProperty(value = "Tila", required = true)
+  @Schema(description = "Tila", required = true)
   private JarjestyskriteerituloksenTila tila;
 
-  @ApiModelProperty(value = "Arvo", required = true)
+  @Schema(description = "Arvo", required = true)
   private BigDecimal arvo;
 
-  @ApiModelProperty(value = "Selite", required = true)
+  @Schema(description = "Selite", required = true)
   private String selite;
 
   public JarjestyskriteerituloksenTila getTila() {

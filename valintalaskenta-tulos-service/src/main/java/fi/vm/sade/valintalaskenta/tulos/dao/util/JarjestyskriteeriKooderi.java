@@ -3,7 +3,9 @@ package fi.vm.sade.valintalaskenta.tulos.dao.util;
 import fi.vm.sade.valintalaskenta.domain.GzipUtil;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
 
-/** @author Jussi Jartamo */
+/**
+ * @author Jussi Jartamo
+ */
 public class JarjestyskriteeriKooderi {
 
   public static boolean tarvitseekoEnkoodata(Jarjestyskriteerihistoria j) {

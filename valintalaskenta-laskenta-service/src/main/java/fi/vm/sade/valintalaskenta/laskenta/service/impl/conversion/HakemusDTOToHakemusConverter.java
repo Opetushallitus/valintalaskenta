@@ -21,8 +21,6 @@ import org.springframework.stereotype.Component;
 import scala.collection.immutable.List$;
 import scala.util.Either;
 
-;
-
 @Component("HakemusDTOKonvertteri")
 public class HakemusDTOToHakemusConverter implements Converter<HakemusDTO, Hakemus> {
   private final JawnParser circeParser = new JawnParser();

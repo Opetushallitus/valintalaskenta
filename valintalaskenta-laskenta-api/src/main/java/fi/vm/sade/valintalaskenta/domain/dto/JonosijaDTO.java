@@ -1,14 +1,13 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-@ApiModel(value = "JonosijaDTO", description = "Jonosija")
+@Schema(name = "JonosijaDTO", description = "Jonosija")
 public class JonosijaDTO {
   public JonosijaDTO() {}
 
@@ -43,47 +42,47 @@ public class JonosijaDTO {
     this.hylattyValisijoittelussa = hylattyValisijoittelussa;
   }
 
-  @ApiModelProperty(value = "Jonosijanumero", required = true)
+  @Schema(description = "Jonosijanumero", required = true)
   private int jonosija;
 
-  @ApiModelProperty(value = "Hakemus OID", required = true)
+  @Schema(description = "Hakemus OID", required = true)
   private String hakemusOid;
 
-  @ApiModelProperty(value = "Hakija OID")
+  @Schema(description = "Hakija OID")
   private String hakijaOid;
 
-  @ApiModelProperty(value = "Järjestyskriteerit", required = true)
+  @Schema(description = "Järjestyskriteerit", required = true)
   private SortedSet<JarjestyskriteeritulosDTO> jarjestyskriteerit =
       new TreeSet<JarjestyskriteeritulosDTO>();
 
-  @ApiModelProperty(value = "Prioriteetti", required = true)
+  @Schema(description = "Prioriteetti", required = true)
   private int prioriteetti;
 
-  @ApiModelProperty(value = "Sukunimi")
+  @Schema(description = "Sukunimi")
   private String sukunimi;
 
-  @ApiModelProperty(value = "Etunimi")
+  @Schema(description = "Etunimi")
   private String etunimi;
 
-  @ApiModelProperty(value = "Onko hakija hakenut harkinnanvaraisesti")
+  @Schema(description = "Onko hakija hakenut harkinnanvaraisesti")
   private boolean harkinnanvarainen = false;
 
-  @ApiModelProperty(value = "Jonosijan tila", required = true)
+  @Schema(description = "Jonosijan tila", required = true)
   private JarjestyskriteerituloksenTila tuloksenTila;
 
-  @ApiModelProperty(value = "Jonosijan historiat")
+  @Schema(description = "Jonosijan historiat")
   private List<String> historiat;
 
-  @ApiModelProperty(value = "Jonosijan syötetyt arvot")
+  @Schema(description = "Jonosijan syötetyt arvot")
   private List<SyotettyArvoDTO> syotetytArvot = new ArrayList<SyotettyArvoDTO>();
 
-  @ApiModelProperty(value = "Jonosijan tallennetut funktiotulokset")
+  @Schema(description = "Jonosijan tallennetut funktiotulokset")
   private List<FunktioTulosDTO> funktioTulokset = new ArrayList<FunktioTulosDTO>();
 
-  @ApiModelProperty(value = "Onko jonosijaa muokattu manuaalisesti")
+  @Schema(description = "Onko jonosijaa muokattu manuaalisesti")
   private boolean muokattu = false;
 
-  @ApiModelProperty(value = "Onko hakemus hylätty välisijoittelussa")
+  @Schema(description = "Onko hakemus hylätty välisijoittelussa")
   private boolean hylattyValisijoittelussa = false;
 
   public List<String> getHistoriat() {

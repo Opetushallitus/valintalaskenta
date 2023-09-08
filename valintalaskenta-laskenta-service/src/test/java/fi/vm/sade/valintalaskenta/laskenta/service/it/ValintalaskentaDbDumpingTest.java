@@ -16,14 +16,13 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
-import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
-import de.flapdoodle.embed.mongo.tests.MongodForTestsFactory;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
+import fi.vm.sade.valintalaskenta.laskenta.testing.ValintalaskentaMongodForTestsFactory;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -205,19 +204,20 @@ public class ValintalaskentaDbDumpingTest {
   @Service
   public static class SwitchingMongoFactory implements ApplicationContextAware {
     private ApplicationContext applicationContext;
-    private Optional<MongodForTestsFactory> embeddedMongoFactory;
+    private Optional<ValintalaskentaMongodForTestsFactory> embeddedMongoFactory;
 
-    public Mongo newMongo() throws UnknownHostException {
+    public MongoClient newMongo() throws UnknownHostException {
       if (StringUtils.isNotBlank(System.getProperty(MONGO_SYSTEM_PROPERTY_NAME))) {
         embeddedMongoFactory = Optional.empty();
         return new MongoClient(new MongoClientURI(System.getProperty(MONGO_SYSTEM_PROPERTY_NAME)));
       }
-      embeddedMongoFactory = Optional.of(applicationContext.getBean(MongodForTestsFactory.class));
+      embeddedMongoFactory =
+          Optional.of(applicationContext.getBean(ValintalaskentaMongodForTestsFactory.class));
       return embeddedMongoFactory.get().newMongo();
     }
 
-    private void shutdown() {
-      embeddedMongoFactory.ifPresent(MongodForTestsFactory::shutdown);
+    public void shutdown() {
+      embeddedMongoFactory.ifPresent(ValintalaskentaMongodForTestsFactory::shutdown);
     }
 
     @Override

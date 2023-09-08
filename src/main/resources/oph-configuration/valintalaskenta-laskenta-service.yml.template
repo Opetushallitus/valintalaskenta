@@ -1,0 +1,80 @@
+#
+# TÄHÄN TIEDOSTOON EI SAA TALLENTAA YMPÄRISTÖKOHTAISIA ARVOJA MUUTOIN KUIN MUUTTUJINA!!!
+#
+# Tämä tiedosto toimii pohjana oph-configuration/common.properties tiedostolle,
+# joka asettaa tomcatin ympäristökohtaiset arvot.
+#
+
+host:
+  alb: {{host_alb}}
+  cas: {{host_cas}}
+  ilb: {{host_ilb}}
+  virkailija: {{host_virkailija}}
+  host-virkailija: {{host_virkailija}}
+  host-cas: {{host_cas}}
+  host-alb: {{host_alb}}
+
+cas-service:
+  service: https://{{host_virkailija}}/valintalaskenta-laskenta-service
+
+cas:
+  service:
+    sijoittelu-service: https://${host.virkailija}/sijoittelu-service
+    valintaperusteet-service: https://${host.virkailija}/valintaperusteet-service
+  callback:
+    valintalaskenta-service: http://{{ cluster_valinta_host | default("${server.name}") }}:{{ cluster_valinta_port | default("8309") }}/valintalaskenta-laskenta-service
+  url: https://${host.cas}/cas
+  login: https://${host.cas}/cas/login
+
+valintalaskenta:
+  uses-ssl-proxy: true
+
+# Aseta vähintään nämä ympäristökohtaiset arvot
+mongodb:
+  virkailija:
+    uri: mongodb://{{mongodb_virkailija_auth}}@{{mongodb_virkailija_host}}:{{mongodb_virkailija_port}}
+
+server:
+  name: {{ansible_hostname}}
+
+
+root:
+  organisaatio:
+    oid: 1.2.246.562.10.00000000001
+
+user:
+  home:
+    conf: ${user.home}/oph-configuration
+
+web:
+  url:
+    cas: https://${host.cas}/cas
+
+valintalaskentakoostepalvelu:
+  sijoittelu:
+    rest:
+      url: https://${host.virkailija}/sijoittelu-service/resources
+  valintaperusteet:
+    ilb:
+      host: {{host_ilb}}
+      url: ${host.ilb}/valintaperusteet-service/resources
+  app:
+    username:
+      to:
+        sijoittelu: {{valintalaskentakoostepalvelu_app_username_to_sijoittelu}}
+    password:
+      to:
+        sijoittelu: {{valintalaskentakoostepalvelu_app_password_to_sijoittelu}}
+
+valintalaskenta-laskenta-service:
+  mongodb:
+    dbname: valintalaskentadb
+    uri: {{ mongodb_valintalaskentadb_uri | default("${mongodb.virkailija.uri}") }}/${valintalaskenta-laskenta-service.mongodb.dbname}?retryWrites=false
+    useIndexQueries: true
+  global:
+    http:
+      connectionTimeoutMillis: {{valintalaskentalaskentaservice_global_http_connectiontimeoutmillis}}
+      receiveTimeoutMillis: {{valintalaskentalaskentaservice_global_http_receivetimeoutmillis}}
+  organisaatio-service:
+    url: https://${host.virkailija}/organisaatio-service
+  parallelism: {{valintalaskentalaskentaservice_parallelism}}

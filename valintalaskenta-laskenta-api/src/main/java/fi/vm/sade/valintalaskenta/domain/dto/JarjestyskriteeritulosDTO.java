@@ -1,12 +1,11 @@
 package fi.vm.sade.valintalaskenta.domain.dto;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import java.util.Map;
 
-@ApiModel(value = "JarjestyskriteeritulosDTO", description = "Järjestyskriteerin tulos")
+@Schema(name = "JarjestyskriteeritulosDTO", description = "Järjestyskriteerin tulos")
 public class JarjestyskriteeritulosDTO implements Comparable<JarjestyskriteeritulosDTO> {
   public JarjestyskriteeritulosDTO() {}
 
@@ -23,19 +22,19 @@ public class JarjestyskriteeritulosDTO implements Comparable<Jarjestyskriteeritu
     this.nimi = nimi != null ? nimi.intern() : null;
   }
 
-  @ApiModelProperty(value = "Järjestyskriteerin lukuarvo", required = true)
+  @Schema(description = "Järjestyskriteerin lukuarvo", required = true)
   private BigDecimal arvo;
 
-  @ApiModelProperty(value = "Järjestyskriteerin tila", required = true)
+  @Schema(description = "Järjestyskriteerin tila", required = true)
   private JarjestyskriteerituloksenTila tila;
 
-  @ApiModelProperty(value = "Monikielinen kuvaus (esim. hylkäyksen syy)")
+  @Schema(description = "Monikielinen kuvaus (esim. hylkäyksen syy)")
   private Map<String, String> kuvaus;
 
-  @ApiModelProperty(value = "Järjestyskriteerin prioriteetti", required = true)
+  @Schema(description = "Järjestyskriteerin prioriteetti", required = true)
   private int prioriteetti;
 
-  @ApiModelProperty(value = "Järjestyskriteerin nimi")
+  @Schema(description = "Järjestyskriteerin nimi")
   private String nimi;
 
   @Override

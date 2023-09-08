@@ -1,0 +1,7 @@
+cas:
+  service: http://localhost:8080/valintalaskenta-laskenta-service
+
+host:
+  host-virkailija: virkailija.testiopintopolku.fi
+  host-cas: virkailija.testiopintopolku.fi
+  host-alb: https://virkailija.testiopintopolku.fi
