@@ -88,22 +88,16 @@ CREATE TABLE Hakijankoe (
     valinnanvaihe uuid,
     lahetaankoKoekutsut boolean DEFAULT NULL,
     kutsunKohde varchar(255),
-    CONSTRAINT fk_valinnanvaihe
-        FOREIGN KEY(valinnanvaihe)
-            REFERENCES HakijanValinnanVaihe(id)
-            ON DELETE CASCADE
-);
-
-CREATE TABLE OsallistuminenTulos (
     osallistuminen varchar(255),
     kuvausFI text,
     kuvausSV text,
     kuvausEN text,
     laskentatila varchar(255),
-    valintakoe uuid,
-    CONSTRAINT fk_valintakoe
-        FOREIGN KEY(valintakoe)
-            REFERENCES Hakijankoe(id)
+    laskentaTulos boolean,
+    tekninenKuvaus text,
+    CONSTRAINT fk_valinnanvaihe
+        FOREIGN KEY(valinnanvaihe)
+            REFERENCES HakijanValinnanVaihe(id)
             ON DELETE CASCADE
 );
 
