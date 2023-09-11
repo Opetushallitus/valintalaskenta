@@ -4,6 +4,7 @@ import static fi.vm.sade.valintalaskenta.laskenta.config.ConfigEnums.CALLER_ID;
 import static fi.vm.sade.valintalaskenta.tulos.RestClientUtil.get;
 import static fi.vm.sade.valintalaskenta.tulos.RestClientUtil.post;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.reflect.TypeToken;
 import fi.vm.sade.javautils.nio.cas.CasClient;
 import fi.vm.sade.javautils.nio.cas.CasConfig;
@@ -24,6 +25,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -168,5 +170,12 @@ public class ValintalaskentaLaskentaConfiguration {
   @Bean
   public LaskentaService laskentaService() {
     return new LaskentaServiceImpl();
+  }
+
+  @Bean
+  public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
+    return builder -> {
+      builder.featuresToEnable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    };
   }
 }
