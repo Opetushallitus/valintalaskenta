@@ -2,21 +2,40 @@ package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
+import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import javax.persistence.*;
+
+@Entity(name = "ValintakoeValinnanvaihe")
 public class ValintakoeValinnanvaihe {
-  private String valinnanVaiheOid;
+
+  @Id
+  private UUID id;
+
+  @ManyToOne
+  private Valinnanvaihe valinnanVaihe;
+
+  @Column
   private Integer valinnanVaiheJarjestysluku;
+
+  @Column
   private Integer laskettavaJarjestysluku;
 
+  @ManyToOne
+  private Hakutoive hakutoive;
+
+  @OneToMany(mappedBy = "valintakoeValinnanvaihe")
   private List<Valintakoe> valintakokeet = new ArrayList<>();
 
-  public String getValinnanVaiheOid() {
-    return valinnanVaiheOid;
+  public Valinnanvaihe getValinnanVaihe() {
+    return valinnanVaihe;
   }
 
-  public void setValinnanVaiheOid(String valinnanVaiheOid) {
-    this.valinnanVaiheOid = valinnanVaiheOid;
+  public void setValinnanVaihe(Valinnanvaihe valinnanVaihe) {
+    this.valinnanVaihe = valinnanVaihe;
   }
 
   public Integer getValinnanVaiheJarjestysluku() {

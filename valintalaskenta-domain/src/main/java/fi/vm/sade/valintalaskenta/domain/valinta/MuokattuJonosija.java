@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.*;
 
@@ -10,27 +11,27 @@ import javax.persistence.*;
 public class MuokattuJonosija {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
+  private UUID id;
 
-  //@Indexed(unique = false, dropDups = false)
+  @Column
   private String hakukohdeOid;
 
-  //@Indexed(unique = false, dropDups = false)
+  @Column
   private String hakuOid;
 
-  // @Indexed(unique = false, dropDups = false)
+  @Column
   private String valintatapajonoOid;
 
+  @Column
   private String hakemusOid;
 
+  @Column
   private Integer prioriteetti; // hakutoive
 
-  @Embedded
+  @OneToMany(mappedBy = "muokattuJonosija")
   private List<Jarjestyskriteeritulos> jarjestyskriteerit = new ArrayList<Jarjestyskriteeritulos>();
 
-  @Embedded private List<LogEntry> logEntries = new ArrayList<LogEntry>();
-
+  @OneToMany(mappedBy = "muokattuJonosija")
   public List<Jarjestyskriteeritulos> getJarjestyskriteerit() {
     return jarjestyskriteerit;
   }
@@ -79,11 +80,11 @@ public class MuokattuJonosija {
     this.prioriteetti = prioriteetti;
   }
 
-  public List<LogEntry> getLogEntries() {
-    return logEntries;
+  public UUID getId() {
+    return id;
   }
 
-  public void setLogEntries(List<LogEntry> logEntries) {
-    this.logEntries = logEntries;
+  public void setId(UUID id) {
+    this.id = id;
   }
 }

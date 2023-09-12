@@ -9,12 +9,16 @@ public class HarkinnanvarainenHyvaksyminen {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
+  @Column
   private HarkinnanvaraisuusTila harkinnanvaraisuusTila;
 
+  @Column
   private String hakukohdeOid;
 
+  @Column
   private String hakemusOid;
 
+  @Column
   private String hakuOid;
 
   public String getHakemusOid() {

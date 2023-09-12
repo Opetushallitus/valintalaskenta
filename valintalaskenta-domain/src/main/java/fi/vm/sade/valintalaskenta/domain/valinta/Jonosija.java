@@ -1,5 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import org.hibernate.annotations.Type;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -7,34 +9,47 @@ import java.util.List;
 
 import javax.persistence.*;
 
+@Entity(name = "Jonosija")
 public class Jonosija {
+
+  @Id
   private String id;
 
-  //@Indexed
+  @Column
   private String hakemusOid;
 
+  @Column
   private String hakijaOid;
 
+  @Column
   private String etunimi;
 
+  @Column
   private String sukunimi;
 
+  @Column
   private int hakutoiveprioriteetti; // hakutoive
 
+  @Column
   private boolean harkinnanvarainen = false;
 
+  @Column
   private boolean hylattyValisijoittelussa = false;
 
   @ManyToOne
   private Hakijaryhma hakijaryhma;
 
-  @Embedded
+  @OneToMany(mappedBy = "jonosija")
   private List<Jarjestyskriteeritulos> jarjestyskriteeritulokset =
       new ArrayList<Jarjestyskriteeritulos>();
 
-  @Embedded private List<SyotettyArvo> syotetytArvot = new ArrayList<SyotettyArvo>();
+  @Type(type = "jsonb")
+  @Column(columnDefinition = "jsonb")
+  private List<SyotettyArvo> syotetytArvot = new ArrayList<SyotettyArvo>();
 
-  @Embedded private List<FunktioTulos> funktioTulokset = new ArrayList<FunktioTulos>();
+  @Type(type = "jsonb")
+  @Column(columnDefinition = "jsonb")
+  private List<FunktioTulos> funktioTulokset = new ArrayList<FunktioTulos>();
 
   public String getId() {
     return this.id;

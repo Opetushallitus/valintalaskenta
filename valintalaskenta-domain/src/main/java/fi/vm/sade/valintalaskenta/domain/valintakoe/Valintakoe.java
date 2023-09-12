@@ -3,16 +3,45 @@ package fi.vm.sade.valintalaskenta.domain.valintakoe;
 import fi.vm.sade.service.valintaperusteet.dto.model.Koekutsu;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import java.util.UUID;
+
+@Entity(name = "Valintakoe")
 public class Valintakoe {
+
+  @Id
+  private UUID id;
+
+  @Column
   private String valintakoeOid;
+
+  @Column
   private String valintakoeTunniste;
+
+  @Column
   private String nimi;
   private boolean aktiivinen;
-  private OsallistuminenTulos osallistuminenTulos;
+
+  @Column
+  private Osallistuminen osallistuminen;
+
+  @Column
   private boolean lahetetaankoKoekutsut;
+
+  @Column
   private Integer kutsuttavienMaara;
+
+  @Column
   private Koekutsu kutsunKohde = Koekutsu.YLIN_TOIVE;
+
+  @Column
   private String kutsunKohdeAvain;
+
+  @ManyToOne
+  private ValintakoeValinnanvaihe valintakoeValinnanvaihe;
 
   public boolean isAktiivinen() {
     return aktiivinen;
@@ -46,12 +75,12 @@ public class Valintakoe {
     this.valintakoeTunniste = valintakoeTunniste;
   }
 
-  public OsallistuminenTulos getOsallistuminenTulos() {
-    return osallistuminenTulos;
+  public Osallistuminen getOsallistuminen() {
+    return osallistuminen;
   }
 
-  public void setOsallistuminenTulos(OsallistuminenTulos osallistuminenTulos) {
-    this.osallistuminenTulos = osallistuminenTulos;
+  public void setOsallistuminen(Osallistuminen osallistuminen) {
+    this.osallistuminen = osallistuminen;
   }
 
   public boolean isLahetetaankoKoekutsut() {
@@ -84,6 +113,14 @@ public class Valintakoe {
 
   public void setKutsunKohdeAvain(String kutsunKohdeAvain) {
     this.kutsunKohdeAvain = kutsunKohdeAvain;
+  }
+
+  public UUID getId() {
+    return id;
+  }
+
+  public void setId(UUID id) {
+    this.id = id;
   }
 
   @Override

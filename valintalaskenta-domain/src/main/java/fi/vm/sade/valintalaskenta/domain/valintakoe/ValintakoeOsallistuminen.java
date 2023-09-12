@@ -3,6 +3,8 @@ package fi.vm.sade.valintalaskenta.domain.valintakoe;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
@@ -11,30 +13,34 @@ import javax.persistence.*;
 @Table(name = "valintakoeosallistuminen")
 public class ValintakoeOsallistuminen {
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
+  private UUID id;
 
+  @Column
   private String hakuOid;
 
-  //@Indexed(unique = true)
+  @Column
   private String hakemusOid;
 
-  //@Indexed(unique = false)
+  @Column
   private String hakijaOid;
 
+  @Column
   private String etunimi;
 
+  @Column
   private String sukunimi;
 
+  @Column
   private Date createdAt;
 
-  @Transient private List<Hakutoive> hakutoiveet = new ArrayList<>();
+  @OneToMany(mappedBy = "valintakoeOsallistuminen")
+  private List<Hakutoive> hakutoiveet = new ArrayList<>();
 
-  public Long getId() {
+  public UUID getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(UUID id) {
     this.id = id;
   }
 

@@ -2,23 +2,50 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.UUID;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
+@Entity
 public class Jarjestyskriteeritulos {
 
+  @Id
+  private UUID id;
+
+  @Column
   private int prioriteetti;
 
+  @Column
   private BigDecimal arvo;
 
+  @Column
   private JarjestyskriteerituloksenTila tila;
 
-  private Map<String, String> kuvaus;
+  @Column
+  private String kuvausFI;
 
+  @Column
+  private String kuvausSV;
+
+  @Column
+  private String kuvausEn;
+
+  @Column
   private String nimi;
 
+  @Column
   private String tekninenKuvaus;
 
-  private String historia;
+  @ManyToOne
+  private Jonosija jonosija;
+
+  @ManyToOne
+  MuokattuJonosija muokattuJonosija;
 
   public int getPrioriteetti() {
     return prioriteetti;
@@ -44,14 +71,6 @@ public class Jarjestyskriteeritulos {
     this.tila = tila;
   }
 
-  public String getHistoria() {
-    return historia;
-  }
-
-  public void setHistoria(String historia) {
-    this.historia = historia;
-  }
-
   public String getNimi() {
     return nimi;
   }
@@ -61,11 +80,13 @@ public class Jarjestyskriteeritulos {
   }
 
   public Map<String, String> getKuvaus() {
-    return kuvaus;
+    return Map.of("FI", getKuvausFI(), "SV", getKuvausSV(), "EN", getKuvausEn());
   }
 
   public void setKuvaus(Map<String, String> kuvaus) {
-    this.kuvaus = kuvaus;
+    this.setKuvausFI(kuvaus.get("FI"));
+    this.setKuvausEn(kuvaus.get("EN"));
+    this.setKuvausSV(kuvaus.get("SV"));
   }
 
   public String getTekninenKuvaus() {
@@ -79,5 +100,53 @@ public class Jarjestyskriteeritulos {
   @Override
   public String toString() {
     return ToStringBuilder.reflectionToString(this);
+  }
+
+  public Jonosija getJonosija() {
+    return jonosija;
+  }
+
+  public void setJonosija(Jonosija jonosija) {
+    this.jonosija = jonosija;
+  }
+
+  public MuokattuJonosija getMuokattuJonosija() {
+    return muokattuJonosija;
+  }
+
+  public void setMuokattuJonosija(MuokattuJonosija muokattuJonosija) {
+    this.muokattuJonosija = muokattuJonosija;
+  }
+
+  public UUID getId() {
+    return id;
+  }
+
+  public void setId(UUID id) {
+    this.id = id;
+  }
+
+  public String getKuvausEn() {
+    return kuvausEn;
+  }
+
+  public void setKuvausEn(String kuvausEn) {
+    this.kuvausEn = kuvausEn;
+  }
+
+  public String getKuvausFI() {
+    return kuvausFI;
+  }
+
+  public void setKuvausFI(String kuvausFI) {
+    this.kuvausFI = kuvausFI;
+  }
+
+  public String getKuvausSV() {
+    return kuvausSV;
+  }
+
+  public void setKuvausSV(String kuvausSV) {
+    this.kuvausSV = kuvausSV;
   }
 }

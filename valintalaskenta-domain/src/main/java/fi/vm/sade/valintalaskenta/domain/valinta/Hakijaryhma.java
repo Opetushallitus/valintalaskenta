@@ -1,54 +1,57 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Entity(name="HakijaRyhma")
 public class Hakijaryhma {
-  public static final int CURRENT_SCHEMA_VERSION = 2;
 
-  private Long id;
+  @Id
+  private UUID id;
 
-  private int schemaVersion = CURRENT_SCHEMA_VERSION;
-
-  //@Indexed
+  @Column
   private String hakijaryhmaOid;
 
+  @Column
   private int prioriteetti;
-
+  @Column
   private Date createdAt;
 
   //@Indexed(unique = false, dropDups = false)
+
+  @Column
   private String hakukohdeOid;
 
+  @Column
   private String nimi;
 
+  @Column
   private String kuvaus;
 
+  @Column
   private int kiintio;
 
+  @Column
   private boolean kaytaKaikki;
 
+  @Column
   private boolean tarkkaKiintio;
 
+  @Column
   private boolean kaytetaanRyhmaanKuuluvia;
 
+  @Column
   private String hakijaryhmatyyppikoodiUri;
 
+  @Column
   private String valintatapajonoOid;
 
+  @OneToMany(mappedBy = "hakijaryhma")
   private List<Jonosija> jonosijat = new ArrayList<>();
-
-  private void prePersist() {
-    createdAt = new Date();
-  }
-
-  public int getSchemaVersion() {
-    return schemaVersion;
-  }
-
-  public void setSchemaVersion(int schemaVersion) {
-    this.schemaVersion = schemaVersion;
-  }
 
   public Date getCreatedAt() {
     return createdAt;
@@ -164,11 +167,11 @@ public class Hakijaryhma {
     this.hakijaryhmatyyppikoodiUri = hakijaryhmatyyppikoodiUri;
   }
 
-  public void setId(Long id) {
+  public void setId(UUID id) {
     this.id = id;
   }
 
-  public Long getId() {
+  public UUID getId() {
     return id;
   }
 }
