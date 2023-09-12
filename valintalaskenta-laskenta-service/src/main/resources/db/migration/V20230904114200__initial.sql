@@ -1,19 +1,3 @@
-CREATE TABLE Hakijaryhma (
-    id uuid PRIMARY KEY,
-    hakijaryhmaOid varchar(127) UNIQUE,
-    prioriteetti int,
-    createdAt timestamp with time zone default now(),
-    hakukohdeOid varchar(127) NOT NULL,
-    nimi varchar(255),
-    kiintio int,
-    kaytaKaikki boolean DEFAULT NULL,
-    tarkkaKiintio boolean DEFAULT NULL,
-    kaytetaanRyhmaanKuuluvia boolean DEFAULT NULL,
-    hakijaryhmatyyppiKoodiuri varchar(255)
-);
-
-CREATE INDEX hakijaryhma_hakukohde ON Hakijaryhma(hakukohdeOid);
-
 CREATE TABLE HarkinnanvarainenHyvaksyminen (
     id uuid PRIMARY KEY,
     createdAt timestamp with time zone default now(),
@@ -63,31 +47,30 @@ CREATE TABLE Hakutoive (
 CREATE INDEX hakutoive_hakukohde ON Hakutoive(hakukohdeOid);
 CREATE INDEX hakutoive_laskettavahakukohde ON Hakutoive(laskettavahakukohdeOid);
 
-CREATE TABLE HakijanValinnanVaihe (
+CREATE TABLE ValintakoeValinnanVaihe (
     id uuid PRIMARY KEY,
-    valinnanVaihe uuid NOT NULL,
+    valinnanvaihe uuid NOT NULL,
     valinnanVaiheJarjestysluku int,
     laskettavaJarjestysluku int,
     hakutoive uuid not null,
     CONSTRAINT fk_hakutoive
         FOREIGN KEY(hakutoive)
-            REFERENCES Hakutoive(id)
-            ON DELETE CASCADE,
+            REFERENCES Hakutoive(id),
     CONSTRAINT fk_valinnanvaihe
-        FOREIGN KEY(valinnanVaihe)
+        FOREIGN KEY(valinnanvaihe)
         REFERENCES Valinnanvaihe(id)
-        ON DELETE CASCADE
 );
 
-CREATE TABLE Hakijankoe (
+CREATE TABLE Valintakoe (
     id uuid PRIMARY KEY,
     valintakoeOid varchar(127) NOT NULL,
     valintakoeTunniste varchar(127),
     nimi varchar(255),
     aktiivinen boolean DEFAULT NULL,
-    valinnanvaihe uuid,
+    valintakoeValinnanvaihe uuid,
     lahetaankoKoekutsut boolean DEFAULT NULL,
     kutsunKohde varchar(255),
+    kutsunKohdeAvain varchar(255),
     osallistuminen varchar(255),
     kuvausFI text,
     kuvausSV text,
@@ -96,9 +79,8 @@ CREATE TABLE Hakijankoe (
     laskentaTulos boolean,
     tekninenKuvaus text,
     CONSTRAINT fk_valinnanvaihe
-        FOREIGN KEY(valinnanvaihe)
-            REFERENCES HakijanValinnanVaihe(id)
-            ON DELETE CASCADE
+        FOREIGN KEY(valintakoeValinnanvaihe)
+            REFERENCES ValintakoeValinnanVaihe(id)
 );
 
 CREATE TABLE Valintatapajono (
@@ -114,11 +96,34 @@ CREATE TABLE Valintatapajono (
     kaikkiEhdonTayttavatHyvaksytaan boolean DEFAULT NULL,
     kaytetaanValintalaskentaa boolean DEFAULT NULL,
     valmisSijoiteltavaksi boolean DEFAULT NULL,
+    kaytetaanKokonaispisteita boolean DEFAULT NULL,
     valinnanvaihe uuid NOT NULL,
+    sijoitteluajoId int,
     CONSTRAINT fk_valinnanvaihe
         FOREIGN KEY(valinnanvaihe)
             REFERENCES Valinnanvaihe(id)
 );
+
+CREATE TABLE Hakijaryhma (
+     id uuid PRIMARY KEY,
+     hakijaryhmaOid varchar(127) UNIQUE,
+     prioriteetti int,
+     createdAt timestamp with time zone default now(),
+     hakukohdeOid varchar(127) NOT NULL,
+     nimi varchar(255),
+     kuvaus text,
+     kiintio int,
+     kaytaKaikki boolean DEFAULT NULL,
+     tarkkaKiintio boolean DEFAULT NULL,
+     kaytetaanRyhmaanKuuluvia boolean DEFAULT NULL,
+     hakijaryhmatyyppiKoodiuri varchar(255),
+     valintatapajono uuid DEFAULT NULL,
+     CONSTRAINT fk_valintatapajono
+        FOREIGN KEY (valintatapajono)
+        REFERENCES Valintatapajono(id)
+);
+
+CREATE INDEX hakijaryhma_hakukohde ON Hakijaryhma(hakukohdeOid);
 
 CREATE TABLE Jonosija (
     id uuid PRIMARY KEY,
@@ -167,17 +172,17 @@ CREATE TABLE Jarjestyskriteeritulos (
     arvo varchar(255),
     tila varchar(100),
     nimi varchar(255),
-    kuvausFI text,
-    kuvausSV text,
-    kuvausEN text,
+    kuvausFI text NOT NULL DEFAULT '',
+    kuvausSV text NOT NULL DEFAULT '',
+    kuvausEN text NOT NULL DEFAULT ä,
     tekninenKuvaus text,
     jonosija uuid DEFAULT NULL,
-    muokattujonosija uuid DEFAULT NULL,
+    muokattuJonosija uuid DEFAULT NULL,
     CONSTRAINT fk_jonosija
         FOREIGN KEY(jonosija)
             REFERENCES Jonosija(id),
     CONSTRAINT fk_muokattujonosija
-        FOREIGN KEY(muokattujonosija)
+        FOREIGN KEY(muokattuJonosija)
             REFERENCES MuokattuJonosija(id)
 );
 

@@ -3,68 +3,71 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.*;
 
+@Entity(name = "Valintatapajono")
 public class Valintatapajono {
-  public static final int CURRENT_SCHEMA_VERSION = 2;
 
-  private String id;
+  @Id
+  private UUID id;
 
-  private int schemaVersion = CURRENT_SCHEMA_VERSION;
-
-  //@Indexed
+  @Column
   private String valintatapajonoOid;
 
+  @Column
   private String nimi;
 
+  @Column
   private int prioriteetti;
 
+  @Column
   private int aloituspaikat;
 
   /**
    * Valintaperusteissa ylläpidettävä tieto siitä, onko tätä jonoa ylipäätään tarkoitus sijoitella.
    */
+  @Column
   private boolean siirretaanSijoitteluun;
 
+  @Column
   private Tasasijasaanto tasasijasaanto;
 
+  @Column
   private Boolean eiVarasijatayttoa;
 
+  @Column
   private Boolean kaikkiEhdonTayttavatHyvaksytaan;
 
+  @Column
   private Boolean kaytetaanValintalaskentaa;
 
+  @Column
   private Boolean poissaOlevaTaytto;
 
   /**
    * Valintalaskennan tuloksissa ylläpidettävä tieto siitä, otetaanko jono mukaan seuraavaan
    * sijoitteluajoon vai ei.
    */
+  @Column
   private Boolean valmisSijoiteltavaksi = true;
 
+  @Column
   private Boolean kaytetaanKokonaispisteita;
 
-  private List<String> jonosijaIdt;
+  @OneToMany(mappedBy = "valintatapajono")
+  private List<Jonosija> jonosijat;
 
-  @Transient private List<Jonosija> jonosijat;
-
+  @Column
   private Long sijoitteluajoId;
 
-  public void setId(String id) {
+  public void setId(UUID id) {
     this.id = id;
   }
 
-  public String getId() {
+  public UUID getId() {
     return id;
-  }
-
-  public int getSchemaVersion() {
-    return schemaVersion;
-  }
-
-  public void setSchemaVersion(int schemaVersion) {
-    this.schemaVersion = schemaVersion;
   }
 
   public String getValintatapajonoOid() {
@@ -123,20 +126,13 @@ public class Valintatapajono {
     this.eiVarasijatayttoa = eiVarasijatayttoa;
   }
 
-  public List<String> getJonosijaIdt() {
-    return jonosijaIdt == null ? new ArrayList<>() : jonosijaIdt;
-  }
-
-  public void setJonosijaIdt(List<String> jonosijaIdt) {
-    this.jonosijaIdt = jonosijaIdt;
-  }
-
   public List<Jonosija> getJonosijat() {
     if (null == jonosijat) {
+      //TODO Check necessity of this exception
       throw new IllegalStateException(
           String.format(
               "Jonosijat not loaded for valintatapajono %s with jonosijaids %s",
-              valintatapajonoOid, jonosijaIdt));
+              valintatapajonoOid, jonosijat));
     }
     return jonosijat;
   }

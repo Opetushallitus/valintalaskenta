@@ -6,7 +6,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/valintalaskentadb
     username: oph
-    password: 
+    password:
     driver-class-name: org.postgresql.Driver
 
 springdoc:

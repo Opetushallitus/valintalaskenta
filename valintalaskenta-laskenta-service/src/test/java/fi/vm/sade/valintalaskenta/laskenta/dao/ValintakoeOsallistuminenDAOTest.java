@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,10 +35,7 @@ public class ValintakoeOsallistuminenDAOTest {
     Valintakoe valintakoe = new Valintakoe();
     valintakoe.setValintakoeOid(valintakoeOid);
     valintakoe.setValintakoeTunniste(valintakoetunniste);
-
-    OsallistuminenTulos osallistuminenTulos = new OsallistuminenTulos();
-    osallistuminenTulos.setOsallistuminen(osallistuminen);
-    valintakoe.setOsallistuminenTulos(osallistuminenTulos);
+    valintakoe.setOsallistuminen(osallistuminen);
 
     return valintakoe;
   }
@@ -45,7 +43,9 @@ public class ValintakoeOsallistuminenDAOTest {
   private static ValintakoeValinnanvaihe luoValinnanVaihe(
       String valinnanVaiheOid, int valinnanVaiheJarjestysluku) {
     ValintakoeValinnanvaihe valinnanVaihe = new ValintakoeValinnanvaihe();
-    valinnanVaihe.setValinnanVaiheOid(valinnanVaiheOid);
+    Valinnanvaihe vaihe = new Valinnanvaihe();
+    vaihe.setValinnanvaiheOid(valinnanVaiheOid);
+    valinnanVaihe.setValinnanVaihe(vaihe);
     valinnanVaihe.setValinnanVaiheJarjestysluku(valinnanVaiheJarjestysluku);
     return valinnanVaihe;
   }
@@ -83,7 +83,7 @@ public class ValintakoeOsallistuminenDAOTest {
                   k % 2 == 0 ? Osallistuminen.EI_OSALLISTU : Osallistuminen.OSALLISTUU);
           vaihe.getValintakokeet().add(koe);
         }
-        hakutoive.getValinnanVaiheet().add(vaihe);
+        hakutoive.getValintakoeValinnanvaiheet().add(vaihe);
       }
       osallistuminen.getHakutoiveet().add(hakutoive);
     }

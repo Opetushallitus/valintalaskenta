@@ -2,9 +2,9 @@ spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/valintalaskentadb
+    url: jdbc:postgresql://localhost:5432/valintalaskenta
     username: oph
-    password:
+    password: ophophoph
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:

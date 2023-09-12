@@ -1,41 +1,47 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 
+@Entity(name = "Valinnanvaihe")
 public class Valinnanvaihe {
   private static final Logger LOGGER = LoggerFactory.getLogger(Valinnanvaihe.class);
 
-  private String id;
+  @Id
+  private UUID id;
 
+  @Column
   private int jarjestysnumero;
 
+  @Column
   private Date createdAt;
 
-  //@Indexed(unique = false, dropDups = false)
+  @Column
   private String hakuOid;
 
-  //@Indexed(unique = false, dropDups = false)
+  @Column
   private String hakukohdeOid;
 
-  // @Indexed(unique = false, dropDups = false)
+  @Column
   private String valinnanvaiheOid;
 
+  @Column
   private String tarjoajaOid;
 
+  @Column
   private String nimi;
 
+  @OneToMany(mappedBy = "valinnanvaihe")
   private List<Valintatapajono> valintatapajonot = new ArrayList<>();
+
+  @OneToMany(mappedBy = "valinnanvaihe")
+  private List<ValintakoeValinnanvaihe> valintakoeValinnanvaiheet = new ArrayList<>();
 
   @PrePersist
   private void prePersist() {
@@ -47,12 +53,12 @@ public class Valinnanvaihe {
     Collections.sort(valintatapajonot, Comparator.comparingInt(Valintatapajono::getPrioriteetti));
   }
 
-  public void setId(String id) {
-    this.id = id;
+  public UUID getId() {
+    return id;
   }
 
-  public String getId() {
-    return id;
+  public void setId(UUID id) {
+    this.id = id;
   }
 
   public int getJarjestysnumero() {
@@ -117,6 +123,14 @@ public class Valinnanvaihe {
 
   public void setNimi(String nimi) {
     this.nimi = nimi;
+  }
+
+  public List<ValintakoeValinnanvaihe> getValintakoeValinnanvaiheet() {
+    return valintakoeValinnanvaiheet;
+  }
+
+  public void setValintakoeValinnanvaiheet(List<ValintakoeValinnanvaihe> valintakoeValinnanvaiheet) {
+    this.valintakoeValinnanvaiheet = valintakoeValinnanvaiheet;
   }
 
   public boolean hylattyValisijoittelussa(String hakemusoid) {
