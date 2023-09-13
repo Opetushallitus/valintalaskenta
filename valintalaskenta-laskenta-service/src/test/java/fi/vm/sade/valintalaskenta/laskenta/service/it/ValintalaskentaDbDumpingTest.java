@@ -147,7 +147,7 @@ public class ValintalaskentaDbDumpingTest {
                                 sailytettavatJonot.add(jono);
                               }
                             });
-                    jono.getJonosijaIdt()
+                    jono.getJonosijat().stream().map(Jonosija::getId).collect(Collectors.toList())
                         .forEach(
                             id -> {
                               if (sailytettavatJonosijat.stream()
@@ -156,7 +156,7 @@ public class ValintalaskentaDbDumpingTest {
                               }
                             });
                     jono.setJonosijat(sailytettavatJonosijat);
-                    jono.setJonosijaIdt(sailytettavatJonosijaIdt);
+                    //jono.setJonosijaIdt(sailytettavatJonosijaIdt);
                   });
           vaihe.setValintatapajonot(new ArrayList<>(sailytettavatJonot));
         });

@@ -33,7 +33,7 @@ public class Jarjestyskriteeritulos {
   private String kuvausSV;
 
   @Column
-  private String kuvausEn;
+  private String kuvausEN;
 
   @Column
   private String nimi;
@@ -80,12 +80,12 @@ public class Jarjestyskriteeritulos {
   }
 
   public Map<String, String> getKuvaus() {
-    return Map.of("FI", getKuvausFI(), "SV", getKuvausSV(), "EN", getKuvausEn());
+    return Map.of("FI", getKuvausFI(), "SV", getKuvausSV(), "EN", getKuvausEN());
   }
 
   public void setKuvaus(Map<String, String> kuvaus) {
     this.setKuvausFI(kuvaus.get("FI"));
-    this.setKuvausEn(kuvaus.get("EN"));
+    this.setKuvausEN(kuvaus.get("EN"));
     this.setKuvausSV(kuvaus.get("SV"));
   }
 
@@ -126,12 +126,12 @@ public class Jarjestyskriteeritulos {
     this.id = id;
   }
 
-  public String getKuvausEn() {
-    return kuvausEn;
+  public String getKuvausEN() {
+    return kuvausEN;
   }
 
-  public void setKuvausEn(String kuvausEn) {
-    this.kuvausEn = kuvausEn;
+  public void setKuvausEN(String kuvausEn) {
+    this.kuvausEN = kuvausEn;
   }
 
   public String getKuvausFI() {

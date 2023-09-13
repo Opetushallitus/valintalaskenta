@@ -142,7 +142,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         osallistuminen
             .getHakutoiveet()
             .get(0)
-            .getValinnanVaiheet()
+            .getValintakoeValinnanvaiheet()
             .get(0)
             .getValintakokeet()
             .get(0)
@@ -348,7 +348,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     Collections.sort(hakutoiveet, (o1, o2) -> o1.getHakukohdeOid().compareTo(o2.getHakukohdeOid()));
     {
       Hakutoive hakutoive1 = hakutoiveet.get(0);
-      ValintakoeValinnanvaihe vaihe1 = hakutoive1.getValinnanVaiheet().get(0);
+      ValintakoeValinnanvaihe vaihe1 = hakutoive1.getValintakoeValinnanvaiheet().get(0);
 
       Valintakoe vk1 = vaihe1.getValintakokeet().get(0);
       assertEquals(Osallistuminen.OSALLISTUU, vk1.getOsallistuminenTulos().getOsallistuminen());
@@ -356,7 +356,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
     {
       Hakutoive hakutoive2 = hakutoiveet.get(1);
-      ValintakoeValinnanvaihe vaihe2 = hakutoive2.getValinnanVaiheet().get(0);
+      ValintakoeValinnanvaihe vaihe2 = hakutoive2.getValintakoeValinnanvaiheet().get(0);
 
       Valintakoe vk1 = vaihe2.getValintakokeet().get(0);
       assertEquals(Osallistuminen.EI_OSALLISTU, vk1.getOsallistuminenTulos().getOsallistuminen());
@@ -457,7 +457,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     Collections.sort(hakutoiveet, (o1, o2) -> o1.getHakukohdeOid().compareTo(o2.getHakukohdeOid()));
     {
       Hakutoive hakutoive1 = hakutoiveet.get(0);
-      ValintakoeValinnanvaihe vaihe1 = hakutoive1.getValinnanVaiheet().get(0);
+      ValintakoeValinnanvaihe vaihe1 = hakutoive1.getValintakoeValinnanvaiheet().get(0);
 
       Valintakoe vk1 = vaihe1.getValintakokeet().get(0);
       assertEquals(Osallistuminen.OSALLISTUU, vk1.getOsallistuminenTulos().getOsallistuminen());
@@ -465,7 +465,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
 
     {
       Hakutoive hakutoive2 = hakutoiveet.get(1);
-      ValintakoeValinnanvaihe vaihe2 = hakutoive2.getValinnanVaiheet().get(0);
+      ValintakoeValinnanvaihe vaihe2 = hakutoive2.getValintakoeValinnanvaiheet().get(0);
 
       Valintakoe vk1 = vaihe2.getValintakokeet().get(0);
       assertEquals(Osallistuminen.EI_OSALLISTU, vk1.getOsallistuminenTulos().getOsallistuminen());
@@ -544,10 +544,10 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     {
       Hakutoive hakutoive1 = hakutoiveet.get(0);
       assertEquals(hakutoive1.getHakukohdeOid(), hakukohdeOid1);
-      assertEquals(1, hakutoive1.getValinnanVaiheet().size());
+      assertEquals(1, hakutoive1.getValintakoeValinnanvaiheet().size());
 
-      ValintakoeValinnanvaihe vaihe1 = hakutoive1.getValinnanVaiheet().get(0);
-      assertEquals(valinnanVaiheOid1, vaihe1.getValinnanVaiheOid());
+      ValintakoeValinnanvaihe vaihe1 = hakutoive1.getValintakoeValinnanvaiheet().get(0);
+      assertEquals(valinnanVaiheOid1, vaihe1.getValinnanVaihe().getValinnanVaiheOid());
       assertEquals(valinnanVaiheJarjestysluku1, vaihe1.getValinnanVaiheJarjestysluku().intValue());
       assertEquals(1, vaihe1.getValintakokeet().size());
 
@@ -559,10 +559,10 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     {
       Hakutoive hakutoive2 = hakutoiveet.get(1);
       assertEquals(hakukohdeOid2, hakutoive2.getHakukohdeOid());
-      assertEquals(1, hakutoive2.getValinnanVaiheet().size());
+      assertEquals(1, hakutoive2.getValintakoeValinnanvaiheet().size());
 
-      ValintakoeValinnanvaihe vaihe2 = hakutoive2.getValinnanVaiheet().get(0);
-      assertEquals(valinnanVaiheOid2, vaihe2.getValinnanVaiheOid());
+      ValintakoeValinnanvaihe vaihe2 = hakutoive2.getValintakoeValinnanvaiheet().get(0);
+      assertEquals(valinnanVaiheOid2, vaihe2.getValinnanVaihe().getValinnanVaiheOid());
       assertEquals(valinnanVaiheJarjestysluku2, vaihe2.getValinnanVaiheJarjestysluku().intValue());
       assertEquals(1, vaihe2.getValintakokeet().size());
 

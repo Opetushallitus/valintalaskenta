@@ -284,13 +284,13 @@ public class ValintakoelaskentaSuorittajaServiceImpl
                         ht -> {
                           if (ht.getHakukohdeOid().equals(hakukohdeOid)) {
                             List<ValintakoeValinnanvaihe> siivotutValinnanvaiheet =
-                                ht.getValinnanVaiheet().stream()
+                                ht.getValintakoeValinnanvaiheet().stream()
                                     .filter(
                                         vv ->
                                             saastettavienValinnanvaiheidenOidit.contains(
-                                                vv.getValinnanVaiheOid()))
+                                                vv.getValinnanVaihe().getValinnanVaiheOid()))
                                     .collect(Collectors.toList());
-                            int ennen = ht.getValinnanVaiheet().size();
+                            int ennen = ht.getValintakoeValinnanvaiheet().size();
                             int jalkeen = siivotutValinnanvaiheet.size();
                             if (ennen > jalkeen) {
                               LOG.warn(
@@ -299,20 +299,20 @@ public class ValintakoelaskentaSuorittajaServiceImpl
                                   hakukohdeOid,
                                   ennen,
                                   jalkeen);
-                              ht.getValinnanVaiheet()
+                              ht.getValintakoeValinnanvaiheet()
                                   .forEach(
                                       vv -> {
                                         if (!saastettavienValinnanvaiheidenOidit.contains(
-                                            vv.getValinnanVaiheOid())) {
+                                            vv.getValinnanVaihe().getValinnanVaiheOid())) {
                                           LOG.warn(
                                               "Poistetaan hakemuksen {} hakutoiveen {} valintakoeosallistumisista valinnanvaihe oidilla {}, "
                                                   + "koska se vaikuttaa kadonneen valintaperusteista.",
                                               hakemus.getHakemusoid(),
                                               hakukohdeOid,
-                                              vv.getValinnanVaiheOid());
+                                              vv.getValinnanVaihe().getValinnanVaiheOid());
                                         }
                                       });
-                              ht.setValinnanVaiheet(siivotutValinnanvaiheet);
+                              ht.setValintakoeValinnanvaiheet(siivotutValinnanvaiheet);
                               valintakoeOsallistuminenDAO.createOrUpdate(tallennettuOsallistuminen);
                             }
                           }
@@ -336,13 +336,13 @@ public class ValintakoelaskentaSuorittajaServiceImpl
             hakutoive -> {
               LOG.debug(String.format("\thakutoive %s : ", hakutoive.getHakukohdeOid()));
               hakutoive
-                  .getValinnanVaiheet()
+                  .getValintakoeValinnanvaiheet()
                   .forEach(
                       valintakoeValinnanvaihe -> {
                         LOG.debug(
                             String.format(
                                 "\t\tvalinnanvaihe %s : ",
-                                valintakoeValinnanvaihe.getValinnanVaiheOid()));
+                                valintakoeValinnanvaihe.getValinnanVaihe().getValinnanVaiheOid()));
                         valintakoeValinnanvaihe
                             .getValintakokeet()
                             .forEach(
@@ -365,7 +365,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl
         .getHakutoiveet()
         .forEach(
             h ->
-                h.getValinnanVaiheet()
+                h.getValintakoeValinnanvaiheet()
                     .forEach(
                         v ->
                             v.getValintakokeet()
@@ -381,7 +381,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl
                                         data.setOsallistuminenTulos(koe.getOsallistuminenTulos());
                                         data.setValinnanVaiheJarjestysNro(
                                             v.getValinnanVaiheJarjestysluku());
-                                        data.setValinnanVaiheOid(v.getValinnanVaiheOid());
+                                        data.setValinnanVaiheOid(v.getValinnanVaihe().getValinnanVaiheOid());
                                         data.setValintakoeOid(koe.getValintakoeOid());
                                         data.setValintakoeTunniste(koe.getValintakoeTunniste());
                                         data.setNimi(koe.getNimi());
@@ -553,7 +553,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl
         final List<ValintakoeValinnanvaihe> valinnanvaiheet =
             kaikkiOsallistumiset.getHakutoiveet().stream()
                 .filter(h -> h.getHakukohdeOid().equals(ensimmainenHakukohde))
-                .flatMap(hakutoive -> hakutoive.getValinnanVaiheet().stream())
+                .flatMap(hakutoive -> hakutoive.getValintakoeValinnanvaiheet().stream())
                 .collect(Collectors.toList());
         valinnanvaiheet.forEach(
             vv -> {
@@ -580,7 +580,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl
                 .forEach(
                     hakutoive -> {
                       if (hakutoive.getHakukohdeOid().equals(ensimmainenHakukohde)) {
-                        hakutoive.setValinnanVaiheet(valinnanvaiheet);
+                        hakutoive.setValintakoeValinnanvaiheet(valinnanvaiheet);
                       }
                     });
           }
@@ -685,12 +685,12 @@ public class ValintakoelaskentaSuorittajaServiceImpl
     for (Hakutoive h : osallistuminen.getHakutoiveet()) {
       String oid = h.getHakukohdeOid();
       if (!hakutoiveetByOid.containsKey(oid) || oid.equals(data.getLaskettavaHakukohdeOid())) {
-        h.setValinnanVaiheet(getHakijanValintaVaiheet(h));
+        h.setValintakoeValinnanvaiheet(getHakijanValintaVaiheet(h));
       }
     }
     osallistuminen.setHakutoiveet(
         osallistuminen.getHakutoiveet().stream()
-            .filter(h -> !h.getValinnanVaiheet().isEmpty())
+            .filter(h -> !h.getValintakoeValinnanvaiheet().isEmpty())
             .collect(Collectors.toList()));
     osallistuminen.setHakuOid(data.getHakuOid());
     osallistuminen.setHakemusOid(hakemus.getHakemusoid());
@@ -701,8 +701,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl
   }
 
   private List<ValintakoeValinnanvaihe> getHakijanValintaVaiheet(Hakutoive t) {
-    return t.getValinnanVaiheet().stream()
-        .filter(v -> v.getValinnanVaiheOid().equals(VALINNANVAIHE_HAKIJAN_VALINTA))
+    return t.getValintakoeValinnanvaiheet().stream()
+        .filter(v -> v.getValinnanVaihe().getValinnanVaiheOid().equals(VALINNANVAIHE_HAKIJAN_VALINTA))
         .collect(Collectors.toList());
   }
 
@@ -726,17 +726,17 @@ public class ValintakoelaskentaSuorittajaServiceImpl
   protected void haeTaiLuoValinnanVaihe(Hakutoive hakutoive, HakukohdeValintakoeData data) {
     hakutoive.setLaskettavaHakukohdeOid(data.getLaskettavaHakukohdeOid());
     ValintakoeValinnanvaihe vaihe = null;
-    for (ValintakoeValinnanvaihe v : hakutoive.getValinnanVaiheet()) {
-      if (data.getValinnanVaiheOid().equals(v.getValinnanVaiheOid())) {
+    for (ValintakoeValinnanvaihe v : hakutoive.getValintakoeValinnanvaiheet()) {
+      if (data.getValinnanVaiheOid().equals(v.getValinnanVaihe().getValinnanVaiheOid())) {
         vaihe = v;
         break;
       }
     }
     if (vaihe == null) {
       vaihe = new ValintakoeValinnanvaihe();
-      hakutoive.getValinnanVaiheet().add(vaihe);
+      hakutoive.getValintakoeValinnanvaiheet().add(vaihe);
     }
-    vaihe.setValinnanVaiheOid(data.getValinnanVaiheOid());
+    vaihe.getValinnanVaihe().setValinnanVaiheOid(data.getValinnanVaiheOid());
     vaihe.setValinnanVaiheJarjestysluku(data.getValinnanVaiheJarjestysNro());
     vaihe.setLaskettavaJarjestysluku(data.getLaskettavaValinnanVaiheJarjestysNro());
     haeTaiLuoValintakoe(vaihe, data);

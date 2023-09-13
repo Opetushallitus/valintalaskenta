@@ -39,7 +39,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
       Set<String> tunnisteet = new HashSet<String>(valintakoeTunnisteet);
       for (ValintakoeOsallistuminen koetulos : valinnanvaiheet) {
         for (Hakutoive hakutoive : koetulos.getHakutoiveet()) {
-          for (ValintakoeValinnanvaihe vaihe : hakutoive.getValinnanVaiheet()) {
+          for (ValintakoeValinnanvaihe vaihe : hakutoive.getValintakoeValinnanvaiheet()) {
             HakemusOsallistuminenDTO h = new HakemusOsallistuminenDTO();
             h.setHakukohdeOid(hakutoive.getHakukohdeOid());
             for (Valintakoe valintakoe : vaihe.getValintakokeet()) {
@@ -47,7 +47,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
                 ValintakoeOsallistuminenDTO osallistuminen = new ValintakoeOsallistuminenDTO();
                 osallistuminen.setOsallistuminen(
                     modelMapper.map(
-                        valintakoe.getOsallistuminenTulos().getOsallistuminen(),
+                        valintakoe.getOsallistuminen(),
                         OsallistuminenDTO.class));
                 osallistuminen.setValintakoeOid(valintakoe.getValintakoeOid());
                 osallistuminen.setValintakoeTunniste(valintakoe.getValintakoeTunniste());

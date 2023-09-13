@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import java.util.Map;
 import java.util.UUID;
 
 @Entity(name = "Valintakoe")
@@ -39,6 +40,24 @@ public class Valintakoe {
 
   @Column
   private String kutsunKohdeAvain;
+
+  @Column
+  private String kuvausFI;
+
+  @Column
+  private String kuvausEN;
+
+  @Column
+  private String kuvausSV;
+
+  @Column
+  private String laskentaTila;
+
+  @Column
+  private Boolean laskentaTulos;
+
+  @Column
+  private String tekninenKuvaus;
 
   @ManyToOne
   private ValintakoeValinnanvaihe valintakoeValinnanvaihe;
@@ -123,8 +142,84 @@ public class Valintakoe {
     this.id = id;
   }
 
+  public String getKuvausFI() {
+    return kuvausFI;
+  }
+
+  public void setKuvausFI(String kuvausFI) {
+    this.kuvausFI = kuvausFI;
+  }
+
+  public String getKuvausSV() {
+    return kuvausSV;
+  }
+
+  public void setKuvausSV(String kuvausSV) {
+    this.kuvausSV = kuvausSV;
+  }
+
+  public String getKuvausEN() {
+    return kuvausEN;
+  }
+
+  public void setKuvausEN(String kuvausEN) {
+    this.kuvausEN = kuvausEN;
+  }
+
+  public Boolean getLaskentaTulos() {
+    return laskentaTulos;
+  }
+
+  public void setLaskentaTulos(Boolean laskentaTulos) {
+    this.laskentaTulos = laskentaTulos;
+  }
+
+  public String getLaskentaTila() {
+    return laskentaTila;
+  }
+
+  public void setLaskentaTila(String laskentatila) {
+    this.laskentaTila = laskentatila;
+  }
+
+  public String getTekninenKuvaus() {
+    return tekninenKuvaus;
+  }
+
+  public void setTekninenKuvaus(String tekninenKuvaus) {
+    this.tekninenKuvaus = tekninenKuvaus;
+  }
+
+  public Map<String, String> getKuvaus() {
+    return Map.of("FI", getKuvausFI(), "SV", getKuvausSV(), "EN", getKuvausEN());
+  }
+
+  public void setKuvaus(Map<String, String> kuvaus) {
+    this.setKuvausFI(kuvaus.get("FI"));
+    this.setKuvausEN(kuvaus.get("EN"));
+    this.setKuvausSV(kuvaus.get("SV"));
+  }
+
+  public OsallistuminenTulos getOsallistuminenTulos() {
+    OsallistuminenTulos tulos = new OsallistuminenTulos();
+    tulos.setLaskentaTulos(getLaskentaTulos());
+    tulos.setOsallistuminen(getOsallistuminen());
+    tulos.setKuvaus(getKuvaus());
+    tulos.setLaskentaTila(getLaskentaTila());
+    tulos.setTekninenKuvaus(getTekninenKuvaus());
+    return tulos;
+  }
+
   @Override
   public String toString() {
     return ToStringBuilder.reflectionToString(this);
+  }
+
+  public void setOsallistuminenTulos(OsallistuminenTulos osallistuminenTulos) {
+    setLaskentaTulos(osallistuminenTulos.getLaskentaTulos());
+    setOsallistuminen(osallistuminenTulos.getOsallistuminen());
+    setKuvaus(osallistuminenTulos.getKuvaus());
+    setLaskentaTila(osallistuminenTulos.getLaskentaTila());
+    setTekninenKuvaus(osallistuminenTulos.getTekninenKuvaus());
   }
 }

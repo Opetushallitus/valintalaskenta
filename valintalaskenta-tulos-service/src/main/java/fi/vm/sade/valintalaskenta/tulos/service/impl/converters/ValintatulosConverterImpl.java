@@ -73,7 +73,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
     for (Hakutoive ht : hakutoiveet) {
       HakutoiveDTO dto = new HakutoiveDTO();
       dto.setHakukohdeOid(ht.getHakukohdeOid());
-      dto.setValinnanVaiheet(convertValinnanVaihe(ht.getValinnanVaiheet()));
+      dto.setValinnanVaiheet(convertValinnanVaihe(ht.getValintakoeValinnanvaiheet()));
       dtot.add(dto);
     }
     return dtot;
@@ -86,7 +86,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
     for (ValintakoeValinnanvaihe vv : valinnanVaiheet) {
       ValintakoeValinnanvaiheDTO dto = new ValintakoeValinnanvaiheDTO();
       dto.setValinnanVaiheJarjestysluku(vv.getValinnanVaiheJarjestysluku());
-      dto.setValinnanVaiheOid(vv.getValinnanVaiheOid());
+      dto.setValinnanVaiheOid(vv.getValinnanVaihe().getValinnanVaiheOid());
       dto.setValintakokeet(convertValintakoe(vv.getValintakokeet()));
       dtot.add(dto);
     }
@@ -100,7 +100,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
       ValintakoeDTO dto = new ValintakoeDTO();
       dto.setValintakoeOid(koe.getValintakoeOid());
       dto.setValintakoeTunniste(koe.getValintakoeTunniste());
-      dto.setOsallistuminenTulos(convertOsallistuminenTulos(koe.getOsallistuminenTulos()));
+      dto.setOsallistuminenTulos(convertOsallistuminenTulos(koe));
       dto.setLahetetaankoKoekutsut(koe.isLahetetaankoKoekutsut());
       dto.setAktiivinen(koe.isAktiivinen());
       dto.setKutsuttavienMaara(koe.getKutsuttavienMaara());
@@ -111,12 +111,12 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
 
   @Override
   public OsallistuminenTulosDTO convertOsallistuminenTulos(
-      OsallistuminenTulos osallistuminenTulos) {
+      Valintakoe valintakoe) {
     OsallistuminenTulosDTO dto = new OsallistuminenTulosDTO();
-    dto.setKuvaus(osallistuminenTulos.getKuvaus());
-    dto.setLaskentaTila(osallistuminenTulos.getLaskentaTila());
-    dto.setLaskentaTulos(osallistuminenTulos.getLaskentaTulos());
-    dto.setOsallistuminen(osallistuminenTulos.getOsallistuminen());
+    dto.setKuvaus(valintakoe.getKuvaus());
+    dto.setLaskentaTila(valintakoe.getLaskentaTila());
+    dto.setLaskentaTulos(valintakoe.getLaskentaTulos());
+    dto.setOsallistuminen(valintakoe.getOsallistuminen());
 
     return dto;
   }
@@ -126,7 +126,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
     ValintatietoValinnanvaiheDTO dto = new ValintatietoValinnanvaiheDTO();
     dto.setCreatedAt(valinnanvaihe.getCreatedAt());
     dto.setJarjestysnumero(valinnanvaihe.getJarjestysnumero());
-    dto.setValinnanvaiheoid(valinnanvaihe.getValinnanvaiheOid());
+    dto.setValinnanvaiheoid(valinnanvaihe.getValinnanVaiheOid());
     dto.setHakuOid(valinnanvaihe.getHakuOid());
     dto.setValintatapajonot(convertValintatapajono(valinnanvaihe.getValintatapajonot()));
     dto.setNimi(valinnanvaihe.getNimi());

@@ -75,7 +75,7 @@ CREATE TABLE Valintakoe (
     kuvausFI text,
     kuvausSV text,
     kuvausEN text,
-    laskentatila varchar(255),
+    laskentaTila varchar(255),
     laskentaTulos boolean,
     tekninenKuvaus text,
     CONSTRAINT fk_valinnanvaihe
