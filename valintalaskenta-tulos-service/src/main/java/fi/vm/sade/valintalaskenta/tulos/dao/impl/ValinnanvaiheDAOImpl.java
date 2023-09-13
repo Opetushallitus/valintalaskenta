@@ -120,12 +120,12 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
             .collect(Collectors.toList()));*/
   }
 
-  private String saveJono(Valintatapajono valintatapajono) {
+  private UUID saveJono(Valintatapajono valintatapajono) {
     return valintatapajono.getId(); //datastore.save(valintatapajono);
   }
 
   @Override
-  public String saveVaihe(Valinnanvaihe vaihe) {
+  public UUID saveVaihe(Valinnanvaihe vaihe) {
     return vaihe.getId(); // datastore.save(vaihe);
   }
 

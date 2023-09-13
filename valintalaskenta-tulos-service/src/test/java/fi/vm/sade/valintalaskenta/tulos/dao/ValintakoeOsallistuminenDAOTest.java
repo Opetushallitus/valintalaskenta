@@ -52,11 +52,11 @@ public class ValintakoeOsallistuminenDAOTest {
     assertEquals(vko.getHakemusOid(), hakemusOid);
     assertEquals(1, vko.getHakutoiveet().size());
     Hakutoive hakutoive = vko.getHakutoiveet().get(0);
-    assertEquals(2, hakutoive.getValinnanVaiheet().size());
-    ValintakoeValinnanvaihe vaihe = hakutoive.getValinnanVaiheet().get(0);
+    assertEquals(2, hakutoive.getValintakoeValinnanvaiheet().size());
+    ValintakoeValinnanvaihe vaihe = hakutoive.getValintakoeValinnanvaiheet().get(0);
     assertEquals(1, vaihe.getValintakokeet().size());
     Valintakoe koe = vaihe.getValintakokeet().get(0);
-    assertEquals(koe.getOsallistuminenTulos().getOsallistuminen(), osallistuminen);
+    assertEquals(koe.getOsallistuminen(), osallistuminen);
   }
 
   @Test
@@ -78,7 +78,7 @@ public class ValintakoeOsallistuminenDAOTest {
         vko.getHakutoiveet().stream()
             .flatMap(
                 h ->
-                    h.getValinnanVaiheet().get(0).getValintakokeet().stream()
+                    h.getValintakoeValinnanvaiheet().get(0).getValintakokeet().stream()
                         .filter(koe -> "kielikoe_fi".equals(koe.getValintakoeTunniste())))
             .findFirst();
     assertThat(kielikoeOpt, OptionalMatchers.isPresent());
@@ -86,8 +86,8 @@ public class ValintakoeOsallistuminenDAOTest {
 
     assertEquals("kielikoe_fi", kielikoe.getValintakoeTunniste());
     assertEquals(
-        Osallistuminen.EI_OSALLISTU, kielikoe.getOsallistuminenTulos().getOsallistuminen());
-    assertEquals(true, kielikoe.getOsallistuminenTulos().getLaskentaTulos());
+        Osallistuminen.EI_OSALLISTU, kielikoe.getOsallistuminen());
+    assertEquals(true, kielikoe.getLaskentaTulos());
 
     assertThat(
         valintakoeOsallistuminenDAO.findAmmatillisenKielikoeOsallistumiset(

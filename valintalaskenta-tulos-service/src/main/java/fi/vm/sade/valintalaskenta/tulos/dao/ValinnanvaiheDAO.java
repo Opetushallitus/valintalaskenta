@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.tulos.dao;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 public interface ValinnanvaiheDAO {
@@ -19,5 +20,5 @@ public interface ValinnanvaiheDAO {
 
   void saveOrUpdate(Valinnanvaihe vaihe);
 
-  String saveVaihe(Valinnanvaihe vaihe);
+  UUID saveVaihe(Valinnanvaihe vaihe);
 }

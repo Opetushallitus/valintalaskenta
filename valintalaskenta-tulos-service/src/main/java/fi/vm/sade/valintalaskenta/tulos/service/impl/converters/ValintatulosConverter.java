@@ -33,7 +33,7 @@ public interface ValintatulosConverter {
 
   List<ValintakoeDTO> convertValintakoe(List<Valintakoe> valintakokeet);
 
-  OsallistuminenTulosDTO convertOsallistuminenTulos(OsallistuminenTulos osallistuminenTulos);
+  OsallistuminenTulosDTO convertOsallistuminenTulos(Valintakoe valintakoe);
 
   List<JarjestyskriteeritulosDTO> convertJarjestyskriteeri(
       Collection<Jarjestyskriteeritulos> jktulos);

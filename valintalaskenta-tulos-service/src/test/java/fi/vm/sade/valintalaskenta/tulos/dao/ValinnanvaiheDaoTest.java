@@ -26,7 +26,7 @@ public class ValinnanvaiheDaoTest {
       Valinnanvaihe vaihe = valinnanvaiheDAO.findByValintatapajonoOid("jono1");
 
       assertNotNull(vaihe);
-      assertEquals("vaihe1", vaihe.getValinnanvaiheOid());
+      assertEquals("vaihe1", vaihe.getValinnanVaiheOid());
     }
   }
 }

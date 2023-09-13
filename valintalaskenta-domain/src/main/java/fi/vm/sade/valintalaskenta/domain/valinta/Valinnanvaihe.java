@@ -93,11 +93,11 @@ public class Valinnanvaihe {
     this.hakukohdeOid = hakukohdeOid;
   }
 
-  public String getValinnanvaiheOid() {
+  public String getValinnanVaiheOid() {
     return valinnanvaiheOid;
   }
 
-  public void setValinnanvaiheOid(String valinnanvaiheOid) {
+  public void setValinnanVaiheOid(String valinnanvaiheOid) {
     this.valinnanvaiheOid = valinnanvaiheOid;
   }
 

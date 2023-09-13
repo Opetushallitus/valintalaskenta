@@ -146,7 +146,7 @@ public class ValintalaskentaServiceIntegrationTest {
     List<Valintakoe> kutsuttavanYlemmankohteenValintakokeet =
         kutsuttavaOsallistuminen.getHakutoiveet().stream()
             .filter(h -> h.getHakukohdeOid().equals(ylempiHakukohdeOidJossaYhteinenKoe))
-            .flatMap(h -> h.getValinnanVaiheet().stream())
+            .flatMap(h -> h.getValintakoeValinnanvaiheet().stream())
             .flatMap(v -> v.getValintakokeet().stream())
             .sorted(Comparator.comparing(Valintakoe::getValintakoeTunniste))
             .collect(Collectors.toList());
@@ -170,7 +170,7 @@ public class ValintalaskentaServiceIntegrationTest {
     List<Valintakoe> kutsuttavanKohteenJossaOmaKoeValintakokeet =
         kutsuttavaOsallistuminen.getHakutoiveet().stream()
             .filter(h -> h.getHakukohdeOid().equals(hakukohdeOidJossaOmaKoe))
-            .flatMap(h -> h.getValinnanVaiheet().stream())
+            .flatMap(h -> h.getValintakoeValinnanvaiheet().stream())
             .flatMap(v -> v.getValintakokeet().stream())
             .sorted(Comparator.comparing(Valintakoe::getValintakoeTunniste))
             .collect(Collectors.toList());
@@ -207,7 +207,7 @@ public class ValintalaskentaServiceIntegrationTest {
     List<Valintakoe> eiKutsuttavanYlemmanKohteenValintakokeet =
         eiKutsuttavaOsallistuminen.getHakutoiveet().stream()
             .filter(h -> h.getHakukohdeOid().equals(ylempiHakukohdeOidJossaYhteinenKoe))
-            .flatMap(h -> h.getValinnanVaiheet().stream())
+            .flatMap(h -> h.getValintakoeValinnanvaiheet().stream())
             .flatMap(v -> v.getValintakokeet().stream())
             .sorted(Comparator.comparing(Valintakoe::getValintakoeTunniste))
             .collect(Collectors.toList());
@@ -233,7 +233,7 @@ public class ValintalaskentaServiceIntegrationTest {
     List<Valintakoe> eiKutsuttavanKohteenJossaOmaKoevalintakokeet =
         eiKutsuttavaOsallistuminen.getHakutoiveet().stream()
             .filter(h -> h.getHakukohdeOid().equals(hakukohdeOidJossaOmaKoe))
-            .flatMap(h -> h.getValinnanVaiheet().stream())
+            .flatMap(h -> h.getValintakoeValinnanvaiheet().stream())
             .flatMap(v -> v.getValintakokeet().stream())
             .sorted(Comparator.comparing(Valintakoe::getValintakoeTunniste))
             .collect(Collectors.toList());

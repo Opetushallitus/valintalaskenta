@@ -147,7 +147,7 @@ public class EdellinenValinnanvaiheKasittelija {
     Set<String> muidenkohteidenKoetunnisteet =
         vanhatOsallistumiset.getHakutoiveet().stream()
             .filter(ht -> !ht.getHakukohdeOid().equals(valintaperusteetDTO.getHakukohdeOid()))
-            .flatMap(ht -> ht.getValinnanVaiheet().stream())
+            .flatMap(ht -> ht.getValintakoeValinnanvaiheet().stream())
             .flatMap(vv -> vv.getValintakokeet().stream())
             .map(Valintakoe::getValintakoeTunniste)
             .collect(Collectors.toSet());
@@ -233,14 +233,14 @@ public class EdellinenValinnanvaiheKasittelija {
     List<String> kohteenValintakokeet =
         hakijanOsallistumiset.getHakutoiveet().stream()
             .filter(h -> h.getHakukohdeOid().equals(hakukohdeOid))
-            .flatMap(h -> h.getValinnanVaiheet().stream())
+            .flatMap(h -> h.getValintakoeValinnanvaiheet().stream())
             .flatMap(v -> v.getValintakokeet().stream())
             .map(Valintakoe::getValintakoeTunniste)
             .collect(Collectors.toList());
 
     return hakijanOsallistumiset.getHakutoiveet().stream()
         .filter(h -> !h.getHakukohdeOid().equals(hakukohdeOid))
-        .flatMap(h -> h.getValinnanVaiheet().stream())
+        .flatMap(h -> h.getValintakoeValinnanvaiheet().stream())
         .flatMap(v -> v.getValintakokeet().stream())
         .anyMatch(
             k ->

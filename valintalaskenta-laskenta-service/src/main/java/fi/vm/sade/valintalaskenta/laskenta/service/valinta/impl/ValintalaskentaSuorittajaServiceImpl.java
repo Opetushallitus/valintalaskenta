@@ -128,7 +128,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
       valinnanvaihe.setHakukohdeOid(hakukohdeOid);
       valinnanvaihe.setHakuOid(hakuOid);
       valinnanvaihe.setJarjestysnumero(jarjestysnumero);
-      valinnanvaihe.setValinnanvaiheOid(valinnanvaiheOid);
+      valinnanvaihe.setValinnanVaiheOid(valinnanvaiheOid);
       valinnanvaihe.setTarjoajaOid(vp.getTarjoajaOid());
       valinnanvaihe.setNimi(vp.getValinnanVaihe().getNimi());
 
@@ -641,7 +641,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         valinnanvaiheDAO.haeValinnanvaiheetJarjestysnumerolla(
             hakuOid, hakukohdeOid, jarjestysnumero);
     for (Valinnanvaihe vaihe : vaiheet) {
-      if (!vaihe.getValinnanvaiheOid().equals(valinnanvaiheOid)) {
+      if (!vaihe.getValinnanVaiheOid().equals(valinnanvaiheOid)) {
         valinnanvaiheDAO.poistaValinnanvaihe(vaihe);
       }
     }
@@ -664,7 +664,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
           && (jono.getKaytetaanValintalaskentaa() == null || jono.getKaytetaanValintalaskentaa())) {
         for (Jonosija jonosija : jono.getJonosijat()) {
           for (Jarjestyskriteeritulos tulos : jonosija.getJarjestyskriteeritulokset()) {
-            jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
+            //jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
           }
         }
         poistettavat.add(jono);
@@ -739,7 +739,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
   private void poistaVanhatHistoriat(Hakijaryhma hakijaryhma) {
     for (Jonosija jonosija : hakijaryhma.getJonosijat()) {
       for (Jarjestyskriteeritulos tulos : jonosija.getJarjestyskriteeritulokset()) {
-        jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
+        //jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
       }
     }
   }

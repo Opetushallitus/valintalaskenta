@@ -149,7 +149,7 @@ public class ValintalaskentaResourceIntegrationTest {
 
     Hakutoive osallistumisenHakutoiveJohonOnKielikoe = osallistuminen.getHakutoiveet().get(0);
     ValintakoeValinnanvaihe kielikokeenPakollisuusVaihe =
-        osallistumisenHakutoiveJohonOnKielikoe.getValinnanVaiheet().get(0);
+        osallistumisenHakutoiveJohonOnKielikoe.getValintakoeValinnanvaiheet().get(0);
     assertEquals(1, kielikokeenPakollisuusVaihe.getValintakokeet().size());
 
     Valintakoe kielikoetulos = kielikokeenPakollisuusVaihe.getValintakokeet().get(0);
@@ -185,7 +185,7 @@ public class ValintalaskentaResourceIntegrationTest {
 
     Hakutoive osallistumisenHakutoiveJohonOnKielikoe = osallistuminen.getHakutoiveet().get(0);
     ValintakoeValinnanvaihe kielikokeenPakollisuusVaihe =
-        osallistumisenHakutoiveJohonOnKielikoe.getValinnanVaiheet().get(0);
+        osallistumisenHakutoiveJohonOnKielikoe.getValintakoeValinnanvaiheet().get(0);
     assertThat(kielikokeenPakollisuusVaihe.getValintakokeet(), Matchers.hasSize(2));
 
     Valintakoe kielikoetulos = kielikokeenPakollisuusVaihe.getValintakokeet().get(0);
@@ -216,7 +216,7 @@ public class ValintalaskentaResourceIntegrationTest {
         having(on(OsallistuminenTulos.class).getLaskentaTila(), equalTo(HYVAKSYTTAVISSA.name())));
 
     ValintakoeValinnanvaihe paasykoeVaihe =
-        osallistumisenHakutoiveJohonOnKielikoe.getValinnanVaiheet().get(1);
+        osallistumisenHakutoiveJohonOnKielikoe.getValintakoeValinnanvaiheet().get(1);
     assertThat(paasykoeVaihe.getValintakokeet(), Matchers.hasSize(1));
     Valintakoe paasykoeTulos = paasykoeVaihe.getValintakokeet().get(0);
     assertThat(
@@ -317,7 +317,7 @@ public class ValintalaskentaResourceIntegrationTest {
     List<Valintakoe> ylemmankohteenValintakokeet =
         osallistuminen.getHakutoiveet().stream()
             .filter(h -> h.getHakukohdeOid().equals(ylempiHakukohdeOidJossaYhteinenKoe))
-            .flatMap(h -> h.getValinnanVaiheet().stream())
+            .flatMap(h -> h.getValintakoeValinnanvaiheet().stream())
             .flatMap(v -> v.getValintakokeet().stream())
             .sorted(Comparator.comparing(Valintakoe::getValintakoeTunniste))
             .collect(Collectors.toList());
@@ -341,7 +341,7 @@ public class ValintalaskentaResourceIntegrationTest {
     List<Valintakoe> kohteenJossaOmaKoeValintakokeet =
         osallistuminen.getHakutoiveet().stream()
             .filter(h -> h.getHakukohdeOid().equals(hakukohdeOidJossaOmaKoe))
-            .flatMap(h -> h.getValinnanVaiheet().stream())
+            .flatMap(h -> h.getValintakoeValinnanvaiheet().stream())
             .flatMap(v -> v.getValintakokeet().stream())
             .sorted(Comparator.comparing(Valintakoe::getValintakoeTunniste))
             .collect(Collectors.toList());

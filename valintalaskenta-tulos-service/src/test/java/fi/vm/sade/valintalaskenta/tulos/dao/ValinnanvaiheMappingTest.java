@@ -30,6 +30,6 @@ public class ValinnanvaiheMappingTest {
     // System.err.println(new GsonBuilder().setPrettyPrinting().create()
     // .toJson(v1));
 
-    Assert.assertEquals("Oidit ei ole samoja!", v.getValinnanvaiheoid(), v1.getValinnanvaiheOid());
+    Assert.assertEquals("Oidit ei ole samoja!", v.getValinnanvaiheoid(), v1.getValinnanVaiheOid());
   }
 }

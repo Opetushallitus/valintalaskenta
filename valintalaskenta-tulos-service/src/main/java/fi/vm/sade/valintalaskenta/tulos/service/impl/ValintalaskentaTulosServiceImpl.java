@@ -26,7 +26,6 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
-import fi.vm.sade.valintalaskenta.domain.valinta.LogEntry;
 import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
@@ -44,7 +43,6 @@ import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
-import fi.vm.sade.valintalaskenta.tulos.service.AuthorizationUtil;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import fi.vm.sade.valintalaskenta.tulos.service.exception.EiOikeuttaPoistaaValintatapajonoaSijoittelustaException;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverter;
@@ -129,7 +127,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
       HakukohdeDTO hakukohdeDTO = getOrCreateHakukohdeDTO(hakukohdeDTOtOidinMukaan, vv);
       ValintatietoValinnanvaiheDTO vvdto =
           createValintatietoValinnanvaiheDTO(
-              hakuOid, vv.getCreatedAt(), vv.getValinnanvaiheOid(), vv.getJarjestysnumero());
+              hakuOid, vv.getCreatedAt(), vv.getValinnanVaiheOid(), vv.getJarjestysnumero());
       for (Valintatapajono jono : vv.getValintatapajonot()) {
         jono.setJonosijat(
             new ArrayList<>(
@@ -390,13 +388,13 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
       Iterator<Hakutoive> j = vko.getHakutoiveet().iterator();
       while (j.hasNext()) {
         Hakutoive ht = j.next();
-        Iterator<ValintakoeValinnanvaihe> k = ht.getValinnanVaiheet().iterator();
+        Iterator<ValintakoeValinnanvaihe> k = ht.getValintakoeValinnanvaiheet().iterator();
         while (k.hasNext()) {
           ValintakoeValinnanvaihe vv = k.next();
           Iterator<Valintakoe> l = vv.getValintakokeet().iterator();
           while (l.hasNext()) {
             Valintakoe vk = l.next();
-            if (!Osallistuminen.VIRHE.equals(vk.getOsallistuminenTulos().getOsallistuminen())) {
+            if (!Osallistuminen.VIRHE.equals(vk.getOsallistuminen())) {
               l.remove();
             }
           }
@@ -404,7 +402,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             k.remove();
           }
         }
-        if (ht.getValinnanVaiheet().isEmpty()) {
+        if (ht.getValintakoeValinnanvaiheet().isEmpty()) {
           j.remove();
         }
       }
@@ -710,16 +708,6 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     jarjestyskriteeritulos.setArvo(jonosija.getArvo());
     jarjestyskriteeritulos.setTila(jonosija.getTila());
 
-    addLogEntry(
-        jonosija.getSelite(),
-        muokattuJonosija,
-        "jarjestyskriteeriPrioriteetti: "
-            + jarjestyskriteeriPrioriteetti
-            + " arvo: "
-            + jonosija.getArvo()
-            + " tila: "
-            + jonosija.getTila().name());
-
     saveMuokattuJonosija(muokattuJonosija, auditUser);
     return muokattuJonosija;
   }
@@ -754,15 +742,6 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         muokattuJonosija.getHakemusOid(),
         Changes.addedDto(muokattuJonosija));
     muokattuJonosijaDAO.saveOrUpdate(muokattuJonosija);
-  }
-
-  private void addLogEntry(String selite, MuokattuJonosija muokattuJonosija, String muutos) {
-    LogEntry logEntry = new LogEntry();
-    logEntry.setLuotu(new Date());
-    logEntry.setMuokkaaja(AuthorizationUtil.getCurrentUser());
-    logEntry.setSelite(selite);
-    logEntry.setMuutos(muutos);
-    muokattuJonosija.getLogEntries().add(logEntry);
   }
 
   private boolean isOPH() {
