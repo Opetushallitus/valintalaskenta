@@ -59,6 +59,9 @@ public class Valintatapajono {
   @OneToMany(mappedBy = "valintatapajono")
   private List<Jonosija> jonosijat;
 
+  @ManyToOne
+  private Valinnanvaihe valinnanVaihe;
+
   @Column
   private Long sijoitteluajoId;
 
@@ -187,5 +190,13 @@ public class Valintatapajono {
 
   public void setSijoitteluajoId(Long sijoitteluajoId) {
     this.sijoitteluajoId = sijoitteluajoId;
+  }
+
+  public Valinnanvaihe getValinnanVaihe() {
+    return valinnanVaihe;
+  }
+
+  public void setValinnanVaihe(Valinnanvaihe valinnanVaihe) {
+    this.valinnanVaihe = valinnanVaihe;
   }
 }

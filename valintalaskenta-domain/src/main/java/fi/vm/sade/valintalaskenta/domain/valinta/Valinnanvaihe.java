@@ -37,10 +37,10 @@ public class Valinnanvaihe {
   @Column
   private String nimi;
 
-  @OneToMany(mappedBy = "valinnanvaihe")
+  @OneToMany(mappedBy = "valinnanVaihe")
   private List<Valintatapajono> valintatapajonot = new ArrayList<>();
 
-  @OneToMany(mappedBy = "valinnanvaihe")
+  @OneToMany(mappedBy = "valinnanVaihe")
   private List<ValintakoeValinnanvaihe> valintakoeValinnanvaiheet = new ArrayList<>();
 
   @PrePersist

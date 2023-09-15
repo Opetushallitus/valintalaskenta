@@ -18,10 +18,6 @@ import org.springframework.stereotype.Repository;
 public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
   private static final Logger LOGGER = LoggerFactory.getLogger(ValinnanvaiheDAOImpl.class);
 
-
-  @Qualifier("LaskentaAuditLog")
-  @Autowired private LaskentaAuditLog auditLog;
-
   @Override
   public List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid) {
     return null;

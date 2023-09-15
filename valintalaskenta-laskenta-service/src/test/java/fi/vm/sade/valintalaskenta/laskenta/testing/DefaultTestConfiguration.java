@@ -11,27 +11,32 @@ import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluRe
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
+import fi.vm.sade.valintalaskenta.laskenta.service.impl.ValintalaskentaServiceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogMock;
 import io.swagger.v3.oas.models.OpenAPI;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.cas.authentication.CasAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.stereotype.Component;
 
-@Configuration
-public class TestConfiguration extends WebSecurityConfigurerAdapter {
+@TestConfiguration
+public class DefaultTestConfiguration {
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.headers().disable().csrf().disable().authorizeHttpRequests().anyRequest().permitAll();
+    return http.build();
   }
 
   @Bean
@@ -89,33 +94,40 @@ public class TestConfiguration extends WebSecurityConfigurerAdapter {
     return new TestApp.ApplicationContextGetter();
   }
 
-  @Bean
-  public ValiSijoitteluResource mockValiSijoitteluResource() {
-    return Mockito.mock(ValiSijoitteluResource.class);
-  }
-
-  @Bean
-  public ErillisSijoitteluResource mockErillisSijoitteluResource() {
-    return Mockito.mock(ErillisSijoitteluResource.class);
-  }
-
-  @Bean
-  public ValintaperusteetValintatapajonoResource mockValintaperusteetValintatapajonoResource() {
-    return Mockito.mock(ValintaperusteetValintatapajonoResource.class);
-  }
-
+  @Primary
   @Bean
   public ValintalaskentaService mockValintalaskentaService() {
     return Mockito.mock(ValintalaskentaService.class);
   }
 
+  @Primary
+  @Bean
+  public ValiSijoitteluResource mockValiSijoitteluResource() {
+    return Mockito.mock(ValiSijoitteluResource.class);
+  }
+
+  @Primary
+  @Bean
+  public ErillisSijoitteluResource mockErillisSijoitteluResource() {
+    return Mockito.mock(ErillisSijoitteluResource.class);
+  }
+
+  @Primary
+  @Bean
+  public ValintaperusteetValintatapajonoResource mockValintaperusteetValintatapajonoResource() {
+    return Mockito.mock(ValintaperusteetValintatapajonoResource.class);
+  }
+
+  @Primary
   @Bean
   public ValisijoitteluKasittelija mockValisijoitteluKasittelija() {
     return Mockito.mock(ValisijoitteluKasittelija.class);
   }
 
+  @Primary
   @Bean
   public LaskentaAuditLogMock laskentaAuditLogMock() {
     return new LaskentaAuditLogMock();
   }
+
 }

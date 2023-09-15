@@ -1,16 +1,14 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Entity(name="HakijaRyhma")
+@Entity(name="Hakijaryhma")
 public class Hakijaryhma {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
 
   @Column
@@ -45,7 +43,7 @@ public class Hakijaryhma {
   private boolean kaytetaanRyhmaanKuuluvia;
 
   @Column
-  private String hakijaryhmatyyppikoodiUri;
+  private String hakijaryhmatyyppiKoodiuri;
 
   @Column
   private String valintatapajonoOid;
@@ -159,12 +157,12 @@ public class Hakijaryhma {
     this.jonosijat = jonosijat;
   }
 
-  public String getHakijaryhmatyyppikoodiUri() {
-    return hakijaryhmatyyppikoodiUri;
+  public String getHakijaryhmatyyppiKoodiuri() {
+    return hakijaryhmatyyppiKoodiuri;
   }
 
-  public void setHakijaryhmatyyppikoodiUri(String hakijaryhmatyyppikoodiUri) {
-    this.hakijaryhmatyyppikoodiUri = hakijaryhmatyyppikoodiUri;
+  public void setHakijaryhmatyyppiKoodiuri(String hakijaryhmatyyppikoodiUri) {
+    this.hakijaryhmatyyppiKoodiuri = hakijaryhmatyyppikoodiUri;
   }
 
   public void setId(UUID id) {

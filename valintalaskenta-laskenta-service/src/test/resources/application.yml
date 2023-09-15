@@ -4,10 +4,9 @@ spring:
   profiles:
     active: dev
   datasource:
-    url: jdbc:postgresql://localhost:5432/valintalaskentadb
-    username: oph
-    password:
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:tc:postgresql:15.4:///test_database
+    username: user
+    password: password
 
 springdoc:
   show-actuator: false
@@ -30,9 +29,38 @@ management:
       connectionpool:
         enabled: false
 
+root:
+  organisaatio:
+    oid: 123.21.23.424
+
+valintalaskenta-laskenta-service:
+  organisaatio-service:
+    url: ""
+
 host:
   host-cas: localhost
   host-virkailija: localhost
+
+web:
+  url:
+    cas: ""
+
+cas:
+  service:
+    valintaperusteet-service: ""
+    sijoittelu-service: ""
+
+valintalaskentakoostepalvelu:
+  app:
+    username:
+      to:
+        sijoittelu: username
+    password:
+      to:
+        sijoittelu: password
+  sijoittelu:
+    rest:
+      url:
 
 cas-service:
   service: http://localhost:${server.port}/valintalaskenta-laskenta-service

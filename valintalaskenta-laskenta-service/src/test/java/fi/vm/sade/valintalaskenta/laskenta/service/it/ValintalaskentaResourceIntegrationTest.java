@@ -273,12 +273,12 @@ public class ValintalaskentaResourceIntegrationTest {
     valisijoiteltavatJonotHakukohteittain.put(
         hakukohdeOidJossaOmaKoe, Collections.singletonList("14871499108842038936225826786200"));
     Mockito.when(
-            mockValintatapajonoResource.findKopiot(org.mockito.Matchers.anyListOf(String.class)))
+            mockValintatapajonoResource.findKopiot(org.mockito.ArgumentMatchers.anyList()))
         .thenReturn(valisijoiteltavatJonotHakukohteittain);
     Mockito.when(
             mockValisijoitteluResource.sijoittele(
-                org.mockito.Matchers.eq(hakuOid),
-                org.mockito.Matchers.any(ValisijoitteluDTO.class)))
+                org.mockito.ArgumentMatchers.eq(hakuOid),
+                org.mockito.ArgumentMatchers.any(ValisijoitteluDTO.class)))
         .thenReturn(
             readJsonFromSamePackage(
                 getClass(),

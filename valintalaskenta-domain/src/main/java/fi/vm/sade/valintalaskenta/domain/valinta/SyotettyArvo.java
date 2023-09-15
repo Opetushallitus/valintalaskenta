@@ -1,5 +1,8 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import org.hibernate.annotations.TypeDef;
+
+
 public class SyotettyArvo {
   private String tunniste;
   private String arvo;

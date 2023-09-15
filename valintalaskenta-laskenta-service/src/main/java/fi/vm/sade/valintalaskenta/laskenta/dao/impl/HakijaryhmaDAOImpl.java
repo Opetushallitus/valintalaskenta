@@ -7,28 +7,52 @@ import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.laskenta.dao.HakijaryhmaDAO;
+import fi.vm.sade.valintalaskenta.laskenta.dao.repository.HakijaryhmaRepository;
 import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.hibernate.Session;
+import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
+
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
+
+import static fi.vm.sade.valintalaskenta.laskenta.dao.QueryUtil.*;
+import static org.jooq.impl.DSL.table;
+import static org.jooq.impl.DSL.*;
+import org.jooq.*;
+import org.jooq.impl.*;
 
 @Repository("hakijaryhmaDAO")
 public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
   private static final Logger LOGGER = LoggerFactory.getLogger(HakijaryhmaDAOImpl.class);
 
-  @Qualifier("LaskentaAuditLog")
   @Autowired
   private LaskentaAuditLog auditLog;
 
+  @Autowired
+  private HakijaryhmaRepository repository;
+
+  @Autowired
+  private EntityManager em;
+
   @Override
   public Optional<Hakijaryhma> haeHakijaryhma(String hakijaryhmaOid) {
-    return Optional.empty();
+    List<Hakijaryhma> result = jooqQuery(em, ctx -> ctx.select()
+            .from(table("Hakijaryhma"))
+            //.join(table("Jonosija"))
+            //.on(field("Jonosija.hakijaryhma").eq(field("Hakijaryhma.id")))
+            .where(field("Hakijaryhma.hakijaryhma_oid").eq(hakijaryhmaOid)),
+            Hakijaryhma.class);
+    return Optional.ofNullable(result.get(0));
   }
 
   @Override
@@ -37,6 +61,7 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
   }
 
   @Override
+  @Transactional
   public void create(Hakijaryhma hakijaryhma, User auditUser) {
     saveJonosijat(hakijaryhma, auditUser);
     auditLog.log(
@@ -44,9 +69,9 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
         auditUser,
         ValintaperusteetOperation.HAKIJARYHMA_PAIVITYS,
         ValintaResource.HAKIJARYHMA,
-        hakijaryhma.getHakijaryhmatyyppikoodiUri(),
+        hakijaryhma.getHakijaryhmatyyppiKoodiuri(),
         Changes.addedDto(hakijaryhma));
-    // datastore.save(hakijaryhma);
+    repository.save(hakijaryhma);
   }
 
   @Override

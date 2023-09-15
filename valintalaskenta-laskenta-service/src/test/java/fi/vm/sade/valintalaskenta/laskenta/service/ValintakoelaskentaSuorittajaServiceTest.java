@@ -5,13 +5,12 @@ import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakuk
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakukohdeValintakoeData;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteetJaValintakoeValinnanvaihe;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.argThat;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
 import fi.vm.sade.service.valintaperusteet.dto.HakukohteenValintaperusteDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
@@ -50,7 +49,6 @@ import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
 import org.springframework.test.util.ReflectionTestUtils;
 
 /** User: wuoti Date: 3.5.2013 Time: 12.00 */
@@ -272,30 +270,30 @@ public class ValintakoelaskentaSuorittajaServiceTest {
             valintakoetunniste);
 
     when(valinnanvaiheDAOMock.haeEdeltavaValinnanvaihe(
-            Matchers.any(), Matchers.eq(hakukohdeOid1), Matchers.eq(valinnanVaiheJarjestysluku1)))
+            any(), eq(hakukohdeOid1), eq(valinnanVaiheJarjestysluku1)))
         .thenReturn(null);
     when(valinnanvaiheDAOMock.haeEdeltavaValinnanvaihe(
-            Matchers.any(), Matchers.eq(hakukohdeOid2), Matchers.eq(valinnanVaiheJarjestysluku2)))
+            any(), eq(hakukohdeOid2), eq(valinnanVaiheJarjestysluku2)))
         .thenReturn(null);
 
     when(valintakoeOsallistuminenDAOMock.haeEdeltavaValinnanvaihe(
-            Matchers.eq(hakuOid),
-            Matchers.eq(hakukohdeOid1),
-            Matchers.eq(valinnanVaiheJarjestysluku1)))
+            eq(hakuOid),
+            eq(hakukohdeOid1),
+            eq(valinnanVaiheJarjestysluku1)))
         .thenReturn(new ValintakoeOsallistuminen());
     when(valintakoeOsallistuminenDAOMock.haeEdeltavaValinnanvaihe(
-            Matchers.eq(hakuOid),
-            Matchers.eq(hakukohdeOid2),
-            Matchers.eq(valinnanVaiheJarjestysluku2)))
+            eq(hakuOid),
+            eq(hakukohdeOid2),
+            eq(valinnanVaiheJarjestysluku2)))
         .thenReturn(new ValintakoeOsallistuminen());
 
     Valinnanvaihe viimeisin1 = new Valinnanvaihe();
     Valinnanvaihe viimeisin2 = new Valinnanvaihe();
     when(valinnanvaiheDAOMock.haeViimeisinValinnanvaihe(
-            Matchers.any(), Matchers.eq(hakukohdeOid1), Matchers.eq(valinnanVaiheJarjestysluku1)))
+            any(), eq(hakukohdeOid1), eq(valinnanVaiheJarjestysluku1)))
         .thenReturn(viimeisin1);
     when(valinnanvaiheDAOMock.haeViimeisinValinnanvaihe(
-            Matchers.any(), Matchers.eq(hakukohdeOid2), Matchers.eq(valinnanVaiheJarjestysluku2)))
+            any(), eq(hakukohdeOid2), eq(valinnanVaiheJarjestysluku2)))
         .thenReturn(viimeisin2);
 
     final Map<String, String> hyvaksyttavissaSelite = new HashMap<>();
@@ -309,10 +307,10 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     final TilaJaSelite ts1 = new TilaJaSelite(JarjestyskriteerituloksenTila.VIRHE, virheSelite);
 
     when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(
-            Matchers.any(), Matchers.any(), Matchers.eq(viimeisin1), any(), any()))
+            any(), any(), eq(viimeisin1), any(), any()))
         .thenReturn(ts0);
     when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(
-            Matchers.any(), Matchers.any(), Matchers.eq(viimeisin2), any(), any()))
+            any(), any(), eq(viimeisin2), any(), any()))
         .thenReturn(ts1);
 
     final OsallistuminenTulos osallistuu1 = new OsallistuminenTulos();
@@ -322,11 +320,11 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     osallistuu2.setOsallistuminen(Osallistuminen.OSALLISTUU);
 
     when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(
-            argThat(hasOid(hakukohdeOid1)), Matchers.any(), Matchers.any()))
+            argThat(hasOid(hakukohdeOid1)), any(), any()))
         .thenReturn(osallistuu1);
 
     when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(
-            argThat(hasOid(hakukohdeOid2)), Matchers.any(), Matchers.any()))
+            argThat(hasOid(hakukohdeOid2)), any(), any()))
         .thenReturn(osallistuu2);
 
     when(valintakoeOsallistuminenDAOMock.readByHakuOidAndHakemusOid(anyString(), anyString()))
@@ -411,17 +409,17 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     final TilaJaSelite ts1 = new TilaJaSelite(JarjestyskriteerituloksenTila.VIRHE, virheSelite);
 
     when(valinnanvaiheDAOMock.haeEdeltavaValinnanvaihe(
-            Matchers.any(), Matchers.eq(hakukohdeOid1), Matchers.eq(valinnanVaiheJarjestysluku1)))
+            any(), eq(hakukohdeOid1), eq(valinnanVaiheJarjestysluku1)))
         .thenReturn(v0);
     when(valinnanvaiheDAOMock.haeEdeltavaValinnanvaihe(
-            Matchers.any(), Matchers.eq(hakukohdeOid2), Matchers.eq(valinnanVaiheJarjestysluku2)))
+            any(), eq(hakukohdeOid2), eq(valinnanVaiheJarjestysluku2)))
         .thenReturn(v1);
 
     when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(
-            Matchers.any(), Matchers.any(), Matchers.eq(v0), any(), any()))
+            any(), any(), eq(v0), any(), any()))
         .thenReturn(ts0);
     when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(
-            Matchers.any(), Matchers.any(), Matchers.eq(v1), any(), any()))
+            any(), any(), eq(v1), any(), any()))
         .thenReturn(ts1);
 
     final OsallistuminenTulos osallistuu1 = new OsallistuminenTulos();
@@ -431,11 +429,11 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     osallistuu2.setOsallistuminen(Osallistuminen.OSALLISTUU);
 
     when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(
-            argThat(hasOid(hakukohdeOid1)), Matchers.any(), Matchers.any()))
+            argThat(hasOid(hakukohdeOid1)), any(), any()))
         .thenReturn(osallistuu1);
 
     when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(
-            argThat(hasOid(hakukohdeOid2)), Matchers.any(), Matchers.any()))
+            argThat(hasOid(hakukohdeOid2)), any(), any()))
         .thenReturn(osallistuu2);
 
     when(valintakoeOsallistuminenDAOMock.readByHakuOidAndHakemusOid(anyString(), anyString()))
@@ -512,11 +510,11 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     osallistuu2.setOsallistuminen(Osallistuminen.OSALLISTUU);
 
     when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(
-            argThat(hasOid(hakukohdeOid1)), Matchers.any(), Matchers.any()))
+            argThat(hasOid(hakukohdeOid1)), any(), any()))
         .thenReturn(osallistuu1);
 
     when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(
-            argThat(hasOid(hakukohdeOid2)), Matchers.any(), Matchers.any()))
+            argThat(hasOid(hakukohdeOid2)), any(), any()))
         .thenReturn(osallistuu2);
 
     when(valintakoeOsallistuminenDAOMock.readByHakuOidAndHakemusOid(anyString(), anyString()))

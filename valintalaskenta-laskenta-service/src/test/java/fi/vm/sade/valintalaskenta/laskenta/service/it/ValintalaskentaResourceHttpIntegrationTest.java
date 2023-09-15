@@ -2,9 +2,7 @@ package fi.vm.sade.valintalaskenta.laskenta.service.it;
 
 import static org.asynchttpclient.Dsl.asyncHttpClient;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyListOf;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
@@ -25,7 +23,7 @@ import org.asynchttpclient.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.springframework.context.ApplicationContext;
 
 public class ValintalaskentaResourceHttpIntegrationTest {
@@ -51,10 +49,10 @@ public class ValintalaskentaResourceHttpIntegrationTest {
     mockValisijoiteltavatJonotCall();
     when(getBean(ValintalaskentaService.class)
             .laskeKaikki(
-                anyListOf(HakemusDTO.class),
-                anyListOf(ValintaperusteetDTO.class),
-                anyListOf(ValintaperusteetHakijaryhmaDTO.class),
-                Matchers.eq(hakukohdeOid),
+                anyList(),
+                    anyList(),
+                    anyList(),
+                    ArgumentMatchers.eq(hakukohdeOid),
                 any(String.class),
                 anyBoolean()))
         .thenReturn("Onnistui!");
@@ -73,10 +71,10 @@ public class ValintalaskentaResourceHttpIntegrationTest {
     mockValisijoiteltavatJonotCall();
     when(getBean(ValintalaskentaService.class)
             .laskeKaikki(
-                anyListOf(HakemusDTO.class),
-                anyListOf(ValintaperusteetDTO.class),
-                anyListOf(ValintaperusteetHakijaryhmaDTO.class),
-                Matchers.eq(hakukohdeOid),
+                    anyList(),
+                    anyList(),
+                    anyList(),
+                    ArgumentMatchers.eq(hakukohdeOid),
                 any(String.class),
                 anyBoolean()))
         .thenThrow(new RuntimeException(getClass().getSimpleName() + "-failure"));
@@ -95,10 +93,10 @@ public class ValintalaskentaResourceHttpIntegrationTest {
     mockValisijoiteltavatJonotCall();
     when(getBean(ValintalaskentaService.class)
             .laskeKaikki(
-                anyListOf(HakemusDTO.class),
-                anyListOf(ValintaperusteetDTO.class),
-                anyListOf(ValintaperusteetHakijaryhmaDTO.class),
-                Matchers.eq(hakukohdeOid),
+                    anyList(),
+                    anyList(),
+                    anyList(),
+                    ArgumentMatchers.eq(hakukohdeOid),
                 any(String.class),
                 anyBoolean()))
         .thenAnswer(
@@ -124,7 +122,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
   @Test
   public void crashingLaskenta() throws InterruptedException, ExecutionException {
     when(getBean(ValisijoitteluKasittelija.class)
-            .valisijoiteltavatJonot(anyListOf(LaskeDTO.class), any()))
+            .valisijoiteltavatJonot(anyList(), any()))
         .thenThrow(
             new RuntimeException(
                 ValisijoitteluKasittelija.class.getSimpleName()
@@ -153,7 +151,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
 
   private void mockValisijoiteltavatJonotCall() {
     when(getBean(ValisijoitteluKasittelija.class)
-            .valisijoiteltavatJonot(anyListOf(LaskeDTO.class), any()))
+            .valisijoiteltavatJonot(anyList(), any()))
         .thenReturn(new ValisijoiteltavatJonot(Collections.emptySet(), Collections.emptyMap()));
   }
 

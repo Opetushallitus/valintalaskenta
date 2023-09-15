@@ -727,7 +727,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     hakijaryhma.setTarkkaKiintio(dto.isTarkkaKiintio());
     hakijaryhma.setValintatapajonoOid(dto.getValintatapajonoOid());
     if (dto.getHakijaryhmatyyppikoodi() != null) {
-      hakijaryhma.setHakijaryhmatyyppikoodiUri(dto.getHakijaryhmatyyppikoodi().getUri());
+      hakijaryhma.setHakijaryhmatyyppiKoodiuri(dto.getHakijaryhmatyyppikoodi().getUri());
     }
 
     poistaVanhatHistoriat(hakijaryhma);

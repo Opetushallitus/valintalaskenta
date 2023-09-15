@@ -1,6 +1,8 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,6 +12,7 @@ import java.util.List;
 import javax.persistence.*;
 
 @Entity(name = "Jonosija")
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class Jonosija {
 
   @Id
@@ -38,6 +41,9 @@ public class Jonosija {
 
   @ManyToOne
   private Hakijaryhma hakijaryhma;
+
+  @ManyToOne
+  private Valintatapajono valintatapajono;
 
   @OneToMany(mappedBy = "jonosija")
   private List<Jarjestyskriteeritulos> jarjestyskriteeritulokset =
@@ -154,5 +160,13 @@ public class Jonosija {
 
   public void setHakijaryhma(Hakijaryhma hakijaryhma) {
     this.hakijaryhma = hakijaryhma;
+  }
+
+  public Valintatapajono getValintatapajono() {
+    return valintatapajono;
+  }
+
+  public void setValintatapajono(Valintatapajono valintatapajono) {
+    this.valintatapajono = valintatapajono;
   }
 }
