@@ -3,10 +3,7 @@ package fi.vm.sade.valintalaskenta.domain.valintakoe;
 import fi.vm.sade.service.valintaperusteet.dto.model.Koekutsu;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.Map;
 import java.util.UUID;
 
@@ -14,6 +11,7 @@ import java.util.UUID;
 public class Valintakoe {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
 
   @Column

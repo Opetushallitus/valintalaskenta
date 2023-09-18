@@ -1,13 +1,14 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Table(name = "HarkinnanvarainenHyvaksyminen")
 public class HarkinnanvarainenHyvaksyminen {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
+  private UUID id;
 
   @Column
   private HarkinnanvaraisuusTila harkinnanvaraisuusTila;
@@ -51,5 +52,13 @@ public class HarkinnanvarainenHyvaksyminen {
 
   public void setHakuOid(String hakuOid) {
     this.hakuOid = hakuOid;
+  }
+
+  public UUID getId() {
+    return id;
+  }
+
+  public void setId(UUID id) {
+    this.id = id;
   }
 }

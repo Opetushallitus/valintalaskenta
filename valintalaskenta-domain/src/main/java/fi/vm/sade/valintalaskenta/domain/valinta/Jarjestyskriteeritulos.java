@@ -6,15 +6,13 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 public class Jarjestyskriteeritulos {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
 
   @Column

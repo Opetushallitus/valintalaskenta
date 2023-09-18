@@ -4,10 +4,7 @@ import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import javax.persistence.*;
 
@@ -16,7 +13,8 @@ import javax.persistence.*;
 public class Jonosija {
 
   @Id
-  private String id;
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private UUID id;
 
   @Column
   private String hakemusOid;
@@ -57,7 +55,7 @@ public class Jonosija {
   @Column(columnDefinition = "jsonb")
   private List<FunktioTulos> funktioTulokset = new ArrayList<FunktioTulos>();
 
-  public String getId() {
+  public UUID getId() {
     return this.id;
   }
 

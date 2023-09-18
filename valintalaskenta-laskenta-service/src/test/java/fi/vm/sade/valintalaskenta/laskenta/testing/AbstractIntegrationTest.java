@@ -21,7 +21,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
+                args = {"--add-opens=java.base/java.lang=ALL-UNNAMED"})
 //@Import(DefaultTestConfiguration.class)
 //@ActiveProfiles("test")
 //@ContextConfiguration(locations = "classpath:application-context-test.xml")

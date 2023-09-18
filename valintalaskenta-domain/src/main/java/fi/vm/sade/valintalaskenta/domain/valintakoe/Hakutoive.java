@@ -12,6 +12,7 @@ import javax.persistence.*;
 public class Hakutoive {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
 
   @Column

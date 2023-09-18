@@ -13,6 +13,7 @@ import javax.persistence.*;
 public class ValintakoeValinnanvaihe {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
 
   @ManyToOne

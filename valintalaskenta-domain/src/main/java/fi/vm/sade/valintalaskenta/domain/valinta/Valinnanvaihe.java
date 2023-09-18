@@ -14,6 +14,7 @@ public class Valinnanvaihe {
   private static final Logger LOGGER = LoggerFactory.getLogger(Valinnanvaihe.class);
 
   @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
 
   @Column

@@ -13,6 +13,7 @@ import javax.persistence.*;
 @Table(name = "valintakoeosallistuminen")
 public class ValintakoeOsallistuminen {
   @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
 
   @Column
