@@ -8,10 +8,12 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.laskenta.dao.HakijaryhmaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.HakijaryhmaRepository;
+import fi.vm.sade.valintalaskenta.laskenta.dao.repository.JonosijaRepository;
 import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.hibernate.Session;
@@ -42,17 +44,20 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
   private HakijaryhmaRepository repository;
 
   @Autowired
+  private JonosijaRepository jonosijaRepository;
+
+  @Autowired
   private EntityManager em;
 
   @Override
   public Optional<Hakijaryhma> haeHakijaryhma(String hakijaryhmaOid) {
-    List<Hakijaryhma> result = jooqQuery(em, ctx -> ctx.select()
+    /*List<Hakijaryhma> result = jooqQuery(em, ctx -> ctx.select()
             .from(table("Hakijaryhma"))
             //.join(table("Jonosija"))
             //.on(field("Jonosija.hakijaryhma").eq(field("Hakijaryhma.id")))
             .where(field("Hakijaryhma.hakijaryhma_oid").eq(hakijaryhmaOid)),
-            Hakijaryhma.class);
-    return Optional.ofNullable(result.get(0));
+            Hakijaryhma.class);*/
+    return repository.findByHakijaryhmaOid(hakijaryhmaOid);
   }
 
   @Override
@@ -77,26 +82,28 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
   @Override
   public void createWithoutAuditLogging(Hakijaryhma hakijaryhma) {
     saveJonosijatWithoutAuditLogging(hakijaryhma);
-    // datastore.save(hakijaryhma);
+    repository.save(hakijaryhma);
   }
 
   @Override
+  @Transactional
   public void poistaHakijaryhma(Hakijaryhma hakijaryhma) {
-    List<String> jonosijaIdt = hakijaryhma.getJonosijaIdt();
+    List<UUID> jonosijaIdt = hakijaryhma.getJonosijaIdt();
     if (!jonosijaIdt.isEmpty()) {
-      // datastore.delete(datastore.createQuery(Jonosija.class).field("_id").in(jonosijaIdt));
+      jonosijaRepository.deleteAllById(jonosijaIdt);
     }
-    // datastore.delete(hakijaryhma);
+    repository.delete(hakijaryhma);
   }
 
   private void saveJonosijat(Hakijaryhma ryhma, User auditUser) {
     ryhma.setJonosijat(
         ryhma.getJonosijat().stream()
-            .map(jonosija -> saveJonosija(new Jonosija(), auditUser))
+            .map(jonosija -> saveJonosija(jonosija, auditUser))
             .collect(Collectors.toList()));
   }
 
   private void saveJonosijatWithoutAuditLogging(Hakijaryhma ryhma) {
+    jonosijaRepository.saveAll(ryhma.getJonosijat());
     /**
      * ryhma.setJonosijaIdt( ryhma.getJonosijat().stream() .map(jonosija -> (ObjectId)
      * saveJonosijaWithoutAuditLogging(jonosija).getId()) .collect(Collectors.toList()));*
@@ -111,10 +118,10 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
         ValintaResource.JONOSIJA,
         jonosija.getHakemusOid(),
         Changes.addedDto(jonosija));
-    return jonosija; // datastore.save(jonosija);
+    return jonosijaRepository.save(jonosija);
   }
 
   private Jonosija saveJonosijaWithoutAuditLogging(Jonosija jonosija) {
-    return jonosija; // datastore.save(jonosija);
+    return jonosijaRepository.save(jonosija);
   }
 }

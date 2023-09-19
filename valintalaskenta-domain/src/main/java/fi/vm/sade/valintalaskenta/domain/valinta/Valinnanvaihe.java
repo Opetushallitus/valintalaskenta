@@ -38,7 +38,7 @@ public class Valinnanvaihe {
   @Column
   private String nimi;
 
-  @OneToMany(mappedBy = "valinnanVaihe")
+  @OneToMany(mappedBy = "valinnanvaihe")
   private List<Valintatapajono> valintatapajonot = new ArrayList<>();
 
   @OneToMany(mappedBy = "valinnanVaihe")

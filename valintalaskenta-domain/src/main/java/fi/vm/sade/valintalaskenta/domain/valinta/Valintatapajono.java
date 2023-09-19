@@ -61,7 +61,7 @@ public class Valintatapajono {
   private List<Jonosija> jonosijat;
 
   @ManyToOne
-  private Valinnanvaihe valinnanVaihe;
+  private Valinnanvaihe valinnanvaihe;
 
   @Column
   private Long sijoitteluajoId;
@@ -194,10 +194,10 @@ public class Valintatapajono {
   }
 
   public Valinnanvaihe getValinnanVaihe() {
-    return valinnanVaihe;
+    return valinnanvaihe;
   }
 
   public void setValinnanVaihe(Valinnanvaihe valinnanVaihe) {
-    this.valinnanVaihe = valinnanVaihe;
+    this.valinnanvaihe = valinnanVaihe;
   }
 }

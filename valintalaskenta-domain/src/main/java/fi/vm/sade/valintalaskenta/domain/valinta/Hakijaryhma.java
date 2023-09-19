@@ -48,7 +48,7 @@ public class Hakijaryhma {
   @Column
   private String valintatapajonoOid;
 
-  @OneToMany(mappedBy = "hakijaryhma")
+  @OneToMany(mappedBy = "hakijaryhma", fetch = FetchType.EAGER)
   private List<Jonosija> jonosijat = new ArrayList<>();
 
   public Date getCreatedAt() {
@@ -139,7 +139,7 @@ public class Hakijaryhma {
     this.valintatapajonoOid = valintatapajonoOid;
   }
 
-  public List<String> getJonosijaIdt() {
+  public List<UUID> getJonosijaIdt() {
     return jonosijat == null ? new ArrayList<>() : jonosijat.stream().map(Jonosija::getId).collect(Collectors.toList());
   }
 

@@ -42,8 +42,8 @@ public class HakijaryhmaDAOTest extends AbstractIntegrationTest {
     hakijaryhmaDAO.create(hakijaryhma, auditUser);
     Hakijaryhma savedHakijaryhma = hakijaryhmaDAO.haeHakijaryhma("uusiHakijaryhmaOid").get();
     assertEquals(savedHakijaryhma.getHakijaryhmaOid(), "uusiHakijaryhmaOid");
-    //assertThat(savedHakijaryhma.getJonosijat(), Matchers.hasSize(2));
-    //assertThat(savedHakijaryhma.getJonosijaIdt(), Matchers.hasSize(2));
+    assertThat(savedHakijaryhma.getJonosijat(), Matchers.hasSize(2));
+    assertThat(savedHakijaryhma.getJonosijaIdt(), Matchers.hasSize(2));
   }
 
   @Test

@@ -125,7 +125,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     return vaihe.getId(); // datastore.save(vaihe);
   }
 
-  private String saveJonosija(Jonosija jonosija) {
+  private UUID saveJonosija(Jonosija jonosija) {
     return jonosija.getId(); // datastore.save(jonosija);
   }
 }

@@ -152,7 +152,7 @@ public class ValintalaskentaDbDumpingTest {
                             id -> {
                               if (sailytettavatJonosijat.stream()
                                   .anyMatch(sailytettava -> sailytettava.getId().equals(id))) {
-                                sailytettavatJonosijaIdt.add(id);
+                                sailytettavatJonosijaIdt.add(id.toString());
                               }
                             });
                     jono.setJonosijat(sailytettavatJonosijat);
