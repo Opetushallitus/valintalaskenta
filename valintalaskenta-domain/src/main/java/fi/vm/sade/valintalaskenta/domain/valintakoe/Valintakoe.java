@@ -2,62 +2,44 @@ package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
 import fi.vm.sade.service.valintaperusteet.dto.model.Koekutsu;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.springframework.data.annotation.Id;
 
-import javax.persistence.*;
 import java.util.Map;
 import java.util.UUID;
 
-@Entity(name = "Valintakoe")
 public class Valintakoe {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
 
-  @Column
   private String valintakoeOid;
 
-  @Column
   private String valintakoeTunniste;
 
-  @Column
   private String nimi;
   private boolean aktiivinen;
 
-  @Column
   private Osallistuminen osallistuminen;
 
-  @Column
   private boolean lahetetaankoKoekutsut;
 
-  @Column
   private Integer kutsuttavienMaara;
 
-  @Column
   private Koekutsu kutsunKohde = Koekutsu.YLIN_TOIVE;
 
-  @Column
   private String kutsunKohdeAvain;
 
-  @Column
   private String kuvausFI;
-
-  @Column
   private String kuvausEN;
 
-  @Column
   private String kuvausSV;
 
-  @Column
   private String laskentaTila;
 
-  @Column
   private Boolean laskentaTulos;
 
-  @Column
   private String tekninenKuvaus;
 
-  @ManyToOne
   private ValintakoeValinnanvaihe valintakoeValinnanvaihe;
 
   public boolean isAktiivinen() {

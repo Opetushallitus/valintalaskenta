@@ -6,29 +6,22 @@ import java.util.UUID;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.springframework.data.annotation.Id;
 
-import javax.persistence.*;
 
-@Entity(name = "ValintakoeValinnanvaihe")
 public class ValintakoeValinnanvaihe {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
 
-  @ManyToOne
   private Valinnanvaihe valinnanVaihe;
 
-  @Column
   private Integer valinnanVaiheJarjestysluku;
 
-  @Column
   private Integer laskettavaJarjestysluku;
 
-  @ManyToOne
   private Hakutoive hakutoive;
 
-  @OneToMany(mappedBy = "valintakoeValinnanvaihe")
   private List<Valintakoe> valintakokeet = new ArrayList<>();
 
   public Valinnanvaihe getValinnanVaihe() {

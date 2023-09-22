@@ -1,38 +1,29 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import org.springframework.data.annotation.Id;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.*;
 
-@Entity
-@Table(name = "muokattujonosija")
 public class MuokattuJonosija {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
 
-  @Column
   private String hakukohdeOid;
 
-  @Column
   private String hakuOid;
 
-  @Column
   private String valintatapajonoOid;
 
-  @Column
   private String hakemusOid;
 
-  @Column
   private Integer prioriteetti; // hakutoive
 
-  @OneToMany(mappedBy = "muokattuJonosija")
   private List<Jarjestyskriteeritulos> jarjestyskriteerit = new ArrayList<Jarjestyskriteeritulos>();
 
-  @OneToMany(mappedBy = "muokattuJonosija")
   public List<Jarjestyskriteeritulos> getJarjestyskriteerit() {
     return jarjestyskriteerit;
   }

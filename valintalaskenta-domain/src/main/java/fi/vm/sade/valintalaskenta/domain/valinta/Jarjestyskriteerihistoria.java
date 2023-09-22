@@ -1,8 +1,5 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-
-import javax.persistence.*;
-
 public class Jarjestyskriteerihistoria {
 
   private String id;

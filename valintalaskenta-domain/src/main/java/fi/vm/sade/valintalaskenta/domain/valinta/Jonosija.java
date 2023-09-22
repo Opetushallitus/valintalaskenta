@@ -1,58 +1,38 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
+
+import org.springframework.data.annotation.Id;
 
 import java.util.*;
 
-import javax.persistence.*;
-
-@Entity(name = "Jonosija")
-@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class Jonosija {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
 
-  @Column
   private String hakemusOid;
 
-  @Column
   private String hakijaOid;
 
-  @Column
   private String etunimi;
 
-  @Column
   private String sukunimi;
 
-  @Column
   private int hakutoiveprioriteetti; // hakutoive
 
-  @Column
   private boolean harkinnanvarainen = false;
 
-  @Column
   private boolean hylattyValisijoittelussa = false;
 
-  @ManyToOne
-  private Hakijaryhma hakijaryhma;
+  private HakijaryhmaEntity hakijaryhma;
 
-  @ManyToOne
   private Valintatapajono valintatapajono;
 
-  @OneToMany(mappedBy = "jonosija")
   private List<Jarjestyskriteeritulos> jarjestyskriteeritulokset =
       new ArrayList<Jarjestyskriteeritulos>();
 
-  @Type(type = "jsonb")
-  @Column(columnDefinition = "jsonb")
   private List<SyotettyArvo> syotetytArvot = new ArrayList<SyotettyArvo>();
 
-  @Type(type = "jsonb")
-  @Column(columnDefinition = "jsonb")
   private List<FunktioTulos> funktioTulokset = new ArrayList<FunktioTulos>();
 
   public UUID getId() {
@@ -107,7 +87,6 @@ public class Jonosija {
     this.harkinnanvarainen = harkinnanvarainen;
   }
 
-  @OneToMany(mappedBy = "")
   public List<Jarjestyskriteeritulos> getJarjestyskriteeritulokset() {
     return jarjestyskriteeritulokset;
   }
@@ -116,7 +95,6 @@ public class Jonosija {
     this.jarjestyskriteeritulokset = jarjestyskriteeritulokset;
   }
 
-  @PrePersist
   private void jarjestaJarjestyskriteeritulokset() {
     Collections.sort(
         jarjestyskriteeritulokset,
@@ -152,11 +130,11 @@ public class Jonosija {
     this.hylattyValisijoittelussa = hylattyValisijoittelussa;
   }
 
-  public Hakijaryhma getHakijaryhma() {
+  public HakijaryhmaEntity getHakijaryhma() {
     return hakijaryhma;
   }
 
-  public void setHakijaryhma(Hakijaryhma hakijaryhma) {
+  public void setHakijaryhma(HakijaryhmaEntity hakijaryhma) {
     this.hakijaryhma = hakijaryhma;
   }
 

@@ -1,30 +1,22 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.springframework.data.annotation.Id;
 
-import javax.persistence.*;
 
-@Entity(name = "Hakutoive")
 public class Hakutoive {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
 
-  @Column
   private String hakukohdeOid;
 
-  @Column
   private String laskettavaHakukohdeOid;
 
-  @OneToMany(mappedBy = "hakutoive")
   private List<ValintakoeValinnanvaihe> valintakoeValinnanvaiheet;
-
-  @ManyToOne
   private ValintakoeOsallistuminen valintakoeOsallistuminen;
 
   public String getHakukohdeOid() {

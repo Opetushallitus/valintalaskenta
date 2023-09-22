@@ -4,9 +4,10 @@ import fi.vm.sade.auditlog.Changes;
 import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valinta.sharedutils.ValintaResource;
 import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
+import fi.vm.sade.valintalaskenta.domain.valinta.HakijaryhmaEntity;
 import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
-import fi.vm.sade.valintalaskenta.laskenta.dao.HakijaryhmaDAO;
+import fi.vm.sade.valintalaskenta.laskenta.dao.HakijaryhmaService;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.HakijaryhmaRepository;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.JonosijaRepository;
 import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
@@ -16,58 +17,66 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.hibernate.Session;
-import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
-import static fi.vm.sade.valintalaskenta.laskenta.dao.QueryUtil.*;
-import static org.jooq.impl.DSL.table;
-import static org.jooq.impl.DSL.*;
-import org.jooq.*;
-import org.jooq.impl.*;
+@Service
+public class HakijaryhmaServiceImpl implements HakijaryhmaService {
+  private static final Logger LOGGER = LoggerFactory.getLogger(HakijaryhmaServiceImpl.class);
 
-@Repository("hakijaryhmaDAO")
-public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
-  private static final Logger LOGGER = LoggerFactory.getLogger(HakijaryhmaDAOImpl.class);
+  private final LaskentaAuditLog auditLog;
 
-  @Autowired
-  private LaskentaAuditLog auditLog;
+  private final HakijaryhmaRepository repository;
 
-  @Autowired
-  private HakijaryhmaRepository repository;
+  private final JonosijaRepository jonosijaRepository;
 
-  @Autowired
-  private JonosijaRepository jonosijaRepository;
+  public HakijaryhmaServiceImpl(LaskentaAuditLog auditLog, HakijaryhmaRepository repository, JonosijaRepository jonosijaRepository) {
+    this.auditLog = auditLog;
+    this.repository = repository;
+    this.jonosijaRepository = jonosijaRepository;
+  }
 
-  @Autowired
-  private EntityManager em;
 
   @Override
-  public Optional<Hakijaryhma> haeHakijaryhma(String hakijaryhmaOid) {
+  public Optional<HakijaryhmaEntity> haeHakijaryhma(String hakijaryhmaOid) {
     /*List<Hakijaryhma> result = jooqQuery(em, ctx -> ctx.select()
             .from(table("Hakijaryhma"))
             //.join(table("Jonosija"))
             //.on(field("Jonosija.hakijaryhma").eq(field("Hakijaryhma.id")))
             .where(field("Hakijaryhma.hakijaryhma_oid").eq(hakijaryhmaOid)),
             Hakijaryhma.class);*/
+    return Optional.empty();
+    //return repository.findByHakijaryhmaOid(hakijaryhmaOid);
+  }
+
+  @Override
+  public Optional<Hakijaryhma> haeHakijaryhmaLite(String hakijaryhmaOid) {
     return repository.findByHakijaryhmaOid(hakijaryhmaOid);
   }
 
   @Override
-  public List<Hakijaryhma> haeHakijaryhmat(String hakukohdeOid) {
+  public List<HakijaryhmaEntity> haeHakijaryhmat(String hakukohdeOid) {
     return null;
   }
 
   @Override
-  @Transactional
   public void create(Hakijaryhma hakijaryhma, User auditUser) {
+    auditLog.log(
+            LaskentaAudit.AUDIT,
+            auditUser,
+            ValintaperusteetOperation.HAKIJARYHMA_PAIVITYS,
+            ValintaResource.HAKIJARYHMA,
+            hakijaryhma.hakijaryhmatyyppiKoodiuri,
+            Changes.addedDto(hakijaryhma));
+    repository.save(hakijaryhma);
+  }
+
+  @Override
+  @Transactional
+  public void create(HakijaryhmaEntity hakijaryhma, User auditUser) {
     saveJonosijat(hakijaryhma, auditUser);
     auditLog.log(
         LaskentaAudit.AUDIT,
@@ -76,33 +85,33 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
         ValintaResource.HAKIJARYHMA,
         hakijaryhma.getHakijaryhmatyyppiKoodiuri(),
         Changes.addedDto(hakijaryhma));
-    repository.save(hakijaryhma);
+    //repository.save(hakijaryhma);
   }
 
   @Override
-  public void createWithoutAuditLogging(Hakijaryhma hakijaryhma) {
+  public void createWithoutAuditLogging(HakijaryhmaEntity hakijaryhma) {
     saveJonosijatWithoutAuditLogging(hakijaryhma);
-    repository.save(hakijaryhma);
+    //repository.save(hakijaryhma);
   }
 
   @Override
   @Transactional
-  public void poistaHakijaryhma(Hakijaryhma hakijaryhma) {
+  public void poistaHakijaryhma(HakijaryhmaEntity hakijaryhma) {
     List<UUID> jonosijaIdt = hakijaryhma.getJonosijaIdt();
     if (!jonosijaIdt.isEmpty()) {
       jonosijaRepository.deleteAllById(jonosijaIdt);
     }
-    repository.delete(hakijaryhma);
+   //repository.delete(hakijaryhma);
   }
 
-  private void saveJonosijat(Hakijaryhma ryhma, User auditUser) {
+  private void saveJonosijat(HakijaryhmaEntity ryhma, User auditUser) {
     ryhma.setJonosijat(
         ryhma.getJonosijat().stream()
             .map(jonosija -> saveJonosija(jonosija, auditUser))
             .collect(Collectors.toList()));
   }
 
-  private void saveJonosijatWithoutAuditLogging(Hakijaryhma ryhma) {
+  private void saveJonosijatWithoutAuditLogging(HakijaryhmaEntity ryhma) {
     jonosijaRepository.saveAll(ryhma.getJonosijat());
     /**
      * ryhma.setJonosijaIdt( ryhma.getJonosijat().stream() .map(jonosija -> (ObjectId)

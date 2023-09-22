@@ -1,69 +1,49 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
-import java.util.ArrayList;
+import org.springframework.data.annotation.Id;
+
 import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.*;
 
-@Entity(name = "Valintatapajono")
 public class Valintatapajono {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
 
-  @Column
   private String valintatapajonoOid;
 
-  @Column
   private String nimi;
 
-  @Column
   private int prioriteetti;
 
-  @Column
   private int aloituspaikat;
 
-  /**
-   * Valintaperusteissa ylläpidettävä tieto siitä, onko tätä jonoa ylipäätään tarkoitus sijoitella.
-   */
-  @Column
   private boolean siirretaanSijoitteluun;
 
-  @Column
   private Tasasijasaanto tasasijasaanto;
 
-  @Column
   private Boolean eiVarasijatayttoa;
 
-  @Column
   private Boolean kaikkiEhdonTayttavatHyvaksytaan;
 
-  @Column
   private Boolean kaytetaanValintalaskentaa;
 
-  @Column
   private Boolean poissaOlevaTaytto;
 
   /**
    * Valintalaskennan tuloksissa ylläpidettävä tieto siitä, otetaanko jono mukaan seuraavaan
    * sijoitteluajoon vai ei.
    */
-  @Column
   private Boolean valmisSijoiteltavaksi = true;
 
-  @Column
   private Boolean kaytetaanKokonaispisteita;
 
-  @OneToMany(mappedBy = "valintatapajono")
   private List<Jonosija> jonosijat;
 
-  @ManyToOne
   private Valinnanvaihe valinnanvaihe;
 
-  @Column
   private Long sijoitteluajoId;
 
   public void setId(UUID id) {

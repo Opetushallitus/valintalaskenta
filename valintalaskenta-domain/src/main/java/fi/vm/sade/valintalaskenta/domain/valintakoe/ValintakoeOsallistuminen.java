@@ -6,35 +6,24 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.springframework.data.annotation.Id;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "valintakoeosallistuminen")
 public class ValintakoeOsallistuminen {
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
 
-  @Column
   private String hakuOid;
 
-  @Column
   private String hakemusOid;
 
-  @Column
   private String hakijaOid;
 
-  @Column
   private String etunimi;
 
-  @Column
   private String sukunimi;
 
-  @Column
   private Date createdAt;
 
-  @OneToMany(mappedBy = "valintakoeOsallistuminen")
   private List<Hakutoive> hakutoiveet = new ArrayList<>();
 
   public UUID getId() {
@@ -75,11 +64,6 @@ public class ValintakoeOsallistuminen {
 
   public void setHakutoiveet(List<Hakutoive> hakutoiveet) {
     this.hakutoiveet = hakutoiveet;
-  }
-
-  @PrePersist
-  private void prePersist() {
-    createdAt = new Date();
   }
 
   public Date getCreatedAt() {

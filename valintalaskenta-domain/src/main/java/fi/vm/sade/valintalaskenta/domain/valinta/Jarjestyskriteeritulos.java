@@ -5,44 +5,31 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.springframework.data.annotation.Id;
 
-import javax.persistence.*;
-
-@Entity
 public class Jarjestyskriteeritulos {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
 
-  @Column
   private int prioriteetti;
 
-  @Column
   private BigDecimal arvo;
 
-  @Column
   private JarjestyskriteerituloksenTila tila;
 
-  @Column
   private String kuvausFI;
 
-  @Column
   private String kuvausSV;
 
-  @Column
   private String kuvausEN;
 
-  @Column
   private String nimi;
 
-  @Column
   private String tekninenKuvaus;
 
-  @ManyToOne
   private Jonosija jonosija;
 
-  @ManyToOne
   MuokattuJonosija muokattuJonosija;
 
   public int getPrioriteetti() {

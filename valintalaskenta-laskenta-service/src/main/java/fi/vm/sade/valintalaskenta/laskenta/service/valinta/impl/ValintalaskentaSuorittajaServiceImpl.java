@@ -20,14 +20,14 @@ import fi.vm.sade.service.valintaperusteet.service.validointi.virhe.Laskentakaav
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
-import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
+import fi.vm.sade.valintalaskenta.domain.valinta.HakijaryhmaEntity;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
-import fi.vm.sade.valintalaskenta.laskenta.dao.HakijaryhmaDAO;
+import fi.vm.sade.valintalaskenta.laskenta.dao.HakijaryhmaService;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
@@ -49,7 +49,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
   private final HakemusDTOToHakemusConverter hakemusConverter;
   private final ValinnanvaiheDAO valinnanvaiheDAO;
-  private final HakijaryhmaDAO hakijaryhmaDAO;
+  private final HakijaryhmaService hakijaryhmaDAO;
   private final JarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAO;
   private final HakemuslaskinService hakemuslaskinService;
   private final ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
@@ -60,7 +60,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
   public ValintalaskentaSuorittajaServiceImpl(
       HakemusDTOToHakemusConverter hakemusConverter,
       ValinnanvaiheDAO valinnanvaiheDAO,
-      HakijaryhmaDAO hakijaryhmaDAO,
+      HakijaryhmaService hakijaryhmaDAO,
       JarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAO,
       HakemuslaskinService hakemuslaskinService,
       ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO,
@@ -331,7 +331,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
       Map<String, Hakemukset> hakemuksetHakukohteittain,
       boolean korkeakouluhaku) {
     if (!hakijaryhmat.isEmpty()) {
-      List<Hakijaryhma> vanhatHakijaryhmat = hakijaryhmaDAO.haeHakijaryhmat(hakukohdeOid);
+      List<HakijaryhmaEntity> vanhatHakijaryhmat = hakijaryhmaDAO.haeHakijaryhmat(hakukohdeOid);
       hakijaryhmat.parallelStream()
           .forEach(
               h -> {
@@ -351,7 +351,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                   return;
                 }
 
-                Hakijaryhma hakijaryhma = haeTaiLuoHakijaryhma(h);
+                HakijaryhmaEntity hakijaryhma = haeTaiLuoHakijaryhma(h);
 
                 Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan = new HashMap<>();
                 Map<String, String> hakukohteenValintaperusteet =
@@ -404,7 +404,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                 for (JonosijaJaSyotetytArvot js : jonosijatHakemusOidinMukaan.values()) {
                   hakijaryhma.getJonosijat().add(createJonosija(js));
                 }
-                List<Hakijaryhma> vanhatSamallaOidilla =
+                List<HakijaryhmaEntity> vanhatSamallaOidilla =
                     vanhatHakijaryhmat.stream()
                         .filter(
                             vh -> vh.getHakijaryhmaOid().equals(hakijaryhma.getHakijaryhmaOid()))
@@ -714,8 +714,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             });
   }
 
-  private Hakijaryhma haeTaiLuoHakijaryhma(ValintaperusteetHakijaryhmaDTO dto) {
-    Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma(dto.getOid()).orElse(new Hakijaryhma());
+  private HakijaryhmaEntity haeTaiLuoHakijaryhma(ValintaperusteetHakijaryhmaDTO dto) {
+    HakijaryhmaEntity hakijaryhma = hakijaryhmaDAO.haeHakijaryhma(dto.getOid()).orElse(new HakijaryhmaEntity());
     hakijaryhma.setHakijaryhmaOid(dto.getOid());
     hakijaryhma.setHakukohdeOid(dto.getHakukohdeOid());
     hakijaryhma.setKaytaKaikki(dto.isKaytaKaikki());
@@ -736,7 +736,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     return hakijaryhma;
   }
 
-  private void poistaVanhatHistoriat(Hakijaryhma hakijaryhma) {
+  private void poistaVanhatHistoriat(HakijaryhmaEntity hakijaryhma) {
     for (Jonosija jonosija : hakijaryhma.getJonosijat()) {
       for (Jarjestyskriteeritulos tulos : jonosija.getJarjestyskriteeritulokset()) {
         //jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());

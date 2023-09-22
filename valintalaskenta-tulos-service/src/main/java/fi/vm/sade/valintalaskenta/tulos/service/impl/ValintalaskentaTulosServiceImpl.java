@@ -19,7 +19,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminen
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValintatapajonoDTO;
-import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
+import fi.vm.sade.valintalaskenta.domain.valinta.HakijaryhmaEntity;
 import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvarainenHyvaksyminen;
 import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvaraisuusTila;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
@@ -371,7 +371,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
   @Override
   public List<HakijaryhmaDTO> haeHakijaryhmatHakukohteelle(String hakukohdeoid) {
-    List<Hakijaryhma> hakijaryhmat = hakijaryhmaDAO.readByHakukohdeOid(hakukohdeoid);
+    List<HakijaryhmaEntity> hakijaryhmat = hakijaryhmaDAO.readByHakukohdeOid(hakukohdeoid);
     return modelMapper.mapList(hakijaryhmat, HakijaryhmaDTO.class);
   }
 

@@ -11,14 +11,12 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.stereotype.Component;
 
 @SpringBootApplication
 @EnableWebSecurity(debug = true)
-@EnableJpaRepositories(basePackages = "fi.vm.sade.valintalaskenta.laskenta.dao.repository")
-@EntityScan(basePackages = "fi.vm.sade.valintalaskenta.domain.*")
+//@EntityScan(basePackages = "fi.vm.sade.valintalaskenta.domain.*")
 @ComponentScan(basePackages = {"fi.vm.sade.valintalaskenta.laskenta.*"},
         excludeFilters = {
           @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fi.vm.sade.valintalaskenta.laskenta.config.*"),

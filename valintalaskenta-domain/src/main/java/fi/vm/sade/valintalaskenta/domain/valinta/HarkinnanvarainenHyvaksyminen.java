@@ -1,25 +1,18 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import javax.persistence.*;
+import org.springframework.data.annotation.Id;
+
 import java.util.UUID;
 
-@Entity
-@Table(name = "HarkinnanvarainenHyvaksyminen")
 public class HarkinnanvarainenHyvaksyminen {
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
 
-  @Column
   private HarkinnanvaraisuusTila harkinnanvaraisuusTila;
 
-  @Column
   private String hakukohdeOid;
-
-  @Column
   private String hakemusOid;
 
-  @Column
   private String hakuOid;
 
   public String getHakemusOid() {

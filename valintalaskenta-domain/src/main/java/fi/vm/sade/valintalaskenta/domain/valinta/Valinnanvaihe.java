@@ -6,50 +6,37 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.annotation.Id;
 
-import javax.persistence.*;
 
-@Entity(name = "Valinnanvaihe")
 public class Valinnanvaihe {
   private static final Logger LOGGER = LoggerFactory.getLogger(Valinnanvaihe.class);
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
 
-  @Column
   private int jarjestysnumero;
 
-  @Column
   private Date createdAt;
 
-  @Column
   private String hakuOid;
 
-  @Column
   private String hakukohdeOid;
 
-  @Column
   private String valinnanvaiheOid;
 
-  @Column
   private String tarjoajaOid;
 
-  @Column
   private String nimi;
 
-  @OneToMany(mappedBy = "valinnanvaihe")
   private List<Valintatapajono> valintatapajonot = new ArrayList<>();
 
-  @OneToMany(mappedBy = "valinnanVaihe")
   private List<ValintakoeValinnanvaihe> valintakoeValinnanvaiheet = new ArrayList<>();
 
-  @PrePersist
   private void prePersist() {
     createdAt = new Date();
   }
 
-  @PostLoad
   private void jarjestaValintatapajonot() {
     Collections.sort(valintatapajonot, Comparator.comparingInt(Valintatapajono::getPrioriteetti));
   }
