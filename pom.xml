@@ -61,18 +61,6 @@
                         <groupId>javax.ws.rs</groupId>
                         <artifactId>javax.ws.rs-api</artifactId>
                     </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.httpcomponents</groupId>
-                        <artifactId>httpclient</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.httpcomponents</groupId>
-                        <artifactId>httpclient-cache</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>fi.vm.sade.java-utils</groupId>
-                        <artifactId>java-http</artifactId>
-                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -89,18 +77,6 @@
                     <exclusion>
                         <groupId>javax.ws.rs</groupId>
                         <artifactId>javax.ws.rs-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.httpcomponents</groupId>
-                        <artifactId>httpclient</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.httpcomponents</groupId>
-                        <artifactId>httpclient-cache</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>fi.vm.sade.java-utils</groupId>
-                        <artifactId>java-http</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
