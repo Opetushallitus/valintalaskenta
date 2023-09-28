@@ -114,7 +114,7 @@ public class ValintalaskentaDbDumpingTest {
 
     List<Valintatapajono> jonot =
         valinnanvaihes.stream()
-            .flatMap(vv -> vv.getValintatapajonot().stream())
+            .flatMap(vv -> vv.getValintatapajono().stream())
             .collect(Collectors.toList());
     List<Jonosija> jonosijat =
         jonot.stream().flatMap(j -> j.getJonosijat().stream()).collect(Collectors.toList());
@@ -134,7 +134,7 @@ public class ValintalaskentaDbDumpingTest {
           vaihe.setCreatedAt(null);
           Set<Valintatapajono> sailytettavatJonot = new HashSet<>();
           vaihe
-              .getValintatapajonot()
+              .getValintatapajono()
               .forEach(
                   jono -> {
                     List<Jonosija> sailytettavatJonosijat = new LinkedList<>();
@@ -158,7 +158,7 @@ public class ValintalaskentaDbDumpingTest {
                     jono.setJonosijat(sailytettavatJonosijat);
                     //jono.setJonosijaIdt(sailytettavatJonosijaIdt);
                   });
-          vaihe.setValintatapajonot(new ArrayList<>(sailytettavatJonot));
+          vaihe.setValintatapajono(new ArrayList<>(sailytettavatJonot));
         });
   }
 

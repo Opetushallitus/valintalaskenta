@@ -2,9 +2,10 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceCreator;
+import org.springframework.data.annotation.Transient;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 public class Valintatapajono {
@@ -40,11 +41,19 @@ public class Valintatapajono {
 
   private Boolean kaytetaanKokonaispisteita;
 
-  private List<Jonosija> jonosijat;
+  private final Set<Jonosija> jonosija = new HashSet<>();
 
+  @Transient
   private Valinnanvaihe valinnanvaihe;
 
   private Long sijoitteluajoId;
+
+  public Valintatapajono() {}
+
+  @PersistenceCreator
+  public Valintatapajono(Set<Jonosija> jonosija) {
+    this.jonosija.addAll(jonosija);
+  }
 
   public void setId(UUID id) {
     this.id = id;
@@ -111,18 +120,19 @@ public class Valintatapajono {
   }
 
   public List<Jonosija> getJonosijat() {
-    if (null == jonosijat) {
+    if (null == jonosija) {
       //TODO Check necessity of this exception
       throw new IllegalStateException(
           String.format(
               "Jonosijat not loaded for valintatapajono %s with jonosijaids %s",
-              valintatapajonoOid, jonosijat));
+              valintatapajonoOid, jonosija));
     }
-    return jonosijat;
+    //TODO check if thi conversion is ok or could set be used instead
+    return new ArrayList<>(jonosija);
   }
 
   public void setJonosijat(List<Jonosija> jonosijat) {
-    this.jonosijat = jonosijat;
+    this.jonosija.addAll(jonosijat);
   }
 
   public Boolean getKaikkiEhdonTayttavatHyvaksytaan() {

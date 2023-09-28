@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 
 import java.util.*;
 
@@ -24,15 +25,22 @@ public class Jonosija {
 
   private boolean hylattyValisijoittelussa = false;
 
-  private HakijaryhmaEntity hakijaryhma;
+  @Transient
+  private Hakijaryhma hakijaryhma;
 
+  @Transient
   private Valintatapajono valintatapajono;
 
+  @Transient
   private List<Jarjestyskriteeritulos> jarjestyskriteeritulokset =
       new ArrayList<Jarjestyskriteeritulos>();
 
+  //TODO json
+  @Transient
   private List<SyotettyArvo> syotetytArvot = new ArrayList<SyotettyArvo>();
 
+  //TODO json
+  @Transient
   private List<FunktioTulos> funktioTulokset = new ArrayList<FunktioTulos>();
 
   public UUID getId() {
@@ -130,11 +138,11 @@ public class Jonosija {
     this.hylattyValisijoittelussa = hylattyValisijoittelussa;
   }
 
-  public HakijaryhmaEntity getHakijaryhma() {
+  public Hakijaryhma getHakijaryhma() {
     return hakijaryhma;
   }
 
-  public void setHakijaryhma(HakijaryhmaEntity hakijaryhma) {
+  public void setHakijaryhma(Hakijaryhma hakijaryhma) {
     this.hakijaryhma = hakijaryhma;
   }
 

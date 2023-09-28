@@ -62,6 +62,7 @@ public class HakijaryhmaServiceImpl implements HakijaryhmaService {
     return null;
   }
 
+  @Transactional
   @Override
   public void create(Hakijaryhma hakijaryhma, User auditUser) {
     auditLog.log(

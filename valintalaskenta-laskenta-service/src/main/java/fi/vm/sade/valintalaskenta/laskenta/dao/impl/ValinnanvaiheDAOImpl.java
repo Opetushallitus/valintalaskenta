@@ -3,6 +3,8 @@ package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import java.util.List;
+
+import fi.vm.sade.valintalaskenta.laskenta.dao.repository.ValinnanvaiheRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -11,27 +13,20 @@ import org.springframework.stereotype.Repository;
 public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
   private static final Logger LOGGER = LoggerFactory.getLogger(ValinnanvaiheDAOImpl.class);
 
+  private final ValinnanvaiheRepository repo;
+
+  public ValinnanvaiheDAOImpl(ValinnanvaiheRepository repo) {
+    this.repo = repo;
+  }
+
+
   @Override
   public Valinnanvaihe haeEdeltavaValinnanvaihe(
       String hakuOid, String hakukohdeOid, int jarjestysnumero) {
-    return null;
-    /*    if (jarjestysnumero > 0) {
-      return Optional.ofNullable(
-              datastore
-                  .find(ValinnanvaiheMigrationDTO.class)
-                  .field("hakuOid")
-                  .equal(hakuOid)
-                  .field("hakukohdeOid")
-                  .equal(hakukohdeOid)
-                  .field("jarjestysnumero")
-                  .equal(jarjestysnumero - 1)
-                  .limit(1)
-                  .get())
-          .map(this::migrate)
-          .orElse(null);
-    } else {
+    if (jarjestysnumero < 0) {
       return null;
-    }*/
+    }
+    return repo.findPreviousValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero - 1).orElse(null);
   }
 
   @Override
@@ -60,7 +55,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 
   @Override
   public Valinnanvaihe haeValinnanvaihe(String valinnanvaiheOid) {
-    return null;
+    return repo.findValinnanvaiheByValinnanvaiheOid(valinnanvaiheOid).orElse(null);
     /*    return Optional.ofNullable(
         datastore
             .find(ValinnanvaiheMigrationDTO.class)
@@ -89,6 +84,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 
   @Override
   public void saveOrUpdate(Valinnanvaihe valinnanvaihe) {
+    repo.save(valinnanvaihe);
     /*    valinnanvaihe.reportDuplicateValintatapajonoOids();
     valinnanvaihe
         .getValintatapajonot()
@@ -102,7 +98,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 
   @Override
   public void poistaValinnanvaihe(Valinnanvaihe valinnanvaihe) {
-    valinnanvaihe.getValintatapajonot().forEach(this::poistaJono);
+    valinnanvaihe.getValintatapajono().forEach(this::poistaJono);
     // datastore.delete(valinnanvaihe);
   }
 

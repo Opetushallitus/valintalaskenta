@@ -238,7 +238,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
             .getOsallistuminen());
     assertEquals(
         VALINNANVAIHE_HAKIJAN_VALINTA,
-        osallistuminen.getHakutoiveet().get(0).getValintakoeValinnanvaiheet().get(0).getValinnanVaihe().getValinnanVaiheOid());
+        osallistuminen.getHakutoiveet().get(0).getValintakoeValinnanvaiheet().get(0).getValinnanvaihe().getValinnanVaiheOid());
     assertEquals(
         Integer.valueOf(100),
         osallistuminen
@@ -1036,7 +1036,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
     assertEquals(1, hakutoive.getValintakoeValinnanvaiheet().size());
     ValintakoeValinnanvaihe vv = hakutoive.getValintakoeValinnanvaiheet().get(0);
-    assertEquals(valinnanVaiheOid, vv.getValinnanVaihe().getValinnanVaiheOid());
+    assertEquals(valinnanVaiheOid, vv.getValinnanvaihe().getValinnanVaiheOid());
     assertEquals(1, vv.getValintakokeet().size());
 
     Valintakoe koe = vv.getValintakokeet().get(0);

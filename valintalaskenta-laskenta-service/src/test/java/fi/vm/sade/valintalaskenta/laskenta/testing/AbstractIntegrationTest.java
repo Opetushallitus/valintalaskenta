@@ -2,7 +2,9 @@ package fi.vm.sade.valintalaskenta.laskenta.testing;
 
 import fi.vm.sade.valintalaskenta.laskenta.App;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.HakijaryhmaRepository;
+import fi.vm.sade.valintalaskenta.laskenta.dao.repository.ValinnanvaiheRepository;
 import fi.vm.sade.valintalaskenta.laskenta.testing.DefaultTestConfiguration;
+import org.junit.Before;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,8 +49,12 @@ public abstract class AbstractIntegrationTest {
   @Autowired
   protected HakijaryhmaRepository hakijaryhmaRepository;
 
-  @BeforeEach
-  void setUp() {
+  @Autowired
+  protected ValinnanvaiheRepository valinnanvaiheRepository;
+
+  @Before
+  public void setUp() {
+    valinnanvaiheRepository.deleteAll();
     hakijaryhmaRepository.deleteAll();
   }
 

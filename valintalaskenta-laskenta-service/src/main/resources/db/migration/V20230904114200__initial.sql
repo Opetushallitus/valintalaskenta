@@ -99,11 +99,12 @@ CREATE TABLE Valintatapajono (
     kaytetaan_valintalaskentaa boolean DEFAULT NULL,
     valmis_sijoiteltavaksi boolean DEFAULT NULL,
     kaytetaan_kokonaispisteita boolean DEFAULT NULL,
-    valinnanvaihe_id uuid NOT NULL,
+    valinnanvaihe uuid NOT NULL,
+    valinnanvaihe_key int,
     sijoitteluajo_id int,
     poissa_oleva_taytto boolean DEFAULT NULL,
     CONSTRAINT fk_valinnanvaihe
-        FOREIGN KEY(valinnanvaihe_id)
+        FOREIGN KEY(valinnanvaihe)
             REFERENCES Valinnanvaihe(id)
 );
 
@@ -135,15 +136,15 @@ CREATE TABLE Jonosija (
     hakutoiveprioriteetti int,
     harkinnanvarainen boolean DEFAULT NULL,
     hylatty_valisijoittelussa boolean DEFAULT NULL,
-    valintatapajono_id uuid,
-    hakijaryhma_id uuid,
+    valintatapajono uuid,
+    hakijaryhma uuid,
     funktio_tulokset jsonb,
     syotetyt_arvot jsonb,
     CONSTRAINT fk_valintatapajono
-        FOREIGN KEY(valintatapajono_id)
+        FOREIGN KEY(valintatapajono)
             REFERENCES Valintatapajono(id),
     CONSTRAINT fk_hakijaryhma
-        FOREIGN KEY(hakijaryhma_id)
+        FOREIGN KEY(hakijaryhma)
             REFERENCES Hakijaryhma(id)
 );
 

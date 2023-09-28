@@ -7,6 +7,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceCreator;
+import org.springframework.data.annotation.Transient;
 
 
 public class Valinnanvaihe {
@@ -29,16 +31,21 @@ public class Valinnanvaihe {
 
   private String nimi;
 
-  private List<Valintatapajono> valintatapajonot = new ArrayList<>();
+  public final List<Valintatapajono> valintatapajono = new ArrayList<>();
 
-  private List<ValintakoeValinnanvaihe> valintakoeValinnanvaiheet = new ArrayList<>();
+  @Transient
+  public final Set<ValintakoeValinnanvaihe> valintakoevalinnanvaihe = new HashSet<>();
 
-  private void prePersist() {
-    createdAt = new Date();
+  public Valinnanvaihe(){}
+
+  @PersistenceCreator
+  public Valinnanvaihe(List<Valintatapajono> valintatapajono) {
+    this.valintatapajono.addAll(valintatapajono);
+    //this.valintakoevalinnanvaihe.addAll(valintakoevalinnanvaihe);
   }
 
   private void jarjestaValintatapajonot() {
-    Collections.sort(valintatapajonot, Comparator.comparingInt(Valintatapajono::getPrioriteetti));
+    Collections.sort(valintatapajono, Comparator.comparingInt(Valintatapajono::getPrioriteetti));
   }
 
   public UUID getId() {
@@ -97,12 +104,13 @@ public class Valinnanvaihe {
     this.tarjoajaOid = tarjoajaOid;
   }
 
-  public List<Valintatapajono> getValintatapajonot() {
-    return valintatapajonot;
+  public List<Valintatapajono> getValintatapajono() {
+    return valintatapajono;
   }
 
-  public void setValintatapajonot(List<Valintatapajono> valintatapajonot) {
-    this.valintatapajonot = valintatapajonot;
+  public void setValintatapajono(List<Valintatapajono> valintatapajono) {
+    this.valintatapajono.clear();
+    this.valintatapajono.addAll(valintatapajono);
   }
 
   public String getNimi() {
@@ -113,16 +121,8 @@ public class Valinnanvaihe {
     this.nimi = nimi;
   }
 
-  public List<ValintakoeValinnanvaihe> getValintakoeValinnanvaiheet() {
-    return valintakoeValinnanvaiheet;
-  }
-
-  public void setValintakoeValinnanvaiheet(List<ValintakoeValinnanvaihe> valintakoeValinnanvaiheet) {
-    this.valintakoeValinnanvaiheet = valintakoeValinnanvaiheet;
-  }
-
   public boolean hylattyValisijoittelussa(String hakemusoid) {
-    return getValintatapajonot().stream()
+    return getValintatapajono().stream()
         .flatMap(j -> j.getJonosijat().stream())
         .filter(j -> j.getHakemusOid().equals(hakemusoid))
         .anyMatch(Jonosija::isHylattyValisijoittelussa);
@@ -130,7 +130,7 @@ public class Valinnanvaihe {
 
   public void reportDuplicateValintatapajonoOids() {
     Set<String> uniqueJonoOids = new HashSet<>();
-    for (Valintatapajono valintatapajono : valintatapajonot) {
+    for (Valintatapajono valintatapajono : valintatapajono) {
       String valintatapajonoOid = valintatapajono.getValintatapajonoOid();
       if (uniqueJonoOids.contains(valintatapajonoOid)) {
         logDuplicate(valintatapajonoOid);
@@ -146,7 +146,7 @@ public class Valinnanvaihe {
             + " detected when saving Valinnanvaihe "
             + valinnanvaiheOid
             + " . Valintatapajonos are: "
-            + valintatapajonot.stream().map(ToStringBuilder::reflectionToString),
+            + valintatapajono.stream().map(ToStringBuilder::reflectionToString),
         new RuntimeException());
   }
 }

@@ -86,7 +86,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
     for (ValintakoeValinnanvaihe vv : valinnanVaiheet) {
       ValintakoeValinnanvaiheDTO dto = new ValintakoeValinnanvaiheDTO();
       dto.setValinnanVaiheJarjestysluku(vv.getValinnanVaiheJarjestysluku());
-      dto.setValinnanVaiheOid(vv.getValinnanVaihe().getValinnanVaiheOid());
+      dto.setValinnanVaiheOid(vv.getValinnanvaihe().getValinnanVaiheOid());
       dto.setValintakokeet(convertValintakoe(vv.getValintakokeet()));
       dtot.add(dto);
     }
@@ -128,7 +128,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
     dto.setJarjestysnumero(valinnanvaihe.getJarjestysnumero());
     dto.setValinnanvaiheoid(valinnanvaihe.getValinnanVaiheOid());
     dto.setHakuOid(valinnanvaihe.getHakuOid());
-    dto.setValintatapajonot(convertValintatapajono(valinnanvaihe.getValintatapajonot()));
+    dto.setValintatapajonot(convertValintatapajono(valinnanvaihe.getValintatapajono()));
     dto.setNimi(valinnanvaihe.getNimi());
     return dto;
   }

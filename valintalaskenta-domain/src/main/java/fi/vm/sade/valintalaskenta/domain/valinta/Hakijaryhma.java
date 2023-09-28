@@ -2,8 +2,7 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import org.springframework.data.annotation.Id;
 
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 
 public class Hakijaryhma {
@@ -27,7 +26,6 @@ public class Hakijaryhma {
 
   public boolean kaytaKaikki;
 
-
   public boolean tarkkaKiintio;
 
 
@@ -36,4 +34,10 @@ public class Hakijaryhma {
   public String hakijaryhmatyyppiKoodiuri;
 
   public String valintatapajonoOid;
+
+  public final Set<Jonosija> jonosija = new HashSet<>();
+
+  public Hakijaryhma(Collection <Jonosija> jonosija) {
+    this.jonosija.addAll(jonosija);
+  }
 }

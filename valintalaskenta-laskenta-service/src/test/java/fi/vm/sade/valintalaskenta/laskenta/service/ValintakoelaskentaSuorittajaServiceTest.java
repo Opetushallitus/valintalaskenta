@@ -545,7 +545,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
       assertEquals(1, hakutoive1.getValintakoeValinnanvaiheet().size());
 
       ValintakoeValinnanvaihe vaihe1 = hakutoive1.getValintakoeValinnanvaiheet().get(0);
-      assertEquals(valinnanVaiheOid1, vaihe1.getValinnanVaihe().getValinnanVaiheOid());
+      assertEquals(valinnanVaiheOid1, vaihe1.getValinnanvaihe().getValinnanVaiheOid());
       assertEquals(valinnanVaiheJarjestysluku1, vaihe1.getValinnanVaiheJarjestysluku().intValue());
       assertEquals(1, vaihe1.getValintakokeet().size());
 
@@ -560,7 +560,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
       assertEquals(1, hakutoive2.getValintakoeValinnanvaiheet().size());
 
       ValintakoeValinnanvaihe vaihe2 = hakutoive2.getValintakoeValinnanvaiheet().get(0);
-      assertEquals(valinnanVaiheOid2, vaihe2.getValinnanVaihe().getValinnanVaiheOid());
+      assertEquals(valinnanVaiheOid2, vaihe2.getValinnanvaihe().getValinnanVaiheOid());
       assertEquals(valinnanVaiheJarjestysluku2, vaihe2.getValinnanVaiheJarjestysluku().intValue());
       assertEquals(1, vaihe2.getValintakokeet().size());
 

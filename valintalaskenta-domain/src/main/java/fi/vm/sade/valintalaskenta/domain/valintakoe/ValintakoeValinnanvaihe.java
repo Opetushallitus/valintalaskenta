@@ -7,29 +7,35 @@ import java.util.UUID;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Table;
 
 
+@Table("ValintakoeValinnanVaihe")
 public class ValintakoeValinnanvaihe {
 
   @Id
   private UUID id;
 
-  private Valinnanvaihe valinnanVaihe;
+  @Transient
+  private Valinnanvaihe valinnanvaihe;
 
   private Integer valinnanVaiheJarjestysluku;
 
   private Integer laskettavaJarjestysluku;
 
+  @Transient
   private Hakutoive hakutoive;
 
+  @Transient
   private List<Valintakoe> valintakokeet = new ArrayList<>();
 
-  public Valinnanvaihe getValinnanVaihe() {
-    return valinnanVaihe;
+  public Valinnanvaihe getValinnanvaihe() {
+    return valinnanvaihe;
   }
 
-  public void setValinnanVaihe(Valinnanvaihe valinnanVaihe) {
-    this.valinnanVaihe = valinnanVaihe;
+  public void setValinnanvaihe(Valinnanvaihe valinnanvaihe) {
+    this.valinnanvaihe = valinnanvaihe;
   }
 
   public Integer getValinnanVaiheJarjestysluku() {

@@ -45,7 +45,7 @@ public class ValintakoeOsallistuminenDAOTest {
     ValintakoeValinnanvaihe valinnanVaihe = new ValintakoeValinnanvaihe();
     Valinnanvaihe vaihe = new Valinnanvaihe();
     vaihe.setValinnanVaiheOid(valinnanVaiheOid);
-    valinnanVaihe.setValinnanVaihe(vaihe);
+    valinnanVaihe.setValinnanvaihe(vaihe);
     valinnanVaihe.setValinnanVaiheJarjestysluku(valinnanVaiheJarjestysluku);
     return valinnanVaihe;
   }
