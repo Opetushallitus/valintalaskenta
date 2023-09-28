@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao.repository;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.valinta.ValinnanvaiheLite;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -16,4 +17,7 @@ public interface ValinnanvaiheRepository extends CrudRepository<Valinnanvaihe, U
                                                     @Param("jarjestysnro") int jarjestysnumero);
 
   Optional<Valinnanvaihe> findValinnanvaiheByValinnanvaiheOid(String valinnanvaiheOid);
+
+  Optional<ValinnanvaiheLite> findValinnanvaiheLiteByValinnanvaiheOid(String valinnanvaiheOid);
 }
+

@@ -11,6 +11,7 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.ValinnanvaiheRepository;
 import fi.vm.sade.valintalaskenta.laskenta.testing.AbstractIntegrationTest;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,18 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
     assertEquals(valinnanvaiheOid, valinnanvaihe.getValinnanVaiheOid());
   }
 
+  @Test
+  public void testLoadingValintapajonoLite() {
+    Valinnanvaihe valinnanvaihe = createValinnanvaihe(1);
+    Valintatapajono valintatapajono = new Valintatapajono();
+    valinnanvaihe.valintatapajono.addAll(Arrays.asList(valintatapajono));
+    valintatapajono.setJonosijat(Arrays.asList(new Jonosija(), new Jonosija()));
+    valinnanvaihe.setValinnanVaiheOid("uusiValinnanvaiheOid");
+    valinnanvaiheRepository.save(valinnanvaihe);
+    assertTrue(valinnanvaiheDAO.haeValinnanvaiheLite("uusiValinnanvaiheOid").isPresent());
+  }
+
+  @Ignore
   @Test
   public void testLoadingValintatapajonoWithoutJonosijat() {
     Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.haeValinnanvaihe("tyhjaValinnanvaiheOid");

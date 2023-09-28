@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import java.util.List;
+import java.util.Optional;
 
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.ValinnanvaiheRepository;
 import org.slf4j.Logger;
@@ -64,6 +65,11 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
             .get())
     .map(this::migrate)
     .orElse(null);*/
+  }
+
+  @Override
+  public Optional<ValinnanvaiheLite> haeValinnanvaiheLite(String valinnanvaiheOid) {
+    return repo.findValinnanvaiheLiteByValinnanvaiheOid(valinnanvaiheOid);
   }
 
   @Override
