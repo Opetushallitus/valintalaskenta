@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Column;
 
 import java.util.*;
 
@@ -35,13 +36,11 @@ public class Jonosija {
   private List<Jarjestyskriteeritulos> jarjestyskriteeritulokset =
       new ArrayList<Jarjestyskriteeritulos>();
 
-  //TODO json
-  @Transient
-  private List<SyotettyArvo> syotetytArvot = new ArrayList<SyotettyArvo>();
+  @Column("syotetyt_arvot")
+  private SyotettyArvoContainer syotetytArvot;
 
-  //TODO json
-  @Transient
-  private List<FunktioTulos> funktioTulokset = new ArrayList<FunktioTulos>();
+  @Column("funktio_tulokset")
+  private FunktioTulosContainer funktioTulokset;
 
   public UUID getId() {
     return this.id;
@@ -115,18 +114,18 @@ public class Jonosija {
   }
 
   public List<SyotettyArvo> getSyotetytArvot() {
-    return syotetytArvot;
+    return syotetytArvot.syotetytArvot;
   }
 
-  public void setSyotetytArvot(List<SyotettyArvo> syotetytArvot) {
+  public void setSyotetytArvot(SyotettyArvoContainer syotetytArvot) {
     this.syotetytArvot = syotetytArvot;
   }
 
-  public List<FunktioTulos> getFunktioTulokset() {
+  public FunktioTulosContainer getFunktioTulokset() {
     return funktioTulokset;
   }
 
-  public void setFunktioTulokset(List<FunktioTulos> funktioTulokset) {
+  public void setFunktioTulokset(FunktioTulosContainer funktioTulokset) {
     this.funktioTulokset = funktioTulokset;
   }
 

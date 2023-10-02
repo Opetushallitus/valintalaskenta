@@ -303,9 +303,9 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
           assertNotNull(historia2.getHistoria());
           assertNotNull(historia2.getHistoriaGzip());*/
 
-          assertEquals(2, jonosija1.getFunktioTulokset().size());
-          assertEquals("100.0", jonosija1.getFunktioTulokset().get(0).getArvo());
-          assertEquals("200.0", jonosija1.getFunktioTulokset().get(1).getArvo());
+          assertEquals(2, jonosija1.getFunktioTulokset().funktioTulokset.size());
+          assertEquals("100.0", jonosija1.getFunktioTulokset().funktioTulokset.get(0).getArvo());
+          assertEquals("200.0", jonosija1.getFunktioTulokset().funktioTulokset.get(1).getArvo());
         }
 
         {
@@ -431,7 +431,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
           assertNotNull(historia1);
           assertNotNull(historia1.getHistoria());*/
 
-          assertEquals(0, jonosija.getFunktioTulokset().size());
+          assertEquals(0, jonosija.getFunktioTulokset().funktioTulokset.size());
         }
         {
           Jonosija jonosija = jono.getJonosijat().get(1);
@@ -505,8 +505,8 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
               jarjestyskriteerihistoriaDAO.hae(jarjestyskriteeritulos2.getHistoria());
           assertNotNull(historia2);
           assertNotNull(historia2.getHistoria());*/
-          assertEquals(1, jonosija1.getFunktioTulokset().size());
-          assertEquals("600.0", jonosija1.getFunktioTulokset().get(0).getArvo());
+          assertEquals(1, jonosija1.getFunktioTulokset().funktioTulokset.size());
+          assertEquals("600.0", jonosija1.getFunktioTulokset().funktioTulokset.get(0).getArvo());
         }
 
         {

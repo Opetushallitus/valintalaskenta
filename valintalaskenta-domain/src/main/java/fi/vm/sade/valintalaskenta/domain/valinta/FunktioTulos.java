@@ -1,12 +1,28 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class FunktioTulos {
+
+  @JsonProperty("tunniste")
   private String tunniste;
+
+  @JsonProperty("arvo")
   private String arvo;
+
+  @JsonProperty("nimiFi")
   private String nimiFi;
+
+  @JsonProperty("nimiSv")
   private String nimiSv;
+
+  @JsonProperty("nimiEn")
   private String nimiEn;
+
+  @JsonProperty("omaopintopolku")
   private boolean omaopintopolku;
+
+  public FunktioTulos() {};
 
   public String getTunniste() {
     return tunniste;

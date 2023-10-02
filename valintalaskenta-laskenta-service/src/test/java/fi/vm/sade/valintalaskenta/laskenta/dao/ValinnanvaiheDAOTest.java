@@ -2,10 +2,10 @@ package fi.vm.sade.valintalaskenta.laskenta.dao;
 
 import static org.junit.Assert.*;
 
-import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.valinta.*;
+
 import java.util.Arrays;
+import java.util.List;
 
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.ValinnanvaiheRepository;
@@ -81,14 +81,25 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
   public void testSavingAndLoadingNewValinnanvaihe() {
     Valinnanvaihe valinnanvaihe = createValinnanvaihe(1);
     Valintatapajono valintatapajono = new Valintatapajono();
-    valinnanvaihe.valintatapajono.addAll(Arrays.asList(valintatapajono));
-    valintatapajono.setJonosijat(Arrays.asList(new Jonosija(), new Jonosija()));
+    valinnanvaihe.valintatapajono.addAll(List.of(valintatapajono));
+    valintatapajono.setJonosijat(Arrays.asList(createJonosija(), new Jonosija()));
     valinnanvaihe.setValinnanVaiheOid("uusiValinnanvaiheOid");
     valinnanvaiheDAO.saveOrUpdate(valinnanvaihe);
     Valinnanvaihe savedValinnanvaihe = valinnanvaiheDAO.haeValinnanvaihe("uusiValinnanvaiheOid");
     assertNotNull(savedValinnanvaihe);
-    assertThat(savedValinnanvaihe.getValintatapajono().get(0).getJonosijat(), Matchers.hasSize(2));
-    //assertThat(savedValinnanvaihe.getValintatapajonot().get(0).getJonosijaIdt(), Matchers.hasSize(2));
+    assertEquals(2, savedValinnanvaihe.getValintatapajono().get(0).getJonosijat().size());
+    Jonosija jono = savedValinnanvaihe.getValintatapajono().get(0).getJonosijat().get(0);
+    FunktioTulos funkkari = jono.getFunktioTulokset().funktioTulokset.get(0);
+    assertEquals("arvokas", funkkari.getArvo());
+    assertEquals("arvoton", funkkari.getTunniste());
+    assertEquals("Funktiotulos", funkkari.getNimiFi());
+    assertEquals("Function", funkkari.getNimiEn());
+    assertEquals("Funktion", funkkari.getNimiSv());
+    assertTrue(funkkari.isOmaopintopolku());
+    SyotettyArvo arvo = jono.getSyotetytArvot().get(0);
+    assertEquals("Kultaa", arvo.getArvo());
+    assertEquals("Hopeaa", arvo.getTunniste());
+    assertEquals("Katinkultaa", arvo.getLaskennallinenArvo());
   }
 
   private Valinnanvaihe createValinnanvaihe(int jarjestysnro) {
@@ -99,5 +110,31 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
     vv.setJarjestysnumero(jarjestysnro);
     vv.setValinnanVaiheOid("valinnanvaiheOid" + jarjestysnro);
     return vv;
+  }
+
+  private Jonosija createJonosija() {
+    Jonosija jono = new Jonosija();
+    jono.setFunktioTulokset(new FunktioTulosContainer(List.of(createFunktioTulos())));
+    jono.setSyotetytArvot(new SyotettyArvoContainer(List.of(createSyotettyArvo())));
+    return jono;
+  }
+
+  private FunktioTulos createFunktioTulos() {
+    FunktioTulos tulos = new FunktioTulos();
+    tulos.setArvo("arvokas");
+    tulos.setTunniste("arvoton");
+    tulos.setOmaopintopolku(true);
+    tulos.setNimiFi("Funktiotulos");
+    tulos.setNimiEn("Function");
+    tulos.setNimiSv("Funktion");
+    return tulos;
+  }
+
+  private SyotettyArvo createSyotettyArvo() {
+    SyotettyArvo arvo = new SyotettyArvo();
+    arvo.setArvo("Kultaa");
+    arvo.setTunniste("Hopeaa");
+    arvo.setLaskennallinenArvo("Katinkultaa");
+    return arvo;
   }
 }

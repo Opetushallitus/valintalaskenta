@@ -205,7 +205,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
       dto.setJarjestyskriteerit(
           new TreeSet<>(convertJarjestyskriteeri(jonosija.getJarjestyskriteeritulokset())));
       dto.setSyotetytArvot(convertSyotettyArvo(jonosija.getSyotetytArvot()));
-      dto.setFunktioTulokset(convertFunktioTulos(jonosija.getFunktioTulokset()));
+      dto.setFunktioTulokset(convertFunktioTulos(jonosija.getFunktioTulokset().funktioTulokset));
       dto.setHylattyValisijoittelussa(jonosija.isHylattyValisijoittelussa());
       list.add(dto);
     }
