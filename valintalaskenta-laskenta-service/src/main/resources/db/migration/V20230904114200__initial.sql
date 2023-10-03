@@ -1,6 +1,6 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE HarkinnanvarainenHyvaksyminen (
+CREATE TABLE harkinnanvarainen_hyvaksyminen (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     created_at timestamp with time zone default now(),
     harkinnanvaraisuustila varchar(255),
@@ -9,7 +9,7 @@ CREATE TABLE HarkinnanvarainenHyvaksyminen (
     haku_oid varchar(127) NOT NULL
 );
 
-CREATE TABLE Valinnanvaihe (
+CREATE TABLE valinnanvaihe (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     jarjestysnumero int,
     created_at timestamp with time zone default now(),
@@ -20,60 +20,60 @@ CREATE TABLE Valinnanvaihe (
     nimi varchar(255)
 );
 
-CREATE INDEX valinnanvaihe_hakukohde ON Valinnanvaihe(hakukohde_oid);
-CREATE INDEX valinnanvaihe_haku ON Valinnanvaihe(haku_oid);
+CREATE INDEX valinnanvaihe_hakukohde ON valinnanvaihe(hakukohde_oid);
+CREATE INDEX valinnanvaihe_haku ON valinnanvaihe(haku_oid);
 
-CREATE TABLE ValintakoeOsallistuminen (
+CREATE TABLE valintakoe_osallistuminen (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     haku_oid varchar(127) NOT NULL,
     hakemus_oid varchar(127) UNIQUE,
     hakija_oid varchar(127) NOT NULL,
+    etunimi varchar(255),
+    sukunimi varchar(255),
     created_at timestamp with time zone default now()
 );
 
-CREATE INDEX valintakoeosallistuminen_haku ON ValintakoeOsallistuminen(haku_oid);
-CREATE INDEX valintakoeosallistuminen_hakija ON ValintakoeOsallistuminen(hakija_oid);
-CREATE INDEX valintakoeosallistuminen_hakemus ON ValintakoeOsallistuminen(hakemus_oid);
+CREATE INDEX valintakoeosallistuminen_haku ON valintakoe_osallistuminen(haku_oid);
+CREATE INDEX valintakoeosallistuminen_hakija ON valintakoe_osallistuminen(hakija_oid);
+CREATE INDEX valintakoeosallistuminen_hakemus ON valintakoe_osallistuminen(hakemus_oid);
 
-CREATE TABLE Hakutoive (
+CREATE TABLE hakutoive (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     hakukohde_oid varchar(127) NOT NULL,
-    laskettava_hakukohde_oid varchar(127) NOT NULL,
     valintakoe_osallistuminen uuid,
     CONSTRAINT fk_valintakoeosallistuminen
         FOREIGN KEY(valintakoe_osallistuminen)
-            REFERENCES ValintakoeOsallistuminen(id)
+            REFERENCES valintakoe_osallistuminen(id)
             ON DELETE CASCADE
 );
 
-CREATE INDEX hakutoive_hakukohde ON Hakutoive(hakukohde_oid);
-CREATE INDEX hakutoive_laskettavahakukohde ON Hakutoive(laskettava_hakukohde_oid);
+CREATE INDEX hakutoive_hakukohde ON hakutoive(hakukohde_oid);
 
-CREATE TABLE ValintakoeValinnanVaihe (
+CREATE TABLE valintakoe_valinnanvaihe (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-    valinnanvaihe uuid NOT NULL,
+    valinnanvaihe uuid,
     valinnan_vaihe_jarjestysluku int,
-    laskettava_jarjestysluku int,
     hakutoive uuid not null,
     CONSTRAINT fk_hakutoive
         FOREIGN KEY(hakutoive)
             REFERENCES Hakutoive(id),
     CONSTRAINT fk_valinnanvaihe
         FOREIGN KEY(valinnanvaihe)
-        REFERENCES Valinnanvaihe(id)
+        REFERENCES valinnanvaihe(id)
 );
 
-CREATE TABLE Valintakoe (
+CREATE TABLE valintakoe (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     valintakoe_oid varchar(127) NOT NULL,
     valintakoe_tunniste varchar(127),
     nimi varchar(255),
     aktiivinen boolean DEFAULT NULL,
     valintakoe_valinnanvaihe uuid,
-    lahetaanko_koekutsut boolean DEFAULT NULL,
+    lahetetaanko_koekutsut boolean DEFAULT NULL,
+    osallistuminen varchar(255),
+    kutsuttavien_maara int,
     kutsun_kohde varchar(255),
     kutsun_kohde_avain varchar(255),
-    osallistuminen varchar(255),
     kuvaus_fi text,
     kuvaus_sv text,
     kuvaus_en text,
@@ -82,10 +82,10 @@ CREATE TABLE Valintakoe (
     tekninen_kuvaus text,
     CONSTRAINT fk_valinnanvaihe
         FOREIGN KEY(valintakoe_valinnanvaihe)
-            REFERENCES ValintakoeValinnanVaihe(id)
+            REFERENCES valintakoe_valinnanVaihe(id)
 );
 
-CREATE TABLE Valintatapajono (
+CREATE TABLE valintatapajono (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     created_at timestamp with time zone default now(),
     valintatapajono_oid varchar(127) UNIQUE,
@@ -105,10 +105,10 @@ CREATE TABLE Valintatapajono (
     poissa_oleva_taytto boolean DEFAULT NULL,
     CONSTRAINT fk_valinnanvaihe
         FOREIGN KEY(valinnanvaihe)
-            REFERENCES Valinnanvaihe(id)
+            REFERENCES valinnanvaihe(id)
 );
 
-CREATE TABLE Hakijaryhma (
+CREATE TABLE hakijaryhma (
      id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
      hakijaryhma_oid varchar(127) UNIQUE,
      prioriteetti int,
@@ -124,9 +124,9 @@ CREATE TABLE Hakijaryhma (
      valintatapajono_oid varchar(127) DEFAULT NULL
 );
 
-CREATE INDEX hakijaryhma_hakukohde ON Hakijaryhma(hakukohde_oid);
+CREATE INDEX hakijaryhma_hakukohde ON hakijaryhma(hakukohde_oid);
 
-CREATE TABLE Jonosija (
+CREATE TABLE jonosija (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     created_at timestamp with time zone default now(),
     etunimi varchar(255),
@@ -142,15 +142,15 @@ CREATE TABLE Jonosija (
     syotetyt_arvot jsonb,
     CONSTRAINT fk_valintatapajono
         FOREIGN KEY(valintatapajono)
-            REFERENCES Valintatapajono(id),
+            REFERENCES valintatapajono(id),
     CONSTRAINT fk_hakijaryhma
         FOREIGN KEY(hakijaryhma)
-            REFERENCES Hakijaryhma(id)
+            REFERENCES hakijaryhma(id)
 );
 
-CREATE INDEX jonosija_hakemus ON Jonosija(hakemus_oid);
+CREATE INDEX jonosija_hakemus ON jonosija(hakemus_oid);
 
-CREATE TABLE MuokattuJonosija (
+CREATE TABLE muokattu_jonosija (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     created_at timestamp with time zone default now(),
     hakukohde_oid varchar(127) NOT NULL,
@@ -165,10 +165,10 @@ CREATE TABLE MuokattuJonosija (
           REFERENCES Valintatapajono(id)
 );
 
-CREATE INDEX muokattujonosija_hakukohde ON MuokattuJonosija(hakukohde_oid);
-CREATE INDEX muokattujonosija_haku ON MuokattuJonosija(haku_oid);
+CREATE INDEX muokattujonosija_hakukohde ON muokattu_jonosija(hakukohde_oid);
+CREATE INDEX muokattujonosija_haku ON muokattu_jonosija(haku_oid);
 
-CREATE TABLE Jarjestyskriteeritulos (
+CREATE TABLE jarjestyskriteeritulos (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     created_at timestamp with time zone default now(),
     prioriteetti int,
@@ -183,10 +183,10 @@ CREATE TABLE Jarjestyskriteeritulos (
     muokattu_jonosija uuid,
     CONSTRAINT fk_jonosija
         FOREIGN KEY(jonosija)
-            REFERENCES Jonosija(id),
+            REFERENCES jonosija(id),
     CONSTRAINT fk_muokattujonosija
         FOREIGN KEY(muokattu_jonosija)
-            REFERENCES MuokattuJonosija(id)
+            REFERENCES muokattu_jonosija(id)
 );
 
 

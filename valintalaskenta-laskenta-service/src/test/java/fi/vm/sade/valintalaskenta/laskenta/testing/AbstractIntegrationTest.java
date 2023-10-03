@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.laskenta.testing;
 import fi.vm.sade.valintalaskenta.laskenta.App;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.HakijaryhmaRepository;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.ValinnanvaiheRepository;
+import fi.vm.sade.valintalaskenta.laskenta.dao.repository.ValintakoeOsallistuminenRepository;
 import fi.vm.sade.valintalaskenta.laskenta.testing.DefaultTestConfiguration;
 import org.junit.Before;
 import org.junit.jupiter.api.AfterAll;
@@ -52,10 +53,14 @@ public abstract class AbstractIntegrationTest {
   @Autowired
   protected ValinnanvaiheRepository valinnanvaiheRepository;
 
+  @Autowired
+  protected ValintakoeOsallistuminenRepository valintakoeOsallistuminenRepository;
+
   @Before
   public void setUp() {
     valinnanvaiheRepository.deleteAll();
     hakijaryhmaRepository.deleteAll();
+    valintakoeOsallistuminenRepository.deleteAll();
   }
 
 }

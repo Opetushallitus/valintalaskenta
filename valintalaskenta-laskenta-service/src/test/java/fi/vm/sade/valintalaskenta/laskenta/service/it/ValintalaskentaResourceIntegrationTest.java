@@ -147,12 +147,12 @@ public class ValintalaskentaResourceIntegrationTest {
 
     assertEquals(1, osallistuminen.getHakutoiveet().size());
 
-    Hakutoive osallistumisenHakutoiveJohonOnKielikoe = osallistuminen.getHakutoiveet().get(0);
+    Hakutoive osallistumisenHakutoiveJohonOnKielikoe = osallistuminen.getHakutoiveetAsList().get(0);
     ValintakoeValinnanvaihe kielikokeenPakollisuusVaihe =
-        osallistumisenHakutoiveJohonOnKielikoe.getValintakoeValinnanvaiheet().get(0);
+        osallistumisenHakutoiveJohonOnKielikoe.getValintakoeValinnanvaiheetAsList().get(0);
     assertEquals(1, kielikokeenPakollisuusVaihe.getValintakokeet().size());
 
-    Valintakoe kielikoetulos = kielikokeenPakollisuusVaihe.getValintakokeet().get(0);
+    Valintakoe kielikoetulos = kielikokeenPakollisuusVaihe.getValintakokeetAsList().get(0);
     OsallistuminenTulos kielikoetulosOsallistuminenTulos = kielikoetulos.getOsallistuminenTulos();
 
     assertThat(
@@ -183,12 +183,12 @@ public class ValintalaskentaResourceIntegrationTest {
 
     assertEquals(1, osallistuminen.getHakutoiveet().size());
 
-    Hakutoive osallistumisenHakutoiveJohonOnKielikoe = osallistuminen.getHakutoiveet().get(0);
+    Hakutoive osallistumisenHakutoiveJohonOnKielikoe = osallistuminen.getHakutoiveetAsList().get(0);
     ValintakoeValinnanvaihe kielikokeenPakollisuusVaihe =
-        osallistumisenHakutoiveJohonOnKielikoe.getValintakoeValinnanvaiheet().get(0);
+        osallistumisenHakutoiveJohonOnKielikoe.getValintakoeValinnanvaiheetAsList().get(0);
     assertThat(kielikokeenPakollisuusVaihe.getValintakokeet(), Matchers.hasSize(2));
 
-    Valintakoe kielikoetulos = kielikokeenPakollisuusVaihe.getValintakokeet().get(0);
+    Valintakoe kielikoetulos = kielikokeenPakollisuusVaihe.getValintakokeetAsList().get(0);
     assertThat(
         kielikoetulos,
         having(on(Valintakoe.class).getValintakoeTunniste(), equalTo("kielikoe_fi")));
@@ -204,7 +204,7 @@ public class ValintalaskentaResourceIntegrationTest {
         having(on(OsallistuminenTulos.class).getLaskentaTila(), equalTo(HYVAKSYTTAVISSA.name())));
 
     OsallistuminenTulos toisenKokeenOsallistuminenTulos =
-        kielikokeenPakollisuusVaihe.getValintakokeet().get(1).getOsallistuminenTulos();
+        kielikokeenPakollisuusVaihe.getValintakokeetAsList().get(1).getOsallistuminenTulos();
     assertThat(
         toisenKokeenOsallistuminenTulos,
         having(on(OsallistuminenTulos.class).getOsallistuminen(), equalTo(EI_OSALLISTU)));
@@ -216,9 +216,9 @@ public class ValintalaskentaResourceIntegrationTest {
         having(on(OsallistuminenTulos.class).getLaskentaTila(), equalTo(HYVAKSYTTAVISSA.name())));
 
     ValintakoeValinnanvaihe paasykoeVaihe =
-        osallistumisenHakutoiveJohonOnKielikoe.getValintakoeValinnanvaiheet().get(1);
+        osallistumisenHakutoiveJohonOnKielikoe.getValintakoeValinnanvaiheetAsList().get(1);
     assertThat(paasykoeVaihe.getValintakokeet(), Matchers.hasSize(1));
-    Valintakoe paasykoeTulos = paasykoeVaihe.getValintakokeet().get(0);
+    Valintakoe paasykoeTulos = paasykoeVaihe.getValintakokeetAsList().get(0);
     assertThat(
         paasykoeTulos,
         having(

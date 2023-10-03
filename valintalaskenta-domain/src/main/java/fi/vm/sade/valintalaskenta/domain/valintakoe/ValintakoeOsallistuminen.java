@@ -1,12 +1,12 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceCreator;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Table;
 
 public class ValintakoeOsallistuminen {
   @Id
@@ -24,7 +24,14 @@ public class ValintakoeOsallistuminen {
 
   private Date createdAt;
 
-  private List<Hakutoive> hakutoiveet = new ArrayList<>();
+  private final Set<Hakutoive> hakutoiveet = new HashSet<>();
+
+  public ValintakoeOsallistuminen() {}
+
+  @PersistenceCreator
+  public ValintakoeOsallistuminen(Set<Hakutoive> hakutoiveet) {
+    this.hakutoiveet.addAll(hakutoiveet);
+  }
 
   public UUID getId() {
     return id;
@@ -58,12 +65,17 @@ public class ValintakoeOsallistuminen {
     this.hakijaOid = hakijaOid;
   }
 
-  public List<Hakutoive> getHakutoiveet() {
+  public Set<Hakutoive> getHakutoiveet() {
     return hakutoiveet;
   }
 
-  public void setHakutoiveet(List<Hakutoive> hakutoiveet) {
-    this.hakutoiveet = hakutoiveet;
+  public List<Hakutoive> getHakutoiveetAsList() {
+    return new ArrayList<>(hakutoiveet);
+  }
+
+  public void setHakutoiveet(Set<Hakutoive> hakutoiveet) {
+    this.hakutoiveet.clear();
+    this.hakutoiveet.addAll(hakutoiveet);
   }
 
   public Date getCreatedAt() {

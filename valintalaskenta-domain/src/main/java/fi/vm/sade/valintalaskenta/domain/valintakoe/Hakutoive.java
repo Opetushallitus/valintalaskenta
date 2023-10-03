@@ -1,10 +1,11 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceCreator;
+import org.springframework.data.annotation.Transient;
 
 
 public class Hakutoive {
@@ -14,10 +15,17 @@ public class Hakutoive {
 
   private String hakukohdeOid;
 
-  private String laskettavaHakukohdeOid;
+  private final Set<ValintakoeValinnanvaihe> valintakoeValinnanvaiheet = new HashSet<>();
 
-  private List<ValintakoeValinnanvaihe> valintakoeValinnanvaiheet;
+  @Transient
   private ValintakoeOsallistuminen valintakoeOsallistuminen;
+
+  public Hakutoive() {}
+
+  @PersistenceCreator
+  public Hakutoive(Set<ValintakoeValinnanvaihe> valintakoeValinnanvaiheet) {
+    this.valintakoeValinnanvaiheet.addAll(valintakoeValinnanvaiheet);
+  }
 
   public String getHakukohdeOid() {
     return hakukohdeOid;
@@ -25,14 +33,6 @@ public class Hakutoive {
 
   public void setHakukohdeOid(String hakukohdeOid) {
     this.hakukohdeOid = hakukohdeOid;
-  }
-
-  public String getLaskettavaHakukohdeOid() {
-    return laskettavaHakukohdeOid;
-  }
-
-  public void setLaskettavaHakukohdeOid(String laskettavaHakukohdeOid) {
-    this.laskettavaHakukohdeOid = laskettavaHakukohdeOid;
   }
 
   public UUID getId() {
@@ -51,12 +51,17 @@ public class Hakutoive {
     this.valintakoeOsallistuminen = valintakoeOsallistuminen;
   }
 
-  public List<ValintakoeValinnanvaihe> getValintakoeValinnanvaiheet() {
+  public Set<ValintakoeValinnanvaihe> getValintakoeValinnanvaiheet() {
     return valintakoeValinnanvaiheet;
   }
 
-  public void setValintakoeValinnanvaiheet(List<ValintakoeValinnanvaihe> valintakoeValinnanvaiheet) {
-    this.valintakoeValinnanvaiheet = valintakoeValinnanvaiheet;
+  public List<ValintakoeValinnanvaihe> getValintakoeValinnanvaiheetAsList() {
+    return new ArrayList<>(valintakoeValinnanvaiheet);
+  }
+
+  public void setValintakoeValinnanvaiheet(Set<ValintakoeValinnanvaihe> valintakoeValinnanvaiheet) {
+    this.valintakoeValinnanvaiheet.clear();
+    this.valintakoeValinnanvaiheet.addAll(valintakoeValinnanvaiheet);
   }
 
   @Override

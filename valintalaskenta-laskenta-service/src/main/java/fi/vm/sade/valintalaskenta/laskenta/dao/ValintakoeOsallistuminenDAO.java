@@ -8,8 +8,6 @@ public interface ValintakoeOsallistuminenDAO {
 
   void createOrUpdate(ValintakoeOsallistuminen v);
 
-  List<ValintakoeOsallistuminen> readAll();
-
   public ValintakoeOsallistuminen haeEdeltavaValinnanvaihe(
       String hakuOid, String hakukohdeOid, int jarjestysnumero);
 }

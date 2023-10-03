@@ -51,11 +51,11 @@ public class ValintakoeOsallistuminenDAOTest {
 
     assertEquals(vko.getHakemusOid(), hakemusOid);
     assertEquals(1, vko.getHakutoiveet().size());
-    Hakutoive hakutoive = vko.getHakutoiveet().get(0);
+    Hakutoive hakutoive = vko.getHakutoiveetAsList().get(0);
     assertEquals(2, hakutoive.getValintakoeValinnanvaiheet().size());
-    ValintakoeValinnanvaihe vaihe = hakutoive.getValintakoeValinnanvaiheet().get(0);
+    ValintakoeValinnanvaihe vaihe = hakutoive.getValintakoeValinnanvaiheetAsList().get(0);
     assertEquals(1, vaihe.getValintakokeet().size());
-    Valintakoe koe = vaihe.getValintakokeet().get(0);
+    Valintakoe koe = vaihe.getValintakokeetAsList().get(0);
     assertEquals(koe.getOsallistuminen(), osallistuminen);
   }
 
@@ -78,7 +78,7 @@ public class ValintakoeOsallistuminenDAOTest {
         vko.getHakutoiveet().stream()
             .flatMap(
                 h ->
-                    h.getValintakoeValinnanvaiheet().get(0).getValintakokeet().stream()
+                    h.getValintakoeValinnanvaiheetAsList().get(0).getValintakokeet().stream()
                         .filter(koe -> "kielikoe_fi".equals(koe.getValintakoeTunniste())))
             .findFirst();
     assertThat(kielikoeOpt, OptionalMatchers.isPresent());

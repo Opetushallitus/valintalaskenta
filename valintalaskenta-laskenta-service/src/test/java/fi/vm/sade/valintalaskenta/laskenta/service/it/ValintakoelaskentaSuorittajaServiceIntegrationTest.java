@@ -168,22 +168,22 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     assertNotNull(osallistuminen);
     assertEquals(
         osallistuminen
-            .getHakutoiveet()
+            .getHakutoiveetAsList()
             .get(0)
-            .getValintakoeValinnanvaiheet()
+            .getValintakoeValinnanvaiheetAsList()
             .get(0)
-            .getValintakokeet()
+            .getValintakokeetAsList()
             .get(0)
             .getOsallistuminenTulos()
             .getOsallistuminen(),
         OSALLISTUU);
     assertEquals(
         osallistuminen
-            .getHakutoiveet()
+            .getHakutoiveetAsList()
             .get(0)
-            .getValintakoeValinnanvaiheet()
+            .getValintakoeValinnanvaiheetAsList()
             .get(0)
-            .getValintakokeet()
+            .getValintakokeetAsList()
             .get(1)
             .getOsallistuminenTulos()
             .getOsallistuminen(),
@@ -228,23 +228,23 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     assertEquals(
         OSALLISTUU,
         osallistuminen
-            .getHakutoiveet()
+            .getHakutoiveetAsList()
             .get(0)
-            .getValintakoeValinnanvaiheet()
+            .getValintakoeValinnanvaiheetAsList()
             .get(0)
-            .getValintakokeet()
+            .getValintakokeetAsList()
             .get(0)
             .getOsallistuminenTulos()
             .getOsallistuminen());
     assertEquals(
         VALINNANVAIHE_HAKIJAN_VALINTA,
-        osallistuminen.getHakutoiveet().get(0).getValintakoeValinnanvaiheet().get(0).getValinnanvaihe().getValinnanVaiheOid());
+        osallistuminen.getHakutoiveetAsList().get(0).getValintakoeValinnanvaiheetAsList().get(0).getValinnanvaihe().getValinnanVaiheOid());
     assertEquals(
         Integer.valueOf(100),
         osallistuminen
-            .getHakutoiveet()
+            .getHakutoiveetAsList()
             .get(0)
-            .getValintakoeValinnanvaiheet()
+            .getValintakoeValinnanvaiheetAsList()
             .get(0)
             .getValinnanVaiheJarjestysluku());
     assertEquals(1, osallistuminen.getHakutoiveet().size());
@@ -399,8 +399,8 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     assertTrue(hakutoive1.isPresent());
 
     assertEquals(2, hakutoive1.get().getValintakoeValinnanvaiheet().size());
-    assertEquals(1, hakutoive1.get().getValintakoeValinnanvaiheet().get(0).getValintakokeet().size());
-    assertEquals(1, hakutoive1.get().getValintakoeValinnanvaiheet().get(1).getValintakokeet().size());
+    assertEquals(1, hakutoive1.get().getValintakoeValinnanvaiheetAsList().get(0).getValintakokeet().size());
+    assertEquals(1, hakutoive1.get().getValintakoeValinnanvaiheetAsList().get(1).getValintakokeet().size());
 
     final Optional<Valintakoe> valintakoetunniste1 =
         hakutoive1.get().getValintakoeValinnanvaiheet().stream()
@@ -427,7 +427,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     assertTrue(hakutoive2.isPresent());
 
     assertEquals(1, hakutoive2.get().getValintakoeValinnanvaiheet().size());
-    assertEquals(2, hakutoive2.get().getValintakoeValinnanvaiheet().get(0).getValintakokeet().size());
+    assertEquals(2, hakutoive2.get().getValintakoeValinnanvaiheetAsList().get(0).getValintakokeet().size());
 
     final Optional<Valintakoe> valintakoetunniste3 =
         hakutoive2.get().getValintakoeValinnanvaiheet().stream()
@@ -620,8 +620,8 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     assertTrue(hakutoive1.isPresent());
 
     assertEquals(2, hakutoive1.get().getValintakoeValinnanvaiheet().size());
-    assertEquals(1, hakutoive1.get().getValintakoeValinnanvaiheet().get(0).getValintakokeet().size());
-    assertEquals(1, hakutoive1.get().getValintakoeValinnanvaiheet().get(1).getValintakokeet().size());
+    assertEquals(1, hakutoive1.get().getValintakoeValinnanvaiheetAsList().get(0).getValintakokeet().size());
+    assertEquals(1, hakutoive1.get().getValintakoeValinnanvaiheetAsList().get(1).getValintakokeet().size());
 
     final Optional<Valintakoe> valintakoetunniste1 =
         hakutoive1.get().getValintakoeValinnanvaiheet().stream()
@@ -648,7 +648,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     assertTrue(hakutoive2.isPresent());
 
     assertEquals(1, hakutoive2.get().getValintakoeValinnanvaiheet().size());
-    assertEquals(1, hakutoive2.get().getValintakoeValinnanvaiheet().get(0).getValintakokeet().size());
+    assertEquals(1, hakutoive2.get().getValintakoeValinnanvaiheetAsList().get(0).getValintakokeet().size());
 
     final Optional<Valintakoe> valintakoetunniste2 =
         hakutoive2.get().getValintakoeValinnanvaiheet().stream()
@@ -805,10 +805,10 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
     assertEquals(1, osallistuminen.getHakutoiveet().size());
 
-    Hakutoive hakutoive1 = osallistuminen.getHakutoiveet().get(0);
+    Hakutoive hakutoive1 = osallistuminen.getHakutoiveetAsList().get(0);
     assertEquals(1, hakutoive1.getValintakoeValinnanvaiheet().size());
 
-    assertEquals(2, hakutoive1.getValintakoeValinnanvaiheet().get(0).getValintakokeet().size());
+    assertEquals(2, hakutoive1.getValintakoeValinnanvaiheetAsList().get(0).getValintakokeet().size());
 
     final Optional<Valintakoe> valintakoetunniste2 =
         hakutoive1.getValintakoeValinnanvaiheet().stream()
@@ -942,9 +942,9 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
     assertEquals(2, osallistuminen.getHakutoiveet().size());
 
-    Hakutoive hakutoive1 = osallistuminen.getHakutoiveet().get(0);
+    Hakutoive hakutoive1 = osallistuminen.getHakutoiveetAsList().get(0);
     assertEquals(1, hakutoive1.getValintakoeValinnanvaiheet().size());
-    assertEquals(1, hakutoive1.getValintakoeValinnanvaiheet().get(0).getValintakokeet().size());
+    assertEquals(1, hakutoive1.getValintakoeValinnanvaiheetAsList().get(0).getValintakokeet().size());
 
     final Optional<Valintakoe> valintakoetunniste2 =
         hakutoive1.getValintakoeValinnanvaiheet().stream()
@@ -955,9 +955,9 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     assertEquals(
         OSALLISTUU, valintakoetunniste2.get().getOsallistuminenTulos().getOsallistuminen());
 
-    Hakutoive hakutoive2 = osallistuminen.getHakutoiveet().get(1);
+    Hakutoive hakutoive2 = osallistuminen.getHakutoiveetAsList().get(1);
     assertEquals(1, hakutoive2.getValintakoeValinnanvaiheet().size());
-    assertEquals(1, hakutoive2.getValintakoeValinnanvaiheet().get(0).getValintakokeet().size());
+    assertEquals(1, hakutoive2.getValintakoeValinnanvaiheetAsList().get(0).getValintakokeet().size());
 
     final Optional<Valintakoe> valintakoetunniste1 =
         hakutoive2.getValintakoeValinnanvaiheet().stream()
@@ -1031,15 +1031,15 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
     assertEquals(hakemusOid, osallistuminen.getHakemusOid());
     assertEquals(1, osallistuminen.getHakutoiveet().size());
 
-    Hakutoive hakutoive = osallistuminen.getHakutoiveet().get(0);
+    Hakutoive hakutoive = osallistuminen.getHakutoiveetAsList().get(0);
     assertEquals(hakukohdeOid, hakutoive.getHakukohdeOid());
 
     assertEquals(1, hakutoive.getValintakoeValinnanvaiheet().size());
-    ValintakoeValinnanvaihe vv = hakutoive.getValintakoeValinnanvaiheet().get(0);
+    ValintakoeValinnanvaihe vv = hakutoive.getValintakoeValinnanvaiheetAsList().get(0);
     assertEquals(valinnanVaiheOid, vv.getValinnanvaihe().getValinnanVaiheOid());
     assertEquals(1, vv.getValintakokeet().size());
 
-    Valintakoe koe = vv.getValintakokeet().get(0);
+    Valintakoe koe = vv.getValintakokeetAsList().get(0);
     assertEquals(valintakoetunniste, koe.getValintakoeTunniste());
     assertEquals(EI_OSALLISTU, koe.getOsallistuminenTulos().getOsallistuminen());
   }
@@ -1092,28 +1092,28 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
     assertNotNull(osallistuminen);
 
-    assertEquals(hakukohdeOid1, osallistuminen.getHakutoiveet().get(0).getHakukohdeOid());
+    assertEquals(hakukohdeOid1, osallistuminen.getHakutoiveetAsList().get(0).getHakukohdeOid());
     assertEquals(
         EI_OSALLISTU,
         osallistuminen
-            .getHakutoiveet()
+            .getHakutoiveetAsList()
             .get(0)
-            .getValintakoeValinnanvaiheet()
+            .getValintakoeValinnanvaiheetAsList()
             .get(0)
-            .getValintakokeet()
+            .getValintakokeetAsList()
             .get(0)
             .getOsallistuminenTulos()
             .getOsallistuminen());
 
-    assertEquals(hakukohdeOid2, osallistuminen.getHakutoiveet().get(1).getHakukohdeOid());
+    assertEquals(hakukohdeOid2, osallistuminen.getHakutoiveetAsList().get(1).getHakukohdeOid());
     assertEquals(
         OSALLISTUU,
         osallistuminen
-            .getHakutoiveet()
+            .getHakutoiveetAsList()
             .get(1)
-            .getValintakoeValinnanvaiheet()
+            .getValintakoeValinnanvaiheetAsList()
             .get(0)
-            .getValintakokeet()
+            .getValintakokeetAsList()
             .get(0)
             .getOsallistuminenTulos()
             .getOsallistuminen());
@@ -1143,49 +1143,49 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
     assertTrue(osallistuminen.getHakutoiveet().size() == 2);
 
-    osallistuminen.getHakutoiveet().sort(Comparator.comparing(Hakutoive::getHakukohdeOid));
+    osallistuminen.getHakutoiveetAsList().sort(Comparator.comparing(Hakutoive::getHakukohdeOid));
 
     assertTrue(
-        osallistuminen.getHakutoiveet().get(0).getValintakoeValinnanvaiheet().get(0).getValintakokeet().size()
+        osallistuminen.getHakutoiveetAsList().get(0).getValintakoeValinnanvaiheetAsList().get(0).getValintakokeet().size()
             == 3);
     assertTrue(
-        osallistuminen.getHakutoiveet().get(1).getValintakoeValinnanvaiheet().get(0).getValintakokeet().size()
+        osallistuminen.getHakutoiveetAsList().get(1).getValintakoeValinnanvaiheetAsList().get(0).getValintakokeet().size()
             == 3);
 
     osallistuminen
-        .getHakutoiveet()
+        .getHakutoiveetAsList()
         .get(0)
-        .getValintakoeValinnanvaiheet()
+        .getValintakoeValinnanvaiheetAsList()
         .get(0)
-        .getValintakokeet()
+        .getValintakokeetAsList()
         .sort(Comparator.comparing(Valintakoe::getValintakoeTunniste));
     osallistuminen
-        .getHakutoiveet()
+        .getHakutoiveetAsList()
         .get(1)
-        .getValintakoeValinnanvaiheet()
+        .getValintakoeValinnanvaiheetAsList()
         .get(0)
-        .getValintakokeet()
+        .getValintakokeetAsList()
         .sort(Comparator.comparing(Valintakoe::getValintakoeTunniste));
 
     assertEquals(
         OSALLISTUU,
         osallistuminen
-            .getHakutoiveet()
+            .getHakutoiveetAsList()
             .get(1)
-            .getValintakoeValinnanvaiheet()
+            .getValintakoeValinnanvaiheetAsList()
             .get(0)
-            .getValintakokeet()
+            .getValintakokeetAsList()
             .get(1)
             .getOsallistuminenTulos()
             .getOsallistuminen());
     assertEquals(
         EI_OSALLISTU,
         osallistuminen
-            .getHakutoiveet()
+            .getHakutoiveetAsList()
             .get(0)
-            .getValintakoeValinnanvaiheet()
+            .getValintakoeValinnanvaiheetAsList()
             .get(0)
-            .getValintakokeet()
+            .getValintakokeetAsList()
             .get(1)
             .getOsallistuminenTulos()
             .getOsallistuminen());
@@ -1210,12 +1210,12 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
     assertEquals(1, osallistuminen.getHakutoiveet().size());
 
-    Hakutoive osallistumisenHakutoiveJohonOnKielikoe = osallistuminen.getHakutoiveet().get(0);
+    Hakutoive osallistumisenHakutoiveJohonOnKielikoe = osallistuminen.getHakutoiveetAsList().get(0);
     ValintakoeValinnanvaihe kielikokeenPakollisuusVaihe =
-        osallistumisenHakutoiveJohonOnKielikoe.getValintakoeValinnanvaiheet().get(0);
+        osallistumisenHakutoiveJohonOnKielikoe.getValintakoeValinnanvaiheetAsList().get(0);
     assertEquals(1, kielikokeenPakollisuusVaihe.getValintakokeet().size());
 
-    Valintakoe kielikoetulos = kielikokeenPakollisuusVaihe.getValintakokeet().get(0);
+    Valintakoe kielikoetulos = kielikokeenPakollisuusVaihe.getValintakokeetAsList().get(0);
     OsallistuminenTulos kielikoetulosOsallistuminenTulos = kielikoetulos.getOsallistuminenTulos();
 
     assertThat(
@@ -1251,12 +1251,12 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
     assertEquals(1, osallistuminen.getHakutoiveet().size());
 
-    Hakutoive osallistumisenHakutoiveJohonOnKielikoe = osallistuminen.getHakutoiveet().get(0);
+    Hakutoive osallistumisenHakutoiveJohonOnKielikoe = osallistuminen.getHakutoiveetAsList().get(0);
     ValintakoeValinnanvaihe kielikokeenPakollisuusVaihe =
-        osallistumisenHakutoiveJohonOnKielikoe.getValintakoeValinnanvaiheet().get(0);
+        osallistumisenHakutoiveJohonOnKielikoe.getValintakoeValinnanvaiheetAsList().get(0);
     assertEquals(1, kielikokeenPakollisuusVaihe.getValintakokeet().size());
 
-    Valintakoe kielikoetulos = kielikokeenPakollisuusVaihe.getValintakokeet().get(0);
+    Valintakoe kielikoetulos = kielikokeenPakollisuusVaihe.getValintakokeetAsList().get(0);
     OsallistuminenTulos kielikoetulosOsallistuminenTulos = kielikoetulos.getOsallistuminenTulos();
 
     assertThat(
@@ -1292,12 +1292,12 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest {
 
     assertEquals(1, osallistuminen.getHakutoiveet().size());
 
-    Hakutoive osallistumisenHakutoiveJohonOnKielikoe = osallistuminen.getHakutoiveet().get(0);
+    Hakutoive osallistumisenHakutoiveJohonOnKielikoe = osallistuminen.getHakutoiveetAsList().get(0);
     ValintakoeValinnanvaihe kielikokeenPakollisuusVaihe =
-        osallistumisenHakutoiveJohonOnKielikoe.getValintakoeValinnanvaiheet().get(0);
+        osallistumisenHakutoiveJohonOnKielikoe.getValintakoeValinnanvaiheetAsList().get(0);
     assertEquals(1, kielikokeenPakollisuusVaihe.getValintakokeet().size());
 
-    Valintakoe kielikoetulos = kielikokeenPakollisuusVaihe.getValintakokeet().get(0);
+    Valintakoe kielikoetulos = kielikokeenPakollisuusVaihe.getValintakokeetAsList().get(0);
     OsallistuminenTulos kielikoetulosOsallistuminenTulos = kielikoetulos.getOsallistuminenTulos();
 
     assertThat(

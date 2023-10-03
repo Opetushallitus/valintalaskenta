@@ -61,7 +61,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
       dto.setHakijaOid(vko.getHakijaOid());
       dto.setHakuOid(vko.getHakuOid());
       dto.setSukunimi(vko.getSukunimi());
-      dto.setHakutoiveet(convertHakutoive(vko.getHakutoiveet()));
+      dto.setHakutoiveet(convertHakutoive(vko.getHakutoiveetAsList()));
       dtot.add(dto);
     }
     return dtot;
@@ -73,7 +73,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
     for (Hakutoive ht : hakutoiveet) {
       HakutoiveDTO dto = new HakutoiveDTO();
       dto.setHakukohdeOid(ht.getHakukohdeOid());
-      dto.setValinnanVaiheet(convertValinnanVaihe(ht.getValintakoeValinnanvaiheet()));
+      dto.setValinnanVaiheet(convertValinnanVaihe(ht.getValintakoeValinnanvaiheetAsList()));
       dtot.add(dto);
     }
     return dtot;
@@ -87,7 +87,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
       ValintakoeValinnanvaiheDTO dto = new ValintakoeValinnanvaiheDTO();
       dto.setValinnanVaiheJarjestysluku(vv.getValinnanVaiheJarjestysluku());
       dto.setValinnanVaiheOid(vv.getValinnanvaihe().getValinnanVaiheOid());
-      dto.setValintakokeet(convertValintakoe(vv.getValintakokeet()));
+      dto.setValintakokeet(convertValintakoe(vv.getValintakokeetAsList()));
       dtot.add(dto);
     }
     return dtot;
