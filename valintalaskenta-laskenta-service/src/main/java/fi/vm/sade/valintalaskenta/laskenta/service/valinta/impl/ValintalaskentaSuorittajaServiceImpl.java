@@ -20,12 +20,7 @@ import fi.vm.sade.service.valintaperusteet.service.validointi.virhe.Laskentakaav
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
-import fi.vm.sade.valintalaskenta.domain.valinta.HakijaryhmaEntity;
-import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
-import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
-import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.HakijaryhmaService;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
@@ -331,7 +326,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
       Map<String, Hakemukset> hakemuksetHakukohteittain,
       boolean korkeakouluhaku) {
     if (!hakijaryhmat.isEmpty()) {
-      List<HakijaryhmaEntity> vanhatHakijaryhmat = hakijaryhmaDAO.haeHakijaryhmat(hakukohdeOid);
+      List<Hakijaryhma> vanhatHakijaryhmat = hakijaryhmaDAO.haeHakijaryhmat(hakukohdeOid);
       hakijaryhmat.parallelStream()
           .forEach(
               h -> {
@@ -351,7 +346,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                   return;
                 }
 
-                HakijaryhmaEntity hakijaryhma = haeTaiLuoHakijaryhma(h);
+                Hakijaryhma hakijaryhma = haeTaiLuoHakijaryhma(h);
 
                 Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan = new HashMap<>();
                 Map<String, String> hakukohteenValintaperusteet =
@@ -402,17 +397,17 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                 }
 
                 for (JonosijaJaSyotetytArvot js : jonosijatHakemusOidinMukaan.values()) {
-                  hakijaryhma.getJonosijat().add(createJonosija(js));
+                  hakijaryhma.jonosija.add(createJonosija(js));
                 }
-                List<HakijaryhmaEntity> vanhatSamallaOidilla =
+                List<Hakijaryhma> vanhatSamallaOidilla =
                     vanhatHakijaryhmat.stream()
                         .filter(
-                            vh -> vh.getHakijaryhmaOid().equals(hakijaryhma.getHakijaryhmaOid()))
-                        .collect(Collectors.toList());
+                            vh -> vh.hakijaryhmaOid.equals(hakijaryhma.hakijaryhmaOid))
+                        .toList();
                 LOG.info(
                     "(Uuid={}) Persistoidaan hakijaryhmä {} ja poistetaan sen aiemmat versiot ({} kpl).",
                     uuid,
-                    hakijaryhma.getHakijaryhmaOid(),
+                    hakijaryhma.hakijaryhmaOid,
                     vanhatSamallaOidilla.size());
                 vanhatSamallaOidilla.forEach(hakijaryhmaDAO::poistaHakijaryhma);
                 hakijaryhmaDAO.createWithoutAuditLogging(hakijaryhma);
@@ -702,42 +697,42 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             .collect(Collectors.toList());
 
     hakijaryhmaDAO.haeHakijaryhmat(hakukohdeOid).stream()
-        .filter(h -> !oidit.contains(h.getHakijaryhmaOid()))
+        .filter(h -> !oidit.contains(h.hakijaryhmaOid))
         .forEach(
             h -> {
               LOG.info(
                   "(Uuid={}) Poistetaan hakukohteelta {} hakijaryhmä {}, jota ei löydy enää valintaperusteista.",
                   uuid,
                   hakukohdeOid,
-                  h.getHakijaryhmaOid());
+                  h.hakijaryhmaOid);
               hakijaryhmaDAO.poistaHakijaryhma(h);
             });
   }
 
-  private HakijaryhmaEntity haeTaiLuoHakijaryhma(ValintaperusteetHakijaryhmaDTO dto) {
-    HakijaryhmaEntity hakijaryhma = hakijaryhmaDAO.haeHakijaryhma(dto.getOid()).orElse(new HakijaryhmaEntity());
-    hakijaryhma.setHakijaryhmaOid(dto.getOid());
-    hakijaryhma.setHakukohdeOid(dto.getHakukohdeOid());
-    hakijaryhma.setKaytaKaikki(dto.isKaytaKaikki());
-    hakijaryhma.setKaytetaanRyhmaanKuuluvia(dto.isKaytetaanRyhmaanKuuluvia());
-    hakijaryhma.setKiintio(dto.getKiintio());
-    hakijaryhma.setKuvaus(dto.getKuvaus());
-    hakijaryhma.setNimi(dto.getNimi());
-    hakijaryhma.setPrioriteetti(dto.getPrioriteetti());
-    hakijaryhma.setTarkkaKiintio(dto.isTarkkaKiintio());
-    hakijaryhma.setValintatapajonoOid(dto.getValintatapajonoOid());
+  private Hakijaryhma haeTaiLuoHakijaryhma(ValintaperusteetHakijaryhmaDTO dto) {
+    Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma(dto.getOid()).orElse(new Hakijaryhma());
+    hakijaryhma.hakijaryhmaOid = dto.getOid();
+    hakijaryhma.hakukohdeOid = dto.getHakukohdeOid();
+    hakijaryhma.kaytaKaikki = dto.isKaytaKaikki();
+    hakijaryhma.kaytetaanRyhmaanKuuluvia = dto.isKaytetaanRyhmaanKuuluvia();
+    hakijaryhma.kiintio = dto.getKiintio();
+    hakijaryhma.kuvaus = dto.getKuvaus();
+    hakijaryhma.nimi = dto.getNimi();
+    hakijaryhma.prioriteetti = dto.getPrioriteetti();
+    hakijaryhma.tarkkaKiintio = dto.isTarkkaKiintio();
+    hakijaryhma.valintatapajonoOid = dto.getValintatapajonoOid();
     if (dto.getHakijaryhmatyyppikoodi() != null) {
-      hakijaryhma.setHakijaryhmatyyppiKoodiuri(dto.getHakijaryhmatyyppikoodi().getUri());
+      hakijaryhma.hakijaryhmaOid = dto.getHakijaryhmatyyppikoodi().getUri();
     }
-
-    poistaVanhatHistoriat(hakijaryhma);
-    hakijaryhma.getJonosijat().clear();
+    //TODO: remove or implement differently in OK-384
+    //poistaVanhatHistoriat(hakijaryhma);
+    hakijaryhma.jonosija.clear();
 
     return hakijaryhma;
   }
 
-  private void poistaVanhatHistoriat(HakijaryhmaEntity hakijaryhma) {
-    for (Jonosija jonosija : hakijaryhma.getJonosijat()) {
+  private void poistaVanhatHistoriat(Hakijaryhma hakijaryhma) {
+    for (Jonosija jonosija : hakijaryhma.jonosija) {
       for (Jarjestyskriteeritulos tulos : jonosija.getJarjestyskriteeritulokset()) {
         //jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
       }

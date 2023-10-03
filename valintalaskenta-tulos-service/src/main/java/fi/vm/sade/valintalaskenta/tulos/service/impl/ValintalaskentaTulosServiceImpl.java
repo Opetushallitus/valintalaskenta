@@ -19,16 +19,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminen
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValintatapajonoDTO;
-import fi.vm.sade.valintalaskenta.domain.valinta.HakijaryhmaEntity;
-import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvarainenHyvaksyminen;
-import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvaraisuusTila;
-import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
-import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
-import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
-import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
-import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
@@ -312,6 +303,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
    */
   @Override
   public List<MinimalJonoDTO> haeSijoittelunKayttamatJonotIlmanValintalaskentaa() {
+    //TODO: check code below
     return null;
 /*    List<ValintatapajonoMigrationDTO> validValintatapajonos =
         valinnanvaiheDAO.valintatapajonotJotkaEivatKaytaLaskentaa();
@@ -371,7 +363,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
   @Override
   public List<HakijaryhmaDTO> haeHakijaryhmatHakukohteelle(String hakukohdeoid) {
-    List<HakijaryhmaEntity> hakijaryhmat = hakijaryhmaDAO.readByHakukohdeOid(hakukohdeoid);
+    List<Hakijaryhma> hakijaryhmat = hakijaryhmaDAO.readByHakukohdeOid(hakukohdeoid);
     return modelMapper.mapList(hakijaryhmat, HakijaryhmaDTO.class);
   }
 

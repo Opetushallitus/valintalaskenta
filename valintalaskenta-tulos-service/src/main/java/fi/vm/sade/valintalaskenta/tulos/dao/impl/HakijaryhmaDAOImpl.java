@@ -1,6 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
-import fi.vm.sade.valintalaskenta.domain.valinta.HakijaryhmaEntity;
+import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
 import fi.vm.sade.valintalaskenta.tulos.dao.HakijaryhmaDAO;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,8 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
   private static final Logger LOGGER = LoggerFactory.getLogger(HakijaryhmaDAOImpl.class);
 
   @Override
-  public List<HakijaryhmaEntity> readByHakukohdeOid(String hakukohdeoid) {
+  public List<Hakijaryhma> readByHakukohdeOid(String hakukohdeoid) {
+    //TODO: Check code below
 /*    List<HakijaryhmaMigrationDTO> ryhmat =
         datastore
             .createQuery(HakijaryhmaMigrationDTO.class)
