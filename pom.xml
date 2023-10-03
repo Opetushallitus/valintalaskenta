@@ -23,7 +23,6 @@
     </modules>
 
     <properties>
-        <valintaperusteet.version>5.17-SNAPSHOT</valintaperusteet.version>
         <valinta-sharedutils.version>5.11-SNAPSHOT</valinta-sharedutils.version>
         <sijoittelu.version>7.6.0-SNAPSHOT</sijoittelu.version>
 
@@ -83,7 +82,7 @@
             <dependency>
                 <groupId>fi.vm.sade.valintaperusteet</groupId>
                 <artifactId>valintaperusteet-api</artifactId>
-                <version>${valintaperusteet.version}</version>
+                <version>5.17-SNAPSHOT</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.servlet</groupId>
@@ -98,7 +97,7 @@
             <dependency>
                 <groupId>fi.vm.sade.valintaperusteet</groupId>
                 <artifactId>valintaperusteet-laskenta</artifactId>
-                <version>${valintaperusteet.version}</version>
+                <version>6.1-SNAPSHOT</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.jboss.spec.javax.transaction</groupId>
