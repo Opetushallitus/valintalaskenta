@@ -29,9 +29,7 @@ public class ValintakoeOsallistuminenDAOTest extends AbstractIntegrationTest {
   private static ValintakoeValinnanvaihe luoValinnanVaihe(
       String valinnanVaiheOid, int valinnanVaiheJarjestysluku) {
     ValintakoeValinnanvaihe valinnanVaihe = new ValintakoeValinnanvaihe();
-    Valinnanvaihe vaihe = new Valinnanvaihe();
-    vaihe.setValinnanVaiheOid(valinnanVaiheOid);
-    valinnanVaihe.setValinnanvaihe(vaihe);
+    valinnanVaihe.setValinnanvaiheOid(valinnanVaiheOid);
     valinnanVaihe.setValinnanVaiheJarjestysluku(valinnanVaiheJarjestysluku);
     return valinnanVaihe;
   }

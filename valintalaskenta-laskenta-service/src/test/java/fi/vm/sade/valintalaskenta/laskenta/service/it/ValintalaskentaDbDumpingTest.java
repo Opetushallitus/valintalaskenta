@@ -137,8 +137,7 @@ public class ValintalaskentaDbDumpingTest {
               .getValintatapajono()
               .forEach(
                   jono -> {
-                    List<Jonosija> sailytettavatJonosijat = new LinkedList<>();
-                    List<String> sailytettavatJonosijaIdt = new LinkedList<>();
+                    Set<Jonosija> sailytettavatJonosijat = new HashSet<>();
                     jono.getJonosijat()
                         .forEach(
                             jonosija -> {
@@ -147,14 +146,14 @@ public class ValintalaskentaDbDumpingTest {
                                 sailytettavatJonot.add(jono);
                               }
                             });
-                    jono.getJonosijat().stream().map(Jonosija::getId).collect(Collectors.toList())
+/*                    jono.getJonosijat().stream().map(Jonosija::getId).collect(Collectors.toList())
                         .forEach(
                             id -> {
                               if (sailytettavatJonosijat.stream()
                                   .anyMatch(sailytettava -> sailytettava.getId().equals(id))) {
                                 sailytettavatJonosijaIdt.add(id.toString());
                               }
-                            });
+                            });*/
                     jono.setJonosijat(sailytettavatJonosijat);
                     //jono.setJonosijaIdt(sailytettavatJonosijaIdt);
                   });

@@ -79,7 +79,7 @@ public class EdellinenValinnanvaiheKasittelija {
 
     List<TilaJaSelite> tilat = new ArrayList<>();
     for (final Valintatapajono jono : edellinenValinnanvaihe.getValintatapajono()) {
-      Jonosija jonosija = getJonosijaForHakemus(hakemusOid, jono.getJonosijat());
+      Jonosija jonosija = getJonosijaForHakemus(hakemusOid, jono.getJonosijatAsList());
 
       TilaJaSelite tilaJonossa;
       if (jonosija == null) {

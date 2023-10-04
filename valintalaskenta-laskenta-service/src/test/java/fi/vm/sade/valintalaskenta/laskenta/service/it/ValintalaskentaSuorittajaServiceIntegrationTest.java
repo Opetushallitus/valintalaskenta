@@ -269,10 +269,10 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         assertEquals(valintatapajonoOid1, jono.getValintatapajonoOid());
 
         assertEquals(2, jono.getJonosijat().size());
-        Collections.sort(jono.getJonosijat(), jonosijaComparator);
+        jono.getJonosijatAsList().sort(jonosijaComparator);
 
         {
-          Jonosija jonosija1 = jono.getJonosijat().get(0);
+          Jonosija jonosija1 = jono.getJonosijatAsList().get(0);
           assertEquals(hakemusOid1, jonosija1.getHakemusOid());
           assertEquals(hakijaOid1, jonosija1.getHakijaOid());
           assertEquals(1, jonosija1.getHakutoiveprioriteetti());
@@ -309,7 +309,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         }
 
         {
-          Jonosija jonosija2 = jono.getJonosijat().get(1);
+          Jonosija jonosija2 = jono.getJonosijatAsList().get(1);
           assertEquals(hakemusOid2, jonosija2.getHakemusOid());
           assertEquals(hakijaOid2, jonosija2.getHakijaOid());
           assertEquals(2, jonosija2.getHakutoiveprioriteetti());
@@ -349,10 +349,10 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         assertEquals(valintatapajonoOid2, jono.getValintatapajonoOid());
 
         assertEquals(2, jono.getJonosijat().size());
-        Collections.sort(jono.getJonosijat(), jonosijaComparator);
+        jono.getJonosijatAsList().sort(jonosijaComparator);
 
         {
-          Jonosija jonosija = jono.getJonosijat().get(0);
+          Jonosija jonosija = jono.getJonosijatAsList().get(0);
           assertEquals(hakemusOid1, jonosija.getHakemusOid());
           assertEquals(hakijaOid1, jonosija.getHakijaOid());
           assertEquals(1, jonosija.getHakutoiveprioriteetti());
@@ -372,7 +372,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         }
 
         {
-          Jonosija jonosija = jono.getJonosijat().get(1);
+          Jonosija jonosija = jono.getJonosijatAsList().get(1);
           assertEquals(hakemusOid2, jonosija.getHakemusOid());
           assertEquals(hakijaOid2, jonosija.getHakijaOid());
           assertEquals(2, jonosija.getHakutoiveprioriteetti());
@@ -410,10 +410,10 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         assertEquals(valintatapajonoOid3, jono.getValintatapajonoOid());
 
         assertEquals(2, jono.getJonosijat().size());
-        Collections.sort(jono.getJonosijat(), jonosijaComparator);
+        jono.getJonosijatAsList().sort(jonosijaComparator);
 
         {
-          Jonosija jonosija = jono.getJonosijat().get(0);
+          Jonosija jonosija = jono.getJonosijatAsList().get(0);
           assertEquals(hakemusOid1, jonosija.getHakemusOid());
           assertEquals(hakijaOid1, jonosija.getHakijaOid());
           assertEquals(1, jonosija.getHakutoiveprioriteetti());
@@ -434,7 +434,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
           assertEquals(0, jonosija.getFunktioTulokset().funktioTulokset.size());
         }
         {
-          Jonosija jonosija = jono.getJonosijat().get(1);
+          Jonosija jonosija = jono.getJonosijatAsList().get(1);
           assertEquals(hakemusOid2, jonosija.getHakemusOid());
           assertEquals(hakijaOid2, jonosija.getHakijaOid());
           assertEquals(2, jonosija.getHakutoiveprioriteetti());
@@ -473,10 +473,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         assertEquals(valintatapajonoOid4, jono.getValintatapajonoOid());
 
         assertEquals(2, jono.getJonosijat().size());
-        Collections.sort(jono.getJonosijat(), jonosijaComparator);
+        List<Jonosija> jonot = jono.getJonosijatAsList();
+        jonot.sort(jonosijaComparator);
 
         {
-          Jonosija jonosija1 = jono.getJonosijat().get(0);
+          Jonosija jonosija1 = jonot.get(0);
           assertEquals(hakemusOid1, jonosija1.getHakemusOid());
           assertEquals(hakijaOid1, jonosija1.getHakijaOid());
           assertEquals(2, jonosija1.getHakutoiveprioriteetti());
@@ -510,7 +511,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         }
 
         {
-          Jonosija jonosija2 = jono.getJonosijat().get(1);
+          Jonosija jonosija2 = jonot.get(1);
           assertEquals(hakemusOid2, jonosija2.getHakemusOid());
           assertEquals(hakijaOid2, jonosija2.getHakijaOid());
           assertEquals(1, jonosija2.getHakutoiveprioriteetti());
@@ -548,10 +549,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         assertEquals(valintatapajonoOid5, jono.getValintatapajonoOid());
 
         assertEquals(2, jono.getJonosijat().size());
-        Collections.sort(jono.getJonosijat(), jonosijaComparator);
+        List<Jonosija> jonot = jono.getJonosijatAsList();
+        jonot.sort(jonosijaComparator);
 
         {
-          Jonosija jonosija = jono.getJonosijat().get(0);
+          Jonosija jonosija = jonot.get(0);
           assertEquals(hakemusOid1, jonosija.getHakemusOid());
           assertEquals(hakijaOid1, jonosija.getHakijaOid());
           assertEquals(2, jonosija.getHakutoiveprioriteetti());
@@ -571,7 +573,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         }
 
         {
-          Jonosija jonosija = jono.getJonosijat().get(1);
+          Jonosija jonosija = jonot.get(1);
           assertEquals(hakemusOid2, jonosija.getHakemusOid());
           assertEquals(hakijaOid2, jonosija.getHakijaOid());
           assertEquals(1, jonosija.getHakutoiveprioriteetti());
@@ -608,10 +610,12 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         assertEquals(valintatapajonoOid6, jono.getValintatapajonoOid());
 
         assertEquals(2, jono.getJonosijat().size());
-        Collections.sort(jono.getJonosijat(), jonosijaComparator);
+
+        List<Jonosija> jonot = jono.getJonosijatAsList();
+        jonot.sort(jonosijaComparator);
 
         {
-          Jonosija jonosija = jono.getJonosijat().get(0);
+          Jonosija jonosija = jonot.get(0);
           assertEquals(hakemusOid1, jonosija.getHakemusOid());
           assertEquals(hakijaOid1, jonosija.getHakijaOid());
           assertEquals(2, jonosija.getHakutoiveprioriteetti());
@@ -630,7 +634,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
           assertNotNull(historia1.getHistoria());*/
         }
         {
-          Jonosija jonosija = jono.getJonosijat().get(1);
+          Jonosija jonosija = jonot.get(1);
           assertEquals(hakemusOid2, jonosija.getHakemusOid());
           assertEquals(hakijaOid2, jonosija.getHakijaOid());
           assertEquals(1, jonosija.getHakutoiveprioriteetti());
@@ -682,7 +686,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
     assertEquals(valintatapajonoOid, jono.getValintatapajonoOid());
     assertEquals(1, jono.getJonosijat().size());
 
-    Jonosija jonosija = jono.getJonosijat().get(0);
+    Jonosija jonosija = jono.getJonosijatAsList().get(0);
     assertEquals(hakemusOid, jonosija.getHakemusOid());
     assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
 
@@ -724,7 +728,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
     assertEquals(valintatapajonoOid, jono.getValintatapajonoOid());
     assertEquals(1, jono.getJonosijat().size());
 
-    Jonosija jonosija = jono.getJonosijat().get(0);
+    Jonosija jonosija = jono.getJonosijatAsList().get(0);
     assertEquals(hakemusOid2, jonosija.getHakemusOid());
     assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
 

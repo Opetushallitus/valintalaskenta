@@ -89,7 +89,7 @@ public class ValintakoelaskennanKumulatiivisetTulokset {
     Optional<ValintakoeValinnanvaihe> existingValinnanvaihe =
         existingHakutoive.getValintakoeValinnanvaiheet().stream()
             .filter(
-                vv -> vv.getValinnanvaihe().getValinnanVaiheOid().equals(laskettuValinnanvaihe.getValinnanvaihe().getValinnanVaiheOid()))
+                vv -> vv.getValinnanvaiheOid().equals(laskettuValinnanvaihe.getValinnanvaiheOid()))
             .findFirst();
     if (existingValinnanvaihe.isPresent()) {
       laskettuValinnanvaihe

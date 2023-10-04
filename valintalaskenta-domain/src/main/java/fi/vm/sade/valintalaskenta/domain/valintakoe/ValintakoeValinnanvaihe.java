@@ -7,15 +7,13 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.annotation.Transient;
-import org.springframework.data.relational.core.mapping.Table;
 
 public class ValintakoeValinnanvaihe {
 
   @Id
   private UUID id;
 
-  @Transient
-  private Valinnanvaihe valinnanvaihe;
+  private String valinnanvaiheOid;
 
   private Integer valinnanVaiheJarjestysluku;
 
@@ -31,12 +29,12 @@ public class ValintakoeValinnanvaihe {
     this.valintakokeet.addAll(valintakokeet);
   }
 
-  public Valinnanvaihe getValinnanvaihe() {
-    return valinnanvaihe;
+  public String getValinnanvaiheOid() {
+    return valinnanvaiheOid;
   }
 
-  public void setValinnanvaihe(Valinnanvaihe valinnanvaihe) {
-    this.valinnanvaihe = valinnanvaihe;
+  public void setValinnanvaiheOid(String valinnanvaiheOid) {
+    this.valinnanvaiheOid = valinnanvaiheOid;
   }
 
   public Integer getValinnanVaiheJarjestysluku() {

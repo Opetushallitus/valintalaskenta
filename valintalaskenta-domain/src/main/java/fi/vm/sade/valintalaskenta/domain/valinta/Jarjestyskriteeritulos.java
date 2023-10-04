@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -65,7 +66,17 @@ public class Jarjestyskriteeritulos {
   }
 
   public Map<String, String> getKuvaus() {
-    return Map.of("FI", getKuvausFI(), "SV", getKuvausSV(), "EN", getKuvausEN());
+    Map<String, String> kuvaus = new HashMap<>();
+    if (getKuvausFI() != null) {
+      kuvaus.put("FI", getKuvausFI());
+    }
+    if (getKuvausSV() != null) {
+      kuvaus.put("SV", getKuvausSV());
+    }
+    if (getKuvausEN() != null) {
+      kuvaus.put("EN", getKuvausEN());
+    }
+    return kuvaus;
   }
 
   public void setKuvaus(Map<String, String> kuvaus) {

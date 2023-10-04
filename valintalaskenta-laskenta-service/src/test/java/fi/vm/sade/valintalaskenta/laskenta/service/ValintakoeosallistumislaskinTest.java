@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.laskenta.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -55,16 +56,14 @@ public class ValintakoeosallistumislaskinTest {
   }
 
   private void valmisteleStubit(final Hakukohde hakukohde, Tila tila, boolean tulos) {
-    Funktiokutsu funktiokutsu = new Funktiokutsu();
-    funktiokutsu.setFunktionimi(Funktionimi.TOTUUSARVO);
 
-    when(laskentadomainkonvertteriWrapperMock.muodostaTotuusarvolasku(funktiokutsu))
-        .thenReturn(any(Totuusarvofunktio.class));
+    when(laskentadomainkonvertteriWrapperMock.muodostaTotuusarvolasku(any()))
+        .thenReturn(mock(Totuusarvofunktio.class));
 
     final Laskentatulos<Boolean> tulos1 =
         new Laskentatulos<>(tila, tulos, "", new HashMap<>(), new HashMap<>());
     when(laskentaServiceMock.suoritaValintakoelaskenta(
-            hakukohde, any(Hakemus.class), any(Totuusarvofunktio.class)))
+            eq(hakukohde), any(Hakemus.class), any(Totuusarvofunktio.class)))
         .thenReturn(tulos1);
   }
 

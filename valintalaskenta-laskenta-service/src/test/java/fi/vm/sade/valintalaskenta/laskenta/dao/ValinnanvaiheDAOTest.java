@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.laskenta.dao;
 
 import static org.junit.Assert.*;
 
+import com.google.common.collect.Sets;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 
 import java.util.Arrays;
@@ -57,7 +58,7 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
     Valinnanvaihe valinnanvaihe = createValinnanvaihe(1);
     Valintatapajono valintatapajono = new Valintatapajono();
     valinnanvaihe.valintatapajono.addAll(Arrays.asList(valintatapajono));
-    valintatapajono.setJonosijat(Arrays.asList(new Jonosija(), new Jonosija()));
+    valintatapajono.setJonosijat(Sets.newHashSet(new Jonosija(), new Jonosija()));
     valinnanvaihe.setValinnanVaiheOid("uusiValinnanvaiheOid");
     valinnanvaiheRepository.save(valinnanvaihe);
     assertTrue(valinnanvaiheDAO.haeValinnanvaiheLite("uusiValinnanvaiheOid").isPresent());
@@ -82,13 +83,13 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
     Valinnanvaihe valinnanvaihe = createValinnanvaihe(1);
     Valintatapajono valintatapajono = new Valintatapajono();
     valinnanvaihe.valintatapajono.addAll(List.of(valintatapajono));
-    valintatapajono.setJonosijat(Arrays.asList(createJonosija(), new Jonosija()));
+    valintatapajono.setJonosijat(Sets.newHashSet(createJonosija(), new Jonosija()));
     valinnanvaihe.setValinnanVaiheOid("uusiValinnanvaiheOid");
     valinnanvaiheDAO.saveOrUpdate(valinnanvaihe);
     Valinnanvaihe savedValinnanvaihe = valinnanvaiheDAO.haeValinnanvaihe("uusiValinnanvaiheOid");
     assertNotNull(savedValinnanvaihe);
     assertEquals(2, savedValinnanvaihe.getValintatapajono().get(0).getJonosijat().size());
-    Jonosija jono = savedValinnanvaihe.getValintatapajono().get(0).getJonosijat().get(0);
+    Jonosija jono = savedValinnanvaihe.getValintatapajono().get(0).getJonosijatAsList().get(0);
     FunktioTulos funkkari = jono.getFunktioTulokset().funktioTulokset.get(0);
     assertEquals("arvokas", funkkari.getArvo());
     assertEquals("arvoton", funkkari.getTunniste());

@@ -119,7 +119,7 @@ public class Valintatapajono {
     this.eiVarasijatayttoa = eiVarasijatayttoa;
   }
 
-  public List<Jonosija> getJonosijat() {
+  public Set<Jonosija> getJonosijat() {
     if (null == jonosija) {
       //TODO Check necessity of this exception
       throw new IllegalStateException(
@@ -128,10 +128,15 @@ public class Valintatapajono {
               valintatapajonoOid, jonosija));
     }
     //TODO check if thi conversion is ok or could set be used instead
+    return jonosija;
+  }
+
+  public List<Jonosija> getJonosijatAsList() {
     return new ArrayList<>(jonosija);
   }
 
-  public void setJonosijat(List<Jonosija> jonosijat) {
+  public void setJonosijat(Set<Jonosija> jonosijat) {
+    this.jonosija.clear();
     this.jonosija.addAll(jonosijat);
   }
 

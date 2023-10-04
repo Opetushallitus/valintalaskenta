@@ -51,15 +51,12 @@ CREATE INDEX hakutoive_hakukohde ON hakutoive(hakukohde_oid);
 
 CREATE TABLE valintakoe_valinnanvaihe (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-    valinnanvaihe uuid,
+    valinnanvaihe_oid varchar(127) NOT NULL,
     valinnan_vaihe_jarjestysluku int,
     hakutoive uuid not null,
     CONSTRAINT fk_hakutoive
         FOREIGN KEY(hakutoive)
-            REFERENCES Hakutoive(id),
-    CONSTRAINT fk_valinnanvaihe
-        FOREIGN KEY(valinnanvaihe)
-        REFERENCES valinnanvaihe(id)
+            REFERENCES Hakutoive(id)
 );
 
 CREATE TABLE valintakoe (

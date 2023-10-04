@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -175,13 +176,31 @@ public class Valintakoe {
   }
 
   public Map<String, String> getKuvaus() {
-    return Map.of("FI", getKuvausFI(), "SV", getKuvausSV(), "EN", getKuvausEN());
+    Map<String, String> kuvaus = new HashMap<>();
+    if (getKuvausFI() != null) {
+      kuvaus.put("FI", getKuvausFI());
+    }
+    if (getKuvausSV() != null) {
+      kuvaus.put("SV", getKuvausSV());
+    }
+    if (getKuvausEN() != null) {
+      kuvaus.put("EN", getKuvausEN());
+    }
+    return kuvaus;
   }
 
   public void setKuvaus(Map<String, String> kuvaus) {
-    this.setKuvausFI(kuvaus.get("FI"));
-    this.setKuvausEN(kuvaus.get("EN"));
-    this.setKuvausSV(kuvaus.get("SV"));
+    if (kuvaus != null) {
+      if (kuvaus.get("FI") != null) {
+        this.setKuvausFI(kuvaus.get("FI"));
+      }
+      if (kuvaus.get("SV") != null) {
+        this.setKuvausEN(kuvaus.get("EN"));
+      }
+      if (kuvaus.get("EN") != null) {
+        this.setKuvausSV(kuvaus.get("SV"));
+      }
+    }
   }
 
   public OsallistuminenTulos getOsallistuminenTulos() {

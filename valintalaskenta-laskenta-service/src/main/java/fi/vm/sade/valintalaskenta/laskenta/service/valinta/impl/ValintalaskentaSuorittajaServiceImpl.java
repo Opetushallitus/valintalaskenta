@@ -539,10 +539,10 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         jono.setJonosijat(
             jonosijatHakemusOidinMukaan.values().stream()
                 .map(this::createJonosija)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toSet()));
 
         if (j.isPoistetaankoHylatyt()) {
-          List<Jonosija> filteroity =
+          Set<Jonosija> filteroity =
               jono.getJonosijat().stream()
                   .filter(
                       sija -> {
@@ -558,7 +558,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                         return tila
                             || tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY);
                       })
-                  .collect(Collectors.toList());
+                  .collect(Collectors.toSet());
           jono.setJonosijat(filteroity);
         }
         // Tässä vois ehkä poistella vähän myös passivoitujen hakemuksien tuloksia?

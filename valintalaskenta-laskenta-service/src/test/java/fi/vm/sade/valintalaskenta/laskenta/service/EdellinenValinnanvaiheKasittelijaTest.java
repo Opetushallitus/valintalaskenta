@@ -18,11 +18,9 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinnanvaiheKasittelija;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.TilaJaSelite;
 import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
+
 import org.junit.Test;
 
 public class EdellinenValinnanvaiheKasittelijaTest {
@@ -49,7 +47,7 @@ public class EdellinenValinnanvaiheKasittelijaTest {
   public void testHakemusEiMukanaValinnanvaiheessa() {
     Valintatapajono jono = new Valintatapajono();
 
-    List<Jonosija> jonosijat = new LinkedList<>();
+    Set<Jonosija> jonosijat = new HashSet<>();
     for (int i = 2; i <= 10; ++i) {
       Jonosija jonosija = new Jonosija();
       jonosija.setHakemusOid("hakemusOid" + i);
@@ -81,15 +79,15 @@ public class EdellinenValinnanvaiheKasittelijaTest {
     final String hakemusOid = "hakemusOid1";
 
     Valintatapajono jono1 = new Valintatapajono();
-    jono1.setJonosijat(new LinkedList<>());
+    jono1.setJonosijat(new HashSet<>());
     jono1.getJonosijat().add(luoJonosija(hakemusOid, JarjestyskriteerituloksenTila.HYLATTY));
 
     Valintatapajono jono2 = new Valintatapajono();
-    jono2.setJonosijat(new LinkedList<>());
+    jono2.setJonosijat(new HashSet<>());
     jono2.getJonosijat().add(luoJonosija(hakemusOid, JarjestyskriteerituloksenTila.VIRHE));
 
     Valintatapajono jono3 = new Valintatapajono();
-    jono3.setJonosijat(new LinkedList<>());
+    jono3.setJonosijat(new HashSet<>());
     jono3
         .getJonosijat()
         .add(luoJonosija(hakemusOid, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA));
@@ -108,15 +106,15 @@ public class EdellinenValinnanvaiheKasittelijaTest {
     final String hakemusOid = "hakemusOid1";
 
     Valintatapajono jono1 = new Valintatapajono();
-    jono1.setJonosijat(new LinkedList<>());
+    jono1.setJonosijat(new HashSet<>());
     jono1.getJonosijat().add(luoJonosija(hakemusOid, JarjestyskriteerituloksenTila.HYLATTY));
 
     Valintatapajono jono2 = new Valintatapajono();
-    jono2.setJonosijat(new LinkedList<>());
+    jono2.setJonosijat(new HashSet<>());
     jono2.getJonosijat().add(luoJonosija(hakemusOid, JarjestyskriteerituloksenTila.VIRHE));
 
     Valintatapajono jono3 = new Valintatapajono();
-    jono3.setJonosijat(new LinkedList<>());
+    jono3.setJonosijat(new HashSet<>());
     jono3
         .getJonosijat()
         .add(luoJonosija(hakemusOid, JarjestyskriteerituloksenTila.MAARITTELEMATON));
