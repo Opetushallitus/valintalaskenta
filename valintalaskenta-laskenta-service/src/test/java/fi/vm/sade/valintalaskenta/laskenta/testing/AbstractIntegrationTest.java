@@ -42,7 +42,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
                 DirtiesContextTestExecutionListener.class
         })*/
 //@EnableWebSecurity(debug = true)
-//@Import(DefaultTestConfiguration.class)
 //@EnableJpaRepositories(basePackages = "fi.vm.sade.valintalaskenta.laskenta.dao.repository")
 //@EntityScan(basePackages = "fi.vm.sade.valintalaskenta.domain.*")
 public abstract class AbstractIntegrationTest {
@@ -55,6 +54,9 @@ public abstract class AbstractIntegrationTest {
 
   @Autowired
   protected ValintakoeOsallistuminenRepository valintakoeOsallistuminenRepository;
+
+  @LocalServerPort
+  protected Integer port;
 
   @Before
   public void setUp() {

@@ -15,6 +15,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.SuoritustiedotDTO;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija.ValisijoiteltavatJonot;
+import fi.vm.sade.valintalaskenta.laskenta.testing.AbstractIntegrationTest;
 import fi.vm.sade.valintalaskenta.laskenta.testing.TestApp;
 import fi.vm.sade.valintalaskenta.tulos.RestClientUtil;
 import java.util.Collections;
@@ -24,25 +25,17 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-public class ValintalaskentaResourceHttpIntegrationTest {
+public class ValintalaskentaResourceHttpIntegrationTest extends AbstractIntegrationTest {
   private final String hakukohdeOid = "hakukohdeOid";
+
+  @Autowired
   private ApplicationContext applicationContext;
   private boolean mayFinish;
   private boolean finished;
   private AsyncHttpClient asyncHttpClient = asyncHttpClient();
-
-  @Before
-  public void setUp() {
-    TestApp.startTestApp();
-    applicationContext = TestApp.ApplicationContextGetter.applicationContext;
-  }
-
-  @After
-  public void tearDown() {
-    TestApp.stopTestApp();
-  }
 
   @Test
   public void successfulLaskentaBecomesReady() throws Exception {
@@ -202,7 +195,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
 
   private String call(final String uri, final String method, final Object body)
       throws ExecutionException, InterruptedException {
-    final String baseAddress = System.getProperty("TestApp.server.rootUrl");
+    final String baseAddress = "http://localhost:" + port + "/resources";
     return asyncHttpClient
         .executeRequest(request(String.format("%s/%s", baseAddress, uri), method, body))
         .toCompletableFuture()

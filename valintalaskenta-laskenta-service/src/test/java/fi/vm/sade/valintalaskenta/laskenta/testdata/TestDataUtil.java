@@ -1,14 +1,18 @@
 package fi.vm.sade.valintalaskenta.laskenta.testdata;
 
 import fi.vm.sade.service.valintaperusteet.dto.*;
+import fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi;
 import fi.vm.sade.service.valintaperusteet.dto.model.Koekutsu;
 import fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi;
+import fi.vm.sade.service.valintaperusteet.model.Syoteparametri;
 import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.AvainArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
+import fi.vm.sade.valintalaskenta.domain.valinta.*;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.HakukohdeValintakoeData;
+
+import java.math.BigDecimal;
 import java.util.*;
 
 /** User: wuoti Date: 6.5.2013 Time: 12.57 */
@@ -170,7 +174,7 @@ public abstract class TestDataUtil {
   public static ValintakoeDTO luoValintakoe(
       String valintakoeOid, String tunniste, Koekutsu kutsunKohde, String kutsunKohdeAvain) {
     ValintakoeDTO koe = new ValintakoeDTO();
-    koe.setFunktiokutsu(new FunktiokutsuDTO());
+    koe.setFunktiokutsu(luoFunktioKutsu());
     koe.setTunniste(tunniste);
     koe.setOid(UUID.randomUUID().toString());
     koe.setLahetetaankoKoekutsut(true);
@@ -179,6 +183,16 @@ public abstract class TestDataUtil {
     koe.setKutsunKohde(kutsunKohde);
     koe.setKutsunKohdeAvain(kutsunKohdeAvain);
     return koe;
+  }
+
+  public static FunktiokutsuDTO luoFunktioKutsu() {
+    FunktiokutsuDTO kutsu = new FunktiokutsuDTO();
+    kutsu.setFunktionimi(Funktionimi.LUKUARVO);
+    SyoteparametriDTO param = new SyoteparametriDTO();
+    param.setArvo("5");
+    param.setAvain("luku");
+    kutsu.setSyoteparametrit(Set.of(param));
+    return kutsu;
   }
 
   public static HakukohdeDTO luoHakukohdeDTO(String hakukohdeOid, int prioriteetti) {
@@ -198,5 +212,74 @@ public abstract class TestDataUtil {
     koe.setOsallistuminenTulos(osallistuminenTulos);
     koe.setValintakoeTunniste(valintakoeTunniste);
     return koe;
+  }
+
+  public static Jarjestyskriteeritulos luoJarjestyskriteeritulosEntity(double arvo, int prioriteetti, JarjestyskriteerituloksenTila tila) {
+    Jarjestyskriteeritulos tulos = new Jarjestyskriteeritulos();
+    tulos.setArvo(new BigDecimal(arvo));
+    tulos.setPrioriteetti(prioriteetti);
+    tulos.setTila(tila);
+    return tulos;
+  }
+
+  public static Jonosija luoJonosijaEntity(String etunimi, String sukunimi, String hakemusOid, int hakutoivePrioriteetti, boolean harkinnanvarainen, List<Jarjestyskriteeritulos> tulokset) {
+    Jonosija jonosija = new Jonosija();
+    jonosija.setEtunimi(etunimi);
+    jonosija.setSukunimi(sukunimi);
+    jonosija.setHakemusOid(hakemusOid);
+    jonosija.setHakutoiveprioriteetti(hakutoivePrioriteetti);
+    jonosija.setHarkinnanvarainen(harkinnanvarainen);
+    jonosija.setJarjestyskriteeritulokset(tulokset);
+    return jonosija;
+  }
+
+  public static Valintatapajono luoValintatapaJonoEntity(int aloituspaikat, Set<Jonosija> jonosijat, String nimi, int prioriteetti, Tasasijasaanto saanto, String valintatapajonoOid) {
+    Valintatapajono jono = new Valintatapajono();
+    jono.setAloituspaikat(aloituspaikat);
+    jono.setJonosijat(jonosijat);
+    jono.setNimi(nimi);
+    jono.setPrioriteetti(prioriteetti);
+    jono.setTasasijasaanto(saanto);
+    jono.setValintatapajonoOid(valintatapajonoOid);
+    return jono;
+  }
+
+  public static Valinnanvaihe luoValinnanvaiheEntity(String hakuOid, String hakukohdeOid, int jarjestysnro, String valinnanvaiheOid, List<Valintatapajono> jonot) {
+    Valinnanvaihe vaihe = new Valinnanvaihe();
+    vaihe.setHakuOid(hakuOid);
+    vaihe.setHakukohdeOid(hakukohdeOid);
+    vaihe.setJarjestysnumero(jarjestysnro);
+    vaihe.setValinnanVaiheOid(valinnanvaiheOid);
+    vaihe.setValintatapajono(jonot);
+    vaihe.setTarjoajaOid("tarjoaja");
+    return vaihe;
+  }
+
+  public static Hakutoive luoHakutoiveEntity(String hakukohdeOid, Set<ValintakoeValinnanvaihe> valintakoeValinnanvaiheet) {
+    Hakutoive toive = new Hakutoive();
+    toive.setHakukohdeOid(hakukohdeOid);
+    toive.setValintakoeValinnanvaiheet(valintakoeValinnanvaiheet);
+    return toive;
+  };
+
+  public static ValintakoeValinnanvaihe luoValintakoeValinnanvaiheEntity(int jarjestysluku, String valinnanvaiheOid, List<Valintakoe> kokeet) {
+    ValintakoeValinnanvaihe vkv = new ValintakoeValinnanvaihe();
+    vkv.setValinnanVaiheJarjestysluku(jarjestysluku);
+    vkv.setValinnanvaiheOid(valinnanvaiheOid);
+    vkv.setValintakokeet(kokeet);
+    return vkv;
+  }
+
+  public static Valintakoe luoValintakoeEntity(String valintakoeOid, String tunniste, Osallistuminen osallistuminen, Boolean laskentaTulos, String laskentatila) {
+    Valintakoe valintakoe = new Valintakoe();
+    valintakoe.setValintakoeOid(valintakoeOid);
+    valintakoe.setValintakoeTunniste(tunniste);
+    valintakoe.setOsallistuminen(osallistuminen);
+    valintakoe.setLaskentaTulos(laskentaTulos);
+    valintakoe.setLaskentaTila(laskentatila);
+    valintakoe.setAktiivinen(true);
+    valintakoe.setNimi(tunniste);
+    valintakoe.setLahetetaankoKoekutsut(false);
+    return valintakoe;
   }
 }
