@@ -16,6 +16,7 @@ import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija.ValisijoiteltavatJonot;
 import fi.vm.sade.valintalaskenta.laskenta.testing.AbstractIntegrationTest;
+import fi.vm.sade.valintalaskenta.laskenta.testing.AbstractMocklessIntegrationTest;
 import fi.vm.sade.valintalaskenta.laskenta.testing.TestApp;
 import fi.vm.sade.valintalaskenta.tulos.RestClientUtil;
 import java.util.Collections;

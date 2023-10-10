@@ -52,6 +52,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import fi.vm.sade.valintalaskenta.laskenta.testing.AbstractIntegrationTest;
+import fi.vm.sade.valintalaskenta.laskenta.testing.AbstractMocklessIntegrationTest;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -68,14 +71,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
-@ContextConfiguration(locations = "classpath:application-context-test.xml")
-@RunWith(SpringJUnit4ClassRunner.class)
-@TestExecutionListeners(
-    listeners = {
-      DependencyInjectionTestExecutionListener.class,
-      DirtiesContextTestExecutionListener.class
-    })
-public class ValintalaskentaResourceIntegrationTest {
+public class ValintalaskentaResourceIntegrationTest extends AbstractMocklessIntegrationTest {
 
   @Autowired private ApplicationContext applicationContextThatNeedsToBeAutowiredToBeIntialised;
 
@@ -136,10 +132,7 @@ public class ValintalaskentaResourceIntegrationTest {
         readJson("laskeDTOYhdenKoekutsuVaiheenKanssa.json", new TypeToken<LaskeDTO>() {});
     Laskentakutsu laskentakutsu =
         new Laskentakutsu(laskeDtoYhdenKoekutsunKanssa, new SuoritustiedotDTO());
-    try {
-      valintalaskentaResource.toteutaLaskeKaikki(laskentakutsu);
-    } catch (Exception e) {
-    }
+    valintalaskentaResource.toteutaLaskeKaikki(laskentakutsu);
 
     ValintakoeOsallistuminen osallistuminen =
         valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(

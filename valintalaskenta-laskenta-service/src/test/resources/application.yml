@@ -1,8 +1,11 @@
+
 spring:
   main:
     allow-bean-definition-overriding: true
   profiles:
-    active: dev
+    group:
+      test: dev
+      test-mockless: dev
   datasource:
     url: jdbc:tc:postgresql:15.4:///test_database
     username: user
