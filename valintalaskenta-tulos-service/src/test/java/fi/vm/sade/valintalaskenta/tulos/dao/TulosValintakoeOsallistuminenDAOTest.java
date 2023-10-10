@@ -17,7 +17,7 @@ import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import org.junit.Rule;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +28,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 /** User: wuoti Date: 28.8.2013 Time: 15.47 */
 @ContextConfiguration(locations = "classpath:application-context-test.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
-public class ValintakoeOsallistuminenDAOTest {
+public class TulosValintakoeOsallistuminenDAOTest {
 
-  @Autowired private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
+  @Autowired private TulosValintakoeOsallistuminenDAO tulosValintakoeOsallistuminenDAO;
 
   @Autowired private ApplicationContext applicationContext;
 
@@ -43,7 +43,7 @@ public class ValintakoeOsallistuminenDAOTest {
 
     final String hakemusOid = "hakemusOid1";
     List<ValintakoeOsallistuminen> osallistumiset =
-        valintakoeOsallistuminenDAO.findByHakuAndOsallistuminen(hakuOid, osallistuminen);
+        tulosValintakoeOsallistuminenDAO.findByHakuAndOsallistuminen(hakuOid, osallistuminen);
     assertEquals(1, osallistumiset.size());
     ValintakoeOsallistuminen vko = osallistumiset.get(0);
 
@@ -62,7 +62,7 @@ public class ValintakoeOsallistuminenDAOTest {
   @Test
   public void testFindAmmatillisenKielikoeOsallistumiset() {
     List<ValintakoeOsallistuminen> osallistumiset =
-        valintakoeOsallistuminenDAO.findAmmatillisenKielikoeOsallistumiset(
+        tulosValintakoeOsallistuminenDAO.findAmmatillisenKielikoeOsallistumiset(
             date(LocalDate.of(2010, 1, 1)));
     assertEquals(1, osallistumiset.size());
     ValintakoeOsallistuminen vko = osallistumiset.get(0);
@@ -90,7 +90,7 @@ public class ValintakoeOsallistuminenDAOTest {
     assertEquals(true, kielikoe.getLaskentaTulos());
 
     assertThat(
-        valintakoeOsallistuminenDAO.findAmmatillisenKielikoeOsallistumiset(
+        tulosValintakoeOsallistuminenDAO.findAmmatillisenKielikoeOsallistumiset(
             date(LocalDate.of(2020, 1, 1))),
         hasSize(0));
   }

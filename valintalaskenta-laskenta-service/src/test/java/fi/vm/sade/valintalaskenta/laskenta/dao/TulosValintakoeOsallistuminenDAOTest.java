@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Streamable;
 
-public class ValintakoeOsallistuminenDAOTest extends AbstractIntegrationTest {
+public class TulosValintakoeOsallistuminenDAOTest extends AbstractIntegrationTest {
 
   @Autowired
   private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;

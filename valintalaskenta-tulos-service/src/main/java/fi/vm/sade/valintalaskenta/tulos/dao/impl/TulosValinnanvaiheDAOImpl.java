@@ -1,22 +1,18 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
-import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
-import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
+import fi.vm.sade.valintalaskenta.tulos.dao.TulosValinnanvaiheDAO;
+
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-import org.apache.commons.lang3.tuple.Pair;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
-  private static final Logger LOGGER = LoggerFactory.getLogger(ValinnanvaiheDAOImpl.class);
+public class TulosValinnanvaiheDAOImpl implements TulosValinnanvaiheDAO {
+  private static final Logger LOGGER = LoggerFactory.getLogger(TulosValinnanvaiheDAOImpl.class);
 
   @Override
   public List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid) {

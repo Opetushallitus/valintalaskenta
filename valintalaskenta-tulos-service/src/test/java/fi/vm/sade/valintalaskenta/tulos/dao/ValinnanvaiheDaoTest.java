@@ -16,14 +16,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ValinnanvaiheDaoTest {
 
-  @Autowired ValinnanvaiheDAO valinnanvaiheDAO;
+  @Autowired
+  TulosValinnanvaiheDAO tulosValinnanvaiheDAO;
 
   @Autowired private ApplicationContext applicationContext;
 
   @Test
   public void testHaeTuloksetValinnantapajonolle() {
     {
-      Valinnanvaihe vaihe = valinnanvaiheDAO.findByValintatapajonoOid("jono1");
+      Valinnanvaihe vaihe = tulosValinnanvaiheDAO.findByValintatapajonoOid("jono1");
 
       assertNotNull(vaihe);
       assertEquals("vaihe1", vaihe.getValinnanVaiheOid());

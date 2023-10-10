@@ -17,7 +17,7 @@ import fi.vm.sade.valintalaskenta.laskenta.resource.ValintakoelaskennanKumulatii
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.ValintalaskentaSuorittajaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
-import fi.vm.sade.valintalaskenta.tulos.dao.ValinnanvaiheDAO;
+import fi.vm.sade.valintalaskenta.tulos.dao.TulosValinnanvaiheDAO;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -41,7 +41,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 
   @Autowired private ValintakoelaskentaSuorittajaService valintakoelaskentaSuorittajaService;
 
-  @Autowired private ValinnanvaiheDAO valinnanvaiheDAO;
+  @Autowired private TulosValinnanvaiheDAO tulosValinnanvaiheDAO;
 
   @Override
   public String laske(
@@ -95,7 +95,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     hakukohdeOids.forEach(
         hakukohdeOid -> {
           Map<Integer, Valinnanvaihe> jarjestysnumeroToValinnanvaiheMap = new HashMap<>();
-          List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid);
+          List<Valinnanvaihe> vaiheet = tulosValinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid);
           vaiheet.forEach(
               vaihe -> {
                 LOG.info(
@@ -187,7 +187,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     valisijoiteltavatJonot.keySet().parallelStream()
         .forEach(
             hakukohdeOid -> {
-              List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid);
+              List<Valinnanvaihe> vaiheet = tulosValinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid);
               vaiheet.forEach(
                   vaihe -> {
                     List<String> hakukohteenValisijoitelujonot =
@@ -268,7 +268,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                                           });
                                 }
                               });
-                      valinnanvaiheDAO.saveOrUpdate(vaihe);
+                      tulosValinnanvaiheDAO.saveOrUpdate(vaihe);
                     }
                   });
             });
@@ -279,7 +279,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
     jonot.keySet().parallelStream()
         .forEach(
             hakukohdeOid -> {
-              List<Valinnanvaihe> vaiheet = valinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid);
+              List<Valinnanvaihe> vaiheet = tulosValinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid);
               vaiheet.forEach(
                   vaihe -> {
                     vaihe
@@ -293,7 +293,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                                 jono.setSijoitteluajoId(ajo);
                               }
                             });
-                    valinnanvaiheDAO.saveOrUpdate(vaihe);
+                    tulosValinnanvaiheDAO.saveOrUpdate(vaihe);
                   });
             });
   }

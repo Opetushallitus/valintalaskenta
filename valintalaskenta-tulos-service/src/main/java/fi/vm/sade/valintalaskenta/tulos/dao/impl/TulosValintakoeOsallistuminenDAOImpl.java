@@ -2,13 +2,13 @@ package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
-import fi.vm.sade.valintalaskenta.tulos.dao.ValintakoeOsallistuminenDAO;
+import fi.vm.sade.valintalaskenta.tulos.dao.TulosValintakoeOsallistuminenDAO;
 import java.util.Date;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminenDAO {
+public class TulosValintakoeOsallistuminenDAOImpl implements TulosValintakoeOsallistuminenDAO {
 
   @Override
   public ValintakoeOsallistuminen findByHakemusOid(String hakemusOid) {

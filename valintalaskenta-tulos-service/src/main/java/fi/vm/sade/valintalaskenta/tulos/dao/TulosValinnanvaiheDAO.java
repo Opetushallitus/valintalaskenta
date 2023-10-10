@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-public interface ValinnanvaiheDAO {
+public interface TulosValinnanvaiheDAO {
   List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid);
 
   List<Valinnanvaihe> readByHakuOid(String hakuoid);
