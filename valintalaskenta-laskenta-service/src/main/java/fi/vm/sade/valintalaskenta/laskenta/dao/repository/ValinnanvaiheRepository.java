@@ -6,6 +6,7 @@ import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,5 +20,16 @@ public interface ValinnanvaiheRepository extends CrudRepository<Valinnanvaihe, U
   Optional<Valinnanvaihe> findValinnanvaiheByValinnanvaiheOid(String valinnanvaiheOid);
 
   Optional<ValinnanvaiheLite> findValinnanvaiheLiteByValinnanvaiheOid(String valinnanvaiheOid);
+
+  @Query("select * from Valinnanvaihe vv where vv.haku_oid = :hakuOid and vv.hakukohde_oid = :hakukohdeOid and vv.jarjestysnumero < :jarjestysnro order by vv.jarjestysnumero desc limit 1")
+  Optional<Valinnanvaihe> findViimeisinEdeltavaValinnanvaihe(@Param("hakuOid") String hakuOid,
+                                                             @Param("hakukohdeOid") String hakukohdeOid,
+                                                             @Param("jarjestysnro") int jarjestysnumero);
+
+  @Query("select * from Valinnanvaihe vv where vv.haku_oid = :hakuOid and vv.hakukohde_oid = :hakukohdeOid and vv.jarjestysnumero = :jarjestysnro")
+  List<Valinnanvaihe> findValinnanvaiheetJarjestysnumerolla(@Param("hakuOid") String hakuOid,
+                                                            @Param("hakukohdeOid") String hakukohdeOid,
+                                                            @Param("jarjestysnro") int jarjestysnumero);
+
 }
 

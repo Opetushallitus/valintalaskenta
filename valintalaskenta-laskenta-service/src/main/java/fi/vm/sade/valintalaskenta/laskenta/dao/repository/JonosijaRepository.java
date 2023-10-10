@@ -8,4 +8,6 @@ import java.util.UUID;
 
 @Repository
 public interface JonosijaRepository extends CrudRepository<Jonosija, UUID> {
+
+
 }

@@ -24,7 +24,7 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
   private static final String HAKUKOHDE = "hakukohdeOid1", HAKU = "hakuOid1";
 
   @Test
-  public void testHaeEdellinenValinnanvaihe() throws InterruptedException {
+  public void testHaeEdellinenValinnanvaihe() {
     valinnanvaiheRepository.save(createValinnanvaihe(1));
     valinnanvaiheRepository.save(createValinnanvaihe(2));
     valinnanvaiheRepository.save(createValinnanvaihe(3));
@@ -43,7 +43,32 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
   }
 
   @Test
-  public void testHaeValinnanvaihe() throws InterruptedException {
+  public void testHaeViimeisinValinnanvaihe() {
+    valinnanvaiheRepository.save(createValinnanvaihe(2));
+    valinnanvaiheRepository.save(createValinnanvaihe(200));
+
+    final String edellinenValinnanvaiheOid = "valinnanvaiheOid2";
+    final int edellinenValinnanvaiheJarjestysnumero = 2;
+
+    Valinnanvaihe valinnanvaihe =
+      valinnanvaiheDAO.haeViimeisinValinnanvaihe(HAKU, HAKUKOHDE, 200);
+    assertEquals(HAKU, valinnanvaihe.getHakuOid());
+    assertEquals(HAKUKOHDE, valinnanvaihe.getHakukohdeOid());
+    assertEquals(edellinenValinnanvaiheOid, valinnanvaihe.getValinnanVaiheOid());
+    assertEquals(edellinenValinnanvaiheJarjestysnumero, valinnanvaihe.getJarjestysnumero());
+
+    Valinnanvaihe valinnanvaihe2 =
+      valinnanvaiheDAO.haeViimeisinValinnanvaihe(HAKU, HAKUKOHDE, 201);
+    assertEquals(HAKU, valinnanvaihe2.getHakuOid());
+    assertEquals(HAKUKOHDE, valinnanvaihe2.getHakukohdeOid());
+    assertEquals("valinnanvaiheOid200", valinnanvaihe2.getValinnanVaiheOid());
+    assertEquals(200, valinnanvaihe2.getJarjestysnumero());
+
+    assertNull(valinnanvaiheDAO.haeViimeisinValinnanvaihe(HAKU, HAKUKOHDE, 1));
+  }
+
+  @Test
+  public void testHaeValinnanvaihe() {
     valinnanvaiheRepository.save(createValinnanvaihe(1));
     valinnanvaiheRepository.save(createValinnanvaihe(2));
 

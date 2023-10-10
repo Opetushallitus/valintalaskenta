@@ -3,9 +3,7 @@ package fi.vm.sade.valintalaskenta.laskenta.testing;
 import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.valintalaskenta.laskenta.App;
 import fi.vm.sade.valintalaskenta.laskenta.config.SwaggerConfiguration;
-import fi.vm.sade.valintalaskenta.laskenta.dao.repository.HakijaryhmaRepository;
-import fi.vm.sade.valintalaskenta.laskenta.dao.repository.ValinnanvaiheRepository;
-import fi.vm.sade.valintalaskenta.laskenta.dao.repository.ValintakoeOsallistuminenRepository;
+import fi.vm.sade.valintalaskenta.laskenta.dao.repository.*;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaPaloissaResourceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource;
@@ -72,11 +70,20 @@ public abstract class AbstractIntegrationTest {
   @Autowired
   protected ValintakoeOsallistuminenRepository valintakoeOsallistuminenRepository;
 
+  @Autowired
+  protected ValintatapajonoRepository valintatapajonoRepository;
+
+  @Autowired
+  protected JonosijaRepository jonosijaRepository;
+
   @LocalServerPort
   protected Integer port;
 
   @Before
   public void setUp() {
+
+    jonosijaRepository.deleteAll();
+    valintatapajonoRepository.deleteAll();
     valinnanvaiheRepository.deleteAll();
     hakijaryhmaRepository.deleteAll();
     valintakoeOsallistuminenRepository.deleteAll();
