@@ -3,61 +3,45 @@ package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvarainenHyvaksyminen;
 import fi.vm.sade.valintalaskenta.tulos.dao.HarkinnanvarainenHyvaksyminenDAO;
 import java.util.List;
+
+import fi.vm.sade.valintalaskenta.tulos.dao.repository.HarkinnanvarainenHyvaksyminenRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository("HarkinnanvarainenHyvaksyminenDAO")
 public class HarkinnanvarainenHyvaksyminenDAOImpl implements HarkinnanvarainenHyvaksyminenDAO {
 
+  private final HarkinnanvarainenHyvaksyminenRepository repo;
+
+  public HarkinnanvarainenHyvaksyminenDAOImpl(HarkinnanvarainenHyvaksyminenRepository repo) {
+    this.repo = repo;
+  }
+
   @Override
   public HarkinnanvarainenHyvaksyminen haeHarkinnanvarainenHyvaksyminen(
       String hakukohdeOid, String hakemusOid) {
-    return null;
- /*   return datastore
-        .find(HarkinnanvarainenHyvaksyminen.class)
-        .field("hakukohdeOid")
-        .equal(hakukohdeOid)
-        .field("hakemusOid")
-        .equal(hakemusOid)
-        .get();*/
+    return repo.findHarkinnanvarainenHyvaksyminenByHakukohdeOidAndHakemusOid(hakukohdeOid, hakemusOid).orElse(null);
   }
 
   @Override
   public void tallennaHarkinnanvarainenHyvaksyminen(
       HarkinnanvarainenHyvaksyminen harkinnanvarainenHyvaksyminen) {
-    //datastore.save(harkinnanvarainenHyvaksyminen);
+    repo.save(harkinnanvarainenHyvaksyminen);
   }
 
   @Override
   public List<HarkinnanvarainenHyvaksyminen> haeHarkinnanvarainenHyvaksyminen(String hakukohdeOid) {
-    return null;
-/*    return datastore
-        .find(HarkinnanvarainenHyvaksyminen.class)
-        .field("hakukohdeOid")
-        .equal(hakukohdeOid)
-        .asList();*/
+    return repo.findHarkinnanvarainenHyvaksyminensByHakukohdeOid(hakukohdeOid);
   }
 
   @Override
   public List<HarkinnanvarainenHyvaksyminen> haeHarkinnanvaraisetHyvaksymisetHaulle(
       String hakuOid) {
-    return null;
-/*    return datastore
-        .find(HarkinnanvarainenHyvaksyminen.class)
-        .field("hakuOid")
-        .equal(hakuOid)
-        .asList();*/
+    return repo.findHarkinnanvarainenHyvaksyminensByHakuOid(hakuOid);
   }
 
   @Override
   public List<HarkinnanvarainenHyvaksyminen> readByHakuOidAndHakemusOid(
       String hakuOid, String hakemusOid) {
-    return null;
-/*    return datastore
-        .find(HarkinnanvarainenHyvaksyminen.class)
-        .field("hakuOid")
-        .equal(hakuOid)
-        .field("hakemusOid")
-        .equal(hakemusOid)
-        .asList();*/
+    return repo.findHarkinnanvarainenHyvaksyminensByHakuOidAndHakemusOid(hakuOid, hakemusOid);
   }
 }
