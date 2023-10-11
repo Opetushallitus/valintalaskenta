@@ -6,6 +6,7 @@ import fi.vm.sade.valintalaskenta.tulos.dao.TulosValinnanvaiheDAO;
 import java.util.*;
 import java.util.stream.Stream;
 
+import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosValinnanvaiheRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -14,24 +15,30 @@ import org.springframework.stereotype.Repository;
 public class TulosValinnanvaiheDAOImpl implements TulosValinnanvaiheDAO {
   private static final Logger LOGGER = LoggerFactory.getLogger(TulosValinnanvaiheDAOImpl.class);
 
+  private final TulosValinnanvaiheRepository repo;
+
+  public TulosValinnanvaiheDAOImpl(TulosValinnanvaiheRepository repo) {
+    this.repo = repo;
+  }
+
   @Override
   public List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid) {
-    return null;
+    return repo.findValinnanvaihesByHakukohdeOid(hakukohdeoid);
   }
 
   @Override
   public List<Valinnanvaihe> readByHakuOid(String hakuoid) {
-    return null;
+    return repo.findValinnanvaihesByHakuOid(hakuoid).toList();
   }
 
   @Override
   public Stream<Valinnanvaihe> readByHakuOidStreaming(String hakuoid) {
-    return null;
+    return repo.findValinnanvaihesByHakuOid(hakuoid);
   }
 
   @Override
   public List<Valinnanvaihe> readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid) {
-    return null;
+    return repo.findValinnanvaihesByHakuOidAndHakemusOid(hakuOid, hakemusOid);
 /*    List<ObjectId> hakemuksenJonosijaIdt = new LinkedList<>();
     datastore
         .find(Jonosija.class)
@@ -66,7 +73,7 @@ public class TulosValinnanvaiheDAOImpl implements TulosValinnanvaiheDAO {
 
   @Override
   public Valinnanvaihe findByValintatapajonoOid(String valintatapajonoOid) {
-    return null;
+    return repo.findValinnanvaiheByValintatapajono(valintatapajonoOid).orElse(null);
 /*    List<ObjectId> valintatapajonoIdt = new LinkedList<>();
     datastore
         .find(Valintatapajono.class)
@@ -90,11 +97,12 @@ public class TulosValinnanvaiheDAOImpl implements TulosValinnanvaiheDAO {
 
   @Override
   public Valinnanvaihe haeValinnanvaihe(String valinnanvaiheOid) {
-    return null;
+    return repo.findValinnanvaiheByValinnanvaiheOid(valinnanvaiheOid).orElse(null);
   }
 
   @Override
   public void saveOrUpdate(Valinnanvaihe vaihe) {
+    repo.save(vaihe);
     /*vaihe
         .getValintatapajonot()
         .forEach(
@@ -105,23 +113,9 @@ public class TulosValinnanvaiheDAOImpl implements TulosValinnanvaiheDAO {
     datastore.save(vaihe);*/
   }
 
-  private void saveJonosijat(Valintatapajono valintatapajono) {
-/*    valintatapajono.setJonosijaIdt(
-        valintatapajono.getJonosijat().stream()
-            .map(jonosija -> (ObjectId) datastore.save(jonosija).getId())
-            .collect(Collectors.toList()));*/
-  }
-
-  private UUID saveJono(Valintatapajono valintatapajono) {
-    return valintatapajono.getId(); //datastore.save(valintatapajono);
-  }
-
   @Override
   public UUID saveVaihe(Valinnanvaihe vaihe) {
-    return vaihe.getId(); // datastore.save(vaihe);
+    return repo.save(vaihe).getId();
   }
 
-  private UUID saveJonosija(Jonosija jonosija) {
-    return jonosija.getId(); // datastore.save(jonosija);
-  }
 }
