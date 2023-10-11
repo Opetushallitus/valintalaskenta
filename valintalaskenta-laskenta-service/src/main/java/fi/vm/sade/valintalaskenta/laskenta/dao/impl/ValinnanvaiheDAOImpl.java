@@ -120,46 +120,4 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     vtpRepo.delete(jono);
   }
 
-  // TODO tämä ei vielä oikeasti poista mitään, logittaa vain poistettavien jonosijojen id:t.
-  // (BUG1899)
-  @Override
-  public void poistaJononJonosijatHakemusOideilla(
-      Valintatapajono jono, List<String> hakemusOidsToRemove) {
-    /*    if (!hakemusOidsToRemove.isEmpty()) {
-      LOGGER.warn("Poistetaan jonosijoja hakemuksille {}", hakemusOidsToRemove);
-      List<ObjectId> tamanJononJonosijaIdt = jono.getJonosijaIdt();
-      List<Jonosija> poistettavatJonosijat =
-          datastore
-              .createQuery(Jonosija.class)
-              .field("_id")
-              .in(tamanJononJonosijaIdt)
-              .field("hakemusOid")
-              .in(hakemusOidsToRemove)
-              .asList();
-
-      for (Jonosija j : poistettavatJonosijat) {
-        LOGGER.warn(
-            "Ollaan valmiita poistamaan hakemuksen {} jonosija ObjectId:llä {} ",
-            j.getHakemusOid(),
-            j.getId());
-      }
-    }*/
-  }
-
-  private void saveJonosijat(Valintatapajono valintatapajono) {
-    /*    valintatapajono.setJonosijaIdt(
-    valintatapajono.getJonosijat().stream()
-        .map(jonosija -> (ObjectId) datastore.save(jonosija).getId())
-        .collect(Collectors.toList()));*/
-  }
-
-  private void populateJonosijat(Valintatapajono valintatapajono) {
-    /*    List<ObjectId> jonosijaIdt = valintatapajono.getJonosijaIdt();
-    if (jonosijaIdt.isEmpty()) {
-      valintatapajono.setJonosijat(new ArrayList<>());
-    } else {
-      valintatapajono.setJonosijat(
-          datastore.createQuery(Jonosija.class).field("_id").in(jonosijaIdt).asList());
-    }*/
-  }
 }

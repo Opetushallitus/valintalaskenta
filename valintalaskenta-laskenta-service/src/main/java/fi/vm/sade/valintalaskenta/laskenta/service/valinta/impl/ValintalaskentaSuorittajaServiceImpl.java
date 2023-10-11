@@ -268,11 +268,6 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         hakemukset.size(),
         passiveHakemusOids.size(),
         goodHakemusOids.size());
-    if (!passiveHakemusOids.isEmpty()) {
-      for (Valintatapajono j : uusi.getValintatapajono()) {
-        valinnanvaiheDAO.poistaJononJonosijatHakemusOideilla(j, passiveHakemusOids);
-      }
-    }
   }
 
   private boolean emptyHakemuksetOrValinnanVaiheTyyppiValintakoe(
