@@ -15,6 +15,6 @@ public class JacksonConfiguration {
                 objectMapper
                     .getFactory()
                     .setStreamReadConstraints(
-                        StreamReadConstraints.builder().maxStringLength(100000000).build()));
+                        StreamReadConstraints.builder().maxStringLength(10000000).build()));
   }
 }
