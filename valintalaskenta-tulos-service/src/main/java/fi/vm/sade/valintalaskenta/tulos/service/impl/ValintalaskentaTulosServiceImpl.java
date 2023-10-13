@@ -11,7 +11,6 @@ import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteeritulosDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.JonoDto;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.MinimalJonoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.HakutoiveDTO;
@@ -288,37 +287,6 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         valintatulosConverter.convertValinnanvaiheList(valinnanVaihes);
     applyMuokatutJonosijatToValinnanvaihe(hakukohdeoid, valintatietoValinnanVaihes);
     return valintatietoValinnanVaihes;
-  }
-
-  /**
-   * ODW requires list of valintatapajonos, which don't use laskenta but use sijoittelu (meaning
-   * officers have to manually input the grades).
-   */
-  @Override
-  public List<MinimalJonoDTO> haeSijoittelunKayttamatJonotIlmanValintalaskentaa() {
-    List<Valintatapajono> validValintatapajonos =
-      tulosValinnanvaiheDAO.valintatapajonotJotkaEivatKaytaLaskentaa();
-    return tulosValinnanvaiheDAO.hakuOidHakukohdeOidPairsForJonos(validValintatapajonos).stream()
-        .flatMap(
-            hakuHakukohdePair ->
-                minimalJonoListForHakukohde(
-                    hakuHakukohdePair.getLeft(), hakuHakukohdePair.getRight()))
-        .collect(Collectors.toList());
-  }
-
-  private Stream<MinimalJonoDTO> minimalJonoListForHakukohde(String haku, String hakukohde) {
-    return haeValinnanvaiheetHakukohteelle(hakukohde).stream()
-        .flatMap(vv -> vv.getValintatapajonot().stream())
-        .filter(Objects::nonNull)
-        .map(
-            vtj ->
-                new MinimalJonoDTO(
-                    haku,
-                    hakukohde,
-                    vtj.getOid(),
-                    vtj.getJonosijat(),
-                    vtj.getKaytetaanValintalaskentaa(),
-                    vtj.isSiirretaanSijoitteluun()));
   }
 
   @Override

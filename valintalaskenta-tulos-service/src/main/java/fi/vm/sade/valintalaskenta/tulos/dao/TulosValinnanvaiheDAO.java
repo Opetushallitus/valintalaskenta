@@ -24,5 +24,4 @@ public interface TulosValinnanvaiheDAO {
 
   UUID saveVaihe(Valinnanvaihe vaihe);
 
-  List<Valintatapajono> valintatapajonotJotkaEivatKaytaLaskentaa();
 }

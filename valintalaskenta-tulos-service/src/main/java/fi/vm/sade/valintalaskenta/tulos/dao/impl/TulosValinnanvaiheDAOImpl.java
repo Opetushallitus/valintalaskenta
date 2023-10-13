@@ -118,9 +118,4 @@ public class TulosValinnanvaiheDAOImpl implements TulosValinnanvaiheDAO {
     return repo.save(vaihe).getId();
   }
 
-  @Override
-  public List<Valintatapajono> valintatapajonotJotkaEivatKaytaLaskentaa() {
-    return null;
-  }
-
 }

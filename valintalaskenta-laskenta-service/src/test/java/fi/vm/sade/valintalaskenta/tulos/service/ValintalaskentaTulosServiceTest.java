@@ -174,49 +174,4 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
     }
   }
 
-  @Test
-  public void testHaeTuloksetHaulle() {
-    Valinnanvaihe vv = TestDataUtil.luoValinnanvaiheEntity("hakuOid1", "hakukohdeOid1", 1, "oid",
-      List.of(TestDataUtil.luoValintatapaJonoEntity(10,
-        Set.of(TestDataUtil.luoJonosijaEntity("Ruhtinas", "Nukettaja", "hakemusOid", 0, false,
-          Arrays.asList(TestDataUtil.luoJarjestyskriteeritulosEntity(13.0, 0, JarjestyskriteerituloksenTila.HYLATTY),
-            TestDataUtil.luoJarjestyskriteeritulosEntity(5.0, 1, JarjestyskriteerituloksenTila.HYLATTY))),
-          TestDataUtil.luoJonosijaEntity("Hertta", "Herttua", "hakemusOid2", 0, true,
-            Arrays.asList(TestDataUtil.luoJarjestyskriteeritulosEntity(20.0, 0, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-              TestDataUtil.luoJarjestyskriteeritulosEntity(10.0, 1, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)))),
-        "vtpjono", 0, Tasasijasaanto.YLITAYTTO, "vtpjono" )));
-    valinnanvaiheRepository.save(vv);
-
-    HarkinnanvarainenHyvaksyminen hh = new HarkinnanvarainenHyvaksyminen();
-    hh.setHakemusOid("hakemusOid2");
-    hh.setHakukohdeOid("hakukohdeOid1");
-    hh.setHakuOid("hakuOid1");
-    hh.setHarkinnanvaraisuusTila(HarkinnanvaraisuusTila.HYVAKSYTTY);
-
-    harkinnanvarainenHyvaksyminenRepository.save(hh);
-
-    MuokattuJonosija jonosija = new MuokattuJonosija();
-    jonosija.setHakuOid("hakuOid1");
-    jonosija.setHakukohdeOid("hakukohdeOid1");
-    jonosija.setValintatapajonoOid("vtpjono");
-    jonosija.setHakemusOid("hakemusOid1");
-    jonosija.setPrioriteetti(0);
-    jonosija.setJarjestyskriteerit(Set.of(TestDataUtil.luoJarjestyskriteeritulosEntity(100.0, 0, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-      TestDataUtil.luoJarjestyskriteeritulosEntity(5.0, 1, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)));
-
-    muokattuJonosijaRepository.save(jonosija);
-
-    List<MinimalJonoDTO> list =
-        valintalaskentaTulosService.haeSijoittelunKayttamatJonotIlmanValintalaskentaa();
-    list.forEach(
-        d -> {
-          assertEquals("hakuOid1", d.getHakuOid());
-          assertEquals("hakukohdeOid1", d.getHakukohdeOid());
-          assertEquals("valintatapajonoOid1", d.getValintatapajonoOid());
-          assertFalse(d.isKaytetaanValintalaskentaa());
-          assertTrue(d.isSiirretaanSijoitteluun());
-          assertEquals(2, d.getHakemusCount());
-        });
-    assertEquals(1, list.size());
-  }
 }
