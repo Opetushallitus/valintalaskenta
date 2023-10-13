@@ -1,4 +1,4 @@
-package fi.vm.sade.valintalaskenta.laskenta.testing;
+package fi.vm.sade.valintalaskenta.testing;
 
 import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.valintalaskenta.laskenta.App;
@@ -11,36 +11,25 @@ import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResou
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
-import fi.vm.sade.valintalaskenta.laskenta.testing.DefaultTestConfiguration;
+import fi.vm.sade.valintalaskenta.tulos.dao.repository.HarkinnanvarainenHyvaksyminenRepository;
+import fi.vm.sade.valintalaskenta.tulos.dao.repository.MuokattuJonosijaRepository;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogMock;
 import io.swagger.v3.oas.models.OpenAPI;
 import org.junit.Before;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.*;
-import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 import org.springframework.security.cas.authentication.CasAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.springframework.boot.test.context.TestConfiguration;
 
 
 //@EnableJdbcRepositories(basePackages = "fi.vm.sade.valintalaskenta.laskenta.dao.repository")
@@ -76,12 +65,19 @@ public abstract class AbstractIntegrationTest {
   @Autowired
   protected JonosijaRepository jonosijaRepository;
 
+  @Autowired
+  protected MuokattuJonosijaRepository muokattuJonosijaRepository;
+
+  @Autowired
+  protected HarkinnanvarainenHyvaksyminenRepository harkinnanvarainenHyvaksyminenRepository;
+
   @LocalServerPort
   protected Integer port;
 
   @Before
   public void setUp() {
-
+    harkinnanvarainenHyvaksyminenRepository.deleteAll();
+    muokattuJonosijaRepository.deleteAll();
     jonosijaRepository.deleteAll();
     valintatapajonoRepository.deleteAll();
     valinnanvaiheRepository.deleteAll();

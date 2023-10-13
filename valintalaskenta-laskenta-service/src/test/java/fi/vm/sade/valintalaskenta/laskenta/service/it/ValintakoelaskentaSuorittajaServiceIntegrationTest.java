@@ -56,7 +56,7 @@ import java.util.TreeMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import fi.vm.sade.valintalaskenta.laskenta.testing.AbstractIntegrationTest;
+import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
 import org.apache.commons.io.IOUtils;
 import org.junit.Ignore;
 import org.junit.Test;

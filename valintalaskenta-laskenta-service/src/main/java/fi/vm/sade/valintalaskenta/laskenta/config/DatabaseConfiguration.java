@@ -30,7 +30,7 @@ import java.util.Set;
 import static java.util.Arrays.asList;
 
 @Configuration
-@EnableJdbcRepositories(basePackages = {"fi.vm.sade.valintalaskenta.laskenta.dao.repository"})
+@EnableJdbcRepositories(basePackages = {"fi.vm.sade.valintalaskenta.laskenta.dao.repository", "fi.vm.sade.valintalaskenta.tulos.dao.repository"})
 class DatabaseConfiguration extends AbstractJdbcConfiguration {
 
     private final ApplicationContext applicationContext;

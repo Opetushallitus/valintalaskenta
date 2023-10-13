@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Column;
 
 
 public class Hakutoive {
@@ -18,6 +19,7 @@ public class Hakutoive {
   private final Set<ValintakoeValinnanvaihe> valintakoeValinnanvaiheet = new HashSet<>();
 
   @Transient
+  @Column("valintakoe_osallistuminen")
   private ValintakoeOsallistuminen valintakoeOsallistuminen;
 
   public Hakutoive() {}

@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE harkinnanvarainen_hyvaksyminen (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     created_at timestamp with time zone default now(),
-    harkinnanvaraisuustila varchar(255),
+    harkinnanvaraisuus_tila varchar(255),
     hakukohde_oid varchar(127) NOT NULL,
     hakemus_oid varchar(127) NOT NULL,
     haku_oid varchar(127) NOT NULL
@@ -152,14 +152,15 @@ CREATE TABLE muokattu_jonosija (
     created_at timestamp with time zone default now(),
     hakukohde_oid varchar(127) NOT NULL,
     haku_oid varchar(127) NOT NULL,
-    valintatapajono uuid NOT NULL,
+    valintatapajono_oid varchar(127) NOT NULL,
     hakemus_oid varchar(127) NOT NULL,
+    harkinnanvarainen boolean DEFAULT NULL,
+    prioriteetti int,
     selite varchar(255),
-    muokkaaja varchar(127) NOT NULL,
     muutos varchar(255),
-    CONSTRAINT fk_valintatapajono
-      FOREIGN KEY(valintatapajono)
-          REFERENCES Valintatapajono(id)
+    CONSTRAINT fk_valintatapajono_oid
+      FOREIGN KEY(valintatapajono_oid)
+          REFERENCES Valintatapajono(valintatapajono_oid)
 );
 
 CREATE INDEX muokattujonosija_hakukohde ON muokattu_jonosija(hakukohde_oid);
@@ -175,7 +176,7 @@ CREATE TABLE jarjestyskriteeritulos (
     kuvaus_fi text NOT NULL DEFAULT '',
     kuvaus_sv text NOT NULL DEFAULT '',
     kuvaus_en text NOT NULL DEFAULT '',
-    tekninenKuvaus text,
+    tekninen_kuvaus text,
     jonosija uuid,
     muokattu_jonosija uuid,
     CONSTRAINT fk_jonosija

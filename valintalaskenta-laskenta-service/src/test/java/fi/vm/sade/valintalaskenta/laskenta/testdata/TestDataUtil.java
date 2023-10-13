@@ -282,4 +282,17 @@ public abstract class TestDataUtil {
     valintakoe.setLahetetaankoKoekutsut(false);
     return valintakoe;
   }
+
+  public static ValintakoeOsallistuminen luoValintakoeOsallistuminen(String hakuOid, String hakijaOid, String hakemusOid, Set<Hakutoive> toiveet) {
+    ValintakoeOsallistuminen osallistuminen = new ValintakoeOsallistuminen();
+    osallistuminen.setHakuOid(hakuOid);
+    osallistuminen.setHakijaOid(hakijaOid);
+    osallistuminen.setHakemusOid(hakemusOid);
+    osallistuminen.setHakutoiveet(toiveet);
+    return osallistuminen;
+  }
+
+  public static ValintakoeOsallistuminen luoValintakoeOsallistuminen(String hakuOid, String hakijaOid, String hakemusOid) {
+    return luoValintakoeOsallistuminen(hakuOid, hakijaOid, hakemusOid, new HashSet<>());
+  }
 }

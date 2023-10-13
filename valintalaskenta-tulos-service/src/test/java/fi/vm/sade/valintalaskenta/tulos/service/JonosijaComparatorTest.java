@@ -6,21 +6,16 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverter;
 import java.util.List;
+
+import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverterImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-/**
- * Created with IntelliJ IDEA. User: kkammone
- *
- * <p>Date: 7.6.2013 Time: 9:18 To change this template use File | Settings | File Templates.
- */
-@ContextConfiguration(locations = "classpath:application-context-test.xml")
-@RunWith(org.springframework.test.context.junit4.SpringJUnit4ClassRunner.class)
 public class JonosijaComparatorTest {
 
-  @Autowired private ValintatulosConverter valintatulosConverter;
+  private ValintatulosConverter valintatulosConverter = new ValintatulosConverterImpl();
 
   @Test
   public void testComparator() {

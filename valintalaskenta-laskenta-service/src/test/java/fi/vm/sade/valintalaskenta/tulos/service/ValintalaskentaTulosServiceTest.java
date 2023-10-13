@@ -1,33 +1,25 @@
 package fi.vm.sade.valintalaskenta.tulos.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import fi.vm.sade.valintalaskenta.domain.dto.*;
-import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.HakutoiveDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
-import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
+import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import java.math.BigDecimal;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import org.junit.Rule;
+
+import fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil;
+import fi.vm.sade.valintalaskenta.testing.AbstractMocklessIntegrationTest;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@ContextConfiguration(locations = "classpath:application-context-test.xml")
-@RunWith(SpringJUnit4ClassRunner.class)
-public class ValintalaskentaTulosServiceTest {
+import static org.junit.Assert.*;
+
+public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegrationTest {
 
   @Autowired private ValintalaskentaTulosService valintalaskentaTulosService;
 
@@ -35,14 +27,20 @@ public class ValintalaskentaTulosServiceTest {
 
   @Test
   public void haeValintakoeOsallistumisetByOidTest() {
+    valintakoeOsallistuminenRepository.save(TestDataUtil.luoValintakoeOsallistuminen("hakuOid1", "hakijaoid1", "oid1"));
     ValintakoeOsallistuminen kaikki =
         valintalaskentaTulosService.haeValintakoeOsallistumiset("oid1");
 
-    assertEquals("oid1", kaikki.getHakijaOid());
+    assertEquals("hakijaoid1", kaikki.getHakijaOid());
   }
 
   @Test
   public void haeValintakoeOsallistumisetByHakutoiveTest() {
+    valintakoeOsallistuminenRepository.save(TestDataUtil.luoValintakoeOsallistuminen("hakuoid", "hakijaoid1", "hakemusoid1",
+      Set.of(TestDataUtil.luoHakutoiveEntity("oid1", new HashSet<>()))));
+    valintakoeOsallistuminenRepository.save(TestDataUtil.luoValintakoeOsallistuminen("hakuoid", "hakijaoid2", "hakemusoid2",
+      Set.of(TestDataUtil.luoHakutoiveEntity("oid1", new HashSet<>()),
+        TestDataUtil.luoHakutoiveEntity("oid2", new HashSet<>()))));
     List<ValintakoeOsallistuminen> kaikki =
         valintalaskentaTulosService.haeValintakoeOsallistumisetByHakutoive("oid1");
     assertEquals(2, kaikki.size());
@@ -178,6 +176,36 @@ public class ValintalaskentaTulosServiceTest {
 
   @Test
   public void testHaeTuloksetHaulle() {
+    Valinnanvaihe vv = TestDataUtil.luoValinnanvaiheEntity("hakuOid1", "hakukohdeOid1", 1, "oid",
+      List.of(TestDataUtil.luoValintatapaJonoEntity(10,
+        Set.of(TestDataUtil.luoJonosijaEntity("Ruhtinas", "Nukettaja", "hakemusOid", 0, false,
+          Arrays.asList(TestDataUtil.luoJarjestyskriteeritulosEntity(13.0, 0, JarjestyskriteerituloksenTila.HYLATTY),
+            TestDataUtil.luoJarjestyskriteeritulosEntity(5.0, 1, JarjestyskriteerituloksenTila.HYLATTY))),
+          TestDataUtil.luoJonosijaEntity("Hertta", "Herttua", "hakemusOid2", 0, true,
+            Arrays.asList(TestDataUtil.luoJarjestyskriteeritulosEntity(20.0, 0, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+              TestDataUtil.luoJarjestyskriteeritulosEntity(10.0, 1, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)))),
+        "vtpjono", 0, Tasasijasaanto.YLITAYTTO, "vtpjono" )));
+    valinnanvaiheRepository.save(vv);
+
+    HarkinnanvarainenHyvaksyminen hh = new HarkinnanvarainenHyvaksyminen();
+    hh.setHakemusOid("hakemusOid2");
+    hh.setHakukohdeOid("hakukohdeOid1");
+    hh.setHakuOid("hakuOid1");
+    hh.setHarkinnanvaraisuusTila(HarkinnanvaraisuusTila.HYVAKSYTTY);
+
+    harkinnanvarainenHyvaksyminenRepository.save(hh);
+
+    MuokattuJonosija jonosija = new MuokattuJonosija();
+    jonosija.setHakuOid("hakuOid1");
+    jonosija.setHakukohdeOid("hakukohdeOid1");
+    jonosija.setValintatapajonoOid("vtpjono");
+    jonosija.setHakemusOid("hakemusOid1");
+    jonosija.setPrioriteetti(0);
+    jonosija.setJarjestyskriteerit(Set.of(TestDataUtil.luoJarjestyskriteeritulosEntity(100.0, 0, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+      TestDataUtil.luoJarjestyskriteeritulosEntity(5.0, 1, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)));
+
+    muokattuJonosijaRepository.save(jonosija);
+
     List<MinimalJonoDTO> list =
         valintalaskentaTulosService.haeSijoittelunKayttamatJonotIlmanValintalaskentaa();
     list.forEach(
@@ -185,8 +213,8 @@ public class ValintalaskentaTulosServiceTest {
           assertEquals("hakuOid1", d.getHakuOid());
           assertEquals("hakukohdeOid1", d.getHakukohdeOid());
           assertEquals("valintatapajonoOid1", d.getValintatapajonoOid());
-          assertEquals(false, d.isKaytetaanValintalaskentaa());
-          assertEquals(true, d.isSiirretaanSijoitteluun());
+          assertFalse(d.isKaytetaanValintalaskentaa());
+          assertTrue(d.isSiirretaanSijoitteluun());
           assertEquals(2, d.getHakemusCount());
         });
     assertEquals(1, list.size());

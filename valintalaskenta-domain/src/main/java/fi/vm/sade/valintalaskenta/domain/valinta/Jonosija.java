@@ -42,6 +42,11 @@ public class Jonosija {
   @Column("funktio_tulokset")
   private FunktioTulosContainer funktioTulokset;
 
+  public Jonosija() {
+    syotetytArvot = new SyotettyArvoContainer();
+    funktioTulokset = new FunktioTulosContainer();
+  }
+
   public UUID getId() {
     return this.id;
   }

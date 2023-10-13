@@ -1,10 +1,9 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceCreator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 public class MuokattuJonosija {
@@ -20,16 +19,26 @@ public class MuokattuJonosija {
 
   private String hakemusOid;
 
+  private Boolean harkinnanvarainen;
+
   private Integer prioriteetti; // hakutoive
 
-  private List<Jarjestyskriteeritulos> jarjestyskriteerit = new ArrayList<Jarjestyskriteeritulos>();
+  private final Set<Jarjestyskriteeritulos> jarjestyskriteerit = new HashSet<>();
 
-  public List<Jarjestyskriteeritulos> getJarjestyskriteerit() {
+  public MuokattuJonosija() {}
+
+  @PersistenceCreator
+  public MuokattuJonosija(Set<Jarjestyskriteeritulos> jarjestyskriteerit) {
+    this.jarjestyskriteerit.addAll(jarjestyskriteerit);
+  }
+
+  public Set<Jarjestyskriteeritulos> getJarjestyskriteerit() {
     return jarjestyskriteerit;
   }
 
-  public void setJarjestyskriteerit(List<Jarjestyskriteeritulos> jarjestyskriteerit) {
-    this.jarjestyskriteerit = jarjestyskriteerit;
+  public void setJarjestyskriteerit(Set<Jarjestyskriteeritulos> jarjestyskriteerit) {
+    this.jarjestyskriteerit.clear();
+    this.jarjestyskriteerit.addAll(jarjestyskriteerit);
   }
 
   public String getValintatapajonoOid() {
@@ -78,5 +87,13 @@ public class MuokattuJonosija {
 
   public void setId(UUID id) {
     this.id = id;
+  }
+
+  public Boolean getHarkinnanvarainen() {
+    return harkinnanvarainen;
+  }
+
+  public void setHarkinnanvarainen(Boolean harkinnanvarainen) {
+    this.harkinnanvarainen = harkinnanvarainen;
   }
 }

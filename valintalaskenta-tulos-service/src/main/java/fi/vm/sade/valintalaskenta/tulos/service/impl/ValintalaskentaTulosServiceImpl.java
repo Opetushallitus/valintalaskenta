@@ -296,16 +296,14 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
    */
   @Override
   public List<MinimalJonoDTO> haeSijoittelunKayttamatJonotIlmanValintalaskentaa() {
-    //TODO: check code below
-    return null;
-/*    List<ValintatapajonoMigrationDTO> validValintatapajonos =
-        valinnanvaiheDAO.valintatapajonotJotkaEivatKaytaLaskentaa();
-    return valinnanvaiheDAO.hakuOidHakukohdeOidPairsForJonos(validValintatapajonos).stream()
+    List<Valintatapajono> validValintatapajonos =
+      tulosValinnanvaiheDAO.valintatapajonotJotkaEivatKaytaLaskentaa();
+    return tulosValinnanvaiheDAO.hakuOidHakukohdeOidPairsForJonos(validValintatapajonos).stream()
         .flatMap(
             hakuHakukohdePair ->
                 minimalJonoListForHakukohde(
                     hakuHakukohdePair.getLeft(), hakuHakukohdePair.getRight()))
-        .collect(Collectors.toList());*/
+        .collect(Collectors.toList());
   }
 
   private Stream<MinimalJonoDTO> minimalJonoListForHakukohde(String haku, String hakukohde) {
@@ -708,10 +706,10 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     if (muokattuJonosija == null) {
       return null;
     } else {
-      List<Jarjestyskriteeritulos> saastettavat =
+      Set<Jarjestyskriteeritulos> saastettavat =
           muokattuJonosija.getJarjestyskriteerit().stream()
               .filter(j -> j.getPrioriteetti() != jarjestyskriteeriPrioriteetti)
-              .collect(Collectors.toList());
+              .collect(Collectors.toSet());
       muokattuJonosija.setJarjestyskriteerit(saastettavat);
       saveMuokattuJonosija(muokattuJonosija, auditUser);
       return muokattuJonosija;

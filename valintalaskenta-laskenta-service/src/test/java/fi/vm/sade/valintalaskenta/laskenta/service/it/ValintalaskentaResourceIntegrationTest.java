@@ -53,23 +53,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import fi.vm.sade.valintalaskenta.laskenta.testing.AbstractIntegrationTest;
-import fi.vm.sade.valintalaskenta.laskenta.testing.AbstractMocklessIntegrationTest;
+import fi.vm.sade.valintalaskenta.testing.AbstractMocklessIntegrationTest;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
 public class ValintalaskentaResourceIntegrationTest extends AbstractMocklessIntegrationTest {
 

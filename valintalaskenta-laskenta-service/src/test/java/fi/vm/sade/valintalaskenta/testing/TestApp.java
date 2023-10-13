@@ -1,18 +1,16 @@
-package fi.vm.sade.valintalaskenta.laskenta.testing;
+package fi.vm.sade.valintalaskenta.testing;
 
 import fi.vm.sade.integrationtest.util.PortChecker;
 import fi.vm.sade.valintalaskenta.laskenta.App;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.stereotype.Component;
 
 @SpringBootApplication
 @EnableWebSecurity(debug = true)

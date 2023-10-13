@@ -10,7 +10,7 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
 import java.util.*;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
-import fi.vm.sade.valintalaskenta.laskenta.testing.AbstractIntegrationTest;
+import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
 import fi.vm.sade.valintalaskenta.laskenta.dao.impl.HakijaryhmaServiceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.HakijaryhmaRepository;
 import org.junit.Test;

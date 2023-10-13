@@ -7,6 +7,8 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Column;
 
 public class Jarjestyskriteeritulos {
 
@@ -19,18 +21,21 @@ public class Jarjestyskriteeritulos {
 
   private JarjestyskriteerituloksenTila tila;
 
-  private String kuvausFI;
+  private String kuvausFI = "";
 
-  private String kuvausSV;
+  private String kuvausSV = "";
 
-  private String kuvausEN;
+  private String kuvausEN = "";
 
   private String nimi;
 
   private String tekninenKuvaus;
 
+  @Transient
   private Jonosija jonosija;
 
+  @Transient
+  @Column("muokattu_jonosija")
   MuokattuJonosija muokattuJonosija;
 
   public int getPrioriteetti() {

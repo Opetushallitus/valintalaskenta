@@ -8,13 +8,10 @@ import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import java.util.Arrays;
 import java.util.List;
 
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
-import fi.vm.sade.valintalaskenta.laskenta.dao.repository.ValinnanvaiheRepository;
-import fi.vm.sade.valintalaskenta.laskenta.testing.AbstractIntegrationTest;
+import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
 import org.hamcrest.Matchers;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {

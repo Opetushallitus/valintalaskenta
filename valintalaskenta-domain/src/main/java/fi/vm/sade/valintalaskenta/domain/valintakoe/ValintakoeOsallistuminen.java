@@ -8,6 +8,7 @@ import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Table;
 
+@Table("valintakoe_osallistuminen")
 public class ValintakoeOsallistuminen {
   @Id
   private UUID id;

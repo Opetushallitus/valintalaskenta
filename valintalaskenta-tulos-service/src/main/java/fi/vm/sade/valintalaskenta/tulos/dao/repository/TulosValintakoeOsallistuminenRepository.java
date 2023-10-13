@@ -14,15 +14,15 @@ public interface TulosValintakoeOsallistuminenRepository extends CrudRepository<
 
   Optional<ValintakoeOsallistuminen> findValintakoeOsallistuminenByHakemusOid(String hakemusOid);
 
-  @Query("select * from ValintakoeOsallistuminen vo join Hakutoive h on h.valintakoe_osallistuminen = vo.id where h.hakukohde_oid = :hakutoive")
+  @Query("select * from valintakoe_osallistuminen vo join hakutoive h on h.valintakoe_osallistuminen = vo.id where h.hakukohde_oid = :hakutoive")
   List<ValintakoeOsallistuminen> findValintakoeOsallistuminensByHakutoive(@Param("hakutoive") String hakukohdeOid);
 
-  @Query("select * from ValintakoeOsallistuminen vo join Hakutoive h on h.valintakoe_osallistuminen = vo.id where h.hakukohde_oid in (:hakutoiveet)")
+  @Query("select * from valintakoe_osallistuminen vo join hakutoive h on h.valintakoe_osallistuminen = vo.id where h.hakukohde_oid in (:hakutoiveet)")
   List<ValintakoeOsallistuminen> findValintakoeOsallistuminensByHakutoiveet(@Param("hakutoiveet") List<String> hakukohdeOid);
 
   List<ValintakoeOsallistuminen> findValintakoeOsallistuminensByHakijaOidIn(List<String> hakijaOids);
 
-  @Query("select * from ValintakoeOsallistuminen vo join Hakutoive h on h.valintakoe_osallistuminen = vo.id join ValintakoeValinnanvaihe vvv on vvv.hakutoive = h.id join Valintakoe vk on vk.valintakoe_valinnanvaihe = vvv.id where vo.hakuOid = :hakuOid and vk.osallistuminen = :osallistuminen")
+  @Query("select * from valintakoe_osallistuminen vo join hakutoive h on h.valintakoe_osallistuminen = vo.id join valintakoe_valinnanvaihe vvv on vvv.hakutoive = h.id join valintakoe vk on vk.valintakoe_valinnanvaihe = vvv.id where vo.hakuOid = :hakuOid and vk.osallistuminen = :osallistuminen")
   List<ValintakoeOsallistuminen> findByHakuAndOsallistuminen(@Param("hakuOid") String hakuOid, @Param("osallistuminen") Osallistuminen osallistuminen);
 
 }
