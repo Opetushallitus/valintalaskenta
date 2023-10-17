@@ -1,18 +1,15 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
 import java.util.*;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 
-
 public class Hakutoive {
 
-  @Id
-  private UUID id;
+  @Id private UUID id;
 
   private String hakukohdeOid;
 

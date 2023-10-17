@@ -25,8 +25,7 @@ import org.springframework.context.ApplicationContext;
 public class ValintalaskentaResourceHttpIntegrationTest extends AbstractIntegrationTest {
   private final String hakukohdeOid = "hakukohdeOid";
 
-  @Autowired
-  private ApplicationContext applicationContext;
+  @Autowired private ApplicationContext applicationContext;
   private boolean mayFinish;
   private boolean finished;
   private AsyncHttpClient asyncHttpClient = asyncHttpClient();
@@ -37,9 +36,9 @@ public class ValintalaskentaResourceHttpIntegrationTest extends AbstractIntegrat
     when(getBean(ValintalaskentaService.class)
             .laskeKaikki(
                 anyList(),
-                    anyList(),
-                    anyList(),
-                    ArgumentMatchers.eq(hakukohdeOid),
+                anyList(),
+                anyList(),
+                ArgumentMatchers.eq(hakukohdeOid),
                 any(String.class),
                 anyBoolean()))
         .thenReturn("Onnistui!");
@@ -58,10 +57,10 @@ public class ValintalaskentaResourceHttpIntegrationTest extends AbstractIntegrat
     mockValisijoiteltavatJonotCall();
     when(getBean(ValintalaskentaService.class)
             .laskeKaikki(
-                    anyList(),
-                    anyList(),
-                    anyList(),
-                    ArgumentMatchers.eq(hakukohdeOid),
+                anyList(),
+                anyList(),
+                anyList(),
+                ArgumentMatchers.eq(hakukohdeOid),
                 any(String.class),
                 anyBoolean()))
         .thenThrow(new RuntimeException(getClass().getSimpleName() + "-failure"));
@@ -80,10 +79,10 @@ public class ValintalaskentaResourceHttpIntegrationTest extends AbstractIntegrat
     mockValisijoiteltavatJonotCall();
     when(getBean(ValintalaskentaService.class)
             .laskeKaikki(
-                    anyList(),
-                    anyList(),
-                    anyList(),
-                    ArgumentMatchers.eq(hakukohdeOid),
+                anyList(),
+                anyList(),
+                anyList(),
+                ArgumentMatchers.eq(hakukohdeOid),
                 any(String.class),
                 anyBoolean()))
         .thenAnswer(
@@ -108,8 +107,7 @@ public class ValintalaskentaResourceHttpIntegrationTest extends AbstractIntegrat
 
   @Test
   public void crashingLaskenta() throws InterruptedException, ExecutionException {
-    when(getBean(ValisijoitteluKasittelija.class)
-            .valisijoiteltavatJonot(anyList(), any()))
+    when(getBean(ValisijoitteluKasittelija.class).valisijoiteltavatJonot(anyList(), any()))
         .thenThrow(
             new RuntimeException(
                 ValisijoitteluKasittelija.class.getSimpleName()
@@ -137,8 +135,7 @@ public class ValintalaskentaResourceHttpIntegrationTest extends AbstractIntegrat
   }
 
   private void mockValisijoiteltavatJonotCall() {
-    when(getBean(ValisijoitteluKasittelija.class)
-            .valisijoiteltavatJonot(anyList(), any()))
+    when(getBean(ValisijoitteluKasittelija.class).valisijoiteltavatJonot(anyList(), any()))
         .thenReturn(new ValisijoiteltavatJonot(Collections.emptySet(), Collections.emptyMap()));
   }
 

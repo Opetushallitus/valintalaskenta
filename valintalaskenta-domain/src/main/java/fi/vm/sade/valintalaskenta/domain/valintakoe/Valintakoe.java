@@ -1,18 +1,16 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
 import fi.vm.sade.service.valintaperusteet.dto.model.Koekutsu;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 public class Valintakoe {
 
-  @Id
-  private UUID id;
+  @Id private UUID id;
 
   private String valintakoeOid;
 
@@ -42,8 +40,7 @@ public class Valintakoe {
 
   private String tekninenKuvaus;
 
-  @Transient
-  private ValintakoeValinnanvaihe valintakoeValinnanvaihe;
+  @Transient private ValintakoeValinnanvaihe valintakoeValinnanvaihe;
 
   public Valintakoe() {}
 

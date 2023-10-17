@@ -3,10 +3,8 @@ package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValintakoeOsallistuminenDAO;
-
-import java.util.List;
-
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosValintakoeOsallistuminenRepository;
+import java.util.List;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -17,7 +15,6 @@ public class TulosValintakoeOsallistuminenDAOImpl implements TulosValintakoeOsal
   public TulosValintakoeOsallistuminenDAOImpl(TulosValintakoeOsallistuminenRepository repo) {
     this.repo = repo;
   }
-
 
   @Override
   public ValintakoeOsallistuminen findByHakemusOid(String hakemusOid) {
@@ -44,5 +41,4 @@ public class TulosValintakoeOsallistuminenDAOImpl implements TulosValintakoeOsal
       String hakuOid, Osallistuminen osallistuminen) {
     return repo.findDistinctByHakuAndOsallistuminen(hakuOid, osallistuminen);
   }
-
 }

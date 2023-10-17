@@ -110,8 +110,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
   }
 
   @Override
-  public OsallistuminenTulosDTO convertOsallistuminenTulos(
-      Valintakoe valintakoe) {
+  public OsallistuminenTulosDTO convertOsallistuminenTulos(Valintakoe valintakoe) {
     OsallistuminenTulosDTO dto = new OsallistuminenTulosDTO();
     dto.setKuvaus(valintakoe.getKuvaus());
     dto.setLaskentaTila(valintakoe.getLaskentaTila());

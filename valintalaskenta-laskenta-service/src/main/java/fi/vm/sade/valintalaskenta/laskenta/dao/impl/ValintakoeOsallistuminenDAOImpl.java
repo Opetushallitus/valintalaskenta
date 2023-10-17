@@ -2,10 +2,6 @@ package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.ValintakoeOsallistuminenRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -36,8 +32,8 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
   public ValintakoeOsallistuminen haeEdeltavaValinnanvaihe(
       String hakuOid, String hakukohdeOid, int jarjestysnumero) {
     if (jarjestysnumero == 0) return null;
-    return repo.findByHakuHakukohdeAndValinnanvaiheJarjestysLuku(hakuOid, hakukohdeOid, jarjestysnumero - 1)
-      .orElse(null);
+    return repo.findByHakuHakukohdeAndValinnanvaiheJarjestysLuku(
+            hakuOid, hakukohdeOid, jarjestysnumero - 1)
+        .orElse(null);
   }
-
 }

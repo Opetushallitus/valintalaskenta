@@ -5,13 +5,9 @@ import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverter;
-import java.util.List;
-
 import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverterImpl;
+import java.util.List;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
 
 public class JonosijaComparatorTest {
 

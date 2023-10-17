@@ -146,16 +146,16 @@ public class ValintalaskentaDbDumpingTest {
                                 sailytettavatJonot.add(jono);
                               }
                             });
-/*                    jono.getJonosijat().stream().map(Jonosija::getId).collect(Collectors.toList())
-                        .forEach(
-                            id -> {
-                              if (sailytettavatJonosijat.stream()
-                                  .anyMatch(sailytettava -> sailytettava.getId().equals(id))) {
-                                sailytettavatJonosijaIdt.add(id.toString());
-                              }
-                            });*/
+                    /*                    jono.getJonosijat().stream().map(Jonosija::getId).collect(Collectors.toList())
+                    .forEach(
+                        id -> {
+                          if (sailytettavatJonosijat.stream()
+                              .anyMatch(sailytettava -> sailytettava.getId().equals(id))) {
+                            sailytettavatJonosijaIdt.add(id.toString());
+                          }
+                        });*/
                     jono.setJonosijat(sailytettavatJonosijat);
-                    //jono.setJonosijaIdt(sailytettavatJonosijaIdt);
+                    // jono.setJonosijaIdt(sailytettavatJonosijaIdt);
                   });
           vaihe.setValintatapajono(new ArrayList<>(sailytettavatJonot));
         });

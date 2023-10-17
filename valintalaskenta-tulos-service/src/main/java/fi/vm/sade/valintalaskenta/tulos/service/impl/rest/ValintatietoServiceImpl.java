@@ -46,9 +46,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
               if (tunnisteet.contains(valintakoe.getValintakoeTunniste())) {
                 ValintakoeOsallistuminenDTO osallistuminen = new ValintakoeOsallistuminenDTO();
                 osallistuminen.setOsallistuminen(
-                    modelMapper.map(
-                        valintakoe.getOsallistuminen(),
-                        OsallistuminenDTO.class));
+                    modelMapper.map(valintakoe.getOsallistuminen(), OsallistuminenDTO.class));
                 osallistuminen.setValintakoeOid(valintakoe.getValintakoeOid());
                 osallistuminen.setValintakoeTunniste(valintakoe.getValintakoeTunniste());
                 osallistuminen.setNimi(valintakoe.getNimi());

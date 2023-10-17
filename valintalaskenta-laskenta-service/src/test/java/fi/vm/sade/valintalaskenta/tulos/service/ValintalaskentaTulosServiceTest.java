@@ -1,23 +1,22 @@
 package fi.vm.sade.valintalaskenta.tulos.service;
 
+import static org.junit.Assert.*;
+
 import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
+import fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil;
+import fi.vm.sade.valintalaskenta.testing.AbstractMocklessIntegrationTest;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil;
-import fi.vm.sade.valintalaskenta.testing.AbstractMocklessIntegrationTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-
-import static org.junit.Assert.*;
 
 public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegrationTest {
 
@@ -27,7 +26,8 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
 
   @Test
   public void haeValintakoeOsallistumisetByOidTest() {
-    valintakoeOsallistuminenRepository.save(TestDataUtil.luoValintakoeOsallistuminen("hakuOid1", "hakijaoid1", "oid1"));
+    valintakoeOsallistuminenRepository.save(
+        TestDataUtil.luoValintakoeOsallistuminen("hakuOid1", "hakijaoid1", "oid1"));
     ValintakoeOsallistuminen kaikki =
         valintalaskentaTulosService.haeValintakoeOsallistumiset("oid1");
 
@@ -36,11 +36,20 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
 
   @Test
   public void haeValintakoeOsallistumisetByHakutoiveTest() {
-    valintakoeOsallistuminenRepository.save(TestDataUtil.luoValintakoeOsallistuminen("hakuoid", "hakijaoid1", "hakemusoid1",
-      Set.of(TestDataUtil.luoHakutoiveEntity("oid1", new HashSet<>()))));
-    valintakoeOsallistuminenRepository.save(TestDataUtil.luoValintakoeOsallistuminen("hakuoid", "hakijaoid2", "hakemusoid2",
-      Set.of(TestDataUtil.luoHakutoiveEntity("oid1", new HashSet<>()),
-        TestDataUtil.luoHakutoiveEntity("oid2", new HashSet<>()))));
+    valintakoeOsallistuminenRepository.save(
+        TestDataUtil.luoValintakoeOsallistuminen(
+            "hakuoid",
+            "hakijaoid1",
+            "hakemusoid1",
+            Set.of(TestDataUtil.luoHakutoiveEntity("oid1", new HashSet<>()))));
+    valintakoeOsallistuminenRepository.save(
+        TestDataUtil.luoValintakoeOsallistuminen(
+            "hakuoid",
+            "hakijaoid2",
+            "hakemusoid2",
+            Set.of(
+                TestDataUtil.luoHakutoiveEntity("oid1", new HashSet<>()),
+                TestDataUtil.luoHakutoiveEntity("oid2", new HashSet<>()))));
     List<ValintakoeOsallistuminen> kaikki =
         valintalaskentaTulosService.haeValintakoeOsallistumisetByHakutoive("oid1");
     assertEquals(2, kaikki.size());
@@ -82,25 +91,75 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
   @Test
   public void testHaeValintakoevirheetHaulle() {
     final String hakuOid = "hakuOid1";
-    valintakoeOsallistuminenRepository.save(TestDataUtil.luoValintakoeOsallistuminen(hakuOid, "hakijaoid1", "hakemusOid1",
-      Set.of(TestDataUtil.luoHakutoiveEntity("hakukohdeOid1",
-        Set.of(
-          TestDataUtil.luoValintakoeValinnanvaiheEntity(0, "valinnanvaheOid1",
-            List.of(TestDataUtil.luoValintakoeEntity("valintakoeOid1", "valintakoeTunniste1", Osallistuminen.VIRHE, false, null))),
-          TestDataUtil.luoValintakoeValinnanvaiheEntity(0, "valinnanvaiheOid2",
-            List.of((TestDataUtil.luoValintakoeEntity("valintakoeOid2", "valintakoeTunniste2", Osallistuminen.OSALLISTUU, false, null)))))))));
+    valintakoeOsallistuminenRepository.save(
+        TestDataUtil.luoValintakoeOsallistuminen(
+            hakuOid,
+            "hakijaoid1",
+            "hakemusOid1",
+            Set.of(
+                TestDataUtil.luoHakutoiveEntity(
+                    "hakukohdeOid1",
+                    Set.of(
+                        TestDataUtil.luoValintakoeValinnanvaiheEntity(
+                            0,
+                            "valinnanvaheOid1",
+                            List.of(
+                                TestDataUtil.luoValintakoeEntity(
+                                    "valintakoeOid1",
+                                    "valintakoeTunniste1",
+                                    Osallistuminen.VIRHE,
+                                    false,
+                                    null))),
+                        TestDataUtil.luoValintakoeValinnanvaiheEntity(
+                            0,
+                            "valinnanvaiheOid2",
+                            List.of(
+                                (TestDataUtil.luoValintakoeEntity(
+                                    "valintakoeOid2",
+                                    "valintakoeTunniste2",
+                                    Osallistuminen.OSALLISTUU,
+                                    false,
+                                    null)))))))));
 
-    valintakoeOsallistuminenRepository.save(TestDataUtil.luoValintakoeOsallistuminen(hakuOid, "hakijaoid2", "hakemusOid2",
-      Set.of(TestDataUtil.luoHakutoiveEntity("hakukohdeOid1",
-        Set.of(
-          TestDataUtil.luoValintakoeValinnanvaiheEntity(0, "valinnanvaheOid1",
-            List.of(TestDataUtil.luoValintakoeEntity("valintakoeOid1", "valintakoeTunniste1", Osallistuminen.OSALLISTUU, false, null))))))));
+    valintakoeOsallistuminenRepository.save(
+        TestDataUtil.luoValintakoeOsallistuminen(
+            hakuOid,
+            "hakijaoid2",
+            "hakemusOid2",
+            Set.of(
+                TestDataUtil.luoHakutoiveEntity(
+                    "hakukohdeOid1",
+                    Set.of(
+                        TestDataUtil.luoValintakoeValinnanvaiheEntity(
+                            0,
+                            "valinnanvaheOid1",
+                            List.of(
+                                TestDataUtil.luoValintakoeEntity(
+                                    "valintakoeOid1",
+                                    "valintakoeTunniste1",
+                                    Osallistuminen.OSALLISTUU,
+                                    false,
+                                    null))))))));
 
-    valintakoeOsallistuminenRepository.save(TestDataUtil.luoValintakoeOsallistuminen("hakuOid2", "hakijaoid1", "hakemusOid3",
-      Set.of(TestDataUtil.luoHakutoiveEntity("hakukohdeOid1",
-        Set.of(
-          TestDataUtil.luoValintakoeValinnanvaiheEntity(0, "valinnanvaheOid1",
-            List.of(TestDataUtil.luoValintakoeEntity("valintakoeOid1", "valintakoeTunniste1", Osallistuminen.VIRHE, false, null))))))));
+    valintakoeOsallistuminenRepository.save(
+        TestDataUtil.luoValintakoeOsallistuminen(
+            "hakuOid2",
+            "hakijaoid1",
+            "hakemusOid3",
+            Set.of(
+                TestDataUtil.luoHakutoiveEntity(
+                    "hakukohdeOid1",
+                    Set.of(
+                        TestDataUtil.luoValintakoeValinnanvaiheEntity(
+                            0,
+                            "valinnanvaheOid1",
+                            List.of(
+                                TestDataUtil.luoValintakoeEntity(
+                                    "valintakoeOid1",
+                                    "valintakoeTunniste1",
+                                    Osallistuminen.VIRHE,
+                                    false,
+                                    null))))))));
 
     List<ValintakoeOsallistuminenDTO> osallistumiset =
         valintalaskentaTulosService.haeValintakoevirheetHaulle(hakuOid);
@@ -121,15 +180,42 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
 
   @Test
   public void testHaeTuloksetHakemukselle() {
-    valinnanvaiheRepository.save(TestDataUtil.luoValinnanvaiheEntity("hakuOid1", "hakukohdeOid1", 0, "valinnanvaiheOid1",
-      Arrays.asList(TestDataUtil.luoValintatapaJonoEntity(10,
-        Set.of(TestDataUtil.luoJonosijaEntity("Ruhtinas", "Nukettaja", "hakemusOid1", 0, false,
-          Arrays.asList(TestDataUtil.luoJarjestyskriteeritulosEntity(13.0, 0, JarjestyskriteerituloksenTila.HYLATTY),
-            TestDataUtil.luoJarjestyskriteeritulosEntity(5.0, 1, JarjestyskriteerituloksenTila.HYLATTY))),
-          TestDataUtil.luoJonosijaEntity("Dakula", "Herttua", "hakemusOid2", 0, false,
-            Arrays.asList(TestDataUtil.luoJarjestyskriteeritulosEntity(20.0, 0, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-              TestDataUtil.luoJarjestyskriteeritulosEntity(10.0, 1, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)))),
-        "valintatapajonoOid1", 0, null, "valintatapajonoOid1"))));
+    valinnanvaiheRepository.save(
+        TestDataUtil.luoValinnanvaiheEntity(
+            "hakuOid1",
+            "hakukohdeOid1",
+            0,
+            "valinnanvaiheOid1",
+            Arrays.asList(
+                TestDataUtil.luoValintatapaJonoEntity(
+                    10,
+                    Set.of(
+                        TestDataUtil.luoJonosijaEntity(
+                            "Ruhtinas",
+                            "Nukettaja",
+                            "hakemusOid1",
+                            0,
+                            false,
+                            Arrays.asList(
+                                TestDataUtil.luoJarjestyskriteeritulosEntity(
+                                    13.0, 0, JarjestyskriteerituloksenTila.HYLATTY),
+                                TestDataUtil.luoJarjestyskriteeritulosEntity(
+                                    5.0, 1, JarjestyskriteerituloksenTila.HYLATTY))),
+                        TestDataUtil.luoJonosijaEntity(
+                            "Dakula",
+                            "Herttua",
+                            "hakemusOid2",
+                            0,
+                            false,
+                            Arrays.asList(
+                                TestDataUtil.luoJarjestyskriteeritulosEntity(
+                                    20.0, 0, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+                                TestDataUtil.luoJarjestyskriteeritulosEntity(
+                                    10.0, 1, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)))),
+                    "valintatapajonoOid1",
+                    0,
+                    null,
+                    "valintatapajonoOid1"))));
 
     MuokattuJonosija mjs = new MuokattuJonosija();
     mjs.setHakuOid("hakuOid1");
@@ -138,8 +224,12 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
     mjs.setHakemusOid("hakemusOid1");
     mjs.setPrioriteetti(0);
     mjs.setHarkinnanvarainen(true);
-    mjs.setJarjestyskriteerit(Set.of(TestDataUtil.luoJarjestyskriteeritulosEntity(100.0, 0, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-      TestDataUtil.luoJarjestyskriteeritulosEntity(5.0, 1, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)));
+    mjs.setJarjestyskriteerit(
+        Set.of(
+            TestDataUtil.luoJarjestyskriteeritulosEntity(
+                100.0, 0, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+            TestDataUtil.luoJarjestyskriteeritulosEntity(
+                5.0, 1, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)));
     muokattuJonosijaRepository.save(mjs);
 
     HarkinnanvarainenHyvaksyminen hyvaksyminen = new HarkinnanvarainenHyvaksyminen();
@@ -208,7 +298,6 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
   public void testHaeTuloksetHakukohteelle() {
     luoValintatapajonojaTasasijoilla();
 
-
     List<ValintatietoValinnanvaiheDTO> hakukohde =
         valintalaskentaTulosService.haeValinnanvaiheetHakukohteelle("hakukohde1");
     assertEquals(1, hakukohde.size());
@@ -226,52 +315,106 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
             h -> {
               assertFalse(h.getJonosija() == 1);
             });
-
   }
 
   private void luoValintatapajonojaTasasijoilla() {
-    Valintatapajono vtpj = TestDataUtil.luoValintatapaJonoEntity(144,
-      Set.of(
-        TestDataUtil.luoJonosijaEntity("Marko Tapio", "Hirvonen", "1.2.246.562.11.00001128774", 6, false,
-          Arrays.asList(TestDataUtil.luoJarjestyskriteeritulosEntity(70.0, 0, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-            TestDataUtil.luoJarjestyskriteeritulosEntity(1, 1, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-            TestDataUtil.luoJarjestyskriteeritulosEntity(49.0, 2, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-            TestDataUtil.luoJarjestyskriteeritulosEntity(7.975, 3, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-            TestDataUtil.luoJarjestyskriteeritulosEntity(21.0, 4, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA))),
-        TestDataUtil.luoJonosijaEntity("Tanja Maarit Hannele", "Toivio", "1.2.246.562.11.00001146141", 1, false,
-          Arrays.asList(TestDataUtil.luoJarjestyskriteeritulosEntity(70.0, 0, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-            TestDataUtil.luoJarjestyskriteeritulosEntity(6, 1, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-            TestDataUtil.luoJarjestyskriteeritulosEntity(48.0, 2, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-            TestDataUtil.luoJarjestyskriteeritulosEntity(8.0, 3, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-            TestDataUtil.luoJarjestyskriteeritulosEntity(22, 4, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA))),
-        TestDataUtil.luoJonosijaEntity("Jani Aulis", "Linna", "1.2.246.562.11.00001046636", 2, false,
-          Arrays.asList(TestDataUtil.luoJarjestyskriteeritulosEntity(70.0, 0, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-            TestDataUtil.luoJarjestyskriteeritulosEntity(5, 1, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-            TestDataUtil.luoJarjestyskriteeritulosEntity(45.0, 2, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-            TestDataUtil.luoJarjestyskriteeritulosEntity(8.62, 3, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-            TestDataUtil.luoJarjestyskriteeritulosEntity(25, 4, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA))),
-        TestDataUtil.luoJonosijaEntity("Eero Johannes", "Lahtinen", "1.2.246.562.11.00001012039", 1, false,
-          Arrays.asList(TestDataUtil.luoJarjestyskriteeritulosEntity(70.0, 0, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-            TestDataUtil.luoJarjestyskriteeritulosEntity(6, 1, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-            TestDataUtil.luoJarjestyskriteeritulosEntity(53.0, 2, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-            TestDataUtil.luoJarjestyskriteeritulosEntity(7.375, 3, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-            TestDataUtil.luoJarjestyskriteeritulosEntity(17, 4, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA))),
-        TestDataUtil.luoJonosijaEntity("Pitäis olla tasasijalla", "Lahtinen", "oid6", 1, false,
-          Arrays.asList(TestDataUtil.luoJarjestyskriteeritulosEntity(70.0, 0, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-            TestDataUtil.luoJarjestyskriteeritulosEntity(6, 1, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-            TestDataUtil.luoJarjestyskriteeritulosEntity(53.0, 2, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-            TestDataUtil.luoJarjestyskriteeritulosEntity(7.375, 3, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
-            TestDataUtil.luoJarjestyskriteeritulosEntity(17, 4, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)))
-      ),
-      "Varsinaisen valinnanvaiheen valintatapajono",
-      0,
-      Tasasijasaanto.YLITAYTTO,
-      "jono1");
+    Valintatapajono vtpj =
+        TestDataUtil.luoValintatapaJonoEntity(
+            144,
+            Set.of(
+                TestDataUtil.luoJonosijaEntity(
+                    "Marko Tapio",
+                    "Hirvonen",
+                    "1.2.246.562.11.00001128774",
+                    6,
+                    false,
+                    Arrays.asList(
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            70.0, 0, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            1, 1, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            49.0, 2, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            7.975, 3, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            21.0, 4, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA))),
+                TestDataUtil.luoJonosijaEntity(
+                    "Tanja Maarit Hannele",
+                    "Toivio",
+                    "1.2.246.562.11.00001146141",
+                    1,
+                    false,
+                    Arrays.asList(
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            70.0, 0, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            6, 1, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            48.0, 2, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            8.0, 3, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            22, 4, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA))),
+                TestDataUtil.luoJonosijaEntity(
+                    "Jani Aulis",
+                    "Linna",
+                    "1.2.246.562.11.00001046636",
+                    2,
+                    false,
+                    Arrays.asList(
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            70.0, 0, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            5, 1, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            45.0, 2, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            8.62, 3, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            25, 4, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA))),
+                TestDataUtil.luoJonosijaEntity(
+                    "Eero Johannes",
+                    "Lahtinen",
+                    "1.2.246.562.11.00001012039",
+                    1,
+                    false,
+                    Arrays.asList(
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            70.0, 0, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            6, 1, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            53.0, 2, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            7.375, 3, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            17, 4, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA))),
+                TestDataUtil.luoJonosijaEntity(
+                    "Pitäis olla tasasijalla",
+                    "Lahtinen",
+                    "oid6",
+                    1,
+                    false,
+                    Arrays.asList(
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            70.0, 0, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            6, 1, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            53.0, 2, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            7.375, 3, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
+                        TestDataUtil.luoJarjestyskriteeritulosEntity(
+                            17, 4, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)))),
+            "Varsinaisen valinnanvaiheen valintatapajono",
+            0,
+            Tasasijasaanto.YLITAYTTO,
+            "jono1");
     vtpj.setSiirretaanSijoitteluun(true);
     vtpj.setPoissaOlevaTaytto(true);
-    Valinnanvaihe vv = TestDataUtil.luoValinnanvaiheEntity("haku1", "hakukohde1", 0, "vaihe1",
-      List.of(vtpj));
+    Valinnanvaihe vv =
+        TestDataUtil.luoValinnanvaiheEntity("haku1", "hakukohde1", 0, "vaihe1", List.of(vtpj));
     valinnanvaiheRepository.save(vv);
   }
-
 }

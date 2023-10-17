@@ -282,14 +282,10 @@ public class ValintakoelaskentaSuorittajaServiceTest {
         .thenReturn(null);
 
     when(valintakoeOsallistuminenDAOMock.haeEdeltavaValinnanvaihe(
-            eq(hakuOid),
-            eq(hakukohdeOid1),
-            eq(valinnanVaiheJarjestysluku1)))
+            eq(hakuOid), eq(hakukohdeOid1), eq(valinnanVaiheJarjestysluku1)))
         .thenReturn(new ValintakoeOsallistuminen());
     when(valintakoeOsallistuminenDAOMock.haeEdeltavaValinnanvaihe(
-            eq(hakuOid),
-            eq(hakukohdeOid2),
-            eq(valinnanVaiheJarjestysluku2)))
+            eq(hakuOid), eq(hakukohdeOid2), eq(valinnanVaiheJarjestysluku2)))
         .thenReturn(new ValintakoeOsallistuminen());
 
     Valinnanvaihe viimeisin1 = new Valinnanvaihe();

@@ -12,8 +12,7 @@ import org.springframework.data.util.Streamable;
 
 public class TulosValintakoeOsallistuminenDAOTest extends AbstractIntegrationTest {
 
-  @Autowired
-  private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
+  @Autowired private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
 
   private static Valintakoe luoValintakoe(
       String valintakoeOid, String valintakoetunniste, Osallistuminen osallistuminen) {
@@ -110,15 +109,11 @@ public class TulosValintakoeOsallistuminenDAOTest extends AbstractIntegrationTes
   @Test
   public void testHaeEdeltavaValinnanvaihe() {
     ValintakoeOsallistuminen osallistuminen =
-      luoTestiOsallistuminen("hakemusOid1", "hakijaOid1", "hakuOid");
+        luoTestiOsallistuminen("hakemusOid1", "hakijaOid1", "hakuOid");
     valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen);
-    assertNotNull(
-        valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid", "hakutoive1", 2));
-    assertNull(
-        valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid", "hakuKohdeOid2", 2));
-    assertNotNull(
-        valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid", "hakutoive2", 4));
-    assertNotNull(
-        valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid", "hakutoive3", 3));
+    assertNotNull(valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid", "hakutoive1", 2));
+    assertNull(valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid", "hakuKohdeOid2", 2));
+    assertNotNull(valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid", "hakutoive2", 4));
+    assertNotNull(valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid", "hakutoive3", 3));
   }
 }

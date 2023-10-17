@@ -2,12 +2,11 @@ package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
-import java.util.List;
-import java.util.Optional;
-
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.JonosijaRepository;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.ValinnanvaiheRepository;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.ValintatapajonoRepository;
+import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -22,7 +21,10 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
 
   private final JonosijaRepository jonosijaRepo;
 
-  public ValinnanvaiheDAOImpl(ValinnanvaiheRepository repo, ValintatapajonoRepository vtpRepo, JonosijaRepository jonosijaRepo) {
+  public ValinnanvaiheDAOImpl(
+      ValinnanvaiheRepository repo,
+      ValintatapajonoRepository vtpRepo,
+      JonosijaRepository jonosijaRepo) {
     this.vtpRepo = vtpRepo;
     this.repo = repo;
     this.jonosijaRepo = jonosijaRepo;
@@ -41,7 +43,8 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
   public Valinnanvaihe haeViimeisinValinnanvaihe(
       String hakuOid, String hakukohdeOid, int jarjestysnumero) {
     if (jarjestysnumero > 0) {
-      return repo.findViimeisinEdeltavaValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero).orElse(null);
+      return repo.findViimeisinEdeltavaValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero)
+          .orElse(null);
     }
     return null;
     /*    if (jarjestysnumero > 0) {
@@ -82,17 +85,18 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     return repo.findValinnanvaiheLiteByValinnanvaiheOid(valinnanvaiheOid);
   }
 
-  //@TODO: necessary anymore?
+  // @TODO: necessary anymore?
   @Override
   public List<Valinnanvaihe> haeValinnanvaiheetJarjestysnumerolla(
       String hakuOid, String hakukohdeOid, int jarjestysnumero) {
-    return repo.findDistinctValinnanvaiheetJarjestysnumerolla(hakuOid, hakukohdeOid, jarjestysnumero);
+    return repo.findDistinctValinnanvaiheetJarjestysnumerolla(
+        hakuOid, hakukohdeOid, jarjestysnumero);
   }
 
   @Override
   public void saveOrUpdate(Valinnanvaihe valinnanvaihe) {
     repo.save(valinnanvaihe);
-    //TODO: remove?
+    // TODO: remove?
     /*    valinnanvaihe.reportDuplicateValintatapajonoOids();
     valinnanvaihe
         .getValintatapajonot()
@@ -119,5 +123,4 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
     }
     vtpRepo.delete(jono);
   }
-
 }

@@ -14,7 +14,7 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
   @Override
   public List<Jarjestyskriteerihistoria> findByValintatapajonoAndHakemusOid(
       String valintatapajonoOid, String hakemusOid) {
-/*    List<ObjectId> jononJonosijaIdt = new LinkedList<>();
+    /*    List<ObjectId> jononJonosijaIdt = new LinkedList<>();
     datastore
         .find(ValintatapajonoMigrationDTO.class)
         .field("valintatapajonoOid")
@@ -44,7 +44,7 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
   }
 
   private List<Jarjestyskriteerihistoria> hae(List<String> historiaIds) {
-/*    if (historiaIds.isEmpty()) {
+    /*    if (historiaIds.isEmpty()) {
       return new ArrayList<>();
     }
     List<Jarjestyskriteerihistoria> historiat =
@@ -62,14 +62,14 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
   }
 
   private void saveJonosijat(Valintatapajono valintatapajono) {
-/*    valintatapajono.setJonosijaIdt(
-        valintatapajono.getJonosijat().stream()
-            .map(jonosija -> (ObjectId) datastore.save(jonosija).getId())
-            .collect(Collectors.toList()));*/
+    /*    valintatapajono.setJonosijaIdt(
+    valintatapajono.getJonosijat().stream()
+        .map(jonosija -> (ObjectId) datastore.save(jonosija).getId())
+        .collect(Collectors.toList()));*/
   }
 
   private void populateJonosijat(Valintatapajono valintatapajono) {
-/*    List<ObjectId> jonosijaIdt = valintatapajono.getJonosijaIdt();
+    /*    List<ObjectId> jonosijaIdt = valintatapajono.getJonosijaIdt();
     if (jonosijaIdt.isEmpty()) {
       valintatapajono.setJonosijat(new ArrayList<>());
     } else {

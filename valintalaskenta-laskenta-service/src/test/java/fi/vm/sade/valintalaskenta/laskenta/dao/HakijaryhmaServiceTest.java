@@ -6,24 +6,20 @@ import static org.junit.Assert.assertEquals;
 
 import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
-
-import java.util.*;
-
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
-import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
 import fi.vm.sade.valintalaskenta.laskenta.dao.impl.HakijaryhmaServiceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.HakijaryhmaRepository;
+import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
+import java.util.*;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class HakijaryhmaServiceTest extends AbstractIntegrationTest {
 
-  @Autowired
-  private HakijaryhmaServiceImpl hakijaryhmaDAO;
+  @Autowired private HakijaryhmaServiceImpl hakijaryhmaDAO;
 
-  @Autowired
-  private HakijaryhmaRepository repo;
+  @Autowired private HakijaryhmaRepository repo;
   private final User auditUser = null;
 
   private static final String HAKUKOHDE_OID = "1.2.246.562.20.18895322503";
@@ -35,7 +31,10 @@ public class HakijaryhmaServiceTest extends AbstractIntegrationTest {
 
   @Test
   public void testSavingAndLoadingNewHakijaryhma() {
-    Hakijaryhma hakijaryhma = new Hakijaryhma(Arrays.asList(createJonosija("Ruhtinas", "Nukettaja"), createJonosija("Silakka", "Markkinat")));
+    Hakijaryhma hakijaryhma =
+        new Hakijaryhma(
+            Arrays.asList(
+                createJonosija("Ruhtinas", "Nukettaja"), createJonosija("Silakka", "Markkinat")));
     hakijaryhma.hakijaryhmaOid = "uusiHakijaryhmaOid";
     hakijaryhmaDAO.create(hakijaryhma, auditUser);
     Hakijaryhma savedHakijaryhma = hakijaryhmaDAO.haeHakijaryhma("uusiHakijaryhmaOid").get();

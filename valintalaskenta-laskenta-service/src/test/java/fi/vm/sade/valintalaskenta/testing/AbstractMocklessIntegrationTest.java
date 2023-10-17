@@ -18,36 +18,30 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-  classes = {App.class},
-  args = {"--add-opens=java.base/java.lang=ALL-UNNAMED"})
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    classes = {App.class},
+    args = {"--add-opens=java.base/java.lang=ALL-UNNAMED"})
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("test-mockless")
 public class AbstractMocklessIntegrationTest {
 
-  @Autowired
-  protected HakijaryhmaRepository hakijaryhmaRepository;
+  @Autowired protected HakijaryhmaRepository hakijaryhmaRepository;
 
-  @Autowired
-  protected ValinnanvaiheRepository valinnanvaiheRepository;
+  @Autowired protected ValinnanvaiheRepository valinnanvaiheRepository;
 
-  @Autowired
-  protected ValintakoeOsallistuminenRepository valintakoeOsallistuminenRepository;
+  @Autowired protected ValintakoeOsallistuminenRepository valintakoeOsallistuminenRepository;
 
-  @Autowired
-  protected MuokattuJonosijaRepository muokattuJonosijaRepository;
+  @Autowired protected MuokattuJonosijaRepository muokattuJonosijaRepository;
 
   @Autowired
   protected HarkinnanvarainenHyvaksyminenRepository harkinnanvarainenHyvaksyminenRepository;
 
-  @Autowired
-  protected JonosijaRepository jonosijaRepository;
+  @Autowired protected JonosijaRepository jonosijaRepository;
 
-  @Autowired
-  protected ValintatapajonoRepository valintatapajonoRepository;
+  @Autowired protected ValintatapajonoRepository valintatapajonoRepository;
 
-  @LocalServerPort
-  protected Integer port;
+  @LocalServerPort protected Integer port;
 
   @Before
   public void setUp() {

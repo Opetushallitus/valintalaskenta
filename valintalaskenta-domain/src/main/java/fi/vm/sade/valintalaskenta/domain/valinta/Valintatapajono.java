@@ -1,17 +1,14 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
+import java.util.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.annotation.Transient;
 
-import java.util.*;
-
-
 public class Valintatapajono {
 
-  @Id
-  private UUID id;
+  @Id private UUID id;
 
   private String valintatapajonoOid;
 
@@ -43,8 +40,7 @@ public class Valintatapajono {
 
   private final Set<Jonosija> jonosija = new HashSet<>();
 
-  @Transient
-  private Valinnanvaihe valinnanvaihe;
+  @Transient private Valinnanvaihe valinnanvaihe;
 
   private Long sijoitteluajoId;
 
@@ -121,13 +117,13 @@ public class Valintatapajono {
 
   public Set<Jonosija> getJonosijat() {
     if (null == jonosija) {
-      //TODO Check necessity of this exception
+      // TODO Check necessity of this exception
       throw new IllegalStateException(
           String.format(
               "Jonosijat not loaded for valintatapajono %s with jonosijaids %s",
               valintatapajonoOid, jonosija));
     }
-    //TODO check if thi conversion is ok or could set be used instead
+    // TODO check if thi conversion is ok or could set be used instead
     return jonosija;
   }
 

@@ -4,11 +4,9 @@ import static org.junit.Assert.*;
 
 import com.google.common.collect.Sets;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
-
+import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
 import java.util.Arrays;
 import java.util.List;
-
-import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
 import org.hamcrest.Matchers;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -29,8 +27,7 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
     final String edellinenValinnanvaiheOid = "valinnanvaiheOid2";
     final int edellinenValinnanvaiheJarjestysnumero = 2;
 
-    Valinnanvaihe valinnanvaihe =
-        valinnanvaiheDAO.haeEdeltavaValinnanvaihe(HAKU, HAKUKOHDE, 3);
+    Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.haeEdeltavaValinnanvaihe(HAKU, HAKUKOHDE, 3);
     assertEquals(HAKU, valinnanvaihe.getHakuOid());
     assertEquals(HAKUKOHDE, valinnanvaihe.getHakukohdeOid());
     assertEquals(edellinenValinnanvaiheOid, valinnanvaihe.getValinnanVaiheOid());
@@ -47,15 +44,13 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
     final String edellinenValinnanvaiheOid = "valinnanvaiheOid2";
     final int edellinenValinnanvaiheJarjestysnumero = 2;
 
-    Valinnanvaihe valinnanvaihe =
-      valinnanvaiheDAO.haeViimeisinValinnanvaihe(HAKU, HAKUKOHDE, 200);
+    Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.haeViimeisinValinnanvaihe(HAKU, HAKUKOHDE, 200);
     assertEquals(HAKU, valinnanvaihe.getHakuOid());
     assertEquals(HAKUKOHDE, valinnanvaihe.getHakukohdeOid());
     assertEquals(edellinenValinnanvaiheOid, valinnanvaihe.getValinnanVaiheOid());
     assertEquals(edellinenValinnanvaiheJarjestysnumero, valinnanvaihe.getJarjestysnumero());
 
-    Valinnanvaihe valinnanvaihe2 =
-      valinnanvaiheDAO.haeViimeisinValinnanvaihe(HAKU, HAKUKOHDE, 201);
+    Valinnanvaihe valinnanvaihe2 = valinnanvaiheDAO.haeViimeisinValinnanvaihe(HAKU, HAKUKOHDE, 201);
     assertEquals(HAKU, valinnanvaihe2.getHakuOid());
     assertEquals(HAKUKOHDE, valinnanvaihe2.getHakukohdeOid());
     assertEquals("valinnanvaiheOid200", valinnanvaihe2.getValinnanVaiheOid());
@@ -95,8 +90,8 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
         .forEach(
             valintatapajono -> {
               assertThat(valintatapajono.getJonosijat(), Matchers.empty());
-              //TODO: Necessary?
-              //assertThat(valintatapajono.getJonosijaIdt(), Matchers.empty());
+              // TODO: Necessary?
+              // assertThat(valintatapajono.getJonosijaIdt(), Matchers.empty());
             });
   }
 

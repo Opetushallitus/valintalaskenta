@@ -28,7 +28,8 @@ public class SyotettyArvo {
     return tunniste;
   }
 
-  public SyotettyArvo() {};
+  public SyotettyArvo() {}
+  ;
 
   public void setTunniste(String tunniste) {
     this.tunniste = tunniste;

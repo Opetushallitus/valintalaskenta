@@ -2,11 +2,9 @@ package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValinnanvaiheDAO;
-
+import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosValinnanvaiheRepository;
 import java.util.*;
 import java.util.stream.Stream;
-
-import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosValinnanvaiheRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -39,7 +37,7 @@ public class TulosValinnanvaiheDAOImpl implements TulosValinnanvaiheDAO {
   @Override
   public List<Valinnanvaihe> readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid) {
     return repo.findDistinctValinnanvaihesByHakuOidAndHakemusOid(hakuOid, hakemusOid);
-/*    List<ObjectId> hakemuksenJonosijaIdt = new LinkedList<>();
+    /*    List<ObjectId> hakemuksenJonosijaIdt = new LinkedList<>();
     datastore
         .find(Jonosija.class)
         .field("hakemusOid")
@@ -74,7 +72,7 @@ public class TulosValinnanvaiheDAOImpl implements TulosValinnanvaiheDAO {
   @Override
   public Valinnanvaihe findByValintatapajonoOid(String valintatapajonoOid) {
     return repo.findValinnanvaiheByValintatapajono(valintatapajonoOid).orElse(null);
-/*    List<ObjectId> valintatapajonoIdt = new LinkedList<>();
+    /*    List<ObjectId> valintatapajonoIdt = new LinkedList<>();
     datastore
         .find(Valintatapajono.class)
         .field("valintatapajonoOid")
@@ -117,5 +115,4 @@ public class TulosValinnanvaiheDAOImpl implements TulosValinnanvaiheDAO {
   public UUID saveVaihe(Valinnanvaihe vaihe) {
     return repo.save(vaihe).getId();
   }
-
 }

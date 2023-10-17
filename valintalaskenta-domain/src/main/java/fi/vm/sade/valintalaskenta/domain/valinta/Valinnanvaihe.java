@@ -1,8 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import java.util.*;
-
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
+import java.util.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,12 +9,10 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.annotation.Transient;
 
-
 public class Valinnanvaihe {
   private static final Logger LOGGER = LoggerFactory.getLogger(Valinnanvaihe.class);
 
-  @Id
-  private UUID id;
+  @Id private UUID id;
 
   private int jarjestysnumero;
 
@@ -33,15 +30,14 @@ public class Valinnanvaihe {
 
   public final List<Valintatapajono> valintatapajono = new ArrayList<>();
 
-  @Transient
-  public final Set<ValintakoeValinnanvaihe> valintakoevalinnanvaihe = new HashSet<>();
+  @Transient public final Set<ValintakoeValinnanvaihe> valintakoevalinnanvaihe = new HashSet<>();
 
-  public Valinnanvaihe(){}
+  public Valinnanvaihe() {}
 
   @PersistenceCreator
   public Valinnanvaihe(List<Valintatapajono> valintatapajono) {
     this.valintatapajono.addAll(valintatapajono);
-    //this.valintakoevalinnanvaihe.addAll(valintakoevalinnanvaihe);
+    // this.valintakoevalinnanvaihe.addAll(valintakoevalinnanvaihe);
   }
 
   private void jarjestaValintatapajonot() {

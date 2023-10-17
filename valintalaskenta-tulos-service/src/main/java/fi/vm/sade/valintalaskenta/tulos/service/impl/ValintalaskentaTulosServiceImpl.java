@@ -25,10 +25,10 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
 import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
-import fi.vm.sade.valintalaskenta.tulos.dao.TulosHakijaryhmaDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.HarkinnanvarainenHyvaksyminenDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
+import fi.vm.sade.valintalaskenta.tulos.dao.TulosHakijaryhmaDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
@@ -36,7 +36,6 @@ import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import fi.vm.sade.valintalaskenta.tulos.service.exception.EiOikeuttaPoistaaValintatapajonoaSijoittelustaException;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverter;
-
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -74,7 +73,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
   @Autowired private ValintalaskentaModelMapper modelMapper;
 
   @Qualifier("LaskentaAuditLog")
-  @Autowired private LaskentaAuditLog auditLog;
+  @Autowired
+  private LaskentaAuditLog auditLog;
 
   @Value("${root.organisaatio.oid}")
   private String rootOrgOid;
@@ -624,7 +624,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
       Integer jarjestyskriteeriPrioriteetti,
       MuokattuJonosijaArvoDTO jonosija,
       User auditUser) {
-    Valinnanvaihe valinnanvaihe = tulosValinnanvaiheDAO.findByValintatapajonoOid(valintatapajonoOid);
+    Valinnanvaihe valinnanvaihe =
+        tulosValinnanvaiheDAO.findByValintatapajonoOid(valintatapajonoOid);
     MuokattuJonosija muokattuJonosija =
         muokattuJonosijaDAO.readByValintatapajonoOid(valintatapajonoOid, hakemusOid);
     if (muokattuJonosija == null) {

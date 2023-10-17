@@ -22,7 +22,8 @@ public class FunktioTulos {
   @JsonProperty("omaopintopolku")
   private boolean omaopintopolku;
 
-  public FunktioTulos() {};
+  public FunktioTulos() {}
+  ;
 
   public String getTunniste() {
     return tunniste;

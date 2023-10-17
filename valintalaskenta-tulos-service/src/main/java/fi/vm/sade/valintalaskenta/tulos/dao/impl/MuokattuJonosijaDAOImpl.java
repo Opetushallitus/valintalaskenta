@@ -2,9 +2,8 @@ package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
-import java.util.List;
-
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.MuokattuJonosijaRepository;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -18,7 +17,6 @@ public class MuokattuJonosijaDAOImpl implements MuokattuJonosijaDAO {
   public MuokattuJonosijaDAOImpl(MuokattuJonosijaRepository repo) {
     this.repo = repo;
   }
-
 
   @Override
   public List<MuokattuJonosija> readByHakuOid(String hakuOid) {
@@ -37,7 +35,9 @@ public class MuokattuJonosijaDAOImpl implements MuokattuJonosijaDAO {
 
   @Override
   public MuokattuJonosija readByValintatapajonoOid(String valintatapajonoOid, String hakemusOid) {
-    return repo.findMuokattuJonosijaByValintatapajonoOidAndHakemusOid(valintatapajonoOid, hakemusOid).orElse(null);
+    return repo.findMuokattuJonosijaByValintatapajonoOidAndHakemusOid(
+            valintatapajonoOid, hakemusOid)
+        .orElse(null);
   }
 
   @Override

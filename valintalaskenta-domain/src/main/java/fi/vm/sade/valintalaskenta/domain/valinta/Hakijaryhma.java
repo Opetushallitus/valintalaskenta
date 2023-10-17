@@ -1,15 +1,12 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import java.util.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
 
-import java.util.*;
-
-
 public class Hakijaryhma {
 
-  @Id
-  public UUID id;
+  @Id public UUID id;
 
   public String hakijaryhmaOid;
 
@@ -37,7 +34,7 @@ public class Hakijaryhma {
   public final Set<Jonosija> jonosija = new HashSet<>();
 
   @PersistenceCreator
-  public Hakijaryhma(Collection <Jonosija> jonosija) {
+  public Hakijaryhma(Collection<Jonosija> jonosija) {
     this.jonosija.addAll(jonosija);
   }
 

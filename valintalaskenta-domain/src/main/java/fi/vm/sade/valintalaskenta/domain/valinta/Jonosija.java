@@ -1,17 +1,14 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-
+import java.util.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 
-import java.util.*;
-
 public class Jonosija {
 
-  @Id
-  private UUID id;
+  @Id private UUID id;
 
   private String hakemusOid;
 
@@ -27,11 +24,9 @@ public class Jonosija {
 
   private boolean hylattyValisijoittelussa = false;
 
-  @Transient
-  private Hakijaryhma hakijaryhma;
+  @Transient private Hakijaryhma hakijaryhma;
 
-  @Transient
-  private Valintatapajono valintatapajono;
+  @Transient private Valintatapajono valintatapajono;
 
   private final List<Jarjestyskriteeritulos> jarjestyskriteeritulokset =
       new ArrayList<Jarjestyskriteeritulos>();

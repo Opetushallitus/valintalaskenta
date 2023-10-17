@@ -1,15 +1,12 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import java.util.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
 
-import java.util.*;
-
-
 public class MuokattuJonosija {
 
-  @Id
-  private UUID id;
+  @Id private UUID id;
 
   private String hakukohdeOid;
 

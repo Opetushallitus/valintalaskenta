@@ -1,8 +1,6 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
 import java.util.*;
-
-import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
@@ -10,15 +8,13 @@ import org.springframework.data.annotation.Transient;
 
 public class ValintakoeValinnanvaihe {
 
-  @Id
-  private UUID id;
+  @Id private UUID id;
 
   private String valinnanvaiheOid;
 
   private Integer valinnanVaiheJarjestysluku;
 
-  @Transient
-  private Hakutoive hakutoive;
+  @Transient private Hakutoive hakutoive;
 
   private final Set<Valintakoe> valintakokeet = new HashSet<>();
 

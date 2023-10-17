@@ -1,12 +1,10 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import java.util.UUID;
 import org.springframework.data.annotation.Id;
 
-import java.util.UUID;
-
 public class HarkinnanvarainenHyvaksyminen {
-  @Id
-  private UUID id;
+  @Id private UUID id;
 
   private HarkinnanvaraisuusTila harkinnanvaraisuusTila;
 

@@ -396,8 +396,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                 }
                 List<Hakijaryhma> vanhatSamallaOidilla =
                     vanhatHakijaryhmat.stream()
-                        .filter(
-                            vh -> vh.hakijaryhmaOid.equals(hakijaryhma.hakijaryhmaOid))
+                        .filter(vh -> vh.hakijaryhmaOid.equals(hakijaryhma.hakijaryhmaOid))
                         .toList();
                 LOG.info(
                     "(Uuid={}) Persistoidaan hakijaryhmä {} ja poistetaan sen aiemmat versiot ({} kpl).",
@@ -654,7 +653,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
           && (jono.getKaytetaanValintalaskentaa() == null || jono.getKaytetaanValintalaskentaa())) {
         for (Jonosija jonosija : jono.getJonosijat()) {
           for (Jarjestyskriteeritulos tulos : jonosija.getJarjestyskriteeritulokset()) {
-            //jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
+            // jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
           }
         }
         poistettavat.add(jono);
@@ -719,8 +718,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     if (dto.getHakijaryhmatyyppikoodi() != null) {
       hakijaryhma.hakijaryhmaOid = dto.getHakijaryhmatyyppikoodi().getUri();
     }
-    //TODO: remove or implement differently in OK-384
-    //poistaVanhatHistoriat(hakijaryhma);
+    // TODO: remove or implement differently in OK-384
+    // poistaVanhatHistoriat(hakijaryhma);
     hakijaryhma.jonosija.clear();
 
     return hakijaryhma;
@@ -729,7 +728,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
   private void poistaVanhatHistoriat(Hakijaryhma hakijaryhma) {
     for (Jonosija jonosija : hakijaryhma.jonosija) {
       for (Jarjestyskriteeritulos tulos : jonosija.getJarjestyskriteeritulokset()) {
-        //jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
+        // jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
       }
     }
   }

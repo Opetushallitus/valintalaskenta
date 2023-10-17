@@ -16,13 +16,13 @@ import fi.vm.sade.valintalaskenta.tulos.dao.repository.MuokattuJonosijaRepositor
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogMock;
 import io.swagger.v3.oas.models.OpenAPI;
 import org.junit.Before;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.*;
 import org.springframework.security.cas.authentication.CasAuthenticationProvider;
@@ -31,48 +31,41 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-
-//@EnableJdbcRepositories(basePackages = "fi.vm.sade.valintalaskenta.laskenta.dao.repository")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-  classes = {App.class},
-  args = {"--add-opens=java.base/java.lang=ALL-UNNAMED"})
-//@Import(DefaultTestConfiguration.class)
+// @EnableJdbcRepositories(basePackages = "fi.vm.sade.valintalaskenta.laskenta.dao.repository")
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    classes = {App.class},
+    args = {"--add-opens=java.base/java.lang=ALL-UNNAMED"})
+// @Import(DefaultTestConfiguration.class)
 @ActiveProfiles("test")
-//@ContextConfiguration(locations = "classpath:application-context-test.xml")
-//@EnableAutoConfiguration(exclude=AbstractMocklessIntegrationTest.class)
+// @ContextConfiguration(locations = "classpath:application-context-test.xml")
+// @EnableAutoConfiguration(exclude=AbstractMocklessIntegrationTest.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 /*@TestExecutionListeners(
-        listeners = {
-                DirtiesContextTestExecutionListener.class
-        })*/
-//@EnableWebSecurity(debug = true)
-//@EnableJpaRepositories(basePackages = "fi.vm.sade.valintalaskenta.laskenta.dao.repository")
-//@EntityScan(basePackages = "fi.vm.sade.valintalaskenta.domain.*")
+listeners = {
+        DirtiesContextTestExecutionListener.class
+})*/
+// @EnableWebSecurity(debug = true)
+// @EnableJpaRepositories(basePackages = "fi.vm.sade.valintalaskenta.laskenta.dao.repository")
+// @EntityScan(basePackages = "fi.vm.sade.valintalaskenta.domain.*")
 public abstract class AbstractIntegrationTest {
 
-  @Autowired
-  protected HakijaryhmaRepository hakijaryhmaRepository;
+  @Autowired protected HakijaryhmaRepository hakijaryhmaRepository;
 
-  @Autowired
-  protected ValinnanvaiheRepository valinnanvaiheRepository;
+  @Autowired protected ValinnanvaiheRepository valinnanvaiheRepository;
 
-  @Autowired
-  protected ValintakoeOsallistuminenRepository valintakoeOsallistuminenRepository;
+  @Autowired protected ValintakoeOsallistuminenRepository valintakoeOsallistuminenRepository;
 
-  @Autowired
-  protected ValintatapajonoRepository valintatapajonoRepository;
+  @Autowired protected ValintatapajonoRepository valintatapajonoRepository;
 
-  @Autowired
-  protected JonosijaRepository jonosijaRepository;
+  @Autowired protected JonosijaRepository jonosijaRepository;
 
-  @Autowired
-  protected MuokattuJonosijaRepository muokattuJonosijaRepository;
+  @Autowired protected MuokattuJonosijaRepository muokattuJonosijaRepository;
 
   @Autowired
   protected HarkinnanvarainenHyvaksyminenRepository harkinnanvarainenHyvaksyminenRepository;
 
-  @LocalServerPort
-  protected Integer port;
+  @LocalServerPort protected Integer port;
 
   @Before
   public void setUp() {
@@ -106,25 +99,27 @@ public abstract class AbstractIntegrationTest {
 
     @Bean("valintalaskentaResourceImpl")
     public ValintalaskentaResourceImpl valintalaskentaResourceImpl(
-      final ValintalaskentaService valintalaskentaService,
-      final ValisijoitteluKasittelija valisijoitteluKasittelija,
-      @Qualifier("mockValiSijoitteluResource") final ValiSijoitteluResource valiSijoitteluResource,
-      @Qualifier("mockErillisSijoitteluResource")
-      final ErillisSijoitteluResource erillisSijoitteluResource,
-      @Qualifier("mockValintaperusteetValintatapajonoResource")
-      final ValintaperusteetValintatapajonoResource valintatapajonoResource,
-      @Value("${valintalaskenta-laskenta-service.parallelism:1}") final int parallelismFromConfig) {
+        final ValintalaskentaService valintalaskentaService,
+        final ValisijoitteluKasittelija valisijoitteluKasittelija,
+        @Qualifier("mockValiSijoitteluResource")
+            final ValiSijoitteluResource valiSijoitteluResource,
+        @Qualifier("mockErillisSijoitteluResource")
+            final ErillisSijoitteluResource erillisSijoitteluResource,
+        @Qualifier("mockValintaperusteetValintatapajonoResource")
+            final ValintaperusteetValintatapajonoResource valintatapajonoResource,
+        @Value("${valintalaskenta-laskenta-service.parallelism:1}")
+            final int parallelismFromConfig) {
       return new ValintalaskentaResourceImpl(
-        valintalaskentaService,
-        valisijoitteluKasittelija,
-        valiSijoitteluResource,
-        erillisSijoitteluResource,
-        valintatapajonoResource,
-        parallelismFromConfig);
+          valintalaskentaService,
+          valisijoitteluKasittelija,
+          valiSijoitteluResource,
+          erillisSijoitteluResource,
+          valintatapajonoResource,
+          parallelismFromConfig);
     }
 
     public ValintalaskentaPaloissaResourceImpl valintalaskentaPaloissaResource(
-      ValintalaskentaResourceImpl valintalaskentaResource) {
+        ValintalaskentaResourceImpl valintalaskentaResource) {
       return new ValintalaskentaPaloissaResourceImpl(valintalaskentaResource);
     }
 
@@ -133,15 +128,15 @@ public abstract class AbstractIntegrationTest {
       return new SwaggerConfiguration().valintalaskentaAPI();
     }
 
-  /*@Component
-  public static class CustomContainer
-      implements WebServerFactoryCustomizer<TomcatServletWebServerFactory> {
-    @Override
-    public void customize(TomcatServletWebServerFactory factory) {
-      factory.setContextPath(App.CONTEXT_PATH);
-      factory.setPort(parseInt(System.getProperty("TestApp.server.port")));
-    }
-  }*/
+    /*@Component
+    public static class CustomContainer
+        implements WebServerFactoryCustomizer<TomcatServletWebServerFactory> {
+      @Override
+      public void customize(TomcatServletWebServerFactory factory) {
+        factory.setContextPath(App.CONTEXT_PATH);
+        factory.setPort(parseInt(System.getProperty("TestApp.server.port")));
+      }
+    }*/
 
     @Bean
     public TestApp.ApplicationContextGetter applicationContextGetter() {
@@ -184,5 +179,4 @@ public abstract class AbstractIntegrationTest {
       return new LaskentaAuditLogMock();
     }
   }
-
 }

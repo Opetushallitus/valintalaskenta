@@ -18,9 +18,7 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinnanvaiheKasittelija;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.TilaJaSelite;
 import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
-
 import java.util.*;
-
 import org.junit.Test;
 
 public class EdellinenValinnanvaiheKasittelijaTest {

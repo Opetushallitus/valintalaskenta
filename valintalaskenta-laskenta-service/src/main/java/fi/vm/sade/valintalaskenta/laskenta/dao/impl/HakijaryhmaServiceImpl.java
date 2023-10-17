@@ -11,18 +11,15 @@ import fi.vm.sade.valintalaskenta.laskenta.dao.repository.HakijaryhmaRepository;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.JonosijaRepository;
 import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 
 @Service
 public class HakijaryhmaServiceImpl implements HakijaryhmaService {
@@ -34,12 +31,14 @@ public class HakijaryhmaServiceImpl implements HakijaryhmaService {
 
   private final JonosijaRepository jonosijaRepository;
 
-  public HakijaryhmaServiceImpl(LaskentaAuditLog auditLog, HakijaryhmaRepository repository, JonosijaRepository jonosijaRepository) {
+  public HakijaryhmaServiceImpl(
+      LaskentaAuditLog auditLog,
+      HakijaryhmaRepository repository,
+      JonosijaRepository jonosijaRepository) {
     this.auditLog = auditLog;
     this.repository = repository;
     this.jonosijaRepository = jonosijaRepository;
   }
-
 
   @Override
   public Optional<Hakijaryhma> haeHakijaryhma(String hakijaryhmaOid) {
@@ -56,8 +55,8 @@ public class HakijaryhmaServiceImpl implements HakijaryhmaService {
   @Override
   @Transactional
   public void create(Hakijaryhma hakijaryhma, User auditUser) {
-    //TODO: necessary?
-    //saveJonosijat(hakijaryhma, auditUser);
+    // TODO: necessary?
+    // saveJonosijat(hakijaryhma, auditUser);
     auditLog.log(
         LaskentaAudit.AUDIT,
         auditUser,
@@ -70,8 +69,8 @@ public class HakijaryhmaServiceImpl implements HakijaryhmaService {
 
   @Override
   public void createWithoutAuditLogging(Hakijaryhma hakijaryhma) {
-    //TODO: necessary?
-    //saveJonosijatWithoutAuditLogging(hakijaryhma);
+    // TODO: necessary?
+    // saveJonosijatWithoutAuditLogging(hakijaryhma);
     repository.save(hakijaryhma);
   }
 
@@ -82,7 +81,7 @@ public class HakijaryhmaServiceImpl implements HakijaryhmaService {
     if (!jonosijaIdt.isEmpty()) {
       jonosijaRepository.deleteAllById(jonosijaIdt);
     }
-   repository.delete(hakijaryhma);
+    repository.delete(hakijaryhma);
   }
 
   private void saveJonosijat(Hakijaryhma ryhma, User auditUser) {
@@ -106,5 +105,4 @@ public class HakijaryhmaServiceImpl implements HakijaryhmaService {
         Changes.addedDto(jonosija));
     return jonosijaRepository.save(jonosija);
   }
-
 }

@@ -14,12 +14,15 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 
 @SpringBootApplication
 @EnableWebSecurity(debug = true)
-//@EntityScan(basePackages = "fi.vm.sade.valintalaskenta.domain.*")
-@ComponentScan(basePackages = {"fi.vm.sade.valintalaskenta.laskenta.*"},
-        excludeFilters = {
-          @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fi.vm.sade.valintalaskenta.laskenta.config.*"),
-          @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = App.class)
-        })
+// @EntityScan(basePackages = "fi.vm.sade.valintalaskenta.domain.*")
+@ComponentScan(
+    basePackages = {"fi.vm.sade.valintalaskenta.laskenta.*"},
+    excludeFilters = {
+      @ComponentScan.Filter(
+          type = FilterType.REGEX,
+          pattern = "fi.vm.sade.valintalaskenta.laskenta.config.*"),
+      @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = App.class)
+    })
 public class TestApp {
   public static void startTestApp() {
     startTestApp(PortChecker.findFreeLocalPort());

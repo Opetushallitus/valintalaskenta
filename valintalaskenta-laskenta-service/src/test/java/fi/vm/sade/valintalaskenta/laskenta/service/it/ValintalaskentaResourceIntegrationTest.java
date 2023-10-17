@@ -43,6 +43,7 @@ import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResou
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
+import fi.vm.sade.valintalaskenta.testing.AbstractMocklessIntegrationTest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,8 +53,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import fi.vm.sade.valintalaskenta.testing.AbstractMocklessIntegrationTest;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -258,8 +257,7 @@ public class ValintalaskentaResourceIntegrationTest extends AbstractMocklessInte
         Arrays.asList("14871500433118662321562230733453", "1487149910926-5198215752602272243"));
     valisijoiteltavatJonotHakukohteittain.put(
         hakukohdeOidJossaOmaKoe, Collections.singletonList("14871499108842038936225826786200"));
-    Mockito.when(
-            mockValintatapajonoResource.findKopiot(org.mockito.ArgumentMatchers.anyList()))
+    Mockito.when(mockValintatapajonoResource.findKopiot(org.mockito.ArgumentMatchers.anyList()))
         .thenReturn(valisijoiteltavatJonotHakukohteittain);
     Mockito.when(
             mockValisijoitteluResource.sijoittele(

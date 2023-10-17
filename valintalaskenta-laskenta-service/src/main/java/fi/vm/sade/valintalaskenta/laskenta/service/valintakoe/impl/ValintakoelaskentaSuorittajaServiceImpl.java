@@ -30,7 +30,6 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoelaskenta
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoeosallistumislaskin;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.HakukohdeValintakoeData;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
-
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -296,7 +295,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl
                                               vv.getValinnanvaiheOid());
                                         }
                                       });
-                              ht.setValintakoeValinnanvaiheet(new HashSet<>(siivotutValinnanvaiheet));
+                              ht.setValintakoeValinnanvaiheet(
+                                  new HashSet<>(siivotutValinnanvaiheet));
                               valintakoeOsallistuminenDAO.createOrUpdate(tallennettuOsallistuminen);
                             }
                           }
@@ -642,8 +642,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl
     boolean osallistuminenLoydetty = false;
     final List<HakukohdeValintakoeData> lasketutKokeet =
         kokeet.stream()
-              .filter(koe -> !koe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA))
-              .toList();
+            .filter(koe -> !koe.getKutsunKohde().equals(Koekutsu.HAKIJAN_VALINTA))
+            .toList();
     for (HakukohdeValintakoeData d : lasketutKokeet) {
       if (!osallistuminenLoydetty
           && Osallistuminen.OSALLISTUU.equals(d.getOsallistuminenTulos().getOsallistuminen())) {

@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -12,8 +11,7 @@ import org.springframework.data.relational.core.mapping.Column;
 
 public class Jarjestyskriteeritulos {
 
-  @Id
-  private UUID id;
+  @Id private UUID id;
 
   private int prioriteetti;
 
@@ -31,8 +29,7 @@ public class Jarjestyskriteeritulos {
 
   private String tekninenKuvaus;
 
-  @Transient
-  private Jonosija jonosija;
+  @Transient private Jonosija jonosija;
 
   @Transient
   @Column("muokattu_jonosija")

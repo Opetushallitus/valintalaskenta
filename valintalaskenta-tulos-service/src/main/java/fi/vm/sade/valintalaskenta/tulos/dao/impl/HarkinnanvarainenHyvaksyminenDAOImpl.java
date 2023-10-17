@@ -2,9 +2,8 @@ package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvarainenHyvaksyminen;
 import fi.vm.sade.valintalaskenta.tulos.dao.HarkinnanvarainenHyvaksyminenDAO;
-import java.util.List;
-
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.HarkinnanvarainenHyvaksyminenRepository;
+import java.util.List;
 import org.springframework.stereotype.Repository;
 
 @Repository("HarkinnanvarainenHyvaksyminenDAO")
@@ -19,7 +18,9 @@ public class HarkinnanvarainenHyvaksyminenDAOImpl implements HarkinnanvarainenHy
   @Override
   public HarkinnanvarainenHyvaksyminen haeHarkinnanvarainenHyvaksyminen(
       String hakukohdeOid, String hakemusOid) {
-    return repo.findHarkinnanvarainenHyvaksyminenByHakukohdeOidAndHakemusOid(hakukohdeOid, hakemusOid).orElse(null);
+    return repo.findHarkinnanvarainenHyvaksyminenByHakukohdeOidAndHakemusOid(
+            hakukohdeOid, hakemusOid)
+        .orElse(null);
   }
 
   @Override
