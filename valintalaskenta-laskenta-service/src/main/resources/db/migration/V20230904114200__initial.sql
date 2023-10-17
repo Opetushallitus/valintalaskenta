@@ -178,6 +178,7 @@ CREATE TABLE jarjestyskriteeritulos (
     kuvaus_en text NOT NULL DEFAULT '',
     tekninen_kuvaus text,
     jonosija uuid,
+    jonosija_key int,
     muokattu_jonosija uuid,
     CONSTRAINT fk_jonosija
         FOREIGN KEY(jonosija)

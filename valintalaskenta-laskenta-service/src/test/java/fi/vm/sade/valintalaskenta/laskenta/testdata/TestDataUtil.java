@@ -222,7 +222,20 @@ public abstract class TestDataUtil {
     return tulos;
   }
 
+  public static SyotettyArvo luoSyotettyArvo(String laskennallinenArvo, String arvo, String tunniste, Osallistuminen osallistuminen) {
+    SyotettyArvo syotettyArvo = new SyotettyArvo();
+    syotettyArvo.setLaskennallinenArvo(laskennallinenArvo);
+    syotettyArvo.setTunniste(tunniste);
+    syotettyArvo.setOsallistuminen(osallistuminen.name());
+    syotettyArvo.setArvo(arvo);
+    return syotettyArvo;
+  }
+
   public static Jonosija luoJonosijaEntity(String etunimi, String sukunimi, String hakemusOid, int hakutoivePrioriteetti, boolean harkinnanvarainen, List<Jarjestyskriteeritulos> tulokset) {
+    return luoJonosijaEntity(etunimi, sukunimi, hakemusOid, hakutoivePrioriteetti, harkinnanvarainen, tulokset, new ArrayList<>());
+  }
+
+  public static Jonosija luoJonosijaEntity(String etunimi, String sukunimi, String hakemusOid, int hakutoivePrioriteetti, boolean harkinnanvarainen, List<Jarjestyskriteeritulos> tulokset, List<SyotettyArvo> arvot) {
     Jonosija jonosija = new Jonosija();
     jonosija.setEtunimi(etunimi);
     jonosija.setSukunimi(sukunimi);
@@ -230,6 +243,9 @@ public abstract class TestDataUtil {
     jonosija.setHakutoiveprioriteetti(hakutoivePrioriteetti);
     jonosija.setHarkinnanvarainen(harkinnanvarainen);
     jonosija.setJarjestyskriteeritulokset(tulokset);
+    SyotettyArvoContainer container = new SyotettyArvoContainer();
+    container.syotetytArvot.addAll(arvot);
+    jonosija.setSyotetytArvot(container);
     return jonosija;
   }
 

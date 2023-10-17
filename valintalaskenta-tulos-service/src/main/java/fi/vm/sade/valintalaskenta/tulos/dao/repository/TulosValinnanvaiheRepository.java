@@ -12,12 +12,12 @@ import java.util.stream.Stream;
 
 public interface TulosValinnanvaiheRepository extends CrudRepository<Valinnanvaihe, UUID> {
 
-  List<Valinnanvaihe> findValinnanvaihesByHakukohdeOid(String hakukohdeOid);
+  List<Valinnanvaihe> findDistinctValinnanvaihesByHakukohdeOid(String hakukohdeOid);
 
-  Stream<Valinnanvaihe> findValinnanvaihesByHakuOid(String hakuOid);
+  Stream<Valinnanvaihe> findDistinctValinnanvaihesByHakuOid(String hakuOid);
 
-  @Query("select * from Valinnanvaihe vv join Valintatapajono vtpjono on vtpjono.valinnanvaihe = vv.id join Jonosija js on js.valintatapajono = vtpjono.id where js.hakemus_oid = :hakemusOid and vv.haku_oid = :hakuOid")
-  List<Valinnanvaihe> findValinnanvaihesByHakuOidAndHakemusOid(@Param("hakuOid") String hakuOid, @Param("hakemusOid") String hakemusOid);
+  @Query("select distinct vv.* from Valinnanvaihe vv join Valintatapajono vtpjono on vtpjono.valinnanvaihe = vv.id join Jonosija js on js.valintatapajono = vtpjono.id where js.hakemus_oid = :hakemusOid and vv.haku_oid = :hakuOid")
+  List<Valinnanvaihe> findDistinctValinnanvaihesByHakuOidAndHakemusOid(@Param("hakuOid") String hakuOid, @Param("hakemusOid") String hakemusOid);
 
   @Query("select * from Valinnanvaihe vv join Valintatapajono vtpjono on vtpjono.valinnanvaihe = vv.id where vtpjono.valintatapajono_oid = :valintatapajonoOid")
   Optional<Valinnanvaihe> findValinnanvaiheByValintatapajono(@Param("valintatapajonoOid") String valintatapajonoOid);

@@ -17,5 +17,4 @@ public interface TulosValintakoeOsallistuminenDAO {
   List<ValintakoeOsallistuminen> findByHakuAndOsallistuminen(
       String hakuOid, Osallistuminen osallistuminen);
 
-  List<ValintakoeOsallistuminen> findAmmatillisenKielikoeOsallistumiset(Date since);
 }

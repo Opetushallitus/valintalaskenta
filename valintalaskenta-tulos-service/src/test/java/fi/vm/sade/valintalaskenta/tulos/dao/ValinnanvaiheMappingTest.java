@@ -21,14 +21,7 @@ public class ValinnanvaiheMappingTest {
                     ValinnanvaiheMappingTest.class.getResourceAsStream("valinnanvaiheDTO.json")),
                 ValinnanvaiheDTO.class);
 
-    // Valinnanvaihe v0 = new Gson().fromJson(
-    // new InputStreamReader(ValinnanvaiheMappingTest.class
-    // .getResourceAsStream("valinnanvaihe.json")),
-    // Valinnanvaihe.class);
-
     Valinnanvaihe v1 = modelMapper.map(v, Valinnanvaihe.class);
-    // System.err.println(new GsonBuilder().setPrettyPrinting().create()
-    // .toJson(v1));
 
     Assert.assertEquals("Oidit ei ole samoja!", v.getValinnanvaiheoid(), v1.getValinnanVaiheOid());
   }

@@ -86,7 +86,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
   @Override
   public List<Valinnanvaihe> haeValinnanvaiheetJarjestysnumerolla(
       String hakuOid, String hakukohdeOid, int jarjestysnumero) {
-    return repo.findValinnanvaiheetJarjestysnumerolla(hakuOid, hakukohdeOid, jarjestysnumero);
+    return repo.findDistinctValinnanvaiheetJarjestysnumerolla(hakuOid, hakukohdeOid, jarjestysnumero);
   }
 
   @Override

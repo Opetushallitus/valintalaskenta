@@ -3,7 +3,7 @@ package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValintakoeOsallistuminenDAO;
-import java.util.Date;
+
 import java.util.List;
 
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosValintakoeOsallistuminenRepository;
@@ -26,56 +26,23 @@ public class TulosValintakoeOsallistuminenDAOImpl implements TulosValintakoeOsal
 
   @Override
   public List<ValintakoeOsallistuminen> findByHakutoive(String hakukohdeOid) {
-    return repo.findValintakoeOsallistuminensByHakutoive(hakukohdeOid);
+    return repo.findDistinctValintakoeOsallistuminensByHakutoive(hakukohdeOid);
   }
 
   @Override
   public List<ValintakoeOsallistuminen> findByHakutoiveet(List<String> hakukohdeOids) {
-    return repo.findValintakoeOsallistuminensByHakutoiveet(hakukohdeOids);
+    return repo.findDistinctValintakoeOsallistuminensByHakutoiveet(hakukohdeOids);
   }
 
   @Override
   public List<ValintakoeOsallistuminen> findByHakijaOids(List<String> hakijaOids) {
-    return repo.findValintakoeOsallistuminensByHakijaOidIn(hakijaOids);
+    return repo.findDistinctValintakoeOsallistuminensByHakijaOidIn(hakijaOids);
   }
 
   @Override
   public List<ValintakoeOsallistuminen> findByHakuAndOsallistuminen(
       String hakuOid, Osallistuminen osallistuminen) {
-    return repo.findByHakuAndOsallistuminen(hakuOid, osallistuminen);
-/*    return datastore
-        .find(ValintakoeOsallistuminen.class)
-        .field("hakuOid")
-        .equal(hakuOid)
-        .field("hakutoiveet.valinnanVaiheet.valintakokeet.osallistuminenTulos.osallistuminen")
-        .equal(osallistuminen)
-        .asList();*/
+    return repo.findDistinctByHakuAndOsallistuminen(hakuOid, osallistuminen);
   }
 
-  @Override
-  public List<ValintakoeOsallistuminen> findAmmatillisenKielikoeOsallistumiset(Date since) {
-    //tODO Is this used anywhere?? Remove if not
-    return null;
-/*    Query<ValintakoeOsallistuminen> findQuery =
-        datastore
-            .find(ValintakoeOsallistuminen.class)
-            .disableValidation()
-            .filter("createdAt >=", since)
-            .filter(
-                "hakutoiveet.valinnanVaiheet.valintakokeet",
-                new BasicDBObject(
-                    "$elemMatch",
-                    new BasicDBObject(
-                        "$and",
-                        new BasicDBObject[] {
-                          new BasicDBObject(
-                              "valintakoeTunniste",
-                              new BasicDBObject(
-                                  "$in", Arrays.asList("kielikoe_fi", "kielikoe_sv"))),
-                          new BasicDBObject(
-                              "osallistuminenTulos.osallistuminen",
-                              Osallistuminen.OSALLISTUU.name())
-                        })));
-    return findQuery.asList();*/
-  }
 }

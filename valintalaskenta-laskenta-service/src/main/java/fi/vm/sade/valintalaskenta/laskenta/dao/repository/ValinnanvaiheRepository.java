@@ -26,10 +26,10 @@ public interface ValinnanvaiheRepository extends CrudRepository<Valinnanvaihe, U
                                                              @Param("hakukohdeOid") String hakukohdeOid,
                                                              @Param("jarjestysnro") int jarjestysnumero);
 
-  @Query("select * from Valinnanvaihe vv where vv.haku_oid = :hakuOid and vv.hakukohde_oid = :hakukohdeOid and vv.jarjestysnumero = :jarjestysnro")
-  List<Valinnanvaihe> findValinnanvaiheetJarjestysnumerolla(@Param("hakuOid") String hakuOid,
-                                                            @Param("hakukohdeOid") String hakukohdeOid,
-                                                            @Param("jarjestysnro") int jarjestysnumero);
+  @Query("select distinct vv.* from Valinnanvaihe vv where vv.haku_oid = :hakuOid and vv.hakukohde_oid = :hakukohdeOid and vv.jarjestysnumero = :jarjestysnro")
+  List<Valinnanvaihe> findDistinctValinnanvaiheetJarjestysnumerolla(@Param("hakuOid") String hakuOid,
+                                                                    @Param("hakukohdeOid") String hakukohdeOid,
+                                                                    @Param("jarjestysnro") int jarjestysnumero);
 
 }
 

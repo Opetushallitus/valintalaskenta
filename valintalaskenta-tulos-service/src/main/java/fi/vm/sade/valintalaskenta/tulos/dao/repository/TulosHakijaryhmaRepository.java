@@ -8,5 +8,5 @@ import java.util.UUID;
 
 public interface TulosHakijaryhmaRepository extends CrudRepository<Hakijaryhma, UUID> {
 
-  List<Hakijaryhma> findHakijaryhmasByHakukohdeOid(String hakukohdeOiud);
+  List<Hakijaryhma> findHakijaryhmasByHakukohdeOid(String hakukohdeOid);
 }

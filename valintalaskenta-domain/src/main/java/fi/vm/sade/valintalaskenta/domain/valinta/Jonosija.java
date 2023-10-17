@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 
@@ -32,8 +33,7 @@ public class Jonosija {
   @Transient
   private Valintatapajono valintatapajono;
 
-  @Transient
-  private List<Jarjestyskriteeritulos> jarjestyskriteeritulokset =
+  private final List<Jarjestyskriteeritulos> jarjestyskriteeritulokset =
       new ArrayList<Jarjestyskriteeritulos>();
 
   @Column("syotetyt_arvot")
@@ -45,6 +45,12 @@ public class Jonosija {
   public Jonosija() {
     syotetytArvot = new SyotettyArvoContainer();
     funktioTulokset = new FunktioTulosContainer();
+  }
+
+  @PersistenceCreator
+  public Jonosija(List<Jarjestyskriteeritulos> jarjestyskriteeritulokset) {
+    this.jarjestyskriteeritulokset.addAll(jarjestyskriteeritulokset);
+    jarjestaJarjestyskriteeritulokset();
   }
 
   public UUID getId() {
@@ -104,7 +110,9 @@ public class Jonosija {
   }
 
   public void setJarjestyskriteeritulokset(List<Jarjestyskriteeritulos> jarjestyskriteeritulokset) {
-    this.jarjestyskriteeritulokset = jarjestyskriteeritulokset;
+    this.jarjestyskriteeritulokset.clear();
+    this.jarjestyskriteeritulokset.addAll(jarjestyskriteeritulokset);
+    jarjestaJarjestyskriteeritulokset();
   }
 
   private void jarjestaJarjestyskriteeritulokset() {

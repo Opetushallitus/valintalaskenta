@@ -23,22 +23,22 @@ public class TulosValinnanvaiheDAOImpl implements TulosValinnanvaiheDAO {
 
   @Override
   public List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid) {
-    return repo.findValinnanvaihesByHakukohdeOid(hakukohdeoid);
+    return repo.findDistinctValinnanvaihesByHakukohdeOid(hakukohdeoid);
   }
 
   @Override
   public List<Valinnanvaihe> readByHakuOid(String hakuoid) {
-    return repo.findValinnanvaihesByHakuOid(hakuoid).toList();
+    return repo.findDistinctValinnanvaihesByHakuOid(hakuoid).toList();
   }
 
   @Override
   public Stream<Valinnanvaihe> readByHakuOidStreaming(String hakuoid) {
-    return repo.findValinnanvaihesByHakuOid(hakuoid);
+    return repo.findDistinctValinnanvaihesByHakuOid(hakuoid);
   }
 
   @Override
   public List<Valinnanvaihe> readByHakuOidAndHakemusOid(String hakuOid, String hakemusOid) {
-    return repo.findValinnanvaihesByHakuOidAndHakemusOid(hakuOid, hakemusOid);
+    return repo.findDistinctValinnanvaihesByHakuOidAndHakemusOid(hakuOid, hakemusOid);
 /*    List<ObjectId> hakemuksenJonosijaIdt = new LinkedList<>();
     datastore
         .find(Jonosija.class)
