@@ -1,28 +1,25 @@
 package fi.vm.sade.valintalaskenta.tulos.dao;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 // TODO: revise this test while implementing OK-384
 /** User: wuoti Date: 20.8.2013 Time: 19.30 */
 @ContextConfiguration(locations = "classpath:application-context-test.xml")
-@RunWith(SpringJUnit4ClassRunner.class)
 public class JonosijaHistoriaTulosDAOTest {
   @Autowired private JarjestyskriteerihistoriaDAO jonosijaHistoriaTulosDAO;
 
   @Autowired private ApplicationContext applicationContext;
 
-  @Ignore
+  @Disabled
   @Test
   public void testFindByValintapajonoOidHakemusOidAndJarjestyskriteeriPrioriteetti() {
     final String valintatapajonoOid = "valintatapajonoOid1";
@@ -37,7 +34,7 @@ public class JonosijaHistoriaTulosDAOTest {
     assertEquals("historia2", jonosijaHistoriat.get(1).getHistoria());
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testJonosijaHistoriat() {
     final String valintatapajonoOid = "1410335755064-1436990924193196531";

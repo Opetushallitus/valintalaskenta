@@ -26,8 +26,8 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoeosallist
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.ValintakoeosallistumislaskinImpl;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /** User: wuoti Date: 6.5.2013 Time: 9.59 */
 public class ValintakoeosallistumislaskinTest {
@@ -45,7 +45,7 @@ public class ValintakoeosallistumislaskinTest {
     return vastaus;
   }
 
-  @Before
+  @BeforeAll
   public void setUpt() {
     laskentaServiceMock = mock(LaskentaService.class);
     laskentadomainkonvertteriWrapperMock = mock(LaskentadomainkonvertteriWrapper.class);

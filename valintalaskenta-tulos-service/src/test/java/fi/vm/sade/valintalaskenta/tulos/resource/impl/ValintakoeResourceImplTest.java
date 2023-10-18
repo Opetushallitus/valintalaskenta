@@ -1,8 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -14,7 +12,7 @@ import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ValintakoeResourceImplTest {
   private final ValintalaskentaTulosService serviceMock = mock(ValintalaskentaTulosService.class);
@@ -34,7 +32,7 @@ public class ValintakoeResourceImplTest {
         .thenReturn(Arrays.asList(osallistuminen1, osallistuminen2));
 
     List<ValintakoeOsallistuminenDTO> osallistumiset = resource.hakuByHakutoive(hakukohdeOid);
-    assertThat(osallistumiset, hasSize(2));
+    assertEquals(2, osallistumiset.size());
     assertEquals("hakemus1Oid", osallistumiset.get(0).getHakemusOid());
     assertEquals("hakemus2Oid", osallistumiset.get(1).getHakemusOid());
 

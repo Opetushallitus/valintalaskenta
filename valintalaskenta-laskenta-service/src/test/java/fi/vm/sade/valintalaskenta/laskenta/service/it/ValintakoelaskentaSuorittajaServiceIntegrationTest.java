@@ -57,8 +57,7 @@ import java.util.TreeMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
@@ -1020,7 +1019,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
         OSALLISTUU, valintakoetunniste1.get().getOsallistuminenTulos().getOsallistuminen());
   }
 
-  @Ignore
   @Test
   public void testEiKoekutsujaAikaisemminHylatyilleHakijanValinnoille() {
     final String hakemusOid = "1.2.246.562.11.00000072753";

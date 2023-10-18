@@ -46,9 +46,8 @@ import java.util.Map;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -71,7 +70,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
   private ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset =
       new ValintakoelaskennanKumulatiivisetTulokset();
 
-  @Before
+  @BeforeEach
   public void setUp() {
     valintakoeOsallistuminenDAOMock = mock(ValintakoeOsallistuminenDAO.class);
     valintakoeosallistumislaskinMock = mock(Valintakoeosallistumislaskin.class);
@@ -92,7 +91,6 @@ public class ValintakoelaskentaSuorittajaServiceTest {
             valinnanvaiheDAOMock);
   }
 
-  @Ignore
   @Test
   public void testMustache() {
     final String hakukohdeOid1 = "hakukohdeOid1";

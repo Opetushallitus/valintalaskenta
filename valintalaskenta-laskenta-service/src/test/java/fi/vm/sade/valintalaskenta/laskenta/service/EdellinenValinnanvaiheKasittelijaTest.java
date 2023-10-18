@@ -19,7 +19,7 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinna
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.TilaJaSelite;
 import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
 import java.util.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EdellinenValinnanvaiheKasittelijaTest {
   private final EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelija =

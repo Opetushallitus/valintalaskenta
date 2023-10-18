@@ -34,8 +34,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class HakemuslaskinServiceTest {
@@ -45,7 +45,7 @@ public class HakemuslaskinServiceTest {
   private JarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAOMock;
   private EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelijaMock;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     hakemuslaskinService = new HakemuslaskinImpl();
     laskentaServiceMock = mock(LaskentaService.class);

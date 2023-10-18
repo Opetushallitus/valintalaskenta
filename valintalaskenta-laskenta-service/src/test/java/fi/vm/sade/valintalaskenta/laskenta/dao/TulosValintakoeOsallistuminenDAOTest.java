@@ -6,7 +6,7 @@ import static org.junit.Assert.assertNull;
 
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Streamable;
 

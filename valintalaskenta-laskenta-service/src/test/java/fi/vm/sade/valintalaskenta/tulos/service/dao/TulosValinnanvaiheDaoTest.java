@@ -9,9 +9,12 @@ import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValinnanvaiheDAO;
 import java.util.HashSet;
 import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+@RunWith(SpringJUnit4ClassRunner.class)
 public class TulosValinnanvaiheDaoTest extends AbstractIntegrationTest {
 
   @Autowired private TulosValinnanvaiheDAO tulosValinnanvaiheDAO;

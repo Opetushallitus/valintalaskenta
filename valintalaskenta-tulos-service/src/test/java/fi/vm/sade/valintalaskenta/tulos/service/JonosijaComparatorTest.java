@@ -1,5 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
@@ -7,7 +9,7 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverter;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverterImpl;
 import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JonosijaComparatorTest {
 
@@ -106,9 +108,9 @@ public class JonosijaComparatorTest {
       System.out.println("After sort: " + j.getHakemusOid());
     }
 
-    org.junit.Assert.assertEquals(a.get(0).getHakemusOid(), sija0.getHakemusOid());
-    org.junit.Assert.assertEquals(a.get(1).getHakemusOid(), sija3.getHakemusOid());
-    org.junit.Assert.assertEquals(a.get(2).getHakemusOid(), sija4.getHakemusOid());
-    org.junit.Assert.assertEquals(a.get(5).getHakemusOid(), sija5.getHakemusOid());
+    assertEquals(a.get(0).getHakemusOid(), sija0.getHakemusOid());
+    assertEquals(a.get(1).getHakemusOid(), sija3.getHakemusOid());
+    assertEquals(a.get(2).getHakemusOid(), sija4.getHakemusOid());
+    assertEquals(a.get(5).getHakemusOid(), sija5.getHakemusOid());
   }
 }

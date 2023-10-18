@@ -10,7 +10,7 @@ import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import java.util.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class TulosValintakoeOsallistuminenDAOTest extends AbstractIntegrationTest {

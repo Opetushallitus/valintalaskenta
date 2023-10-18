@@ -11,8 +11,8 @@ import fi.vm.sade.valintalaskenta.laskenta.dao.impl.HakijaryhmaServiceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.HakijaryhmaRepository;
 import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
 import java.util.*;
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class HakijaryhmaServiceTest extends AbstractIntegrationTest {

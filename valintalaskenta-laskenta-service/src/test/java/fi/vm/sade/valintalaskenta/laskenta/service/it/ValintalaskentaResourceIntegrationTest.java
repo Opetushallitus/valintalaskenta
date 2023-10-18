@@ -55,9 +55,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matchers;
-import org.junit.Before;
 import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -104,7 +104,7 @@ public class ValintalaskentaResourceIntegrationTest extends AbstractMocklessInte
   private final ValintaperusteetValintatapajonoResource mockValintatapajonoResource =
       Mockito.mock(ValintaperusteetValintatapajonoResource.class);
 
-  @Before
+  @BeforeEach
   public void initResource() {
     valintalaskentaResource =
         new ValintalaskentaResourceImpl(
