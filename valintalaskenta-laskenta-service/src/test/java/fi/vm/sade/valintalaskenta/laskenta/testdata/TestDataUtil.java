@@ -73,6 +73,7 @@ public abstract class TestDataUtil {
       String valinnanVaiheOid,
       int valinnanVaiheJarjestysluku) {
     ValintaperusteetDTO perusteet = luoValintaperusteet(hakuOid, hakukohdeOid);
+    perusteet.setTarjoajaOid("tarjoaja");
     perusteet.setValinnanVaihe(
         luoTavallinenValinnanvaihe(valinnanVaiheOid, valinnanVaiheJarjestysluku));
     return perusteet;

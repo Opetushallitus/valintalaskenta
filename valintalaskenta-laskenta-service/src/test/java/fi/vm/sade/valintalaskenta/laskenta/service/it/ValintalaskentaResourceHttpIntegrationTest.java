@@ -12,7 +12,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.SuoritustiedotDTO;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija.ValisijoiteltavatJonot;
-import fi.vm.sade.valintalaskenta.testing.AbstractMocklessIntegrationTest;
+import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
 import fi.vm.sade.valintalaskenta.tulos.RestClientUtil;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
@@ -22,7 +22,7 @@ import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-public class ValintalaskentaResourceHttpIntegrationTest extends AbstractMocklessIntegrationTest {
+public class ValintalaskentaResourceHttpIntegrationTest extends AbstractIntegrationTest {
   private final String hakukohdeOid = "hakukohdeOid";
 
   @Autowired private ApplicationContext applicationContext;

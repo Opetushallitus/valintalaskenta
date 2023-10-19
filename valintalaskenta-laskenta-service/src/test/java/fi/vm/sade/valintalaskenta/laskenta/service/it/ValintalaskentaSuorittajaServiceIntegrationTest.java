@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.laskenta.service.it;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi.LUKUARVO;
+import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.HYLATTY;
 import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakemus;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoJarjestyskriteeri;
@@ -19,6 +20,7 @@ import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetFunktiokutsuDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetValinnanVaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
@@ -27,31 +29,16 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.ValintalaskentaSuorittajaService;
+import fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil;
+import fi.vm.sade.valintalaskenta.testing.AbstractMocklessIntegrationTest;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
-@ContextConfiguration(locations = "classpath:application-context-test.xml")
-@RunWith(SpringJUnit4ClassRunner.class)
-@TestExecutionListeners(
-    listeners = {
-      DependencyInjectionTestExecutionListener.class,
-      DirtiesContextTestExecutionListener.class
-    })
-public class ValintalaskentaSuorittajaServiceIntegrationTest {
+public class ValintalaskentaSuorittajaServiceIntegrationTest
+    extends AbstractMocklessIntegrationTest {
   private final String uuid = null;
 
   @Autowired private ApplicationContext applicationContext;
@@ -664,6 +651,8 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
     final String valinnanVaiheOid = "vv3";
     final String valintatapajonoOid = "jono1";
 
+    luoEdellinenVaihe(hakemusOid, hakukohdeOid, hakuOid);
+
     ValintaperusteetDTO vv3 =
         luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 2);
     (vv3.getValinnanVaihe())
@@ -702,6 +691,8 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
     final String hakuOid = "1.2.246.562.5.2013080813081926341927";
     final String valinnanVaiheOid = "vv3";
     final String valintatapajonoOid = "jono1";
+
+    luoEdellinenVaihe(hakemusOid, hakukohdeOid, hakuOid);
 
     ValintaperusteetDTO vv3 =
         luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 2);
@@ -835,5 +826,48 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         hakemuksenTulos.get().getJarjestyskriteeritulokset();
     assertThat(jarjestyskriteeritulokset, hasSize(1));
     assertEquals(HYVAKSYTTAVISSA, jarjestyskriteeritulokset.get(0).getTila());
+  }
+
+  private void luoEdellinenVaihe(String hakemusOid, String hakukohdeOid, String hakuOid) {
+    Valinnanvaihe edellinen =
+        TestDataUtil.luoValinnanvaiheEntity(
+            hakuOid,
+            hakukohdeOid,
+            1,
+            "1388739479946-6344111160036037403",
+            List.of(
+                TestDataUtil.luoValintatapaJonoEntity(
+                    10,
+                    Set.of(
+                        TestDataUtil.luoJonosijaEntity(
+                            "Valtteri",
+                            "Villi",
+                            "1.2.246.562.11.00000072672",
+                            5,
+                            false,
+                            List.of(
+                                TestDataUtil.luoJarjestyskriteeritulosEntity(
+                                    0.0, 0, HYVAKSYTTAVISSA))),
+                        TestDataUtil.luoJonosijaEntity(
+                            "Keijo",
+                            "Keskeyttänyt",
+                            hakemusOid,
+                            1,
+                            false,
+                            List.of(TestDataUtil.luoJarjestyskriteeritulosEntity(0.0, 0, HYLATTY))),
+                        TestDataUtil.luoJonosijaEntity(
+                            "Ulla",
+                            "Unelias",
+                            "1.2.246.562.11.00000072740",
+                            3,
+                            false,
+                            List.of(
+                                TestDataUtil.luoJarjestyskriteeritulosEntity(
+                                    0.0, 0, HYVAKSYTTAVISSA)))),
+                    "Harkinnanvaraisten käsittelyvaiheen valintatapajono",
+                    0,
+                    Tasasijasaanto.ARVONTA,
+                    "1388739480159-1173947553521563587")));
+    valinnanvaiheRepository.save(edellinen);
   }
 }

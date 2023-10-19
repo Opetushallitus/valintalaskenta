@@ -14,6 +14,7 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
+import fi.vm.sade.valintalaskenta.testing.AbstractMocklessIntegrationTest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -24,12 +25,9 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.persistence.Entity;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * A little utility for dumping valintalaskentadb contents to a form that can be easily used for
@@ -37,9 +35,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * -ea -Xmx7G -DVIRKAILIJAMONGO_URL=mongodb://oph:PASSWORD@qa-mongodb1.oph.ware.fi,qa-mongodb2.oph.ware.fi,qa-mongodb3.oph.ware.fi:27017
  * </code> Note that the JSONs produced might still need some manual fixing.
  */
-@ContextConfiguration(locations = ValintalaskentaDbDumpingTest.SPRING_CONFIG_XML)
-@RunWith(SpringJUnit4ClassRunner.class)
-public class ValintalaskentaDbDumpingTest {
+public class ValintalaskentaDbDumpingTest extends AbstractMocklessIntegrationTest {
   protected static final String SPRING_CONFIG_XML =
       "classpath:fi/vm/sade/valintalaskenta/laskenta/service/it/test-valintalaskentadb-access.xml";
 
