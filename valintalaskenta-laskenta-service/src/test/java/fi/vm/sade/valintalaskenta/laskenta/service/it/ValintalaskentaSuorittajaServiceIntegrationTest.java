@@ -34,7 +34,6 @@ import fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil;
 import fi.vm.sade.valintalaskenta.testing.AbstractMocklessIntegrationTest;
 import java.math.BigDecimal;
 import java.util.*;
-
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -259,10 +258,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
         assertEquals(valintatapajonoOid1, jono.getValintatapajonoOid());
 
         assertEquals(2, jono.getJonosijat().size());
-        jono.getJonosijatAsList().sort(jonosijaComparator);
+        List<Jonosija> sijat = jono.getJonosijatAsList();
+        sijat.sort(jonosijaComparator);
 
         {
-          Jonosija jonosija1 = jono.getJonosijatAsList().get(0);
+          Jonosija jonosija1 = sijat.get(0);
           assertEquals(hakemusOid1, jonosija1.getHakemusOid());
           assertEquals(hakijaOid1, jonosija1.getHakijaOid());
           assertEquals(1, jonosija1.getHakutoiveprioriteetti());
@@ -299,7 +299,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
         }
 
         {
-          Jonosija jonosija2 = jono.getJonosijatAsList().get(1);
+          Jonosija jonosija2 = sijat.get(1);
           assertEquals(hakemusOid2, jonosija2.getHakemusOid());
           assertEquals(hakijaOid2, jonosija2.getHakijaOid());
           assertEquals(2, jonosija2.getHakutoiveprioriteetti());
@@ -339,10 +339,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
         assertEquals(valintatapajonoOid2, jono.getValintatapajonoOid());
 
         assertEquals(2, jono.getJonosijat().size());
-        jono.getJonosijatAsList().sort(jonosijaComparator);
+        List<Jonosija> jonosijat = jono.getJonosijatAsList();
+        jonosijat.sort(jonosijaComparator);
 
         {
-          Jonosija jonosija = jono.getJonosijatAsList().get(0);
+          Jonosija jonosija = jonosijat.get(0);
           assertEquals(hakemusOid1, jonosija.getHakemusOid());
           assertEquals(hakijaOid1, jonosija.getHakijaOid());
           assertEquals(1, jonosija.getHakutoiveprioriteetti());
@@ -362,7 +363,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
         }
 
         {
-          Jonosija jonosija = jono.getJonosijatAsList().get(1);
+          Jonosija jonosija = jonosijat.get(1);
           assertEquals(hakemusOid2, jonosija.getHakemusOid());
           assertEquals(hakijaOid2, jonosija.getHakijaOid());
           assertEquals(2, jonosija.getHakutoiveprioriteetti());
@@ -400,10 +401,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
         assertEquals(valintatapajonoOid3, jono.getValintatapajonoOid());
 
         assertEquals(2, jono.getJonosijat().size());
-        jono.getJonosijatAsList().sort(jonosijaComparator);
+        List<Jonosija> sijat = jono.getJonosijatAsList();
+        sijat.sort(jonosijaComparator);
 
         {
-          Jonosija jonosija = jono.getJonosijatAsList().get(0);
+          Jonosija jonosija = sijat.get(0);
           assertEquals(hakemusOid1, jonosija.getHakemusOid());
           assertEquals(hakijaOid1, jonosija.getHakijaOid());
           assertEquals(1, jonosija.getHakutoiveprioriteetti());
@@ -424,7 +426,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(0, jonosija.getFunktioTulokset().funktioTulokset.size());
         }
         {
-          Jonosija jonosija = jono.getJonosijatAsList().get(1);
+          Jonosija jonosija = sijat.get(1);
           assertEquals(hakemusOid2, jonosija.getHakemusOid());
           assertEquals(hakijaOid2, jonosija.getHakijaOid());
           assertEquals(2, jonosija.getHakutoiveprioriteetti());
@@ -739,33 +741,37 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
     final String hakukohdeOid = "1.2.246.562.20.66128426039";
     final String hakuOid = "1.2.246.562.29.173465377510";
     final String hakemusOid2 = "1.2.246.562.11.00001223556";
-    final String hakijaOid = "1.2.246.562.24.43656814814", hakijaOid2 = "1.2.246.562.24.31678660760";
+    final String hakijaOid = "1.2.246.562.24.43656814814",
+        hakijaOid2 = "1.2.246.562.24.31678660760";
     final String etunimi = "Jaakko Matias", sukunimi = "Rantamäki";
-    final String etunimi2 =  "Saara Sofia", sukunimi2 = "Vetelöinen";
+    final String etunimi2 = "Saara Sofia", sukunimi2 = "Vetelöinen";
 
     valinnanvaiheRepository.save(
-      TestDataUtil.luoValinnanvaiheEntity(
-        hakuOid,
-        hakukohdeOid,
-        1,
-        "vv1",
-        Arrays.asList(
-          TestDataUtil.luoValintatapaJonoEntity(
-            0,
-            Set.of(luoHylattyJonosija(hakemusOid, etunimi, sukunimi, hakijaOid),
-              luoHylattyJonosija(hakemusOid2, etunimi2, sukunimi2, hakijaOid2)),
-            "Ammattitutkinnolla ja ulkomaisella tutkinnolla hakevat",
-            0,
-            Tasasijasaanto.YLITAYTTO,
-            "vtpj-1"),
-          TestDataUtil.luoValintatapaJonoEntity(
-            245,
-            Set.of(luoHylattyJonosijaValisijoittelussa(hakemusOid, etunimi, sukunimi, hakijaOid),
-              luoHylattyJonosija(hakemusOid2, etunimi2, sukunimi2, hakijaOid2)),
-            "Ylioppilaat ja ammatillisella perustutkinnolla hakevat",
+        TestDataUtil.luoValinnanvaiheEntity(
+            hakuOid,
+            hakukohdeOid,
             1,
-            Tasasijasaanto.YLITAYTTO,
-            "vtpj-2"))));
+            "vv1",
+            Arrays.asList(
+                TestDataUtil.luoValintatapaJonoEntity(
+                    0,
+                    Set.of(
+                        luoHylattyJonosija(hakemusOid, etunimi, sukunimi, hakijaOid),
+                        luoHylattyJonosija(hakemusOid2, etunimi2, sukunimi2, hakijaOid2)),
+                    "Ammattitutkinnolla ja ulkomaisella tutkinnolla hakevat",
+                    0,
+                    Tasasijasaanto.YLITAYTTO,
+                    "vtpj-1"),
+                TestDataUtil.luoValintatapaJonoEntity(
+                    245,
+                    Set.of(
+                        luoHylattyJonosijaValisijoittelussa(
+                            hakemusOid, etunimi, sukunimi, hakijaOid),
+                        luoHylattyJonosija(hakemusOid2, etunimi2, sukunimi2, hakijaOid2)),
+                    "Ylioppilaat ja ammatillisella perustutkinnolla hakevat",
+                    1,
+                    Tasasijasaanto.YLITAYTTO,
+                    "vtpj-2"))));
 
     luoValintakoeOsallistuminen(hakemusOid, hakukohdeOid, hakuOid, hakijaOid, false);
     luoValintakoeOsallistuminen(hakemusOid2, hakukohdeOid, hakuOid, hakijaOid2, true);
@@ -819,7 +825,8 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
   }
 
   @Test
-  public void valisijoittelussaVoiTullaHyvaksytyksiVaikkaToiseltaKohteeltaEiLoytyisiKutsujaKaikkiinKohteenKokeisiin() {
+  public void
+      valisijoittelussaVoiTullaHyvaksytyksiVaikkaToiseltaKohteeltaEiLoytyisiKutsujaKaikkiinKohteenKokeisiin() {
     final String valinnanVaiheOid = "vv4";
     final String valintatapajonoOid = "jono2";
     final String hakemusOid = "1.2.246.562.11.00001212279";
@@ -827,7 +834,6 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
     final String hakuOid = "1.2.246.562.29.173465377510";
     final String etunimi = "Jaakko, Matias", sukunimi = "Rantamäki";
     final String hakijaOid = "1.2.246.562.24.43656814814";
-
 
     valinnanvaiheRepository.save(
         TestDataUtil.luoValinnanvaiheEntity(
@@ -845,7 +851,9 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
                     "vtpj-1"),
                 TestDataUtil.luoValintatapaJonoEntity(
                     245,
-                    Set.of(luoHylattyJonosijaValisijoittelussa(hakemusOid, etunimi, sukunimi, hakijaOid)),
+                    Set.of(
+                        luoHylattyJonosijaValisijoittelussa(
+                            hakemusOid, etunimi, sukunimi, hakijaOid)),
                     "Ylioppilaat ja ammatillisella perustutkinnolla hakevat",
                     1,
                     Tasasijasaanto.YLITAYTTO,
@@ -888,17 +896,19 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
   }
 
   @NotNull
-  private static Jonosija luoHylattyJonosijaValisijoittelussa(String hakemusOid, String etunimi, String sukunimi, String hakijaOid) {
-    Jonosija sija = TestDataUtil.luoJonosijaEntity(
-      etunimi,
-      sukunimi,
-      hakemusOid,
-      2,
-      false,
-      Arrays.asList(
-        TestDataUtil.luoJarjestyskriteeritulosEntity(12.0, 0, HYLATTY),
-        TestDataUtil.luoJarjestyskriteeritulosEntity(2.0, 1, HYVAKSYTTAVISSA),
-        TestDataUtil.luoJarjestyskriteeritulosEntity(6.82, 2, HYVAKSYTTAVISSA)));
+  private static Jonosija luoHylattyJonosijaValisijoittelussa(
+      String hakemusOid, String etunimi, String sukunimi, String hakijaOid) {
+    Jonosija sija =
+        TestDataUtil.luoJonosijaEntity(
+            etunimi,
+            sukunimi,
+            hakemusOid,
+            2,
+            false,
+            Arrays.asList(
+                TestDataUtil.luoJarjestyskriteeritulosEntity(12.0, 0, HYLATTY),
+                TestDataUtil.luoJarjestyskriteeritulosEntity(2.0, 1, HYVAKSYTTAVISSA),
+                TestDataUtil.luoJarjestyskriteeritulosEntity(6.82, 2, HYVAKSYTTAVISSA)));
 
     sija.setHylattyValisijoittelussa(true);
     sija.setHakijaOid(hakijaOid);
@@ -906,25 +916,34 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
   }
 
   @NotNull
-  private static Jonosija luoHylattyJonosija(String hakemusOid, String etunimi, String sukunimi, String hakijaOid) {
-    Jonosija sija = TestDataUtil.luoJonosijaEntity(
-      etunimi,
-      sukunimi,
-      hakemusOid,
-      1,
-      false,
-      List.of(TestDataUtil.luoJarjestyskriteeritulosEntity(0, 0, HYLATTY)));
-    sija.getJarjestyskriteeritulokset().get(0).setKuvausFI("Hakemus hyväksyttiin korkeammalle hakutoiveelle");
+  private static Jonosija luoHylattyJonosija(
+      String hakemusOid, String etunimi, String sukunimi, String hakijaOid) {
+    Jonosija sija =
+        TestDataUtil.luoJonosijaEntity(
+            etunimi,
+            sukunimi,
+            hakemusOid,
+            1,
+            false,
+            List.of(TestDataUtil.luoJarjestyskriteeritulosEntity(0, 0, HYLATTY)));
+    sija.getJarjestyskriteeritulokset()
+        .get(0)
+        .setKuvausFI("Hakemus hyväksyttiin korkeammalle hakutoiveelle");
     sija.setHakijaOid(hakijaOid);
     return sija;
   }
 
-  private void luoValintakoeOsallistuminen(String hakemusOid, String hakukohdeOid, String hakuOid, String hakijaOid, boolean osallistumisetHylatty) {
+  private void luoValintakoeOsallistuminen(
+      String hakemusOid,
+      String hakukohdeOid,
+      String hakuOid,
+      String hakijaOid,
+      boolean osallistumisetHylatty) {
     valintakoeOsallistuminenRepository.save(
         TestDataUtil.luoValintakoeOsallistuminen(
-          hakuOid,
-          hakijaOid,
-          hakemusOid,
+            hakuOid,
+            hakijaOid,
+            hakemusOid,
             Set.of(
                 TestDataUtil.luoHakutoiveEntity(
                     "1.2.246.562.20.75182408387",
@@ -977,7 +996,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
                                     null,
                                     "HYLATTY"))))),
                 TestDataUtil.luoHakutoiveEntity(
-                  hakukohdeOid,
+                    hakukohdeOid,
                     Set.of(
                         TestDataUtil.luoValintakoeValinnanvaiheEntity(
                             2,
@@ -1044,7 +1063,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
                     Set.of(
                         TestDataUtil.luoValintakoeValinnanvaiheEntity(
                             2,
-                            "vv8" + hakijaOid ,
+                            "vv8" + hakijaOid,
                             Arrays.asList(
                                 TestDataUtil.luoValintakoeEntity(
                                     "1413284033343-6883461063685526158",

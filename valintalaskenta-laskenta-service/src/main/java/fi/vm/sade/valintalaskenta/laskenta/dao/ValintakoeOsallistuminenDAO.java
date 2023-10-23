@@ -7,6 +7,6 @@ public interface ValintakoeOsallistuminenDAO {
 
   void createOrUpdate(ValintakoeOsallistuminen v);
 
-  public ValintakoeOsallistuminen haeEdeltavaValinnanvaihe(
+  boolean onkoEdeltavaValinnanvaiheOlemassa(
       String hakuOid, String hakukohdeOid, int jarjestysnumero);
 }

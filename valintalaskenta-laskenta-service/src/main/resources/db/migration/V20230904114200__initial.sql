@@ -16,7 +16,7 @@ CREATE TABLE valinnanvaihe (
     haku_oid varchar(127) NOT NULL,
     hakukohde_oid varchar(127) NOT NULL,
     valinnanvaihe_oid varchar(127) UNIQUE NOT NULL,
-    tarjoaja_oid varchar(127) NOT NULL,
+    tarjoaja_oid varchar(127),
     nimi varchar(255)
 );
 

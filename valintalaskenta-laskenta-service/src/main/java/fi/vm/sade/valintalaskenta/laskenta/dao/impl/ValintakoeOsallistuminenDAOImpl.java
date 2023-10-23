@@ -29,11 +29,11 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
   }
 
   @Override
-  public ValintakoeOsallistuminen haeEdeltavaValinnanvaihe(
+  public boolean onkoEdeltavaValinnanvaiheOlemassa(
       String hakuOid, String hakukohdeOid, int jarjestysnumero) {
-    if (jarjestysnumero == 0) return null;
+    if (jarjestysnumero == 0) return false;
     return repo.findByHakuHakukohdeAndValinnanvaiheJarjestysLuku(
             hakuOid, hakukohdeOid, jarjestysnumero - 1)
-        .orElse(null);
+        .isPresent();
   }
 }

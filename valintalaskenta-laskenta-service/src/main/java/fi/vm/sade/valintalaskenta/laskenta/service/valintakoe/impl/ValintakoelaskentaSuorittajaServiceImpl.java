@@ -385,11 +385,8 @@ public class ValintakoelaskentaSuorittajaServiceImpl
       ValintaperusteetValinnanVaiheDTO vaihe,
       Valinnanvaihe edellinenVaihe) {
     if (edellinenVaihe == null && vaihe.getValinnanVaiheJarjestysluku() > 0) {
-      // tarkistetaaan löytyykö edellistä valintakoevaihetta vai heitetäänö virhe
-      ValintakoeOsallistuminen edellinenOsallistuminen =
-          valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(
-              vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku());
-      if (edellinenOsallistuminen == null) {
+      if (!valintakoeOsallistuminenDAO.onkoEdeltavaValinnanvaiheOlemassa(
+          vp.getHakuOid(), vp.getHakukohdeOid(), vaihe.getValinnanVaiheJarjestysluku())) {
         LOG.warn(
             String.format(
                 "(Uuid=%s) Valinnanvaiheen %s järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt",

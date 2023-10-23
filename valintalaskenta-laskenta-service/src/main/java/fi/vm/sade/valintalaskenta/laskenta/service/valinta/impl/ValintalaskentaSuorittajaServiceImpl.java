@@ -21,7 +21,6 @@ import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.HakijaryhmaService;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
@@ -129,8 +128,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
       heitaPoikkeusJosValintatapajonoJaaIlmanTuloksia(uuid, vaihe, valinnanvaihe);
 
-      ValintakoeOsallistuminen edellinenOsallistuminen =
-          valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(
+      boolean edellinenValinnanvaiheOnOlemassa =
+          valintakoeOsallistuminenDAO.onkoEdeltavaValinnanvaiheOlemassa(
               hakuOid, hakukohdeOid, jarjestysnumero);
 
       searchForPassives("PRE", valinnanvaihe, hakemukset);
@@ -146,7 +145,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
           edellinenVaihe,
           viimeisinVaihe,
           valinnanvaihe,
-          edellinenOsallistuminen,
+          edellinenValinnanvaiheOnOlemassa,
           korkeakouluhaku);
 
       searchForPassives("POST ", valinnanvaihe, hakemukset);
@@ -284,10 +283,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
       String hakuOid,
       Valinnanvaihe edellinenVaihe) {
     if (edellinenVaihe == null && jarjestysnumero > 0) {
-      ValintakoeOsallistuminen edellinenOsallistuminen =
-          valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(
-              hakuOid, hakukohdeOid, jarjestysnumero);
-      if (edellinenOsallistuminen == null) {
+      if (!valintakoeOsallistuminenDAO.onkoEdeltavaValinnanvaiheOlemassa(
+          hakuOid, hakukohdeOid, jarjestysnumero)) {
         LOG.warn(
             "(Uuid={}) Valinnanvaiheen järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt",
             uuid);
@@ -447,7 +444,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
       Valinnanvaihe edellinenVaihe,
       Valinnanvaihe viimeisinVaihe,
       Valinnanvaihe valinnanvaihe,
-      ValintakoeOsallistuminen edellinenOsallistuminen,
+      boolean edellinenValinnanvaiheOnOlemassa,
       boolean korkeakouluhaku) {
     for (ValintatapajonoJarjestyskriteereillaDTO j : vaihe.getValintatapajono()) {
       if (j.getEiLasketaPaivamaaranJalkeen() != null
@@ -503,7 +500,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                   jonosijatHakemusOidinMukaan,
                   jk.getNimi(),
                   jarjestysnumero,
-                  edellinenOsallistuminen);
+                  edellinenValinnanvaiheOnOlemassa);
             } else {
               hakemuslaskinService.suoritaLaskentaHakemukselle(
                   new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet, korkeakouluhaku),
@@ -515,7 +512,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                   jonosijatHakemusOidinMukaan,
                   jk.getNimi(),
                   jarjestysnumero,
-                  edellinenOsallistuminen);
+                  edellinenValinnanvaiheOnOlemassa);
             }
             processed++;
             if (processed % 100 == 0 || processed == hakemukset.size()) {

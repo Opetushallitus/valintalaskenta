@@ -1,8 +1,8 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
@@ -111,9 +111,14 @@ public class ValintakoeOsallistuminenDAOTest extends AbstractIntegrationTest {
     ValintakoeOsallistuminen osallistuminen =
         luoTestiOsallistuminen("hakemusOid1", "hakijaOid1", "hakuOid");
     valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen);
-    assertNotNull(valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid", "hakutoive1", 2));
-    assertNull(valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid", "hakuKohdeOid2", 2));
-    assertNotNull(valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid", "hakutoive2", 4));
-    assertNotNull(valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid", "hakutoive3", 3));
+    assertTrue(
+        valintakoeOsallistuminenDAO.onkoEdeltavaValinnanvaiheOlemassa("hakuOid", "hakutoive1", 2));
+    assertFalse(
+        valintakoeOsallistuminenDAO.onkoEdeltavaValinnanvaiheOlemassa(
+            "hakuOid", "hakuKohdeOid2", 2));
+    assertTrue(
+        valintakoeOsallistuminenDAO.onkoEdeltavaValinnanvaiheOlemassa("hakuOid", "hakutoive2", 4));
+    assertTrue(
+        valintakoeOsallistuminenDAO.onkoEdeltavaValinnanvaiheOlemassa("hakuOid", "hakutoive3", 3));
   }
 }
