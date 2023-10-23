@@ -16,10 +16,10 @@ public interface ValintakoeOsallistuminenRepository
       @Param("hakemusOid") String hakemusOid, @Param("hakuOid") String hakuOid);
 
   @Query(
-      "SELECT * FROM valintakoe_osallistuminen vo "
+      "SELECT distinct vo.* FROM valintakoe_osallistuminen vo "
           + "JOIN hakutoive h on h.valintakoe_osallistuminen = vo.id "
           + "JOIN valintakoe_valinnanvaihe vvv on vvv.hakutoive = h.id "
-          + "WHERE vo.haku_oid = :hakuOid AND h.hakukohde_oid = :hakukohdeOid AND vvv.valinnan_vaihe_jarjestysluku = :jarjestysluku")
+          + "WHERE vo.haku_oid = :hakuOid AND h.hakukohde_oid = :hakukohdeOid AND vvv.valinnan_vaihe_jarjestysluku = :jarjestysluku limit 1")
   Optional<ValintakoeOsallistuminen> findByHakuHakukohdeAndValinnanvaiheJarjestysLuku(
       @Param("hakuOid") String hakuOid,
       @Param("hakukohdeOid") String hakukohdeOid,

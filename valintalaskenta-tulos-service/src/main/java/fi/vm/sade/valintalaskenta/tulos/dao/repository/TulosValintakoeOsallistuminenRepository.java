@@ -20,7 +20,7 @@ public interface TulosValintakoeOsallistuminenRepository
       @Param("hakutoive") String hakukohdeOid);
 
   @Query(
-      "select distinct  vo.* from valintakoe_osallistuminen vo join hakutoive h on h.valintakoe_osallistuminen = vo.id where h.hakukohde_oid in (:hakutoiveet)")
+      "select distinct vo.* from valintakoe_osallistuminen vo join hakutoive h on h.valintakoe_osallistuminen = vo.id where h.hakukohde_oid in (:hakutoiveet)")
   List<ValintakoeOsallistuminen> findDistinctValintakoeOsallistuminensByHakutoiveet(
       @Param("hakutoiveet") List<String> hakukohdeOid);
 

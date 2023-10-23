@@ -219,6 +219,9 @@ public abstract class TestDataUtil {
     tulos.setArvo(new BigDecimal(arvo));
     tulos.setPrioriteetti(prioriteetti);
     tulos.setTila(tila);
+    tulos.setKuvausFI("");
+    tulos.setKuvausEN("");
+    tulos.setKuvausSV("");
     return tulos;
   }
 

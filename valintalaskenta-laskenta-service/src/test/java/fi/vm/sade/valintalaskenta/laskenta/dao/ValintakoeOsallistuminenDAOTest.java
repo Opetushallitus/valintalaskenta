@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Streamable;
 
-public class TulosValintakoeOsallistuminenDAOTest extends AbstractIntegrationTest {
+public class ValintakoeOsallistuminenDAOTest extends AbstractIntegrationTest {
 
   @Autowired private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
 
