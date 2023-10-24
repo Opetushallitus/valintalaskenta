@@ -352,12 +352,10 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
   private Jonosija muodostaJonosija(
       HakemusDTO hakemus, int prioriteetti, boolean harkinnanvaraisuus) {
     Jonosija jonosija = new Jonosija();
-    jonosija.setEtunimi(hakemus.getEtunimi());
     jonosija.setHakemusOid(hakemus.getHakemusoid());
     jonosija.setHakijaOid(hakemus.getHakijaOid());
     jonosija.setHakutoiveprioriteetti(prioriteetti);
     jonosija.setHarkinnanvarainen(harkinnanvaraisuus);
-    jonosija.setSukunimi(hakemus.getSukunimi());
 
     return jonosija;
   }

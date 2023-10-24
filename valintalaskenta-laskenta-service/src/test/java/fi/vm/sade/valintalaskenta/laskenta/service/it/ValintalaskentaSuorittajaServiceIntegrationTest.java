@@ -26,7 +26,6 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.ValintalaskentaSuorittajaService;
@@ -34,7 +33,6 @@ import fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil;
 import fi.vm.sade.valintalaskenta.testing.AbstractMocklessIntegrationTest;
 import java.math.BigDecimal;
 import java.util.*;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -743,8 +741,6 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
     final String hakemusOid2 = "1.2.246.562.11.00001223556";
     final String hakijaOid = "1.2.246.562.24.43656814814",
         hakijaOid2 = "1.2.246.562.24.31678660760";
-    final String etunimi = "Jaakko Matias", sukunimi = "Rantamäki";
-    final String etunimi2 = "Saara Sofia", sukunimi2 = "Vetelöinen";
 
     valinnanvaiheRepository.save(
         TestDataUtil.luoValinnanvaiheEntity(
@@ -756,8 +752,8 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
                 TestDataUtil.luoValintatapaJonoEntity(
                     0,
                     Set.of(
-                        TestDataUtil.luoHylattyJonosija(hakemusOid, etunimi, sukunimi, hakijaOid),
-                      TestDataUtil.luoHylattyJonosija(hakemusOid2, etunimi2, sukunimi2, hakijaOid2)),
+                        TestDataUtil.luoHylattyJonosija(hakemusOid, hakijaOid),
+                        TestDataUtil.luoHylattyJonosija(hakemusOid2, hakijaOid2)),
                     "Ammattitutkinnolla ja ulkomaisella tutkinnolla hakevat",
                     0,
                     Tasasijasaanto.YLITAYTTO,
@@ -765,18 +761,19 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
                 TestDataUtil.luoValintatapaJonoEntity(
                     245,
                     Set.of(
-                      TestDataUtil.luoHylattyJonosijaValisijoittelussa(
-                            hakemusOid, etunimi, sukunimi, hakijaOid),
-                      TestDataUtil.luoHylattyJonosija(hakemusOid2, etunimi2, sukunimi2, hakijaOid2)),
+                        TestDataUtil.luoHylattyJonosijaValisijoittelussa(hakemusOid, hakijaOid),
+                        TestDataUtil.luoHylattyJonosija(hakemusOid2, hakijaOid2)),
                     "Ylioppilaat ja ammatillisella perustutkinnolla hakevat",
                     1,
                     Tasasijasaanto.YLITAYTTO,
                     "vtpj-2"))));
 
     valintakoeOsallistuminenRepository.save(
-      TestDataUtil.luoValintakoeOsallistuminen(hakemusOid, hakukohdeOid, hakuOid, hakijaOid, false));
+        TestDataUtil.luoValintakoeOsallistuminen(
+            hakemusOid, hakukohdeOid, hakuOid, hakijaOid, false));
     valintakoeOsallistuminenRepository.save(
-      TestDataUtil.luoValintakoeOsallistuminen(hakemusOid2, hakukohdeOid, hakuOid, hakijaOid2, true));
+        TestDataUtil.luoValintakoeOsallistuminen(
+            hakemusOid2, hakukohdeOid, hakuOid, hakijaOid2, true));
 
     ValintaperusteetDTO vv3 =
         luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 3);
@@ -846,23 +843,22 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
             Arrays.asList(
                 TestDataUtil.luoValintatapaJonoEntity(
                     0,
-                    Set.of(TestDataUtil.luoHylattyJonosija(hakemusOid, etunimi, sukunimi, hakijaOid)),
+                    Set.of(TestDataUtil.luoHylattyJonosija(hakemusOid, hakijaOid)),
                     "Ammattitutkinnolla ja ulkomaisella tutkinnolla hakevat",
                     0,
                     Tasasijasaanto.YLITAYTTO,
                     "vtpj-1"),
                 TestDataUtil.luoValintatapaJonoEntity(
                     245,
-                    Set.of(
-                        TestDataUtil.luoHylattyJonosijaValisijoittelussa(
-                            hakemusOid, etunimi, sukunimi, hakijaOid)),
+                    Set.of(TestDataUtil.luoHylattyJonosijaValisijoittelussa(hakemusOid, hakijaOid)),
                     "Ylioppilaat ja ammatillisella perustutkinnolla hakevat",
                     1,
                     Tasasijasaanto.YLITAYTTO,
                     "vtpj-2"))));
 
     valintakoeOsallistuminenRepository.save(
-      TestDataUtil.luoValintakoeOsallistuminen(hakemusOid, hakukohdeOid, hakuOid, hakijaOid, false));
+        TestDataUtil.luoValintakoeOsallistuminen(
+            hakemusOid, hakukohdeOid, hakuOid, hakijaOid, false));
 
     ValintaperusteetDTO vv3 =
         luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 3);
@@ -910,8 +906,6 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
                     10,
                     Set.of(
                         TestDataUtil.luoJonosijaEntity(
-                            "Valtteri",
-                            "Villi",
                             "1.2.246.562.11.00000072672",
                             5,
                             false,
@@ -919,15 +913,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
                                 TestDataUtil.luoJarjestyskriteeritulosEntity(
                                     0.0, 0, HYVAKSYTTAVISSA))),
                         TestDataUtil.luoJonosijaEntity(
-                            "Keijo",
-                            "Keskeyttänyt",
                             hakemusOid,
                             1,
                             false,
                             List.of(TestDataUtil.luoJarjestyskriteeritulosEntity(0.0, 0, HYLATTY))),
                         TestDataUtil.luoJonosijaEntity(
-                            "Ulla",
-                            "Unelias",
                             "1.2.246.562.11.00000072740",
                             3,
                             false,

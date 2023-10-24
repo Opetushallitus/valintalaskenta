@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.service;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.*;
@@ -191,8 +192,6 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
                     10,
                     Set.of(
                         TestDataUtil.luoJonosijaEntity(
-                            "Ruhtinas",
-                            "Nukettaja",
                             "hakemusOid1",
                             0,
                             false,
@@ -202,8 +201,6 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
                                 TestDataUtil.luoJarjestyskriteeritulosEntity(
                                     5.0, 1, JarjestyskriteerituloksenTila.HYLATTY))),
                         TestDataUtil.luoJonosijaEntity(
-                            "Dakula",
-                            "Herttua",
                             "hakemusOid2",
                             0,
                             false,
@@ -323,8 +320,6 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
             144,
             Set.of(
                 TestDataUtil.luoJonosijaEntity(
-                    "Marko Tapio",
-                    "Hirvonen",
                     "1.2.246.562.11.00001128774",
                     6,
                     false,
@@ -340,8 +335,6 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
                         TestDataUtil.luoJarjestyskriteeritulosEntity(
                             21.0, 4, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA))),
                 TestDataUtil.luoJonosijaEntity(
-                    "Tanja Maarit Hannele",
-                    "Toivio",
                     "1.2.246.562.11.00001146141",
                     1,
                     false,
@@ -357,8 +350,6 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
                         TestDataUtil.luoJarjestyskriteeritulosEntity(
                             22, 4, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA))),
                 TestDataUtil.luoJonosijaEntity(
-                    "Jani Aulis",
-                    "Linna",
                     "1.2.246.562.11.00001046636",
                     2,
                     false,
@@ -374,8 +365,6 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
                         TestDataUtil.luoJarjestyskriteeritulosEntity(
                             25, 4, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA))),
                 TestDataUtil.luoJonosijaEntity(
-                    "Eero Johannes",
-                    "Lahtinen",
                     "1.2.246.562.11.00001012039",
                     1,
                     false,
@@ -392,8 +381,6 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
                             17, 4, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA))),
                 TestDataUtil.luoJonosijaEntity(
                     "Pitäis olla tasasijalla",
-                    "Lahtinen",
-                    "oid6",
                     1,
                     false,
                     Arrays.asList(

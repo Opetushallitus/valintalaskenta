@@ -2,7 +2,7 @@ package fi.vm.sade.valintalaskenta.laskenta.dao;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
@@ -32,9 +32,7 @@ public class HakijaryhmaServiceTest extends AbstractIntegrationTest {
   @Test
   public void testSavingAndLoadingNewHakijaryhma() {
     Hakijaryhma hakijaryhma =
-        new Hakijaryhma(
-            Arrays.asList(
-                createJonosija("Ruhtinas", "Nukettaja"), createJonosija("Silakka", "Markkinat")));
+        new Hakijaryhma(Arrays.asList(createJonosija("ruh-nuk"), createJonosija("sil-mak")));
     hakijaryhma.hakijaryhmaOid = "uusiHakijaryhmaOid";
     hakijaryhmaDAO.create(hakijaryhma, auditUser);
     Hakijaryhma savedHakijaryhma = hakijaryhmaDAO.haeHakijaryhma("uusiHakijaryhmaOid").get();
@@ -53,12 +51,12 @@ public class HakijaryhmaServiceTest extends AbstractIntegrationTest {
     List<Hakijaryhma> sorted = new ArrayList<>(fetched);
     sorted.sort(Comparator.comparing(h -> h.prioriteetti));
 
-    assertEquals("Hakijaryhma entries are not sorted based on priority!", sorted, fetched);
+    assertEquals(sorted, fetched, "Hakijaryhma entries are not sorted based on priority!");
 
     assertEquals(
-        "lowest numeric priority should come first meaning it is the most important",
         asList("highestPriorityOid", "middlePriorityOid", "lowestPriorityOid"),
-        sorted.stream().map(h -> h.hakijaryhmaOid).collect(toList()));
+        sorted.stream().map(h -> h.hakijaryhmaOid).collect(toList()),
+        "lowest numeric priority should come first meaning it is the most important");
   }
 
   private Hakijaryhma createHakijaryhma(String oid, int prioriteetti) {
@@ -69,10 +67,9 @@ public class HakijaryhmaServiceTest extends AbstractIntegrationTest {
     return hakijaryhma;
   }
 
-  private Jonosija createJonosija(String etunimi, String sukunimi) {
+  private Jonosija createJonosija(String hakijaOid) {
     Jonosija jonosija = new Jonosija();
-    jonosija.setEtunimi(etunimi);
-    jonosija.setSukunimi(sukunimi);
+    jonosija.setHakijaOid(hakijaOid);
     return jonosija;
   }
 }

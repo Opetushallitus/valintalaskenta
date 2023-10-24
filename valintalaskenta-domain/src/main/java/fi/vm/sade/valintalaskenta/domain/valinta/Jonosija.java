@@ -14,10 +14,6 @@ public class Jonosija {
 
   private String hakijaOid;
 
-  private String etunimi;
-
-  private String sukunimi;
-
   private int hakutoiveprioriteetti; // hakutoive
 
   private boolean harkinnanvarainen = false;
@@ -66,22 +62,6 @@ public class Jonosija {
 
   public void setHakijaOid(String hakijaOid) {
     this.hakijaOid = hakijaOid;
-  }
-
-  public String getEtunimi() {
-    return etunimi;
-  }
-
-  public void setEtunimi(String etunimi) {
-    this.etunimi = etunimi;
-  }
-
-  public String getSukunimi() {
-    return sukunimi;
-  }
-
-  public void setSukunimi(String sukunimi) {
-    this.sukunimi = sukunimi;
   }
 
   public int getHakutoiveprioriteetti() {

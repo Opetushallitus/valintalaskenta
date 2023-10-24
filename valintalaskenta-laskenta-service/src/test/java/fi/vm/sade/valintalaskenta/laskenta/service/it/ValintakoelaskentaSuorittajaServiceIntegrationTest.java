@@ -1066,15 +1066,11 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
             10,
             Sets.newHashSet(
                 luoJonosijaEntity(
-                    "Valtteri",
-                    "Villi",
                     "1.2.246.562.11.00000072672",
                     5,
                     false,
                     List.of(luoJarjestyskriteeritulosEntity(0.0, 0, HYVAKSYTTAVISSA))),
                 luoJonosijaEntity(
-                    "Keijo",
-                    "Keskeyttänyt",
                     hakemusOid,
                     1,
                     false,
@@ -1176,8 +1172,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
             10,
             Sets.newHashSet(
                 luoJonosijaEntity(
-                    "Valtteri",
-                    "Villi",
                     hakemusOid,
                     1,
                     false,
@@ -1198,8 +1192,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
             10,
             Sets.newHashSet(
                 luoJonosijaEntity(
-                    "Valtteri",
-                    "Villi",
                     hakemusOid,
                     2,
                     false,
@@ -1361,36 +1353,30 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
                 .size()
             == 3);
 
-    List<Valintakoe> hakutoive1Valintakokeet = osallistuminen.getHakutoiveetAsList().stream()
-      .filter(h -> h.getHakukohdeOid().equals(hakukohde1))
-      .toList()
-      .get(0)
-      .getValintakoeValinnanvaiheetAsList()
-      .get(0)
-      .getValintakokeetAsList();
+    List<Valintakoe> hakutoive1Valintakokeet =
+        osallistuminen.getHakutoiveetAsList().stream()
+            .filter(h -> h.getHakukohdeOid().equals(hakukohde1))
+            .toList()
+            .get(0)
+            .getValintakoeValinnanvaiheetAsList()
+            .get(0)
+            .getValintakokeetAsList();
     hakutoive1Valintakokeet.sort(Comparator.comparing(Valintakoe::getValintakoeTunniste));
 
-    List<Valintakoe> hakutoive2Valintakokeet = osallistuminen.getHakutoiveetAsList().stream()
-      .filter(h -> h.getHakukohdeOid().equals(hakukohde2))
-      .toList()
-      .get(0)
-      .getValintakoeValinnanvaiheetAsList()
-      .get(0)
-      .getValintakokeetAsList();
+    List<Valintakoe> hakutoive2Valintakokeet =
+        osallistuminen.getHakutoiveetAsList().stream()
+            .filter(h -> h.getHakukohdeOid().equals(hakukohde2))
+            .toList()
+            .get(0)
+            .getValintakoeValinnanvaiheetAsList()
+            .get(0)
+            .getValintakokeetAsList();
     hakutoive2Valintakokeet.sort(Comparator.comparing(Valintakoe::getValintakoeTunniste));
 
     assertEquals(
-        OSALLISTUU,
-        hakutoive1Valintakokeet
-            .get(1)
-            .getOsallistuminenTulos()
-            .getOsallistuminen());
+        OSALLISTUU, hakutoive1Valintakokeet.get(1).getOsallistuminenTulos().getOsallistuminen());
     assertEquals(
-        EI_OSALLISTU,
-        hakutoive2Valintakokeet
-            .get(1)
-            .getOsallistuminenTulos()
-            .getOsallistuminen());
+        EI_OSALLISTU, hakutoive2Valintakokeet.get(1).getOsallistuminenTulos().getOsallistuminen());
   }
 
   @Test
@@ -1616,31 +1602,29 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
     final String hakijaOid = "1.2.246.562.24.43656814814";
 
     valinnanvaiheRepository.save(
-      TestDataUtil.luoValinnanvaiheEntity(
-        hakuOid,
-        hakukohdeOid,
-        1,
-        "vv1",
-        Arrays.asList(
-          TestDataUtil.luoValintatapaJonoEntity(
-            0,
-            Set.of(luoHylattyJonosija(hakemusOid, "Ruhtinas", "Nukettaja", hakijaOid)),
-            "Ammattitutkinnolla ja ulkomaisella tutkinnolla hakevat",
-            0,
-            Tasasijasaanto.YLITAYTTO,
-            "vtpj-1"),
-          TestDataUtil.luoValintatapaJonoEntity(
-            245,
-            Set.of(
-              luoHylattyJonosijaValisijoittelussa(
-                hakemusOid, "Herttua", "Harras", hakijaOid)),
-            "Ylioppilaat ja ammatillisella perustutkinnolla hakevat",
+        TestDataUtil.luoValinnanvaiheEntity(
+            hakuOid,
+            hakukohdeOid,
             1,
-            Tasasijasaanto.YLITAYTTO,
-            "vtpj-2"))));
+            "vv1",
+            Arrays.asList(
+                TestDataUtil.luoValintatapaJonoEntity(
+                    0,
+                    Set.of(luoHylattyJonosija(hakemusOid, hakijaOid)),
+                    "Ammattitutkinnolla ja ulkomaisella tutkinnolla hakevat",
+                    0,
+                    Tasasijasaanto.YLITAYTTO,
+                    "vtpj-1"),
+                TestDataUtil.luoValintatapaJonoEntity(
+                    245,
+                    Set.of(luoHylattyJonosijaValisijoittelussa(hakemusOid, hakijaOid)),
+                    "Ylioppilaat ja ammatillisella perustutkinnolla hakevat",
+                    1,
+                    Tasasijasaanto.YLITAYTTO,
+                    "vtpj-2"))));
 
     valintakoeOsallistuminenRepository.save(
-      luoValintakoeOsallistuminen(hakemusOid, hakukohdeOid, hakuOid, hakijaOid, false));
+        luoValintakoeOsallistuminen(hakemusOid, hakukohdeOid, hakuOid, hakijaOid, false));
 
     ValintakoeOsallistuminen osallistuminen =
         valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
@@ -1652,7 +1636,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
             .flatMap(h -> h.getValintakoeValinnanvaiheet().stream())
             .flatMap(v -> v.getValintakokeet().stream())
             .sorted(Comparator.comparing(Valintakoe::getValintakoeTunniste))
-            .collect(Collectors.toList());
+            .toList();
 
     assertEquals(3, kohteenValintakokeet.size());
     assertThat(

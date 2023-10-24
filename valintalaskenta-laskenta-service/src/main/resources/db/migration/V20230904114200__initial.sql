@@ -124,8 +124,6 @@ CREATE INDEX hakijaryhma_hakukohde ON hakijaryhma(hakukohde_oid);
 CREATE TABLE jonosija (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     created_at timestamp with time zone default now(),
-    etunimi varchar(255),
-    sukunimi varchar(255),
     hakemus_oid varchar(127),
     hakija_oid varchar(127),
     hakutoiveprioriteetti int,
