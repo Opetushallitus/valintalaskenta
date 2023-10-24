@@ -1,21 +1,12 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.it;
 
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
 import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA;
 import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.EI_OSALLISTU;
 import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.OSALLISTUU;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakemus;
 import static java.util.stream.Collectors.groupingBy;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.hasValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
-import co.unruly.matchers.StreamMatchers;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -45,18 +36,10 @@ import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
 import fi.vm.sade.valintalaskenta.testing.AbstractMocklessIntegrationTest;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 import org.apache.commons.io.IOUtils;
-import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,8 +47,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
 public class ValintalaskentaResourceIntegrationTest extends AbstractMocklessIntegrationTest {
-
-  @Autowired private ApplicationContext applicationContextThatNeedsToBeAutowiredToBeIntialised;
 
   private ValintalaskentaResourceImpl valintalaskentaResource;
 
@@ -140,15 +121,9 @@ public class ValintalaskentaResourceIntegrationTest extends AbstractMocklessInte
     Valintakoe kielikoetulos = kielikokeenPakollisuusVaihe.getValintakokeetAsList().get(0);
     OsallistuminenTulos kielikoetulosOsallistuminenTulos = kielikoetulos.getOsallistuminenTulos();
 
-    assertThat(
-        kielikoetulosOsallistuminenTulos,
-        having(on(OsallistuminenTulos.class).getOsallistuminen(), equalTo(OSALLISTUU)));
-    assertThat(
-        kielikoetulosOsallistuminenTulos,
-        having(on(OsallistuminenTulos.class).getLaskentaTulos(), equalTo(true)));
-    assertThat(
-        kielikoetulosOsallistuminenTulos,
-        having(on(OsallistuminenTulos.class).getLaskentaTila(), equalTo(HYVAKSYTTAVISSA.name())));
+    assertEquals(kielikoetulosOsallistuminenTulos.getOsallistuminen(), OSALLISTUU);
+    assertTrue(kielikoetulosOsallistuminenTulos.getLaskentaTulos());
+    assertEquals(kielikoetulosOsallistuminenTulos.getLaskentaTila(), HYVAKSYTTAVISSA.name());
   }
 
   @Test
@@ -170,58 +145,61 @@ public class ValintalaskentaResourceIntegrationTest extends AbstractMocklessInte
 
     Hakutoive osallistumisenHakutoiveJohonOnKielikoe = osallistuminen.getHakutoiveetAsList().get(0);
     ValintakoeValinnanvaihe kielikokeenPakollisuusVaihe =
-        osallistumisenHakutoiveJohonOnKielikoe.getValintakoeValinnanvaiheetAsList().get(0);
-    assertThat(kielikokeenPakollisuusVaihe.getValintakokeet(), Matchers.hasSize(2));
+        osallistumisenHakutoiveJohonOnKielikoe.getValintakoeValinnanvaiheetAsList().stream()
+            .filter(
+                vkvv ->
+                    vkvv.getValintakokeet().stream()
+                        .map(Valintakoe::getValintakoeTunniste)
+                        .toList()
+                        .contains("kielikoe_fi"))
+            .findFirst()
+            .orElseThrow();
+    assertEquals(2, kielikokeenPakollisuusVaihe.getValintakokeet().size());
 
-    Valintakoe kielikoetulos = kielikokeenPakollisuusVaihe.getValintakokeetAsList().get(0);
-    assertThat(
-        kielikoetulos,
-        having(on(Valintakoe.class).getValintakoeTunniste(), equalTo("kielikoe_fi")));
+    Valintakoe kielikoetulos =
+        kielikokeenPakollisuusVaihe.getValintakokeetAsList().stream()
+            .filter(vk -> vk.getValintakoeTunniste().equals("kielikoe_fi"))
+            .findFirst()
+            .orElseThrow();
+    assertEquals("kielikoe_fi", kielikoetulos.getValintakoeTunniste());
     OsallistuminenTulos kielikoetulosOsallistuminenTulos = kielikoetulos.getOsallistuminenTulos();
-    assertThat(
-        kielikoetulosOsallistuminenTulos,
-        having(on(OsallistuminenTulos.class).getOsallistuminen(), equalTo(OSALLISTUU)));
-    assertThat(
-        kielikoetulosOsallistuminenTulos,
-        having(on(OsallistuminenTulos.class).getLaskentaTulos(), equalTo(true)));
-    assertThat(
-        kielikoetulosOsallistuminenTulos,
-        having(on(OsallistuminenTulos.class).getLaskentaTila(), equalTo(HYVAKSYTTAVISSA.name())));
+    assertEquals(OSALLISTUU, kielikoetulosOsallistuminenTulos.getOsallistuminen());
+    assertTrue(kielikoetulosOsallistuminenTulos.getLaskentaTulos());
+    assertEquals(HYVAKSYTTAVISSA.name(), kielikoetulosOsallistuminenTulos.getLaskentaTila());
 
     OsallistuminenTulos toisenKokeenOsallistuminenTulos =
-        kielikokeenPakollisuusVaihe.getValintakokeetAsList().get(1).getOsallistuminenTulos();
-    assertThat(
-        toisenKokeenOsallistuminenTulos,
-        having(on(OsallistuminenTulos.class).getOsallistuminen(), equalTo(EI_OSALLISTU)));
-    assertThat(
-        toisenKokeenOsallistuminenTulos,
-        having(on(OsallistuminenTulos.class).getLaskentaTulos(), equalTo(false)));
-    assertThat(
-        toisenKokeenOsallistuminenTulos,
-        having(on(OsallistuminenTulos.class).getLaskentaTila(), equalTo(HYVAKSYTTAVISSA.name())));
+        kielikokeenPakollisuusVaihe.getValintakokeetAsList().stream()
+            .filter(vk -> !vk.getValintakoeTunniste().equals("kielikoe_fi"))
+            .findFirst()
+            .map(Valintakoe::getOsallistuminenTulos)
+            .orElseThrow();
+    assertEquals(EI_OSALLISTU, toisenKokeenOsallistuminenTulos.getOsallistuminen());
+    assertFalse(toisenKokeenOsallistuminenTulos.getLaskentaTulos());
+    assertEquals(HYVAKSYTTAVISSA.name(), toisenKokeenOsallistuminenTulos.getLaskentaTila());
 
     ValintakoeValinnanvaihe paasykoeVaihe =
-        osallistumisenHakutoiveJohonOnKielikoe.getValintakoeValinnanvaiheetAsList().get(1);
-    assertThat(paasykoeVaihe.getValintakokeet(), Matchers.hasSize(1));
+        osallistumisenHakutoiveJohonOnKielikoe.getValintakoeValinnanvaiheetAsList().stream()
+            .filter(
+                vkvv ->
+                    vkvv.getValintakokeet().stream()
+                        .map(Valintakoe::getValintakoeTunniste)
+                        .toList()
+                        .contains("1_2_246_562_20_83855523359_paasykoe"))
+            .findFirst()
+            .orElse(null);
+    assertEquals(1, paasykoeVaihe.getValintakokeet().size());
     Valintakoe paasykoeTulos = paasykoeVaihe.getValintakokeetAsList().get(0);
-    assertThat(
-        paasykoeTulos,
-        having(
-            on(Valintakoe.class).getValintakoeTunniste(),
-            equalTo("1_2_246_562_20_83855523359_paasykoe")));
+    assertEquals("1_2_246_562_20_83855523359_paasykoe", paasykoeTulos.getValintakoeTunniste());
     OsallistuminenTulos paasykoeOsallistuminenTulos = paasykoeTulos.getOsallistuminenTulos();
-    assertThat(
-        paasykoeOsallistuminenTulos,
-        having(on(OsallistuminenTulos.class).getOsallistuminen(), equalTo(EI_OSALLISTU)));
-    assertThat(
-        paasykoeOsallistuminenTulos,
-        having(
-            on(OsallistuminenTulos.class).getKuvaus(),
-            hasValue("Hylätty kielikoetulos tai ei osallistunut")));
+    assertEquals(EI_OSALLISTU, paasykoeOsallistuminenTulos.getOsallistuminen());
+    assertTrue(
+        paasykoeOsallistuminenTulos
+            .getKuvaus()
+            .containsValue("Hylätty kielikoetulos tai ei osallistunut"));
   }
 
   @Test
-  @Ignore(
+  @Disabled(
       "Valitettavasti tämä testi ei suostu menemään läpi. "
           + "Hakukohteen 1.2.246.562.20.80972757381 edellisen vaiheen jonoista ei löydy tuloksia EdellinenValinnanVaiheKasittelija :ssa.")
   public void
@@ -304,23 +282,26 @@ public class ValintalaskentaResourceIntegrationTest extends AbstractMocklessInte
             .flatMap(h -> h.getValintakoeValinnanvaiheet().stream())
             .flatMap(v -> v.getValintakokeet().stream())
             .sorted(Comparator.comparing(Valintakoe::getValintakoeTunniste))
-            .collect(Collectors.toList());
+            .toList();
 
-    assertThat(ylemmankohteenValintakokeet, hasSize(2));
-    assertThat(
-        ylemmankohteenValintakokeet.stream().map(Valintakoe::getValintakoeTunniste),
-        StreamMatchers.contains("Sote3_pakollinen_osio", "Sote3_valintakoe"));
+    assertEquals(2, ylemmankohteenValintakokeet.size());
+    assertTrue(
+        ylemmankohteenValintakokeet.stream()
+            .map(Valintakoe::getValintakoeTunniste)
+            .toList()
+            .containsAll(Set.of("Sote3_pakollinen_osio", "Sote3_valintakoe")));
 
     Map<Osallistuminen, List<Valintakoe>> ylemmanKohteenKokeetOsallistumisenMukaan =
         ylemmankohteenValintakokeet.stream()
             .collect(groupingBy(k -> k.getOsallistuminenTulos().getOsallistuminen()));
-    assertThat(ylemmanKohteenKokeetOsallistumisenMukaan.get(OSALLISTUU), hasSize(2));
-    assertThat(ylemmanKohteenKokeetOsallistumisenMukaan.keySet(), hasSize(1));
-    assertThat(ylemmanKohteenKokeetOsallistumisenMukaan.keySet(), hasItem(OSALLISTUU));
-    assertThat(
+    assertEquals(2, ylemmanKohteenKokeetOsallistumisenMukaan.get(OSALLISTUU).size());
+    assertEquals(1, ylemmanKohteenKokeetOsallistumisenMukaan.keySet().size());
+    assertTrue(ylemmanKohteenKokeetOsallistumisenMukaan.containsKey(OSALLISTUU));
+    assertTrue(
         ylemmanKohteenKokeetOsallistumisenMukaan.get(OSALLISTUU).stream()
-            .map(Valintakoe::getValintakoeTunniste),
-        StreamMatchers.contains("Sote3_pakollinen_osio", "Sote3_valintakoe"));
+            .map(Valintakoe::getValintakoeTunniste)
+            .toList()
+            .containsAll(Set.of("Sote3_pakollinen_osio", "Sote3_valintakoe")));
 
     List<Valintakoe> kohteenJossaOmaKoeValintakokeet =
         osallistuminen.getHakutoiveet().stream()
@@ -328,30 +309,35 @@ public class ValintalaskentaResourceIntegrationTest extends AbstractMocklessInte
             .flatMap(h -> h.getValintakoeValinnanvaiheet().stream())
             .flatMap(v -> v.getValintakokeet().stream())
             .sorted(Comparator.comparing(Valintakoe::getValintakoeTunniste))
-            .collect(Collectors.toList());
+            .toList();
 
-    assertThat(kohteenJossaOmaKoeValintakokeet, hasSize(4));
-    assertThat(
-        kohteenJossaOmaKoeValintakokeet.stream().map(Valintakoe::getValintakoeTunniste),
-        StreamMatchers.contains(
-            "Sote3_pakollinen_osio",
-            "Sote3_valintakoe",
-            "amk_kielikoe_2017_suomi",
-            "mikon-testikoe-BUG-1564"));
+    assertEquals(4, kohteenJossaOmaKoeValintakokeet.size());
+    assertTrue(
+        kohteenJossaOmaKoeValintakokeet.stream()
+            .map(Valintakoe::getValintakoeTunniste)
+            .toList()
+            .containsAll(
+                Set.of(
+                    "Sote3_pakollinen_osio",
+                    "Sote3_valintakoe",
+                    "amk_kielikoe_2017_suomi",
+                    "mikon-testikoe-BUG-1564")));
 
     Map<Osallistuminen, List<Valintakoe>> kohteenJossaOmaKoeKokeetOsallistumisenMukaan =
         kohteenJossaOmaKoeValintakokeet.stream()
             .collect(groupingBy(k -> k.getOsallistuminenTulos().getOsallistuminen()));
-    assertThat(kohteenJossaOmaKoeKokeetOsallistumisenMukaan.get(OSALLISTUU), hasSize(2));
-    assertThat(
+    assertEquals(2, kohteenJossaOmaKoeKokeetOsallistumisenMukaan.get(OSALLISTUU).size());
+    assertTrue(
         kohteenJossaOmaKoeKokeetOsallistumisenMukaan.get(OSALLISTUU).stream()
-            .map(Valintakoe::getValintakoeTunniste),
-        StreamMatchers.contains("amk_kielikoe_2017_suomi", "mikon-testikoe-BUG-1564"));
-    assertThat(kohteenJossaOmaKoeKokeetOsallistumisenMukaan.get(EI_OSALLISTU), hasSize(2));
-    assertThat(
+            .map(Valintakoe::getValintakoeTunniste)
+            .toList()
+            .containsAll(Set.of("amk_kielikoe_2017_suomi", "mikon-testikoe-BUG-1564")));
+    assertEquals(2, kohteenJossaOmaKoeKokeetOsallistumisenMukaan.get(EI_OSALLISTU).size());
+    assertTrue(
         kohteenJossaOmaKoeKokeetOsallistumisenMukaan.get(EI_OSALLISTU).stream()
-            .map(Valintakoe::getValintakoeTunniste),
-        StreamMatchers.contains("Sote3_pakollinen_osio", "Sote3_valintakoe"));
+            .map(Valintakoe::getValintakoeTunniste)
+            .toList()
+            .containsAll(Set.of("Sote3_pakollinen_osio", "Sote3_valintakoe")));
   }
 
   private <T> T readJson(String pathInClasspath, TypeToken<T> typeToken) throws IOException {

@@ -1018,6 +1018,28 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
     final String valinnanVaiheOid = "valinnanVaiheHakijanValinta";
     final String valintakoetunniste = "kielikoe_tunniste";
 
+    valinnanvaiheRepository.save(
+        TestDataUtil.luoValinnanvaiheEntity(
+            hakuOid,
+            hakukohdeOid,
+            0,
+            "vv2",
+            List.of(
+                TestDataUtil.luoValintatapaJonoEntity(
+                    10,
+                    Set.of(
+                        TestDataUtil.luoJonosijaEntity(
+                            hakemusOid,
+                            1,
+                            false,
+                            List.of(
+                                TestDataUtil.luoJarjestyskriteeritulosEntity(
+                                    0.0, 0, JarjestyskriteerituloksenTila.HYLATTY)))),
+                    "Ei hakukelpoiset",
+                    0,
+                    Tasasijasaanto.YLITAYTTO,
+                    "1388739480159-1173947553521563587"))));
+
     ValintaperusteetDTO vv2 =
         luoValintaperusteetJaValintakoeValinnanvaihe(
             hakuOid, hakukohdeOid, valinnanVaiheOid, 1, valintakoetunniste);
@@ -1050,7 +1072,11 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
         valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);
     assertNotNull(osallistuminen);
 
-    // todo: add asserts (work in progress)
+    assertTrue(
+        osallistuminen.getHakutoiveetAsList().stream()
+            .flatMap(h -> h.getValintakoeValinnanvaiheetAsList().stream())
+            .flatMap(vkvv -> vkvv.getValintakokeet().stream())
+            .allMatch(vk -> vk.getOsallistuminen().equals(EI_OSALLISTU)));
   }
 
   @Test
