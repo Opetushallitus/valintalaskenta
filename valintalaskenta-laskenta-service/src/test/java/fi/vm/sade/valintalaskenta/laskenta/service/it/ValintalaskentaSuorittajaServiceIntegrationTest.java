@@ -756,8 +756,8 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
                 TestDataUtil.luoValintatapaJonoEntity(
                     0,
                     Set.of(
-                        luoHylattyJonosija(hakemusOid, etunimi, sukunimi, hakijaOid),
-                        luoHylattyJonosija(hakemusOid2, etunimi2, sukunimi2, hakijaOid2)),
+                        TestDataUtil.luoHylattyJonosija(hakemusOid, etunimi, sukunimi, hakijaOid),
+                      TestDataUtil.luoHylattyJonosija(hakemusOid2, etunimi2, sukunimi2, hakijaOid2)),
                     "Ammattitutkinnolla ja ulkomaisella tutkinnolla hakevat",
                     0,
                     Tasasijasaanto.YLITAYTTO,
@@ -765,16 +765,18 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
                 TestDataUtil.luoValintatapaJonoEntity(
                     245,
                     Set.of(
-                        luoHylattyJonosijaValisijoittelussa(
+                      TestDataUtil.luoHylattyJonosijaValisijoittelussa(
                             hakemusOid, etunimi, sukunimi, hakijaOid),
-                        luoHylattyJonosija(hakemusOid2, etunimi2, sukunimi2, hakijaOid2)),
+                      TestDataUtil.luoHylattyJonosija(hakemusOid2, etunimi2, sukunimi2, hakijaOid2)),
                     "Ylioppilaat ja ammatillisella perustutkinnolla hakevat",
                     1,
                     Tasasijasaanto.YLITAYTTO,
                     "vtpj-2"))));
 
-    luoValintakoeOsallistuminen(hakemusOid, hakukohdeOid, hakuOid, hakijaOid, false);
-    luoValintakoeOsallistuminen(hakemusOid2, hakukohdeOid, hakuOid, hakijaOid2, true);
+    valintakoeOsallistuminenRepository.save(
+      TestDataUtil.luoValintakoeOsallistuminen(hakemusOid, hakukohdeOid, hakuOid, hakijaOid, false));
+    valintakoeOsallistuminenRepository.save(
+      TestDataUtil.luoValintakoeOsallistuminen(hakemusOid2, hakukohdeOid, hakuOid, hakijaOid2, true));
 
     ValintaperusteetDTO vv3 =
         luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 3);
@@ -844,7 +846,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
             Arrays.asList(
                 TestDataUtil.luoValintatapaJonoEntity(
                     0,
-                    Set.of(luoHylattyJonosija(hakemusOid, etunimi, sukunimi, hakijaOid)),
+                    Set.of(TestDataUtil.luoHylattyJonosija(hakemusOid, etunimi, sukunimi, hakijaOid)),
                     "Ammattitutkinnolla ja ulkomaisella tutkinnolla hakevat",
                     0,
                     Tasasijasaanto.YLITAYTTO,
@@ -852,14 +854,15 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
                 TestDataUtil.luoValintatapaJonoEntity(
                     245,
                     Set.of(
-                        luoHylattyJonosijaValisijoittelussa(
+                        TestDataUtil.luoHylattyJonosijaValisijoittelussa(
                             hakemusOid, etunimi, sukunimi, hakijaOid)),
                     "Ylioppilaat ja ammatillisella perustutkinnolla hakevat",
                     1,
                     Tasasijasaanto.YLITAYTTO,
                     "vtpj-2"))));
 
-    luoValintakoeOsallistuminen(hakemusOid, hakukohdeOid, hakuOid, hakijaOid, false);
+    valintakoeOsallistuminenRepository.save(
+      TestDataUtil.luoValintakoeOsallistuminen(hakemusOid, hakukohdeOid, hakuOid, hakijaOid, false));
 
     ValintaperusteetDTO vv3 =
         luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 3);
@@ -893,190 +896,6 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
         hakemuksenTulos.get().getJarjestyskriteeritulokset();
     assertThat(jarjestyskriteeritulokset, hasSize(1));
     assertEquals(HYVAKSYTTAVISSA, jarjestyskriteeritulokset.get(0).getTila());
-  }
-
-  @NotNull
-  private static Jonosija luoHylattyJonosijaValisijoittelussa(
-      String hakemusOid, String etunimi, String sukunimi, String hakijaOid) {
-    Jonosija sija =
-        TestDataUtil.luoJonosijaEntity(
-            etunimi,
-            sukunimi,
-            hakemusOid,
-            2,
-            false,
-            Arrays.asList(
-                TestDataUtil.luoJarjestyskriteeritulosEntity(12.0, 0, HYLATTY),
-                TestDataUtil.luoJarjestyskriteeritulosEntity(2.0, 1, HYVAKSYTTAVISSA),
-                TestDataUtil.luoJarjestyskriteeritulosEntity(6.82, 2, HYVAKSYTTAVISSA)));
-
-    sija.setHylattyValisijoittelussa(true);
-    sija.setHakijaOid(hakijaOid);
-    return sija;
-  }
-
-  @NotNull
-  private static Jonosija luoHylattyJonosija(
-      String hakemusOid, String etunimi, String sukunimi, String hakijaOid) {
-    Jonosija sija =
-        TestDataUtil.luoJonosijaEntity(
-            etunimi,
-            sukunimi,
-            hakemusOid,
-            1,
-            false,
-            List.of(TestDataUtil.luoJarjestyskriteeritulosEntity(0, 0, HYLATTY)));
-    sija.getJarjestyskriteeritulokset()
-        .get(0)
-        .setKuvausFI("Hakemus hyväksyttiin korkeammalle hakutoiveelle");
-    sija.setHakijaOid(hakijaOid);
-    return sija;
-  }
-
-  private void luoValintakoeOsallistuminen(
-      String hakemusOid,
-      String hakukohdeOid,
-      String hakuOid,
-      String hakijaOid,
-      boolean osallistumisetHylatty) {
-    valintakoeOsallistuminenRepository.save(
-        TestDataUtil.luoValintakoeOsallistuminen(
-            hakuOid,
-            hakijaOid,
-            hakemusOid,
-            Set.of(
-                TestDataUtil.luoHakutoiveEntity(
-                    "1.2.246.562.20.75182408387",
-                    Set.of(
-                        TestDataUtil.luoValintakoeValinnanvaiheEntity(
-                            2,
-                            "vv2" + hakijaOid,
-                            Arrays.asList(
-                                TestDataUtil.luoValintakoeEntity(
-                                    "1413283036386-2122258152875806456",
-                                    "SOTE1_kaikkiosiot",
-                                    Osallistuminen.EI_OSALLISTU,
-                                    null,
-                                    "HYLATTY"),
-                                TestDataUtil.luoValintakoeEntity(
-                                    "14132830363881382138007672413981",
-                                    "SOTEKOE_VK_RYHMA1",
-                                    Osallistuminen.EI_OSALLISTU,
-                                    null,
-                                    "HYLATTY"),
-                                TestDataUtil.luoValintakoeEntity(
-                                    "1413373250365-957582059449313229",
-                                    "kielikoe_amk_fi",
-                                    Osallistuminen.EI_OSALLISTU,
-                                    null,
-                                    "HYLATTY"))))),
-                TestDataUtil.luoHakutoiveEntity(
-                    "1.2.246.562.20.68508673735",
-                    Set.of(
-                        TestDataUtil.luoValintakoeValinnanvaiheEntity(
-                            2,
-                            "vv3" + hakijaOid,
-                            Arrays.asList(
-                                TestDataUtil.luoValintakoeEntity(
-                                    "1413283096804-4591090746315355326",
-                                    "SOTE1_kaikkiosiot",
-                                    Osallistuminen.EI_OSALLISTU,
-                                    null,
-                                    "HYLATTY"),
-                                TestDataUtil.luoValintakoeEntity(
-                                    "1413283096806-1884654158026567207",
-                                    "SOTEKOE_VK_RYHMA1",
-                                    Osallistuminen.EI_OSALLISTU,
-                                    null,
-                                    "HYLATTY"),
-                                TestDataUtil.luoValintakoeEntity(
-                                    "1413373326095-2455808773394676892",
-                                    "kielikoe_amk_fi",
-                                    Osallistuminen.EI_OSALLISTU,
-                                    null,
-                                    "HYLATTY"))))),
-                TestDataUtil.luoHakutoiveEntity(
-                    hakukohdeOid,
-                    Set.of(
-                        TestDataUtil.luoValintakoeValinnanvaiheEntity(
-                            2,
-                            "vv5" + hakijaOid,
-                            Arrays.asList(
-                                TestDataUtil.luoValintakoeEntity(
-                                    "14132865785323928261359415431364",
-                                    "SOTE1_kaikkiosiot",
-                                    Osallistuminen.EI_OSALLISTU,
-                                    null,
-                                    "HYLATTY"),
-                                TestDataUtil.luoValintakoeEntity(
-                                    "1413286578535-5213085081652469216",
-                                    "SOTEKOE_VK_RYHMA1",
-                                    Osallistuminen.EI_OSALLISTU,
-                                    null,
-                                    "HYLATTY"),
-                                TestDataUtil.luoValintakoeEntity(
-                                    "1413286578535-5213085081652461564",
-                                    "KOHTEEN_SPESIFI_KOE_BUG-1564",
-                                    Osallistuminen.OSALLISTUU,
-                                    null,
-                                    osallistumisetHylatty ? "HYLATTY" : "HYVAKSYTTAVISSA"))))),
-                TestDataUtil.luoHakutoiveEntity(
-                    "1.2.246.562.20.93258129167",
-                    Set.of(
-                        TestDataUtil.luoValintakoeValinnanvaiheEntity(
-                            1,
-                            "vv6" + hakijaOid,
-                            Arrays.asList(
-                                TestDataUtil.luoValintakoeEntity(
-                                    "1413286979019-1352529564096963601",
-                                    "SOTE1_kaikkiosiot",
-                                    Osallistuminen.EI_OSALLISTU,
-                                    null,
-                                    "HYLATTY"),
-                                TestDataUtil.luoValintakoeEntity(
-                                    "1413286979022-1524554277697202959",
-                                    "SOTEKOE_VK_RYHMA1",
-                                    Osallistuminen.EI_OSALLISTU,
-                                    null,
-                                    "HYLATTY"))))),
-                TestDataUtil.luoHakutoiveEntity(
-                    "1.2.246.562.20.64586301414",
-                    Set.of(
-                        TestDataUtil.luoValintakoeValinnanvaiheEntity(
-                            2,
-                            "vv7" + hakijaOid,
-                            Arrays.asList(
-                                TestDataUtil.luoValintakoeEntity(
-                                    "1413284065430-8581021134442572546",
-                                    "SOTE1_kaikkiosiot",
-                                    Osallistuminen.EI_OSALLISTU,
-                                    null,
-                                    "HYLATTY"),
-                                TestDataUtil.luoValintakoeEntity(
-                                    "14132840654327607869284614200980",
-                                    "SOTEKOE_VK_RYHMA1",
-                                    Osallistuminen.EI_OSALLISTU,
-                                    null,
-                                    "HYLATTY"))))),
-                TestDataUtil.luoHakutoiveEntity(
-                    "1.2.246.562.20.70883151881",
-                    Set.of(
-                        TestDataUtil.luoValintakoeValinnanvaiheEntity(
-                            2,
-                            "vv8" + hakijaOid,
-                            Arrays.asList(
-                                TestDataUtil.luoValintakoeEntity(
-                                    "1413284033343-6883461063685526158",
-                                    "SOTE1_kaikkiosiot",
-                                    Osallistuminen.OSALLISTUU,
-                                    true,
-                                    osallistumisetHylatty ? "HYLATTY" : "HYVAKSYTTAVISSA"),
-                                TestDataUtil.luoValintakoeEntity(
-                                    "1413284033345-7502478179236072968",
-                                    "SOTEKOE_VK_RYHMA1",
-                                    Osallistuminen.OSALLISTUU,
-                                    true,
-                                    osallistumisetHylatty ? "HYLATTY" : "HYVAKSYTTAVISSA"))))))));
   }
 
   private void luoEdellinenVaihe(String hakemusOid, String hakukohdeOid, String hakuOid) {
