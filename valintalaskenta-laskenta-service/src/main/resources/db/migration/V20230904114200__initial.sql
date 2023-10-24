@@ -28,8 +28,6 @@ CREATE TABLE valintakoe_osallistuminen (
     haku_oid varchar(127) NOT NULL,
     hakemus_oid varchar(127) UNIQUE,
     hakija_oid varchar(127) NOT NULL,
-    etunimi varchar(255),
-    sukunimi varchar(255),
     created_at timestamp with time zone default now()
 );
 

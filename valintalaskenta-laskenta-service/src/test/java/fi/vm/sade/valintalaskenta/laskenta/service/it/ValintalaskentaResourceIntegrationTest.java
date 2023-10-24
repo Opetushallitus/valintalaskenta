@@ -156,7 +156,7 @@ public class ValintalaskentaResourceIntegrationTest extends AbstractMocklessInte
       kielikokeeseenKutsutaanJosSuoritustaTaiTodennettuaKielitaitoaEiLoydyVaikkaValintakoevaiheitaOlisiUseampia()
           throws JsonSyntaxException, IOException {
     LaskeDTO laskeDtoUseammanKoekutsunKanssa =
-        readJson("laskeDTOUseammanKoekutsuVaiheenKanssa.json", new TypeToken<LaskeDTO>() {});
+        readJson("laskeDTOUseammanKoekutsuVaiheenKanssa.json", new TypeToken<>() {});
     Laskentakutsu laskentakutsu =
         new Laskentakutsu(laskeDtoUseammanKoekutsunKanssa, new SuoritustiedotDTO());
 

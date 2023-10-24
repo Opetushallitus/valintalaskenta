@@ -6,15 +6,11 @@ import static fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen.OSALLI
 import static fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.ValintakoelaskentaSuorittajaServiceImpl.VALINNANVAIHE_HAKIJAN_VALINTA;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.*;
 import static java.util.stream.Collectors.groupingBy;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 import co.unruly.matchers.StreamMatchers;
 import com.google.common.collect.Sets;
@@ -996,7 +992,8 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
         1, hakutoive1.getValintakoeValinnanvaiheetAsList().get(0).getValintakokeet().size());
 
     final Optional<Valintakoe> valintakoetunniste2 =
-        hakutoive1.getValintakoeValinnanvaiheet().stream()
+        osallistuminen.getHakutoiveetAsList().stream()
+            .flatMap(h -> h.getValintakoeValinnanvaiheetAsList().stream())
             .flatMap(v -> v.getValintakokeet().stream())
             .filter(koeWithTunniste("valintakoetunniste2"))
             .findFirst();
@@ -1010,7 +1007,8 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
         1, hakutoive2.getValintakoeValinnanvaiheetAsList().get(0).getValintakokeet().size());
 
     final Optional<Valintakoe> valintakoetunniste1 =
-        hakutoive2.getValintakoeValinnanvaiheet().stream()
+        osallistuminen.getHakutoiveetAsList().stream()
+            .flatMap(h -> h.getValintakoeValinnanvaiheetAsList().stream())
             .flatMap(v -> v.getValintakokeet().stream())
             .filter(koeWithTunniste("valintakoetunniste1"))
             .findFirst();
@@ -1114,8 +1112,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
                             "HYVAKSYTTAVISSA")))));
 
     ValintakoeOsallistuminen osa = new ValintakoeOsallistuminen();
-    osa.setEtunimi("Keijo");
-    osa.setSukunimi("Keskeyttänyt");
     osa.setHakemusOid(hakemusOid);
     osa.setHakuOid(hakuOid);
     osa.setHakijaOid("akija");
@@ -1285,10 +1281,10 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
 
   @Test
   public void testOlemassaolevatKokoeet() throws JsonSyntaxException, IOException {
-
+    final String hakukohde1 = "1.2.246.562.5.85532589612", hakukohde2 = "1.2.246.562.5.37009438716";
     Hakutoive toive =
         luoHakutoiveEntity(
-            "1.2.246.562.5.85532589612",
+            hakukohde1,
             Sets.newHashSet(
                 luoValintakoeValinnanvaiheEntity(
                     1,
@@ -1314,7 +1310,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
                             "HYVAKSYTTAVISSA")))));
     Hakutoive toive2 =
         luoHakutoiveEntity(
-            "1.2.246.562.5.37009438716",
+            hakukohde2,
             Sets.newHashSet(
                 luoValintakoeValinnanvaiheEntity(
                     1,
@@ -1328,8 +1324,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
                             "HYVAKSYTTAVISSA")))));
 
     ValintakoeOsallistuminen osa = new ValintakoeOsallistuminen();
-    osa.setEtunimi("Jenna X");
-    osa.setSukunimi("Alavirta");
     osa.setHakemusOid("1.2.246.562.11.00000304421");
     osa.setHakuOid("1.2.246.562.5.2013080813081926341927");
     osa.setHakijaOid("1.2.246.562.24.30568204729");
@@ -1390,9 +1384,10 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
 
     assertEquals(
         OSALLISTUU,
-        osallistuminen
-            .getHakutoiveetAsList()
-            .get(1)
+        osallistuminen.getHakutoiveetAsList().stream()
+            .filter(h -> h.getHakukohdeOid().equals(hakukohde2))
+            .toList()
+            .get(0)
             .getValintakoeValinnanvaiheetAsList()
             .get(0)
             .getValintakokeetAsList()
@@ -1401,8 +1396,9 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
             .getOsallistuminen());
     assertEquals(
         EI_OSALLISTU,
-        osallistuminen
-            .getHakutoiveetAsList()
+        osallistuminen.getHakutoiveetAsList().stream()
+            .filter(h -> h.getHakukohdeOid().equals(hakukohde2))
+            .toList()
             .get(0)
             .getValintakoeValinnanvaiheetAsList()
             .get(0)
@@ -1577,8 +1573,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
                             "HYVAKSYTTAVISSA")))));
 
     ValintakoeOsallistuminen osa = new ValintakoeOsallistuminen();
-    osa.setEtunimi("Ruhtinas");
-    osa.setSukunimi("Nukettaja");
     osa.setHakemusOid(hakemusOid);
     osa.setHakuOid(hakuOid);
     osa.setHakijaOid("1.2.246.562.24.30568204729");
@@ -1607,8 +1601,6 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
                             "HYLATTY")))));
 
     ValintakoeOsallistuminen osa2 = new ValintakoeOsallistuminen();
-    osa2.setEtunimi("Jenna X");
-    osa2.setSukunimi("Alavirta");
     osa2.setHakemusOid(hakemusOid2);
     osa2.setHakuOid(hakuOid);
     osa2.setHakijaOid("1.2.246.562.24.30568204729");
@@ -1649,7 +1641,7 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
             .sorted(Comparator.comparing(Valintakoe::getValintakoeTunniste))
             .collect(Collectors.toList());
 
-    assertThat(kohteenValintakokeet, hasSize(3));
+    assertEquals(3, kohteenValintakokeet.size());
     assertThat(
         kohteenValintakokeet.stream().map(Valintakoe::getValintakoeTunniste),
         StreamMatchers.contains(

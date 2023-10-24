@@ -56,11 +56,9 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
     for (ValintakoeOsallistuminen vko : osallistumiset) {
       ValintakoeOsallistuminenDTO dto = new ValintakoeOsallistuminenDTO();
       dto.setCreatedAt(vko.getCreatedAt());
-      dto.setEtunimi(vko.getEtunimi());
       dto.setHakemusOid(vko.getHakemusOid());
       dto.setHakijaOid(vko.getHakijaOid());
       dto.setHakuOid(vko.getHakuOid());
-      dto.setSukunimi(vko.getSukunimi());
       dto.setHakutoiveet(convertHakutoive(vko.getHakutoiveetAsList()));
       dtot.add(dto);
     }

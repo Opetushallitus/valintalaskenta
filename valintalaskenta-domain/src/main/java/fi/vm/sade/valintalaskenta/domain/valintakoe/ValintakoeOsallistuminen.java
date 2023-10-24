@@ -16,10 +16,6 @@ public class ValintakoeOsallistuminen {
 
   private String hakijaOid;
 
-  private String etunimi;
-
-  private String sukunimi;
-
   private Date createdAt;
 
   private final Set<Hakutoive> hakutoiveet = new HashSet<>();
@@ -82,22 +78,6 @@ public class ValintakoeOsallistuminen {
 
   public void setCreatedAt(Date createdAt) {
     this.createdAt = createdAt;
-  }
-
-  public String getSukunimi() {
-    return sukunimi;
-  }
-
-  public void setSukunimi(String sukunimi) {
-    this.sukunimi = sukunimi;
-  }
-
-  public String getEtunimi() {
-    return etunimi;
-  }
-
-  public void setEtunimi(String etunimi) {
-    this.etunimi = etunimi;
   }
 
   @Override

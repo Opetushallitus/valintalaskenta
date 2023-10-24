@@ -676,8 +676,6 @@ public class ValintakoelaskentaSuorittajaServiceImpl
     osallistuminen.setHakuOid(data.getHakuOid());
     osallistuminen.setHakemusOid(hakemus.getHakemusoid());
     osallistuminen.setHakijaOid(hakemus.getHakijaOid());
-    osallistuminen.setSukunimi(hakemus.getSukunimi());
-    osallistuminen.setEtunimi(hakemus.getEtunimi());
     return osallistuminen;
   }
 

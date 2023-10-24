@@ -57,8 +57,6 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             // valintakoe hakemukselle!
             if (!h.getOsallistumiset().isEmpty()) {
               h.setLuontiPvm(koetulos.getCreatedAt());
-              h.setEtunimi(koetulos.getEtunimi());
-              h.setSukunimi(koetulos.getSukunimi());
               h.setHakemusOid(koetulos.getHakemusOid());
               osallistumiset.add(h);
             }
