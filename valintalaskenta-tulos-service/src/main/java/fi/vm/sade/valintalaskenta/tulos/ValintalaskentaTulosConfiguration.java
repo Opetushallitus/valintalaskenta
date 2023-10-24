@@ -80,7 +80,8 @@ public class ValintalaskentaTulosConfiguration {
   @Bean(name = "valintaperusteetClient")
   public ValintaperusteetResource valintaperusteetResource(
       @Qualifier("valintaperusteetCasClient") final CasClient valintaperusteetCasClient,
-      @Value("${cas.service.valintaperusteet-service}") final String valintaperusteetBaseUrl) {
+      @Value("${valintalaskentakoostepalvelu.valintaperusteet.ilb.url}")
+          final String valintaperusteetBaseUrl) {
     return new ValintaperusteetResource() {
       @Override
       public List<ValintatapajonoDTO> haeValintatapajonotSijoittelulle(final String hakukohdeOid) {
