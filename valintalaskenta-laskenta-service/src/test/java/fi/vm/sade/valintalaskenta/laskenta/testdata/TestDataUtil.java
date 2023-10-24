@@ -229,6 +229,18 @@ public abstract class TestDataUtil {
     return tulos;
   }
 
+  public static Jarjestyskriteeritulos luoJarjestyskriteeritulosEntityKuvauksella(
+      double arvo, int prioriteetti, JarjestyskriteerituloksenTila tila, String kuvaus) {
+    Jarjestyskriteeritulos tulos = new Jarjestyskriteeritulos();
+    tulos.setArvo(new BigDecimal(arvo));
+    tulos.setPrioriteetti(prioriteetti);
+    tulos.setTila(tila);
+    tulos.setKuvausFI(kuvaus);
+    tulos.setKuvausEN("");
+    tulos.setKuvausSV("");
+    return tulos;
+  }
+
   public static SyotettyArvo luoSyotettyArvo(
       String laskennallinenArvo, String arvo, String tunniste, Osallistuminen osallistuminen) {
     SyotettyArvo syotettyArvo = new SyotettyArvo();

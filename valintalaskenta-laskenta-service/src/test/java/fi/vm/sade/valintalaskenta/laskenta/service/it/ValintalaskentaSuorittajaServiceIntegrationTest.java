@@ -26,6 +26,7 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.ValintalaskentaSuorittajaService;
@@ -831,7 +832,6 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
     final String hakemusOid = "1.2.246.562.11.00001212279";
     final String hakukohdeOid = "1.2.246.562.20.66128426039";
     final String hakuOid = "1.2.246.562.29.173465377510";
-    final String etunimi = "Jaakko, Matias", sukunimi = "Rantamäki";
     final String hakijaOid = "1.2.246.562.24.43656814814";
 
     valinnanvaiheRepository.save(
@@ -899,7 +899,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
         TestDataUtil.luoValinnanvaiheEntity(
             hakuOid,
             hakukohdeOid,
-            1,
+            0,
             "1388739479946-6344111160036037403",
             List.of(
                 TestDataUtil.luoValintatapaJonoEntity(
@@ -929,5 +929,65 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
                     Tasasijasaanto.ARVONTA,
                     "1388739480159-1173947553521563587")));
     valinnanvaiheRepository.save(edellinen);
+
+    valintakoeOsallistuminenRepository.save(
+        TestDataUtil.luoValintakoeOsallistuminen(
+            hakuOid,
+            "keijon-oidi",
+            hakemusOid,
+            Set.of(
+                TestDataUtil.luoHakutoiveEntity(
+                    hakukohdeOid,
+                    Set.of(
+                        TestDataUtil.luoValintakoeValinnanvaiheEntity(
+                            1,
+                            "13887394798212581302211576347831",
+                            List.of(
+                                TestDataUtil.luoValintakoeEntity(
+                                    "13887394815186315041955335611484",
+                                    "kielikoe_tunniste",
+                                    Osallistuminen.EI_OSALLISTU,
+                                    true,
+                                    "HYVAKSYTTAVISSA"))))))));
+
+    valintakoeOsallistuminenRepository.save(
+        TestDataUtil.luoValintakoeOsallistuminen(
+            hakuOid,
+            "valtsun-oidi",
+            "1.2.246.562.11.00000072672",
+            Set.of(
+                TestDataUtil.luoHakutoiveEntity(
+                    hakukohdeOid,
+                    Set.of(
+                        TestDataUtil.luoValintakoeValinnanvaiheEntity(
+                            1,
+                            "13887394798212581302211576347831",
+                            List.of(
+                                TestDataUtil.luoValintakoeEntity(
+                                    "13887394815186315041955335611484",
+                                    "kielikoe_tunniste",
+                                    Osallistuminen.OSALLISTUU,
+                                    true,
+                                    "HYVAKSYTTAVISSA"))))))));
+
+    valintakoeOsallistuminenRepository.save(
+        TestDataUtil.luoValintakoeOsallistuminen(
+            hakuOid,
+            "ullan-oidi",
+            "1.2.246.562.11.00000072740",
+            Set.of(
+                TestDataUtil.luoHakutoiveEntity(
+                    hakukohdeOid,
+                    Set.of(
+                        TestDataUtil.luoValintakoeValinnanvaiheEntity(
+                            1,
+                            "13887394798212581302211576347831",
+                            List.of(
+                                TestDataUtil.luoValintakoeEntity(
+                                    "13887394815186315041955335611484",
+                                    "kielikoe_tunniste",
+                                    Osallistuminen.OSALLISTUU,
+                                    true,
+                                    "HYVAKSYTTAVISSA"))))))));
   }
 }

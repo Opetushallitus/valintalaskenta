@@ -121,7 +121,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     final OsallistuminenTulos osallistuminenTulos = new OsallistuminenTulos();
     osallistuminenTulos.setOsallistuminen(Osallistuminen.OSALLISTUU);
     when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(
-            any(Hakukohde.class), any(Hakemus.class), any(Funktiokutsu.class)))
+            any(Hakukohde.class), any(), any()))
         .thenReturn(osallistuminenTulos);
 
     ArgumentCaptor<ValintakoeOsallistuminen> captor =

@@ -1,13 +1,12 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Sets;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
 import java.util.Arrays;
 import java.util.List;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,9 +88,7 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
         .getValintatapajono()
         .forEach(
             valintatapajono -> {
-              assertThat(valintatapajono.getJonosijat(), Matchers.empty());
-              // TODO: Necessary?
-              // assertThat(valintatapajono.getJonosijaIdt(), Matchers.empty());
+              assertTrue(valintatapajono.getJonosijat().isEmpty());
             });
   }
 
@@ -99,8 +96,10 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
   public void testSavingAndLoadingNewValinnanvaihe() {
     Valinnanvaihe valinnanvaihe = createValinnanvaihe(1);
     Valintatapajono valintatapajono = new Valintatapajono();
-    valinnanvaihe.valintatapajono.addAll(List.of(valintatapajono));
-    valintatapajono.setJonosijat(Sets.newHashSet(createJonosija(), new Jonosija()));
+    valinnanvaihe.valintatapajono.add(valintatapajono);
+    valintatapajono.setJonosijat(
+        Sets.newHashSet(
+            createJonosija("ruhtinas-nukettaja-oid"), createJonosija("kreivi-dacula-oid")));
     valinnanvaihe.setValinnanVaiheOid("uusiValinnanvaiheOid");
     valinnanvaiheDAO.saveOrUpdate(valinnanvaihe);
     Valinnanvaihe savedValinnanvaihe = valinnanvaiheDAO.haeValinnanvaihe("uusiValinnanvaiheOid");
@@ -130,8 +129,9 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
     return vv;
   }
 
-  private Jonosija createJonosija() {
+  private Jonosija createJonosija(String hakijaOid) {
     Jonosija jono = new Jonosija();
+    jono.setHakijaOid(hakijaOid);
     jono.setFunktioTulokset(new FunktioTulosContainer(List.of(createFunktioTulos())));
     jono.setSyotetytArvot(new SyotettyArvoContainer(List.of(createSyotettyArvo())));
     return jono;

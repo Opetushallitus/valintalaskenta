@@ -1,7 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.*;
@@ -301,16 +300,16 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
     assertEquals(1, hakukohde.get(0).getValintatapajonot().size());
     List<JonosijaDTO> jonosijat = hakukohde.get(0).getValintatapajonot().get(0).getJonosijat();
     jonosijat.stream()
-        .filter(h -> h.getSukunimi().equals("Lahtinen"))
+        .filter(h -> h.getHakemusOid().contains("Pitäis olla tasasijalla"))
         .forEach(
             h -> {
               assertEquals(1, h.getJonosija());
             });
     jonosijat.stream()
-        .filter(h -> !h.getSukunimi().equals("Lahtinen"))
+        .filter(h -> !h.getHakemusOid().contains("Pitäis olla tasasijalla"))
         .forEach(
             h -> {
-              assertFalse(h.getJonosija() == 1);
+              assertNotEquals(1, h.getJonosija());
             });
   }
 
@@ -365,7 +364,7 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
                         TestDataUtil.luoJarjestyskriteeritulosEntity(
                             25, 4, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA))),
                 TestDataUtil.luoJonosijaEntity(
-                    "1.2.246.562.11.00001012039",
+                    "Pitäis olla tasasijalla 1",
                     1,
                     false,
                     Arrays.asList(
@@ -380,7 +379,7 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
                         TestDataUtil.luoJarjestyskriteeritulosEntity(
                             17, 4, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA))),
                 TestDataUtil.luoJonosijaEntity(
-                    "Pitäis olla tasasijalla",
+                    "Pitäis olla tasasijalla 2",
                     1,
                     false,
                     Arrays.asList(
