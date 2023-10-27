@@ -21,7 +21,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
-import fi.vm.sade.valintalaskenta.laskenta.dao.HakijaryhmaService;
+import fi.vm.sade.valintalaskenta.laskenta.dao.HakijaryhmaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
@@ -43,7 +43,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
   private final HakemusDTOToHakemusConverter hakemusConverter;
   private final ValinnanvaiheDAO valinnanvaiheDAO;
-  private final HakijaryhmaService hakijaryhmaDAO;
+  private final HakijaryhmaDAO hakijaryhmaDAO;
   private final JarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAO;
   private final HakemuslaskinService hakemuslaskinService;
   private final ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
@@ -54,7 +54,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
   public ValintalaskentaSuorittajaServiceImpl(
       HakemusDTOToHakemusConverter hakemusConverter,
       ValinnanvaiheDAO valinnanvaiheDAO,
-      HakijaryhmaService hakijaryhmaDAO,
+      HakijaryhmaDAO hakijaryhmaDAO,
       JarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAO,
       HakemuslaskinService hakemuslaskinService,
       ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO,

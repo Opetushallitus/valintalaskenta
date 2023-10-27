@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
-import fi.vm.sade.valintalaskenta.laskenta.dao.impl.HakijaryhmaServiceImpl;
+import fi.vm.sade.valintalaskenta.laskenta.dao.impl.HakijaryhmaDAOImpl;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.HakijaryhmaRepository;
 import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
 import java.util.*;
@@ -15,9 +15,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class HakijaryhmaServiceTest extends AbstractIntegrationTest {
+public class HakijaryhmaDAOTest extends AbstractIntegrationTest {
 
-  @Autowired private HakijaryhmaServiceImpl hakijaryhmaDAO;
+  @Autowired private HakijaryhmaDAOImpl hakijaryhmaDAO;
 
   @Autowired private HakijaryhmaRepository repo;
   private final User auditUser = null;

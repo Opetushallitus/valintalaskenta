@@ -5,7 +5,7 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
 import java.util.List;
 import java.util.Optional;
 
-public interface HakijaryhmaService {
+public interface HakijaryhmaDAO {
 
   Optional<Hakijaryhma> haeHakijaryhma(String hakijaryhmaOid);
 

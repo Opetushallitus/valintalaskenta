@@ -6,7 +6,7 @@ import fi.vm.sade.valinta.sharedutils.ValintaResource;
 import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
-import fi.vm.sade.valintalaskenta.laskenta.dao.HakijaryhmaService;
+import fi.vm.sade.valintalaskenta.laskenta.dao.HakijaryhmaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.HakijaryhmaRepository;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.JonosijaRepository;
 import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
@@ -22,8 +22,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-public class HakijaryhmaServiceImpl implements HakijaryhmaService {
-  private static final Logger LOGGER = LoggerFactory.getLogger(HakijaryhmaServiceImpl.class);
+public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
+  private static final Logger LOGGER = LoggerFactory.getLogger(HakijaryhmaDAOImpl.class);
 
   private final LaskentaAuditLog auditLog;
 
@@ -31,7 +31,7 @@ public class HakijaryhmaServiceImpl implements HakijaryhmaService {
 
   private final JonosijaRepository jonosijaRepository;
 
-  public HakijaryhmaServiceImpl(
+  public HakijaryhmaDAOImpl(
       LaskentaAuditLog auditLog,
       HakijaryhmaRepository repository,
       JonosijaRepository jonosijaRepository) {
