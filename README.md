@@ -1,8 +1,45 @@
 # valintalaskenta
 
-## Requirements
+Palvelu suorittaa valintaperusteisiin määritellyllä logiikalla valintakoostepalvelun kautta saatavien 
+hakemusten hakutoiveiden tulosten laskennan, mitä sijoittelu taas hyödyntää sijoitellessaan hakijat eri hakukohteisiin.
+
+## Komponentit
+
+- valintalaskenta-domain
+  - Sisältää entityt
+- valintalaskenta-laskenta-api
+  - Sisältää rajapinnoissa käytettävät DTO:t
+- valintalaskenta-laskenta-service
+  - itse palvelu 
+  - SpringBoot applikaatio
+- valintalaskenta-tulos-service
+  - Nimestä huolimatta vain osa valintalaskenta-laskenta-service palvelua
+  - Sijoittelu käyttää suoraan lähdekoodin kautta tässä sijaitsevia service- ja muita luokkia
+
+## Vaatimukset
 
 Java 17
 Maven
 
-postgres version 15.2
+## Palvelun lokaali ajo
+
+WIP
+
+## Swagger
+
+Löytyy esim. osoitteesta https://virkailija.testiopintopolku.fi/valintalaskenta-laskenta-service/swagger-ui/index.html
+
+## Testaus
+
+Repossa on sekä yksikkötestejä että integraatiotestejä (käyttävät testcontainersia postgres instanssin pyörittämiseen)
+
+Aja kaikki testit komennolla `mvn test`
+
+
+## Linttaus
+
+Käyttää spotless maven plugaria.
+
+Tarkista suorittamalla `mvn spotless:check`
+
+Korjaa tyylivirheet suorittamalla `mvn spotless:apply`
