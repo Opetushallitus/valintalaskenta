@@ -20,10 +20,15 @@ hakemusten hakutoiveiden tulosten laskennan, mitä sijoittelu taas hyödyntää 
 
 Java 17
 Maven
+docker
 
 ## Palvelun lokaali ajo
 
-WIP
+Luo postgres image `docker build -t valintalaskenta-db .`
+
+Käynnistä kontti `docker run -dp 127.0.0.1:5555:5432 valintalaskenta-db`
+
+Käynnistä valintalaskenta-laskenta-service kansiossa `mvn spring-boot:run`
 
 ## Swagger
 
