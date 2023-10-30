@@ -5,13 +5,10 @@ import fi.vm.sade.valintalaskenta.tulos.dao.TulosHakijaryhmaDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosHakijaryhmaRepository;
 import java.util.Comparator;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
-@Repository
+@Service
 public class TulosHakijaryhmaDAOImpl implements TulosHakijaryhmaDAO {
-  private static final Logger LOGGER = LoggerFactory.getLogger(TulosHakijaryhmaDAOImpl.class);
 
   private final TulosHakijaryhmaRepository repo;
 

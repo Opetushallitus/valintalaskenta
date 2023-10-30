@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Repository("valinnanvaiheDAO")
+@Service
 public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
   private static final Logger LOGGER = LoggerFactory.getLogger(ValinnanvaiheDAOImpl.class);
 
@@ -47,37 +47,11 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
           .orElse(null);
     }
     return null;
-    /*    if (jarjestysnumero > 0) {
-      return Optional.ofNullable(
-              datastore
-                  .find(ValinnanvaiheMigrationDTO.class)
-                  .field("hakuOid")
-                  .equal(hakuOid)
-                  .field("hakukohdeOid")
-                  .equal(hakukohdeOid)
-                  .field("jarjestysnumero")
-                  .lessThan(jarjestysnumero)
-                  .order("-jarjestysnumero")
-                  .limit(1)
-                  .get())
-          .map(this::migrate)
-          .orElse(null);
-    } else {
-      return null;
-    }*/
   }
 
   @Override
   public Valinnanvaihe haeValinnanvaihe(String valinnanvaiheOid) {
     return repo.findValinnanvaiheByValinnanvaiheOid(valinnanvaiheOid).orElse(null);
-    /*    return Optional.ofNullable(
-        datastore
-            .find(ValinnanvaiheMigrationDTO.class)
-            .field("valinnanvaiheOid")
-            .equal(valinnanvaiheOid)
-            .get())
-    .map(this::migrate)
-    .orElse(null);*/
   }
 
   @Override
@@ -96,16 +70,6 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
   @Override
   public void saveOrUpdate(Valinnanvaihe valinnanvaihe) {
     repo.save(valinnanvaihe);
-    // TODO: remove?
-    /*    valinnanvaihe.reportDuplicateValintatapajonoOids();
-    valinnanvaihe
-        .getValintatapajonot()
-        .forEach(
-            valintatapajono -> {
-              saveJonosijat(valintatapajono);
-              datastore.save(valintatapajono);
-            });
-    datastore.save(valinnanvaihe);*/
   }
 
   @Transactional

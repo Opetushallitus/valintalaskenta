@@ -8,8 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+// TODO: poista tai toteuta OK-384 yhteydessä
+
 @Repository("jonosijaHistoriaDAO")
 public class JarjestyskriteerihistoriaDAOImpl implements JarjestyskriteerihistoriaDAO {
+
   private static final Logger LOG = LoggerFactory.getLogger(JarjestyskriteerihistoriaDAOImpl.class);
 
   @Override

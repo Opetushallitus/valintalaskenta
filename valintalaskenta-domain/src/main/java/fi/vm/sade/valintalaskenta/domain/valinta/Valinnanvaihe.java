@@ -1,13 +1,10 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
 import java.util.*;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
-import org.springframework.data.annotation.Transient;
 
 public class Valinnanvaihe {
   private static final Logger LOGGER = LoggerFactory.getLogger(Valinnanvaihe.class);
@@ -28,20 +25,18 @@ public class Valinnanvaihe {
 
   private String nimi;
 
-  public final List<Valintatapajono> valintatapajono = new ArrayList<>();
-
-  @Transient public final Set<ValintakoeValinnanvaihe> valintakoevalinnanvaihe = new HashSet<>();
+  private final List<Valintatapajono> valintatapajono = new ArrayList<>();
 
   public Valinnanvaihe() {}
 
   @PersistenceCreator
   public Valinnanvaihe(List<Valintatapajono> valintatapajono) {
     this.valintatapajono.addAll(valintatapajono);
-    // this.valintakoevalinnanvaihe.addAll(valintakoevalinnanvaihe);
+    this.jarjestaValintatapajonot();
   }
 
   private void jarjestaValintatapajonot() {
-    Collections.sort(valintatapajono, Comparator.comparingInt(Valintatapajono::getPrioriteetti));
+    valintatapajono.sort(Comparator.comparingInt(Valintatapajono::getPrioriteetti));
   }
 
   public UUID getId() {
@@ -107,6 +102,7 @@ public class Valinnanvaihe {
   public void setValintatapajono(List<Valintatapajono> valintatapajono) {
     this.valintatapajono.clear();
     this.valintatapajono.addAll(valintatapajono);
+    jarjestaValintatapajonot();
   }
 
   public String getNimi() {
@@ -122,27 +118,5 @@ public class Valinnanvaihe {
         .flatMap(j -> j.getJonosijat().stream())
         .filter(j -> j.getHakemusOid().equals(hakemusoid))
         .anyMatch(Jonosija::isHylattyValisijoittelussa);
-  }
-
-  public void reportDuplicateValintatapajonoOids() {
-    Set<String> uniqueJonoOids = new HashSet<>();
-    for (Valintatapajono valintatapajono : valintatapajono) {
-      String valintatapajonoOid = valintatapajono.getValintatapajonoOid();
-      if (uniqueJonoOids.contains(valintatapajonoOid)) {
-        logDuplicate(valintatapajonoOid);
-      }
-      uniqueJonoOids.add(valintatapajonoOid);
-    }
-  }
-
-  private void logDuplicate(String valintatapajonoOid) {
-    LOGGER.error(
-        "Warning: duplicate valintatapajonoOid"
-            + valintatapajonoOid
-            + " detected when saving Valinnanvaihe "
-            + valinnanvaiheOid
-            + " . Valintatapajonos are: "
-            + valintatapajono.stream().map(ToStringBuilder::reflectionToString),
-        new RuntimeException());
   }
 }

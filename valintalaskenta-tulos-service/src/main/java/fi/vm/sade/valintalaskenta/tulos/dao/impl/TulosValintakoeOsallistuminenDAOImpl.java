@@ -5,9 +5,9 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosValintakoeOsallistuminenRepository;
 import java.util.List;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
-@Repository
+@Service
 public class TulosValintakoeOsallistuminenDAOImpl implements TulosValintakoeOsallistuminenDAO {
 
   private final TulosValintakoeOsallistuminenRepository repo;

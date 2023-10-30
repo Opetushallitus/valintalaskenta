@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.google.common.collect.Sets;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -73,7 +72,7 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
   public void testLoadingValintapajonoLite() {
     Valinnanvaihe valinnanvaihe = createValinnanvaihe(1);
     Valintatapajono valintatapajono = new Valintatapajono();
-    valinnanvaihe.valintatapajono.addAll(Arrays.asList(valintatapajono));
+    valinnanvaihe.setValintatapajono(List.of(valintatapajono));
     valintatapajono.setJonosijat(Sets.newHashSet(new Jonosija(), new Jonosija()));
     valinnanvaihe.setValinnanVaiheOid("uusiValinnanvaiheOid");
     valinnanvaiheRepository.save(valinnanvaihe);
@@ -96,7 +95,7 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
   public void testSavingAndLoadingNewValinnanvaihe() {
     Valinnanvaihe valinnanvaihe = createValinnanvaihe(1);
     Valintatapajono valintatapajono = new Valintatapajono();
-    valinnanvaihe.valintatapajono.add(valintatapajono);
+    valinnanvaihe.setValintatapajono(List.of(valintatapajono));
     valintatapajono.setJonosijat(
         Sets.newHashSet(
             createJonosija("ruhtinas-nukettaja-oid"), createJonosija("kreivi-dacula-oid")));

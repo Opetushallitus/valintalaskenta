@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+// TODO Change or delete in OK-384
 @Repository("jonosijaHistoriaTulosDAO")
 public class JarjestyskriteerihistoriaDAOImpl implements JarjestyskriteerihistoriaDAO {
   private static final Logger LOG = LoggerFactory.getLogger(JarjestyskriteerihistoriaDAOImpl.class);

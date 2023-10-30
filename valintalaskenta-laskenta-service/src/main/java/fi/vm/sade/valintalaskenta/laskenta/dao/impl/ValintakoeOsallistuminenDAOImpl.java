@@ -4,9 +4,9 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.ValintakoeOsallistuminenRepository;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
-@Repository("ValintakoeOsallistuminenDAO")
+@Service
 public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminenDAO {
 
   @Value("${valintalaskenta-laskenta-service.mongodb.useIndexQueries:false}")

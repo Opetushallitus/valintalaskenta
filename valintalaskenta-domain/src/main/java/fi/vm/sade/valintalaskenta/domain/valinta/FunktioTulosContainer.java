@@ -10,7 +10,6 @@ public class FunktioTulosContainer {
   public final List<FunktioTulos> funktioTulokset = new ArrayList<>();
 
   public FunktioTulosContainer() {}
-  ;
 
   public FunktioTulosContainer(List<FunktioTulos> funktioTulokset) {
     this.funktioTulokset.addAll(funktioTulokset);

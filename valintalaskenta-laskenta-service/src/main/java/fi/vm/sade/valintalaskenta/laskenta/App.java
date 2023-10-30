@@ -2,10 +2,8 @@ package fi.vm.sade.valintalaskenta.laskenta;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 
 @SpringBootApplication
-@EnableJdbcRepositories(basePackages = {"fi.vm.sade.valintalaskenta.laskenta"})
 public class App {
   public static final String CONTEXT_PATH = "/valintalaskenta-laskenta-service";
 

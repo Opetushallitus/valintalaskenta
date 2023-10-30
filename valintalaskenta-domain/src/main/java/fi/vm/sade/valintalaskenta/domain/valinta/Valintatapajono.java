@@ -116,14 +116,6 @@ public class Valintatapajono {
   }
 
   public Set<Jonosija> getJonosijat() {
-    if (null == jonosija) {
-      // TODO Check necessity of this exception
-      throw new IllegalStateException(
-          String.format(
-              "Jonosijat not loaded for valintatapajono %s with jonosijaids %s",
-              valintatapajonoOid, jonosija));
-    }
-    // TODO check if thi conversion is ok or could set be used instead
     return jonosija;
   }
 

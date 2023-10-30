@@ -4,9 +4,9 @@ import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvarainenHyvaksyminen;
 import fi.vm.sade.valintalaskenta.tulos.dao.HarkinnanvarainenHyvaksyminenDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.HarkinnanvarainenHyvaksyminenRepository;
 import java.util.List;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
-@Repository("HarkinnanvarainenHyvaksyminenDAO")
+@Service
 public class HarkinnanvarainenHyvaksyminenDAOImpl implements HarkinnanvarainenHyvaksyminenDAO {
 
   private final HarkinnanvarainenHyvaksyminenRepository repo;
