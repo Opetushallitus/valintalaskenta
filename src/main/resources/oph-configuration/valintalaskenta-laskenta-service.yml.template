@@ -71,6 +71,7 @@ valintalaskenta-laskenta-service:
     maxwait: {{host_postgresql_valintalaskenta_max_wait}}
     maxlifetimemillis: 60000
     leakdetectionthresholdmillis: 1800000
+    driver: org.postgresql.Driver
   global:
     http:
       connectionTimeoutMillis: {{valintalaskentalaskentaservice_global_http_connectiontimeoutmillis}}
