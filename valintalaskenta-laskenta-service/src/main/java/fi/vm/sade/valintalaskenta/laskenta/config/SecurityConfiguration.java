@@ -21,9 +21,9 @@ import org.springframework.security.cas.web.CasAuthenticationFilter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Profile("!dev")
 @Configuration
@@ -125,11 +125,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .csrf()
         .disable()
         .authorizeHttpRequests()
-        .requestMatchers(
-            new AntPathRequestMatcher("/buildversion.txt"),
-            new AntPathRequestMatcher("/actuator/health"),
-            new AntPathRequestMatcher("/swagger**"),
-            new AntPathRequestMatcher("/v3/api-docs**"))
+        .antMatchers(
+            "/buildversion.txt",
+            "/actuator/health",
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/swagger",
+            "/swagger/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/webjars/swagger-ui/**")
         .permitAll()
         .anyRequest()
         .authenticated()
@@ -139,6 +144,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .authenticationEntryPoint(casAuthenticationEntryPoint())
         .and()
         .addFilterBefore(singleSignOutFilter(), CasAuthenticationFilter.class);
+  }
+
+  @Override
+  public void configure(WebSecurity web) throws Exception {
+    web.ignoring().antMatchers("/v3/api-docs/**", "/swagger-ui/**");
   }
 
   @Override
