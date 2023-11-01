@@ -65,7 +65,7 @@ valintalaskentakoostepalvelu:
 valintalaskenta-laskenta-service:
   postgresql:
     url: jdbc:postgresql://{{host_postgresql_valintalaskenta}}:{{port_postgresql}}/valintalaskenta?ApplicationName=valintalaskenta-laskenta-service
-    user: {{postgre_app_user}}
+    user: {{postgres_app_user}}
     password: {{host_postgresql_valintalaskenta_app_password}}
     maxactive: {{host_postgresql_valintalaskenta_max_active}}
     maxwait: {{host_postgresql_valintalaskenta_max_wait}}
