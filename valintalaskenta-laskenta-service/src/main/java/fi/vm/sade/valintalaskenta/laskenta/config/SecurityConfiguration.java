@@ -125,15 +125,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .csrf()
         .disable()
         .authorizeHttpRequests()
-        .requestMatchers(new AntPathRequestMatcher("/buildversion.txt"))
-        .permitAll()
-        .requestMatchers(new AntPathRequestMatcher("/actuator/health"))
-        .permitAll()
-        .requestMatchers(new AntPathRequestMatcher("/swagger-ui**"))
-        .permitAll()
-        .requestMatchers(new AntPathRequestMatcher("/swagger**"))
-        .permitAll()
-        .requestMatchers(new AntPathRequestMatcher("/v3/api-docs"))
+        .requestMatchers(
+            new AntPathRequestMatcher("/buildversion.txt"),
+            new AntPathRequestMatcher("/actuator/health"),
+            new AntPathRequestMatcher("/swagger**"),
+            new AntPathRequestMatcher("/v3/api-docs**"))
         .permitAll()
         .anyRequest()
         .authenticated()
