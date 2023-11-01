@@ -1,18 +1,18 @@
 spring:
   main:
     allow-bean-definition-overriding: true
-  datasource:
-    url: jdbc:postgresql://localhost:5555/valintalaskenta
-    username: app
-    password: app
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: none
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
 
+valintalaskenta-laskenta-service:
+  postgresql:
+    url: jdbc:postgresql://localhost:5555/valintalaskenta
+    user: app
+    password: app
+    maxactive: 10
+    maxwait: 3000
+    leakdetectionthresholdmillis: 1800000
+    driver: org.postgresql.Driver
+  organisaatio-service:
+    url:
 
 springdoc:
   show-actuator: false
@@ -88,12 +88,8 @@ valintalaskentakoostepalvelu:
         sijoittelu: password
   sijoittelu:
     rest:
-      url:
+      url: ""
 
 root:
   organisaatio:
     oid: ""
-
-valintalaskenta-laskenta-service:
-  organisaatio-service:
-    url:

@@ -4,15 +4,15 @@ import static java.util.Arrays.asList;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import fi.vm.sade.valintalaskenta.domain.valinta.FunktioTulosContainer;
 import fi.vm.sade.valintalaskenta.domain.valinta.SyotettyArvoContainer;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import javax.sql.DataSource;
 import org.postgresql.util.PGobject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,6 +43,34 @@ class DatabaseConfiguration extends AbstractJdbcConfiguration {
 
   DatabaseConfiguration(ApplicationContext applicationContext) {
     this.applicationContext = applicationContext;
+  }
+
+  @Bean
+  public DataSource dataSource(
+      @Value("${valintalaskenta-laskenta-service.postgresql.maxactive}") final String maxPoolSize,
+      @Value("${valintalaskenta-laskenta-service.postgresql.maxwait}") final String maxWait,
+      @Value("${valintalaskenta-laskenta-service.postgresql.leakdetectionthresholdmillis}")
+          final String leaksThreshold,
+      @Value("${valintalaskenta-laskenta-service.postgresql.url}") final String url,
+      @Value("${valintalaskenta-laskenta-service.postgresql.user}") final String user,
+      @Value("${valintalaskenta-laskenta-service.postgresql.password}") final String password,
+      @Value("${valintalaskenta-laskenta-service.postgresql.driver}")
+          final String driverClassName) {
+    final HikariConfig config = new HikariConfig();
+    config.setPoolName("springHikariCP");
+    config.setConnectionTestQuery("SELECT 1");
+    config.setJdbcUrl(url);
+    config.setDriverClassName(driverClassName);
+    config.setMaximumPoolSize(Integer.parseInt(maxPoolSize));
+    config.setMaxLifetime(Long.parseLong(maxWait));
+    config.setLeakDetectionThreshold(Long.parseLong(leaksThreshold));
+    config.setRegisterMbeans(false);
+    final Properties dsProperties = new Properties();
+    dsProperties.setProperty("url", url);
+    dsProperties.setProperty("user", user);
+    dsProperties.setProperty("password", password);
+    config.setDataSourceProperties(dsProperties);
+    return new HikariDataSource(config);
   }
 
   @Bean

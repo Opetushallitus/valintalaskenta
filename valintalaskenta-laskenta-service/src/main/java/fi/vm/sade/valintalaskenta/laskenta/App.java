@@ -9,6 +9,7 @@ public class App {
 
   public static void main(String[] args) {
     System.setProperty("server.servlet.context-path", CONTEXT_PATH);
+
     SpringApplication.run(App.class, args);
   }
 }

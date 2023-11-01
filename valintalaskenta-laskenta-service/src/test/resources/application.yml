@@ -6,10 +6,19 @@ spring:
     group:
       test: dev
       test-mockless: dev
-  datasource:
+
+valintalaskenta-laskenta-service:
+  postgresql:
     url: jdbc:tc:postgresql:15.4:///test_database
-    username: user
+    user: user
     password: password
+    maxactive: 10
+    maxwait: 3000
+    maxlifetimemillis: 60000
+    leakdetectionthresholdmillis: 1800000
+    driver: org.testcontainers.jdbc.ContainerDatabaseDriver
+  organisaatio-service:
+    url:
 
 springdoc:
   show-actuator: false
@@ -35,10 +44,6 @@ management:
 root:
   organisaatio:
     oid: 123.21.23.424
-
-valintalaskenta-laskenta-service:
-  organisaatio-service:
-    url: ""
 
 host:
   host-cas: localhost
