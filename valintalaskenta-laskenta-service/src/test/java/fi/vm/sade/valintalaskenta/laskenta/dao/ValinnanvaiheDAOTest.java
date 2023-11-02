@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.google.common.collect.Sets;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
+import java.util.Date;
 import java.util.List;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -92,7 +93,7 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
   }
 
   @Test
-  public void testSavingAndLoadingNewValinnanvaihe() {
+  public void testSavingAndLoadingNewValinnanvaihe() throws InterruptedException {
     Valinnanvaihe valinnanvaihe = createValinnanvaihe(1);
     Valintatapajono valintatapajono = new Valintatapajono();
     valinnanvaihe.setValintatapajono(List.of(valintatapajono));
@@ -103,6 +104,7 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
     valinnanvaiheDAO.saveOrUpdate(valinnanvaihe);
     Valinnanvaihe savedValinnanvaihe = valinnanvaiheDAO.haeValinnanvaihe("uusiValinnanvaiheOid");
     assertNotNull(savedValinnanvaihe);
+    assertFalse(new Date().before(savedValinnanvaihe.getCreatedAt()));
     assertEquals(2, savedValinnanvaihe.getValintatapajono().get(0).getJonosijat().size());
     Jonosija jono = savedValinnanvaihe.getValintatapajono().get(0).getJonosijatAsList().get(0);
     FunktioTulos funkkari = jono.getFunktioTulokset().funktioTulokset.get(0);

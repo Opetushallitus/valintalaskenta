@@ -1,19 +1,16 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import java.util.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
 
 public class Valinnanvaihe {
-  private static final Logger LOGGER = LoggerFactory.getLogger(Valinnanvaihe.class);
 
   @Id private UUID id;
 
   private int jarjestysnumero;
 
-  private Date createdAt;
+  private Date createdAt = new Date();
 
   private String hakuOid;
 
