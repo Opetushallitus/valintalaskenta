@@ -12,7 +12,7 @@ public class Hakijaryhma {
 
   public int prioriteetti;
 
-  public Date createdAt;
+  public Date createdAt = new Date();
 
   public String hakukohdeOid;
 

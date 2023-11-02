@@ -16,7 +16,7 @@ public class ValintakoeOsallistuminen {
 
   private String hakijaOid;
 
-  private Date createdAt;
+  private Date createdAt = new Date();
 
   private final Set<Hakutoive> hakutoiveet = new HashSet<>();
 
