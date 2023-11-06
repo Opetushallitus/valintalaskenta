@@ -8,7 +8,7 @@ import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.laskenta.dao.impl.HakijaryhmaDAOImpl;
-import fi.vm.sade.valintalaskenta.laskenta.dao.repository.HakijaryhmaRepository;
+import fi.vm.sade.valintalaskenta.laskenta.dao.repository.HakijaryhmaHistoryRepository;
 import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
 import java.util.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,14 +19,14 @@ public class HakijaryhmaDAOTest extends AbstractIntegrationTest {
 
   @Autowired private HakijaryhmaDAOImpl hakijaryhmaDAO;
 
-  @Autowired private HakijaryhmaRepository repo;
+  @Autowired private HakijaryhmaHistoryRepository historyRepo;
   private final User auditUser = null;
 
   private static final String HAKUKOHDE_OID = "1.2.246.562.20.18895322503";
 
   @BeforeEach
   public void clear() {
-    repo.deleteAll();
+    historyRepo.deleteAll();
   }
 
   @Test
@@ -57,6 +57,36 @@ public class HakijaryhmaDAOTest extends AbstractIntegrationTest {
         asList("highestPriorityOid", "middlePriorityOid", "lowestPriorityOid"),
         sorted.stream().map(h -> h.hakijaryhmaOid).collect(toList()),
         "lowest numeric priority should come first meaning it is the most important");
+  }
+
+  @Test
+  public void modifyingHakijaryhmaInsertsRowToHistory() {
+    Hakijaryhma hakijaryhma =
+      new Hakijaryhma(Arrays.asList(createJonosija("ruh-nuk"), createJonosija("sil-mak")));
+    hakijaryhma.hakijaryhmaOid = "wanhaHakijaryhmaOid";
+    hakijaryhmaDAO.create(hakijaryhma, auditUser);
+
+    assertEquals(0, historyRepo.findAll().spliterator().estimateSize());
+
+    hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("wanhaHakijaryhmaOid").orElseThrow();
+    hakijaryhma.prioriteetti = 8;
+    hakijaryhmaDAO.create(hakijaryhma, auditUser);
+
+    assertEquals(1, historyRepo.findAll().spliterator().estimateSize());
+  }
+
+  @Test
+  public void deletingHakijaryhmaInsertsRowToHistory() {
+    Hakijaryhma hakijaryhma =
+      new Hakijaryhma(Arrays.asList(createJonosija("ruh-nuk"), createJonosija("sil-mak")));
+    hakijaryhma.hakijaryhmaOid = "wanhaHakijaryhmaOid";
+    hakijaryhmaDAO.create(hakijaryhma, auditUser);
+
+    assertEquals(0, historyRepo.findAll().spliterator().estimateSize());
+
+    hakijaryhmaDAO.poistaHakijaryhma(hakijaryhma);
+
+    assertEquals(1, historyRepo.findAll().spliterator().estimateSize());
   }
 
   private Hakijaryhma createHakijaryhma(String oid, int prioriteetti) {
