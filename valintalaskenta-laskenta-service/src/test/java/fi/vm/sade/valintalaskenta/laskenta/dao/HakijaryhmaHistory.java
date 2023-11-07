@@ -1,17 +1,14 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao;
 
-import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Table;
-
 import java.util.Date;
 import java.util.UUID;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
 @Table("hakijaryhma_history")
 public class HakijaryhmaHistory {
 
-  @Id
-  public UUID id;
+  @Id public UUID id;
 
   public String hakijaryhmaOid;
 

@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.laskenta.dao;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
@@ -11,6 +12,7 @@ import fi.vm.sade.valintalaskenta.laskenta.dao.impl.HakijaryhmaDAOImpl;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.HakijaryhmaHistoryRepository;
 import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
 import java.util.*;
+import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,8 +64,9 @@ public class HakijaryhmaDAOTest extends AbstractIntegrationTest {
   @Test
   public void modifyingHakijaryhmaInsertsRowToHistory() {
     Hakijaryhma hakijaryhma =
-      new Hakijaryhma(Arrays.asList(createJonosija("ruh-nuk"), createJonosija("sil-mak")));
+        new Hakijaryhma(Arrays.asList(createJonosija("ruh-nuk"), createJonosija("sil-mak")));
     hakijaryhma.hakijaryhmaOid = "wanhaHakijaryhmaOid";
+    hakijaryhma.prioriteetti = 3;
     hakijaryhmaDAO.create(hakijaryhma, auditUser);
 
     assertEquals(0, historyRepo.findAll().spliterator().estimateSize());
@@ -72,13 +75,24 @@ public class HakijaryhmaDAOTest extends AbstractIntegrationTest {
     hakijaryhma.prioriteetti = 8;
     hakijaryhmaDAO.create(hakijaryhma, auditUser);
 
-    assertEquals(1, historyRepo.findAll().spliterator().estimateSize());
+    List<HakijaryhmaHistory> historys =
+        StreamSupport.stream(historyRepo.findAll().spliterator(), false).toList();
+    assertEquals(1, historys.size());
+    assertEquals(3, historys.get(0).prioriteetti);
+
+    hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("wanhaHakijaryhmaOid").orElseThrow();
+    hakijaryhma.prioriteetti = 6;
+    hakijaryhmaDAO.create(hakijaryhma, auditUser);
+
+    historys = StreamSupport.stream(historyRepo.findAll().spliterator(), false).toList();
+    assertEquals(2, historys.size());
+    assertTrue(historys.stream().map(h -> h.prioriteetti).toList().containsAll(List.of(3, 8)));
   }
 
   @Test
   public void deletingHakijaryhmaInsertsRowToHistory() {
     Hakijaryhma hakijaryhma =
-      new Hakijaryhma(Arrays.asList(createJonosija("ruh-nuk"), createJonosija("sil-mak")));
+        new Hakijaryhma(Arrays.asList(createJonosija("ruh-nuk"), createJonosija("sil-mak")));
     hakijaryhma.hakijaryhmaOid = "wanhaHakijaryhmaOid";
     hakijaryhmaDAO.create(hakijaryhma, auditUser);
 
