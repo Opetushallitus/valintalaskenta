@@ -10,6 +10,7 @@ import fi.vm.sade.valintalaskenta.domain.valinta.FunktioTulosContainer;
 import fi.vm.sade.valintalaskenta.domain.valinta.SyotettyArvoContainer;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import javax.sql.DataSource;
 import org.postgresql.util.PGobject;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,7 +56,9 @@ class DatabaseConfiguration extends AbstractJdbcConfiguration {
       @Value("${valintalaskenta-laskenta-service.postgresql.user}") final String user,
       @Value("${valintalaskenta-laskenta-service.postgresql.password}") final String password,
       @Value("${valintalaskenta-laskenta-service.postgresql.driver}")
-          final String driverClassName) {
+          final String driverClassName,
+      @Value("${valintalaskenta-laskenta-service.postgresql.idletimeoutminutes:10}") final String idleTimeout,
+      @Value("${valintalaskenta-laskenta-service.postgresql.minidle:0}") final String minIdle) {
     final HikariConfig config = new HikariConfig();
     config.setPoolName("springHikariCP");
     config.setConnectionTestQuery("SELECT 1");
@@ -64,6 +67,8 @@ class DatabaseConfiguration extends AbstractJdbcConfiguration {
     config.setMaximumPoolSize(Integer.parseInt(maxPoolSize));
     config.setMaxLifetime(Long.parseLong(maxWait));
     config.setLeakDetectionThreshold(Long.parseLong(leaksThreshold));
+    config.setIdleTimeout(TimeUnit.MINUTES.toMillis(Long.parseLong(idleTimeout)));
+    config.setMinimumIdle(Integer.parseInt(minIdle));
     config.setRegisterMbeans(false);
     final Properties dsProperties = new Properties();
     dsProperties.setProperty("url", url);

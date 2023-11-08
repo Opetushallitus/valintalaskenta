@@ -69,6 +69,8 @@ valintalaskenta-laskenta-service:
     password: {{host_postgresql_valintalaskenta_app_password}}
     maxactive: {{host_postgresql_valintalaskenta_max_active}}
     maxwait: {{host_postgresql_valintalaskenta_max_wait}}
+    idletimeoutminutes: 2
+    minidle: 0
     maxlifetimemillis: 60000
     leakdetectionthresholdmillis: 1800000
     driver: org.postgresql.Driver
