@@ -55,9 +55,9 @@ class DatabaseConfiguration extends AbstractJdbcConfiguration {
       @Value("${valintalaskenta-laskenta-service.postgresql.url}") final String url,
       @Value("${valintalaskenta-laskenta-service.postgresql.user}") final String user,
       @Value("${valintalaskenta-laskenta-service.postgresql.password}") final String password,
-      @Value("${valintalaskenta-laskenta-service.postgresql.driver}")
-          final String driverClassName,
-      @Value("${valintalaskenta-laskenta-service.postgresql.idletimeoutminutes:10}") final String idleTimeout,
+      @Value("${valintalaskenta-laskenta-service.postgresql.driver}") final String driverClassName,
+      @Value("${valintalaskenta-laskenta-service.postgresql.idletimeoutminutes:10}")
+          final String idleTimeout,
       @Value("${valintalaskenta-laskenta-service.postgresql.minidle:0}") final String minIdle) {
     final HikariConfig config = new HikariConfig();
     config.setPoolName("springHikariCP");
