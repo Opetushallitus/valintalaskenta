@@ -57,6 +57,7 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
   public void create(Hakijaryhma hakijaryhma, User auditUser) {
     // TODO: necessary?
     // saveJonosijat(hakijaryhma, auditUser);
+    hakijaryhma.id = null; // ensures insert and no update
     auditLog.log(
         LaskentaAudit.AUDIT,
         auditUser,
@@ -68,9 +69,11 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
   }
 
   @Override
+  @Transactional
   public void createWithoutAuditLogging(Hakijaryhma hakijaryhma) {
     // TODO: necessary?
     // saveJonosijatWithoutAuditLogging(hakijaryhma);
+    hakijaryhma.id = null; // ensures insert and no update
     repository.save(hakijaryhma);
   }
 

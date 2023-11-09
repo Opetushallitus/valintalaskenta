@@ -73,7 +73,7 @@ public class HakijaryhmaDAOTest extends AbstractIntegrationTest {
 
     hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("wanhaHakijaryhmaOid").orElseThrow();
     hakijaryhma.prioriteetti = 8;
-    hakijaryhmaDAO.create(hakijaryhma, auditUser);
+    hakijaryhmaRepository.save(hakijaryhma);
 
     List<HakijaryhmaHistory> historys =
         StreamSupport.stream(historyRepo.findAll().spliterator(), false).toList();
@@ -82,7 +82,7 @@ public class HakijaryhmaDAOTest extends AbstractIntegrationTest {
 
     hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("wanhaHakijaryhmaOid").orElseThrow();
     hakijaryhma.prioriteetti = 6;
-    hakijaryhmaDAO.create(hakijaryhma, auditUser);
+    hakijaryhmaRepository.save(hakijaryhma);
 
     historys = StreamSupport.stream(historyRepo.findAll().spliterator(), false).toList();
     assertEquals(2, historys.size());
