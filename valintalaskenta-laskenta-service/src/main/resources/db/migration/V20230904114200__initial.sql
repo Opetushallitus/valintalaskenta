@@ -39,6 +39,7 @@ CREATE TABLE hakutoive (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     hakukohde_oid varchar(127) NOT NULL,
     valintakoe_osallistuminen uuid,
+    created_at timestamp with time zone default now(),
     CONSTRAINT fk_valintakoeosallistuminen
         FOREIGN KEY(valintakoe_osallistuminen)
             REFERENCES valintakoe_osallistuminen(id)
@@ -52,6 +53,7 @@ CREATE TABLE valintakoe_valinnanvaihe (
     valinnanvaihe_oid varchar(127) NOT NULL,
     valinnan_vaihe_jarjestysluku int,
     hakutoive uuid not null,
+    created_at timestamp with time zone default now(),
     CONSTRAINT fk_hakutoive
         FOREIGN KEY(hakutoive)
             REFERENCES Hakutoive(id)
@@ -75,6 +77,7 @@ CREATE TABLE valintakoe (
     laskenta_tila varchar(255),
     laskenta_tulos boolean,
     tekninen_kuvaus text,
+    created_at timestamp with time zone default now(),
     CONSTRAINT fk_valinnanvaihe
         FOREIGN KEY(valintakoe_valinnanvaihe)
             REFERENCES valintakoe_valinnanVaihe(id)

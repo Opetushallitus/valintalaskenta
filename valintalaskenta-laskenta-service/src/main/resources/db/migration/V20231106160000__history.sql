@@ -185,11 +185,13 @@ begin
         id,
         hakukohde_oid,
         valintakoe_osallistuminen,
+        created_at,
         transaction_id
     ) values (
              old.id,
              old.hakukohde_oid,
              old.valintakoe_osallistuminen,
+             old.created_at,
              old.transaction_id
              );
     return null;
@@ -221,12 +223,14 @@ begin
         valinnanvaihe_oid,
         valinnan_vaihe_jarjestysluku,
         hakutoive,
+        created_at,
         transaction_id
     ) values (
              old.id,
              old.valinnanvaihe_oid,
              old.valinnan_vaihe_jarjestysluku,
              old.hakutoive,
+             old.created_at,
              old.transaction_id
              );
     return null;
@@ -270,6 +274,7 @@ begin
         laskenta_tila,
         laskenta_tulos,
         tekninen_kuvaus,
+        created_at,
         transaction_id
     ) values (
              old.id,
@@ -289,6 +294,7 @@ begin
              old.laskenta_tila,
              old.laskenta_tulos,
              old.tekninen_kuvaus,
+             old.created_at,
              old.transaction_id
              );
     return null;
