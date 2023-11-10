@@ -32,4 +32,6 @@ public class HakijaryhmaHistory {
   public String hakijaryhmatyyppiKoodiuri;
 
   public String valintatapajonoOid;
+
+  public Object systemTime;
 }

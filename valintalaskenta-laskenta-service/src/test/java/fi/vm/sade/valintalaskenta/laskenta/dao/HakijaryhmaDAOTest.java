@@ -2,8 +2,7 @@ package fi.vm.sade.valintalaskenta.laskenta.dao;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
@@ -79,6 +78,7 @@ public class HakijaryhmaDAOTest extends AbstractIntegrationTest {
         StreamSupport.stream(historyRepo.findAll().spliterator(), false).toList();
     assertEquals(1, historys.size());
     assertEquals(3, historys.get(0).prioriteetti);
+    assertNotNull(historys.get(0).systemTime);
 
     hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("wanhaHakijaryhmaOid").orElseThrow();
     hakijaryhma.prioriteetti = 6;
@@ -100,7 +100,10 @@ public class HakijaryhmaDAOTest extends AbstractIntegrationTest {
 
     hakijaryhmaDAO.poistaHakijaryhma(hakijaryhma);
 
-    assertEquals(1, historyRepo.findAll().spliterator().estimateSize());
+    List<HakijaryhmaHistory> historys =
+        StreamSupport.stream(historyRepo.findAll().spliterator(), false).toList();
+    assertEquals(1, historys.size());
+    assertNotNull(historys.get(0).systemTime);
   }
 
   private Hakijaryhma createHakijaryhma(String oid, int prioriteetti) {

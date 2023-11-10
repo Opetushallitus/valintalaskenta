@@ -1,6 +1,7 @@
 ALTER TABLE harkinnanvarainen_hyvaksyminen ADD COLUMN transaction_id bigint not null default txid_current();
 
 CREATE TABLE harkinnanvarainen_hyvaksyminen_history (like harkinnanvarainen_hyvaksyminen);
+ALTER TABLE harkinnanvarainen_hyvaksyminen_history ADD COLUMN system_time tstzrange not null;
 
 CREATE OR REPLACE FUNCTION update_harkinnanvarainen_hyvaksyminen_history() returns trigger as
 $$
@@ -12,7 +13,8 @@ begin
         hakukohde_oid,
         hakemus_oid,
         haku_oid,
-        transaction_id
+        transaction_id,
+        system_time
     ) values (
         old.id,
         old.created_at,
@@ -20,7 +22,8 @@ begin
         old.hakukohde_oid,
         old.hakemus_oid,
         old.haku_oid,
-        old.transaction_id
+        old.transaction_id,
+        tstzrange(old.created_at, now(), '[)')
     );
     return null;
 end;
@@ -41,6 +44,7 @@ execute procedure update_harkinnanvarainen_hyvaksyminen_history();
 ALTER TABLE hakijaryhma ADD COLUMN transaction_id bigint not null default txid_current();
 
 CREATE TABLE hakijaryhma_history (like hakijaryhma);
+ALTER TABLE hakijaryhma_history ADD COLUMN system_time tstzrange not null;
 
 CREATE OR REPLACE FUNCTION update_hakijaryhma_history() returns trigger as
 $$
@@ -59,7 +63,8 @@ begin
         kaytetaan_ryhmaan_kuuluvia,
         hakijaryhmatyyppi_koodiuri,
         valintatapajono_oid,
-        transaction_id
+        transaction_id,
+        system_time
     ) values (
          old.id,
          old.hakijaryhma_oid,
@@ -74,7 +79,8 @@ begin
          old.kaytetaan_ryhmaan_kuuluvia,
          old.hakijaryhmatyyppi_koodiuri,
          old.valintatapajono_oid,
-         old.transaction_id
+         old.transaction_id,
+         tstzrange(old.created_at, now(), '[)')
      );
     return null;
 end;
@@ -95,6 +101,7 @@ execute procedure update_hakijaryhma_history();
 ALTER TABLE valinnanvaihe ADD COLUMN transaction_id bigint not null default txid_current();
 
 CREATE TABLE valinnanvaihe_history (like valinnanvaihe);
+ALTER TABLE valinnanvaihe_history ADD COLUMN system_time tstzrange not null;
 
 CREATE OR REPLACE FUNCTION update_valinnanvaihe_history() returns trigger as
 $$
@@ -108,7 +115,8 @@ begin
         valinnanvaihe_oid,
         tarjoaja_oid,
         nimi,
-        transaction_id
+        transaction_id,
+        system_time
     ) values (
              old.id,
              old.jarjestysnumero,
@@ -118,7 +126,8 @@ begin
              old.valinnanvaihe_oid,
              old.tarjoaja_oid,
              old.nimi,
-             old.transaction_id
+             old.transaction_id,
+             tstzrange(old.created_at, now(), '[)')
      );
     return null;
 end;
@@ -139,6 +148,7 @@ execute procedure update_valinnanvaihe_history();
 ALTER TABLE valintakoe_osallistuminen ADD COLUMN transaction_id bigint not null default txid_current();
 
 CREATE TABLE valintakoe_osallistuminen_history (like valintakoe_osallistuminen);
+ALTER TABLE valintakoe_osallistuminen_history ADD COLUMN system_time tstzrange not null;
 
 CREATE OR REPLACE FUNCTION update_valintakoe_osallistuminen_history() returns trigger as
 $$
@@ -149,14 +159,16 @@ begin
         hakemus_oid,
         hakija_oid,
         created_at,
-        transaction_id
+        transaction_id,
+        system_time
     ) values (
              old.id,
              old.haku_oid,
              old.hakemus_oid,
              old.hakija_oid,
              old.created_at,
-             old.transaction_id
+             old.transaction_id,
+             tstzrange(old.created_at, now(), '[)')
              );
     return null;
 end;
@@ -177,6 +189,7 @@ execute procedure update_valintakoe_osallistuminen_history();
 ALTER TABLE hakutoive ADD COLUMN transaction_id bigint not null default txid_current();
 
 CREATE TABLE hakutoive_history (like hakutoive);
+ALTER TABLE hakutoive_history ADD COLUMN system_time tstzrange not null;
 
 CREATE OR REPLACE FUNCTION update_hakutoive_history() returns trigger as
 $$
@@ -186,13 +199,15 @@ begin
         hakukohde_oid,
         valintakoe_osallistuminen,
         created_at,
-        transaction_id
+        transaction_id,
+        system_time
     ) values (
              old.id,
              old.hakukohde_oid,
              old.valintakoe_osallistuminen,
              old.created_at,
-             old.transaction_id
+             old.transaction_id,
+             tstzrange(old.created_at, now(), '[)')
              );
     return null;
 end;
@@ -214,6 +229,7 @@ execute procedure update_hakutoive_history();
 ALTER TABLE valintakoe_valinnanvaihe ADD COLUMN transaction_id bigint not null default txid_current();
 
 CREATE TABLE valintakoe_valinnanvaihe_history (like valintakoe_valinnanvaihe);
+ALTER TABLE valintakoe_valinnanvaihe_history ADD COLUMN system_time tstzrange not null;
 
 CREATE OR REPLACE FUNCTION update_valintakoe_valinnanvaihe_history() returns trigger as
 $$
@@ -224,14 +240,16 @@ begin
         valinnan_vaihe_jarjestysluku,
         hakutoive,
         created_at,
-        transaction_id
+        transaction_id,
+        system_time
     ) values (
              old.id,
              old.valinnanvaihe_oid,
              old.valinnan_vaihe_jarjestysluku,
              old.hakutoive,
              old.created_at,
-             old.transaction_id
+             old.transaction_id,
+             tstzrange(old.created_at, now(), '[)')
              );
     return null;
 end;
@@ -252,6 +270,7 @@ execute procedure update_valintakoe_valinnanvaihe_history();
 ALTER TABLE valintakoe ADD COLUMN transaction_id bigint not null default txid_current();
 
 CREATE TABLE valintakoe_history (like valintakoe);
+ALTER TABLE valintakoe_history ADD COLUMN system_time tstzrange not null;
 
 CREATE OR REPLACE FUNCTION update_valintakoe_history() returns trigger as
 $$
@@ -275,7 +294,8 @@ begin
         laskenta_tulos,
         tekninen_kuvaus,
         created_at,
-        transaction_id
+        transaction_id,
+        system_time
     ) values (
              old.id,
              old.valintakoe_oid,
@@ -295,7 +315,8 @@ begin
              old.laskenta_tulos,
              old.tekninen_kuvaus,
              old.created_at,
-             old.transaction_id
+             old.transaction_id,
+             tstzrange(old.created_at, now(), '[)')
              );
     return null;
 end;
@@ -316,6 +337,7 @@ execute procedure update_valintakoe_history();
 ALTER TABLE valintatapajono ADD COLUMN transaction_id bigint not null default txid_current();
 
 CREATE TABLE valintatapajono_history (like valintatapajono);
+ALTER TABLE valintatapajono_history ADD COLUMN system_time tstzrange not null;
 
 CREATE OR REPLACE FUNCTION update_valintatapajono_history() returns trigger as
 $$
@@ -338,7 +360,8 @@ begin
         valinnanvaihe_key,
         sijoitteluajo_id,
         poissa_oleva_taytto,
-        transaction_id
+        transaction_id,
+        system_time
     ) values (
              old.id,
              old.created_at,
@@ -357,7 +380,8 @@ begin
              old.valinnanvaihe_key,
              old.sijoitteluajo_id,
              old.poissa_oleva_taytto,
-             old.transaction_id
+             old.transaction_id,
+             tstzrange(old.created_at, now(), '[)')
              );
     return null;
 end;
@@ -378,6 +402,7 @@ execute procedure update_valintatapajono_history();
 ALTER TABLE jonosija ADD COLUMN transaction_id bigint not null default txid_current();
 
 CREATE TABLE jonosija_history (like jonosija);
+ALTER TABLE jonosija_history ADD COLUMN system_time tstzrange not null;
 
 CREATE OR REPLACE FUNCTION update_jonosija_history() returns trigger as
 $$
@@ -394,7 +419,8 @@ begin
         hakijaryhma,
         funktio_tulokset,
         syotetyt_arvot,
-        transaction_id
+        transaction_id,
+        system_time
     ) values (
              old.id,
              old.created_at,
@@ -407,7 +433,8 @@ begin
              old.hakijaryhma,
              old.funktio_tulokset,
              old.syotetyt_arvot,
-             old.transaction_id
+             old.transaction_id,
+             tstzrange(old.created_at, now(), '[)')
              );
     return null;
 end;
@@ -429,6 +456,7 @@ execute procedure update_jonosija_history();
 ALTER TABLE muokattu_jonosija ADD COLUMN transaction_id bigint not null default txid_current();
 
 CREATE TABLE muokattu_jonosija_history (like muokattu_jonosija);
+ALTER TABLE muokattu_jonosija_history ADD COLUMN system_time tstzrange not null;
 
 CREATE OR REPLACE FUNCTION update_muokattu_jonosija_history() returns trigger as
 $$
@@ -444,7 +472,8 @@ begin
         prioriteetti,
         selite,
         muutos,
-        transaction_id
+        transaction_id,
+        system_time
     ) values (
              old.id,
              old.created_at,
@@ -456,7 +485,8 @@ begin
              old.prioriteetti,
              old.selite,
              old.muutos,
-             old.transaction_id
+             old.transaction_id,
+             tstzrange(old.created_at, now(), '[)')
              );
     return null;
 end;
@@ -478,6 +508,7 @@ execute procedure update_muokattu_jonosija_history();
 ALTER TABLE jarjestyskriteeritulos ADD COLUMN transaction_id bigint not null default txid_current();
 
 CREATE TABLE jarjestyskriteeritulos_history (like jarjestyskriteeritulos);
+ALTER TABLE jarjestyskriteeritulos_history ADD COLUMN system_time tstzrange not null;
 
 CREATE OR REPLACE FUNCTION update_jarjestyskriteeritulos_history() returns trigger as
 $$
@@ -496,7 +527,8 @@ begin
         jonosija,
         jonosija_key,
         muokattu_jonosija,
-        transaction_id
+        transaction_id,
+        system_time
     ) values (
                  old.id,
                  old.created_at,
@@ -511,7 +543,8 @@ begin
                  old.jonosija,
                  old.jonosija_key,
                  old.muokattu_jonosija,
-                 old.transaction_id
+                 old.transaction_id,
+                 tstzrange(old.created_at, now(), '[)')
              );
     return null;
 end;
