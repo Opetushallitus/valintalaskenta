@@ -26,6 +26,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.AvainArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
+import fi.vm.sade.valintalaskenta.domain.testdata.TestEntityDataUtil;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
@@ -39,7 +40,6 @@ import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintakoelaskennanKumulatiivisetTulokset;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinnanvaiheKasittelija;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.ValintakoelaskentaSuorittajaService;
-import fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil;
 import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
 import java.io.IOException;
 import java.util.*;
@@ -1020,21 +1020,21 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
     final String valintakoetunniste = "kielikoe_tunniste";
 
     valinnanvaiheRepository.save(
-        TestDataUtil.luoValinnanvaiheEntity(
+        TestEntityDataUtil.luoValinnanvaiheEntity(
             hakuOid,
             hakukohdeOid,
             0,
             "vv2",
             List.of(
-                TestDataUtil.luoValintatapaJonoEntity(
+                TestEntityDataUtil.luoValintatapaJonoEntity(
                     10,
                     Set.of(
-                        TestDataUtil.luoJonosijaEntity(
+                        TestEntityDataUtil.luoJonosijaEntity(
                             hakemusOid,
                             1,
                             false,
                             List.of(
-                                TestDataUtil.luoJarjestyskriteeritulosEntity(
+                                TestEntityDataUtil.luoJarjestyskriteeritulosEntity(
                                     0.0, 0, JarjestyskriteerituloksenTila.HYLATTY)))),
                     "Ei hakukelpoiset",
                     0,
@@ -1089,38 +1089,41 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
     final String valintakoetunniste = "koe1";
 
     Valintatapajono jono =
-        luoValintatapaJonoEntity(
+        TestEntityDataUtil.luoValintatapaJonoEntity(
             10,
             Sets.newHashSet(
-                luoJonosijaEntity(
+                TestEntityDataUtil.luoJonosijaEntity(
                     "1.2.246.562.11.00000072672",
                     5,
                     false,
-                    List.of(luoJarjestyskriteeritulosEntity(0.0, 0, HYVAKSYTTAVISSA))),
-                luoJonosijaEntity(
+                    List.of(
+                        TestEntityDataUtil.luoJarjestyskriteeritulosEntity(
+                            0.0, 0, HYVAKSYTTAVISSA))),
+                TestEntityDataUtil.luoJonosijaEntity(
                     hakemusOid,
                     1,
                     false,
                     List.of(
-                        luoJarjestyskriteeritulosEntity(
+                        TestEntityDataUtil.luoJarjestyskriteeritulosEntity(
                             0.0, 0, JarjestyskriteerituloksenTila.HYLATTY)))),
             "Harkinnanvaraisten käsittelyvaiheen valintatapajono",
             0,
             Tasasijasaanto.ARVONTA,
             "1388739480159-1173947553521563587");
 
-    Valinnanvaihe vaihe = luoValinnanvaiheEntity(hakuOid, hakukohdeOid, 0, "vv2", List.of(jono));
+    Valinnanvaihe vaihe =
+        TestEntityDataUtil.luoValinnanvaiheEntity(hakuOid, hakukohdeOid, 0, "vv2", List.of(jono));
     valinnanvaiheRepository.save(vaihe);
 
     Hakutoive toive =
-        luoHakutoiveEntity(
+        TestEntityDataUtil.luoHakutoiveEntity(
             hakukohdeOid,
             Sets.newHashSet(
-                luoValintakoeValinnanvaiheEntity(
+                TestEntityDataUtil.luoValintakoeValinnanvaiheEntity(
                     1,
                     "13887394798212581302211576347831",
                     List.of(
-                        luoValintakoeEntity(
+                        TestEntityDataUtil.luoValintakoeEntity(
                             "13887394815186315041955335611484",
                             "kielikoe_tunniste",
                             EI_OSALLISTU,
@@ -1195,15 +1198,15 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
             "hakukohdeKutsunKohde2");
 
     Valintatapajono jono1 =
-        luoValintatapaJonoEntity(
+        TestEntityDataUtil.luoValintatapaJonoEntity(
             10,
             Sets.newHashSet(
-                luoJonosijaEntity(
+                TestEntityDataUtil.luoJonosijaEntity(
                     hakemusOid,
                     1,
                     false,
                     List.of(
-                        luoJarjestyskriteeritulosEntity(
+                        TestEntityDataUtil.luoJarjestyskriteeritulosEntity(
                             0.0, 0, JarjestyskriteerituloksenTila.HYLATTY)))),
             "Harkinnanvaraisten käsittelyvaiheen valintatapajono",
             0,
@@ -1211,19 +1214,20 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
             "1388739480159-1173947553521563587");
 
     Valinnanvaihe vaihe1 =
-        luoValinnanvaiheEntity(hakuOid, hakukohdeOid1, 0, "vv2_kohde1", List.of(jono1));
+        TestEntityDataUtil.luoValinnanvaiheEntity(
+            hakuOid, hakukohdeOid1, 0, "vv2_kohde1", List.of(jono1));
     valinnanvaiheRepository.save(vaihe1);
 
     Valintatapajono jono2 =
-        luoValintatapaJonoEntity(
+        TestEntityDataUtil.luoValintatapaJonoEntity(
             10,
             Sets.newHashSet(
-                luoJonosijaEntity(
+                TestEntityDataUtil.luoJonosijaEntity(
                     hakemusOid,
                     2,
                     false,
                     List.of(
-                        luoJarjestyskriteeritulosEntity(
+                        TestEntityDataUtil.luoJarjestyskriteeritulosEntity(
                             0.0, 0, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)))),
             "Harkinnanvaraisten käsittelyvaiheen valintatapajono",
             0,
@@ -1231,7 +1235,8 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
             "1388739480159-117394755352156358");
 
     Valinnanvaihe vaihe2 =
-        luoValinnanvaiheEntity(hakuOid, hakukohdeOid2, 0, "vv2_kohde2", List.of(jono2));
+        TestEntityDataUtil.luoValinnanvaiheEntity(
+            hakuOid, hakukohdeOid2, 0, "vv2_kohde2", List.of(jono2));
     valinnanvaiheRepository.save(vaihe2);
 
     valintakoelaskentaSuorittajaService.laske(
@@ -1296,40 +1301,40 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
       throws JsonSyntaxException, IOException {
     final String hakukohde1 = "1.2.246.562.5.85532589612", hakukohde2 = "1.2.246.562.5.37009438716";
     Hakutoive toive =
-        luoHakutoiveEntity(
+        TestEntityDataUtil.luoHakutoiveEntity(
             hakukohde1,
             Sets.newHashSet(
-                luoValintakoeValinnanvaiheEntity(
+                TestEntityDataUtil.luoValintakoeValinnanvaiheEntity(
                     1,
                     "1395127862819-2325484147265742138",
                     List.of(
-                        luoValintakoeEntity(
+                        TestEntityDataUtil.luoValintakoeEntity(
                             "1395127863035-4341500380094392330",
                             "kielikoe_fi",
                             EI_OSALLISTU,
                             false,
                             "HYVAKSYTTAVISSA"),
-                        luoValintakoeEntity(
+                        TestEntityDataUtil.luoValintakoeEntity(
                             "1395127863037-3426800498277516554",
                             "1_2_246_562_5_85532589612_urheilija_lisapiste",
                             EI_OSALLISTU,
                             false,
                             "HYVAKSYTTAVISSA"),
-                        luoValintakoeEntity(
+                        TestEntityDataUtil.luoValintakoeEntity(
                             "1395127863046-7261761979692934156",
                             "Eläintenhoidon koulutusohjelma, pk (Maatalousalan perustutkinto), pääsy- ja soveltuvuuskoe",
                             OSALLISTUU,
                             true,
                             "HYVAKSYTTAVISSA")))));
     Hakutoive toive2 =
-        luoHakutoiveEntity(
+        TestEntityDataUtil.luoHakutoiveEntity(
             hakukohde2,
             Sets.newHashSet(
-                luoValintakoeValinnanvaiheEntity(
+                TestEntityDataUtil.luoValintakoeValinnanvaiheEntity(
                     1,
                     "1395127824348-1049605647060825146",
                     List.of(
-                        luoValintakoeEntity(
+                        TestEntityDataUtil.luoValintakoeEntity(
                             "1401778607536-1848915787886635271",
                             "Eläintenhoidon koulutusohjelma, pk (Maatalousalan perustutkinto), pääsy- ja soveltuvuuskoe",
                             OSALLISTUU,
@@ -1535,20 +1540,20 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
     final String hakemusOid2 = "1.2.246.562.11.00001223556";
 
     Hakutoive toive =
-        luoHakutoiveEntity(
+        TestEntityDataUtil.luoHakutoiveEntity(
             hakukohdeOid,
             Sets.newHashSet(
-                luoValintakoeValinnanvaiheEntity(
+                TestEntityDataUtil.luoValintakoeValinnanvaiheEntity(
                     2,
                     "1395127824348-1049605647060825146",
                     List.of(
-                        luoValintakoeEntity(
+                        TestEntityDataUtil.luoValintakoeEntity(
                             "1395127863037-3426800498277516554",
                             "SOTE1_kaikkiosiot",
                             EI_OSALLISTU,
                             null,
                             "HYLATTY"),
-                        luoValintakoeEntity(
+                        TestEntityDataUtil.luoValintakoeEntity(
                             "1401778607536-1848915787886635271",
                             "SOTEKOE_VK_RYHMA1",
                             EI_OSALLISTU,
@@ -1556,14 +1561,14 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
                             "HYLATTY")))));
 
     Hakutoive toive2 =
-        luoHakutoiveEntity(
+        TestEntityDataUtil.luoHakutoiveEntity(
             "1.2.246.562.5.37009438716",
             Sets.newHashSet(
-                luoValintakoeValinnanvaiheEntity(
+                TestEntityDataUtil.luoValintakoeValinnanvaiheEntity(
                     2,
                     "1395127862819-2325484147265742138",
                     List.of(
-                        luoValintakoeEntity(
+                        TestEntityDataUtil.luoValintakoeEntity(
                             "1395127863046-7261761979692934156",
                             "SOTE1_kaikkiosiot",
                             OSALLISTUU,
@@ -1578,20 +1583,20 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
     valintakoeOsallistuminenRepository.save(osa);
 
     Hakutoive toive3 =
-        luoHakutoiveEntity(
+        TestEntityDataUtil.luoHakutoiveEntity(
             hakukohdeOid,
             Sets.newHashSet(
-                luoValintakoeValinnanvaiheEntity(
+                TestEntityDataUtil.luoValintakoeValinnanvaiheEntity(
                     2,
                     "1395127824348-1049605647060825149",
                     List.of(
-                        luoValintakoeEntity(
+                        TestEntityDataUtil.luoValintakoeEntity(
                             "1395127863037-3426800498277516554",
                             "SOTE1_kaikkiosiot",
                             EI_OSALLISTU,
                             null,
                             "HYLATTY"),
-                        luoValintakoeEntity(
+                        TestEntityDataUtil.luoValintakoeEntity(
                             "1401778607536-1848915787886635271",
                             "SOTEKOE_VK_RYHMA1",
                             EI_OSALLISTU,
@@ -1629,29 +1634,32 @@ public class ValintakoelaskentaSuorittajaServiceIntegrationTest extends Abstract
     final String hakijaOid = "1.2.246.562.24.43656814814";
 
     valinnanvaiheRepository.save(
-        TestDataUtil.luoValinnanvaiheEntity(
+        TestEntityDataUtil.luoValinnanvaiheEntity(
             hakuOid,
             hakukohdeOid,
             1,
             "vv1",
             Arrays.asList(
-                TestDataUtil.luoValintatapaJonoEntity(
+                TestEntityDataUtil.luoValintatapaJonoEntity(
                     0,
-                    Set.of(luoHylattyJonosija(hakemusOid, hakijaOid)),
+                    Set.of(TestEntityDataUtil.luoHylattyJonosija(hakemusOid, hakijaOid)),
                     "Ammattitutkinnolla ja ulkomaisella tutkinnolla hakevat",
                     0,
                     Tasasijasaanto.YLITAYTTO,
                     "vtpj-1"),
-                TestDataUtil.luoValintatapaJonoEntity(
+                TestEntityDataUtil.luoValintatapaJonoEntity(
                     245,
-                    Set.of(luoHylattyJonosijaValisijoittelussa(hakemusOid, hakijaOid)),
+                    Set.of(
+                        TestEntityDataUtil.luoHylattyJonosijaValisijoittelussa(
+                            hakemusOid, hakijaOid)),
                     "Ylioppilaat ja ammatillisella perustutkinnolla hakevat",
                     1,
                     Tasasijasaanto.YLITAYTTO,
                     "vtpj-2"))));
 
     valintakoeOsallistuminenRepository.save(
-        luoValintakoeOsallistuminen(hakemusOid, hakukohdeOid, hakuOid, hakijaOid, false));
+        TestEntityDataUtil.luoValintakoeOsallistuminen(
+            hakemusOid, hakukohdeOid, hakuOid, hakijaOid, false));
 
     ValintakoeOsallistuminen osallistuminen =
         valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid);

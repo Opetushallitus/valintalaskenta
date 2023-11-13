@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
+import fi.vm.sade.valintalaskenta.domain.testdata.TestEntityDataUtil;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
-import fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil;
 import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
@@ -26,25 +26,25 @@ public class TulosValintakoeOsallistuminenDAOTest extends AbstractIntegrationTes
 
     final String hakemusOid = "hakemusOid1";
     valintakoeOsallistuminenRepository.save(
-        TestDataUtil.luoValintakoeOsallistuminen(
+        TestEntityDataUtil.luoValintakoeOsallistuminen(
             hakuOid,
             "hakija1",
             hakemusOid,
             Set.of(
-                TestDataUtil.luoHakutoiveEntity(
+                TestEntityDataUtil.luoHakutoiveEntity(
                     "hakukohde1",
                     Set.of(
-                        TestDataUtil.luoValintakoeValinnanvaiheEntity(
+                        TestEntityDataUtil.luoValintakoeValinnanvaiheEntity(
                             0,
                             "vaihe1",
                             List.of(
-                                TestDataUtil.luoValintakoeEntity(
+                                TestEntityDataUtil.luoValintakoeEntity(
                                     "vk1", "vk1", osallistuminen, false, null))),
-                        TestDataUtil.luoValintakoeValinnanvaiheEntity(
+                        TestEntityDataUtil.luoValintakoeValinnanvaiheEntity(
                             0,
                             "vaihe2",
                             List.of(
-                                TestDataUtil.luoValintakoeEntity(
+                                TestEntityDataUtil.luoValintakoeEntity(
                                     "vk2", "vk2", osallistuminen, false, null))))))));
 
     List<ValintakoeOsallistuminen> osallistumiset =
