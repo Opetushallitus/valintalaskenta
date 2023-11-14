@@ -44,4 +44,84 @@ public class Hakijaryhma {
     this.jonosija.clear();
     this.jonosija.addAll(jonosija);
   }
+
+  public UUID getId() {
+    return id;
+  }
+
+  public void setId(UUID id) {
+    this.id = id;
+  }
+
+  public Date getCreatedAt() {
+    return createdAt;
+  }
+
+  public int getKiintio() {
+    return kiintio;
+  }
+
+  public void setKiintio(int kiintio) {
+    this.kiintio = kiintio;
+  }
+
+  public int getPrioriteetti() {
+    return prioriteetti;
+  }
+
+  public void setPrioriteetti(int prioriteetti) {
+    this.prioriteetti = prioriteetti;
+  }
+
+  public Set<Jonosija> getJonosija() {
+    return jonosija;
+  }
+
+  public String getHakijaryhmaOid() {
+    return hakijaryhmaOid;
+  }
+
+  public void setHakijaryhmaOid(String hakijaryhmaOid) {
+    this.hakijaryhmaOid = hakijaryhmaOid;
+  }
+
+  public String getHakijaryhmatyyppiKoodiuri() {
+    return hakijaryhmatyyppiKoodiuri;
+  }
+
+  public void setHakijaryhmatyyppiKoodiuri(String hakijaryhmatyyppiKoodiuri) {
+    this.hakijaryhmatyyppiKoodiuri = hakijaryhmatyyppiKoodiuri;
+  }
+
+  public String getHakukohdeOid() {
+    return hakukohdeOid;
+  }
+
+  public void setHakukohdeOid(String hakukohdeOid) {
+    this.hakukohdeOid = hakukohdeOid;
+  }
+
+  public String getKuvaus() {
+    return kuvaus;
+  }
+
+  public void setKuvaus(String kuvaus) {
+    this.kuvaus = kuvaus;
+  }
+
+  public String getNimi() {
+    return nimi;
+  }
+
+  public void setNimi(String nimi) {
+    this.nimi = nimi;
+  }
+
+  public String getValintatapajonoOid() {
+    return valintatapajonoOid;
+  }
+
+  public void setValintatapajonoOid(String valintatapajonoOid) {
+    this.valintatapajonoOid = valintatapajonoOid;
+  }
 }
