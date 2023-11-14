@@ -73,7 +73,7 @@ public class Hakijaryhma {
     this.prioriteetti = prioriteetti;
   }
 
-  public Set<Jonosija> getJonosija() {
+  public Set<Jonosija> getJonosijat() {
     return jonosija;
   }
 
@@ -123,5 +123,17 @@ public class Hakijaryhma {
 
   public void setValintatapajonoOid(String valintatapajonoOid) {
     this.valintatapajonoOid = valintatapajonoOid;
+  }
+
+  public boolean isKaytaKaikki() {
+    return kaytaKaikki;
+  }
+
+  public boolean isKaytetaanRyhmaanKuuluvia() {
+    return kaytetaanRyhmaanKuuluvia;
+  }
+
+  public boolean isTarkkaKiintio() {
+    return tarkkaKiintio;
   }
 }

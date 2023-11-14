@@ -5,11 +5,13 @@ import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
 
 import fi.vm.sade.auditlog.User;
+import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.laskenta.dao.impl.HakijaryhmaDAOImpl;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.HakijaryhmaHistoryRepository;
 import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
+import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import java.util.*;
 import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +23,9 @@ public class HakijaryhmaDAOTest extends AbstractIntegrationTest {
   @Autowired private HakijaryhmaDAOImpl hakijaryhmaDAO;
 
   @Autowired private HakijaryhmaHistoryRepository historyRepo;
+
+  @Autowired private ValintalaskentaModelMapper modelMapper;
+
   private final User auditUser = null;
 
   private static final String HAKUKOHDE_OID = "1.2.246.562.20.18895322503";
@@ -31,7 +36,7 @@ public class HakijaryhmaDAOTest extends AbstractIntegrationTest {
   }
 
   @Test
-  public void testSavingAndLoadingNewHakijaryhma() {
+  public void savingAndLoadingNewHakijaryhma() {
     Hakijaryhma hakijaryhma =
         new Hakijaryhma(Arrays.asList(createJonosija("ruh-nuk"), createJonosija("sil-mak")));
     hakijaryhma.hakijaryhmaOid = "uusiHakijaryhmaOid";
@@ -39,6 +44,20 @@ public class HakijaryhmaDAOTest extends AbstractIntegrationTest {
     Hakijaryhma savedHakijaryhma = hakijaryhmaDAO.haeHakijaryhma("uusiHakijaryhmaOid").get();
     assertEquals(savedHakijaryhma.hakijaryhmaOid, "uusiHakijaryhmaOid");
     assertEquals(2, savedHakijaryhma.jonosija.size());
+  }
+
+  @Test
+  public void convertHakijaryhmaToDTO() {
+    Hakijaryhma hakijaryhma =
+        new Hakijaryhma(Arrays.asList(createJonosija("ruh-nuk"), createJonosija("sil-mak")));
+    hakijaryhma.hakijaryhmaOid = "uusiHakijaryhmaOid";
+    hakijaryhmaDAO.create(hakijaryhma, auditUser);
+
+    HakijaryhmaDTO dto =
+        modelMapper.map(
+            hakijaryhmaDAO.haeHakijaryhma("uusiHakijaryhmaOid").get(), HakijaryhmaDTO.class);
+    assertEquals(dto.getHakijaryhmaOid(), "uusiHakijaryhmaOid");
+    assertEquals(2, dto.getJonosijat().size());
   }
 
   @Test
