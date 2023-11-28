@@ -1,7 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.service.dao;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import fi.vm.sade.valintalaskenta.domain.testdata.TestEntityDataUtil;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
@@ -10,11 +10,8 @@ import fi.vm.sade.valintalaskenta.tulos.dao.TulosValinnanvaiheDAO;
 import java.util.HashSet;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
 public class TulosValinnanvaiheDaoTest extends AbstractIntegrationTest {
 
   @Autowired private TulosValinnanvaiheDAO tulosValinnanvaiheDAO;

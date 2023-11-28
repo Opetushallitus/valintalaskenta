@@ -136,4 +136,20 @@ public class Hakijaryhma {
   public boolean isTarkkaKiintio() {
     return tarkkaKiintio;
   }
+
+  public void setCreatedAt(Date createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public void setKaytaKaikki(boolean kaytaKaikki) {
+    this.kaytaKaikki = kaytaKaikki;
+  }
+
+  public void setKaytetaanRyhmaanKuuluvia(boolean kaytetaanRyhmaanKuuluvia) {
+    this.kaytetaanRyhmaanKuuluvia = kaytetaanRyhmaanKuuluvia;
+  }
+
+  public void setTarkkaKiintio(boolean tarkkaKiintio) {
+    this.tarkkaKiintio = tarkkaKiintio;
+  }
 }
