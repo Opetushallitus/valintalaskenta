@@ -21,4 +21,6 @@ public interface TulosValinnanvaiheDAO {
   void saveOrUpdate(Valinnanvaihe vaihe);
 
   UUID saveVaihe(Valinnanvaihe vaihe);
+
+  List<String> haeHaunHakukohteetValinnanvaiheista(String hakuOid);
 }

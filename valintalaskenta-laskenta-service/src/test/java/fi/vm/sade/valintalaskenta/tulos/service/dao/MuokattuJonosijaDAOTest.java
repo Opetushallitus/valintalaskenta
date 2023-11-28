@@ -1,23 +1,20 @@
 package fi.vm.sade.valintalaskenta.tulos.service.dao;
 
-import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
-import fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil;
-import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
-import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
+import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
+import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
 public class MuokattuJonosijaDAOTest extends AbstractIntegrationTest {
 
-  @Autowired
-  private MuokattuJonosijaDAO dao;
+  @Autowired private MuokattuJonosijaDAO dao;
 
   @Test
   public void eiLoydaMuokattuaJonosijaaHakuOidilla() {
@@ -50,5 +47,4 @@ public class MuokattuJonosijaDAOTest extends AbstractIntegrationTest {
     assertEquals("valintatapajonoOid", jonosija.getValintatapajonoOid());
     assertEquals("hakemusOid", jonosija.getHakemusOid());
   }
-
 }

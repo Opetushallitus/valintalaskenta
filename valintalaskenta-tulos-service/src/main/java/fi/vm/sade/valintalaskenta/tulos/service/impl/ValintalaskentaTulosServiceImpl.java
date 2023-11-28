@@ -421,7 +421,6 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
   @Override
   public List<HakukohdeDTO> haeLasketutValinnanvaiheetHaulle(String hakuOid) {
-    LOGGER.info("Valintatietoja haettu mongosta {}!", hakuOid);
     List<HakukohdeDTO> b = getValinnanvaihesByHakukohteet(hakuOid);
     LOGGER.info("Valintatiedot kovertoitu DTO:iksi {}!", hakuOid);
     applyMuokatutJonosijatToHakukohde(hakuOid, b);
@@ -451,26 +450,34 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
   }
 
   private List<HakukohdeDTO> getValinnanvaihesByHakukohteet(String hakuOid) {
-    LOGGER.info("Valintatietoja haetaan mongosta {}!", hakuOid);
+    LOGGER.info("Valintatietoja haetaan kannasta {}!", hakuOid);
+
+    List<String> hakukohteet = tulosValinnanvaiheDAO.haeHaunHakukohteetValinnanvaiheista(hakuOid);
+
+    LOGGER.info("Haulle löytyi {} hakukohdetta valinnanvaiheista", hakukohteet.size());
 
     Map<String, HakukohdeDTO> hakukohdeDTOtOidinMukaan = new HashMap<String, HakukohdeDTO>();
 
-    tulosValinnanvaiheDAO
-        .readByHakuOidStreaming(hakuOid)
-        .forEach(
-            vv -> {
-              HakukohdeDTO hakukohdeDTO;
-              if (hakukohdeDTOtOidinMukaan.containsKey(vv.getHakukohdeOid())) {
-                hakukohdeDTO = hakukohdeDTOtOidinMukaan.get(vv.getHakukohdeOid());
-              } else {
-                hakukohdeDTO = new HakukohdeDTO();
-                hakukohdeDTO.setHakuoid(vv.getHakuOid());
-                hakukohdeDTO.setOid(vv.getHakukohdeOid());
-                hakukohdeDTO.setTarjoajaoid(vv.getTarjoajaOid());
-                hakukohdeDTOtOidinMukaan.put(vv.getHakukohdeOid(), hakukohdeDTO);
-              }
-              hakukohdeDTO.getValinnanvaihe().add(valintatulosConverter.convertValinnanvaihe(vv));
-            });
+    hakukohteet.forEach(
+        hakukohdeOid ->
+            tulosValinnanvaiheDAO
+                .readByHakukohdeOid(hakukohdeOid)
+                .forEach(
+                    vv -> {
+                      HakukohdeDTO hakukohdeDTO;
+                      if (hakukohdeDTOtOidinMukaan.containsKey(vv.getHakukohdeOid())) {
+                        hakukohdeDTO = hakukohdeDTOtOidinMukaan.get(vv.getHakukohdeOid());
+                      } else {
+                        hakukohdeDTO = new HakukohdeDTO();
+                        hakukohdeDTO.setHakuoid(vv.getHakuOid());
+                        hakukohdeDTO.setOid(vv.getHakukohdeOid());
+                        hakukohdeDTO.setTarjoajaoid(vv.getTarjoajaOid());
+                        hakukohdeDTOtOidinMukaan.put(vv.getHakukohdeOid(), hakukohdeDTO);
+                      }
+                      hakukohdeDTO
+                          .getValinnanvaihe()
+                          .add(valintatulosConverter.convertValinnanvaihe(vv));
+                    }));
     return new ArrayList<>(hakukohdeDTOtOidinMukaan.values());
   }
 

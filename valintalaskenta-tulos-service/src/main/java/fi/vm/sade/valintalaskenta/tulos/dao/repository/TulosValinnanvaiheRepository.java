@@ -15,6 +15,9 @@ public interface TulosValinnanvaiheRepository extends CrudRepository<Valinnanvai
 
   Stream<Valinnanvaihe> findDistinctValinnanvaihesByHakuOid(String hakuOid);
 
+  @Query("select distinct vv.* from Valinnanvaihe vv where vv.haku_oid = :hakuOid")
+  List<Valinnanvaihe> findDistinctValinnanvaihesByHakuOidAsList(@Param("hakuOid") String hakuOid);
+
   @Query(
       "select distinct vv.* from Valinnanvaihe vv join Valintatapajono vtpjono on vtpjono.valinnanvaihe = vv.id join Jonosija js on js.valintatapajono = vtpjono.id where js.hakemus_oid = :hakemusOid and vv.haku_oid = :hakuOid")
   List<Valinnanvaihe> findDistinctValinnanvaihesByHakuOidAndHakemusOid(
@@ -26,4 +29,7 @@ public interface TulosValinnanvaiheRepository extends CrudRepository<Valinnanvai
       @Param("valintatapajonoOid") String valintatapajonoOid);
 
   Optional<Valinnanvaihe> findValinnanvaiheByValinnanvaiheOid(String valinnanvaiheOid);
+
+  @Query("select distinct vv.hakukohde_oid from Valinnanvaihe vv where vv.haku_oid = :hakuOid")
+  List<String> findDistinctHakukohdeOidByHakuOid(@Param("hakuOid") String hakuOid);
 }

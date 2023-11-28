@@ -26,7 +26,7 @@ public class TulosValinnanvaiheDAOImpl implements TulosValinnanvaiheDAO {
 
   @Override
   public List<Valinnanvaihe> readByHakuOid(String hakuoid) {
-    return repo.findDistinctValinnanvaihesByHakuOid(hakuoid).toList();
+    return repo.findDistinctValinnanvaihesByHakuOidAsList(hakuoid);
   }
 
   @Override
@@ -57,5 +57,10 @@ public class TulosValinnanvaiheDAOImpl implements TulosValinnanvaiheDAO {
   @Override
   public UUID saveVaihe(Valinnanvaihe vaihe) {
     return repo.save(vaihe).getId();
+  }
+
+  @Override
+  public List<String> haeHaunHakukohteetValinnanvaiheista(String hakuOid) {
+    return repo.findDistinctHakukohdeOidByHakuOid(hakuOid);
   }
 }
