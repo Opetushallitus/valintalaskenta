@@ -29,7 +29,7 @@
         <flapdoodle.embed.mongo.version>4.6.2</flapdoodle.embed.mongo.version>
         <httpcomponents.version>4.5.14</httpcomponents.version>
         <modelmapper.version>3.1.1</modelmapper.version>
-        <spring.boot.version>2.7.14</spring.boot.version>
+        <spring.boot.version>2.7.18</spring.boot.version>
         <spring.version>5.3.29</spring.version>
         <spring.security.version>5.7.10</spring.security.version>
         <jackson.version>2.15.0</jackson.version>
@@ -411,12 +411,12 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-access</artifactId>
-                <version>1.2.12</version>
+                <version>1.4.12</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.2.12</version>
+                <version>1.4.12</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
