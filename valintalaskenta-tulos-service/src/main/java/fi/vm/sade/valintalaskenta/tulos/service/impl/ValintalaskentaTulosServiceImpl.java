@@ -19,8 +19,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeValinnanvaiheD
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValintatapajonoDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
-import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluJarjestyskriteeritulos;
-import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluValintatapajono;
+import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluMorko;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
@@ -466,8 +465,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
           HakukohdeDTO hakukohdeDTO = new HakukohdeDTO();
           hakukohdeDTO.setHakuoid(hakuOid);
           hakukohdeDTO.setOid(hakukohdeOid);
-          List<SijoitteluValintatapajono> vtps =
-              tulosValinnanvaiheDAO.haeValintatapajonotValinnanvaiheetSijoittelulle(hakukohdeOid);
+          List<SijoitteluMorko> vtps = tulosValinnanvaiheDAO.haeSijoittelunTiedot(hakukohdeOid);
           LOGGER.info("Took time to fetch: " + (System.currentTimeMillis() - millis) + " ms");
           vtps.stream()
               .collect(Collectors.groupingBy(jono -> jono.valinnanvaiheOid))
@@ -479,77 +477,72 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                     vaiheDTO.setHakuOid(hakuOid);
                     vaiheDTO.setNimi(values.get(0).valinnanvaiheNimi);
 
-                    values.forEach(
-                        jono -> {
-                          ValintatietoValintatapajonoDTO dto = new ValintatietoValintatapajonoDTO();
-                          dto.setAloituspaikat(jono.aloituspaikat);
-                          dto.setEiVarasijatayttoa(jono.eiVarasijatayttoa);
-                          dto.setKaikkiEhdonTayttavatHyvaksytaan(
-                              jono.kaikkiEhdonTayttavatHyvaksytaan);
-                          dto.setKaytetaanKokonaispisteita(jono.kaytetaanKokonaisPisteita);
-                          dto.setKaytetaanValintalaskentaa(jono.kaytetaanValintalaskentaa);
-                          dto.setSijoitteluajoId(jono.sijoitteluajoId);
-                          dto.setSiirretaanSijoitteluun(jono.siirretaanSijoitteluun);
-                          dto.setPrioriteetti(jono.prioriteetti);
-                          dto.setTasasijasaanto(jono.tasasijasaanto);
-                          dto.setNimi(jono.nimi);
-                          dto.setOid(jono.valintatapajonoOid);
-                          dto.setPoissaOlevaTaytto(jono.poissaOlevaTaytto);
-                          dto.setValmisSijoiteltavaksi(jono.valmisSijoiteltavaksi);
+                    values.stream()
+                        .collect(Collectors.groupingBy(jono -> jono.valintatapajonoOid))
+                        .forEach(
+                            (jonoKey, jonos) -> {
+                              ValintatietoValintatapajonoDTO dto =
+                                  new ValintatietoValintatapajonoDTO();
+                              dto.setAloituspaikat(jonos.get(0).aloituspaikat);
+                              dto.setEiVarasijatayttoa(jonos.get(0).eiVarasijatayttoa);
+                              dto.setKaikkiEhdonTayttavatHyvaksytaan(
+                                  jonos.get(0).kaikkiEhdonTayttavatHyvaksytaan);
+                              dto.setKaytetaanKokonaispisteita(
+                                  jonos.get(0).kaytetaanKokonaisPisteita);
+                              dto.setKaytetaanValintalaskentaa(
+                                  jonos.get(0).kaytetaanValintalaskentaa);
+                              dto.setSijoitteluajoId(jonos.get(0).sijoitteluajoId);
+                              dto.setSiirretaanSijoitteluun(jonos.get(0).siirretaanSijoitteluun);
+                              dto.setPrioriteetti(jonos.get(0).prioriteetti);
+                              dto.setTasasijasaanto(jonos.get(0).tasasijasaanto);
+                              dto.setNimi(jonos.get(0).nimi);
+                              dto.setOid(jonos.get(0).valintatapajonoOid);
+                              dto.setPoissaOlevaTaytto(jonos.get(0).poissaOlevaTaytto);
+                              dto.setValmisSijoiteltavaksi(jonos.get(0).valmisSijoiteltavaksi);
 
-                          long millisToKriteerit = System.currentTimeMillis();
-                          List<SijoitteluJarjestyskriteeritulos> tulokset =
-                              tulosValinnanvaiheDAO
-                                  .haeJarjestyskriteerituloksetJonosijoillaValintatapajonolle(
-                                      jono.id);
-                          LOGGER.info(
-                              "Took time to fetch tulokset: "
-                                  + (System.currentTimeMillis() - millisToKriteerit)
-                                  + " ms, size "
-                                  + tulokset.size());
+                              long millisKriteeritConvert = System.currentTimeMillis();
+                              jonos.stream()
+                                  .collect(Collectors.groupingBy(sija -> sija.jonosijaId))
+                                  .forEach(
+                                      (jonosijaId, kriteerit) -> {
+                                        JonosijaDTO jonosijaDTO = new JonosijaDTO();
+                                        jonosijaDTO.setHakemusOid(kriteerit.get(0).hakemusOid);
+                                        jonosijaDTO.setHakijaOid(kriteerit.get(0).hakijaOid);
+                                        jonosijaDTO.setPrioriteetti(
+                                            kriteerit.get(0).hakutoiveprioriteetti);
+                                        jonosijaDTO.setSyotetytArvot(
+                                            kriteerit.get(0).syotetytArvot.syotetytArvot.stream()
+                                                .map(valintatulosConverter::convertSyotettyArvo)
+                                                .toList());
+                                        jonosijaDTO.setHylattyValisijoittelussa(
+                                            kriteerit.get(0).hylattyValisijoittelussa);
 
-                          long millisKriteeritConvert = System.currentTimeMillis();
-                          tulokset.stream()
-                              .collect(Collectors.groupingBy(kri -> kri.jonosijaId))
-                              .forEach(
-                                  (jonosijaId, kriteerit) -> {
-                                    JonosijaDTO jonosijaDTO = new JonosijaDTO();
-                                    jonosijaDTO.setHakemusOid(kriteerit.get(0).hakemusOid);
-                                    jonosijaDTO.setHakijaOid(kriteerit.get(0).hakijaOid);
-                                    jonosijaDTO.setPrioriteetti(
-                                        kriteerit.get(0).hakutoiveprioriteetti);
-                                    jonosijaDTO.setSyotetytArvot(
-                                        kriteerit.get(0).syotetytArvot.syotetytArvot.stream()
-                                            .map(valintatulosConverter::convertSyotettyArvo)
-                                            .toList());
-                                    jonosijaDTO.setHylattyValisijoittelussa(
-                                        kriteerit.get(0).hylattyValisijoittelussa);
+                                        jonosijaDTO.setJarjestyskriteerit(
+                                            new TreeSet<>(
+                                                kriteerit.stream()
+                                                    .map(
+                                                        kri -> {
+                                                          JarjestyskriteeritulosDTO kriDTO =
+                                                              new JarjestyskriteeritulosDTO();
+                                                          kriDTO.setArvo(kri.arvo);
+                                                          kriDTO.setPrioriteetti(
+                                                              kri.kriteeriPrioriteetti);
+                                                          kriDTO.setTila(kri.tila);
+                                                          kriDTO.setNimi(kri.kriteeriNimi);
+                                                          kriDTO.setKuvaus(kri.getKuvaus());
+                                                          return kriDTO;
+                                                        })
+                                                    .collect(Collectors.toSet())));
 
-                                    jonosijaDTO.setJarjestyskriteerit(
-                                        new TreeSet<>(
-                                            kriteerit.stream()
-                                                .map(
-                                                    kri -> {
-                                                      JarjestyskriteeritulosDTO kriDTO =
-                                                          new JarjestyskriteeritulosDTO();
-                                                      kriDTO.setArvo(kri.arvo);
-                                                      kriDTO.setPrioriteetti(kri.prioriteetti);
-                                                      kriDTO.setTila(kri.tila);
-                                                      kriDTO.setNimi(kri.nimi);
-                                                      kriDTO.setKuvaus(kri.getKuvaus());
-                                                      return kriDTO;
-                                                    })
-                                                .collect(Collectors.toSet())));
+                                        dto.getJonosijat().add(jonosijaDTO);
+                                      });
 
-                                    dto.getJonosijat().add(jonosijaDTO);
-                                  });
+                              LOGGER.info(
+                                  "Took time to convert tulokset: "
+                                      + (System.currentTimeMillis() - millisKriteeritConvert));
 
-                          LOGGER.info(
-                              "Took time to convert tulokset: "
-                                  + (System.currentTimeMillis() - millisKriteeritConvert));
-
-                          vaiheDTO.getValintatapajonot().add(dto);
-                        });
+                              vaiheDTO.getValintatapajonot().add(dto);
+                            });
 
                     hakukohdeDTO.getValinnanvaihe().add(vaiheDTO);
                   });

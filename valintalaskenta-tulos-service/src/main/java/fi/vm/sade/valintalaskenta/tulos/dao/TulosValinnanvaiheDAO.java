@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.tulos.dao;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluJarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluMorko;
 import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluValintatapajono;
 import java.util.List;
 import java.util.UUID;
@@ -31,4 +32,6 @@ public interface TulosValinnanvaiheDAO {
 
   List<SijoitteluJarjestyskriteeritulos> haeJarjestyskriteerituloksetJonosijoillaValintatapajonolle(
       UUID valintatapajonoId);
+
+  List<SijoitteluMorko> haeSijoittelunTiedot(String hakukohde);
 }
