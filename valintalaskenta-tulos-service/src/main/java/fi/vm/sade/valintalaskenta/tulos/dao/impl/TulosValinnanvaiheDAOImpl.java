@@ -1,6 +1,8 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
+import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluJarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluValintatapajono;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosValinnanvaiheRepository;
 import java.util.*;
@@ -62,5 +64,17 @@ public class TulosValinnanvaiheDAOImpl implements TulosValinnanvaiheDAO {
   @Override
   public List<String> haeHaunHakukohteetValinnanvaiheista(String hakuOid) {
     return repo.findDistinctHakukohdeOidByHakuOid(hakuOid);
+  }
+
+  @Override
+  public List<SijoitteluValintatapajono> haeValintatapajonotValinnanvaiheetSijoittelulle(
+      String hakukohdeOid) {
+    return repo.findValintatapajonoWithValinnanvaiheForSijoittelu(hakukohdeOid);
+  }
+
+  @Override
+  public List<SijoitteluJarjestyskriteeritulos>
+      haeJarjestyskriteerituloksetJonosijoillaValintatapajonolle(UUID valintatapajonoId) {
+    return repo.haeJarjestyskriteeritSijoittelulle(valintatapajonoId);
   }
 }

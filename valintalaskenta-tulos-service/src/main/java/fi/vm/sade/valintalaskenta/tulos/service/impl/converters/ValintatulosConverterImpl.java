@@ -208,14 +208,14 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
   }
 
   private List<SyotettyArvoDTO> convertSyotettyArvo(List<SyotettyArvo> syotetytArvot) {
-    List<SyotettyArvoDTO> dtos = new ArrayList<SyotettyArvoDTO>();
+    List<SyotettyArvoDTO> dtos = new ArrayList<>();
     for (SyotettyArvo sa : syotetytArvot) {
       dtos.add(convertSyotettyArvo(sa));
     }
     return dtos;
   }
 
-  private SyotettyArvoDTO convertSyotettyArvo(SyotettyArvo sa) {
+  public SyotettyArvoDTO convertSyotettyArvo(SyotettyArvo sa) {
     SyotettyArvoDTO dto = new SyotettyArvoDTO();
     dto.setArvo(sa.getArvo());
     dto.setLaskennallinenArvo(sa.getLaskennallinenArvo());

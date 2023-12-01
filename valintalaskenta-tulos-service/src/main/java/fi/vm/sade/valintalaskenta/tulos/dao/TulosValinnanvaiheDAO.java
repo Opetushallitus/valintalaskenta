@@ -1,6 +1,8 @@
 package fi.vm.sade.valintalaskenta.tulos.dao;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluJarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluValintatapajono;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -23,4 +25,10 @@ public interface TulosValinnanvaiheDAO {
   UUID saveVaihe(Valinnanvaihe vaihe);
 
   List<String> haeHaunHakukohteetValinnanvaiheista(String hakuOid);
+
+  List<SijoitteluValintatapajono> haeValintatapajonotValinnanvaiheetSijoittelulle(
+      String hakukohdeOid);
+
+  List<SijoitteluJarjestyskriteeritulos> haeJarjestyskriteerituloksetJonosijoillaValintatapajonolle(
+      UUID valintatapajonoId);
 }

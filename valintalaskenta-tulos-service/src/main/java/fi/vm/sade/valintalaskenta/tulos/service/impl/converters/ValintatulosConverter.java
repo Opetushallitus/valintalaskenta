@@ -4,10 +4,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValintatapajonoDTO;
-import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
-import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import java.util.Collection;
 import java.util.List;
@@ -45,4 +42,6 @@ public interface ValintatulosConverter {
   ValintatietoValinnanvaiheDTO convertValinnanvaihe(Valinnanvaihe valinnanvaihe);
 
   List<HakukohdeDTO> convertValinnanvaihe(Collection<Valinnanvaihe> valinnanvaiheet);
+
+  SyotettyArvoDTO convertSyotettyArvo(SyotettyArvo sa);
 }
