@@ -458,19 +458,16 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     List<SijoitteluValintatapajono> valintatapajonot =
         tulosValinnanvaiheDAO.haeValintatapajonotValinnanvaiheetSijoittelulle(hakuOid);
     LOGGER.info(
-        "Sijoitteluvalintatapajonojen haussa kesti: "
-            + (System.currentTimeMillis() - timeTotal)
-            + " ms, löytyi valinnan vaiheita "
-            + valintatapajonot.stream().map(jono -> jono.hakukohdeOid).distinct().count()
-            + " hakukohteelle.");
+        "Sijoitteluvalintatapajonojen haussa kesti: {} ms, valinnan vaiheita löytyi {} hakukohteelle.",
+        System.currentTimeMillis() - timeTotal,
+        valintatapajonot.stream().map(jono -> jono.hakukohdeOid).distinct().count());
     long timeToFetchSijoitteluData = System.currentTimeMillis();
     Map<UUID, List<SijoitteluJarjestyskriteeritulos>> kriteeritValintatapajonolle =
         tulosValinnanvaiheDAO.haeJarjestyskriteerituloksetJonosijoillaHaulle(hakuOid).stream()
             .collect(Collectors.groupingBy(a -> a.valintatapajono));
     LOGGER.info(
-        "Sijoittelujarjestyskriteerituloksien haussa kesti: "
-            + (System.currentTimeMillis() - timeToFetchSijoitteluData)
-            + " ms");
+        "Sijoittelujarjestyskriteerituloksien haussa kesti: {} ms.",
+        System.currentTimeMillis() - timeToFetchSijoitteluData);
 
     valintatapajonot.stream()
         .collect(Collectors.groupingBy(m -> m.hakukohdeOid))
@@ -503,26 +500,24 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
             });
 
     LOGGER.info(
-        "Kokonaisaika valintatietojen haulle kesti: "
-            + ((System.currentTimeMillis() - timeTotal) / 1000)
-            + " sekuntia, valintatapajonoja: "
-            + hakukohdeDTOList.stream()
-                .flatMap(o -> o.getValinnanvaihe().stream())
-                .map(o -> o.getValintatapajonot().size())
-                .reduce(0, Integer::sum)
-            + " jonosijoja "
-            + hakukohdeDTOList.stream()
-                .flatMap(o -> o.getValinnanvaihe().stream())
-                .flatMap(o -> o.getValintatapajonot().stream())
-                .map(o -> o.getJonosijat().size())
-                .reduce(0, Integer::sum)
-            + " kriteereja "
-            + hakukohdeDTOList.stream()
-                .flatMap(o -> o.getValinnanvaihe().stream())
-                .flatMap(o -> o.getValintatapajonot().stream())
-                .flatMap(o -> o.getJonosijat().stream())
-                .map(o -> o.getJarjestyskriteerit().size())
-                .reduce(0, Integer::sum));
+        "Kokonaisaika valintatietojen haulle kesti: {} s, valintatapajonoja: {}, jonosijoja {}, jarjestyskriteerituloksia {}.",
+        (System.currentTimeMillis() - timeTotal) / 1000,
+        hakukohdeDTOList.stream()
+            .flatMap(o -> o.getValinnanvaihe().stream())
+            .map(o -> o.getValintatapajonot().size())
+            .reduce(0, Integer::sum),
+        hakukohdeDTOList.stream()
+            .flatMap(o -> o.getValinnanvaihe().stream())
+            .flatMap(o -> o.getValintatapajonot().stream())
+            .map(o -> o.getJonosijat().size())
+            .reduce(0, Integer::sum),
+        hakukohdeDTOList.stream()
+            .flatMap(o -> o.getValinnanvaihe().stream())
+            .flatMap(o -> o.getValintatapajonot().stream())
+            .flatMap(o -> o.getJonosijat().stream())
+            .map(o -> o.getJarjestyskriteerit().size())
+            .reduce(0, Integer::sum));
+
     return hakukohdeDTOList;
   }
 
