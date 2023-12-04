@@ -25,6 +25,8 @@ public class SijoitteluJarjestyskriteeritulos {
 
   public Boolean hylattyValisijoittelussa;
 
+  public UUID valintatapajono;
+
   // Jarjestyskriteerin tiedot:
   public JarjestyskriteerituloksenTila tila;
 

@@ -42,4 +42,6 @@ public class SijoitteluValintatapajono {
   public String valinnanvaiheNimi;
 
   public int jarjestysnumero;
+
+  public String hakukohdeOid;
 }

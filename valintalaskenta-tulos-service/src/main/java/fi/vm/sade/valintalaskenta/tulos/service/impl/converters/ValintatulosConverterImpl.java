@@ -7,8 +7,11 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValintatapajonoDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
+import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluJarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluValintatapajono;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import java.util.*;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -224,6 +227,66 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
     dto.setTyypinKoodiUri(sa.getTyypinKoodiUri());
     dto.setTilastoidaan(sa.isTilastoidaan());
     return dto;
+  }
+
+  @Override
+  public ValintatietoValintatapajonoDTO convertSijoitteluValintatapajono(
+      SijoitteluValintatapajono jono,
+      List<SijoitteluJarjestyskriteeritulos> kriteeritValintatapajonolle) {
+
+    ValintatietoValintatapajonoDTO jonoDto = new ValintatietoValintatapajonoDTO();
+    jonoDto.setAloituspaikat(jono.aloituspaikat);
+    jonoDto.setEiVarasijatayttoa(jono.eiVarasijatayttoa);
+    jonoDto.setKaikkiEhdonTayttavatHyvaksytaan(jono.kaikkiEhdonTayttavatHyvaksytaan);
+    jonoDto.setKaytetaanKokonaispisteita(jono.kaytetaanKokonaisPisteita);
+    jonoDto.setKaytetaanValintalaskentaa(jono.kaytetaanValintalaskentaa);
+    jonoDto.setSijoitteluajoId(jono.sijoitteluajoId);
+    jonoDto.setSiirretaanSijoitteluun(jono.siirretaanSijoitteluun);
+    jonoDto.setPrioriteetti(jono.prioriteetti);
+    jonoDto.setTasasijasaanto(jono.tasasijasaanto);
+    jonoDto.setNimi(jono.nimi);
+    jonoDto.setOid(jono.valintatapajonoOid);
+    jonoDto.setPoissaOlevaTaytto(jono.poissaOlevaTaytto);
+    jonoDto.setValmisSijoiteltavaksi(jono.valmisSijoiteltavaksi);
+
+    kriteeritValintatapajonolle.stream()
+        .collect(Collectors.groupingBy(sija -> sija.jonosijaId))
+        .forEach(
+            (jonosijaId, kriteerit) ->
+                jonoDto.getJonosijat().add(convertJonosijaDTOForSijoittelu(kriteerit)));
+
+    return jonoDto;
+  }
+
+  private JonosijaDTO convertJonosijaDTOForSijoittelu(
+      List<SijoitteluJarjestyskriteeritulos> kriteerit) {
+    JonosijaDTO jonosijaDTO = new JonosijaDTO();
+    jonosijaDTO.setHakemusOid(kriteerit.get(0).hakemusOid);
+    jonosijaDTO.setHakijaOid(kriteerit.get(0).hakijaOid);
+    jonosijaDTO.setPrioriteetti(kriteerit.get(0).hakutoiveprioriteetti);
+    jonosijaDTO.setSyotetytArvot(
+        kriteerit.get(0).syotetytArvot.syotetytArvot.stream()
+            .map(this::convertSyotettyArvo)
+            .toList());
+    jonosijaDTO.setHylattyValisijoittelussa(kriteerit.get(0).hylattyValisijoittelussa);
+
+    jonosijaDTO.setJarjestyskriteerit(
+        new TreeSet<>(
+            kriteerit.stream()
+                .map(this::convertSijoitteluJarjestyskriteeritulosToDTO)
+                .collect(Collectors.toSet())));
+    return jonosijaDTO;
+  }
+
+  private JarjestyskriteeritulosDTO convertSijoitteluJarjestyskriteeritulosToDTO(
+      SijoitteluJarjestyskriteeritulos kri) {
+    JarjestyskriteeritulosDTO kriDTO = new JarjestyskriteeritulosDTO();
+    kriDTO.setArvo(kri.arvo);
+    kriDTO.setPrioriteetti(kri.prioriteetti);
+    kriDTO.setTila(kri.tila);
+    kriDTO.setNimi(kri.nimi);
+    kriDTO.setKuvaus(kri.getKuvaus());
+    return kriDTO;
   }
 
   private List<FunktioTulosDTO> convertFunktioTulos(List<FunktioTulos> funktioTulokset) {

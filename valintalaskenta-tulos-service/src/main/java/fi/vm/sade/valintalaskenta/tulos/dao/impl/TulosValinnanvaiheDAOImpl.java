@@ -2,7 +2,6 @@ package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluJarjestyskriteeritulos;
-import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluMorko;
 import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluValintatapajono;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosValinnanvaiheRepository;
@@ -63,24 +62,14 @@ public class TulosValinnanvaiheDAOImpl implements TulosValinnanvaiheDAO {
   }
 
   @Override
-  public List<String> haeHaunHakukohteetValinnanvaiheista(String hakuOid) {
-    return repo.findDistinctHakukohdeOidByHakuOid(hakuOid);
-  }
-
-  @Override
   public List<SijoitteluValintatapajono> haeValintatapajonotValinnanvaiheetSijoittelulle(
-      String hakukohdeOid) {
-    return repo.findValintatapajonoWithValinnanvaiheForSijoittelu(hakukohdeOid);
+      String hakuOid) {
+    return repo.findValintatapajonoWithValinnanvaiheForSijoittelu(hakuOid);
   }
 
   @Override
-  public List<SijoitteluJarjestyskriteeritulos>
-      haeJarjestyskriteerituloksetJonosijoillaValintatapajonolle(UUID valintatapajonoId) {
-    return repo.haeJarjestyskriteeritSijoittelulle(valintatapajonoId);
-  }
-
-  @Override
-  public List<SijoitteluMorko> haeSijoittelunTiedot(String hakukohde) {
-    return repo.haeSijoittelutiedot(hakukohde);
+  public List<SijoitteluJarjestyskriteeritulos> haeJarjestyskriteerituloksetJonosijoillaHaulle(
+      String hakuOid) {
+    return repo.haeSijoittelunJonosijatJaJarjestyskriteerit(hakuOid);
   }
 }
