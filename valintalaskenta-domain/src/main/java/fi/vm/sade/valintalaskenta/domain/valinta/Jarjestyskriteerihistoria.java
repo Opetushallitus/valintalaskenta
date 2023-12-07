@@ -2,6 +2,8 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 
 public class Jarjestyskriteerihistoria {
 
+  public static String FILENAME_PREFIX = "JARHIS_", FILENAME_SUFFIX = ".zip";
+
   private String id;
 
   private String historia;
@@ -10,6 +12,10 @@ public class Jarjestyskriteerihistoria {
 
   public String getId() {
     return id;
+  }
+
+  public String getFilename() {
+    return String.join("", FILENAME_PREFIX, this.getId(), FILENAME_SUFFIX);
   }
 
   public void setId(String id) {

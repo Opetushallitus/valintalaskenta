@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.testing;
 
 import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
+import fi.vm.sade.valinta.dokumenttipalvelu.Dokumenttipalvelu;
 import fi.vm.sade.valintalaskenta.laskenta.config.SwaggerConfiguration;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaPaloissaResourceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
@@ -120,5 +121,11 @@ class TestConfigurationWithMocks {
   @Bean
   public LaskentaAuditLog laskentaAuditLogMock() {
     return new LaskentaAuditLogMock();
+  }
+
+  @Primary
+  @Bean
+  public Dokumenttipalvelu dokumenttipalvelu() {
+    return Mockito.mock(Dokumenttipalvelu.class);
   }
 }

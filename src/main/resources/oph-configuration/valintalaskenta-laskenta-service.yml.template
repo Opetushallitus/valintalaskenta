@@ -81,3 +81,8 @@ valintalaskenta-laskenta-service:
   organisaatio-service:
     url: https://${host.virkailija}/organisaatio-service
   parallelism: {{valintalaskentalaskentaservice_parallelism}}
+
+aws:
+  region: {{aws_region}}
+  bucket:
+    name: {{dokumenttipalvelu_aws_bucket_name}}
