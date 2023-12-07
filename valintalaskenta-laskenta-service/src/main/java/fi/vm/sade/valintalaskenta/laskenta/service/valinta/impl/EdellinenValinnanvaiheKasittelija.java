@@ -89,13 +89,14 @@ public class EdellinenValinnanvaiheKasittelija {
             VIRHE,
             suomenkielinenMap(
                 "Hakemus ei ole ollut mukana laskennassa edellisessä valinnan vaiheessa"));
-      } else if (jonosija.getJarjestyskriteeritulokset().isEmpty()) {
+      } else if (jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.isEmpty()) {
         // Mitä tehdään, jos hakemukselle ei ole laskentatulosta? Kai se on hyväksyttävissä
         tilaJonossa =
             new TilaJaSelite(
                 HYVAKSYTTAVISSA, suomenkielinenMap("Hakemukselle ei ole laskentatulosta jonossa"));
       } else {
-        Jarjestyskriteeritulos tulos = jonosija.getJarjestyskriteeritulokset().get(0);
+        Jarjestyskriteeritulos tulos =
+            jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
 
         Optional<MuokattuJonosija> muokattuJonosija =
             Optional.ofNullable(

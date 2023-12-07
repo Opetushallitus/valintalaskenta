@@ -19,7 +19,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeValinnanvaiheD
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValintatapajonoDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
-import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluJarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluValintatapajono;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
@@ -208,6 +208,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
                 }
               });
         }
+        valintatapajonoDTO.setJonosijat(new ArrayList<>(valintatapajonoDTO.getJonosijat()));
         valintatulosConverter.sort(valintatapajonoDTO.getJonosijat());
       }
     }
@@ -380,14 +381,15 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         Iterator<Jonosija> k = jono.getJonosijat().iterator();
         while (k.hasNext()) {
           Jonosija jonosija = k.next();
-          Iterator<Jarjestyskriteeritulos> l = jonosija.getJarjestyskriteeritulokset().iterator();
+          Iterator<Jarjestyskriteeritulos> l =
+              jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.iterator();
           while (l.hasNext()) {
             Jarjestyskriteeritulos jktulos = l.next();
             if (!JarjestyskriteerituloksenTila.VIRHE.equals(jktulos.getTila())) {
               l.remove();
             }
           }
-          if (jonosija.getJarjestyskriteeritulokset().isEmpty()) {
+          if (jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.isEmpty()) {
             k.remove();
           }
         }
@@ -462,7 +464,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         System.currentTimeMillis() - timeTotal,
         valintatapajonot.stream().map(jono -> jono.hakukohdeOid).distinct().count());
     long timeToFetchSijoitteluData = System.currentTimeMillis();
-    Map<UUID, List<SijoitteluJarjestyskriteeritulos>> kriteeritValintatapajonolle =
+    Map<UUID, List<SijoitteluJonosija>> kriteeritValintatapajonolle =
         tulosValinnanvaiheDAO.haeJarjestyskriteerituloksetJonosijoillaHaulle(hakuOid).stream()
             .collect(Collectors.groupingBy(a -> a.valintatapajono));
     LOGGER.info(

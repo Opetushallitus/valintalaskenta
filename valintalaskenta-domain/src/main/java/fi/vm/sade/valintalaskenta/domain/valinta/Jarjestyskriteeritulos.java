@@ -1,39 +1,38 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.relational.core.mapping.Column;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Jarjestyskriteeritulos {
 
-  @Id private UUID id;
-
+  @JsonProperty("prioriteetti")
   private int prioriteetti;
 
+  @JsonProperty("arvo")
   private BigDecimal arvo;
 
+  @JsonProperty("tila")
   private JarjestyskriteerituloksenTila tila;
 
+  @JsonProperty("kuvausFI")
   private String kuvausFI = "";
 
+  @JsonProperty("kuvausSV")
   private String kuvausSV = "";
 
+  @JsonProperty("kuvausEN")
   private String kuvausEN = "";
 
+  @JsonProperty("nimi")
   private String nimi;
 
+  @JsonProperty("tekninenKuvaus")
   private String tekninenKuvaus;
-
-  @Transient private Jonosija jonosija;
-
-  @Transient
-  @Column("muokattu_jonosija")
-  MuokattuJonosija muokattuJonosija;
 
   public int getPrioriteetti() {
     return prioriteetti;
@@ -98,30 +97,6 @@ public class Jarjestyskriteeritulos {
   @Override
   public String toString() {
     return ToStringBuilder.reflectionToString(this);
-  }
-
-  public Jonosija getJonosija() {
-    return jonosija;
-  }
-
-  public void setJonosija(Jonosija jonosija) {
-    this.jonosija = jonosija;
-  }
-
-  public MuokattuJonosija getMuokattuJonosija() {
-    return muokattuJonosija;
-  }
-
-  public void setMuokattuJonosija(MuokattuJonosija muokattuJonosija) {
-    this.muokattuJonosija = muokattuJonosija;
-  }
-
-  public UUID getId() {
-    return id;
-  }
-
-  public void setId(UUID id) {
-    this.id = id;
   }
 
   public String getKuvausEN() {

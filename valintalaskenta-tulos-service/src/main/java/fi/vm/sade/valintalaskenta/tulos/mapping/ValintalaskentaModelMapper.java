@@ -12,6 +12,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.HakutoiveDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.OsallistuminenTulosDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteeritulosContainer;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
@@ -405,11 +406,12 @@ public class ValintalaskentaModelMapper extends ModelMapper {
         new PropertyMap<Jonosija, JonosijaDTO>() {
           @Override
           protected void configure() {
-            Converter<List<Jarjestyskriteeritulos>, SortedSet<JarjestyskriteeritulosDTO>>
+            Converter<JarjestyskriteeritulosContainer, SortedSet<JarjestyskriteeritulosDTO>>
                 JarjestyskriteeritulosToDtoConverter =
                     context -> {
                       SortedSet<JarjestyskriteeritulosDTO> result = new TreeSet<>();
-                      for (Jarjestyskriteeritulos arg : context.getSource()) {
+                      for (Jarjestyskriteeritulos arg :
+                          context.getSource().getJarjestyskriteeritulokset()) {
                         JarjestyskriteeritulosDTO j = new JarjestyskriteeritulosDTO();
                         j.setArvo(arg.getArvo());
                         j.setKuvaus(arg.getKuvaus());

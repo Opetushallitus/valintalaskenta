@@ -265,10 +265,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(hakemusOid1, jonosija1.getHakemusOid());
           assertEquals(hakijaOid1, jonosija1.getHakijaOid());
           assertEquals(1, jonosija1.getHakutoiveprioriteetti());
-          assertEquals(2, jonosija1.getJarjestyskriteeritulokset().size());
+          assertEquals(
+              2, jonosija1.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos1 =
-              jonosija1.getJarjestyskriteeritulokset().get(0);
+              jonosija1.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("100.0"), jarjestyskriteeritulos1.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos1.getTila());
@@ -280,7 +281,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertNotNull(historia1.getHistoria());*/
 
           Jarjestyskriteeritulos jarjestyskriteeritulos2 =
-              jonosija1.getJarjestyskriteeritulokset().get(1);
+              jonosija1.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(1);
           assertEquals(new BigDecimal("200.0"), jarjestyskriteeritulos2.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos2.getTila());
@@ -302,10 +303,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(hakemusOid2, jonosija2.getHakemusOid());
           assertEquals(hakijaOid2, jonosija2.getHakijaOid());
           assertEquals(2, jonosija2.getHakutoiveprioriteetti());
-          assertEquals(2, jonosija2.getJarjestyskriteeritulokset().size());
+          assertEquals(
+              2, jonosija2.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos1 =
-              jonosija2.getJarjestyskriteeritulokset().get(0);
+              jonosija2.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("100.0"), jarjestyskriteeritulos1.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos1.getTila());
@@ -318,7 +320,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertNotNull(historia1.getHistoriaGzip());*/
 
           Jarjestyskriteeritulos jarjestyskriteeritulos2 =
-              jonosija2.getJarjestyskriteeritulokset().get(1);
+              jonosija2.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(1);
           assertEquals(new BigDecimal("200.0"), jarjestyskriteeritulos2.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos2.getTila());
@@ -346,10 +348,10 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(hakemusOid1, jonosija.getHakemusOid());
           assertEquals(hakijaOid1, jonosija.getHakijaOid());
           assertEquals(1, jonosija.getHakutoiveprioriteetti());
-          assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+          assertEquals(1, jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos =
-              jonosija.getJarjestyskriteeritulokset().get(0);
+              jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("300.0"), jarjestyskriteeritulos.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
@@ -366,10 +368,10 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(hakemusOid2, jonosija.getHakemusOid());
           assertEquals(hakijaOid2, jonosija.getHakijaOid());
           assertEquals(2, jonosija.getHakutoiveprioriteetti());
-          assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+          assertEquals(1, jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos =
-              jonosija.getJarjestyskriteeritulokset().get(0);
+              jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("300.0"), jarjestyskriteeritulos.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
@@ -408,10 +410,10 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(hakemusOid1, jonosija.getHakemusOid());
           assertEquals(hakijaOid1, jonosija.getHakijaOid());
           assertEquals(1, jonosija.getHakutoiveprioriteetti());
-          assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+          assertEquals(1, jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos =
-              jonosija.getJarjestyskriteeritulokset().get(0);
+              jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("400.0"), jarjestyskriteeritulos.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
@@ -429,10 +431,10 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(hakemusOid2, jonosija.getHakemusOid());
           assertEquals(hakijaOid2, jonosija.getHakijaOid());
           assertEquals(2, jonosija.getHakutoiveprioriteetti());
-          assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+          assertEquals(1, jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos =
-              jonosija.getJarjestyskriteeritulokset().get(0);
+              jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("400.0"), jarjestyskriteeritulos.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
@@ -472,10 +474,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(hakemusOid1, jonosija1.getHakemusOid());
           assertEquals(hakijaOid1, jonosija1.getHakijaOid());
           assertEquals(2, jonosija1.getHakutoiveprioriteetti());
-          assertEquals(2, jonosija1.getJarjestyskriteeritulokset().size());
+          assertEquals(
+              2, jonosija1.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos1 =
-              jonosija1.getJarjestyskriteeritulokset().get(0);
+              jonosija1.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("500.0"), jarjestyskriteeritulos1.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos1.getTila());
@@ -487,7 +490,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertNotNull(historia1.getHistoria());*/
 
           Jarjestyskriteeritulos jarjestyskriteeritulos2 =
-              jonosija1.getJarjestyskriteeritulokset().get(1);
+              jonosija1.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(1);
           assertEquals(new BigDecimal("600.0"), jarjestyskriteeritulos2.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos2.getTila());
@@ -506,10 +509,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(hakemusOid2, jonosija2.getHakemusOid());
           assertEquals(hakijaOid2, jonosija2.getHakijaOid());
           assertEquals(1, jonosija2.getHakutoiveprioriteetti());
-          assertEquals(2, jonosija2.getJarjestyskriteeritulokset().size());
+          assertEquals(
+              2, jonosija2.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos1 =
-              jonosija2.getJarjestyskriteeritulokset().get(0);
+              jonosija2.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("500.0"), jarjestyskriteeritulos1.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos1.getTila());
@@ -521,7 +525,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertNotNull(historia1.getHistoria());*/
 
           Jarjestyskriteeritulos jarjestyskriteeritulos2 =
-              jonosija2.getJarjestyskriteeritulokset().get(1);
+              jonosija2.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(1);
           assertEquals(new BigDecimal("600.0"), jarjestyskriteeritulos2.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos2.getTila());
@@ -548,10 +552,10 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(hakemusOid1, jonosija.getHakemusOid());
           assertEquals(hakijaOid1, jonosija.getHakijaOid());
           assertEquals(2, jonosija.getHakutoiveprioriteetti());
-          assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+          assertEquals(1, jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos =
-              jonosija.getJarjestyskriteeritulokset().get(0);
+              jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("700.0"), jarjestyskriteeritulos.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
@@ -568,10 +572,10 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(hakemusOid2, jonosija.getHakemusOid());
           assertEquals(hakijaOid2, jonosija.getHakijaOid());
           assertEquals(1, jonosija.getHakutoiveprioriteetti());
-          assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+          assertEquals(1, jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos =
-              jonosija.getJarjestyskriteeritulokset().get(0);
+              jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("700.0"), jarjestyskriteeritulos.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
@@ -610,10 +614,10 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(hakemusOid1, jonosija.getHakemusOid());
           assertEquals(hakijaOid1, jonosija.getHakijaOid());
           assertEquals(2, jonosija.getHakutoiveprioriteetti());
-          assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+          assertEquals(1, jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos =
-              jonosija.getJarjestyskriteeritulokset().get(0);
+              jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("800.0"), jarjestyskriteeritulos.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
@@ -629,10 +633,10 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(hakemusOid2, jonosija.getHakemusOid());
           assertEquals(hakijaOid2, jonosija.getHakijaOid());
           assertEquals(1, jonosija.getHakutoiveprioriteetti());
-          assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+          assertEquals(1, jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos =
-              jonosija.getJarjestyskriteeritulokset().get(0);
+              jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("800.0"), jarjestyskriteeritulos.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
@@ -681,9 +685,10 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
 
     Jonosija jonosija = jono.getJonosijatAsList().get(0);
     assertEquals(hakemusOid, jonosija.getHakemusOid());
-    assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+    assertEquals(1, jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
-    Jarjestyskriteeritulos tulos = jonosija.getJarjestyskriteeritulokset().get(0);
+    Jarjestyskriteeritulos tulos =
+        jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
     assertEquals(JarjestyskriteerituloksenTila.HYLATTY, tulos.getTila());
   }
 
@@ -725,9 +730,10 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
 
     Jonosija jonosija = jono.getJonosijatAsList().get(0);
     assertEquals(hakemusOid2, jonosija.getHakemusOid());
-    assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+    assertEquals(1, jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
-    Jarjestyskriteeritulos tulos = jonosija.getJarjestyskriteeritulokset().get(0);
+    Jarjestyskriteeritulos tulos =
+        jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
     assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, tulos.getTila());
   }
 
@@ -802,6 +808,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
             .findFirst()
             .get()
             .getJarjestyskriteeritulokset()
+            .jarjestyskriteeritulokset
             .get(0)
             .getTila());
     assertEquals(
@@ -811,6 +818,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
             .findFirst()
             .get()
             .getJarjestyskriteeritulokset()
+            .jarjestyskriteeritulokset
             .get(0)
             .getTila());
     assertEquals(
@@ -820,6 +828,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
             .findFirst()
             .get()
             .getJarjestyskriteeritulokset()
+            .jarjestyskriteeritulokset
             .get(0)
             .getKuvaus()
             .get("FI"));
@@ -892,7 +901,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
     assertThat(hakemuksenTulos, isPresent());
 
     List<Jarjestyskriteeritulos> jarjestyskriteeritulokset =
-        hakemuksenTulos.get().getJarjestyskriteeritulokset();
+        hakemuksenTulos.get().getJarjestyskriteeritulokset().jarjestyskriteeritulokset;
     assertThat(jarjestyskriteeritulokset, hasSize(1));
     assertEquals(HYVAKSYTTAVISSA, jarjestyskriteeritulokset.get(0).getTila());
   }

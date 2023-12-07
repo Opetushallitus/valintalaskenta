@@ -5,7 +5,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValintatapajonoDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
-import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluJarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluValintatapajono;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import java.util.Collection;
@@ -48,6 +48,5 @@ public interface ValintatulosConverter {
   SyotettyArvoDTO convertSyotettyArvo(SyotettyArvo sa);
 
   ValintatietoValintatapajonoDTO convertSijoitteluValintatapajono(
-      SijoitteluValintatapajono jono,
-      List<SijoitteluJarjestyskriteeritulos> kriteeritValintatapajonolle);
+      SijoitteluValintatapajono jono, List<SijoitteluJonosija> kriteeritValintatapajonolle);
 }

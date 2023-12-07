@@ -2,7 +2,6 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import java.util.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 
@@ -24,8 +23,8 @@ public class Jonosija {
 
   @Transient private Valintatapajono valintatapajono;
 
-  private final List<Jarjestyskriteeritulos> jarjestyskriteeritulokset =
-      new ArrayList<Jarjestyskriteeritulos>();
+  @Column("jarjestyskriteeritulokset")
+  private JarjestyskriteeritulosContainer jarjestyskriteeritulokset;
 
   @Column("syotetyt_arvot")
   private SyotettyArvoContainer syotetytArvot;
@@ -36,12 +35,7 @@ public class Jonosija {
   public Jonosija() {
     syotetytArvot = new SyotettyArvoContainer();
     funktioTulokset = new FunktioTulosContainer();
-  }
-
-  @PersistenceCreator
-  public Jonosija(List<Jarjestyskriteeritulos> jarjestyskriteeritulokset) {
-    this.jarjestyskriteeritulokset.addAll(jarjestyskriteeritulokset);
-    jarjestaJarjestyskriteeritulokset();
+    jarjestyskriteeritulokset = new JarjestyskriteeritulosContainer();
   }
 
   public UUID getId() {
@@ -80,19 +74,19 @@ public class Jonosija {
     this.harkinnanvarainen = harkinnanvarainen;
   }
 
-  public List<Jarjestyskriteeritulos> getJarjestyskriteeritulokset() {
+  public JarjestyskriteeritulosContainer getJarjestyskriteeritulokset() {
     return jarjestyskriteeritulokset;
   }
 
-  public void setJarjestyskriteeritulokset(List<Jarjestyskriteeritulos> jarjestyskriteeritulokset) {
-    this.jarjestyskriteeritulokset.clear();
-    this.jarjestyskriteeritulokset.addAll(jarjestyskriteeritulokset);
+  public void setJarjestyskriteeritulokset(
+      JarjestyskriteeritulosContainer jarjestyskriteeritulokset) {
+    this.jarjestyskriteeritulokset = jarjestyskriteeritulokset;
     jarjestaJarjestyskriteeritulokset();
   }
 
   private void jarjestaJarjestyskriteeritulokset() {
     Collections.sort(
-        jarjestyskriteeritulokset,
+        jarjestyskriteeritulokset.jarjestyskriteeritulokset,
         new Comparator<Jarjestyskriteeritulos>() {
           @Override
           public int compare(Jarjestyskriteeritulos o1, Jarjestyskriteeritulos o2) {

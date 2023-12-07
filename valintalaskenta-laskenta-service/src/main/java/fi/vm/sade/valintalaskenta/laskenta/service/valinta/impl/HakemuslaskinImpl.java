@@ -79,7 +79,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
 
     JonosijaJaSyotetytArvot jonosija =
         getJonosijaJaSyotetytArvot(laskettavaHakemus, jonosijatHakemusOidinMukaan, hakemus);
-    jonosija.getJonosija().getJarjestyskriteeritulokset().add(jktulos);
+    jonosija.getJonosija().getJarjestyskriteeritulokset().jarjestyskriteeritulokset.add(jktulos);
     jonosija.lisaaSyotetytArvot(tulos.getSyotetytArvot());
     jonosija.lisaaFunktioTulokset(tulos.getFunktioTulokset());
 
@@ -106,7 +106,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
 
     JonosijaJaSyotetytArvot jonosija =
         getJonosijaJaSyotetytArvot(laskettavaHakemus, jonosijatHakemusOidinMukaan, hakemus);
-    jonosija.getJonosija().getJarjestyskriteeritulokset().add(jktulos);
+    jonosija.getJonosija().getJarjestyskriteeritulokset().jarjestyskriteeritulokset.add(jktulos);
     jonosija.lisaaSyotetytArvot(tulos.getSyotetytArvot());
     jonosija.lisaaFunktioTulokset(tulos.getFunktioTulokset());
 
@@ -264,7 +264,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
 
     JonosijaJaSyotetytArvot jonosija =
         getJonosijaJaSyotetytArvot(laskettavaHakemus, jonosijatHakemusOidinMukaan, hakemus);
-    jonosija.getJonosija().getJarjestyskriteeritulokset().add(jktulos);
+    jonosija.getJonosija().getJarjestyskriteeritulokset().jarjestyskriteeritulokset.add(jktulos);
     jonosija.lisaaSyotetytArvot(tulos.getSyotetytArvot());
     jonosija.lisaaFunktioTulokset(tulos.getFunktioTulokset());
 

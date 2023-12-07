@@ -219,11 +219,15 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                                             if (jonosija.isHylattyValisijoittelussa()
                                                 && hakemusDTO.getTila().isHyvaksytty()) {
                                               Collections.sort(
-                                                  jonosija.getJarjestyskriteeritulokset(),
+                                                  jonosija.getJarjestyskriteeritulokset()
+                                                      .jarjestyskriteeritulokset,
                                                   Comparator.comparingInt(
                                                       Jarjestyskriteeritulos::getPrioriteetti));
                                               Jarjestyskriteeritulos jarjestyskriteeritulos =
-                                                  jonosija.getJarjestyskriteeritulokset().get(0);
+                                                  jonosija
+                                                      .getJarjestyskriteeritulokset()
+                                                      .jarjestyskriteeritulokset
+                                                      .get(0);
                                               jarjestyskriteeritulos.setTila(
                                                   JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA);
                                               jonosija.setHylattyValisijoittelussa(false);
@@ -234,11 +238,15 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
                                                 && asList(VARALLA, PERUUNTUNUT)
                                                     .contains(hakemusDTO.getTila())) {
                                               Collections.sort(
-                                                  jonosija.getJarjestyskriteeritulokset(),
+                                                  jonosija.getJarjestyskriteeritulokset()
+                                                      .jarjestyskriteeritulokset,
                                                   Comparator.comparingInt(
                                                       Jarjestyskriteeritulos::getPrioriteetti));
                                               Jarjestyskriteeritulos jarjestyskriteeritulos =
-                                                  jonosija.getJarjestyskriteeritulokset().get(0);
+                                                  jonosija
+                                                      .getJarjestyskriteeritulokset()
+                                                      .jarjestyskriteeritulokset
+                                                      .get(0);
                                               jarjestyskriteeritulos.setTila(
                                                   JarjestyskriteerituloksenTila.HYLATTY);
                                               jonosija.setHylattyValisijoittelussa(true);

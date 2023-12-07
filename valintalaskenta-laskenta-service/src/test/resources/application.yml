@@ -6,6 +6,10 @@ spring:
     group:
       test: dev
       test-mockless: dev
+  datasource:
+    hikari:
+      data-source-properties:
+        reWriteBatchedInserts: true
 
 valintalaskenta-laskenta-service:
   postgresql:

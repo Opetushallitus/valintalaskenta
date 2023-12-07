@@ -136,6 +136,7 @@ CREATE TABLE jonosija (
     hakijaryhma uuid,
     funktio_tulokset jsonb,
     syotetyt_arvot jsonb,
+    jarjestyskriteeritulokset jsonb,
     CONSTRAINT fk_valintatapajono
         FOREIGN KEY(valintatapajono)
             REFERENCES valintatapajono(id),
@@ -157,6 +158,7 @@ CREATE TABLE muokattu_jonosija (
     prioriteetti int,
     selite varchar(255),
     muutos varchar(255),
+    jarjestyskriteeritulokset jsonb,
     CONSTRAINT fk_valintatapajono_oid
       FOREIGN KEY(valintatapajono_oid)
           REFERENCES Valintatapajono(valintatapajono_oid)
@@ -165,27 +167,6 @@ CREATE TABLE muokattu_jonosija (
 CREATE INDEX muokattujonosija_hakukohde ON muokattu_jonosija(hakukohde_oid);
 CREATE INDEX muokattujonosija_haku ON muokattu_jonosija(haku_oid);
 
-CREATE TABLE jarjestyskriteeritulos (
-    id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-    created_at timestamp with time zone default now(),
-    prioriteetti int,
-    arvo varchar(255),
-    tila varchar(100),
-    nimi varchar(255),
-    kuvaus_fi text DEFAULT '',
-    kuvaus_sv text DEFAULT '',
-    kuvaus_en text DEFAULT '',
-    tekninen_kuvaus text,
-    jonosija uuid,
-    jonosija_key int,
-    muokattu_jonosija uuid,
-    CONSTRAINT fk_jonosija
-        FOREIGN KEY(jonosija)
-            REFERENCES jonosija(id),
-    CONSTRAINT fk_muokattujonosija
-        FOREIGN KEY(muokattu_jonosija)
-            REFERENCES muokattu_jonosija(id)
-);
 
 
 

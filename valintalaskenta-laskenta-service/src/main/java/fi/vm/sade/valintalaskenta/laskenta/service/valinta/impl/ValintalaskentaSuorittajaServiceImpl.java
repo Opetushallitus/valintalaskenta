@@ -539,6 +539,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                       sija -> {
                         boolean tila =
                             !sija.getJarjestyskriteeritulokset()
+                                .jarjestyskriteeritulokset
                                 .get(0)
                                 .getTila()
                                 .equals(JarjestyskriteerituloksenTila.HYLATTY);
@@ -649,7 +650,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
       if (!jononTulostaEiSaaLaskeaUudestaan(jono, valinnanvaiheValintaperusteissa)
           && (jono.getKaytetaanValintalaskentaa() == null || jono.getKaytetaanValintalaskentaa())) {
         for (Jonosija jonosija : jono.getJonosijat()) {
-          for (Jarjestyskriteeritulos tulos : jonosija.getJarjestyskriteeritulokset()) {
+          for (Jarjestyskriteeritulos tulos :
+              jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset) {
             // jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
           }
         }
@@ -724,7 +726,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
 
   private void poistaVanhatHistoriat(Hakijaryhma hakijaryhma) {
     for (Jonosija jonosija : hakijaryhma.jonosija) {
-      for (Jarjestyskriteeritulos tulos : jonosija.getJarjestyskriteeritulokset()) {
+      for (Jarjestyskriteeritulos tulos :
+          jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset) {
         // jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
       }
     }

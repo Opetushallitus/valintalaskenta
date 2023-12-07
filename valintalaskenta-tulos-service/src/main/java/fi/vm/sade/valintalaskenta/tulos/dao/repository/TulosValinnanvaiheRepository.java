@@ -1,7 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.repository;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluJarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluValintatapajono;
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +15,7 @@ public interface TulosValinnanvaiheRepository extends CrudRepository<Valinnanvai
 
   @Query(
       value =
-          "select distinct vv.* from Valinnanvaihe vv join Valintatapajono vtpjono on vtpjono.valinnanvaihe = vv.id join Jonosija js on js.valintatapajono = vtpjono.id  join Jarjestyskriteeritulos tulos on tulos.jonosija = js.id where vv.hakukohde_oid = :hakukohdeOid")
+          "select distinct vv.* from Valinnanvaihe vv join Valintatapajono vtpjono on vtpjono.valinnanvaihe = vv.id join Jonosija js on js.valintatapajono = vtpjono.id  where vv.hakukohde_oid = :hakukohdeOid")
   List<Valinnanvaihe> findDistinctValinnanvaihesByHakukohdeOid(
       @Param("hakukohdeOid") String hakukohdeOid);
 
@@ -37,11 +37,11 @@ public interface TulosValinnanvaiheRepository extends CrudRepository<Valinnanvai
   Optional<Valinnanvaihe> findValinnanvaiheByValinnanvaiheOid(String valinnanvaiheOid);
 
   @Query(
-      "select js.id as jonosija_id, js.hakemus_oid, js.hakija_oid, js.syotetyt_arvot, js.hakutoiveprioriteetti, js.harkinnanvarainen, js.hylatty_valisijoittelussa, js.valintatapajono, "
-          + "kri.tila, kri.arvo, kri.prioriteetti, kri.nimi as kriteeri_nimi, kri.kuvaus_fi, kri.kuvaus_sv, kri.kuvaus_en "
-          + "from jarjestyskriteeritulos kri join jonosija js on kri.jonosija = js.id join Valintatapajono jono on jono.id = js.valintatapajono join Valinnanvaihe vv on vv.id = jono.valinnanvaihe "
+      "select js.id as jonosija_id, js.hakemus_oid, js.hakija_oid, js.syotetyt_arvot, js.jarjestyskriteeritulokset, "
+          + "js.hakutoiveprioriteetti, js.harkinnanvarainen, js.hylatty_valisijoittelussa, js.valintatapajono "
+          + "from Jonosija js join Valintatapajono jono on jono.id = js.valintatapajono join Valinnanvaihe vv on vv.id = jono.valinnanvaihe "
           + "where vv.haku_oid = :hakuOid")
-  List<SijoitteluJarjestyskriteeritulos> haeSijoittelunJonosijatJaJarjestyskriteerit(
+  List<SijoitteluJonosija> haeSijoittelunJonosijatJaJarjestyskriteerit(
       @Param("hakuOid") String hakuOid);
 
   @Query(

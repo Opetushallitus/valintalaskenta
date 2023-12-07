@@ -3,10 +3,10 @@ package fi.vm.sade.valintalaskenta.laskenta.dao;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Sets;
+import fi.vm.sade.valintalaskenta.domain.testdata.TestEntityDataUtil;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,7 +93,7 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
   }
 
   @Test
-  public void testSavingAndLoadingNewValinnanvaihe() throws InterruptedException {
+  public void testSavingAndLoadingNewValinnanvaihe() {
     Valinnanvaihe valinnanvaihe = createValinnanvaihe(1);
     Valintatapajono valintatapajono = new Valintatapajono();
     valinnanvaihe.setValintatapajono(List.of(valintatapajono));
@@ -118,6 +118,33 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
     assertEquals("Kultaa", arvo.getArvo());
     assertEquals("Hopeaa", arvo.getTunniste());
     assertEquals("Katinkultaa", arvo.getLaskennallinenArvo());
+  }
+
+  @Test
+  public void testSavingLargeValinnanvaihe() {
+    long timeStart = System.currentTimeMillis();
+
+    Valinnanvaihe valinnanvaihe = createValinnanvaihe(1);
+    Valintatapajono valintatapajono = new Valintatapajono();
+    valinnanvaihe.setValintatapajono(List.of(valintatapajono));
+    Set<Jonosija> sijat = new HashSet<>();
+    for (int i = 0; i < 1000; i++) {
+      Jonosija js = createJonosija("kloonin-oid-" + i);
+      for (int j = 0; j < 100; j++) {
+        js.getJarjestyskriteeritulokset()
+            .jarjestyskriteeritulokset
+            .add(
+                TestEntityDataUtil.luoJarjestyskriteeritulosEntity(
+                    5.3, j, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA));
+      }
+      sijat.add(js);
+    }
+    valintatapajono.setJonosijat(sijat);
+    valinnanvaihe.setValinnanVaiheOid("uusiValinnanvaiheOid");
+    valinnanvaiheDAO.saveOrUpdate(valinnanvaihe);
+    Valinnanvaihe savedValinnanvaihe = valinnanvaiheDAO.haeValinnanvaihe("uusiValinnanvaiheOid");
+    assertEquals(1000, savedValinnanvaihe.getValintatapajono().get(0).getJonosijat().size());
+    assertTrue(timeStart - System.currentTimeMillis() > -10000, "Finishes in 10 seconds");
   }
 
   private Valinnanvaihe createValinnanvaihe(int jarjestysnro) {

@@ -2,7 +2,7 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import java.util.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceCreator;
+import org.springframework.data.relational.core.mapping.Column;
 
 public class MuokattuJonosija {
 
@@ -20,22 +20,21 @@ public class MuokattuJonosija {
 
   private Integer prioriteetti; // hakutoive
 
-  private final Set<Jarjestyskriteeritulos> jarjestyskriteerit = new HashSet<>();
+  @Column("jarjestyskriteeritulokset")
+  private JarjestyskriteeritulosContainer jarjestyskriteeritulokset;
 
-  public MuokattuJonosija() {}
-
-  @PersistenceCreator
-  public MuokattuJonosija(Set<Jarjestyskriteeritulos> jarjestyskriteerit) {
-    this.jarjestyskriteerit.addAll(jarjestyskriteerit);
+  public MuokattuJonosija() {
+    jarjestyskriteeritulokset = new JarjestyskriteeritulosContainer();
   }
 
-  public Set<Jarjestyskriteeritulos> getJarjestyskriteerit() {
-    return jarjestyskriteerit;
+  public List<Jarjestyskriteeritulos> getJarjestyskriteerit() {
+    return jarjestyskriteeritulokset.jarjestyskriteeritulokset;
   }
 
   public void setJarjestyskriteerit(Set<Jarjestyskriteeritulos> jarjestyskriteerit) {
-    this.jarjestyskriteerit.clear();
-    this.jarjestyskriteerit.addAll(jarjestyskriteerit);
+    this.jarjestyskriteeritulokset.jarjestyskriteeritulokset.clear();
+    this.jarjestyskriteeritulokset.jarjestyskriteeritulokset.addAll(jarjestyskriteerit);
+    this.jarjestaJarjestyskriteeritulokset();
   }
 
   public String getValintatapajonoOid() {
@@ -92,5 +91,16 @@ public class MuokattuJonosija {
 
   public void setHarkinnanvarainen(Boolean harkinnanvarainen) {
     this.harkinnanvarainen = harkinnanvarainen;
+  }
+
+  private void jarjestaJarjestyskriteeritulokset() {
+    Collections.sort(
+        jarjestyskriteeritulokset.jarjestyskriteeritulokset,
+        new Comparator<Jarjestyskriteeritulos>() {
+          @Override
+          public int compare(Jarjestyskriteeritulos o1, Jarjestyskriteeritulos o2) {
+            return o1.getPrioriteetti() - o2.getPrioriteetti();
+          }
+        });
   }
 }

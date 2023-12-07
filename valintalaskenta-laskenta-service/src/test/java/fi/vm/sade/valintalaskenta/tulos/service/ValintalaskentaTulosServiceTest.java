@@ -13,7 +13,6 @@ import fi.vm.sade.valintalaskenta.testing.AbstractMocklessIntegrationTest;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -81,7 +80,7 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
     List<HakukohdeDTO> convertedHakukohdeDTOs =
         valintalaskentaTulosService
             .haeLasketutValinnanvaiheetHaulle(hakuOid, testConverter)
-            .collect(Collectors.toList());
+            .toList();
 
     assertEquals(1, convertedHakukohdeDTOs.size());
     HakukohdeDTO convertedHakukohdeDTO = convertedHakukohdeDTOs.get(0);

@@ -7,7 +7,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValintatapajonoDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
-import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluJarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluValintatapajono;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import java.util.*;
@@ -201,7 +201,9 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
       dto.setHakijaOid(jonosija.getHakijaOid());
       dto.setPrioriteetti(jonosija.getHakutoiveprioriteetti());
       dto.setJarjestyskriteerit(
-          new TreeSet<>(convertJarjestyskriteeri(jonosija.getJarjestyskriteeritulokset())));
+          new TreeSet<>(
+              convertJarjestyskriteeri(
+                  jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset)));
       dto.setSyotetytArvot(convertSyotettyArvo(jonosija.getSyotetytArvot()));
       dto.setFunktioTulokset(convertFunktioTulos(jonosija.getFunktioTulokset().funktioTulokset));
       dto.setHylattyValisijoittelussa(jonosija.isHylattyValisijoittelussa());
@@ -231,8 +233,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
 
   @Override
   public ValintatietoValintatapajonoDTO convertSijoitteluValintatapajono(
-      SijoitteluValintatapajono jono,
-      List<SijoitteluJarjestyskriteeritulos> kriteeritValintatapajonolle) {
+      SijoitteluValintatapajono jono, List<SijoitteluJonosija> kriteeritValintatapajonolle) {
 
     ValintatietoValintatapajonoDTO jonoDto = new ValintatietoValintatapajonoDTO();
     jonoDto.setAloituspaikat(jono.aloituspaikat);
@@ -249,42 +250,36 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
     jonoDto.setPoissaOlevaTaytto(jono.poissaOlevaTaytto);
     jonoDto.setValmisSijoiteltavaksi(jono.valmisSijoiteltavaksi);
 
-    kriteeritValintatapajonolle.stream()
-        .collect(Collectors.groupingBy(sija -> sija.jonosijaId))
-        .forEach(
-            (jonosijaId, kriteerit) ->
-                jonoDto.getJonosijat().add(convertJonosijaDTOForSijoittelu(kriteerit)));
+    jonoDto.setJonosijat(
+        kriteeritValintatapajonolle.stream().map(this::convertJonosijaDTOForSijoittelu).toList());
 
     return jonoDto;
   }
 
-  private JonosijaDTO convertJonosijaDTOForSijoittelu(
-      List<SijoitteluJarjestyskriteeritulos> kriteerit) {
+  private JonosijaDTO convertJonosijaDTOForSijoittelu(SijoitteluJonosija jonosija) {
     JonosijaDTO jonosijaDTO = new JonosijaDTO();
-    jonosijaDTO.setHakemusOid(kriteerit.get(0).hakemusOid);
-    jonosijaDTO.setHakijaOid(kriteerit.get(0).hakijaOid);
-    jonosijaDTO.setPrioriteetti(kriteerit.get(0).hakutoiveprioriteetti);
+    jonosijaDTO.setHakemusOid(jonosija.hakemusOid);
+    jonosijaDTO.setHakijaOid(jonosija.hakijaOid);
+    jonosijaDTO.setPrioriteetti(jonosija.hakutoiveprioriteetti);
     jonosijaDTO.setSyotetytArvot(
-        kriteerit.get(0).syotetytArvot.syotetytArvot.stream()
-            .map(this::convertSyotettyArvo)
-            .toList());
-    jonosijaDTO.setHylattyValisijoittelussa(kriteerit.get(0).hylattyValisijoittelussa);
+        jonosija.syotetytArvot.syotetytArvot.stream().map(this::convertSyotettyArvo).toList());
+    jonosijaDTO.setHylattyValisijoittelussa(jonosija.hylattyValisijoittelussa);
 
     jonosijaDTO.setJarjestyskriteerit(
         new TreeSet<>(
-            kriteerit.stream()
+            jonosija.jarjestyskriteeritulokset.jarjestyskriteeritulokset.stream()
                 .map(this::convertSijoitteluJarjestyskriteeritulosToDTO)
                 .collect(Collectors.toSet())));
     return jonosijaDTO;
   }
 
   private JarjestyskriteeritulosDTO convertSijoitteluJarjestyskriteeritulosToDTO(
-      SijoitteluJarjestyskriteeritulos kri) {
+      Jarjestyskriteeritulos kri) {
     JarjestyskriteeritulosDTO kriDTO = new JarjestyskriteeritulosDTO();
-    kriDTO.setArvo(kri.arvo);
-    kriDTO.setPrioriteetti(kri.prioriteetti);
-    kriDTO.setTila(kri.tila);
-    kriDTO.setNimi(kri.nimi);
+    kriDTO.setArvo(kri.getArvo());
+    kriDTO.setPrioriteetti(kri.getPrioriteetti());
+    kriDTO.setTila(kri.getTila());
+    kriDTO.setNimi(kri.getNimi());
     kriDTO.setKuvaus(kri.getKuvaus());
     return kriDTO;
   }

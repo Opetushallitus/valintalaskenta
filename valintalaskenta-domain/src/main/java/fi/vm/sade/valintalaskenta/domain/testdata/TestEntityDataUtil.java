@@ -65,7 +65,7 @@ public class TestEntityDataUtil {
     jonosija.setHakemusOid(hakemusOid);
     jonosija.setHakutoiveprioriteetti(hakutoivePrioriteetti);
     jonosija.setHarkinnanvarainen(harkinnanvarainen);
-    jonosija.setJarjestyskriteeritulokset(tulokset);
+    jonosija.setJarjestyskriteeritulokset(new JarjestyskriteeritulosContainer(tulokset));
     SyotettyArvoContainer container = new SyotettyArvoContainer();
     container.syotetytArvot.addAll(arvot);
     jonosija.setSyotetytArvot(container);
@@ -178,6 +178,7 @@ public class TestEntityDataUtil {
         luoJonosijaEntity(
             hakemusOid, 1, false, List.of(luoJarjestyskriteeritulosEntity(0, 0, HYLATTY)));
     sija.getJarjestyskriteeritulokset()
+        .jarjestyskriteeritulokset
         .get(0)
         .setKuvausFI("Hakemus hyväksyttiin korkeammalle hakutoiveelle");
     sija.setHakijaOid(hakijaOid);

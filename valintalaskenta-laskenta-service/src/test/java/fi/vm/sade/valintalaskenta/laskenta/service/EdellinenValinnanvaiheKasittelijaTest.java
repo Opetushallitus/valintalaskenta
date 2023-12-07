@@ -68,7 +68,7 @@ public class EdellinenValinnanvaiheKasittelijaTest {
     jonosija.setHakemusOid(hakemusOid);
     Jarjestyskriteeritulos tulos = new Jarjestyskriteeritulos();
     tulos.setTila(tila);
-    jonosija.getJarjestyskriteeritulokset().add(tulos);
+    jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.add(tulos);
     return jonosija;
   }
 
