@@ -652,7 +652,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         for (Jonosija jonosija : jono.getJonosijat()) {
           for (Jarjestyskriteeritulos tulos :
               jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset) {
-            // jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
+            jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
           }
         }
         poistettavat.add(jono);
@@ -717,8 +717,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     if (dto.getHakijaryhmatyyppikoodi() != null) {
       hakijaryhma.hakijaryhmatyyppiKoodiuri = dto.getHakijaryhmatyyppikoodi().getUri();
     }
-    // TODO: remove or implement differently in OK-384
-    // poistaVanhatHistoriat(hakijaryhma);
+    poistaVanhatHistoriat(hakijaryhma);
     hakijaryhma.jonosija.clear();
 
     return hakijaryhma;
@@ -728,7 +727,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     for (Jonosija jonosija : hakijaryhma.jonosija) {
       for (Jarjestyskriteeritulos tulos :
           jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset) {
-        // jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
+        jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
       }
     }
   }

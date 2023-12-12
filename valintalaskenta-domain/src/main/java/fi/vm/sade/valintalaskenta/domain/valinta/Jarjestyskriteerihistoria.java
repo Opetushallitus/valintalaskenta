@@ -1,24 +1,28 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import java.util.UUID;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+
 public class Jarjestyskriteerihistoria {
 
   public static String FILENAME_PREFIX = "JARHIS_", FILENAME_SUFFIX = ".zip";
 
-  private String id;
+  @Id private UUID id;
 
   private String historia;
 
-  private byte[] historiaGzip;
+  @Transient private byte[] historiaGzip;
 
-  public String getId() {
+  public UUID getId() {
     return id;
   }
 
   public String getFilename() {
-    return String.join("", FILENAME_PREFIX, this.getId(), FILENAME_SUFFIX);
+    return String.join("", FILENAME_PREFIX, this.getId().toString(), FILENAME_SUFFIX);
   }
 
-  public void setId(String id) {
+  public void setId(UUID id) {
     this.id = id;
   }
 

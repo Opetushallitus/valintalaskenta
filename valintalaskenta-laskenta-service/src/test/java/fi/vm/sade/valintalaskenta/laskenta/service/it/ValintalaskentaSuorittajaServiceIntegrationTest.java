@@ -1,6 +1,5 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.it;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi.LUKUARVO;
 import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.HYLATTY;
 import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA;
@@ -10,10 +9,7 @@ import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoTaval
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteet;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteetJaTavallinenValinnanvaihe;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintatapajono;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
@@ -22,11 +18,7 @@ import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetValinnanVaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 import fi.vm.sade.valintalaskenta.domain.testdata.TestEntityDataUtil;
-import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
-import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
-import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
@@ -36,13 +28,10 @@ import java.math.BigDecimal;
 import java.util.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 
 public class ValintalaskentaSuorittajaServiceIntegrationTest
     extends AbstractMocklessIntegrationTest {
   private final String uuid = null;
-
-  @Autowired private ApplicationContext applicationContext;
 
   @Autowired private ValintalaskentaSuorittajaService valintalaskentaSuorittajaService;
 
@@ -274,11 +263,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos1.getTila());
           assertEquals(1, jarjestyskriteeritulos1.getPrioriteetti());
-          // assertNotNull(jarjestyskriteeritulos1.getHistoria());
-          /*         Jarjestyskriteerihistoria historia1 =
+          assertNotNull(jarjestyskriteeritulos1.getHistoria());
+          Jarjestyskriteerihistoria historia1 =
               jarjestyskriteerihistoriaDAO.hae(jarjestyskriteeritulos1.getHistoria());
           assertNotNull(historia1);
-          assertNotNull(historia1.getHistoria());*/
+          assertNotNull(historia1.getHistoria());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos2 =
               jonosija1.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(1);
@@ -286,12 +275,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos2.getTila());
           assertEquals(2, jarjestyskriteeritulos2.getPrioriteetti());
-          /*          assertNotNull(jarjestyskriteeritulos2.getHistoria());
+          assertNotNull(jarjestyskriteeritulos2.getHistoria());
           Jarjestyskriteerihistoria historia2 =
               jarjestyskriteerihistoriaDAO.hae(jarjestyskriteeritulos2.getHistoria());
           assertNotNull(historia2);
           assertNotNull(historia2.getHistoria());
-          assertNotNull(historia2.getHistoriaGzip());*/
 
           assertEquals(2, jonosija1.getFunktioTulokset().funktioTulokset.size());
           assertEquals("100.0", jonosija1.getFunktioTulokset().funktioTulokset.get(0).getArvo());
@@ -312,12 +300,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos1.getTila());
           assertEquals(1, jarjestyskriteeritulos1.getPrioriteetti());
-          /*          assertNotNull(jarjestyskriteeritulos1.getHistoria());
+          assertNotNull(jarjestyskriteeritulos1.getHistoria());
           Jarjestyskriteerihistoria historia1 =
               jarjestyskriteerihistoriaDAO.hae(jarjestyskriteeritulos1.getHistoria());
           assertNotNull(historia1);
           assertNotNull(historia1.getHistoria());
-          assertNotNull(historia1.getHistoriaGzip());*/
 
           Jarjestyskriteeritulos jarjestyskriteeritulos2 =
               jonosija2.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(1);
@@ -325,12 +312,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos2.getTila());
           assertEquals(2, jarjestyskriteeritulos2.getPrioriteetti());
-          /*          assertNotNull(jarjestyskriteeritulos2.getHistoria());
+          assertNotNull(jarjestyskriteeritulos2.getHistoria());
           Jarjestyskriteerihistoria historia2 =
               jarjestyskriteerihistoriaDAO.hae(jarjestyskriteeritulos2.getHistoria());
           assertNotNull(historia2);
           assertNotNull(historia2.getHistoria());
-          assertNotNull(historia2.getHistoriaGzip());*/
         }
       }
       {
@@ -356,11 +342,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
           assertEquals(1, jarjestyskriteeritulos.getPrioriteetti());
-          /*assertNotNull(jarjestyskriteeritulos.getHistoria());
+          assertNotNull(jarjestyskriteeritulos.getHistoria());
           Jarjestyskriteerihistoria historia =
               jarjestyskriteerihistoriaDAO.hae(jarjestyskriteeritulos.getHistoria());
           assertNotNull(historia);
-          assertNotNull(historia.getHistoria());*/
+          assertNotNull(historia.getHistoria());
         }
 
         {
@@ -376,11 +362,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
           assertEquals(1, jarjestyskriteeritulos.getPrioriteetti());
-          /*          assertNotNull(jarjestyskriteeritulos.getHistoria());
+          assertNotNull(jarjestyskriteeritulos.getHistoria());
           Jarjestyskriteerihistoria historia =
               jarjestyskriteerihistoriaDAO.hae(jarjestyskriteeritulos.getHistoria());
           assertNotNull(historia);
-          assertNotNull(historia.getHistoria());*/
+          assertNotNull(historia.getHistoria());
         }
       }
     }
@@ -418,11 +404,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
           assertEquals(1, jarjestyskriteeritulos.getPrioriteetti());
-          /*          assertNotNull(jarjestyskriteeritulos.getHistoria());
+          assertNotNull(jarjestyskriteeritulos.getHistoria());
           Jarjestyskriteerihistoria historia1 =
               jarjestyskriteerihistoriaDAO.hae(jarjestyskriteeritulos.getHistoria());
           assertNotNull(historia1);
-          assertNotNull(historia1.getHistoria());*/
+          assertNotNull(historia1.getHistoria());
 
           assertEquals(0, jonosija.getFunktioTulokset().funktioTulokset.size());
         }
@@ -439,11 +425,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
           assertEquals(1, jarjestyskriteeritulos.getPrioriteetti());
-          /*          assertNotNull(jarjestyskriteeritulos.getHistoria());
+          assertNotNull(jarjestyskriteeritulos.getHistoria());
           Jarjestyskriteerihistoria historia1 =
               jarjestyskriteerihistoriaDAO.hae(jarjestyskriteeritulos.getHistoria());
           assertNotNull(historia1);
-          assertNotNull(historia1.getHistoria());*/
+          assertNotNull(historia1.getHistoria());
         }
       }
     }
@@ -483,11 +469,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos1.getTila());
           assertEquals(1, jarjestyskriteeritulos1.getPrioriteetti());
-          /*          assertNotNull(jarjestyskriteeritulos1.getHistoria());
+          assertNotNull(jarjestyskriteeritulos1.getHistoria());
           Jarjestyskriteerihistoria historia1 =
               jarjestyskriteerihistoriaDAO.hae(jarjestyskriteeritulos1.getHistoria());
           assertNotNull(historia1);
-          assertNotNull(historia1.getHistoria());*/
+          assertNotNull(historia1.getHistoria());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos2 =
               jonosija1.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(1);
@@ -495,11 +481,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos2.getTila());
           assertEquals(2, jarjestyskriteeritulos2.getPrioriteetti());
-          /*          assertNotNull(jarjestyskriteeritulos2.getHistoria());
+          assertNotNull(jarjestyskriteeritulos2.getHistoria());
           Jarjestyskriteerihistoria historia2 =
               jarjestyskriteerihistoriaDAO.hae(jarjestyskriteeritulos2.getHistoria());
           assertNotNull(historia2);
-          assertNotNull(historia2.getHistoria());*/
+          assertNotNull(historia2.getHistoria());
           assertEquals(1, jonosija1.getFunktioTulokset().funktioTulokset.size());
           assertEquals("600.0", jonosija1.getFunktioTulokset().funktioTulokset.get(0).getArvo());
         }
@@ -518,11 +504,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos1.getTila());
           assertEquals(1, jarjestyskriteeritulos1.getPrioriteetti());
-          /*          assertNotNull(jarjestyskriteeritulos1.getHistoria());
+          assertNotNull(jarjestyskriteeritulos1.getHistoria());
           Jarjestyskriteerihistoria historia1 =
               jarjestyskriteerihistoriaDAO.hae(jarjestyskriteeritulos1.getHistoria());
           assertNotNull(historia1);
-          assertNotNull(historia1.getHistoria());*/
+          assertNotNull(historia1.getHistoria());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos2 =
               jonosija2.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(1);
@@ -530,11 +516,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos2.getTila());
           assertEquals(2, jarjestyskriteeritulos2.getPrioriteetti());
-          /*          assertNotNull(jarjestyskriteeritulos2.getHistoria());
+          assertNotNull(jarjestyskriteeritulos2.getHistoria());
           Jarjestyskriteerihistoria historia2 =
               jarjestyskriteerihistoriaDAO.hae(jarjestyskriteeritulos2.getHistoria());
           assertNotNull(historia2);
-          assertNotNull(historia2.getHistoria());*/
+          assertNotNull(historia2.getHistoria());
         }
       }
       {
@@ -560,11 +546,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
           assertEquals(1, jarjestyskriteeritulos.getPrioriteetti());
-          /*          assertNotNull(jarjestyskriteeritulos.getHistoria());
+          assertNotNull(jarjestyskriteeritulos.getHistoria());
           Jarjestyskriteerihistoria historia =
               jarjestyskriteerihistoriaDAO.hae(jarjestyskriteeritulos.getHistoria());
           assertNotNull(historia);
-          assertNotNull(historia.getHistoria());*/
+          assertNotNull(historia.getHistoria());
         }
 
         {
@@ -580,11 +566,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
           assertEquals(1, jarjestyskriteeritulos.getPrioriteetti());
-          /*assertNotNull(jarjestyskriteeritulos.getHistoria());
+          assertNotNull(jarjestyskriteeritulos.getHistoria());
           Jarjestyskriteerihistoria historia =
               jarjestyskriteerihistoriaDAO.hae(jarjestyskriteeritulos.getHistoria());
           assertNotNull(historia);
-          assertNotNull(historia.getHistoria());*/
+          assertNotNull(historia.getHistoria());
         }
       }
     }
@@ -622,11 +608,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
           assertEquals(1, jarjestyskriteeritulos.getPrioriteetti());
-          /*          assertNotNull(jarjestyskriteeritulos.getHistoria());
+          assertNotNull(jarjestyskriteeritulos.getHistoria());
           Jarjestyskriteerihistoria historia1 =
               jarjestyskriteerihistoriaDAO.hae(jarjestyskriteeritulos.getHistoria());
           assertNotNull(historia1);
-          assertNotNull(historia1.getHistoria());*/
+          assertNotNull(historia1.getHistoria());
         }
         {
           Jonosija jonosija = jonot.get(1);
@@ -641,11 +627,11 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
           assertEquals(1, jarjestyskriteeritulos.getPrioriteetti());
-          /*          assertNotNull(jarjestyskriteeritulos.getHistoria());
+          assertNotNull(jarjestyskriteeritulos.getHistoria());
           Jarjestyskriteerihistoria historia1 =
               jarjestyskriteerihistoriaDAO.hae(jarjestyskriteeritulos.getHistoria());
           assertNotNull(historia1);
-          assertNotNull(historia1.getHistoria());*/
+          assertNotNull(historia1.getHistoria());
         }
       }
     }
@@ -892,17 +878,17 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
         vaihe.getValintatapajono().stream()
             .filter(j -> valintatapajonoOid.equals(j.getValintatapajonoOid()))
             .findFirst();
-    assertThat(jononTulos, isPresent());
+    assertTrue(jononTulos.isPresent());
 
     Optional<Jonosija> hakemuksenTulos =
         jononTulos.get().getJonosijat().stream()
             .filter(s -> hakemusOid.equals(s.getHakemusOid()))
             .findFirst();
-    assertThat(hakemuksenTulos, isPresent());
+    assertTrue(hakemuksenTulos.isPresent());
 
     List<Jarjestyskriteeritulos> jarjestyskriteeritulokset =
         hakemuksenTulos.get().getJarjestyskriteeritulokset().jarjestyskriteeritulokset;
-    assertThat(jarjestyskriteeritulokset, hasSize(1));
+    assertEquals(1, jarjestyskriteeritulokset.size());
     assertEquals(HYVAKSYTTAVISSA, jarjestyskriteeritulokset.get(0).getTila());
   }
 

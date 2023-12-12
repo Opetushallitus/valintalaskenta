@@ -3,7 +3,9 @@ package fi.vm.sade.valintalaskenta.testing;
 import fi.vm.sade.valintalaskenta.laskenta.App;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.*;
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.HarkinnanvarainenHyvaksyminenRepository;
+import fi.vm.sade.valintalaskenta.tulos.dao.repository.JarjestyskriteerihistoriaRepository;
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.MuokattuJonosijaRepository;
+import fi.vm.sade.valintalaskenta.tulos.dao.repository.ValintatapajonoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,23 +13,12 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.*;
 import org.springframework.test.context.ActiveProfiles;
 
-// @EnableJdbcRepositories(basePackages = "fi.vm.sade.valintalaskenta.laskenta.dao.repository")
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     classes = {App.class},
     args = {"--add-opens=java.base/java.lang=ALL-UNNAMED"})
 @Import(TestConfigurationWithMocks.class)
 @ActiveProfiles("test")
-// @ContextConfiguration(locations = "classpath:application-context-test.xml")
-// @EnableAutoConfiguration(exclude=AbstractMocklessIntegrationTest.class)
-// @ExtendWith(SpringBExtension.class)
-/*@TestExecutionListeners(
-listeners = {
-        DirtiesContextTestExecutionListener.class
-})*/
-// @EnableWebSecurity(debug = true)
-// @EnableJpaRepositories(basePackages = "fi.vm.sade.valintalaskenta.laskenta.dao.repository")
-// @EntityScan(basePackages = "fi.vm.sade.valintalaskenta.domain.*")
 public abstract class AbstractIntegrationTest {
 
   @Autowired protected HakijaryhmaRepository hakijaryhmaRepository;
@@ -45,6 +36,8 @@ public abstract class AbstractIntegrationTest {
   @Autowired
   protected HarkinnanvarainenHyvaksyminenRepository harkinnanvarainenHyvaksyminenRepository;
 
+  @Autowired protected JarjestyskriteerihistoriaRepository jarjestyskriteerihistoriaRepository;
+
   @LocalServerPort protected Integer port;
 
   @BeforeEach
@@ -56,5 +49,6 @@ public abstract class AbstractIntegrationTest {
     valinnanvaiheRepository.deleteAll();
     hakijaryhmaRepository.deleteAll();
     valintakoeOsallistuminenRepository.deleteAll();
+    jarjestyskriteerihistoriaRepository.deleteAll();
   }
 }

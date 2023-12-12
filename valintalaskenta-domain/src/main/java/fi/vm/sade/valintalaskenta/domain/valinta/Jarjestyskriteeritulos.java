@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -33,6 +34,9 @@ public class Jarjestyskriteeritulos {
 
   @JsonProperty("tekninenKuvaus")
   private String tekninenKuvaus;
+
+  @JsonProperty("historia")
+  private UUID historia;
 
   public int getPrioriteetti() {
     return prioriteetti;
@@ -121,5 +125,13 @@ public class Jarjestyskriteeritulos {
 
   public void setKuvausSV(String kuvausSV) {
     this.kuvausSV = kuvausSV;
+  }
+
+  public UUID getHistoria() {
+    return historia;
+  }
+
+  public void setHistoria(UUID historia) {
+    this.historia = historia;
   }
 }

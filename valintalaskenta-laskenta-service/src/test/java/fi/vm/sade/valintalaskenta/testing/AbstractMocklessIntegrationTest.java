@@ -4,6 +4,7 @@ import fi.vm.sade.valintalaskenta.laskenta.App;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.*;
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.HarkinnanvarainenHyvaksyminenRepository;
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.MuokattuJonosijaRepository;
+import fi.vm.sade.valintalaskenta.tulos.dao.repository.ValintatapajonoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -4,7 +4,7 @@ import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.JonosijaRepository;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.ValinnanvaiheRepository;
-import fi.vm.sade.valintalaskenta.laskenta.dao.repository.ValintatapajonoRepository;
+import fi.vm.sade.valintalaskenta.tulos.dao.repository.ValintatapajonoRepository;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;

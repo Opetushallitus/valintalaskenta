@@ -28,9 +28,9 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
 import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.dao.HarkinnanvarainenHyvaksyminenDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosHakijaryhmaDAO;
+import fi.vm.sade.valintalaskenta.tulos.dao.TulosJarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
@@ -68,7 +68,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
   @Autowired private ValintatulosConverter valintatulosConverter;
 
-  @Autowired private JarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAO;
+  @Autowired private TulosJarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAO;
 
   @Autowired private HarkinnanvarainenHyvaksyminenDAO harkinnanvarainenHyvaksyminenDAO;
 
@@ -553,13 +553,6 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
   public List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakutoive(
       String hakukohdeOid) {
     return tulosValintakoeOsallistuminenDAO.findByHakutoive(hakukohdeOid);
-  }
-
-  @Override
-  public List<Jarjestyskriteerihistoria> haeJonosijaHistoria(
-      String valintatapajonoOid, String hakemusOid) {
-    return jarjestyskriteerihistoriaDAO.findByValintatapajonoAndHakemusOid(
-        valintatapajonoOid, hakemusOid);
   }
 
   @Override
