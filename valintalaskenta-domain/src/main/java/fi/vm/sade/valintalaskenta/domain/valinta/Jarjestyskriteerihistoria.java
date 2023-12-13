@@ -15,6 +15,8 @@ public class Jarjestyskriteerihistoria {
 
   @Transient private byte[] historiaGzip;
 
+  private boolean laskettuUudelleen = false;
+
   public static final List<String> TAGS = List.of("valintalaskenta", "jarjestyskriteerihistoria");
 
   public UUID getId() {
@@ -43,5 +45,13 @@ public class Jarjestyskriteerihistoria {
 
   public void setHistoria(String historia) {
     this.historia = historia;
+  }
+
+  public boolean isLaskettuUudelleen() {
+    return laskettuUudelleen;
+  }
+
+  public void setLaskettuUudelleen(boolean laskettuUudelleen) {
+    this.laskettuUudelleen = laskettuUudelleen;
   }
 }
