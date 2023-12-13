@@ -72,7 +72,6 @@
         <dependency>
             <groupId>fi.vm.sade.dokumenttipalvelu</groupId>
             <artifactId>dokumenttipalvelu</artifactId>
-            <version>6.10-SNAPSHOT</version>
         </dependency>
 
         <!-- SADE -->

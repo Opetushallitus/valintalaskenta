@@ -25,6 +25,7 @@
     <properties>
         <valinta-sharedutils.version>5.11-SNAPSHOT</valinta-sharedutils.version>
         <sijoittelu.version>7.6.0-SNAPSHOT</sijoittelu.version>
+        <dokumenttipalvelu.version>6.11-SNAPSHOT</dokumenttipalvelu.version>
 
         <httpcomponents.version>4.5.14</httpcomponents.version>
         <modelmapper.version>3.1.1</modelmapper.version>
@@ -103,6 +104,11 @@
                         <artifactId>jboss-transaction-api_1.1_spec</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>fi.vm.sade.dokumenttipalvelu</groupId>
+                <artifactId>dokumenttipalvelu</artifactId>
+                <version>${dokumenttipalvelu.version}</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
