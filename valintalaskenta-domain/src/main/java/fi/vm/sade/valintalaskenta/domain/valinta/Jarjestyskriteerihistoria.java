@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.annotation.Id;
@@ -16,6 +17,8 @@ public class Jarjestyskriteerihistoria {
   @Transient private byte[] historiaGzip;
 
   private boolean laskettuUudelleen = false;
+
+  private Date createdAt = new Date();
 
   public static final List<String> TAGS = List.of("valintalaskenta", "jarjestyskriteerihistoria");
 
@@ -53,5 +56,13 @@ public class Jarjestyskriteerihistoria {
 
   public void setLaskettuUudelleen(boolean laskettuUudelleen) {
     this.laskettuUudelleen = laskettuUudelleen;
+  }
+
+  public Date getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(Date createdAt) {
+    this.createdAt = createdAt;
   }
 }
