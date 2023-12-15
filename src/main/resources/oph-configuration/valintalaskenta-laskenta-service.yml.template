@@ -85,4 +85,4 @@ valintalaskenta-laskenta-service:
 aws:
   region: {{aws_region}}
   bucket:
-    name: {{dokumenttipalvelu_aws_bucket_name}}
+    name: {{valintalaskentalaskentaservice_aws_bucket_name}}

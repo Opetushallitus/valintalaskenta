@@ -8,8 +8,10 @@ import java.io.ByteArrayInputStream;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +20,9 @@ public class JarjestyskriteerihistoriaUploader {
 
   private static final Integer STORAGE_TIME_AROUND_6_YEARS =
       2192; // couple more in case of leap years
+
+  private static final Logger LOG =
+      LoggerFactory.getLogger(JarjestyskriteerihistoriaUploader.class);
 
   private final Dokumenttipalvelu dokumenttipalvelu;
 
@@ -29,9 +34,14 @@ public class JarjestyskriteerihistoriaUploader {
     this.historiaDAO = historiaDAO;
   }
 
-  @Scheduled(initialDelay = 15, fixedRate = 20, timeUnit = TimeUnit.SECONDS)
+  @Scheduled(initialDelay = 15, fixedDelay = 10, timeUnit = TimeUnit.SECONDS)
   public void moveJarjestyskriteeriHistoriaFromDatabaseToS3() {
-    historiaDAO.fetchOldest().forEach(this::uploadThenDelete);
+    List<Jarjestyskriteerihistoria> historyIds = historiaDAO.fetchOldest();
+    if (historyIds.isEmpty()) {
+      LOG.debug("Jarjestyskriteerihistorioita ei löytynyt kannasta");
+    } else {
+      historyIds.forEach(this::uploadThenDelete);
+    }
   }
 
   private void uploadThenDelete(Jarjestyskriteerihistoria jarjestyskriteerihistoria) {
