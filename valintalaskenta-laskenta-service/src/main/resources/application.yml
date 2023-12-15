@@ -93,3 +93,8 @@ valintalaskentakoostepalvelu:
 root:
   organisaatio:
     oid: ""
+
+aws:
+  region: ""
+  bucket:
+    name: ""

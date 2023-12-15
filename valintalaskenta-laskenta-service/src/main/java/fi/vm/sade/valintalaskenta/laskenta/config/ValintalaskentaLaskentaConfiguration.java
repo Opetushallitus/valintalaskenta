@@ -182,7 +182,8 @@ public class ValintalaskentaLaskentaConfiguration {
 
   @Bean
   public Dokumenttipalvelu dokumenttipalvelu(
-      @Value("aws.region") final String region, @Value("aws.bucket.name") final String bucketName) {
+      @Value("${aws.region}") final String region,
+      @Value("${aws.bucket.name}") final String bucketName) {
     return new Dokumenttipalvelu(region, bucketName);
   }
 }

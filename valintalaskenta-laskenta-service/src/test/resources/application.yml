@@ -74,6 +74,11 @@ valintalaskentakoostepalvelu:
     rest:
       url:
 
+aws:
+  region: ""
+  bucket:
+    name: ""
+
 cas-service:
   service: http://localhost:${server.port}/valintalaskenta-laskenta-service
   send-renew: false
