@@ -10,7 +10,9 @@ public class Jarjestyskriteerihistoria {
 
   public static final String FILENAME_PREFIX = "JARHIS_", FILENAME_SUFFIX = ".zip";
 
-  @Id private UUID id;
+  @Id private Long id;
+
+  private UUID tunniste;
 
   private String historia;
 
@@ -22,7 +24,7 @@ public class Jarjestyskriteerihistoria {
 
   public static final List<String> TAGS = List.of("valintalaskenta", "jarjestyskriteerihistoria");
 
-  public UUID getId() {
+  public Long getId() {
     return id;
   }
 
@@ -30,7 +32,7 @@ public class Jarjestyskriteerihistoria {
     return String.join("", FILENAME_PREFIX, this.getId().toString(), FILENAME_SUFFIX);
   }
 
-  public void setId(UUID id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
@@ -64,5 +66,13 @@ public class Jarjestyskriteerihistoria {
 
   public void setCreatedAt(Date createdAt) {
     this.createdAt = createdAt;
+  }
+
+  public UUID getTunniste() {
+    return tunniste;
+  }
+
+  public void setTunniste(UUID tunniste) {
+    this.tunniste = tunniste;
   }
 }

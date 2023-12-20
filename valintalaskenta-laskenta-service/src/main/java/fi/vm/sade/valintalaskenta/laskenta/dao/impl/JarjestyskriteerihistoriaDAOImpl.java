@@ -19,17 +19,28 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
 
   @Override
   public void create(Jarjestyskriteerihistoria jarjestyskriteerihistoria) {
+    if (jarjestyskriteerihistoria.getTunniste() == null) {
+      jarjestyskriteerihistoria.setTunniste(UUID.randomUUID());
+    }
     repository.save(jarjestyskriteerihistoria);
   }
 
   @Override
-  public void delete(UUID id) {
+  public void createVersionWithUpdate(UUID tunniste) {
+    Jarjestyskriteerihistoria historia = new Jarjestyskriteerihistoria();
+    historia.setTunniste(tunniste);
+    historia.setLaskettuUudelleen(true);
+    repository.save(historia);
+  }
+
+  @Override
+  public void delete(Long id) {
     repository.deleteById(id);
   }
 
   @Override
   public Jarjestyskriteerihistoria hae(UUID id) {
-    return repository.findById(id).orElse(null);
+    return repository.findLatestByTunniste(id).orElse(null);
   }
 
   @Override

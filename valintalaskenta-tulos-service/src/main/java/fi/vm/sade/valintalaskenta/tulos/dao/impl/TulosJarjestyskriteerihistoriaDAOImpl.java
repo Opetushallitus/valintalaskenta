@@ -5,7 +5,6 @@ import fi.vm.sade.valintalaskenta.tulos.dao.TulosJarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.JarjestyskriteerihistoriaRepository;
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.ValintatapajonoRepository;
 import java.util.*;
-import java.util.stream.StreamSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -37,7 +36,7 @@ public class TulosJarjestyskriteerihistoriaDAOImpl implements TulosJarjestyskrit
   }
 
   @Override
-  public List<Jarjestyskriteerihistoria> findById(List<UUID> ids) {
-    return StreamSupport.stream(repo.findAllById(ids).spliterator(), false).toList();
+  public List<Jarjestyskriteerihistoria> findByTunnisteet(List<UUID> tunnisteet) {
+    return repo.findLatestByTunnisteet(tunnisteet).stream().toList();
   }
 }

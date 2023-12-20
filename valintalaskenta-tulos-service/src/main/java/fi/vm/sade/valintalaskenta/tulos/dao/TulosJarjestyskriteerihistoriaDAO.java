@@ -7,5 +7,5 @@ import java.util.UUID;
 public interface TulosJarjestyskriteerihistoriaDAO {
   List<UUID> findByValintatapajonoAndHakemusOid(String valintatapajonoOid, String hakemusOid);
 
-  List<Jarjestyskriteerihistoria> findById(List<UUID> ids);
+  List<Jarjestyskriteerihistoria> findByTunnisteet(List<UUID> tunnisteet);
 }

@@ -8,7 +8,9 @@ public interface JarjestyskriteerihistoriaDAO {
 
   void create(Jarjestyskriteerihistoria jarjestyskriteerihistoria);
 
-  void delete(UUID id);
+  void createVersionWithUpdate(UUID tunniste);
+
+  void delete(Long id);
 
   Jarjestyskriteerihistoria hae(UUID id);
 

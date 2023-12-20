@@ -39,7 +39,7 @@ public class JarjestyskriteerihistoriaServiceImplTest {
   private static final String JONO_OID = "jono1";
   private static final String HAKEMUS_OID = "hakemus1";
 
-  private static final UUID ID = UUID.randomUUID(), ID_NOT_IN_S3 = UUID.randomUUID();
+  private static final UUID TUNNISTE = UUID.randomUUID(), TUNNISTE_NOT_IN_S3 = UUID.randomUUID();
 
   @BeforeEach
   public void init() throws IOException {
@@ -51,8 +51,9 @@ public class JarjestyskriteerihistoriaServiceImplTest {
 
   @Test
   public void hakeeHistoriatDokumenttipalvelusta() {
-    when(dao.findByValintatapajonoAndHakemusOid(JONO_OID, HAKEMUS_OID)).thenReturn(List.of(ID));
-    when(dokumenttipalvelu.composeKey(Jarjestyskriteerihistoria.TAGS, ID.toString()))
+    when(dao.findByValintatapajonoAndHakemusOid(JONO_OID, HAKEMUS_OID))
+        .thenReturn(List.of(TUNNISTE));
+    when(dokumenttipalvelu.composeKey(Jarjestyskriteerihistoria.TAGS, TUNNISTE.toString()))
         .thenReturn("avain");
     when(dokumenttipalvelu.get("avain")).thenReturn(entity);
     assertEquals(1, service.findByValintatapajonoAndHakemusOid(JONO_OID, HAKEMUS_OID).size());
@@ -61,26 +62,29 @@ public class JarjestyskriteerihistoriaServiceImplTest {
   @Test
   public void hakeeDokumenttipalvelustaPuuttuvanHistorianKannasta() {
     when(dao.findByValintatapajonoAndHakemusOid(JONO_OID, HAKEMUS_OID))
-        .thenReturn(List.of(ID, ID_NOT_IN_S3));
-    when(dokumenttipalvelu.composeKey(Jarjestyskriteerihistoria.TAGS, ID.toString()))
+        .thenReturn(List.of(TUNNISTE, TUNNISTE_NOT_IN_S3));
+    when(dokumenttipalvelu.composeKey(Jarjestyskriteerihistoria.TAGS, TUNNISTE.toString()))
         .thenReturn("avain");
-    when(dokumenttipalvelu.composeKey(Jarjestyskriteerihistoria.TAGS, ID_NOT_IN_S3.toString()))
+    when(dokumenttipalvelu.composeKey(
+            Jarjestyskriteerihistoria.TAGS, TUNNISTE_NOT_IN_S3.toString()))
         .thenReturn("avain2");
     when(dokumenttipalvelu.get("avain")).thenReturn(entity);
     when(dokumenttipalvelu.get("avain2")).thenThrow(Mockito.mock(NoSuchKeyException.class));
-    when(dao.findById(List.of(ID_NOT_IN_S3))).thenReturn(List.of(new Jarjestyskriteerihistoria()));
+    when(dao.findByTunnisteet(List.of(TUNNISTE_NOT_IN_S3)))
+        .thenReturn(List.of(new Jarjestyskriteerihistoria()));
     assertEquals(2, service.findByValintatapajonoAndHakemusOid(JONO_OID, HAKEMUS_OID).size());
-    verify(dao).findById(List.of(ID_NOT_IN_S3));
+    verify(dao).findByTunnisteet(List.of(TUNNISTE_NOT_IN_S3));
   }
 
   @Test
   public void heittaaPoikkeuksenJosTietoaEiLoydyKannastakaan() {
     when(dao.findByValintatapajonoAndHakemusOid(JONO_OID, HAKEMUS_OID))
-        .thenReturn(List.of(ID_NOT_IN_S3));
-    when(dokumenttipalvelu.composeKey(Jarjestyskriteerihistoria.TAGS, ID_NOT_IN_S3.toString()))
+        .thenReturn(List.of(TUNNISTE_NOT_IN_S3));
+    when(dokumenttipalvelu.composeKey(
+            Jarjestyskriteerihistoria.TAGS, TUNNISTE_NOT_IN_S3.toString()))
         .thenReturn("avain2");
     when(dokumenttipalvelu.get("avain2")).thenThrow(Mockito.mock(NoSuchKeyException.class));
-    when(dao.findById(List.of(ID_NOT_IN_S3))).thenReturn(new ArrayList<>());
+    when(dao.findByTunnisteet(List.of(TUNNISTE_NOT_IN_S3))).thenReturn(new ArrayList<>());
     assertThrows(
         RuntimeException.class,
         () -> service.findByValintatapajonoAndHakemusOid(JONO_OID, HAKEMUS_OID));

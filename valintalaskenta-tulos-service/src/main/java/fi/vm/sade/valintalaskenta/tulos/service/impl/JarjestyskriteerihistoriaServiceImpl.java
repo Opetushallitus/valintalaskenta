@@ -42,7 +42,7 @@ public class JarjestyskriteerihistoriaServiceImpl implements Jarjestyskriteerihi
     List<Jarjestyskriteerihistoria> historiat = getJarjestyskriteerihistoriatFromS3(historyIds);
     List<UUID> puuttuvatHistoriat =
         CollectionUtils.subtract(
-                historyIds, historiat.stream().map(Jarjestyskriteerihistoria::getId).toList())
+                historyIds, historiat.stream().map(Jarjestyskriteerihistoria::getTunniste).toList())
             .stream()
             .toList();
     return puuttuvatHistoriat.isEmpty()
@@ -50,13 +50,14 @@ public class JarjestyskriteerihistoriaServiceImpl implements Jarjestyskriteerihi
         : ListUtils.union(historiat, getJarjestyskriteerihistoriatFromDb(puuttuvatHistoriat));
   }
 
-  private List<Jarjestyskriteerihistoria> getJarjestyskriteerihistoriatFromDb(List<UUID> ids) {
-    List<Jarjestyskriteerihistoria> historiat = historiaDAO.findById(ids);
-    if (historiat.size() < ids.size()) {
+  private List<Jarjestyskriteerihistoria> getJarjestyskriteerihistoriatFromDb(
+      List<UUID> tunnisteet) {
+    List<Jarjestyskriteerihistoria> historiat = historiaDAO.findByTunnisteet(tunnisteet);
+    if (historiat.size() < tunnisteet.size()) {
       LOG.error(
           "Jarjestyskriteerihistorioita ei löytynyt dokumenttipalvelusta tai kannasta, puuttuvat historiat: {}",
           CollectionUtils.subtract(
-              ids, historiat.stream().map(Jarjestyskriteerihistoria::getId).toList())
+              tunnisteet, historiat.stream().map(Jarjestyskriteerihistoria::getId).toList())
               .stream());
       throw new RuntimeException("Jarjestyskriteerihistorioita ei löytynyt kannasta");
     }
@@ -73,7 +74,7 @@ public class JarjestyskriteerihistoriaServiceImpl implements Jarjestyskriteerihi
 
   private Jarjestyskriteerihistoria getJarjestyskriteerihistoria(UUID id) {
     Jarjestyskriteerihistoria historia = new Jarjestyskriteerihistoria();
-    historia.setId(id);
+    historia.setTunniste(id);
     try {
       String key = dokumenttipalvelu.composeKey(Jarjestyskriteerihistoria.TAGS, id.toString());
       ObjectEntity objectEntity = dokumenttipalvelu.get(key);

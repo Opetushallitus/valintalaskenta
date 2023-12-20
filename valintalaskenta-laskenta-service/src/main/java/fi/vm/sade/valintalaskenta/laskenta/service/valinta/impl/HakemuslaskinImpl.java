@@ -86,7 +86,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
     Jarjestyskriteerihistoria jkhistoria = new Jarjestyskriteerihistoria();
     jkhistoria.setHistoria(tulos.getHistoria());
     jarjestyskriteerihistoriaDAO.create(jkhistoria);
-    jktulos.setHistoria(jkhistoria.getId());
+    jktulos.setHistoria(jkhistoria.getTunniste());
   }
 
   @Override
@@ -113,7 +113,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
     Jarjestyskriteerihistoria jkhistoria = new Jarjestyskriteerihistoria();
     jkhistoria.setHistoria(tulos.getHistoria());
     jarjestyskriteerihistoriaDAO.create(jkhistoria);
-    jktulos.setHistoria(jkhistoria.getId());
+    jktulos.setHistoria(jkhistoria.getTunniste());
   }
 
   @Override
@@ -271,7 +271,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
     Jarjestyskriteerihistoria jkhistoria = new Jarjestyskriteerihistoria();
     jkhistoria.setHistoria(tulos.getHistoria());
     jarjestyskriteerihistoriaDAO.create(jkhistoria);
-    jktulos.setHistoria(jkhistoria.getId());
+    jktulos.setHistoria(jkhistoria.getTunniste());
   }
 
   private JonosijaJaSyotetytArvot getJonosijaJaSyotetytArvot(

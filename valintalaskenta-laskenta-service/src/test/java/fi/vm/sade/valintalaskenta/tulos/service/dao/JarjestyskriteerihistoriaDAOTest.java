@@ -54,16 +54,16 @@ public class JarjestyskriteerihistoriaDAOTest extends AbstractIntegrationTest {
 
   @Test
   public void findHistoriat() {
-    final String hakemusOid = "1.2.246.562.11.00000072752";
-    final String valintatapajonoOid = "jono2";
+    String hakemusOid = "1.2.246.562.11.00000072752";
+    String valintatapajonoOid = "jono2";
 
     teeLaskenta(hakemusOid, valintatapajonoOid);
 
-    List<UUID> ids =
+    List<UUID> tunnisteet =
         jonosijaHistoriaTulosDAO.findByValintatapajonoAndHakemusOid(valintatapajonoOid, hakemusOid);
 
     List<String> historiat =
-        jonosijaHistoriaTulosDAO.findById(ids).stream()
+        jonosijaHistoriaTulosDAO.findByTunnisteet(tunnisteet).stream()
             .map(Jarjestyskriteerihistoria::getHistoria)
             .toList();
 

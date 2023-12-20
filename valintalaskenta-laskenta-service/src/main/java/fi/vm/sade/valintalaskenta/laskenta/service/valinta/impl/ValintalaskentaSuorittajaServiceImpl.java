@@ -652,7 +652,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         for (Jonosija jonosija : jono.getJonosijat()) {
           for (Jarjestyskriteeritulos tulos :
               jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset) {
-            jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
+            jarjestyskriteerihistoriaDAO.createVersionWithUpdate(tulos.getHistoria());
           }
         }
         poistettavat.add(jono);
@@ -727,7 +727,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     for (Jonosija jonosija : hakijaryhma.jonosija) {
       for (Jarjestyskriteeritulos tulos :
           jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset) {
-        jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
+        jarjestyskriteerihistoriaDAO.createVersionWithUpdate(tulos.getHistoria());
       }
     }
   }
