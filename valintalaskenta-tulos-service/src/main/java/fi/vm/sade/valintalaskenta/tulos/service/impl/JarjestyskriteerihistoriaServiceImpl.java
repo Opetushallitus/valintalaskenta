@@ -72,20 +72,21 @@ public class JarjestyskriteerihistoriaServiceImpl implements Jarjestyskriteerihi
         .toList();
   }
 
-  private Jarjestyskriteerihistoria getJarjestyskriteerihistoria(UUID id) {
+  private Jarjestyskriteerihistoria getJarjestyskriteerihistoria(UUID tunniste) {
     Jarjestyskriteerihistoria historia = new Jarjestyskriteerihistoria();
-    historia.setTunniste(id);
+    historia.setTunniste(tunniste);
     try {
-      String key = dokumenttipalvelu.composeKey(Jarjestyskriteerihistoria.TAGS, id.toString());
+      String key =
+          dokumenttipalvelu.composeKey(Jarjestyskriteerihistoria.TAGS, tunniste.toString());
       ObjectEntity objectEntity = dokumenttipalvelu.get(key);
       historia.setHistoriaGzip(objectEntity.entity.readAllBytes());
     } catch (IOException e) {
-      LOG.error("Tietojen lataus epäonnistui järjestyskriteerihistorialle {}", id);
+      LOG.error("Tietojen lataus epäonnistui järjestyskriteerihistorialle {}", tunniste);
       throw new RuntimeException(e);
     } catch (NoSuchKeyException | CompletionException e) {
       LOG.debug(
           "Järjestyskriteerihistoriaa {} ei löytynyt s3:sta, yritetään hakea se tieto kannasta",
-          id);
+          tunniste);
       return null;
     }
     return JarjestyskriteeriKooderi.dekoodaa(historia);

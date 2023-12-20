@@ -21,6 +21,8 @@ public class JarjestyskriteerihistoriaUploader {
   private static final Integer STORAGE_TIME_AROUND_6_YEARS =
       2192; // couple more in case of leap years
 
+  private static final Integer STORAGE_FOR_OLD_VERSION_AROUND_3_MONTHS = 90;
+
   private static final Logger LOG =
       LoggerFactory.getLogger(JarjestyskriteerihistoriaUploader.class);
 
@@ -45,7 +47,11 @@ public class JarjestyskriteerihistoriaUploader {
   }
 
   private void uploadThenDelete(Jarjestyskriteerihistoria jarjestyskriteerihistoria) {
-    upload(jarjestyskriteerihistoria);
+    if (jarjestyskriteerihistoria.isLaskettuUudelleen()) {
+      update(jarjestyskriteerihistoria);
+    } else {
+      upload(jarjestyskriteerihistoria);
+    }
     historiaDAO.delete(jarjestyskriteerihistoria.getId());
   }
 
@@ -53,11 +59,20 @@ public class JarjestyskriteerihistoriaUploader {
     Jarjestyskriteerihistoria enkoodattu =
         JarjestyskriteeriKooderi.enkoodaa(jarjestyskriteerihistoria);
     dokumenttipalvelu.save(
-        jarjestyskriteerihistoria.getId().toString(),
+        jarjestyskriteerihistoria.getTunniste().toString(),
         jarjestyskriteerihistoria.getFilename(),
         Date.from(Instant.now().plus(STORAGE_TIME_AROUND_6_YEARS, ChronoUnit.DAYS)),
         Jarjestyskriteerihistoria.TAGS,
         "application/zip",
         new ByteArrayInputStream(enkoodattu.getHistoriaGzip()));
+  }
+
+  private void update(Jarjestyskriteerihistoria jarjestyskriteerihistoria) {
+    String key =
+        dokumenttipalvelu.composeKey(
+            Jarjestyskriteerihistoria.TAGS, jarjestyskriteerihistoria.getTunniste().toString());
+    dokumenttipalvelu.changeExpirationDate(
+        key,
+        Date.from(Instant.now().plus(STORAGE_FOR_OLD_VERSION_AROUND_3_MONTHS, ChronoUnit.DAYS)));
   }
 }
