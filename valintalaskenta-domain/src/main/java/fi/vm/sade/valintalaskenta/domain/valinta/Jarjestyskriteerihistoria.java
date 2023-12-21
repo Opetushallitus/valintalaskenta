@@ -29,7 +29,7 @@ public class Jarjestyskriteerihistoria {
   }
 
   public String getFilename() {
-    return String.join("", FILENAME_PREFIX, this.getId().toString(), FILENAME_SUFFIX);
+    return String.join("", FILENAME_PREFIX, this.getTunniste().toString(), FILENAME_SUFFIX);
   }
 
   public void setId(Long id) {
