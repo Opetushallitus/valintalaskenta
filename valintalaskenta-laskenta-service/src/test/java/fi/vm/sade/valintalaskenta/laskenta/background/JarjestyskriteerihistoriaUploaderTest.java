@@ -9,7 +9,6 @@ import fi.vm.sade.valinta.dokumenttipalvelu.Dokumenttipalvelu;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import java.io.InputStream;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +22,7 @@ public class JarjestyskriteerihistoriaUploaderTest {
   private JarjestyskriteerihistoriaDAO dao = Mockito.mock(JarjestyskriteerihistoriaDAO.class);
 
   private JarjestyskriteerihistoriaUploader uploader =
-      new JarjestyskriteerihistoriaUploader(dokumenttipalvelu, dao);
+      new JarjestyskriteerihistoriaUploader(dokumenttipalvelu, dao, "old");
 
   @BeforeEach
   public void init() {
@@ -35,8 +34,7 @@ public class JarjestyskriteerihistoriaUploaderTest {
     when(dao.fetchOldest()).thenReturn(List.of(createHistoria(false)));
     uploader.moveJarjestyskriteeriHistoriaFromDatabaseToS3();
     verify(dokumenttipalvelu)
-        .save(
-            anyString(), anyString(), any(Date.class), any(), anyString(), any(InputStream.class));
+        .save(anyString(), anyString(), any(), anyString(), any(InputStream.class));
     verify(dao).delete(any(Long.class));
   }
 
@@ -44,7 +42,7 @@ public class JarjestyskriteerihistoriaUploaderTest {
   public void updatesHistoriaAndThenDeletes() {
     when(dao.fetchOldest()).thenReturn(List.of(createHistoria(true)));
     uploader.moveJarjestyskriteeriHistoriaFromDatabaseToS3();
-    verify(dokumenttipalvelu).changeExpirationDate(anyString(), any(Date.class));
+    verify(dokumenttipalvelu).moveToAnotherBucket(anyString(), anyString());
     verify(dao).delete(any(Long.class));
   }
 

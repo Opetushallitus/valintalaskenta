@@ -98,3 +98,4 @@ aws:
   region: ""
   bucket:
     name: ""
+    oldversionname: ""

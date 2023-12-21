@@ -5,23 +5,16 @@ import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.util.JarjestyskriteeriKooderi;
 import java.io.ByteArrayInputStream;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JarjestyskriteerihistoriaUploader {
-
-  private static final Integer STORAGE_TIME_AROUND_6_YEARS =
-      2192; // couple more in case of leap years
-
-  private static final Integer STORAGE_FOR_OLD_VERSION_AROUND_3_MONTHS = 90;
 
   private static final Logger LOG =
       LoggerFactory.getLogger(JarjestyskriteerihistoriaUploader.class);
@@ -30,10 +23,15 @@ public class JarjestyskriteerihistoriaUploader {
 
   private final JarjestyskriteerihistoriaDAO historiaDAO;
 
+  private final String oldVersionBucketName;
+
   public JarjestyskriteerihistoriaUploader(
-      Dokumenttipalvelu dokumenttipalvelu, JarjestyskriteerihistoriaDAO historiaDAO) {
+      Dokumenttipalvelu dokumenttipalvelu,
+      JarjestyskriteerihistoriaDAO historiaDAO,
+      @Value("${aws.bucket.oldversionname}") final String oldBucketName) {
     this.dokumenttipalvelu = dokumenttipalvelu;
     this.historiaDAO = historiaDAO;
+    this.oldVersionBucketName = oldBucketName;
   }
 
   @Scheduled(initialDelay = 15, fixedDelay = 10, timeUnit = TimeUnit.SECONDS)
@@ -61,7 +59,6 @@ public class JarjestyskriteerihistoriaUploader {
     dokumenttipalvelu.save(
         jarjestyskriteerihistoria.getTunniste().toString(),
         jarjestyskriteerihistoria.getFilename(),
-        Date.from(Instant.now().plus(STORAGE_TIME_AROUND_6_YEARS, ChronoUnit.DAYS)),
         Jarjestyskriteerihistoria.TAGS,
         "application/zip",
         new ByteArrayInputStream(enkoodattu.getHistoriaGzip()));
@@ -71,8 +68,6 @@ public class JarjestyskriteerihistoriaUploader {
     String key =
         dokumenttipalvelu.composeKey(
             Jarjestyskriteerihistoria.TAGS, jarjestyskriteerihistoria.getTunniste().toString());
-    dokumenttipalvelu.changeExpirationDate(
-        key,
-        Date.from(Instant.now().plus(STORAGE_FOR_OLD_VERSION_AROUND_3_MONTHS, ChronoUnit.DAYS)));
+    dokumenttipalvelu.moveToAnotherBucket(key, oldVersionBucketName);
   }
 }

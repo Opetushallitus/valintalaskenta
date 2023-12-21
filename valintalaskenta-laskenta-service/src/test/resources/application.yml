@@ -78,6 +78,7 @@ aws:
   region: ""
   bucket:
     name: ""
+    oldversionname: ""
 
 cas-service:
   service: http://localhost:${server.port}/valintalaskenta-laskenta-service

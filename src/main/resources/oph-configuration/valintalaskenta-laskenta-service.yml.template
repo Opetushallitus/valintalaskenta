@@ -86,3 +86,4 @@ aws:
   region: {{aws_region}}
   bucket:
     name: {{valintalaskentalaskentaservice_aws_bucket_name}}
+    oldversionname: {{valintalaskentalaskentaservice_oldversion_aws_bucket_name}}
