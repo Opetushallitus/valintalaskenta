@@ -3,14 +3,10 @@ package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.ValintakoeOsallistuminenRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminenDAO {
-
-  @Value("${valintalaskenta-laskenta-service.mongodb.useIndexQueries:false}")
-  private boolean useIndexQueries;
 
   private final ValintakoeOsallistuminenRepository repo;
 

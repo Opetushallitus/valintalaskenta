@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 public interface JarjestyskriteerihistoriaRepository
     extends CrudRepository<Jarjestyskriteerihistoria, Long> {
 
-  @Query("select * from Jarjestyskriteerihistoria ORDER BY id ASC LIMIT 100")
+  @Query("select * from Jarjestyskriteerihistoria ORDER BY id ASC LIMIT 1000")
   List<Jarjestyskriteerihistoria> fetchOldest();
 
   @Query(

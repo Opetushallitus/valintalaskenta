@@ -22,7 +22,10 @@ public class Jarjestyskriteerihistoria {
 
   private Date createdAt = new Date();
 
-  public static final List<String> TAGS = List.of("valintalaskenta", "jarjestyskriteerihistoria");
+  public static final String TAG_VALINTALASKENTA = "valintalaskenta",
+      TAG_JARJESTYSKRIHISTORIA = "jarjestyskriteerihistoria";
+
+  public static final List<String> TAGS = List.of(TAG_VALINTALASKENTA, TAG_JARJESTYSKRIHISTORIA);
 
   public Long getId() {
     return id;

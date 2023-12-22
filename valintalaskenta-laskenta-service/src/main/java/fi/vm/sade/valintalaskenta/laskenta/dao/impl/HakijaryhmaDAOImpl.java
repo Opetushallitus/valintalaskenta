@@ -15,15 +15,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import javax.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
-  private static final Logger LOGGER = LoggerFactory.getLogger(HakijaryhmaDAOImpl.class);
 
   private final LaskentaAuditLog auditLog;
 
@@ -55,8 +51,6 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
   @Override
   @Transactional
   public void create(Hakijaryhma hakijaryhma, User auditUser) {
-    // TODO: necessary?
-    // saveJonosijat(hakijaryhma, auditUser);
     hakijaryhma.id = null; // ensures insert and no update
     auditLog.log(
         LaskentaAudit.AUDIT,
@@ -71,8 +65,6 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
   @Override
   @Transactional
   public void createWithoutAuditLogging(Hakijaryhma hakijaryhma) {
-    // TODO: necessary?
-    // saveJonosijatWithoutAuditLogging(hakijaryhma);
     hakijaryhma.id = null; // ensures insert and no update
     repository.save(hakijaryhma);
   }
@@ -85,27 +77,5 @@ public class HakijaryhmaDAOImpl implements HakijaryhmaDAO {
       jonosijaRepository.deleteAllById(jonosijaIdt);
     }
     repository.delete(hakijaryhma);
-  }
-
-  private void saveJonosijat(Hakijaryhma ryhma, User auditUser) {
-    ryhma.setJonosija(
-        ryhma.jonosija.stream()
-            .map(jonosija -> saveJonosija(jonosija, auditUser))
-            .collect(Collectors.toList()));
-  }
-
-  private void saveJonosijatWithoutAuditLogging(Hakijaryhma ryhma) {
-    jonosijaRepository.saveAll(ryhma.jonosija);
-  }
-
-  private Jonosija saveJonosija(Jonosija jonosija, User auditUser) {
-    auditLog.log(
-        LaskentaAudit.AUDIT,
-        auditUser,
-        ValintaperusteetOperation.JONOSIJA_PAIVITYS,
-        ValintaResource.JONOSIJA,
-        jonosija.getHakemusOid(),
-        Changes.addedDto(jonosija));
-    return jonosijaRepository.save(jonosija);
   }
 }
