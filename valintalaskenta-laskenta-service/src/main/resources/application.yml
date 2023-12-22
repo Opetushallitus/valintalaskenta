@@ -89,6 +89,9 @@ valintalaskentakoostepalvelu:
   sijoittelu:
     rest:
       url: ""
+  valintaperusteet:
+    ilb:
+      url: ""
 
 root:
   organisaatio:
