@@ -1,0 +1,26 @@
+{
+  "type": "module",
+  "name": "mongo-to-postgres",
+  "version": "0.0.1",
+  "description": "Valintalaskenta data migration from MongoDb to PostgreSQL",
+  "main": "index.js",
+  "license": "MIT",
+  "keywords": [
+    "mongo",
+    "postgres",
+    "migration",
+    "database",
+    "valintalaskenta"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.19.0",
+    "@babel/eslint-parser": "^7.18.9",
+    "eslint": "^8.23.0"
+  },
+  "dependencies": {
+    "bookshelf": "^1.2.0",
+    "knex": "^2.3.0",
+    "mongoose": "^8.0.3",
+    "pg": "^8.8.0"
+  }
+}
