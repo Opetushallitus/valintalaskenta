@@ -1,3 +1,40 @@
+import {getFromMongoObject} from "./get-from-mongo.js";
+
+
+const copySubCollection = async (mongooseConn, knex, row, parentId, sub) => {
+  const { tableName, collectionName, foreignKey, ordered, fieldsToCopy, parentField, jsonFields } = sub;
+  const innerSub = sub.subCollection;
+  const subIds = row[parentField];
+
+  for (let i = 0; i < subIds.length; i ++) {
+    const idPropery = subIds[i].oid ? subIds[i].oid : subIds[i];
+    const subRow = await getFromMongoObject(mongooseConn, collectionName, idPropery);
+    const rowToInsert = fieldsToCopy.reduce((prev, field) => {
+      if (jsonFields && jsonFields.includes(field[0])) {
+        prev[field[1]] = JSON.stringify(subRow[field[0]]);
+      } else {
+        prev[field[1]] = subRow[field[0]];
+      }
+      return prev;
+    }, {})
+
+    if (ordered) {
+      rowToInsert[ordered] = i;
+    }
+
+    rowToInsert[foreignKey] = parentId[0].id;
+
+    const newId = await knex(tableName)
+      .returning('id')
+      .insert(rowToInsert);
+
+    if (innerSub) {
+      await copySubCollection(mongooseConn, knex, subRow, newId, innerSub);
+    }
+  }
+};
+
+
 /**
    * Insert data to destination table
    * @param {object} kenx - knex object
@@ -5,34 +42,12 @@
    * @param {string} tableName - Table name
    * @param {string} rows - Objects to insert
    */
-export default async ({ knex, collections, tableName, rows }) => {
-  const { foreignKeys, fieldsToCopy, fieldsRedefine, links } =
+export default async ({ knex, collections, tableName, rows, mongooseConn }) => {
+  const { fieldsToCopy, subCollection } =
     collections.find(c => c.tableName === tableName);
 
   const idsMap = []; // array for identifiers maps
   for (const currentRow of rows) {
-
-    // redefine attributes
-    if (fieldsRedefine) {
-      for (const field of fieldsRedefine) {
-        currentRow[field[0]] = field[1];
-      }
-    }
-
-    // map foreign keys
-    if (foreignKeys) {
-      for (const [fieldName, collectionName] of Object.entries(foreignKeys)) {
-        const foreignCollection = collections.find(c => c.collectionName === collectionName);
-        const maps = foreignCollection.idsMap;
-        if (!Array.isArray(currentRow[fieldName])) {
-          const mapedField = maps
-            .find(x => x.oldId === (currentRow[fieldName] ? currentRow[fieldName].toString() : null));
-          currentRow[fieldName] = mapedField
-            ? currentRow[fieldName] = mapedField.newId
-            : currentRow[fieldName] = null;
-        }
-      }
-    }
 
     // save and then delete Mongo _id
     const oldId = currentRow._id.toString();
@@ -42,46 +57,18 @@ export default async ({ knex, collections, tableName, rows }) => {
       return prev;
     }, {})
 
-    // remove arrays from row object
-    const rowCopy = JSON.parse(JSON.stringify(rowToInsert));
-    for (const fieldName of Object.keys(rowCopy)) {
-      if (Array.isArray(rowCopy[fieldName])) {
-        delete rowCopy[fieldName];
-      }
-    }
     // insert current row
-    const newId = await knex(tableName)
-      .returning('id')
-      .insert(rowCopy);
+     const newId = await knex(tableName)
+       .returning('id')
+       .insert(rowToInsert);
 
     // save id mapping
     idsMap.push({ oldId, newId: newId[0] });
 
-    // many-to-many links
-    if (links) {
-      for (const [fieldName, linksTableAttrs] of Object.entries(links)) {
-        for (const relatedField of currentRow[fieldName]) {
-          const foreignCollection = collections.find(c => c.collectionName === foreignKeys[fieldName]);
-          let foreignKey;
-          let linkRow = {};
-          // if related field contains just ID
-          if (relatedField.constructor.name === 'ObjectID') {
-            foreignKey = relatedField.toString();
-          } else {
-          // or if it contains additional fields
-            const func = linksTableAttrs[3];
-            const res = func(linkRow, relatedField);
-            foreignKey = res.foreignKey;
-            linkRow = res.linkRow;
-          }
-          const map = foreignCollection.idsMap.find(x => x.oldId === foreignKey);
-          linkRow[linksTableAttrs[1]] = newId[0];
-          linkRow[linksTableAttrs[2]] = map.newId;
-          await knex(linksTableAttrs[0]).insert(linkRow);
-        }
-      }
+    if (!!subCollection) {
+      await copySubCollection(mongooseConn, knex, currentRow, newId, subCollection);
     }
-    // next row
+
   }
 
   console.log(`Inserted ${rows.length} rows to "${tableName}" table`);
