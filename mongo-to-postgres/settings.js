@@ -7,6 +7,26 @@ const connections = {
 
 //TODO: jarjestyskriteerihistoria needs extra care among others
 
+const formJonosijaCollection = (foreignKey, parentField) => {
+  return   {
+    collectionName: 'Jonosija',
+    tableName: 'jonosija',
+    fieldsToCopy: [
+      ['hakemusOid', 'hakemus_oid'],
+      ['hakijaOid', 'hakija_oid'],
+      ['hakutoiveprioriteetti', 'hakutoiveprioriteetti'],
+      ['harkinnanvarainen', 'harkinnanvarainen'],
+      ['hylattyValisijoittelussa', 'hylatty_valisijoittelussa'],
+      ['funktioTulokset', 'funktio_tulokset'],
+      ['syotetytArvot', 'syotetyt_arvot'],
+      ['jarjestyskriteeritulokset', 'jarjestyskriteeritulokset']
+    ],
+    foreignKey,
+    parentField,
+    jsonFields: ['syotetytArvot', 'funktioTulokset', 'jarjestyskriteeritulokset']
+  }
+}
+
 const collections = [
   {
     collectionName: 'HarkinnanvarainenHyvaksyminen',
@@ -29,29 +49,32 @@ const collections = [
       ['valinnanvaiheOid', 'valinnanvaihe_oid'],
       ['tarjoajaOid', 'tarjoaja_oid'],
       ['nimi', 'nimi'],
-    ]
+    ],
+    subCollection: {
+      collectionName: 'Valintatapajono',
+      tableName: 'valintatapajono',
+      fieldsToCopy: [
+        ['valintatapajonoOid', 'valintatapajono_oid'],
+        ['nimi', 'nimi'],
+        ['prioriteetti', 'prioriteetti'],
+        ['aloituspaikat', 'aloituspaikat'],
+        ['siirretaanSijoitteluun', 'siirretaan_sijoitteluun'],
+        ['tasasijasaanto', 'tasasijasaanto'],
+        ['eiVarasijatayttoa', 'ei_varasijatayttoa'],
+        ['kaikkiEhdonTayttavatHyvaksytaan', 'kaikki_ehdon_tayttavat_hyvaksytaan'],
+        ['kaytetaanValintalaskentaa', 'kaytetaan_valintalaskentaa'],
+        ['poissaOlevaTaytto', 'poissa_oleva_taytto'],
+        ['valmisSijoiteltavaksi', 'valmis_sijoiteltavaksi'],
+        ['kaytetaanKokonaispisteita', 'kaytetaan_kokonaispisteita'],
+        ['sijoitteluajoId', 'sijoitteluajo_id']
+      ],
+      parentField: 'valintatapajonot',
+      foreignKey: 'valinnanvaihe',
+      ordered: 'valinnanvaihe_key',
+      subCollection: formJonosijaCollection('valintatapajono', 'jonosijaIdt')
+    }
   },
-  {
-    collectionName: 'Valintatapajono',
-    tableName: 'valintatapajono',
-    fieldsToCopy: [
-      ['valintatapajonoOid', 'valintatapajono_oid'],
-      ['nimi', 'nimi'],
-      ['prioriteetti', 'prioriteetti'],
-      ['aloituspaikat', 'aloituspaikat'],
-      ['siirretaanSijoitteluun', 'siirretaan_sijoitteluun'],
-      ['tasasijasaanto', 'tasasijasaanto'],
-      ['eiVarasijatayttoa', 'ei_varasijatayttoa'],
-      ['kaikkiEhdonTayttavatHyvaksytaan', 'kaikki_ehdon_tayttavat_hyvaksytaan'],
-      ['kaytetaanValintalaskentaa', 'kaytetaan_valintalaskentaa'],
-      ['poissaOlevaTaytto', 'poissa_oleva_taytto'],
-      ['valmisSijoiteltavaksi', 'valmis_sijoiteltavaksi'],
-      ['kaytetaanKokonaispisteita', 'kaytetaan_kokonaispisteita'],
-      //TODO reference to valinnanvaihe
-      ['sijoitteluajoId', 'sijoitteluajo_id']
-    ]
-  },
-  {
+  /*{
     collectionName: 'Hakijaryhma',
     tableName: 'hakijaryhma',
     fieldsToCopy: [
@@ -67,23 +90,8 @@ const collections = [
       ['kaytetaanRyhmaanKuuluvia', 'kaytetaan_ryhmaan_kuuluvia'],
       ['hakijaryhmatyyppikoodiUri', 'hakijaryhmatyyppi_koodiuri'],
       ['valintatapajonoOid', 'valintatapajono_oid']
-    ]
-  },
-  {
-    collectionName: 'Jonosija',
-    tableName: 'jonosija',
-    fieldsToCopy: [
-      ['hakemusOid', 'hakemus_oid'],
-      ['hakijaOid', 'hakija_oid'],
-      ['hakutoiveprioriteetti', 'hakutoiveprioriteetti'],
-      ['harkinnanvarainen', 'harkinnanvarainen'],
-      ['hylattyValisijoittelussa', 'hylatty_valisijoittelussa'],
-      //TODO: valintatapajono, relaatio possuksi
-      //TODO: hakijaryhma, relaatio possuksi
-      ['funktioTulokset', 'funktio_tulokset'],
-      ['syotetytArvot', 'syotetyt_arvot'],
-      ['jarjestyskriteeritulokset', 'jarjestyskriteeritulokset']
     ],
+    subCollection: formJonosijaCollection('hakijaryhma')
   },
   {
     collectionName: 'MuokattuJonosija',
@@ -96,41 +104,42 @@ const collections = [
       ['jarjestyskriteerit', 'jarjestyskriteeritulokset']
       //TODO include fields from LogEntry
     ]
-  },
+  },*/
   //TODO maybe handle following entities separately? hakuOid can be entry point
-  {
-    collectionName: 'ValintakoeOsallistuminen',
-    tableName: 'valintakoe_osallistuminen',
-    fieldsToCopy: [
-      ['hakuOid', 'haku_oid'],
-      ['hakemusOid', 'hakemus_oid'],
-      ['hakijaOid', 'hakija_oid'],
-      ['createdAt', 'created_at']
-    ]
-  },
-  {
-    collectionName: 'Hakutoive',
-    tableName: 'hakutoive',
-    fieldsToCopy: [
-      ['hakukohdeOid', 'hakukohde_oid'],
-      //TODO reference to valintakoe_osallistuminen
-    ]
-  },
-  {
-    collectionName: 'Valintakoe',
-    tableName: 'valintakoe',
-    fieldsToCopy: [
-      ['valintakoeOid', 'valintakoe_oid'],
-      ['valintakoeTunniste', 'valintakoe_tunniste'],
-      ['nimi', 'nimi'],
-      ['aktiivinen', 'aktiivinen'],
-      ['lahetetaankoKoekutsut', 'lahetetaanko_koekutsut'],
-      ['kutsuttavienMaara', 'kutsuttavienMaara'],
-      ['kutsunKohde', 'kutsun_kohde'],
-      ['kutsunKohdeAvain', 'kutsun_kohde_avain'],
-      //TODO rest of the fields from collection OsallistuminenTulos
-    ]
-  }
+  // {
+  //   collectionName: 'ValintakoeOsallistuminen',
+  //   tableName: 'valintakoe_osallistuminen',
+  //   fieldsToCopy: [
+  //     ['hakuOid', 'haku_oid'],
+  //     ['hakemusOid', 'hakemus_oid'],
+  //     ['hakijaOid', 'hakija_oid'],
+  //     ['createdAt', 'created_at']
+  //   ],
+  //   subCollection: {
+  //     collectionName: 'Hakutoive',
+  //     tableName: 'hakutoive',
+  //     fieldsToCopy: [
+  //       ['hakukohdeOid', 'hakukohde_oid'],
+  //     ],
+  //     foreignKey: 'valintakoe_osallistuminen'
+  //   },
+  // },
+
+  // {
+  //   collectionName: 'Valintakoe',
+  //   tableName: 'valintakoe',
+  //   fieldsToCopy: [
+  //     ['valintakoeOid', 'valintakoe_oid'],
+  //     ['valintakoeTunniste', 'valintakoe_tunniste'],
+  //     ['nimi', 'nimi'],
+  //     ['aktiivinen', 'aktiivinen'],
+  //     ['lahetetaankoKoekutsut', 'lahetetaanko_koekutsut'],
+  //     ['kutsuttavienMaara', 'kutsuttavienMaara'],
+  //     ['kutsunKohde', 'kutsun_kohde'],
+  //     ['kutsunKohdeAvain', 'kutsun_kohde_avain'],
+  //     //TODO rest of the fields from collection OsallistuminenTulos
+  //   ]
+  // }
 
 ];
 
