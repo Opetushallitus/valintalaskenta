@@ -1,5 +1,4 @@
-const mongoPass = "";
-const possuPass = "";
+import {mongoPass, possuPass} from './pass.js';
 
 const connections = {
   mongo: `mongodb://valintalaskentauser:${mongoPass}@localhost:57117/valintalaskentadb`,
@@ -17,6 +16,39 @@ const collections = [
       ['hakukohdeOid', 'hakukohde_oid'],
       ['hakemusOid', 'hakemus_oid'],
       ['hakuOid', 'haku_oid']
+    ]
+  },
+  {
+    collectionName: 'Valinnanvaihe',
+    tableName: 'valinnanvaihe',
+    fieldsToCopy: [
+      ['jarjestysnumero', 'jarjestysnumero'],
+      ['createdAt', 'created_at'],
+      ['hakuOid', 'haku_oid'],
+      ['hakukohdeOid', 'hakukohde_oid'],
+      ['valinnanvaiheOid', 'valinnanvaihe_oid'],
+      ['tarjoajaOid', 'tarjoaja_oid'],
+      ['nimi', 'nimi'],
+    ]
+  },
+  {
+    collectionName: 'Valintatapajono',
+    tableName: 'valintatapajono',
+    fieldsToCopy: [
+      ['valintatapajonoOid', 'valintatapajono_oid'],
+      ['nimi', 'nimi'],
+      ['prioriteetti', 'prioriteetti'],
+      ['aloituspaikat', 'aloituspaikat'],
+      ['siirretaanSijoitteluun', 'siirretaan_sijoitteluun'],
+      ['tasasijasaanto', 'tasasijasaanto'],
+      ['eiVarasijatayttoa', 'ei_varasijatayttoa'],
+      ['kaikkiEhdonTayttavatHyvaksytaan', 'kaikki_ehdon_tayttavat_hyvaksytaan'],
+      ['kaytetaanValintalaskentaa', 'kaytetaan_valintalaskentaa'],
+      ['poissaOlevaTaytto', 'poissa_oleva_taytto'],
+      ['valmisSijoiteltavaksi', 'valmis_sijoiteltavaksi'],
+      ['kaytetaanKokonaispisteita', 'kaytetaan_kokonaispisteita'],
+      //TODO reference to valinnanvaihe
+      ['sijoitteluajoId', 'sijoitteluajo_id']
     ]
   },
   {
@@ -63,39 +95,6 @@ const collections = [
       ['hakemusOid', 'hakemus_oid']
       ['jarjestyskriteerit', 'jarjestyskriteeritulokset']
       //TODO include fields from LogEntry
-    ]
-  },
-  {
-    collectionName: 'Valinnanvaihe',
-    tableName: 'valinnanvaihe',
-    fieldsToCopy: [
-      ['jarjestysnumero', 'jarjestysnumero'],
-      ['createdAt', 'created_at'],
-      ['hakuOid', 'haku_oid'],
-      ['hakukohdeOid', 'hakukohde_oid'],
-      ['valinnanvaiheOid', 'valinnanvaihe_oid'],
-      ['tarjoajaOid', 'tarjoaja_oid'],
-      ['nimi', 'nimi'],
-    ]
-  },
-  {
-    collectionName: 'Valintatapajono',
-    tableName: 'valintatapajono',
-    fieldsToCopy: [
-      ['valintatapajonoOid', 'valintatapajono_oid'],
-      ['nimi', 'nimi'],
-      ['prioriteetti', 'prioriteetti'],
-      ['aloituspaikat', 'aloituspaikat'],
-      ['siirretaanSijoitteluun', 'siirretaan_sijoitteluun'],
-      ['tasasijasaanto', 'tasasijasaanto'],
-      ['eiVarasijatayttoa', 'ei_varasijatayttoa'],
-      ['kaikkiEhdonTayttavatHyvaksytaan', 'kaikki_ehdon_tayttavat_hyvaksytaan'],
-      ['kaytetaanValintalaskentaa', 'kaytetaan_valintalaskentaa'],
-      ['poissaOlevaTaytto', 'poissa_oleva_taytto'],
-      ['valmisSijoiteltavaksi', 'valmis_sijoiteltavaksi'],
-      ['kaytetaanKokonaispisteita', 'kaytetaan_kokonaispisteita'],
-      //TODO reference to valinnanvaihe
-      ['sijoitteluajoId', 'sijoitteluajo_id']
     ]
   },
   //TODO maybe handle following entities separately? hakuOid can be entry point
