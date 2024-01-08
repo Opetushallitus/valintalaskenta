@@ -44,6 +44,7 @@ export default async ({ connections, collections }) => {
 };
 
 async function performProcess(mongooseConn, knex, collections) {
+  const timeStarted = Date.now();
   for (const collection of collections) {
     const rows = await getFromMongo(mongooseConn, collection.collectionName, '1.2.246.562.20.00000000000000004724');
     console.log(rows.length);
@@ -55,4 +56,5 @@ async function performProcess(mongooseConn, knex, collections) {
       mongooseConn
     });
   }
+  console.log(`Took ${(Date.now() - timeStarted) / 1000} seconds`)
 }

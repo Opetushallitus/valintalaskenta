@@ -72,7 +72,7 @@ const collections = [
       subCollection: formJonosijaCollection('valintatapajono', 'jonosijaIdt')
     }
   },
-  /*{
+  {
     collectionName: 'Hakijaryhma',
     tableName: 'hakijaryhma',
     fieldsToCopy: [
@@ -89,9 +89,9 @@ const collections = [
       ['hakijaryhmatyyppikoodiUri', 'hakijaryhmatyyppi_koodiuri'],
       ['valintatapajonoOid', 'valintatapajono_oid']
     ],
-    subCollection: formJonosijaCollection('hakijaryhma')
+    subCollection: formJonosijaCollection('hakijaryhma', 'jonosijaIdt')
   },
-  {
+  /*{
     collectionName: 'MuokattuJonosija',
     tableName: 'muokattu_jonosija',
     fieldsToCopy: [
