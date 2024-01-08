@@ -5,8 +5,6 @@ const connections = {
   postgres: `postgres://oph:${possuPass}h@localhost:5432/valintalaskenta`
 };
 
-//TODO: jarjestyskriteerihistoria needs extra care among others
-
 const formJonosijaCollection = (foreignKey, parentField) => {
   return   {
     collectionName: 'Jonosija',

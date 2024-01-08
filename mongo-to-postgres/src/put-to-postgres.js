@@ -1,4 +1,31 @@
+import { gunzipSync } from "zlib";
 import {getFromMongoObject} from "./get-from-mongo.js";
+
+const copyHistoria = async (mongooseConn, knex, historyId) => {
+  const historiaDoc = await getFromMongoObject(mongooseConn, "Jarjestyskriteerihistoria", historyId);
+  if (historiaDoc.historia) {
+    return await knex('jarjestyskriteerihistoria')
+      .returning('tunniste')
+      .insert(historiaDoc.historia);
+  } else {
+    const historia = gunzipSync(historiaDoc.historiaGzip.buffer);
+    return await knex('jarjestyskriteerihistoria')
+      .returning('tunniste')
+      .insert({historia: historia.toString()});
+  }
+}
+
+const handleJsonField = async (mongooseConn, knex, collectionName, field, subRow ) => {
+  if (collectionName === 'Jonosija' && field[0] === 'jarjestyskriteeritulokset') {
+    const tulokset = [];
+    for (const tulos of subRow[field[0]]) {
+      const historia = await copyHistoria(mongooseConn, knex, tulos.historia);
+      tulokset.push(Object.assign({}, tulos, {historia: historia[0].tunniste}));
+    };
+    return `{"${field[0]}":${JSON.stringify(tulokset)}}`;
+  }
+  return `{"${field[0]}":${JSON.stringify(subRow[field[0]])}}`;
+}
 
 
 const copySubCollection = async (mongooseConn, knex, row, parentId, sub) => {
@@ -9,14 +36,16 @@ const copySubCollection = async (mongooseConn, knex, row, parentId, sub) => {
   for (let i = 0; i < subIds.length; i ++) {
     const idPropery = subIds[i].oid ? subIds[i].oid : subIds[i];
     const subRow = await getFromMongoObject(mongooseConn, collectionName, idPropery);
-    const rowToInsert = fieldsToCopy.reduce((prev, field) => {
+
+    const rowToInsert = {};
+
+    for (const field of fieldsToCopy) {
       if (jsonFields && jsonFields.includes(field[0]) && subRow[field[0]]) {
-        prev[field[1]] = `{"${field[0]}":${JSON.stringify(subRow[field[0]])}}`;
+        rowToInsert[field[1]] = await handleJsonField(mongooseConn, knex, collectionName, field, subRow);
       } else {
-        prev[field[1]] = subRow[field[0]];
+        rowToInsert[field[1]] = subRow[field[0]];
       }
-      return prev;
-    }, {})
+    }
 
     if (ordered) {
       rowToInsert[ordered] = i;
@@ -37,7 +66,7 @@ const copySubCollection = async (mongooseConn, knex, row, parentId, sub) => {
 
 /**
    * Insert data to destination table
-   * @param {object} kenx - knex object
+   * @param {object} knex - knex object
    * @param {Array} collections - Array of collections
    * @param {string} tableName - Table name
    * @param {string} rows - Objects to insert
