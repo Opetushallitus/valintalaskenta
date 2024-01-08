@@ -10,8 +10,8 @@ const copySubCollection = async (mongooseConn, knex, row, parentId, sub) => {
     const idPropery = subIds[i].oid ? subIds[i].oid : subIds[i];
     const subRow = await getFromMongoObject(mongooseConn, collectionName, idPropery);
     const rowToInsert = fieldsToCopy.reduce((prev, field) => {
-      if (jsonFields && jsonFields.includes(field[0])) {
-        prev[field[1]] = JSON.stringify(subRow[field[0]]);
+      if (jsonFields && jsonFields.includes(field[0]) && subRow[field[0]]) {
+        prev[field[1]] = `{"${field[0]}":${JSON.stringify(subRow[field[0]])}}`;
       } else {
         prev[field[1]] = subRow[field[0]];
       }
