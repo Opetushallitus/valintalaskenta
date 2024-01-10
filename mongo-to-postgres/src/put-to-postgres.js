@@ -72,7 +72,7 @@ const copySubCollection = async (mongooseConn, knex, row, parentId, sub) => {
    * @param {string} rows - Objects to insert
    */
 export default async ({ knex, collections, tableName, rows, mongooseConn }) => {
-  const { fieldsToCopy, subCollection } =
+  const { fieldsToCopy, subCollection, getMoreFieldsToAddFn, jsonFields } =
     collections.find(c => c.tableName === tableName);
 
   const idsMap = []; // array for identifiers maps
@@ -82,9 +82,19 @@ export default async ({ knex, collections, tableName, rows, mongooseConn }) => {
     const oldId = currentRow._id.toString();
 
     const rowToInsert = fieldsToCopy.reduce((prev, field) => {
+      if (jsonFields && jsonFields.includes(field[0]) && currentRow[field[0]]) {
+        prev[field[1]] = `{"${field[1]}":${JSON.stringify(currentRow[field[0]])}}`
+      } else {
       prev[field[1]] = currentRow[field[0]];
+      }
       return prev;
     }, {})
+
+    console.log(rowToInsert);
+
+    if (getMoreFieldsToAddFn) {
+      Object.assign(rowToInsert, getMoreFieldsToAddFn(currentRow));
+    }
 
     // insert current row
      const newId = await knex(tableName)
