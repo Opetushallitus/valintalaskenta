@@ -35,6 +35,22 @@ const getValuesFromLatestLogEntry = (row) => {
   return {selite: latestLogEntry.selite, muutos: latestLogEntry.muutos, muokkaaja: latestLogEntry.muokkaaja};
 };
 
+const getValuesFromOsallistuminenTulos = (row) => {
+  const osallistuminenTulos = row.osallistuminenTulos;
+  const kuvausFi = osallistuminenTulos?.kuvaus?.FI || '';
+  const kuvausEn = osallistuminenTulos?.kuvaus?.EN || '';
+  const kuvausSv = osallistuminenTulos?.kuvaus?.SV || '';
+  return {
+    osallistuminen: osallistuminenTulos.osallistuminen,
+    kuvaus_fi: kuvausFi,
+    kuvaus_en: kuvausEn,
+    kuvaus_sv: kuvausSv,
+    laskenta_tila: osallistuminenTulos.laskentaTila,
+    laskenta_tulos: osallistuminenTulos.laskentaTulos,
+    tekninen_kuvaus: osallistuminenTulos.tekninenKuvaus
+  }
+}
+
 const collections = [
   {
     collectionName: 'HarkinnanvarainenHyvaksyminen',
@@ -114,42 +130,53 @@ const collections = [
     jsonFields: ['jarjestyskriteerit'],
     getMoreFieldsToAddFn: getValuesFromLatestLogEntry
   },
-  //TODO maybe handle following entities separately? hakuOid can be entry point
-  // {
-  //   collectionName: 'ValintakoeOsallistuminen',
-  //   tableName: 'valintakoe_osallistuminen',
-  //   fieldsToCopy: [
-  //     ['hakuOid', 'haku_oid'],
-  //     ['hakemusOid', 'hakemus_oid'],
-  //     ['hakijaOid', 'hakija_oid'],
-  //     ['createdAt', 'created_at']
-  //   ],
-  //   subCollection: {
-  //     collectionName: 'Hakutoive',
-  //     tableName: 'hakutoive',
-  //     fieldsToCopy: [
-  //       ['hakukohdeOid', 'hakukohde_oid'],
-  //     ],
-  //     foreignKey: 'valintakoe_osallistuminen'
-  //   },
-  // },
-
-  // {
-  //   collectionName: 'Valintakoe',
-  //   tableName: 'valintakoe',
-  //   fieldsToCopy: [
-  //     ['valintakoeOid', 'valintakoe_oid'],
-  //     ['valintakoeTunniste', 'valintakoe_tunniste'],
-  //     ['nimi', 'nimi'],
-  //     ['aktiivinen', 'aktiivinen'],
-  //     ['lahetetaankoKoekutsut', 'lahetetaanko_koekutsut'],
-  //     ['kutsuttavienMaara', 'kutsuttavienMaara'],
-  //     ['kutsunKohde', 'kutsun_kohde'],
-  //     ['kutsunKohdeAvain', 'kutsun_kohde_avain'],
-  //     //TODO rest of the fields from collection OsallistuminenTulos
-  //   ]
-  // }
-
+  {
+    collectionName: 'ValintakoeOsallistuminen',
+    tableName: 'valintakoe_osallistuminen',
+    useHaku: true,
+    fieldsToCopy: [
+      ['hakuOid', 'haku_oid'],
+      ['hakemusOid', 'hakemus_oid'],
+      ['hakijaOid', 'hakija_oid'],
+      ['createdAt', 'created_at']
+    ],
+    subCollection: {
+      tableName: 'hakutoive',
+      fieldsToCopy: [
+        ['hakukohdeOid', 'hakukohde_oid'],
+      ],
+      parentField: 'hakutoiveet',
+      foreignKey: 'valintakoe_osallistuminen',
+      embbeddedCollection: true,
+      subCollection: {
+        embbeddedCollection: true,
+        tableName: 'valintakoe_valinnanvaihe',
+        fieldsToCopy: [
+          ['valinnanVaiheOid', 'valinnanvaihe_oid'],
+          ['valinnanVaiheJarjestysluku', 'valinnan_vaihe_jarjestysluku'],
+        ],
+        parentField: 'valinnanVaiheet',
+        foreignKey: 'hakutoive',
+        subCollection: {
+          embbeddedCollection: true,
+          tableName: 'valintakoe',
+          fieldsToCopy: [
+            ['valintakoeOid', 'valintakoe_oid'],
+            ['valintakoeTunniste', 'valintakoe_tunniste'],
+            ['nimi', 'nimi'],
+            ['aktiivinen', 'aktiivinen'],
+            ['lahetetaankoKoekutsut', 'lahetetaanko_koekutsut'],
+            ['kutsuttavienMaara', 'kutsuttavien_maara'],
+            ['kutsunKohde', 'kutsun_kohde'],
+            ['kutsunKohdeAvain', 'kutsun_kohde_avain'],
+          ],
+          parentField: 'valintakokeet',
+          foreignKey: 'valintakoe_valinnanvaihe',
+          getMoreFieldsToAddFn: getValuesFromOsallistuminenTulos
+        }
+      },
+    },
+  }
 ];
 
 export { connections, collections };
