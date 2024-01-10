@@ -9,11 +9,11 @@ const subModels = {};
    * @param {string} hakukohdeOid - Hakukohde identifier
    * @return {Array} Retrieved objects
    */
-export default async (mongooseConn, collectionName, hakukohdeOid) => {
+export default async (mongooseConn, collectionName, hakukohdeOid, useHaku = false) => {
   const Model = mongooseConn.model(collectionName,
     new mongoose.Schema({}, { collection: collectionName })
   );
-  const result = await Model.find({hakukohdeOid});
+  const result = await Model.find(useHaku? {hakuOid: hakukohdeOid}: {hakukohdeOid});
   return result.map((r) => {
     return r._doc;
   });

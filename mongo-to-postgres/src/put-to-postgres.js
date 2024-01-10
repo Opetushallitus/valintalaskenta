@@ -29,13 +29,19 @@ const handleJsonField = async (mongooseConn, knex, collectionName, field, subRow
 
 
 const copySubCollection = async (mongooseConn, knex, row, parentId, sub) => {
-  const { tableName, collectionName, foreignKey, ordered, fieldsToCopy, parentField, jsonFields } = sub;
+  const { tableName, collectionName, foreignKey, ordered, getMoreFieldsToAddFn,
+    fieldsToCopy, parentField, jsonFields, embbeddedCollection } = sub;
   const innerSub = sub.subCollection;
   const subIds = row[parentField];
 
   for (let i = 0; i < subIds.length; i ++) {
-    const idPropery = subIds[i].oid ? subIds[i].oid : subIds[i];
-    const subRow = await getFromMongoObject(mongooseConn, collectionName, idPropery);
+    let subRow;
+    if (!embbeddedCollection) {
+      const idPropery = subIds[i].oid ? subIds[i].oid : subIds[i];
+      subRow = await getFromMongoObject(mongooseConn, collectionName, idPropery);
+    } else {
+      subRow = subIds[i];
+    }
 
     const rowToInsert = {};
 
@@ -49,6 +55,10 @@ const copySubCollection = async (mongooseConn, knex, row, parentId, sub) => {
 
     if (ordered) {
       rowToInsert[ordered] = i;
+    }
+
+    if (getMoreFieldsToAddFn) {
+      Object.assign(rowToInsert, getMoreFieldsToAddFn(subRow));
     }
 
     rowToInsert[foreignKey] = parentId[0].id;
@@ -89,8 +99,6 @@ export default async ({ knex, collections, tableName, rows, mongooseConn }) => {
       }
       return prev;
     }, {})
-
-    console.log(rowToInsert);
 
     if (getMoreFieldsToAddFn) {
       Object.assign(rowToInsert, getMoreFieldsToAddFn(currentRow));
