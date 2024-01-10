@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const subModels = {};
+const Models = {};
 
 /**
    * Get data from source collection
@@ -10,9 +10,15 @@ const subModels = {};
    * @return {Array} Retrieved objects
    */
 export default async (mongooseConn, collectionName, hakukohdeOid, useHaku = false) => {
-  const Model = mongooseConn.model(collectionName,
-    new mongoose.Schema({}, { collection: collectionName })
-  );
+
+  let Model = Models[collectionName];
+  if (!Model) {
+    Model = mongooseConn.model(collectionName,
+      new mongoose.Schema({}, { collection: collectionName })
+    );
+    Models[collectionName] = Model;
+  }
+  
   const result = await Model.find(useHaku? {hakuOid: hakukohdeOid}: {hakukohdeOid});
   return result.map((r) => {
     return r._doc;
@@ -20,12 +26,12 @@ export default async (mongooseConn, collectionName, hakukohdeOid, useHaku = fals
 };
 
 export const getFromMongoObject = async (mongooseConn, collectionName, objectId) => {
-  let Model = subModels[collectionName];
+  let Model = Models[collectionName];
   if (!Model) {
     Model = mongooseConn.model(collectionName,
       new mongoose.Schema({}, { collection: collectionName })
     );
-    subModels[collectionName] = Model;
+    Models[collectionName] = Model;
   }
   
   const result = await Model.findById(objectId);

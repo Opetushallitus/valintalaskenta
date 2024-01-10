@@ -129,11 +129,13 @@ const collections = [
     ],
     jsonFields: ['jarjestyskriteerit'],
     getMoreFieldsToAddFn: getValuesFromLatestLogEntry
-  },
+  }
+];
+
+const collectionsForHaku = [
   {
     collectionName: 'ValintakoeOsallistuminen',
     tableName: 'valintakoe_osallistuminen',
-    useHaku: true,
     fieldsToCopy: [
       ['hakuOid', 'haku_oid'],
       ['hakemusOid', 'hakemus_oid'],
@@ -177,6 +179,6 @@ const collections = [
       },
     },
   }
-];
+]
 
-export { connections, collections };
+export { connections, collections, collectionsForHaku };
