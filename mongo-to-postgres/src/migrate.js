@@ -46,7 +46,7 @@ export default async ({ connections, collections }) => {
 async function performProcess(mongooseConn, knex, collections) {
   const timeStarted = Date.now();
   for (const collection of collections) {
-    const rows = await getFromMongo(mongooseConn, collection.collectionName, '1.2.246.562.20.00000000000000004724');
+    const rows = await getFromMongo(mongooseConn, collection.collectionName, '1.2.246.562.20.45279263003');
     console.log(rows.length);
     await putToPostgres({
       knex,

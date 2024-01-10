@@ -25,6 +25,16 @@ const formJonosijaCollection = (foreignKey, parentField) => {
   }
 }
 
+//TODO: remember to add column muokkaaja to muokattu_jonosija table
+const getValuesFromLatestLogEntry = (row) => {
+  const logEntries = row.logEntries;
+  if (logEntries.length < 1) {
+    return {};
+  }
+  const latestLogEntry = logEntries[logEntries.length - 1];
+  return {selite: latestLogEntry.selite, muutos: latestLogEntry.muutos, muokkaaja: latestLogEntry.muokkaaja};
+};
+
 const collections = [
   {
     collectionName: 'HarkinnanvarainenHyvaksyminen',
@@ -91,18 +101,19 @@ const collections = [
     ],
     subCollection: formJonosijaCollection('hakijaryhma', 'jonosijaIdt')
   },
-  /*{
+  {
     collectionName: 'MuokattuJonosija',
     tableName: 'muokattu_jonosija',
     fieldsToCopy: [
       ['hakukohdeOid', 'hakukohde_oid'],
       ['hakuOid', 'haku_oid'],
       ['valintatapajonoOid', 'valintatapajono_oid'],
-      ['hakemusOid', 'hakemus_oid']
-      ['jarjestyskriteerit', 'jarjestyskriteeritulokset']
-      //TODO include fields from LogEntry
-    ]
-  },*/
+      ['hakemusOid', 'hakemus_oid'],
+      ['jarjestyskriteerit', 'jarjestyskriteeritulokset'],
+    ],
+    jsonFields: ['jarjestyskriteerit'],
+    getMoreFieldsToAddFn: getValuesFromLatestLogEntry
+  },
   //TODO maybe handle following entities separately? hakuOid can be entry point
   // {
   //   collectionName: 'ValintakoeOsallistuminen',
