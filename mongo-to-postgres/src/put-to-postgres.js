@@ -4,22 +4,20 @@ import {getFromMongoObject} from "./get-from-mongo.js";
 const copyHistoria = async (mongooseConn, knex, historyId) => {
   const historiaDoc = await getFromMongoObject(mongooseConn, "Jarjestyskriteerihistoria", historyId);
   if (historiaDoc.historia) {
-    return await knex('jarjestyskriteerihistoria')
-      .returning('tunniste')
-      .insert(historiaDoc.historia);
+    return await trx('jarjestyskriteerihistoria')
+      .insert(historiaDoc.historia, 'tunniste');
   } else {
     const historia = gunzipSync(historiaDoc.historiaGzip.buffer);
     return await knex('jarjestyskriteerihistoria')
-      .returning('tunniste')
-      .insert({historia: historia.toString()});
+      .insert({historia: historia.toString()}, 'tunniste');
   }
 }
 
-const handleJsonField = async (mongooseConn, knex, collectionName, field, subRow ) => {
+const handleJsonField = async (mongooseConn, trx, collectionName, field, subRow ) => {
   if (collectionName === 'Jonosija' && field[0] === 'jarjestyskriteeritulokset') {
     const tulokset = [];
     for (const tulos of subRow[field[0]]) {
-      const historia = await copyHistoria(mongooseConn, knex, tulos.historia);
+      const historia = await copyHistoria(mongooseConn, trx, tulos.historia);
       tulokset.push(Object.assign({}, tulos, {historia: historia[0].tunniste}));
     };
     return `{"${field[0]}":${JSON.stringify(tulokset)}}`;
@@ -28,7 +26,7 @@ const handleJsonField = async (mongooseConn, knex, collectionName, field, subRow
 }
 
 
-const copySubCollection = async (mongooseConn, knex, row, parentId, sub) => {
+const copySubCollection = async (mongooseConn, trx, row, parentId, sub) => {
   const { tableName, collectionName, foreignKey, ordered, getMoreFieldsToAddFn,
     fieldsToCopy, parentField, jsonFields, embbeddedCollection } = sub;
   const innerSub = sub.subCollection;
@@ -47,7 +45,7 @@ const copySubCollection = async (mongooseConn, knex, row, parentId, sub) => {
 
     for (const field of fieldsToCopy) {
       if (jsonFields && jsonFields.includes(field[0]) && subRow[field[0]]) {
-        rowToInsert[field[1]] = await handleJsonField(mongooseConn, knex, collectionName, field, subRow);
+        rowToInsert[field[1]] = await handleJsonField(mongooseConn, trx, collectionName, field, subRow);
       } else {
         rowToInsert[field[1]] = subRow[field[0]];
       }
@@ -63,12 +61,11 @@ const copySubCollection = async (mongooseConn, knex, row, parentId, sub) => {
 
     rowToInsert[foreignKey] = parentId[0].id;
 
-    const newId = await knex(tableName)
-      .returning('id')
-      .insert(rowToInsert);
+    const newId = await trx(tableName)
+      .insert(rowToInsert, 'id');
 
     if (innerSub) {
-      await copySubCollection(mongooseConn, knex, subRow, newId, innerSub);
+      await copySubCollection(mongooseConn, trx, subRow, newId, innerSub);
     }
   }
 };
@@ -76,19 +73,20 @@ const copySubCollection = async (mongooseConn, knex, row, parentId, sub) => {
 
 /**
    * Insert data to destination table
-   * @param {object} knex - knex object
+   * @param {object} trx - knex transaction object
    * @param {Array} collections - Array of collections
    * @param {string} tableName - Table name
    * @param {string} rows - Objects to insert
+   * @param {object} mongooseConn - mongoose object
    */
-export default async ({ knex, collections, tableName, rows, mongooseConn }) => {
+export default async ({ trx, collections, tableName, rows, mongooseConn }) => {
   const { fieldsToCopy, subCollection, getMoreFieldsToAddFn, jsonFields } =
     collections.find(c => c.tableName === tableName);
 
-  const idsMap = []; // array for identifiers maps
+  const idsMap = [];
+
   for (const currentRow of rows) {
 
-    // save and then delete Mongo _id
     const oldId = currentRow._id.toString();
 
     const rowToInsert = fieldsToCopy.reduce((prev, field) => {
@@ -105,15 +103,14 @@ export default async ({ knex, collections, tableName, rows, mongooseConn }) => {
     }
 
     // insert current row
-     const newId = await knex(tableName)
-       .returning('id')
-       .insert(rowToInsert);
+     const newId = await trx(tableName)
+       .insert(rowToInsert, 'id');
 
     // save id mapping
     idsMap.push({ oldId, newId: newId[0] });
 
     if (!!subCollection) {
-      await copySubCollection(mongooseConn, knex, currentRow, newId, subCollection);
+      await copySubCollection(mongooseConn, trx, currentRow, newId, subCollection);
     }
 
   }
