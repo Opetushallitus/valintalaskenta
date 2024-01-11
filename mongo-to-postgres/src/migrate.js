@@ -52,21 +52,27 @@ export default async ({ connections, collections, collectionsForHaku }) => {
 
 async function performProcess(mongooseConn, knex, collections, collectionsForHaku, oidsToProcess) {
   for (const oid of oidsToProcess) {
-    if (oid.haku) {
-      await copyHakuData(mongooseConn, knex, collectionsForHaku, oid.haku);
-    } else {
-      await copyHakukohdeData(mongooseConn, knex, collections, oid.hakukohde);
+    try {
+      await knex.transaction(async trx => {
+        if (oid.haku) {
+          await copyHakuData(mongooseConn, knex, collectionsForHaku, oid.haku);
+        } else {
+          await copyHakukohdeData(mongooseConn, knex, collections, oid.hakukohde);
+        }
+      })
+    } catch (error) {
+      console.error(error);
     }
   }
 }
 
-async function copyHakuData(mongooseConn, knex, collections, hakuOid) {
+async function copyHakuData(mongooseConn, trx, collections, hakuOid) {
   const timeStarted = Date.now();
 
   for (const collection of collections) {
     const rows = await getFromMongo(mongooseConn, collection.collectionName, hakuOid, true);
     await putToPostgres({
-      knex,
+      trx,
       collections,
       tableName: collection.tableName,
       rows,
@@ -76,13 +82,13 @@ async function copyHakuData(mongooseConn, knex, collections, hakuOid) {
   console.log(`Took ${(Date.now() - timeStarted) / 1000} seconds to copy haku data for ${hakuOid}`);
 }
 
-async function copyHakukohdeData(mongooseConn, knex, collections, hakukohdeOid) {
+async function copyHakukohdeData(mongooseConn, trx, collections, hakukohdeOid) {
   const timeStarted = Date.now();
 
   for (const collection of collections) {
     const rows = await getFromMongo(mongooseConn, collection.collectionName, hakukohdeOid);
     await putToPostgres({
-      knex,
+      trx,
       collections,
       tableName: collection.tableName,
       rows,
