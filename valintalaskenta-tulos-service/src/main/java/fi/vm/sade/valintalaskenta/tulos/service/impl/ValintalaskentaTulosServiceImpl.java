@@ -35,6 +35,7 @@ import fi.vm.sade.valintalaskenta.tulos.dao.TulosValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
+import fi.vm.sade.valintalaskenta.tulos.service.AuthorizationUtil;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import fi.vm.sade.valintalaskenta.tulos.service.exception.EiOikeuttaPoistaaValintatapajonoaSijoittelustaException;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverter;
@@ -701,6 +702,16 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     jarjestyskriteeritulos.setKuvaus(muokattuKasin);
     jarjestyskriteeritulos.setArvo(jonosija.getArvo());
     jarjestyskriteeritulos.setTila(jonosija.getTila());
+
+    muokattuJonosija.setMuokkaaja(AuthorizationUtil.getCurrentUser());
+    muokattuJonosija.setSelite(jonosija.getSelite());
+    muokattuJonosija.setMuutos(
+        "jarjestyskriteeriPrioriteetti: "
+            + jarjestyskriteeriPrioriteetti
+            + " arvo: "
+            + jonosija.getArvo()
+            + " tila: "
+            + jonosija.getTila().name());
 
     saveMuokattuJonosija(muokattuJonosija, auditUser);
     return muokattuJonosija;

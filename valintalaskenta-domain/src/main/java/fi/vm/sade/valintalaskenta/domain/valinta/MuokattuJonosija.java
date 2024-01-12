@@ -22,6 +22,10 @@ public class MuokattuJonosija {
 
   private String muokkaaja;
 
+  private String selite;
+
+  private String muutos;
+
   @Column("jarjestyskriteeritulokset")
   private JarjestyskriteeritulosContainer jarjestyskriteeritulokset;
 
@@ -112,5 +116,21 @@ public class MuokattuJonosija {
 
   public void setMuokkaaja(String muokkaaja) {
     this.muokkaaja = muokkaaja;
+  }
+
+  public String getSelite() {
+    return selite;
+  }
+
+  public void setSelite(String selite) {
+    this.selite = selite;
+  }
+
+  public String getMuutos() {
+    return muutos;
+  }
+
+  public void setMuutos(String muutos) {
+    this.muutos = muutos;
   }
 }

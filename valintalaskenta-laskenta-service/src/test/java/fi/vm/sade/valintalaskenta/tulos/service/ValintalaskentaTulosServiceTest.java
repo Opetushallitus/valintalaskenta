@@ -219,6 +219,7 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
     mjs.setHakemusOid("hakemusOid1");
     mjs.setPrioriteetti(0);
     mjs.setHarkinnanvarainen(true);
+    mjs.setMuokkaaja("muokkaajaOid");
     mjs.setJarjestyskriteerit(
         Set.of(
             TestEntityDataUtil.luoJarjestyskriteeritulosEntity(

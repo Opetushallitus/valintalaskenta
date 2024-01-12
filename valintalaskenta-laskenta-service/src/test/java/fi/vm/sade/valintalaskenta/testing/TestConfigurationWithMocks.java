@@ -3,7 +3,6 @@ package fi.vm.sade.valintalaskenta.testing;
 import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.valinta.dokumenttipalvelu.Dokumenttipalvelu;
 import fi.vm.sade.valintalaskenta.laskenta.config.SwaggerConfiguration;
-import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaPaloissaResourceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource;
@@ -62,25 +61,10 @@ class TestConfigurationWithMocks {
         parallelismFromConfig);
   }
 
-  public ValintalaskentaPaloissaResourceImpl valintalaskentaPaloissaResource(
-      ValintalaskentaResourceImpl valintalaskentaResource) {
-    return new ValintalaskentaPaloissaResourceImpl(valintalaskentaResource);
-  }
-
   @Bean
   public OpenAPI openAPI() {
     return new SwaggerConfiguration().valintalaskentaAPI();
   }
-
-  /*@Component
-  public static class CustomContainer
-      implements WebServerFactoryCustomizer<TomcatServletWebServerFactory> {
-    @Override
-    public void customize(TomcatServletWebServerFactory factory) {
-      factory.setContextPath(App.CONTEXT_PATH);
-      factory.setPort(parseInt(System.getProperty("TestApp.server.port")));
-    }
-  }*/
 
   @Bean
   public ApplicationContextGetter applicationContextGetter() {

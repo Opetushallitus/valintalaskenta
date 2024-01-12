@@ -39,6 +39,7 @@ public class MuokattuJonosijaDAOTest extends AbstractIntegrationTest {
     muoks.setHakukohdeOid("hakukohdeOid");
     muoks.setValintatapajonoOid("valintatapajonoOid");
     muoks.setHakemusOid("hakemusOid");
+    muoks.setMuokkaaja("muokkaajaOid");
     muokattuJonosijaRepository.save(muoks);
 
     MuokattuJonosija jonosija = dao.readByHakuOid("hakuOid").get(0);
@@ -46,5 +47,6 @@ public class MuokattuJonosijaDAOTest extends AbstractIntegrationTest {
     assertEquals("hakukohdeOid", jonosija.getHakukohdeOid());
     assertEquals("valintatapajonoOid", jonosija.getValintatapajonoOid());
     assertEquals("hakemusOid", jonosija.getHakemusOid());
+    assertEquals("muokkaajaOid", jonosija.getMuokkaaja());
   }
 }
