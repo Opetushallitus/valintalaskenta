@@ -20,6 +20,8 @@ public class MuokattuJonosija {
 
   private Integer prioriteetti; // hakutoive
 
+  private String muokkaaja;
+
   @Column("jarjestyskriteeritulokset")
   private JarjestyskriteeritulosContainer jarjestyskriteeritulokset;
 
@@ -102,5 +104,13 @@ public class MuokattuJonosija {
             return o1.getPrioriteetti() - o2.getPrioriteetti();
           }
         });
+  }
+
+  public String getMuokkaaja() {
+    return muokkaaja;
+  }
+
+  public void setMuokkaaja(String muokkaaja) {
+    this.muokkaaja = muokkaaja;
   }
 }
