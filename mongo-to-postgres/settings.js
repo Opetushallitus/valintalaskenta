@@ -2,7 +2,7 @@ import {mongoPass, possuPass} from './pass.js';
 
 const connections = {
   mongo: `mongodb://valintalaskentauser:${mongoPass}@localhost:57117/valintalaskentadb`,
-  postgres: `postgres://oph:${possuPass}h@localhost:5432/valintalaskenta`
+  postgres: `postgres://oph:${possuPass}@localhost:5432/valintalaskenta`
 };
 
 const formJonosijaCollection = (foreignKey, parentField) => {
@@ -25,7 +25,6 @@ const formJonosijaCollection = (foreignKey, parentField) => {
   }
 }
 
-//TODO: remember to add column muokkaaja to muokattu_jonosija table
 const getValuesFromLatestLogEntry = (row) => {
   const logEntries = row.logEntries;
   if (logEntries.length < 1) {

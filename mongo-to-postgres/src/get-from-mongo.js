@@ -25,6 +25,38 @@ export default async (mongooseConn, collectionName, hakukohdeOid, useHaku = fals
   });
 };
 
+export const getDistinctHakukohteetAndHaut = async (mongooseConn) => {
+  let Model = Models['Valinnanvaihe'];
+  if (!Model) {
+    Model = mongooseConn.model('Valinnanvaihe',
+      new mongoose.Schema({}, { collection: 'Valinnanvaihe'})
+    );
+    Models['Valinnanvaihe'] = Model;
+  }
+
+  const result = await Model.find({})
+    .sort({createdAt: 1}).exec();
+    //.where('createdAt').lt() // for start need to fetch only ones older than 2 years
+
+  const distinctHakuOids = [];
+  const distinctHakukohdeOids = [];
+  const response = [];
+  
+  result.map((r) => r._doc).forEach(result => {
+    if (distinctHakuOids.indexOf(result.hakuOid) < 0) {
+      distinctHakuOids.push(result.hakuOid);
+      response.push({haku: result.hakuOid});
+    }
+
+    if (distinctHakukohdeOids.indexOf(result.hakukohdeOid) < 0) {
+      distinctHakukohdeOids.push(result.hakukohdeOid);
+      response.push({haku: result.hakuOid, hakukohde: result.hakukohdeOid});
+    }
+  })
+
+  return response;
+}
+
 export const getFromMongoObject = async (mongooseConn, collectionName, objectId) => {
   let Model = Models[collectionName];
   if (!Model) {
