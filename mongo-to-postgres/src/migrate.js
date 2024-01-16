@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import Knex from 'knex';
 import getFromMongo from './get-from-mongo.js';
 import putToPostgres from './put-to-postgres.js';
+import {fetchFromMigrationControl} from './migration-control.js';
 
 export default async ({ connections, collections, collectionsForHaku }) => {
   console.log('Starting migration...');
@@ -37,17 +38,13 @@ export default async ({ connections, collections, collectionsForHaku }) => {
     console.err(err);
   }
 
-  //TODO: fetch these from control table
-  // Control table: {hakuOid, hakukohdeOid, status (SUCCESS, FAIL, null), reason_for_fail, osallistumisetHandled};
-  const oidsToProcess = [
-    {haku: '1.2.246.562.29.00000000000000002821'}, 
-    {hakukohde: '1.2.246.562.20.00000000000000004724'},
-    {hakukohde: '1.2.246.562.20.45279263003'}];
+  const oidsToProcess = await fetchFromMigrationControl(knex, mongooseConn);
+  console.log(oidsToProcess);
 
-  performProcess(mongooseConn, knex, collections, collectionsForHaku, oidsToProcess)
+  /*performProcess(mongooseConn, knex, collections, collectionsForHaku, oidsToProcess)
     .then(() => console.log('Finished successfully.'))
     .catch((err) => console.error(err))
-    .finally(() => process.exit(0));
+    .finally(() => process.exit(0));*/
 };
 
 async function performProcess(mongooseConn, knex, collections, collectionsForHaku, oidsToProcess) {
