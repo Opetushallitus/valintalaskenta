@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import Knex from 'knex';
 import getFromMongo from './get-from-mongo.js';
 import putToPostgres from './put-to-postgres.js';
-import {fetchFromMigrationControl} from './migration-control.js';
+import {fetchFromMigrationControl, updateMigrationRow} from './migration-control.js';
 
 export default async ({ connections, collections, collectionsForHaku }) => {
   console.log('Starting migration...');
@@ -41,23 +41,26 @@ export default async ({ connections, collections, collectionsForHaku }) => {
   const oidsToProcess = await fetchFromMigrationControl(knex, mongooseConn);
   console.log(oidsToProcess);
 
-  /*performProcess(mongooseConn, knex, collections, collectionsForHaku, oidsToProcess)
+  performProcess(mongooseConn, knex, collections, collectionsForHaku, oidsToProcess)
     .then(() => console.log('Finished successfully.'))
     .catch((err) => console.error(err))
-    .finally(() => process.exit(0));*/
+    .finally(() => process.exit(0));
 };
+
 
 async function performProcess(mongooseConn, knex, collections, collectionsForHaku, oidsToProcess) {
   for (const oid of oidsToProcess) {
     try {
       await knex.transaction(async trx => {
-        if (oid.haku) {
-          await copyHakuData(mongooseConn, knex, collectionsForHaku, oid.haku);
+        if (oid.hakukohde) {
+          await copyHakukohdeData(mongooseConn, trx, collections, oid.hakukohde);
         } else {
-          await copyHakukohdeData(mongooseConn, knex, collections, oid.hakukohde);
+          await copyHakuData(mongooseConn, trx, collectionsForHaku, oid.haku);
         }
-      })
+      });
+      await updateMigrationRow(knex, oid, true, null);
     } catch (error) {
+      await updateMigrationRow(knex, oid, false, error);
       console.error(error);
     }
   }
