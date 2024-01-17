@@ -1,7 +1,7 @@
-ALTER TABLE harkinnanvarainen_hyvaksyminen ADD COLUMN transaction_id bigint not null default txid_current();
+ALTER TABLE harkinnanvarainen_hyvaksyminen ADD COLUMN IF NOT EXISTS transaction_id bigint not null default txid_current();
 
-CREATE TABLE harkinnanvarainen_hyvaksyminen_history (like harkinnanvarainen_hyvaksyminen);
-ALTER TABLE harkinnanvarainen_hyvaksyminen_history ADD COLUMN system_time tstzrange not null;
+CREATE TABLE IF NOT EXISTS harkinnanvarainen_hyvaksyminen_history (like harkinnanvarainen_hyvaksyminen);
+ALTER TABLE harkinnanvarainen_hyvaksyminen_history ADD COLUMN IF NOT EXISTS system_time tstzrange not null;
 
 CREATE OR REPLACE FUNCTION update_harkinnanvarainen_hyvaksyminen_history() returns trigger as
 $$
@@ -29,22 +29,22 @@ begin
 end;
 $$ language plpgsql;
 
-create trigger harkinnanvarainen_hyvaksyminen_history
+create or replace trigger harkinnanvarainen_hyvaksyminen_history
     after update on harkinnanvarainen_hyvaksyminen
     for each row
     when (old.transaction_id <> txid_current())
 execute procedure update_harkinnanvarainen_hyvaksyminen_history();
 
-create trigger delete_harkinnanvarainen_hyvaksyminen_history
+create or replace trigger delete_harkinnanvarainen_hyvaksyminen_history
     after delete on harkinnanvarainen_hyvaksyminen
     for each row
 execute procedure update_harkinnanvarainen_hyvaksyminen_history();
 
 
-ALTER TABLE hakijaryhma ADD COLUMN transaction_id bigint not null default txid_current();
+ALTER TABLE hakijaryhma ADD COLUMN IF NOT EXISTS transaction_id bigint not null default txid_current();
 
-CREATE TABLE hakijaryhma_history (like hakijaryhma);
-ALTER TABLE hakijaryhma_history ADD COLUMN system_time tstzrange not null;
+CREATE TABLE IF NOT EXISTS hakijaryhma_history (like hakijaryhma);
+ALTER TABLE hakijaryhma_history ADD COLUMN IF NOT EXISTS system_time tstzrange not null;
 
 CREATE OR REPLACE FUNCTION update_hakijaryhma_history() returns trigger as
 $$
@@ -86,22 +86,22 @@ begin
 end;
 $$ language plpgsql;
 
-create trigger hakijaryhma_history
+create or replace trigger hakijaryhma_history
     after update on hakijaryhma
     for each row
     when (old.transaction_id <> txid_current())
 execute procedure update_hakijaryhma_history();
 
-create trigger delete_hakijaryhma_history
+create or replace trigger delete_hakijaryhma_history
     after delete on hakijaryhma
     for each row
 execute procedure update_hakijaryhma_history();
 
 
-ALTER TABLE valinnanvaihe ADD COLUMN transaction_id bigint not null default txid_current();
+ALTER TABLE valinnanvaihe ADD COLUMN IF NOT EXISTS transaction_id bigint not null default txid_current();
 
-CREATE TABLE valinnanvaihe_history (like valinnanvaihe);
-ALTER TABLE valinnanvaihe_history ADD COLUMN system_time tstzrange not null;
+CREATE TABLE IF NOT EXISTS valinnanvaihe_history (like valinnanvaihe);
+ALTER TABLE valinnanvaihe_history ADD COLUMN IF NOT EXISTS system_time tstzrange not null;
 
 CREATE OR REPLACE FUNCTION update_valinnanvaihe_history() returns trigger as
 $$
@@ -133,22 +133,22 @@ begin
 end;
 $$ language plpgsql;
 
-create trigger valinnanvaihe_history
+create or replace trigger valinnanvaihe_history
     after update on valinnanvaihe
     for each row
     when (old.transaction_id <> txid_current())
 execute procedure update_valinnanvaihe_history();
 
-create trigger delete_valinnanvaihe_history
+create or replace trigger delete_valinnanvaihe_history
     after delete on valinnanvaihe
     for each row
 execute procedure update_valinnanvaihe_history();
 
 
-ALTER TABLE valintakoe_osallistuminen ADD COLUMN transaction_id bigint not null default txid_current();
+ALTER TABLE valintakoe_osallistuminen ADD COLUMN IF NOT EXISTS transaction_id bigint not null default txid_current();
 
-CREATE TABLE valintakoe_osallistuminen_history (like valintakoe_osallistuminen);
-ALTER TABLE valintakoe_osallistuminen_history ADD COLUMN system_time tstzrange not null;
+CREATE TABLE IF NOT EXISTS valintakoe_osallistuminen_history (like valintakoe_osallistuminen);
+ALTER TABLE valintakoe_osallistuminen_history ADD COLUMN IF NOT EXISTS system_time tstzrange not null;
 
 CREATE OR REPLACE FUNCTION update_valintakoe_osallistuminen_history() returns trigger as
 $$
@@ -174,22 +174,22 @@ begin
 end;
 $$ language plpgsql;
 
-create trigger valintakoe_osallistuminen_history
+create or replace trigger valintakoe_osallistuminen_history
     after update on valintakoe_osallistuminen
     for each row
     when (old.transaction_id <> txid_current())
 execute procedure update_valintakoe_osallistuminen_history();
 
-create trigger delete_valintakoe_osallistuminen_history
+create or replace trigger delete_valintakoe_osallistuminen_history
     after delete on valintakoe_osallistuminen
     for each row
 execute procedure update_valintakoe_osallistuminen_history();
 
 
-ALTER TABLE hakutoive ADD COLUMN transaction_id bigint not null default txid_current();
+ALTER TABLE hakutoive ADD COLUMN IF NOT EXISTS transaction_id bigint not null default txid_current();
 
-CREATE TABLE hakutoive_history (like hakutoive);
-ALTER TABLE hakutoive_history ADD COLUMN system_time tstzrange not null;
+CREATE TABLE IF NOT EXISTS hakutoive_history (like hakutoive);
+ALTER TABLE hakutoive_history ADD COLUMN IF NOT EXISTS system_time tstzrange not null;
 
 CREATE OR REPLACE FUNCTION update_hakutoive_history() returns trigger as
 $$
@@ -213,23 +213,23 @@ begin
 end;
 $$ language plpgsql;
 
-create trigger hakutoive_history
+create or replace trigger hakutoive_history
     after update on hakutoive
     for each row
     when (old.transaction_id <> txid_current())
 execute procedure update_hakutoive_history();
 
-create trigger delete_hakutoive_history
+create or replace trigger delete_hakutoive_history
     after delete on hakutoive
     for each row
 execute procedure update_hakutoive_history();
 
 
 
-ALTER TABLE valintakoe_valinnanvaihe ADD COLUMN transaction_id bigint not null default txid_current();
+ALTER TABLE valintakoe_valinnanvaihe ADD COLUMN IF NOT EXISTS transaction_id bigint not null default txid_current();
 
-CREATE TABLE valintakoe_valinnanvaihe_history (like valintakoe_valinnanvaihe);
-ALTER TABLE valintakoe_valinnanvaihe_history ADD COLUMN system_time tstzrange not null;
+CREATE TABLE IF NOT EXISTS valintakoe_valinnanvaihe_history (like valintakoe_valinnanvaihe);
+ALTER TABLE valintakoe_valinnanvaihe_history ADD COLUMN IF NOT EXISTS system_time tstzrange not null;
 
 CREATE OR REPLACE FUNCTION update_valintakoe_valinnanvaihe_history() returns trigger as
 $$
@@ -255,22 +255,22 @@ begin
 end;
 $$ language plpgsql;
 
-create trigger valintakoe_valinnanvaihe_history
+create or replace trigger valintakoe_valinnanvaihe_history
     after update on valintakoe_valinnanvaihe
     for each row
     when (old.transaction_id <> txid_current())
 execute procedure update_valintakoe_valinnanvaihe_history();
 
-create trigger delete_valintakoe_valinnanvaihe_history
+create or replace trigger delete_valintakoe_valinnanvaihe_history
     after delete on valintakoe_valinnanvaihe
     for each row
 execute procedure update_valintakoe_valinnanvaihe_history();
 
 
-ALTER TABLE valintakoe ADD COLUMN transaction_id bigint not null default txid_current();
+ALTER TABLE valintakoe ADD COLUMN IF NOT EXISTS transaction_id bigint not null default txid_current();
 
-CREATE TABLE valintakoe_history (like valintakoe);
-ALTER TABLE valintakoe_history ADD COLUMN system_time tstzrange not null;
+CREATE TABLE IF NOT EXISTS valintakoe_history (like valintakoe);
+ALTER TABLE valintakoe_history ADD COLUMN IF NOT EXISTS system_time tstzrange not null;
 
 CREATE OR REPLACE FUNCTION update_valintakoe_history() returns trigger as
 $$
@@ -322,22 +322,22 @@ begin
 end;
 $$ language plpgsql;
 
-create trigger valintakoe_history
+create or replace trigger valintakoe_history
     after update on valintakoe
     for each row
     when (old.transaction_id <> txid_current())
 execute procedure update_valintakoe_history();
 
-create trigger delete_valintakoe_history
+create or replace trigger delete_valintakoe_history
     after delete on valintakoe
     for each row
 execute procedure update_valintakoe_history();
 
 
-ALTER TABLE valintatapajono ADD COLUMN transaction_id bigint not null default txid_current();
+ALTER TABLE valintatapajono ADD COLUMN IF NOT EXISTS transaction_id bigint not null default txid_current();
 
-CREATE TABLE valintatapajono_history (like valintatapajono);
-ALTER TABLE valintatapajono_history ADD COLUMN system_time tstzrange not null;
+CREATE TABLE IF NOT EXISTS valintatapajono_history (like valintatapajono);
+ALTER TABLE valintatapajono_history ADD COLUMN IF NOT EXISTS system_time tstzrange not null;
 
 CREATE OR REPLACE FUNCTION update_valintatapajono_history() returns trigger as
 $$
@@ -387,22 +387,22 @@ begin
 end;
 $$ language plpgsql;
 
-create trigger valintatapajono_history
+create or replace trigger valintatapajono_history
     after update on valintatapajono
     for each row
     when (old.transaction_id <> txid_current())
 execute procedure update_valintatapajono_history();
 
-create trigger delete_valintatapajono_history
+create or replace trigger delete_valintatapajono_history
     after delete on valintatapajono
     for each row
 execute procedure update_valintatapajono_history();
 
 
-ALTER TABLE jonosija ADD COLUMN transaction_id bigint not null default txid_current();
+ALTER TABLE jonosija ADD COLUMN IF NOT EXISTS transaction_id bigint not null default txid_current();
 
-CREATE TABLE jonosija_history (like jonosija);
-ALTER TABLE jonosija_history ADD COLUMN system_time tstzrange not null;
+CREATE TABLE IF NOT EXISTS jonosija_history (like jonosija);
+ALTER TABLE jonosija_history ADD COLUMN IF NOT EXISTS system_time tstzrange not null;
 
 CREATE OR REPLACE FUNCTION update_jonosija_history() returns trigger as
 $$
@@ -440,23 +440,23 @@ begin
 end;
 $$ language plpgsql;
 
-create trigger jonosija_history
+create or replace trigger jonosija_history
     after update on jonosija
     for each row
     when (old.transaction_id <> txid_current())
 execute procedure update_jonosija_history();
 
-create trigger delete_jonosija_history
+create or replace trigger delete_jonosija_history
     after delete on jonosija
     for each row
 execute procedure update_jonosija_history();
 
 
 
-ALTER TABLE muokattu_jonosija ADD COLUMN transaction_id bigint not null default txid_current();
+ALTER TABLE muokattu_jonosija ADD COLUMN IF NOT EXISTS transaction_id bigint not null default txid_current();
 
-CREATE TABLE muokattu_jonosija_history (like muokattu_jonosija);
-ALTER TABLE muokattu_jonosija_history ADD COLUMN system_time tstzrange not null;
+CREATE TABLE IF NOT EXISTS muokattu_jonosija_history (like muokattu_jonosija);
+ALTER TABLE muokattu_jonosija_history ADD COLUMN IF NOT EXISTS system_time tstzrange not null;
 
 CREATE OR REPLACE FUNCTION update_muokattu_jonosija_history() returns trigger as
 $$
@@ -492,13 +492,13 @@ begin
 end;
 $$ language plpgsql;
 
-create trigger muokattu_jonosija_history
+create or replace trigger muokattu_jonosija_history
     after update on muokattu_jonosija
     for each row
     when (old.transaction_id <> txid_current())
 execute procedure update_muokattu_jonosija_history();
 
-create trigger delete_muokattu_jonosija_history
+create or replace trigger delete_muokattu_jonosija_history
     after delete on muokattu_jonosija
     for each row
 execute procedure update_muokattu_jonosija_history();

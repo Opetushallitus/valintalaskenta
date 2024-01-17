@@ -1,6 +1,6 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE harkinnanvarainen_hyvaksyminen (
+CREATE TABLE IF NOT EXISTS harkinnanvarainen_hyvaksyminen (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     created_at timestamp with time zone default now(),
     harkinnanvaraisuus_tila varchar(255),
@@ -9,7 +9,7 @@ CREATE TABLE harkinnanvarainen_hyvaksyminen (
     haku_oid varchar(127) NOT NULL
 );
 
-CREATE TABLE valinnanvaihe (
+CREATE TABLE IF NOT EXISTS valinnanvaihe (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     jarjestysnumero int,
     created_at timestamp with time zone default now(),
@@ -20,10 +20,10 @@ CREATE TABLE valinnanvaihe (
     nimi varchar(255)
 );
 
-CREATE INDEX valinnanvaihe_hakukohde ON valinnanvaihe(hakukohde_oid);
-CREATE INDEX valinnanvaihe_haku ON valinnanvaihe(haku_oid);
+CREATE INDEX IF NOT EXISTS valinnanvaihe_hakukohde ON valinnanvaihe(hakukohde_oid);
+CREATE INDEX IF NOT EXISTS valinnanvaihe_haku ON valinnanvaihe(haku_oid);
 
-CREATE TABLE valintakoe_osallistuminen (
+CREATE TABLE IF NOT EXISTS valintakoe_osallistuminen (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     haku_oid varchar(127) NOT NULL,
     hakemus_oid varchar(127) UNIQUE,
@@ -31,11 +31,11 @@ CREATE TABLE valintakoe_osallistuminen (
     created_at timestamp with time zone default now()
 );
 
-CREATE INDEX valintakoeosallistuminen_haku ON valintakoe_osallistuminen(haku_oid);
-CREATE INDEX valintakoeosallistuminen_hakija ON valintakoe_osallistuminen(hakija_oid);
-CREATE INDEX valintakoeosallistuminen_hakemus ON valintakoe_osallistuminen(hakemus_oid);
+CREATE INDEX IF NOT EXISTS valintakoeosallistuminen_haku ON valintakoe_osallistuminen(haku_oid);
+CREATE INDEX IF NOT EXISTS valintakoeosallistuminen_hakija ON valintakoe_osallistuminen(hakija_oid);
+CREATE INDEX IF NOT EXISTS valintakoeosallistuminen_hakemus ON valintakoe_osallistuminen(hakemus_oid);
 
-CREATE TABLE hakutoive (
+CREATE TABLE IF NOT EXISTS hakutoive (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     hakukohde_oid varchar(127) NOT NULL,
     valintakoe_osallistuminen uuid,
@@ -46,9 +46,9 @@ CREATE TABLE hakutoive (
             ON DELETE CASCADE
 );
 
-CREATE INDEX hakutoive_hakukohde ON hakutoive(hakukohde_oid);
+CREATE INDEX IF NOT EXISTS hakutoive_hakukohde ON hakutoive(hakukohde_oid);
 
-CREATE TABLE valintakoe_valinnanvaihe (
+CREATE TABLE IF NOT EXISTS valintakoe_valinnanvaihe (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     valinnanvaihe_oid varchar(127) NOT NULL,
     valinnan_vaihe_jarjestysluku int,
@@ -59,7 +59,7 @@ CREATE TABLE valintakoe_valinnanvaihe (
             REFERENCES Hakutoive(id)
 );
 
-CREATE TABLE valintakoe (
+CREATE TABLE IF NOT EXISTS valintakoe (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     valintakoe_oid varchar(127) NOT NULL,
     valintakoe_tunniste varchar(127),
@@ -83,7 +83,7 @@ CREATE TABLE valintakoe (
             REFERENCES valintakoe_valinnanVaihe(id)
 );
 
-CREATE TABLE valintatapajono (
+CREATE TABLE IF NOT EXISTS valintatapajono (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     created_at timestamp with time zone default now(),
     valintatapajono_oid varchar(127) UNIQUE,
@@ -99,14 +99,14 @@ CREATE TABLE valintatapajono (
     kaytetaan_kokonaispisteita boolean DEFAULT NULL,
     valinnanvaihe uuid NOT NULL,
     valinnanvaihe_key int,
-    sijoitteluajo_id int,
+    sijoitteluajo_id bigint,
     poissa_oleva_taytto boolean DEFAULT NULL,
     CONSTRAINT fk_valinnanvaihe
         FOREIGN KEY(valinnanvaihe)
             REFERENCES valinnanvaihe(id)
 );
 
-CREATE TABLE hakijaryhma (
+CREATE TABLE IF NOT EXISTS hakijaryhma (
      id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
      hakijaryhma_oid varchar(127) UNIQUE,
      prioriteetti int,
@@ -122,9 +122,9 @@ CREATE TABLE hakijaryhma (
      valintatapajono_oid varchar(127) DEFAULT NULL
 );
 
-CREATE INDEX hakijaryhma_hakukohde ON hakijaryhma(hakukohde_oid);
+CREATE INDEX IF NOT EXISTS hakijaryhma_hakukohde ON hakijaryhma(hakukohde_oid);
 
-CREATE TABLE jonosija (
+CREATE TABLE IF NOT EXISTS jonosija (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     created_at timestamp with time zone default now(),
     hakemus_oid varchar(127),
@@ -145,9 +145,9 @@ CREATE TABLE jonosija (
             REFERENCES hakijaryhma(id)
 );
 
-CREATE INDEX jonosija_hakemus ON jonosija(hakemus_oid);
+CREATE INDEX IF NOT EXISTS jonosija_hakemus ON jonosija(hakemus_oid);
 
-CREATE TABLE muokattu_jonosija (
+CREATE TABLE IF NOT EXISTS muokattu_jonosija (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     created_at timestamp with time zone default now(),
     hakukohde_oid varchar(127) NOT NULL,
@@ -164,8 +164,8 @@ CREATE TABLE muokattu_jonosija (
           REFERENCES Valintatapajono(valintatapajono_oid)
 );
 
-CREATE INDEX muokattujonosija_hakukohde ON muokattu_jonosija(hakukohde_oid);
-CREATE INDEX muokattujonosija_haku ON muokattu_jonosija(haku_oid);
+CREATE INDEX IF NOT EXISTS muokattujonosija_hakukohde ON muokattu_jonosija(hakukohde_oid);
+CREATE INDEX IF NOT EXISTS muokattujonosija_haku ON muokattu_jonosija(haku_oid);
 
 
 
