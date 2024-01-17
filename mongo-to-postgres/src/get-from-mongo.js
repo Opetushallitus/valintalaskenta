@@ -35,7 +35,7 @@ export const getDistinctHakukohteetAndHaut = async (mongooseConn) => {
   }
 
   const result = await Model.find({})
-    .sort({createdAt: 1}).exec();
+    .sort({createdAt: -1}).exec();
     //.where('createdAt').lt() // for start need to fetch only ones older than 2 years
 
   const distinctHakuOids = [];
