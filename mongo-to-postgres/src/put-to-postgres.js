@@ -32,6 +32,10 @@ const copySubCollection = async (mongooseConn, trx, row, parentId, sub) => {
   const innerSub = sub.subCollection;
   const subIds = row[parentField];
 
+  if (!subIds || !subIds.length) {
+    return;
+  }
+
   for (let i = 0; i < subIds.length; i ++) {
     let subRow;
     if (!embbeddedCollection) {
