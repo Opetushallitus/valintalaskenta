@@ -41,8 +41,10 @@ export default async ({ connections, collections, collectionsForHaku }) => {
   const oidsToProcess = await fetchFromMigrationControl(knex, mongooseConn);
   console.log(oidsToProcess);
 
+  const timeRoundStarted = Date.now();
+
   performProcess(mongooseConn, knex, collections, collectionsForHaku, oidsToProcess)
-    .then(() => console.log('Finished successfully.'))
+    .then(() => console.log(`\n\nFinished successfully. Total duration in seconds ${Math.round((Date.now() - timeRoundStarted) / 1000)}`))
     .catch((err) => console.error(err))
     .finally(() => process.exit(0));
 };
@@ -51,16 +53,17 @@ export default async ({ connections, collections, collectionsForHaku }) => {
 async function performProcess(mongooseConn, knex, collections, collectionsForHaku, oidsToProcess) {
   for (const oid of oidsToProcess) {
     try {
+      let totalSeconds = 0;
       await knex.transaction(async trx => {
         if (oid.hakukohde) {
-          await copyHakukohdeData(mongooseConn, trx, collections, oid.hakukohde);
+          totalSeconds = await copyHakukohdeData(mongooseConn, trx, collections, oid.hakukohde);
         } else {
-          await copyHakuData(mongooseConn, trx, collectionsForHaku, oid.haku);
+          totalSeconds = await copyHakuData(mongooseConn, trx, collectionsForHaku, oid.haku);
         }
       });
-      await updateMigrationRow(knex, oid, true, null);
+      await updateMigrationRow(knex, oid, true, null, totalSeconds);
     } catch (error) {
-      await updateMigrationRow(knex, oid, false, error);
+      await updateMigrationRow(knex, oid, false, error, null);
       console.error(error);
     }
   }
@@ -68,7 +71,7 @@ async function performProcess(mongooseConn, knex, collections, collectionsForHak
 
 async function copyHakuData(mongooseConn, trx, collections, hakuOid) {
   const timeStarted = Date.now();
-
+  console.log(`Migrating haku ${hakuOid}`);
   for (const collection of collections) {
     const rows = await getFromMongo(mongooseConn, collection.collectionName, hakuOid, true);
     await putToPostgres({
@@ -79,12 +82,14 @@ async function copyHakuData(mongooseConn, trx, collections, hakuOid) {
       mongooseConn
     });
   }
-  console.log(`Took ${(Date.now() - timeStarted) / 1000} seconds to copy haku data for ${hakuOid}`);
+  const totalSeconds = Math.round((Date.now() - timeStarted) / 1000);
+  console.log(`Took ${totalSeconds} seconds to copy haku data for ${hakuOid}`);
+  return totalSeconds;
 }
 
 async function copyHakukohdeData(mongooseConn, trx, collections, hakukohdeOid) {
   const timeStarted = Date.now();
-
+  console.log(`Migrating hakukohde ${hakukohdeOid}`);
   for (const collection of collections) {
     const rows = await getFromMongo(mongooseConn, collection.collectionName, hakukohdeOid);
     await putToPostgres({
@@ -95,7 +100,9 @@ async function copyHakukohdeData(mongooseConn, trx, collections, hakukohdeOid) {
       mongooseConn
     });
   }
-  console.log(`Took ${(Date.now() - timeStarted) / 1000} seconds to copy hakukohde data for ${hakukohdeOid}`);
+  const totalSeconds = Math.round((Date.now() - timeStarted) / 1000);
+  console.log(`Took ${totalSeconds} seconds to copy hakukohde data for ${hakukohdeOid}`);
+  return totalSeconds;
 }
 
 
