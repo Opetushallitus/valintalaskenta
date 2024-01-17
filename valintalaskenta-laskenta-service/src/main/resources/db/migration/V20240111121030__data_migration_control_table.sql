@@ -5,5 +5,6 @@ CREATE TABLE IF NOT EXISTS data_migration_control (
     hakukohde_oid varchar(127),
     haku_oid varchar(127) NOT NULL,
     success boolean DEFAULT NULL,
-    error_message text
+    error_message text,
+    duration_in_seconds integer
 );
