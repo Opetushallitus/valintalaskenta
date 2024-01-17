@@ -1,6 +1,6 @@
 import {getDistinctHakukohteetAndHaut} from "./get-from-mongo.js";
 
-const AMOUNT_TO_FETCH_AT_ONCE = 10;
+const AMOUNT_TO_FETCH_AT_ONCE = 50;
 const CONTROL_TABLE = 'data_migration_control';
 
 const populateControlTable = async (knex, mongoConn) => {
@@ -38,7 +38,7 @@ export const fetchFromMigrationControl = async (knex, mongoConn) => {
   });
 }
 
-export const updateMigrationRow = async (knex, oidObj, isSuccess, error) => {
+export const updateMigrationRow = async (knex, oidObj, isSuccess, error, totalSeconds) => {
   const isHaku = oidObj.hakukohde == null;
   const oid = isHaku? oidObj.haku : oidObj.hakukohde;
   console.log(`updateMigrationRow, ${oid}, ${isHaku}, ${isSuccess}`);
@@ -48,13 +48,15 @@ export const updateMigrationRow = async (knex, oidObj, isSuccess, error) => {
     .whereNull('hakukohde_oid')
     .update({ updated_at: new Date().toUTCString(),
               success: isSuccess,
-              error_message: error});
+              error_message: error,
+              duration_in_seconds: totalSeconds});
   } else {
     await knex(CONTROL_TABLE)
     .where('hakukohde_oid', '=', oid)
     .update({ updated_at: new Date().toUTCString(),
               success: isSuccess,
-              error_message: error});
+              error_message: error,
+              duration_in_seconds: totalSeconds});
   }
 
 }
