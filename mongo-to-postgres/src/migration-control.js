@@ -42,10 +42,20 @@ export const updateMigrationRow = async (knex, oidObj, isSuccess, error) => {
   const isHaku = oidObj.hakukohde == null;
   const oid = isHaku? oidObj.haku : oidObj.hakukohde;
   console.log(`updateMigrationRow, ${oid}, ${isHaku}, ${isSuccess}`);
-  await knex(CONTROL_TABLE)
-    .where(isHaku? 'haku_oid' : 'hakukohde_oid', '=', oid)
+  if (isHaku) {
+    await knex(CONTROL_TABLE)
+    .where('haku_oid', '=', oid)
+    .whereNull('hakukohde_oid')
     .update({ updated_at: new Date().toUTCString(),
               success: isSuccess,
               error_message: error});
+  } else {
+    await knex(CONTROL_TABLE)
+    .where('hakukohde_oid', '=', oid)
+    .update({ updated_at: new Date().toUTCString(),
+              success: isSuccess,
+              error_message: error});
+  }
+
 }
 
