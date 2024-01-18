@@ -1,25 +1,16 @@
-import { gunzipSync } from "zlib";
-import {getFromMongoObject} from "./get-from-mongo.js";
 import { v4 as uuidv4 } from 'uuid'
 
-const copyHistoria = async (mongooseConn, knex, historyId, tunniste) => {
-  const historiaDoc = await getFromMongoObject(mongooseConn, "Jarjestyskriteerihistoria", historyId);
-  if (historiaDoc.historia) {
-    await trx('jarjestyskriteerihistoria')
-      .insert({historia: historiaDoc.historia, tunniste});
-  } else {
-    const historia = gunzipSync(historiaDoc.historiaGzip.buffer);
-    await knex('jarjestyskriteerihistoria')
-      .insert({historia: historia.toString(), tunniste});
-  }
+const copyHistoria = async (trx, historia, tunniste) => {
+  await trx('jarjestyskriteerihistoria')
+    .insert({historia, tunniste});
 }
 
-const handleJsonField = async (mongooseConn, trx, collectionName, field, subRow ) => {
+const handleJsonField = async (trx, collectionName, field, subRow ) => {
   if (collectionName === 'Jonosija' && field[0] === 'jarjestyskriteeritulokset') {
     const tulokset = [];
     for (const tulos of subRow[field[0]]) {
       const tunniste = uuidv4();
-      await copyHistoria(mongooseConn, trx, tulos.historia, tunniste);
+      await copyHistoria(trx, tulos.historia, tunniste);
       tulokset.push(Object.assign({}, tulos, {historia: tunniste}));
     };
     return `{"${field[0]}":${JSON.stringify(tulokset)}}`;
@@ -28,30 +19,26 @@ const handleJsonField = async (mongooseConn, trx, collectionName, field, subRow 
 }
 
 
-const copySubCollection = async (mongooseConn, trx, row, parentId, sub) => {
+const copySubCollection = async (trx, row, parentId, sub) => {
   const { tableName, collectionName, foreignKey, ordered, getMoreFieldsToAddFn,
-    fieldsToCopy, parentField, jsonFields, embbeddedCollection } = sub;
+    fieldsToCopy, parentField, jsonFields } = sub;
   const innerSub = sub.subCollection;
-  const subIds = row[parentField];
+  const subs = row[parentField];
 
-  if (!subIds || !subIds.length) {
-    return;
+  if (!subs || !subs.length) {
+    return 0;
   }
 
-  for (let i = 0; i < subIds.length; i ++) {
-    let subRow;
-    if (!embbeddedCollection) {
-      const idPropery = subIds[i].oid ? subIds[i].oid : subIds[i];
-      subRow = await getFromMongoObject(mongooseConn, collectionName, idPropery);
-    } else {
-      subRow = subIds[i];
-    }
+  let totalObjects = subs.length;
+
+  for (let i = 0; i < subs.length; i ++) {
+    let subRow = subs[i];
 
     const rowToInsert = {};
 
     for (const field of fieldsToCopy) {
       if (jsonFields && jsonFields.includes(field[0]) && subRow[field[0]]) {
-        rowToInsert[field[1]] = await handleJsonField(mongooseConn, trx, collectionName, field, subRow);
+        rowToInsert[field[1]] = await handleJsonField(trx, collectionName, field, subRow);
       } else {
         rowToInsert[field[1]] = subRow[field[0]];
       }
@@ -74,9 +61,10 @@ const copySubCollection = async (mongooseConn, trx, row, parentId, sub) => {
       .insert(rowToInsert);
 
     if (innerSub) {
-      await copySubCollection(mongooseConn, trx, subRow, newId, innerSub);
+      totalObjects += await copySubCollection(trx, subRow, newId, innerSub);
     }
   }
+  return totalObjects;
 };
 
 
@@ -86,13 +74,14 @@ const copySubCollection = async (mongooseConn, trx, row, parentId, sub) => {
    * @param {Array} collections - Array of collections
    * @param {string} tableName - Table name
    * @param {string} rows - Objects to insert
-   * @param {object} mongooseConn - mongoose object
    */
-export default async ({ trx, collections, tableName, rows, mongooseConn }) => {
+export default async ({ trx, collections, tableName, rows }) => {
   const { fieldsToCopy, subCollection, getMoreFieldsToAddFn, jsonFields } =
     collections.find(c => c.tableName === tableName);
 
   const idsMap = [];
+
+  let totalDescendants = 0;
 
   for (const currentRow of rows) {
 
@@ -114,20 +103,18 @@ export default async ({ trx, collections, tableName, rows, mongooseConn }) => {
       Object.assign(rowToInsert, getMoreFieldsToAddFn(currentRow));
     }
 
-    // insert current row
      await trx(tableName)
        .insert(rowToInsert);
 
-    // save id mapping
     idsMap.push({ oldId, newId });
 
     if (!!subCollection) {
-      await copySubCollection(mongooseConn, trx, currentRow, newId, subCollection);
+      totalDescendants += await copySubCollection(trx, currentRow, newId, subCollection);
     }
 
   }
 
-  console.log(`Inserted ${rows.length} rows to "${tableName}" table`);
+  console.log(`Inserted ${rows.length} rows to "${tableName}" table with ${totalDescendants} number of descendants`);
 
   return idsMap;
 };
