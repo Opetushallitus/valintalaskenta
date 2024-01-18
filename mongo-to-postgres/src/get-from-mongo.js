@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { gunzipSync } from "zlib";
 
 const Models = {};
 
@@ -68,4 +69,83 @@ export const getFromMongoObject = async (mongooseConn, collectionName, objectId)
   
   const result = await Model.findById(objectId);
   return result._doc;
+};
+
+
+
+
+
+
+
+
+
+
+const copyHistoria = async (mongooseConn, historyId) => {
+  const historiaDoc = await getFromMongoObject(mongooseConn, "Jarjestyskriteerihistoria", historyId);
+  if (historiaDoc.historia) {
+    return historiaDoc.historia;
+  } else {
+    const historia = gunzipSync(historiaDoc.historiaGzip.buffer);
+    return historia.toString();
+  }
+}
+
+
+const fillSubCollection = async (mongooseConn, row, sub) => {
+  const { collectionName,
+    fieldsToCopy, parentField, embbeddedCollection } = sub;
+  const innerSub = sub.subCollection;
+  const subIds = row[parentField];
+
+  if (!subIds || !subIds.length) {
+    return [];
+  }
+
+  let subObjs = [];
+
+  for (let i = 0; i < subIds.length; i ++) {
+    let subRow;
+    if (!embbeddedCollection) {
+      const idPropery = subIds[i].oid ? subIds[i].oid : subIds[i];
+      subRow = await getFromMongoObject(mongooseConn, collectionName, idPropery);
+    } else {
+      subRow = subIds[i];
+    }
+
+    for (const field of fieldsToCopy) {
+      if (collectionName === 'Jonosija' && field[0] === 'jarjestyskriteeritulokset') {
+        for (const tulos of subRow[field[0]]) {
+          tulos.historia = await copyHistoria(mongooseConn, tulos.historia);
+        };
+      }
+    }
+
+    if (innerSub) {
+      const innerSubs = await fillSubCollection(mongooseConn, subRow, innerSub);
+      subObjs.push(Object.assign(subRow, {[innerSub.parentField]: innerSubs}));
+    } else {
+      subObjs.push(subRow);
+    }
+  }
+  return subObjs;
+};
+
+export const fillMongoObject = async ({ collections, tableName, rows, mongooseConn }) => {
+  const { subCollection } =
+    collections.find(c => c.tableName === tableName);
+
+  const filledObjs = [];
+
+  for (const currentRow of rows) {
+
+    if (!!subCollection) {
+      const filledChildren = await fillSubCollection(mongooseConn, currentRow, subCollection);
+      filledObjs.push(Object.assign(currentRow, {[subCollection.parentField]: filledChildren})) 
+    } else {
+      filledObjs.push(currentRow);
+    }
+
+  }
+
+  return filledObjs;
 };
