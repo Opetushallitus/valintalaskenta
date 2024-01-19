@@ -12,6 +12,9 @@
     "database",
     "valintalaskenta"
   ],
+  "scripts":{
+    "start": "node --max-old-space-size=16192 index.js"
+  },
   "devDependencies": {
     "@babel/core": "^7.19.0",
     "@babel/eslint-parser": "^7.18.9",
