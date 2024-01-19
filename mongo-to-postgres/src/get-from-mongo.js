@@ -26,7 +26,7 @@ export default async (mongooseConn, collectionName, hakukohdeOid, useHaku = fals
   });
 };
 
-export const getDistinctHakukohteetAndHaut = async (mongooseConn) => {
+export const getDistinctHakukohteetAndHaut = async (mongooseConn, olderThan) => {
   let Model = Models['Valinnanvaihe'];
   if (!Model) {
     Model = mongooseConn.model('Valinnanvaihe',
@@ -35,9 +35,8 @@ export const getDistinctHakukohteetAndHaut = async (mongooseConn) => {
     Models['Valinnanvaihe'] = Model;
   }
 
-  const result = await Model.find({})
+  const result = await Model.find({createdAt: {$lt: olderThan}})
     .sort({createdAt: -1}).exec();
-    //.where('createdAt').lt() // for start need to fetch only ones older than 2 years
 
   const distinctHakuOids = [];
   const distinctHakukohdeOids = [];
@@ -58,19 +57,6 @@ export const getDistinctHakukohteetAndHaut = async (mongooseConn) => {
   return response;
 }
 
-export const getFromMongoObject = async (mongooseConn, collectionName, objectId) => {
-  let Model = Models[collectionName];
-  if (!Model) {
-    Model = mongooseConn.model(collectionName,
-      new mongoose.Schema({}, { collection: collectionName })
-    );
-    Models[collectionName] = Model;
-  }
-  
-  const result = await Model.findById(objectId);
-  return result._doc;
-};
-
 export const getFromMongoObjects = async (mongooseConn, collectionName, objectIds) => {
   let Model = Models[collectionName];
   if (!Model) {
@@ -85,14 +71,6 @@ export const getFromMongoObjects = async (mongooseConn, collectionName, objectId
     return r._doc;
   });
 };
-
-
-
-
-
-
-
-
 
 
 const unzipHistoria = (historiaDoc) => {

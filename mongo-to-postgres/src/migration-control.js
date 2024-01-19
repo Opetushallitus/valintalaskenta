@@ -1,10 +1,12 @@
 import {getDistinctHakukohteetAndHaut} from "./get-from-mongo.js";
 
-const AMOUNT_TO_FETCH_AT_ONCE = 500;
+const AMOUNT_TO_FETCH_AT_ONCE = 100;
 const CONTROL_TABLE = 'data_migration_control';
+const BEFORE_DATE = new Date(Date.UTC(2022, 0, 1));
 
 const populateControlTable = async (knex, mongoConn) => {
-  const result = await getDistinctHakukohteetAndHaut(mongoConn);
+  console.log('Fetching hakukohde and haku data older than ' + BEFORE_DATE);
+  const result = await getDistinctHakukohteetAndHaut(mongoConn, BEFORE_DATE);
 
   await knex.transaction(async trx => {
     for (const obj of result) {

@@ -4,6 +4,14 @@ import getFromMongo, {fillMongoObject} from './get-from-mongo.js';
 import putToPostgres from './put-to-postgres.js';
 import {fetchFromMigrationControl, updateMigrationRow} from './migration-control.js';
 
+const SLEEP_TIME_SECONDS = 1;
+
+function sleep(s) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, s * 1000);
+  });
+}
+
 export default async ({ connections, collections, collectionsForHaku }) => {
   console.log('Starting migration...');
 
@@ -38,15 +46,28 @@ export default async ({ connections, collections, collectionsForHaku }) => {
     console.err(err);
   }
 
-  const oidsToProcess = await fetchFromMigrationControl(knex, mongooseConn);
-  console.log(oidsToProcess);
+  let oidsToProcess;
 
-  const timeRoundStarted = Date.now();
+  do {
+    oidsToProcess = await fetchFromMigrationControl(knex, mongooseConn);
 
-  performProcess(mongooseConn, knex, collections, collectionsForHaku, oidsToProcess)
-    .then(() => console.log(`\n\nFinished successfully. Total duration in seconds ${Math.round((Date.now() - timeRoundStarted) / 1000)}`))
-    .catch((err) => console.error(err))
-    .finally(() => process.exit(0));
+    try {
+
+      const timeRoundStarted = Date.now();
+
+      await performProcess(mongooseConn, knex, collections, collectionsForHaku, oidsToProcess)
+      console.log(`\n\nFinished processing ${oidsToProcess.length} haku or hakukohde. Total duration in seconds ${Math.round((Date.now() - timeRoundStarted) / 1000)}`);  
+
+    } catch (error) {
+      console.error('Caught exception while trying to process oids');
+      console.error(error);
+    }
+
+    await sleep(SLEEP_TIME_SECONDS);
+  } while(oidsToProcess.length > 0)
+
+  process.exit(0);
+
 };
 
 
@@ -75,7 +96,7 @@ async function copyHakuData(mongooseConn, trx, collections, hakuOid) {
   for (const collection of collections) {
     const rows = await getFromMongo(mongooseConn, collection.collectionName, hakuOid, true);
     const filledRows = await fillMongoObject({collections, tableName: collection.tableName, rows, mongooseConn});
-    console.log(`Fetching hakukohde data took ${Math.round((Date.now() - timeStarted) / 1000)} for hakukohde ${hakukohdeOid}`);
+    console.log(`Fetching haku data took ${Math.round((Date.now() - timeStarted) / 1000)} seconds for haku ${hakuOid}`);
     await putToPostgres({
       trx,
       collections,
@@ -95,7 +116,7 @@ async function copyHakukohdeData(mongooseConn, trx, collections, hakukohdeOid) {
     const rows = await getFromMongo(mongooseConn, collection.collectionName, hakukohdeOid);
     const filledRows = await fillMongoObject({collections, tableName: collection.tableName, rows, mongooseConn});
     if (collection.collectionName == 'Valinnanvaihe') {
-      console.log(`Fetching hakukohde data took ${Math.round((Date.now() - timeStarted) / 1000)} for hakukohde ${hakukohdeOid}`);
+      console.log(`Fetching hakukohde data took ${Math.round((Date.now() - timeStarted) / 1000)} seconds for hakukohde ${hakukohdeOid}`);
     }
     await putToPostgres({
       trx,
