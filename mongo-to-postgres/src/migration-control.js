@@ -1,6 +1,6 @@
 import {getDistinctHakukohteetAndHaut} from "./get-from-mongo.js";
 
-const AMOUNT_TO_FETCH_AT_ONCE = 1;
+const AMOUNT_TO_FETCH_AT_ONCE = 500;
 const CONTROL_TABLE = 'data_migration_control';
 
 const populateControlTable = async (knex, mongoConn) => {

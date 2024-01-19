@@ -94,7 +94,9 @@ async function copyHakukohdeData(mongooseConn, trx, collections, hakukohdeOid) {
   for (const collection of collections) {
     const rows = await getFromMongo(mongooseConn, collection.collectionName, hakukohdeOid);
     const filledRows = await fillMongoObject({collections, tableName: collection.tableName, rows, mongooseConn});
-    console.log(`Fetching hakukohde data took ${Math.round((Date.now() - timeStarted) / 1000)} for hakukohde ${hakukohdeOid}`);
+    if (collection.collectionName == 'Valinnanvaihe') {
+      console.log(`Fetching hakukohde data took ${Math.round((Date.now() - timeStarted) / 1000)} for hakukohde ${hakukohdeOid}`);
+    }
     await putToPostgres({
       trx,
       collections,
