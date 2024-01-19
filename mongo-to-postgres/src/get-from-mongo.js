@@ -71,6 +71,20 @@ export const getFromMongoObject = async (mongooseConn, collectionName, objectId)
   return result._doc;
 };
 
+export const getFromMongoObjects = async (mongooseConn, collectionName, objectIds) => {
+  let Model = Models[collectionName];
+  if (!Model) {
+    Model = mongooseConn.model(collectionName,
+      new mongoose.Schema({}, { collection: collectionName })
+    );
+    Models[collectionName] = Model;
+  }
+  
+  const result = await Model.find().where('_id').in(objectIds).exec();
+  return result.map((r) => {
+    return r._doc;
+  });
+};
 
 
 
@@ -80,8 +94,8 @@ export const getFromMongoObject = async (mongooseConn, collectionName, objectId)
 
 
 
-const copyHistoria = async (mongooseConn, historyId) => {
-  const historiaDoc = await getFromMongoObject(mongooseConn, "Jarjestyskriteerihistoria", historyId);
+
+const unzipHistoria = (historiaDoc) => {
   if (historiaDoc.historia) {
     return historiaDoc.historia;
   } else {
@@ -103,21 +117,25 @@ const fillSubCollection = async (mongooseConn, row, sub) => {
 
   let subObjs = [];
 
-  for (let i = 0; i < subIds.length; i ++) {
-    let subRow;
-    if (!embbeddedCollection) {
-      const idPropery = subIds[i].oid ? subIds[i].oid : subIds[i];
-      subRow = await getFromMongoObject(mongooseConn, collectionName, idPropery);
-    } else {
-      subRow = subIds[i];
-    }
+  let subs = [];
 
-    for (const field of fieldsToCopy) {
-      if (collectionName === 'Jonosija' && field[0] === 'jarjestyskriteeritulokset') {
-        for (const tulos of subRow[field[0]]) {
-          tulos.historia = await copyHistoria(mongooseConn, tulos.historia);
-        };
-      }
+  let tuloksetField = fieldsToCopy.find(field => field[0] === 'jarjestyskriteeritulokset');
+
+  if (!embbeddedCollection) {
+    const ids = subIds.map(id => id.oid ? id.oid : id);
+    subs = await getFromMongoObjects(mongooseConn, collectionName, ids);
+  } else {
+    subs = subIds;
+  }
+
+  let histories = [];
+
+  for (let subRow of subs) {
+
+    if (collectionName === 'Jonosija') {
+      for (const tulos of subRow[tuloksetField[0]]) {
+        histories.push(tulos.historia);
+      };
     }
 
     if (innerSub) {
@@ -127,6 +145,18 @@ const fillSubCollection = async (mongooseConn, row, sub) => {
       subObjs.push(subRow);
     }
   }
+
+  if (histories.length > 0 && collectionName === 'Jonosija') {
+    const historyObjs = await getFromMongoObjects(mongooseConn, "Jarjestyskriteerihistoria", histories);
+    for (let subObj of subObjs) {
+      for (const tulos of subObj[tuloksetField[0]]) {
+        const historia = historyObjs.find(h => h._id.equals(tulos.historia));
+        tulos.historia = unzipHistoria(historia)
+      };
+    }
+  }
+
+
   return subObjs;
 };
 
