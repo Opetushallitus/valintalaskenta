@@ -64,7 +64,7 @@ export default async ({ connections, collections, collectionsForHaku }) => {
     }
 
     await sleep(SLEEP_TIME_SECONDS);
-  } while(oidsToProcess.length > 0)
+  } while (oidsToProcess.length > 0)
 
   process.exit(0);
 
@@ -84,7 +84,8 @@ async function performProcess(mongooseConn, knex, collections, collectionsForHak
       });
       await updateMigrationRow(knex, oid, true, null, totalSeconds);
     } catch (error) {
-      await updateMigrationRow(knex, oid, false, error, null);
+      const errorWithMessageAndStack = `${error.message}, \n\n stack: ${error.stack?.toString()}`;
+      await updateMigrationRow(knex, oid, false, errorWithMessageAndStack, null);
       console.error(error);
     }
   }
