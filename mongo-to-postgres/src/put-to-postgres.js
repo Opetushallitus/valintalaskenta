@@ -9,9 +9,14 @@ const handleJsonField = async (trx, collectionName, field, subRow ) => {
   if (collectionName === 'Jonosija' && field[0] === 'jarjestyskriteeritulokset') {
     const tulokset = [];
     for (const tulos of subRow[field[0]]) {
-      const tunniste = uuidv4();
-      await copyHistoria(trx, tulos.historia, tunniste);
-      tulokset.push(Object.assign({}, tulos, {historia: tunniste}));
+      if (tulos.historia) {
+        const tunniste = uuidv4();
+        await copyHistoria(trx, tulos.historia, tunniste);
+        tulokset.push(Object.assign({}, tulos, {historia: tunniste}));
+      } else {
+        tulokset.push(tulos);
+      }
+      
     };
     return `{"${field[0]}":${JSON.stringify(tulokset)}}`;
   }

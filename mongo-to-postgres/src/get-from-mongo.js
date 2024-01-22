@@ -93,8 +93,6 @@ const fillSubCollection = async (mongooseConn, row, sub) => {
     return [];
   }
 
-  let subObjs = [];
-
   let subs = [];
 
   let tuloksetField = fieldsToCopy.find(field => field[0] === 'jarjestyskriteeritulokset');
@@ -112,21 +110,21 @@ const fillSubCollection = async (mongooseConn, row, sub) => {
 
     if (collectionName === 'Jonosija') {
       for (const tulos of subRow[tuloksetField[0]]) {
-        histories.push(tulos.historia);
+        if (tulos.historia) {
+          histories.push(tulos.historia);
+        }
       };
     }
 
     if (innerSub) {
       const innerSubs = await fillSubCollection(mongooseConn, subRow, innerSub);
-      subObjs.push(Object.assign(subRow, {[innerSub.parentField]: innerSubs}));
-    } else {
-      subObjs.push(subRow);
+      subRow[innerSub.parentField] = innerSubs;
     }
   }
 
   if (histories.length > 0 && collectionName === 'Jonosija') {
     const historyObjs = await getFromMongoObjects(mongooseConn, "Jarjestyskriteerihistoria", histories);
-    for (let subObj of subObjs) {
+    for (let subObj of subs) {
       for (const tulos of subObj[tuloksetField[0]]) {
         const historia = historyObjs.find(h => h._id.equals(tulos.historia));
         tulos.historia = unzipHistoria(historia)
@@ -135,7 +133,7 @@ const fillSubCollection = async (mongooseConn, row, sub) => {
   }
 
 
-  return subObjs;
+  return subs; //doing in mutable way as memory runs out with larger objects;
 };
 
 export const fillMongoObject = async ({ collections, tableName, rows, mongooseConn }) => {
