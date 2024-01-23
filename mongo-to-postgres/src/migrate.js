@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import Knex from 'knex';
-import getFromMongo, {fillMongoObject} from './get-from-mongo.js';
-import putToPostgres from './put-to-postgres.js';
+import getFromMongo, {fillMongoObject, getFromMongoObjects} from './get-from-mongo.js';
+import putToPostgres, {storeSubCollection} from './put-to-postgres.js';
 import {fetchFromMigrationControl, updateMigrationRow} from './migration-control.js';
 
 const SLEEP_TIME_SECONDS = 1;
@@ -115,20 +115,60 @@ async function copyHakukohdeData(mongooseConn, trx, collections, hakukohdeOid) {
   console.log(`\nMigrating hakukohde ${hakukohdeOid}`);
   for (const collection of collections) {
     const rows = await getFromMongo(mongooseConn, collection.collectionName, hakukohdeOid);
-    const filledRows = await fillMongoObject({collections, tableName: collection.tableName, rows, mongooseConn});
     if (collection.collectionName == 'Valinnanvaihe') {
-      console.log(`Fetching hakukohde data took ${Math.round((Date.now() - timeStarted) / 1000)} seconds for hakukohde ${hakukohdeOid}`);
+      await copyValinnanVaihe(mongooseConn, trx, collection, rows);
+    } else {
+      const filledRows = await fillMongoObject({collections, tableName: collection.tableName, rows, mongooseConn});
+
+      await putToPostgres({
+        trx,
+        collections,
+        tableName: collection.tableName,
+        rows: filledRows
+      });
     }
-    await putToPostgres({
-      trx,
-      collections,
-      tableName: collection.tableName,
-      rows: filledRows
-    });
+
   }
   const totalSeconds = Math.round((Date.now() - timeStarted) / 1000);
   console.log(`Took ${totalSeconds} seconds to copy hakukohde data for ${hakukohdeOid}`);
   return totalSeconds;
 }
 
+
+async function copyValinnanVaihe(mongooseConn, trx, collection, rows) {
+  const idsMap = await putToPostgres({
+    trx,
+    collections: [collection],
+    tableName: collection.tableName,
+    rows
+  });
+
+  const jonoCollection = collection.subCollection;
+
+  for (const row of rows) {
+
+    let totalDescendants = 0;
+
+    const ids = row[jonoCollection.parentField].map(id => id.oid ? id.oid : id);
+    const vvId = idsMap.find(idEntry => idEntry.oldId = row._id.toString()).newId;
+
+    for (const vtpJonoId of ids) {
+      const jono = await getFromMongoObjects(mongooseConn, jonoCollection.collectionName, [vtpJonoId]);
+
+      const filledJono = await fillMongoObject({
+        collections: [jonoCollection], 
+        tableName: jonoCollection.tableName, 
+        rows: jono, 
+        mongooseConn});
+      
+      const fakeParentRow = {valintatapajonot: filledJono}
+      totalDescendants += await storeSubCollection(trx, fakeParentRow, vvId, jonoCollection);
+    }
+
+    console.log(`Inserted ${ids.length} rows to Valintatapajono table with ${totalDescendants} number of descendants`);
+
+  }
+  
+
+} 
 
