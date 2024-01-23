@@ -1,8 +1,19 @@
 import { v4 as uuidv4 } from 'uuid'
+import { gunzipSync } from "zlib";
+
+
+const unzipHistoria = (historiaDoc) => {
+  if (historiaDoc.historia) {
+    return historiaDoc.historia;
+  } else {
+    const historia = gunzipSync(historiaDoc.historiaGzip.buffer);
+    return historia.toString();
+  }
+}
 
 const copyHistoria = async (trx, historia, tunniste) => {
   await trx('jarjestyskriteerihistoria')
-    .insert({historia, tunniste});
+    .insert({historia: unzipHistoria(historia), tunniste});
 }
 
 const handleJsonField = async (trx, collectionName, field, subRow ) => {

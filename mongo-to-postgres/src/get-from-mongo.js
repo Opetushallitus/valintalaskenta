@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { gunzipSync } from "zlib";
 
 const Models = {};
 
@@ -72,15 +71,6 @@ export const getFromMongoObjects = async (mongooseConn, collectionName, objectId
   });
 };
 
-const unzipHistoria = (historiaDoc) => {
-  if (historiaDoc.historia) {
-    return historiaDoc.historia;
-  } else {
-    const historia = gunzipSync(historiaDoc.historiaGzip.buffer);
-    return historia.toString();
-  }
-}
-
 const fillSubCollection = async (mongooseConn, row, sub) => {
   const { collectionName,
     fieldsToCopy, parentField, embbeddedCollection } = sub;
@@ -124,8 +114,7 @@ const fillSubCollection = async (mongooseConn, row, sub) => {
     const historyObjs = await getFromMongoObjects(mongooseConn, "Jarjestyskriteerihistoria", histories);
     for (let subObj of subs) {
       for (const tulos of subObj[tuloksetField[0]]) {
-        const historia = historyObjs.find(h => h._id.equals(tulos.historia));
-        tulos.historia = unzipHistoria(historia)
+        tulos.historia = historyObjs.find(h => h._id.equals(tulos.historia));
       };
     }
   }

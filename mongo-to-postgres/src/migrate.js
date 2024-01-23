@@ -146,26 +146,27 @@ async function copyValinnanVaihe(mongooseConn, trx, collection, rows) {
   const jonoCollection = collection.subCollection;
 
   for (const row of rows) {
+    
+    if (row[jonoCollection.parentField] && row[jonoCollection.parentField].length > 0) {
+      const ids = row[jonoCollection.parentField].map(id => id.oid ? id.oid : id);
+      let totalDescendants = 0;
+      const vvId = idsMap.find(idEntry => idEntry.oldId = row._id.toString()).newId;
 
-    let totalDescendants = 0;
-
-    const ids = row[jonoCollection.parentField].map(id => id.oid ? id.oid : id);
-    const vvId = idsMap.find(idEntry => idEntry.oldId = row._id.toString()).newId;
-
-    for (const vtpJonoId of ids) {
-      const jono = await getFromMongoObjects(mongooseConn, jonoCollection.collectionName, [vtpJonoId]);
-
-      const filledJono = await fillMongoObject({
-        collections: [jonoCollection], 
-        tableName: jonoCollection.tableName, 
-        rows: jono, 
-        mongooseConn});
-      
-      const fakeParentRow = {valintatapajonot: filledJono}
-      totalDescendants += await storeSubCollection(trx, fakeParentRow, vvId, jonoCollection);
+      for (const vtpJonoId of ids) {
+        const jono = await getFromMongoObjects(mongooseConn, jonoCollection.collectionName, [vtpJonoId]);
+  
+        const filledJono = await fillMongoObject({
+          collections: [jonoCollection], 
+          tableName: jonoCollection.tableName, 
+          rows: jono, 
+          mongooseConn});
+        
+        const fakeParentRow = {valintatapajonot: filledJono}
+        totalDescendants += await storeSubCollection(trx, fakeParentRow, vvId, jonoCollection);
+      }
+  
+      console.log(`Inserted ${ids.length} rows to Valintatapajono table with ${totalDescendants} number of descendants`);
     }
-
-    console.log(`Inserted ${ids.length} rows to Valintatapajono table with ${totalDescendants} number of descendants`);
 
   }
   
