@@ -24,7 +24,7 @@ const handleJsonField = async (trx, collectionName, field, subRow ) => {
 }
 
 
-const copySubCollection = async (trx, row, parentId, sub) => {
+export const storeSubCollection = async (trx, row, parentId, sub) => {
   const { tableName, collectionName, foreignKey, ordered, getMoreFieldsToAddFn,
     fieldsToCopy, parentField, jsonFields } = sub;
   const innerSub = sub.subCollection;
@@ -66,12 +66,11 @@ const copySubCollection = async (trx, row, parentId, sub) => {
       .insert(rowToInsert);
 
     if (innerSub) {
-      totalObjects += await copySubCollection(trx, subRow, newId, innerSub);
+      totalObjects += await storeSubCollection(trx, subRow, newId, innerSub);
     }
   }
   return totalObjects;
 };
-
 
 /**
    * Insert data to destination table
@@ -81,7 +80,7 @@ const copySubCollection = async (trx, row, parentId, sub) => {
    * @param {string} rows - Objects to insert
    */
 export default async ({ trx, collections, tableName, rows }) => {
-  const { fieldsToCopy, subCollection, getMoreFieldsToAddFn, jsonFields } =
+  const { fieldsToCopy, subCollection, getMoreFieldsToAddFn, jsonFields, fetchSubCollectionInBits } =
     collections.find(c => c.tableName === tableName);
 
   const idsMap = [];
@@ -113,8 +112,8 @@ export default async ({ trx, collections, tableName, rows }) => {
 
     idsMap.push({ oldId, newId });
 
-    if (!!subCollection) {
-      totalDescendants += await copySubCollection(trx, currentRow, newId, subCollection);
+    if (!!subCollection && !fetchSubCollectionInBits) {
+      totalDescendants += await storeSubCollection(trx, currentRow, newId, subCollection);
     }
 
   }

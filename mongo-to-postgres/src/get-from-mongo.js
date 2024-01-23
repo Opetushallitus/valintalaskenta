@@ -72,7 +72,6 @@ export const getFromMongoObjects = async (mongooseConn, collectionName, objectId
   });
 };
 
-
 const unzipHistoria = (historiaDoc) => {
   if (historiaDoc.historia) {
     return historiaDoc.historia;
@@ -81,7 +80,6 @@ const unzipHistoria = (historiaDoc) => {
     return historia.toString();
   }
 }
-
 
 const fillSubCollection = async (mongooseConn, row, sub) => {
   const { collectionName,
@@ -131,7 +129,6 @@ const fillSubCollection = async (mongooseConn, row, sub) => {
       };
     }
   }
-
 
   return subs; //doing in mutable way as memory runs out with larger objects;
 };

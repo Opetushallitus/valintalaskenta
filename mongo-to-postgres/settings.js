@@ -73,6 +73,7 @@ const collections = [
       ['tarjoajaOid', 'tarjoaja_oid'],
       ['nimi', 'nimi'],
     ],
+    fetchSubCollectionInBits: true,
     subCollection: {
       collectionName: 'Valintatapajono',
       tableName: 'valintatapajono',
