@@ -9,7 +9,7 @@ const Models = {};
    * @param {string} hakukohdeOid - Hakukohde identifier
    * @return {Array} Retrieved objects
    */
-export default async (mongooseConn, collectionName, hakukohdeOid, useHaku = false) => {
+export default async (mongooseConn, collectionName, hakuOrHakukohdeOid, useHaku = false) => {
 
   let Model = Models[collectionName];
   if (!Model) {
@@ -19,7 +19,7 @@ export default async (mongooseConn, collectionName, hakukohdeOid, useHaku = fals
     Models[collectionName] = Model;
   }
   
-  const result = await Model.find(useHaku? {hakuOid: hakukohdeOid}: {hakukohdeOid});
+  const result = await Model.find(useHaku? {hakuOid: hakuOrHakukohdeOid}: {hakukohdeOid: hakuOrHakukohdeOid});
   return result.map((r) => {
     return r._doc;
   });
