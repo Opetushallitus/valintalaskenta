@@ -12,7 +12,7 @@ function sleep(s) {
   });
 }
 
-export default async ({ connections, collections, collectionsForHaku }) => {
+export default async ({ connections, collections, collectionsForHaku, useAfter}) => {
   console.log('Starting migration...');
 
   let mongooseConn;
@@ -49,7 +49,7 @@ export default async ({ connections, collections, collectionsForHaku }) => {
   let oidsToProcess;
 
   do {
-    oidsToProcess = await fetchFromMigrationControl(knex, mongooseConn);
+    oidsToProcess = await fetchFromMigrationControl(knex, mongooseConn, useAfter);
 
     try {
 

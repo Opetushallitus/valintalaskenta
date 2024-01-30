@@ -3,30 +3,46 @@ import {getDistinctHakukohteetAndHaut} from "./get-from-mongo.js";
 const AMOUNT_TO_FETCH_AT_ONCE = 100;
 const CONTROL_TABLE = 'data_migration_control';
 const BEFORE_DATE = new Date(Date.UTC(2022, 0, 1));
+const AFTER_DATE = new Date(Date.UTC(2021, 11, 31));
 
-const populateControlTable = async (knex, mongoConn) => {
-  console.log('Fetching hakukohde and haku data older than ' + BEFORE_DATE);
-  const result = await getDistinctHakukohteetAndHaut(mongoConn, BEFORE_DATE);
+const populateControlTable = async (knex, mongoConn, useAfter = false) => {
+  let result;
+  if (useAfter) {
+    console.log('Fetching hakukohde and haku data newer than ' + AFTER_DATE);
+    result = await getDistinctHakukohteetAndHaut(mongoConn, null, AFTER_DATE);
+  } else {
+    console.log('Fetching hakukohde and haku data older than ' + BEFORE_DATE);
+    result = await getDistinctHakukohteetAndHaut(mongoConn, BEFORE_DATE);
+  }
 
   await knex.transaction(async trx => {
     for (const obj of result) {
       await trx(CONTROL_TABLE)
-        .insert({hakukohde_oid : obj.hakukohde, haku_oid : obj.haku});
+        .insert({hakukohde_oid: obj.hakukohde, haku_oid: obj.haku, created_at: obj.createdAt});
     }
   });
 
 }
 
-export const fetchFromMigrationControl = async (knex, mongoConn) => {
+export const fetchFromMigrationControl = async (knex, mongoConn, useAfter = false) => {
   
-  const populated = await knex(CONTROL_TABLE)
-    .select('id')
-    .limit(1)
+  let populated;
+  
+  if (useAfter) {
+    populated = await knex(CONTROL_TABLE)
+      .select('id')
+      .where('created_at', '>', AFTER_DATE)
+      .limit(1);
+  } else {
+    populated = await knex(CONTROL_TABLE)
+      .select('id')
+      .limit(1);
+  }
 
   console.log(populated);
 
   if (!populated || populated.length < 1) {
-    await populateControlTable(knex, mongoConn);
+    await populateControlTable(knex, mongoConn, useAfter);
   }
   
   const data = await knex(CONTROL_TABLE)
