@@ -25,7 +25,7 @@ export default async (mongooseConn, collectionName, hakukohdeOid, useHaku = fals
   });
 };
 
-export const getDistinctHakukohteetAndHaut = async (mongooseConn, olderThan) => {
+export const getDistinctHakukohteetAndHaut = async (mongooseConn, olderThan, newerThan = null) => {
   let Model = Models['Valinnanvaihe'];
   if (!Model) {
     Model = mongooseConn.model('Valinnanvaihe',
@@ -34,8 +34,15 @@ export const getDistinctHakukohteetAndHaut = async (mongooseConn, olderThan) => 
     Models['Valinnanvaihe'] = Model;
   }
 
-  const result = await Model.find({createdAt: {$lt: olderThan}})
-    .sort({createdAt: -1}).exec();
+  let result;
+
+  if (newerThan != null) {
+    result = await Model.find({createdAt: {$gt: newerThan}})
+      .sort({createdAt: -1}).exec();
+  } else {
+    result = await Model.find({createdAt: {$lt: olderThan}})
+      .sort({createdAt: -1}).exec();
+  }
 
   const distinctHakuOids = [];
   const distinctHakukohdeOids = [];
@@ -44,12 +51,12 @@ export const getDistinctHakukohteetAndHaut = async (mongooseConn, olderThan) => 
   result.map((r) => r._doc).forEach(result => {
     if (distinctHakuOids.indexOf(result.hakuOid) < 0) {
       distinctHakuOids.push(result.hakuOid);
-      response.push({haku: result.hakuOid});
+      response.push({haku: result.hakuOid, createdAt: result.createdAt});
     }
 
     if (distinctHakukohdeOids.indexOf(result.hakukohdeOid) < 0) {
       distinctHakukohdeOids.push(result.hakukohdeOid);
-      response.push({haku: result.hakuOid, hakukohde: result.hakukohdeOid});
+      response.push({haku: result.hakuOid, hakukohde: result.hakukohdeOid, createdAt: result.createdAt});
     }
   })
 

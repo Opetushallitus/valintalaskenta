@@ -1,7 +1,7 @@
 import {mongoPass, possuPass} from './pass.js';
 
 const connections = {
-  mongo: `mongodb://valintalaskentauser:${mongoPass}@localhost:57117/valintalaskentadb`,
+  mongo: `mongodb://valintalaskentauser:${mongoPass}@localhost:63117/valintalaskentadb`,
   postgres: `postgres://oph:${possuPass}@localhost:5432/valintalaskenta`
 };
 
