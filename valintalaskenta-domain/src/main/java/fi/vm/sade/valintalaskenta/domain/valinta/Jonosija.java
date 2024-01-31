@@ -87,16 +87,11 @@ public class Jonosija {
   private void jarjestaJarjestyskriteeritulokset() {
     Collections.sort(
         jarjestyskriteeritulokset.jarjestyskriteeritulokset,
-        new Comparator<Jarjestyskriteeritulos>() {
-          @Override
-          public int compare(Jarjestyskriteeritulos o1, Jarjestyskriteeritulos o2) {
-            return o1.getPrioriteetti() - o2.getPrioriteetti();
-          }
-        });
+        Comparator.comparingInt(Jarjestyskriteeritulos::getPrioriteetti));
   }
 
   public List<SyotettyArvo> getSyotetytArvot() {
-    return syotetytArvot.syotetytArvot;
+    return (syotetytArvot != null) ? syotetytArvot.syotetytArvot : new ArrayList<>();
   }
 
   public void setSyotetytArvot(SyotettyArvoContainer syotetytArvot) {
