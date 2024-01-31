@@ -75,6 +75,9 @@ public class Jonosija {
   }
 
   public JarjestyskriteeritulosContainer getJarjestyskriteeritulokset() {
+    if (jarjestyskriteeritulokset == null) {
+      jarjestyskriteeritulokset = new JarjestyskriteeritulosContainer();
+    }
     return jarjestyskriteeritulokset;
   }
 
@@ -91,7 +94,10 @@ public class Jonosija {
   }
 
   public List<SyotettyArvo> getSyotetytArvot() {
-    return (syotetytArvot != null) ? syotetytArvot.syotetytArvot : new ArrayList<>();
+    if (syotetytArvot == null) {
+      syotetytArvot = new SyotettyArvoContainer();
+    }
+    return syotetytArvot.syotetytArvot;
   }
 
   public void setSyotetytArvot(SyotettyArvoContainer syotetytArvot) {
@@ -99,6 +105,9 @@ public class Jonosija {
   }
 
   public FunktioTulosContainer getFunktioTulokset() {
+    if (funktioTulokset == null) {
+      funktioTulokset = new FunktioTulosContainer();
+    }
     return funktioTulokset;
   }
 

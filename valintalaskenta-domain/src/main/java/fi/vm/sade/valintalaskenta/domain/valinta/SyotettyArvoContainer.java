@@ -10,7 +10,6 @@ public class SyotettyArvoContainer {
   public final List<SyotettyArvo> syotetytArvot = new ArrayList<>();
 
   public SyotettyArvoContainer() {}
-  ;
 
   public SyotettyArvoContainer(List<SyotettyArvo> syotetytArvot) {
     this.syotetytArvot.addAll(syotetytArvot);
