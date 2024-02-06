@@ -142,7 +142,6 @@ async function copyValinnanVaihe(mongooseConn, trx, collection, rows) {
     tableName: collection.tableName,
     rows
   });
-
   const jonoCollection = collection.subCollection;
 
   for (const row of rows) {
@@ -150,7 +149,7 @@ async function copyValinnanVaihe(mongooseConn, trx, collection, rows) {
     if (row[jonoCollection.parentField] && row[jonoCollection.parentField].length > 0) {
       const ids = row[jonoCollection.parentField].map(id => id.oid ? id.oid : id);
       let totalDescendants = 0;
-      const vvId = idsMap.find(idEntry => idEntry.oldId = row._id.toString()).newId;
+      const vvId = idsMap.find(idEntry => idEntry.oldId == row._id.toString()).newId;
 
       for (const vtpJonoId of ids) {
         const jono = await getFromMongoObjects(mongooseConn, jonoCollection.collectionName, [vtpJonoId]);
