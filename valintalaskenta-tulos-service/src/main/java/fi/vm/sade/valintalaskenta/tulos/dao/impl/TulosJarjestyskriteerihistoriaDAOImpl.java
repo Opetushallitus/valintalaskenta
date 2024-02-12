@@ -31,6 +31,7 @@ public class TulosJarjestyskriteerihistoriaDAOImpl implements TulosJarjestyskrit
         .flatMap(jono -> jono.getJonosijat().stream())
         .filter(js -> hakemusOid.equals(js.getHakemusOid()))
         .flatMap(js -> js.getJarjestyskriteeritulokset().getJarjestyskriteeritulokset().stream())
+        .sorted(Comparator.comparingInt(Jarjestyskriteeritulos::getPrioriteetti))
         .map(Jarjestyskriteeritulos::getHistoria)
         .toList();
   }
