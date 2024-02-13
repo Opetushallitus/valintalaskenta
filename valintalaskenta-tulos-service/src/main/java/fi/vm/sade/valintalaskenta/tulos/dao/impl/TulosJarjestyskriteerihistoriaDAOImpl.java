@@ -38,6 +38,8 @@ public class TulosJarjestyskriteerihistoriaDAOImpl implements TulosJarjestyskrit
 
   @Override
   public List<Jarjestyskriteerihistoria> findByTunnisteet(List<UUID> tunnisteet) {
-    return repo.findLatestByTunnisteet(tunnisteet).stream().toList();
+    return repo.findLatestByTunnisteet(tunnisteet).stream()
+        .sorted(Comparator.comparingInt(historia -> tunnisteet.indexOf(historia.getTunniste())))
+        .toList();
   }
 }

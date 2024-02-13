@@ -1,4 +1,4 @@
-package fi.vm.sade.valintalaskenta.tulos.service.dao;
+package fi.vm.sade.valintalaskenta.tulos.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -7,7 +7,6 @@ import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
-import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

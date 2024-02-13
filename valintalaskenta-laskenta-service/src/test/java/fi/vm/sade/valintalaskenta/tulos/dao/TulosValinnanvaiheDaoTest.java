@@ -1,4 +1,4 @@
-package fi.vm.sade.valintalaskenta.tulos.service.dao;
+package fi.vm.sade.valintalaskenta.tulos.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import fi.vm.sade.valintalaskenta.domain.testdata.TestEntityDataUtil;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
-import fi.vm.sade.valintalaskenta.tulos.dao.TulosValinnanvaiheDAO;
 import java.util.HashSet;
 import java.util.List;
 import org.junit.jupiter.api.Test;
