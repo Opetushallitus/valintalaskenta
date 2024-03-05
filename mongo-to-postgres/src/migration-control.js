@@ -36,6 +36,7 @@ export const fetchFromMigrationControl = async (knex, mongoConn, useAfter = fals
   } else {
     populated = await knex(CONTROL_TABLE)
       .select('id')
+      .where('created_at', '<', BEFORE_DATE)
       .limit(1);
   }
 
