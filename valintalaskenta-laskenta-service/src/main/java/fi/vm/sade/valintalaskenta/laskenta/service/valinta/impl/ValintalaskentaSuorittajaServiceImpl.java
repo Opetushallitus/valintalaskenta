@@ -198,7 +198,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
   private boolean valintalaskennastaEiLoydyValintaperusteissaOlevaaJonoa(
       ValintatapajonoJarjestyskriteereillaDTO valintatapajonoValintaperusteissa,
       Valinnanvaihe valinnanvaiheValintalaskennassa) {
-    return valinnanvaiheValintalaskennassa.getValintatapajono().stream()
+    return valinnanvaiheValintalaskennassa.getValintatapajonot().stream()
         .noneMatch(
             valintatapajonoValintalaskennassa ->
                 valintatapajonoValintalaskennassa
@@ -230,7 +230,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     // varten haetuista) hakemuksista
     List<String> passiveHakemusOids = new ArrayList<>();
     List<String> goodHakemusOids = new ArrayList<>();
-    for (Valintatapajono jono : uusi.getValintatapajono()) {
+    for (Valintatapajono jono : uusi.getValintatapajonot()) {
       for (Jonosija j : jono.getJonosijat()) {
         if (!validHakemusOids.contains(j.getHakemusOid())) {
           passiveHakemusOids.add(j.getHakemusOid());
@@ -241,7 +241,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     }
     if (!passiveHakemusOids.isEmpty()) {
       LOG.warn("Löytyi passiivisia hakemuksia!");
-      uusi.getValintatapajono()
+      uusi.getValintatapajonot()
           .forEach(
               j ->
                   j.getJonosijat()
@@ -554,7 +554,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
           jono.setJonosijat(filteroity);
         }
         // Tässä vois ehkä poistella vähän myös passivoitujen hakemuksien tuloksia?
-        valinnanvaihe.getValintatapajono().add(jono);
+        valinnanvaihe.getValintatapajonot().add(jono);
       }
     }
   }
@@ -646,7 +646,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
       ValintaperusteetValinnanVaiheDTO valinnanvaiheValintaperusteissa) {
     List<Valintatapajono> saastettavat = new ArrayList<>();
     List<Valintatapajono> poistettavat = new ArrayList<>();
-    for (Valintatapajono jono : valinnanvaihe.getValintatapajono()) {
+    for (Valintatapajono jono : valinnanvaihe.getValintatapajonot()) {
       if (!jononTulostaEiSaaLaskeaUudestaan(jono, valinnanvaiheValintaperusteissa)
           && (jono.getKaytetaanValintalaskentaa() == null || jono.getKaytetaanValintalaskentaa())) {
         for (Jonosija jonosija : jono.getJonosijat()) {
@@ -661,8 +661,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
       }
     }
 
-    valinnanvaihe.getValintatapajono().clear();
-    valinnanvaihe.getValintatapajono().addAll(saastettavat);
+    valinnanvaihe.getValintatapajonot().clear();
+    valinnanvaihe.getValintatapajonot().addAll(saastettavat);
     valinnanvaiheDAO.saveOrUpdate(valinnanvaihe);
     poistettavat.forEach(valinnanvaiheDAO::poistaJono);
   }

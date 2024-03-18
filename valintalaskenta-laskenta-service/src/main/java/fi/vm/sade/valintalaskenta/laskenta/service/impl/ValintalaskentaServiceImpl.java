@@ -195,14 +195,14 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 
                     // Onko tässä valinanvaiheessa välisijoiteltavia jonoja
                     final boolean valisijoitteluVaihe =
-                        vaihe.getValintatapajono().stream()
+                        vaihe.getValintatapajonot().stream()
                             .anyMatch(
                                 j ->
                                     hakukohteenValisijoitelujonot.contains(
                                         j.getValintatapajonoOid()));
                     if (valisijoitteluVaihe) {
                       vaihe
-                          .getValintatapajono()
+                          .getValintatapajonot()
                           .forEach(
                               jono -> {
                                 if (hakukohteenValisijoitelujonot.contains(
@@ -291,7 +291,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
               vaiheet.forEach(
                   vaihe -> {
                     vaihe
-                        .getValintatapajono()
+                        .getValintatapajonot()
                         .forEach(
                             jono -> {
                               if (jonot

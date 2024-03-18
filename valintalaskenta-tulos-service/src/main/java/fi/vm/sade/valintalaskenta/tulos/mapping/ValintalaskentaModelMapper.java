@@ -323,14 +323,14 @@ public class ValintalaskentaModelMapper extends ModelMapper {
         new PropertyMap<JonosijaDTO, Jonosija>() {
           @Override
           protected void configure() {
-            Converter<SortedSet<JarjestyskriteeritulosDTO>, List<Jarjestyskriteeritulos>>
+            Converter<SortedSet<JarjestyskriteeritulosDTO>, JarjestyskriteeritulosContainer>
                 dtoToJarjestyskriteeritulosConverter =
                     new Converter<
-                        SortedSet<JarjestyskriteeritulosDTO>, List<Jarjestyskriteeritulos>>() {
-                      public List<Jarjestyskriteeritulos> convert(
+                        SortedSet<JarjestyskriteeritulosDTO>, JarjestyskriteeritulosContainer>() {
+                      public JarjestyskriteeritulosContainer convert(
                           MappingContext<
                                   SortedSet<JarjestyskriteeritulosDTO>,
-                                  List<Jarjestyskriteeritulos>>
+                                  JarjestyskriteeritulosContainer>
                               context) {
                         List<Jarjestyskriteeritulos> result =
                             new ArrayList<Jarjestyskriteeritulos>();
@@ -343,12 +343,13 @@ public class ValintalaskentaModelMapper extends ModelMapper {
                           j.setTila(arg.getTila());
                           result.add(j);
                         }
-                        return result;
+                        return new JarjestyskriteeritulosContainer(result);
                       }
                     };
             using(dtoToJarjestyskriteeritulosConverter)
                 .map(source.getJarjestyskriteerit())
                 .setJarjestyskriteeritulokset(null);
+
             map().setHakutoiveprioriteetti(source.getPrioriteetti());
           }
         });
@@ -386,7 +387,6 @@ public class ValintalaskentaModelMapper extends ModelMapper {
                                             osa.setLaskentaTila(koe.getLaskentaTila());
                                             osa.setLaskentaTulos(koe.getLaskentaTulos());
                                             koeDTO.setOsallistuminenTulos(osa);
-                                            // TODO: missing? koeDTO.setKutsutaankoKaikki(koe.getK);
                                             koeDTO.setValintakoeTunniste(
                                                 koe.getValintakoeTunniste());
                                             return koeDTO;

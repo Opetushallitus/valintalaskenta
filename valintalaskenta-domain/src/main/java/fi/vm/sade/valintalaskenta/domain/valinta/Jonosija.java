@@ -84,7 +84,9 @@ public class Jonosija {
   public void setJarjestyskriteeritulokset(
       JarjestyskriteeritulosContainer jarjestyskriteeritulokset) {
     this.jarjestyskriteeritulokset = jarjestyskriteeritulokset;
-    jarjestaJarjestyskriteeritulokset();
+    if (jarjestyskriteeritulokset != null) {
+      jarjestaJarjestyskriteeritulokset();
+    }
   }
 
   private void jarjestaJarjestyskriteeritulokset() {

@@ -38,7 +38,7 @@ public class Valintatapajono {
 
   private Boolean kaytetaanKokonaispisteita;
 
-  private final Set<Jonosija> jonosija = new HashSet<>();
+  private Set<Jonosija> jonosija = new HashSet<>();
 
   @Transient private Valinnanvaihe valinnanvaihe;
 
@@ -124,8 +124,12 @@ public class Valintatapajono {
   }
 
   public void setJonosijat(Set<Jonosija> jonosijat) {
-    this.jonosija.clear();
-    this.jonosija.addAll(jonosijat);
+    if (jonosijat == null) {
+      this.jonosija = null;
+    } else {
+      this.jonosija.clear();
+      this.jonosija.addAll(jonosijat);
+    }
   }
 
   public Boolean getKaikkiEhdonTayttavatHyvaksytaan() {

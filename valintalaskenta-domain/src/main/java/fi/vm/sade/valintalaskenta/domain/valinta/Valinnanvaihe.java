@@ -22,18 +22,18 @@ public class Valinnanvaihe {
 
   private String nimi;
 
-  private final List<Valintatapajono> valintatapajono = new ArrayList<>();
+  private List<Valintatapajono> valintatapajonot = new ArrayList<>();
 
   public Valinnanvaihe() {}
 
   @PersistenceCreator
-  public Valinnanvaihe(List<Valintatapajono> valintatapajono) {
-    this.valintatapajono.addAll(valintatapajono);
+  public Valinnanvaihe(List<Valintatapajono> valintatapajonot) {
+    this.valintatapajonot.addAll(valintatapajonot);
     this.jarjestaValintatapajonot();
   }
 
   private void jarjestaValintatapajonot() {
-    valintatapajono.sort(Comparator.comparingInt(Valintatapajono::getPrioriteetti));
+    valintatapajonot.sort(Comparator.comparingInt(Valintatapajono::getPrioriteetti));
   }
 
   public UUID getId() {
@@ -92,14 +92,18 @@ public class Valinnanvaihe {
     this.tarjoajaOid = tarjoajaOid;
   }
 
-  public List<Valintatapajono> getValintatapajono() {
-    return valintatapajono;
+  public List<Valintatapajono> getValintatapajonot() {
+    return valintatapajonot;
   }
 
-  public void setValintatapajono(List<Valintatapajono> valintatapajono) {
-    this.valintatapajono.clear();
-    this.valintatapajono.addAll(valintatapajono);
-    jarjestaValintatapajonot();
+  public void setValintatapajonot(List<Valintatapajono> valintatapajonot) {
+    if (valintatapajonot == null) {
+      this.valintatapajonot = null;
+    } else {
+      this.valintatapajonot.clear();
+      this.valintatapajonot.addAll(valintatapajonot);
+      jarjestaValintatapajonot();
+    }
   }
 
   public String getNimi() {
@@ -111,7 +115,7 @@ public class Valinnanvaihe {
   }
 
   public boolean hylattyValisijoittelussa(String hakemusoid) {
-    return getValintatapajono().stream()
+    return getValintatapajonot().stream()
         .flatMap(j -> j.getJonosijat().stream())
         .filter(j -> j.getHakemusOid().equals(hakemusoid))
         .anyMatch(Jonosija::isHylattyValisijoittelussa);

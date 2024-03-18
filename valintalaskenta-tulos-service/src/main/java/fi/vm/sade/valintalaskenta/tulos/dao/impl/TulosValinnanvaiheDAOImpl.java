@@ -53,11 +53,17 @@ public class TulosValinnanvaiheDAOImpl implements TulosValinnanvaiheDAO {
 
   @Override
   public void saveOrUpdate(Valinnanvaihe vaihe) {
+    if (vaihe.getCreatedAt() == null) {
+      vaihe.setCreatedAt(new Date());
+    }
     repo.save(vaihe);
   }
 
   @Override
   public UUID saveVaihe(Valinnanvaihe vaihe) {
+    if (vaihe.getCreatedAt() == null) {
+      vaihe.setCreatedAt(new Date());
+    }
     return repo.save(vaihe).getId();
   }
 

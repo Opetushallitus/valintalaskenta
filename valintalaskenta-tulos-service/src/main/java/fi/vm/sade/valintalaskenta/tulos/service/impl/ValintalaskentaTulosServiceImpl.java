@@ -30,7 +30,6 @@ import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.dao.HarkinnanvarainenHyvaksyminenDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosHakijaryhmaDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.TulosJarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
@@ -59,33 +58,49 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
   private static final Logger LOGGER =
       LoggerFactory.getLogger(ValintalaskentaTulosServiceImpl.class);
 
-  @Autowired private TulosValinnanvaiheDAO tulosValinnanvaiheDAO;
+  private final TulosValinnanvaiheDAO tulosValinnanvaiheDAO;
 
-  @Autowired private TulosHakijaryhmaDAO tulosHakijaryhmaDAO;
+  private final TulosHakijaryhmaDAO tulosHakijaryhmaDAO;
 
-  @Autowired private TulosValintakoeOsallistuminenDAO tulosValintakoeOsallistuminenDAO;
+  private final TulosValintakoeOsallistuminenDAO tulosValintakoeOsallistuminenDAO;
 
-  @Autowired private MuokattuJonosijaDAO muokattuJonosijaDAO;
+  private final MuokattuJonosijaDAO muokattuJonosijaDAO;
 
-  @Autowired private ValintatulosConverter valintatulosConverter;
+  private final ValintatulosConverter valintatulosConverter;
 
-  @Autowired private TulosJarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAO;
+  private final HarkinnanvarainenHyvaksyminenDAO harkinnanvarainenHyvaksyminenDAO;
 
-  @Autowired private HarkinnanvarainenHyvaksyminenDAO harkinnanvarainenHyvaksyminenDAO;
+  private final ValintalaskentaModelMapper modelMapper;
 
-  @Autowired private ValintalaskentaModelMapper modelMapper;
-
-  @Qualifier("LaskentaAuditLog")
-  @Autowired
-  private LaskentaAuditLog auditLog;
+  private final LaskentaAuditLog auditLog;
 
   @Value("${root.organisaatio.oid}")
   private String rootOrgOid;
 
+  @Autowired
+  public ValintalaskentaTulosServiceImpl(
+      TulosValinnanvaiheDAO tulosValinnanvaiheDAO,
+      TulosHakijaryhmaDAO tulosHakijaryhmaDAO,
+      TulosValintakoeOsallistuminenDAO tulosValintakoeOsallistuminenDAO,
+      MuokattuJonosijaDAO muokattuJonosijaDAO,
+      ValintatulosConverter valintatulosConverter,
+      HarkinnanvarainenHyvaksyminenDAO harkinnanvarainenHyvaksyminenDAO,
+      ValintalaskentaModelMapper modelMapper,
+      @Qualifier("LaskentaAuditLog") LaskentaAuditLog auditLog) {
+    this.tulosValinnanvaiheDAO = tulosValinnanvaiheDAO;
+    this.tulosHakijaryhmaDAO = tulosHakijaryhmaDAO;
+    this.tulosValintakoeOsallistuminenDAO = tulosValintakoeOsallistuminenDAO;
+    this.muokattuJonosijaDAO = muokattuJonosijaDAO;
+    this.valintatulosConverter = valintatulosConverter;
+    this.harkinnanvarainenHyvaksyminenDAO = harkinnanvarainenHyvaksyminenDAO;
+    this.modelMapper = modelMapper;
+    this.auditLog = auditLog;
+  }
+
   public List<JonoDto> haeJonotSijoittelussa(String hakuOid) {
     final Function<Valinnanvaihe, Stream<JonoDto>> valinnanvaiheToJonoDtos =
         vv ->
-            vv.getValintatapajono().stream()
+            vv.getValintatapajonot().stream()
                 .map(
                     jono ->
                         new JonoDto(
@@ -114,7 +129,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
       ValintatietoValinnanvaiheDTO vvdto =
           createValintatietoValinnanvaiheDTO(
               hakuOid, vv.getCreatedAt(), vv.getValinnanVaiheOid(), vv.getJarjestysnumero());
-      for (Valintatapajono jono : vv.getValintatapajono()) {
+      for (Valintatapajono jono : vv.getValintatapajonot()) {
         jono.setJonosijat(
             new HashSet<>(
                 Collections2.filter(
@@ -301,11 +316,11 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     a.forEach(
         vaihe -> {
           List<Valintatapajono> jonot =
-              vaihe.getValintatapajono().stream()
+              vaihe.getValintatapajonot().stream()
                   .filter(j -> valintatapajonot.indexOf(j.getValintatapajonoOid()) != -1)
                   .collect(Collectors.toList());
           if (!jonot.isEmpty()) {
-            vaihe.setValintatapajono(jonot);
+            vaihe.setValintatapajonot(jonot);
             result.add(vaihe);
           } else {
             LOGGER.warn("Yhtään jonoa ei löytynyt {}!", hakukohdeoid);
@@ -376,7 +391,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     Iterator<Valinnanvaihe> i = valinnanvaiheet.iterator();
     while (i.hasNext()) {
       Valinnanvaihe vv = i.next();
-      Iterator<Valintatapajono> j = vv.getValintatapajono().iterator();
+      Iterator<Valintatapajono> j = vv.getValintatapajonot().iterator();
       while (j.hasNext()) {
         Valintatapajono jono = j.next();
         Iterator<Jonosija> k = jono.getJonosijat().iterator();
@@ -398,7 +413,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
           j.remove();
         }
       }
-      if (vv.getValintatapajono().isEmpty()) {
+      if (vv.getValintatapajonot().isEmpty()) {
         i.remove();
       }
     }
@@ -610,9 +625,9 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
       tulosValinnanvaiheDAO.saveOrUpdate(annettu);
     } else {
       List<Valintatapajono> vanhat = new ArrayList<Valintatapajono>();
-      for (Valintatapajono jono : haettu.getValintatapajono()) {
+      for (Valintatapajono jono : haettu.getValintatapajonot()) {
         boolean mukana = false;
-        for (Valintatapajono uusi : annettu.getValintatapajono()) {
+        for (Valintatapajono uusi : annettu.getValintatapajonot()) {
           if (uusi.getValintatapajonoOid().equals(jono.getValintatapajonoOid())) {
             mukana = true;
           }
@@ -621,11 +636,11 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
           vanhat.add(jono);
         }
       }
-      annettu.getValintatapajono().addAll(vanhat);
+      annettu.getValintatapajonot().addAll(vanhat);
       haettu.setHakukohdeOid(hakukohdeoid);
       haettu.setHakuOid(vaihe.getHakuOid());
       haettu.setTarjoajaOid(tarjoajaOid);
-      haettu.setValintatapajono(annettu.getValintatapajono());
+      haettu.setValintatapajonot(annettu.getValintatapajonot());
       tulosValinnanvaiheDAO.saveOrUpdate(haettu);
     }
     return vaihe;
@@ -639,11 +654,11 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
           "Ei oikeutta muokata valintatapajonoa");
     }
     Valinnanvaihe vaihe = tulosValinnanvaiheDAO.findByValintatapajonoOid(valintatapajonoOid);
-    vaihe.getValintatapajono().stream()
+    vaihe.getValintatapajonot().stream()
         .filter(j -> j.getValintatapajonoOid().equals(valintatapajonoOid))
         .forEach(j -> muokkausFunktio.accept(j));
     tulosValinnanvaiheDAO.saveOrUpdate(vaihe);
-    return vaihe.getValintatapajono().stream()
+    return vaihe.getValintatapajonot().stream()
         .filter(j -> j.getValintatapajonoOid().equals(valintatapajonoOid))
         .findFirst();
   }
@@ -654,7 +669,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     if (vaihe == null) {
       return false;
     }
-    return vaihe.getValintatapajono().stream()
+    return vaihe.getValintatapajonot().stream()
         .filter(j -> j.getValintatapajonoOid().equals(valintatapajonoOid))
         .allMatch(Valintatapajono::getValmisSijoiteltavaksi);
   }

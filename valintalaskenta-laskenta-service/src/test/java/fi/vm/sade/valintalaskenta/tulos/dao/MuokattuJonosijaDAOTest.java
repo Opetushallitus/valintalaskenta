@@ -30,7 +30,7 @@ public class MuokattuJonosijaDAOTest extends AbstractIntegrationTest {
     vaihe.setHakukohdeOid("hakukohdeOid");
     vaihe.setHakuOid("hakuOid");
     vaihe.setValinnanVaiheOid("valinnanvaiheOid");
-    vaihe.setValintatapajono(List.of(jono));
+    vaihe.setValintatapajonot(List.of(jono));
     valinnanvaiheRepository.save(vaihe);
 
     MuokattuJonosija muoks = new MuokattuJonosija();

@@ -235,12 +235,12 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
       assertEquals(hakukohdeOid1, valinnanvaihe1.getHakukohdeOid());
       assertEquals(0, valinnanvaihe1.getJarjestysnumero());
       assertEquals(valinnanvaiheOid1, valinnanvaihe1.getValinnanVaiheOid());
-      assertEquals(2, valinnanvaihe1.getValintatapajono().size());
+      assertEquals(2, valinnanvaihe1.getValintatapajonot().size());
 
       Comparator<Jonosija> jonosijaComparator = Comparator.comparing(Jonosija::getHakemusOid);
 
       {
-        Valintatapajono jono = valinnanvaihe1.getValintatapajono().get(0);
+        Valintatapajono jono = valinnanvaihe1.getValintatapajonot().get(0);
         assertEquals(10, jono.getAloituspaikat());
         assertEquals(1, jono.getPrioriteetti());
         assertEquals(valintatapajonoOid1, jono.getValintatapajonoOid());
@@ -320,7 +320,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
         }
       }
       {
-        Valintatapajono jono = valinnanvaihe1.getValintatapajono().get(1);
+        Valintatapajono jono = valinnanvaihe1.getValintatapajonot().get(1);
         assertEquals(20, jono.getAloituspaikat());
         assertEquals(2, jono.getPrioriteetti());
         assertEquals(valintatapajonoOid2, jono.getValintatapajonoOid());
@@ -377,12 +377,12 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
       assertEquals(hakukohdeOid1, valinnanvaihe2.getHakukohdeOid());
       assertEquals(1, valinnanvaihe2.getJarjestysnumero());
       assertEquals(valinnanvaiheOid2, valinnanvaihe2.getValinnanVaiheOid());
-      assertEquals(1, valinnanvaihe2.getValintatapajono().size());
+      assertEquals(1, valinnanvaihe2.getValintatapajonot().size());
 
       Comparator<Jonosija> jonosijaComparator = Comparator.comparing(Jonosija::getHakemusOid);
 
       {
-        Valintatapajono jono = valinnanvaihe2.getValintatapajono().get(0);
+        Valintatapajono jono = valinnanvaihe2.getValintatapajonot().get(0);
         assertEquals(30, jono.getAloituspaikat());
         assertEquals(1, jono.getPrioriteetti());
         assertEquals(valintatapajonoOid3, jono.getValintatapajonoOid());
@@ -441,12 +441,12 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
       assertEquals(hakukohdeOid2, valinnanvaihe3.getHakukohdeOid());
       assertEquals(0, valinnanvaihe3.getJarjestysnumero());
       assertEquals(valinnanvaiheOid3, valinnanvaihe3.getValinnanVaiheOid());
-      assertEquals(2, valinnanvaihe3.getValintatapajono().size());
+      assertEquals(2, valinnanvaihe3.getValintatapajonot().size());
 
       Comparator<Jonosija> jonosijaComparator = Comparator.comparing(Jonosija::getHakemusOid);
 
       {
-        Valintatapajono jono = valinnanvaihe3.getValintatapajono().get(0);
+        Valintatapajono jono = valinnanvaihe3.getValintatapajonot().get(0);
         assertEquals(40, jono.getAloituspaikat());
         assertEquals(1, jono.getPrioriteetti());
         assertEquals(valintatapajonoOid4, jono.getValintatapajonoOid());
@@ -524,7 +524,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
         }
       }
       {
-        Valintatapajono jono = valinnanvaihe3.getValintatapajono().get(1);
+        Valintatapajono jono = valinnanvaihe3.getValintatapajonot().get(1);
         assertEquals(50, jono.getAloituspaikat());
         assertEquals(2, jono.getPrioriteetti());
         assertEquals(valintatapajonoOid5, jono.getValintatapajonoOid());
@@ -580,12 +580,12 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
       assertEquals(hakukohdeOid2, valinnanvaihe4.getHakukohdeOid());
       assertEquals(1, valinnanvaihe4.getJarjestysnumero());
       assertEquals(valinnanvaiheOid4, valinnanvaihe4.getValinnanVaiheOid());
-      assertEquals(1, valinnanvaihe4.getValintatapajono().size());
+      assertEquals(1, valinnanvaihe4.getValintatapajonot().size());
 
       Comparator<Jonosija> jonosijaComparator = Comparator.comparing(Jonosija::getHakemusOid);
 
       {
-        Valintatapajono jono = valinnanvaihe4.getValintatapajono().get(0);
+        Valintatapajono jono = valinnanvaihe4.getValintatapajonot().get(0);
         assertEquals(60, jono.getAloituspaikat());
         assertEquals(1, jono.getPrioriteetti());
         assertEquals(valintatapajonoOid6, jono.getValintatapajonoOid());
@@ -663,9 +663,9 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
     Valinnanvaihe vaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanVaiheOid);
     assertNotNull(vaihe);
     assertEquals(valinnanVaiheOid, vaihe.getValinnanVaiheOid());
-    assertEquals(1, vaihe.getValintatapajono().size());
+    assertEquals(1, vaihe.getValintatapajonot().size());
 
-    Valintatapajono jono = vaihe.getValintatapajono().get(0);
+    Valintatapajono jono = vaihe.getValintatapajonot().get(0);
     assertEquals(valintatapajonoOid, jono.getValintatapajonoOid());
     assertEquals(1, jono.getJonosijat().size());
 
@@ -708,9 +708,9 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
     Valinnanvaihe vaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanVaiheOid);
     assertNotNull(vaihe);
     assertEquals(valinnanVaiheOid, vaihe.getValinnanVaiheOid());
-    assertEquals(1, vaihe.getValintatapajono().size());
+    assertEquals(1, vaihe.getValintatapajonot().size());
 
-    Valintatapajono jono = vaihe.getValintatapajono().get(0);
+    Valintatapajono jono = vaihe.getValintatapajonot().get(0);
     assertEquals(valintatapajonoOid, jono.getValintatapajonoOid());
     assertEquals(1, jono.getJonosijat().size());
 
@@ -789,7 +789,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
 
     assertEquals(
         JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA,
-        vaihe.getValintatapajono().get(0).getJonosijat().stream()
+        vaihe.getValintatapajonot().get(0).getJonosijat().stream()
             .filter(j -> j.getHakemusOid().equals(hakemusOid))
             .findFirst()
             .get()
@@ -799,7 +799,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
             .getTila());
     assertEquals(
         JarjestyskriteerituloksenTila.HYLATTY,
-        vaihe.getValintatapajono().get(0).getJonosijat().stream()
+        vaihe.getValintatapajonot().get(0).getJonosijat().stream()
             .filter(j -> j.getHakemusOid().equals(hakemusOid2))
             .findFirst()
             .get()
@@ -809,7 +809,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
             .getTila());
     assertEquals(
         "Pisteesi eivät riittäneet valintakoekutsuun",
-        vaihe.getValintatapajono().get(0).getJonosijat().stream()
+        vaihe.getValintatapajonot().get(0).getJonosijat().stream()
             .filter(j -> j.getHakemusOid().equals(hakemusOid2))
             .findFirst()
             .get()
@@ -875,7 +875,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest
     assertNotNull(vaihe);
 
     Optional<Valintatapajono> jononTulos =
-        vaihe.getValintatapajono().stream()
+        vaihe.getValintatapajonot().stream()
             .filter(j -> valintatapajonoOid.equals(j.getValintatapajonoOid()))
             .findFirst();
     assertTrue(jononTulos.isPresent());

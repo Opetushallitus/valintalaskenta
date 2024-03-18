@@ -77,7 +77,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
   @Transactional
   @Override
   public void poistaValinnanvaihe(Valinnanvaihe valinnanvaihe) {
-    valinnanvaihe.getValintatapajono().forEach(this::poistaJono);
+    valinnanvaihe.getValintatapajonot().forEach(this::poistaJono);
     repo.delete(valinnanvaihe);
   }
 

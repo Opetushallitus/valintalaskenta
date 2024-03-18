@@ -54,7 +54,7 @@ public class EdellinenValinnanvaiheKasittelijaTest {
     jono.setJonosijat(jonosijat);
 
     Valinnanvaihe vaihe = new Valinnanvaihe();
-    vaihe.getValintatapajono().add(jono);
+    vaihe.getValintatapajonot().add(jono);
 
     final String hakemusOid = "hakemusOid1";
     TilaJaSelite tila =
@@ -91,7 +91,7 @@ public class EdellinenValinnanvaiheKasittelijaTest {
         .add(luoJonosija(hakemusOid, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA));
 
     Valinnanvaihe vaihe = new Valinnanvaihe();
-    vaihe.getValintatapajono().addAll(Arrays.asList(jono1, jono2, jono3));
+    vaihe.getValintatapajonot().addAll(Arrays.asList(jono1, jono2, jono3));
 
     TilaJaSelite tila =
         edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(
@@ -118,7 +118,7 @@ public class EdellinenValinnanvaiheKasittelijaTest {
         .add(luoJonosija(hakemusOid, JarjestyskriteerituloksenTila.MAARITTELEMATON));
 
     Valinnanvaihe vaihe = new Valinnanvaihe();
-    vaihe.getValintatapajono().addAll(Arrays.asList(jono1, jono2, jono3));
+    vaihe.getValintatapajonot().addAll(Arrays.asList(jono1, jono2, jono3));
 
     TilaJaSelite tila =
         edellinenValinnanvaiheKasittelija.hakemusHyvaksyttavissaEdellisenValinnanvaiheenMukaan(

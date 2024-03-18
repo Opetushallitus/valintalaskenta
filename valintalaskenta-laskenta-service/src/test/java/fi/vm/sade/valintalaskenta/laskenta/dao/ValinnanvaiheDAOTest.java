@@ -73,7 +73,7 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
   public void testLoadingValintapajonoLite() {
     Valinnanvaihe valinnanvaihe = createValinnanvaihe(1);
     Valintatapajono valintatapajono = new Valintatapajono();
-    valinnanvaihe.setValintatapajono(List.of(valintatapajono));
+    valinnanvaihe.setValintatapajonot(List.of(valintatapajono));
     valintatapajono.setJonosijat(Sets.newHashSet(new Jonosija(), new Jonosija()));
     valinnanvaihe.setValinnanVaiheOid("uusiValinnanvaiheOid");
     valinnanvaiheRepository.save(valinnanvaihe);
@@ -85,7 +85,7 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
   public void testLoadingValintatapajonoWithoutJonosijat() {
     Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.haeValinnanvaihe("tyhjaValinnanvaiheOid");
     valinnanvaihe
-        .getValintatapajono()
+        .getValintatapajonot()
         .forEach(
             valintatapajono -> {
               assertTrue(valintatapajono.getJonosijat().isEmpty());
@@ -96,7 +96,7 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
   public void testSavingAndLoadingNewValinnanvaihe() {
     Valinnanvaihe valinnanvaihe = createValinnanvaihe(1);
     Valintatapajono valintatapajono = new Valintatapajono();
-    valinnanvaihe.setValintatapajono(List.of(valintatapajono));
+    valinnanvaihe.setValintatapajonot(List.of(valintatapajono));
     valintatapajono.setJonosijat(
         Sets.newHashSet(
             createJonosija("ruhtinas-nukettaja-oid"), createJonosija("kreivi-dacula-oid")));
@@ -105,8 +105,8 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
     Valinnanvaihe savedValinnanvaihe = valinnanvaiheDAO.haeValinnanvaihe("uusiValinnanvaiheOid");
     assertNotNull(savedValinnanvaihe);
     assertFalse(new Date().before(savedValinnanvaihe.getCreatedAt()));
-    assertEquals(2, savedValinnanvaihe.getValintatapajono().get(0).getJonosijat().size());
-    Jonosija jono = savedValinnanvaihe.getValintatapajono().get(0).getJonosijatAsList().get(0);
+    assertEquals(2, savedValinnanvaihe.getValintatapajonot().get(0).getJonosijat().size());
+    Jonosija jono = savedValinnanvaihe.getValintatapajonot().get(0).getJonosijatAsList().get(0);
     FunktioTulos funkkari = jono.getFunktioTulokset().funktioTulokset.get(0);
     assertEquals("arvokas", funkkari.getArvo());
     assertEquals("arvoton", funkkari.getTunniste());
@@ -126,7 +126,7 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
 
     Valinnanvaihe valinnanvaihe = createValinnanvaihe(1);
     Valintatapajono valintatapajono = new Valintatapajono();
-    valinnanvaihe.setValintatapajono(List.of(valintatapajono));
+    valinnanvaihe.setValintatapajonot(List.of(valintatapajono));
     Set<Jonosija> sijat = new HashSet<>();
     for (int i = 0; i < 1000; i++) {
       Jonosija js = createJonosija("kloonin-oid-" + i);
@@ -143,7 +143,7 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
     valinnanvaihe.setValinnanVaiheOid("uusiValinnanvaiheOid");
     valinnanvaiheDAO.saveOrUpdate(valinnanvaihe);
     Valinnanvaihe savedValinnanvaihe = valinnanvaiheDAO.haeValinnanvaihe("uusiValinnanvaiheOid");
-    assertEquals(1000, savedValinnanvaihe.getValintatapajono().get(0).getJonosijat().size());
+    assertEquals(1000, savedValinnanvaihe.getValintatapajonot().get(0).getJonosijat().size());
     assertTrue(timeStart - System.currentTimeMillis() > -10000, "Finishes in 10 seconds");
   }
 

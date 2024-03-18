@@ -66,7 +66,7 @@ public class EdellinenValinnanvaiheKasittelija {
     // Jos edellisessä valinnan vaiheessa ei ole yhtään valintatapajonoa, voidaan olettaa, että
     // hakemus
     // on hyväksyttävissä
-    if (edellinenValinnanvaihe == null || edellinenValinnanvaihe.getValintatapajono().isEmpty()) {
+    if (edellinenValinnanvaihe == null || edellinenValinnanvaihe.getValintatapajonot().isEmpty()) {
       return new TilaJaSelite(HYVAKSYTTAVISSA, new HashMap<>());
     }
 
@@ -78,7 +78,7 @@ public class EdellinenValinnanvaiheKasittelija {
     }
 
     List<TilaJaSelite> tilat = new ArrayList<>();
-    for (final Valintatapajono jono : edellinenValinnanvaihe.getValintatapajono()) {
+    for (final Valintatapajono jono : edellinenValinnanvaihe.getValintatapajonot()) {
       Jonosija jonosija = getJonosijaForHakemus(hakemusOid, jono.getJonosijatAsList());
 
       TilaJaSelite tilaJonossa;

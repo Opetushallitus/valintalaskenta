@@ -100,7 +100,7 @@ public class TestEntityDataUtil {
     vaihe.setHakukohdeOid(hakukohdeOid);
     vaihe.setJarjestysnumero(jarjestysnro);
     vaihe.setValinnanVaiheOid(valinnanvaiheOid);
-    vaihe.setValintatapajono(jonot);
+    vaihe.setValintatapajonot(jonot);
     vaihe.setTarjoajaOid("tarjoaja");
     return vaihe;
   }
