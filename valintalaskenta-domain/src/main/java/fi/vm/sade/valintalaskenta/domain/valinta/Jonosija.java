@@ -1,23 +1,17 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.*;
+import java.util.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Column;
 
-@Entity(value = "Jonosija", noClassnameStored = true)
 public class Jonosija {
-  @Id private ObjectId id;
 
-  @Indexed private String hakemusOid;
+  @Id private UUID id;
+
+  private String hakemusOid;
 
   private String hakijaOid;
-
-  private String etunimi;
-
-  private String sukunimi;
 
   private int hakutoiveprioriteetti; // hakutoive
 
@@ -25,15 +19,26 @@ public class Jonosija {
 
   private boolean hylattyValisijoittelussa = false;
 
-  @Embedded
-  private List<Jarjestyskriteeritulos> jarjestyskriteeritulokset =
-      new ArrayList<Jarjestyskriteeritulos>();
+  @Transient private Hakijaryhma hakijaryhma;
 
-  @Embedded private List<SyotettyArvo> syotetytArvot = new ArrayList<SyotettyArvo>();
+  @Transient private Valintatapajono valintatapajono;
 
-  @Embedded private List<FunktioTulos> funktioTulokset = new ArrayList<FunktioTulos>();
+  @Column("jarjestyskriteeritulokset")
+  private JarjestyskriteeritulosContainer jarjestyskriteeritulokset;
 
-  public ObjectId getId() {
+  @Column("syotetyt_arvot")
+  private SyotettyArvoContainer syotetytArvot;
+
+  @Column("funktio_tulokset")
+  private FunktioTulosContainer funktioTulokset;
+
+  public Jonosija() {
+    syotetytArvot = new SyotettyArvoContainer();
+    funktioTulokset = new FunktioTulosContainer();
+    jarjestyskriteeritulokset = new JarjestyskriteeritulosContainer();
+  }
+
+  public UUID getId() {
     return this.id;
   }
 
@@ -53,22 +58,6 @@ public class Jonosija {
     this.hakijaOid = hakijaOid;
   }
 
-  public String getEtunimi() {
-    return etunimi;
-  }
-
-  public void setEtunimi(String etunimi) {
-    this.etunimi = etunimi;
-  }
-
-  public String getSukunimi() {
-    return sukunimi;
-  }
-
-  public void setSukunimi(String sukunimi) {
-    this.sukunimi = sukunimi;
-  }
-
   public int getHakutoiveprioriteetti() {
     return hakutoiveprioriteetti;
   }
@@ -85,39 +74,46 @@ public class Jonosija {
     this.harkinnanvarainen = harkinnanvarainen;
   }
 
-  public List<Jarjestyskriteeritulos> getJarjestyskriteeritulokset() {
+  public JarjestyskriteeritulosContainer getJarjestyskriteeritulokset() {
+    if (jarjestyskriteeritulokset == null) {
+      jarjestyskriteeritulokset = new JarjestyskriteeritulosContainer();
+    }
     return jarjestyskriteeritulokset;
   }
 
-  public void setJarjestyskriteeritulokset(List<Jarjestyskriteeritulos> jarjestyskriteeritulokset) {
+  public void setJarjestyskriteeritulokset(
+      JarjestyskriteeritulosContainer jarjestyskriteeritulokset) {
     this.jarjestyskriteeritulokset = jarjestyskriteeritulokset;
+    if (jarjestyskriteeritulokset != null) {
+      jarjestaJarjestyskriteeritulokset();
+    }
   }
 
-  @PrePersist
   private void jarjestaJarjestyskriteeritulokset() {
     Collections.sort(
-        jarjestyskriteeritulokset,
-        new Comparator<Jarjestyskriteeritulos>() {
-          @Override
-          public int compare(Jarjestyskriteeritulos o1, Jarjestyskriteeritulos o2) {
-            return o1.getPrioriteetti() - o2.getPrioriteetti();
-          }
-        });
+        jarjestyskriteeritulokset.jarjestyskriteeritulokset,
+        Comparator.comparingInt(Jarjestyskriteeritulos::getPrioriteetti));
   }
 
   public List<SyotettyArvo> getSyotetytArvot() {
-    return syotetytArvot;
+    if (syotetytArvot == null) {
+      syotetytArvot = new SyotettyArvoContainer();
+    }
+    return syotetytArvot.syotetytArvot;
   }
 
-  public void setSyotetytArvot(List<SyotettyArvo> syotetytArvot) {
+  public void setSyotetytArvot(SyotettyArvoContainer syotetytArvot) {
     this.syotetytArvot = syotetytArvot;
   }
 
-  public List<FunktioTulos> getFunktioTulokset() {
+  public FunktioTulosContainer getFunktioTulokset() {
+    if (funktioTulokset == null) {
+      funktioTulokset = new FunktioTulosContainer();
+    }
     return funktioTulokset;
   }
 
-  public void setFunktioTulokset(List<FunktioTulos> funktioTulokset) {
+  public void setFunktioTulokset(FunktioTulosContainer funktioTulokset) {
     this.funktioTulokset = funktioTulokset;
   }
 
@@ -127,5 +123,21 @@ public class Jonosija {
 
   public void setHylattyValisijoittelussa(boolean hylattyValisijoittelussa) {
     this.hylattyValisijoittelussa = hylattyValisijoittelussa;
+  }
+
+  public Hakijaryhma getHakijaryhma() {
+    return hakijaryhma;
+  }
+
+  public void setHakijaryhma(Hakijaryhma hakijaryhma) {
+    this.hakijaryhma = hakijaryhma;
+  }
+
+  public Valintatapajono getValintatapajono() {
+    return valintatapajono;
+  }
+
+  public void setValintatapajono(Valintatapajono valintatapajono) {
+    this.valintatapajono = valintatapajono;
   }
 }

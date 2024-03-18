@@ -2,9 +2,7 @@ package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
 import java.util.Map;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.mongodb.morphia.annotations.Embedded;
 
-@Embedded
 public class OsallistuminenTulos {
   private Osallistuminen osallistuminen;
   private Map<String, String> kuvaus;

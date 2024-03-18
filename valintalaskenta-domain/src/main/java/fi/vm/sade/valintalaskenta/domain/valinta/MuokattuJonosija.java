@@ -1,42 +1,46 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Indexed;
+import java.util.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
 
-@Entity("MuokattuJonosija")
 public class MuokattuJonosija {
 
-  @Id private ObjectId id;
+  @Id private UUID id;
 
-  @Indexed(unique = false, dropDups = false)
   private String hakukohdeOid;
 
-  @Indexed(unique = false, dropDups = false)
   private String hakuOid;
 
-  @Indexed(unique = false, dropDups = false)
   private String valintatapajonoOid;
 
   private String hakemusOid;
 
+  private Boolean harkinnanvarainen;
+
   private Integer prioriteetti; // hakutoive
 
-  @Embedded
-  private List<Jarjestyskriteeritulos> jarjestyskriteerit = new ArrayList<Jarjestyskriteeritulos>();
+  private String muokkaaja;
 
-  @Embedded private List<LogEntry> logEntries = new ArrayList<LogEntry>();
+  private String selite;
 
-  public List<Jarjestyskriteeritulos> getJarjestyskriteerit() {
-    return jarjestyskriteerit;
+  private String muutos;
+
+  @Column("jarjestyskriteeritulokset")
+  private JarjestyskriteeritulosContainer jarjestyskriteeritulokset;
+
+  public MuokattuJonosija() {
+    jarjestyskriteeritulokset = new JarjestyskriteeritulosContainer();
   }
 
-  public void setJarjestyskriteerit(List<Jarjestyskriteeritulos> jarjestyskriteerit) {
-    this.jarjestyskriteerit = jarjestyskriteerit;
+  public List<Jarjestyskriteeritulos> getJarjestyskriteerit() {
+    return jarjestyskriteeritulokset.jarjestyskriteeritulokset;
+  }
+
+  public void setJarjestyskriteerit(Set<Jarjestyskriteeritulos> jarjestyskriteerit) {
+    this.jarjestyskriteeritulokset.jarjestyskriteeritulokset.clear();
+    this.jarjestyskriteeritulokset.jarjestyskriteeritulokset.addAll(jarjestyskriteerit);
+    this.jarjestaJarjestyskriteeritulokset();
   }
 
   public String getValintatapajonoOid() {
@@ -79,11 +83,54 @@ public class MuokattuJonosija {
     this.prioriteetti = prioriteetti;
   }
 
-  public List<LogEntry> getLogEntries() {
-    return logEntries;
+  public UUID getId() {
+    return id;
   }
 
-  public void setLogEntries(List<LogEntry> logEntries) {
-    this.logEntries = logEntries;
+  public void setId(UUID id) {
+    this.id = id;
+  }
+
+  public Boolean getHarkinnanvarainen() {
+    return harkinnanvarainen;
+  }
+
+  public void setHarkinnanvarainen(Boolean harkinnanvarainen) {
+    this.harkinnanvarainen = harkinnanvarainen;
+  }
+
+  private void jarjestaJarjestyskriteeritulokset() {
+    Collections.sort(
+        jarjestyskriteeritulokset.jarjestyskriteeritulokset,
+        new Comparator<Jarjestyskriteeritulos>() {
+          @Override
+          public int compare(Jarjestyskriteeritulos o1, Jarjestyskriteeritulos o2) {
+            return o1.getPrioriteetti() - o2.getPrioriteetti();
+          }
+        });
+  }
+
+  public String getMuokkaaja() {
+    return muokkaaja;
+  }
+
+  public void setMuokkaaja(String muokkaaja) {
+    this.muokkaaja = muokkaaja;
+  }
+
+  public String getSelite() {
+    return selite;
+  }
+
+  public void setSelite(String selite) {
+    this.selite = selite;
+  }
+
+  public String getMuutos() {
+    return muutos;
+  }
+
+  public void setMuutos(String muutos) {
+    this.muutos = muutos;
   }
 }

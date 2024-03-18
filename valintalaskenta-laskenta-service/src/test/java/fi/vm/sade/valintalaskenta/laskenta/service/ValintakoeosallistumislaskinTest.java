@@ -1,7 +1,8 @@
 package fi.vm.sade.valintalaskenta.laskenta.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -25,8 +26,8 @@ import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.Valintakoeosallist
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.ValintakoeosallistumislaskinImpl;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** User: wuoti Date: 6.5.2013 Time: 9.59 */
 public class ValintakoeosallistumislaskinTest {
@@ -44,7 +45,7 @@ public class ValintakoeosallistumislaskinTest {
     return vastaus;
   }
 
-  @Before
+  @BeforeEach
   public void setUpt() {
     laskentaServiceMock = mock(LaskentaService.class);
     laskentadomainkonvertteriWrapperMock = mock(LaskentadomainkonvertteriWrapper.class);
@@ -55,16 +56,14 @@ public class ValintakoeosallistumislaskinTest {
   }
 
   private void valmisteleStubit(final Hakukohde hakukohde, Tila tila, boolean tulos) {
-    Funktiokutsu funktiokutsu = new Funktiokutsu();
-    funktiokutsu.setFunktionimi(Funktionimi.TOTUUSARVO);
 
-    when(laskentadomainkonvertteriWrapperMock.muodostaTotuusarvolasku(funktiokutsu))
-        .thenReturn(any(Totuusarvofunktio.class));
+    when(laskentadomainkonvertteriWrapperMock.muodostaTotuusarvolasku(any()))
+        .thenReturn(mock(Totuusarvofunktio.class));
 
     final Laskentatulos<Boolean> tulos1 =
         new Laskentatulos<>(tila, tulos, "", new HashMap<>(), new HashMap<>());
     when(laskentaServiceMock.suoritaValintakoelaskenta(
-            hakukohde, any(Hakemus.class), any(Totuusarvofunktio.class)))
+            eq(hakukohde), any(Hakemus.class), any(Totuusarvofunktio.class)))
         .thenReturn(tulos1);
   }
 

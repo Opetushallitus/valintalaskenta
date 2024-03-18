@@ -30,13 +30,9 @@ valintalaskenta:
   uses-ssl-proxy: true
 
 # Aseta vähintään nämä ympäristökohtaiset arvot
-mongodb:
-  virkailija:
-    uri: mongodb://{{mongodb_virkailija_auth}}@{{mongodb_virkailija_host}}:{{mongodb_virkailija_port}}
 
 server:
   name: {{ansible_hostname}}
-
 
 root:
   organisaatio:
@@ -67,10 +63,17 @@ valintalaskentakoostepalvelu:
         sijoittelu: {{valintalaskentakoostepalvelu_app_password_to_sijoittelu}}
 
 valintalaskenta-laskenta-service:
-  mongodb:
-    dbname: valintalaskentadb
-    uri: {{ mongodb_valintalaskentadb_uri | default("${mongodb.virkailija.uri}") }}/${valintalaskenta-laskenta-service.mongodb.dbname}?retryWrites=false
-    useIndexQueries: true
+  postgresql:
+    url: jdbc:postgresql://{{host_postgresql_valintalaskenta}}:{{port_postgresql}}/valintalaskenta?ApplicationName=valintalaskenta-laskenta-service
+    user: {{postgres_app_user}}
+    password: {{host_postgresql_valintalaskenta_app_password}}
+    maxactive: {{host_postgresql_valintalaskenta_max_active}}
+    maxwait: {{host_postgresql_valintalaskenta_max_wait}}
+    idletimeoutminutes: 2
+    minidle: 0
+    maxlifetimemillis: 60000
+    leakdetectionthresholdmillis: 1800000
+    driver: org.postgresql.Driver
   global:
     http:
       connectionTimeoutMillis: {{valintalaskentalaskentaservice_global_http_connectiontimeoutmillis}}
@@ -78,3 +81,9 @@ valintalaskenta-laskenta-service:
   organisaatio-service:
     url: https://${host.virkailija}/organisaatio-service
   parallelism: {{valintalaskentalaskentaservice_parallelism}}
+
+aws:
+  region: {{aws_region}}
+  bucket:
+    name: {{valintalaskentalaskentaservice_aws_bucket_name}}
+    oldversionname: {{valintalaskentalaskentaservice_oldversion_aws_bucket_name}}

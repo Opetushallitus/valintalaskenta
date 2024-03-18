@@ -5,7 +5,6 @@ import fi.vm.sade.service.valintaperusteet.laskenta.Totuusarvofunktio;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakemus;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.Hakukohde;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.HakemusWrapper;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.JonosijaJaSyotetytArvot;
 import java.util.List;
@@ -37,7 +36,7 @@ public interface HakemuslaskinService {
       Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan,
       String jkNimi,
       int jarjestysnumero,
-      ValintakoeOsallistuminen edellinenOsallistuminen);
+      boolean edellinenValinnanvaiheOnOlemassa);
 
   void suoritaLaskentaHakemukselle(
       Hakukohde hakukohde,
@@ -49,5 +48,5 @@ public interface HakemuslaskinService {
       Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan,
       String jkNimi,
       int jarjestysnumero,
-      ValintakoeOsallistuminen edellinenOsallistuminen);
+      boolean edellinenValinnanvaiheOnOlemassa);
 }

@@ -16,13 +16,6 @@ public interface ValintakoelaskentaSuorittajaService {
       ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset,
       boolean korkeakouluhaku);
 
-  void laske(
-      HakemusDTO hakemus,
-      List<ValintaperusteetDTO> valintaperusteet,
-      String uuid,
-      ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset,
-      boolean korkeakouluhaku);
-
   void siivoaValintakoeOsallistumiset(
       List<HakemusDTO> hakemukset,
       String hakukohdeOid,

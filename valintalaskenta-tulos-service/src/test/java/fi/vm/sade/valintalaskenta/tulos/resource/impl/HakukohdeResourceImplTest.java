@@ -1,6 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -18,8 +18,8 @@ import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import java.util.Collections;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -39,7 +39,7 @@ public class HakukohdeResourceImplTest {
 
   private final ValinnanvaiheDTO valinnanvaiheFromUi = new ValinnanvaiheDTO();
 
-  @Before
+  @BeforeEach
   public void setup() {
     valinnanvaiheFromUi.setValintatapajonot(
         Collections.singletonList(new ValintatietoValintatapajonoDTO()));

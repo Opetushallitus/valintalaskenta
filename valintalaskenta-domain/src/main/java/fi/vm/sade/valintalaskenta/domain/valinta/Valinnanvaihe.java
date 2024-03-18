@@ -1,67 +1,46 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Field;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Index;
-import org.mongodb.morphia.annotations.IndexOptions;
-import org.mongodb.morphia.annotations.Indexed;
-import org.mongodb.morphia.annotations.Indexes;
-import org.mongodb.morphia.annotations.PostLoad;
-import org.mongodb.morphia.annotations.PrePersist;
-import org.mongodb.morphia.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceCreator;
 
-@Entity(value = "Valinnanvaihe", noClassnameStored = true)
-@Indexes(
-    @Index(
-        fields = {@Field("hakuOid"), @Field("valinnanvaiheOid")},
-        options = @IndexOptions(name = "idx_hakuoid_valinnanvaihe_oid", unique = true)))
 public class Valinnanvaihe {
-  private static final Logger LOGGER = LoggerFactory.getLogger(Valinnanvaihe.class);
 
-  @Id private ObjectId id;
+  @Id private UUID id;
 
   private int jarjestysnumero;
 
-  private Date createdAt;
+  private Date createdAt = new Date();
 
-  @Indexed(unique = false, dropDups = false)
   private String hakuOid;
 
-  @Indexed(unique = false, dropDups = false)
   private String hakukohdeOid;
 
-  @Indexed(unique = false, dropDups = false)
   private String valinnanvaiheOid;
 
   private String tarjoajaOid;
 
   private String nimi;
 
-  @Reference private List<Valintatapajono> valintatapajonot = new ArrayList<>();
+  private List<Valintatapajono> valintatapajonot = new ArrayList<>();
 
-  @PrePersist
-  private void prePersist() {
-    createdAt = new Date();
+  public Valinnanvaihe() {}
+
+  @PersistenceCreator
+  public Valinnanvaihe(List<Valintatapajono> valintatapajonot) {
+    this.valintatapajonot.addAll(valintatapajonot);
+    this.jarjestaValintatapajonot();
   }
 
-  @PostLoad
   private void jarjestaValintatapajonot() {
-    Collections.sort(valintatapajonot, Comparator.comparingInt(Valintatapajono::getPrioriteetti));
+    valintatapajonot.sort(Comparator.comparingInt(Valintatapajono::getPrioriteetti));
   }
 
-  public void setId(ObjectId id) {
+  public UUID getId() {
+    return id;
+  }
+
+  public void setId(UUID id) {
     this.id = id;
   }
 
@@ -97,11 +76,11 @@ public class Valinnanvaihe {
     this.hakukohdeOid = hakukohdeOid;
   }
 
-  public String getValinnanvaiheOid() {
+  public String getValinnanVaiheOid() {
     return valinnanvaiheOid;
   }
 
-  public void setValinnanvaiheOid(String valinnanvaiheOid) {
+  public void setValinnanVaiheOid(String valinnanvaiheOid) {
     this.valinnanvaiheOid = valinnanvaiheOid;
   }
 
@@ -118,7 +97,13 @@ public class Valinnanvaihe {
   }
 
   public void setValintatapajonot(List<Valintatapajono> valintatapajonot) {
-    this.valintatapajonot = valintatapajonot;
+    if (valintatapajonot == null) {
+      this.valintatapajonot = null;
+    } else {
+      this.valintatapajonot.clear();
+      this.valintatapajonot.addAll(valintatapajonot);
+      jarjestaValintatapajonot();
+    }
   }
 
   public String getNimi() {
@@ -134,27 +119,5 @@ public class Valinnanvaihe {
         .flatMap(j -> j.getJonosijat().stream())
         .filter(j -> j.getHakemusOid().equals(hakemusoid))
         .anyMatch(Jonosija::isHylattyValisijoittelussa);
-  }
-
-  public void reportDuplicateValintatapajonoOids() {
-    Set<String> uniqueJonoOids = new HashSet<>();
-    for (Valintatapajono valintatapajono : valintatapajonot) {
-      String valintatapajonoOid = valintatapajono.getValintatapajonoOid();
-      if (uniqueJonoOids.contains(valintatapajonoOid)) {
-        logDuplicate(valintatapajonoOid);
-      }
-      uniqueJonoOids.add(valintatapajonoOid);
-    }
-  }
-
-  private void logDuplicate(String valintatapajonoOid) {
-    LOGGER.error(
-        "Warning: duplicate valintatapajonoOid"
-            + valintatapajonoOid
-            + " detected when saving Valinnanvaihe "
-            + valinnanvaiheOid
-            + " . Valintatapajonos are: "
-            + valintatapajonot.stream().map(ToStringBuilder::reflectionToString),
-        new RuntimeException());
   }
 }

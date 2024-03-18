@@ -1,8 +1,10 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.valinta.ValinnanvaiheLite;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
 import java.util.List;
+import java.util.Optional;
 
 public interface ValinnanvaiheDAO {
 
@@ -12,6 +14,8 @@ public interface ValinnanvaiheDAO {
 
   Valinnanvaihe haeValinnanvaihe(String valinnanvaiheOid);
 
+  Optional<ValinnanvaiheLite> haeValinnanvaiheLite(String valinnanvaiheOid);
+
   List<Valinnanvaihe> haeValinnanvaiheetJarjestysnumerolla(
       String hakuOid, String hakukohdeOid, int jarjestysnumero);
 
@@ -20,6 +24,4 @@ public interface ValinnanvaiheDAO {
   void poistaValinnanvaihe(Valinnanvaihe valinnanvaihe);
 
   void poistaJono(Valintatapajono jono);
-
-  void poistaJononJonosijatHakemusOideilla(Valintatapajono jono, List<String> hakemusOids);
 }

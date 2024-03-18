@@ -11,6 +11,7 @@ import fi.vm.sade.javautils.nio.cas.CasConfig;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaServiceImpl;
 import fi.vm.sade.sijoittelu.tulos.dto.HakukohdeDTO;
+import fi.vm.sade.valinta.dokumenttipalvelu.Dokumenttipalvelu;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource;
@@ -177,5 +178,12 @@ public class ValintalaskentaLaskentaConfiguration {
     return builder -> {
       builder.featuresToEnable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     };
+  }
+
+  @Bean
+  public Dokumenttipalvelu dokumenttipalvelu(
+      @Value("${aws.region}") final String region,
+      @Value("${aws.bucket.name}") final String bucketName) {
+    return new Dokumenttipalvelu(region, bucketName);
   }
 }

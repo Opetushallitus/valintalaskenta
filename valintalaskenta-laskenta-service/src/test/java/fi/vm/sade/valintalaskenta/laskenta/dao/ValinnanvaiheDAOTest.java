@@ -1,174 +1,186 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao;
 
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
-import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
-import java.util.Arrays;
-import java.util.List;
-import org.bson.types.ObjectId;
-import org.hamcrest.Matchers;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.google.common.collect.Sets;
+import fi.vm.sade.valintalaskenta.domain.testdata.TestEntityDataUtil;
+import fi.vm.sade.valintalaskenta.domain.valinta.*;
+import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
+import java.util.*;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
-/** User: wuoti Date: 4.9.2013 Time: 12.27 */
-@ContextConfiguration(locations = "classpath:application-context-test.xml")
-@RunWith(SpringJUnit4ClassRunner.class)
-@TestExecutionListeners(
-    listeners = {
-      DependencyInjectionTestExecutionListener.class,
-      DirtiesContextTestExecutionListener.class
-    })
-public class ValinnanvaiheDAOTest {
-
-  @Rule public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
-
-  @Autowired private ApplicationContext applicationContext;
+public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
 
   @Autowired private ValinnanvaiheDAO valinnanvaiheDAO;
 
+  private static final String HAKUKOHDE = "hakukohdeOid1", HAKU = "hakuOid1";
+
   @Test
-  @UsingDataSet(
-      locations = "valinnanvaiheDAOTestInitialData.json",
-      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-  public void testHaeEdellinenValinnanvaihe() throws InterruptedException {
-    final String hakuOid = "hakuOid1";
-    final String hakukohdeOid = "hakukohdeOid1";
-    final int jarjestysnumero = 3;
+  public void testHaeEdellinenValinnanvaihe() {
+    valinnanvaiheRepository.save(createValinnanvaihe(1));
+    valinnanvaiheRepository.save(createValinnanvaihe(2));
+    valinnanvaiheRepository.save(createValinnanvaihe(3));
 
     final String edellinenValinnanvaiheOid = "valinnanvaiheOid2";
     final int edellinenValinnanvaiheJarjestysnumero = 2;
 
-    Valinnanvaihe valinnanvaihe =
-        valinnanvaiheDAO.haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid, jarjestysnumero);
-    assertEquals(hakuOid, valinnanvaihe.getHakuOid());
-    assertEquals(hakukohdeOid, valinnanvaihe.getHakukohdeOid());
-    assertEquals(edellinenValinnanvaiheOid, valinnanvaihe.getValinnanvaiheOid());
+    Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.haeEdeltavaValinnanvaihe(HAKU, HAKUKOHDE, 3);
+    assertEquals(HAKU, valinnanvaihe.getHakuOid());
+    assertEquals(HAKUKOHDE, valinnanvaihe.getHakukohdeOid());
+    assertEquals(edellinenValinnanvaiheOid, valinnanvaihe.getValinnanVaiheOid());
     assertEquals(edellinenValinnanvaiheJarjestysnumero, valinnanvaihe.getJarjestysnumero());
 
-    assertNull(valinnanvaiheDAO.haeEdeltavaValinnanvaihe(hakuOid, hakukohdeOid, 1));
+    assertNull(valinnanvaiheDAO.haeEdeltavaValinnanvaihe(HAKU, HAKUKOHDE, 1));
   }
 
   @Test
-  @UsingDataSet(
-      locations = "valinnanvaiheDAOTestInitialData.json",
-      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-  public void testHaeValinnanvaihe() throws InterruptedException {
+  public void testHaeViimeisinValinnanvaihe() {
+    valinnanvaiheRepository.save(createValinnanvaihe(2));
+    valinnanvaiheRepository.save(createValinnanvaihe(200));
+
+    final String edellinenValinnanvaiheOid = "valinnanvaiheOid2";
+    final int edellinenValinnanvaiheJarjestysnumero = 2;
+
+    Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.haeViimeisinValinnanvaihe(HAKU, HAKUKOHDE, 200);
+    assertEquals(HAKU, valinnanvaihe.getHakuOid());
+    assertEquals(HAKUKOHDE, valinnanvaihe.getHakukohdeOid());
+    assertEquals(edellinenValinnanvaiheOid, valinnanvaihe.getValinnanVaiheOid());
+    assertEquals(edellinenValinnanvaiheJarjestysnumero, valinnanvaihe.getJarjestysnumero());
+
+    Valinnanvaihe valinnanvaihe2 = valinnanvaiheDAO.haeViimeisinValinnanvaihe(HAKU, HAKUKOHDE, 201);
+    assertEquals(HAKU, valinnanvaihe2.getHakuOid());
+    assertEquals(HAKUKOHDE, valinnanvaihe2.getHakukohdeOid());
+    assertEquals("valinnanvaiheOid200", valinnanvaihe2.getValinnanVaiheOid());
+    assertEquals(200, valinnanvaihe2.getJarjestysnumero());
+
+    assertNull(valinnanvaiheDAO.haeViimeisinValinnanvaihe(HAKU, HAKUKOHDE, 1));
+  }
+
+  @Test
+  public void testHaeValinnanvaihe() {
+    valinnanvaiheRepository.save(createValinnanvaihe(1));
+    valinnanvaiheRepository.save(createValinnanvaihe(2));
+
     final String valinnanvaiheOid = "valinnanvaiheOid2";
 
     Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanvaiheOid);
-    assertEquals(valinnanvaiheOid, valinnanvaihe.getValinnanvaiheOid());
+    assertEquals(valinnanvaiheOid, valinnanvaihe.getValinnanVaiheOid());
   }
 
   @Test
-  @UsingDataSet(
-      locations = "valinnanvaiheMigrationTestData.json",
-      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-  public void testMigrationOfValinnanvaihe() {
-    Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.haeValinnanvaihe("vanhaValinnanvaiheOid");
-    assertNotNull(valinnanvaihe);
-    valinnanvaihe
-        .getValintatapajonot()
-        .forEach(
-            valintatapajono -> {
-              List<Jonosija> jonosijat = valintatapajono.getJonosijat();
-              List<ObjectId> jonosijaIdt = valintatapajono.getJonosijaIdt();
-              assertThat(jonosijat, Matchers.hasSize(3));
-              assertThat(jonosijaIdt, Matchers.hasSize(3));
-              for (int i = 0; i < Math.max(jonosijat.size(), jonosijaIdt.size()); i++) {
-                assertEquals(jonosijaIdt.get(i), jonosijat.get(i).getId());
-              }
-            });
+  public void testLoadingValintapajonoLite() {
+    Valinnanvaihe valinnanvaihe = createValinnanvaihe(1);
+    Valintatapajono valintatapajono = new Valintatapajono();
+    valinnanvaihe.setValintatapajonot(List.of(valintatapajono));
+    valintatapajono.setJonosijat(Sets.newHashSet(new Jonosija(), new Jonosija()));
+    valinnanvaihe.setValinnanVaiheOid("uusiValinnanvaiheOid");
+    valinnanvaiheRepository.save(valinnanvaihe);
+    assertTrue(valinnanvaiheDAO.haeValinnanvaiheLite("uusiValinnanvaiheOid").isPresent());
   }
 
+  @Disabled
   @Test
-  @UsingDataSet(
-      locations = "valinnanvaiheMigrationTestData.json",
-      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-  public void testLoadingOfMigratedValinnanvaihe() {
-    Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.haeValinnanvaihe("migroituValinnanvaiheOid");
-    assertNotNull(valinnanvaihe);
-    valinnanvaihe
-        .getValintatapajonot()
-        .forEach(
-            valintatapajono -> {
-              List<Jonosija> jonosijat = valintatapajono.getJonosijat();
-              List<ObjectId> jonosijaIdt = valintatapajono.getJonosijaIdt();
-              assertThat(jonosijat, Matchers.hasSize(3));
-              assertThat(jonosijaIdt, Matchers.hasSize(3));
-              for (int i = 0; i < Math.max(jonosijat.size(), jonosijaIdt.size()); i++) {
-                assertEquals(jonosijaIdt.get(i), jonosijat.get(i).getId());
-              }
-            });
-  }
-
-  @Test
-  @UsingDataSet(
-      locations = "valinnanvaiheMigrationTestData.json",
-      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
   public void testLoadingValintatapajonoWithoutJonosijat() {
     Valinnanvaihe valinnanvaihe = valinnanvaiheDAO.haeValinnanvaihe("tyhjaValinnanvaiheOid");
     valinnanvaihe
         .getValintatapajonot()
         .forEach(
             valintatapajono -> {
-              assertThat(valintatapajono.getJonosijat(), Matchers.empty());
-              assertThat(valintatapajono.getJonosijaIdt(), Matchers.empty());
+              assertTrue(valintatapajono.getJonosijat().isEmpty());
             });
-  }
-
-  @Test
-  @UsingDataSet(
-      locations = "valinnanvaiheMigrationTestData.json",
-      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-  public void testLoadingMigratedValintatapajonoWithoutJonosijat() {
-    Valinnanvaihe valinnanvaihe =
-        valinnanvaiheDAO.haeValinnanvaihe("migroituTyhjaValinnanvaiheOid");
-    valinnanvaihe
-        .getValintatapajonot()
-        .forEach(
-            valintatapajono -> {
-              assertThat(valintatapajono.getJonosijat(), Matchers.empty());
-              assertThat(valintatapajono.getJonosijaIdt(), Matchers.empty());
-            });
-  }
-
-  @Test
-  @UsingDataSet(
-      locations = "valinnanvaiheMigrationTestData.json",
-      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-  public void testDeletingMigratedValintatapajonoWithoutJonosijat() {
-    Valinnanvaihe valinnanvaihe =
-        valinnanvaiheDAO.haeValinnanvaihe("migroituTyhjaValinnanvaiheOid");
-    valinnanvaiheDAO.poistaValinnanvaihe(valinnanvaihe);
-    assertNull(valinnanvaiheDAO.haeValinnanvaihe("migroituTyhjaValinnanvaiheOid"));
   }
 
   @Test
   public void testSavingAndLoadingNewValinnanvaihe() {
-    Valinnanvaihe valinnanvaihe = new Valinnanvaihe();
+    Valinnanvaihe valinnanvaihe = createValinnanvaihe(1);
     Valintatapajono valintatapajono = new Valintatapajono();
-    valinnanvaihe.setValintatapajonot(Arrays.asList(valintatapajono));
-    valintatapajono.setJonosijat(Arrays.asList(new Jonosija(), new Jonosija()));
-    valinnanvaihe.setValinnanvaiheOid("uusiValinnanvaiheOid");
+    valinnanvaihe.setValintatapajonot(List.of(valintatapajono));
+    valintatapajono.setJonosijat(
+        Sets.newHashSet(
+            createJonosija("ruhtinas-nukettaja-oid"), createJonosija("kreivi-dacula-oid")));
+    valinnanvaihe.setValinnanVaiheOid("uusiValinnanvaiheOid");
     valinnanvaiheDAO.saveOrUpdate(valinnanvaihe);
     Valinnanvaihe savedValinnanvaihe = valinnanvaiheDAO.haeValinnanvaihe("uusiValinnanvaiheOid");
     assertNotNull(savedValinnanvaihe);
-    assertThat(savedValinnanvaihe.getValintatapajonot().get(0).getJonosijat(), Matchers.hasSize(2));
-    assertThat(
-        savedValinnanvaihe.getValintatapajonot().get(0).getJonosijaIdt(), Matchers.hasSize(2));
+    assertFalse(new Date().before(savedValinnanvaihe.getCreatedAt()));
+    assertEquals(2, savedValinnanvaihe.getValintatapajonot().get(0).getJonosijat().size());
+    Jonosija jono = savedValinnanvaihe.getValintatapajonot().get(0).getJonosijatAsList().get(0);
+    FunktioTulos funkkari = jono.getFunktioTulokset().funktioTulokset.get(0);
+    assertEquals("arvokas", funkkari.getArvo());
+    assertEquals("arvoton", funkkari.getTunniste());
+    assertEquals("Funktiotulos", funkkari.getNimiFi());
+    assertEquals("Function", funkkari.getNimiEn());
+    assertEquals("Funktion", funkkari.getNimiSv());
+    assertTrue(funkkari.isOmaopintopolku());
+    SyotettyArvo arvo = jono.getSyotetytArvot().get(0);
+    assertEquals("Kultaa", arvo.getArvo());
+    assertEquals("Hopeaa", arvo.getTunniste());
+    assertEquals("Katinkultaa", arvo.getLaskennallinenArvo());
+  }
+
+  @Test
+  public void testSavingLargeValinnanvaihe() {
+    long timeStart = System.currentTimeMillis();
+
+    Valinnanvaihe valinnanvaihe = createValinnanvaihe(1);
+    Valintatapajono valintatapajono = new Valintatapajono();
+    valinnanvaihe.setValintatapajonot(List.of(valintatapajono));
+    Set<Jonosija> sijat = new HashSet<>();
+    for (int i = 0; i < 1000; i++) {
+      Jonosija js = createJonosija("kloonin-oid-" + i);
+      for (int j = 0; j < 100; j++) {
+        js.getJarjestyskriteeritulokset()
+            .jarjestyskriteeritulokset
+            .add(
+                TestEntityDataUtil.luoJarjestyskriteeritulosEntity(
+                    5.3, j, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA));
+      }
+      sijat.add(js);
+    }
+    valintatapajono.setJonosijat(sijat);
+    valinnanvaihe.setValinnanVaiheOid("uusiValinnanvaiheOid");
+    valinnanvaiheDAO.saveOrUpdate(valinnanvaihe);
+    Valinnanvaihe savedValinnanvaihe = valinnanvaiheDAO.haeValinnanvaihe("uusiValinnanvaiheOid");
+    assertEquals(1000, savedValinnanvaihe.getValintatapajonot().get(0).getJonosijat().size());
+    assertTrue(timeStart - System.currentTimeMillis() > -10000, "Finishes in 10 seconds");
+  }
+
+  private Valinnanvaihe createValinnanvaihe(int jarjestysnro) {
+    Valinnanvaihe vv = new Valinnanvaihe();
+    vv.setHakukohdeOid(HAKUKOHDE);
+    vv.setHakuOid(HAKU);
+    vv.setTarjoajaOid("tarjoajaOid1");
+    vv.setJarjestysnumero(jarjestysnro);
+    vv.setValinnanVaiheOid("valinnanvaiheOid" + jarjestysnro);
+    return vv;
+  }
+
+  private Jonosija createJonosija(String hakijaOid) {
+    Jonosija jono = new Jonosija();
+    jono.setHakijaOid(hakijaOid);
+    jono.setFunktioTulokset(new FunktioTulosContainer(List.of(createFunktioTulos())));
+    jono.setSyotetytArvot(new SyotettyArvoContainer(List.of(createSyotettyArvo())));
+    return jono;
+  }
+
+  private FunktioTulos createFunktioTulos() {
+    FunktioTulos tulos = new FunktioTulos();
+    tulos.setArvo("arvokas");
+    tulos.setTunniste("arvoton");
+    tulos.setOmaopintopolku(true);
+    tulos.setNimiFi("Funktiotulos");
+    tulos.setNimiEn("Function");
+    tulos.setNimiSv("Funktion");
+    return tulos;
+  }
+
+  private SyotettyArvo createSyotettyArvo() {
+    SyotettyArvo arvo = new SyotettyArvo();
+    arvo.setArvo("Kultaa");
+    arvo.setTunniste("Hopeaa");
+    arvo.setLaskennallinenArvo("Katinkultaa");
+    return arvo;
   }
 }

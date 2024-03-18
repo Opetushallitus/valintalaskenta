@@ -1,9 +1,9 @@
 package fi.vm.sade.valintalaskenta.laskenta.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyCollection;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -21,7 +21,6 @@ import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.HakemuslaskinService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.EdellinenValinnanvaiheKasittelija;
@@ -34,8 +33,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class HakemuslaskinServiceTest {
@@ -45,7 +44,7 @@ public class HakemuslaskinServiceTest {
   private JarjestyskriteerihistoriaDAO jarjestyskriteerihistoriaDAOMock;
   private EdellinenValinnanvaiheKasittelija edellinenValinnanvaiheKasittelijaMock;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     hakemuslaskinService = new HakemuslaskinImpl();
     laskentaServiceMock = mock(LaskentaService.class);
@@ -109,7 +108,7 @@ public class HakemuslaskinServiceTest {
         jonosijat,
         "jkNimi",
         1,
-        new ValintakoeOsallistuminen());
+        true);
 
     verify(jarjestyskriteerihistoriaDAOMock, times(1)).create(any(Jarjestyskriteerihistoria.class));
 
@@ -119,8 +118,9 @@ public class HakemuslaskinServiceTest {
     assertEquals(hakemusOid, jonosija.getHakemusOid());
     assertEquals(hakijaOid, jonosija.getHakijaOid());
     assertEquals(hakutoiveprioriteetti, jonosija.getHakutoiveprioriteetti());
-    assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
-    Jarjestyskriteeritulos jktulos = jonosija.getJarjestyskriteeritulokset().get(0);
+    assertEquals(1, jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
+    Jarjestyskriteeritulos jktulos =
+        jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
 
     // Laskennan arvoa ei enää tallenneta järjestyskriteeritulokseen jos
     // hakemus on hylätty edellisessä valinnanvaiheessa

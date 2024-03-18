@@ -9,8 +9,6 @@ public interface HakijaryhmaDAO {
 
   Optional<Hakijaryhma> haeHakijaryhma(String hakijaryhmaOid);
 
-  List<Hakijaryhma> haeHakijaryhmatPrioriteetilla(String hakukohdeOid, int prioriteetti);
-
   List<Hakijaryhma> haeHakijaryhmat(String hakukohdeOid);
 
   void create(Hakijaryhma hakijaryhma, User auditUser);

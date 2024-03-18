@@ -1,18 +1,30 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Indexed;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceCreator;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Column;
 
-@Embedded("Hakutoive")
 public class Hakutoive {
-  @Indexed private String hakukohdeOid;
 
-  @Indexed private String laskettavaHakukohdeOid;
+  @Id private UUID id;
 
-  @Embedded private List<ValintakoeValinnanvaihe> valinnanVaiheet = new ArrayList<>();
+  private String hakukohdeOid;
+
+  private final Set<ValintakoeValinnanvaihe> valintakoeValinnanvaiheet = new HashSet<>();
+
+  @Transient
+  @Column("valintakoe_osallistuminen")
+  private ValintakoeOsallistuminen valintakoeOsallistuminen;
+
+  public Hakutoive() {}
+
+  @PersistenceCreator
+  public Hakutoive(Set<ValintakoeValinnanvaihe> valintakoeValinnanvaiheet) {
+    this.valintakoeValinnanvaiheet.addAll(valintakoeValinnanvaiheet);
+  }
 
   public String getHakukohdeOid() {
     return hakukohdeOid;
@@ -22,20 +34,33 @@ public class Hakutoive {
     this.hakukohdeOid = hakukohdeOid;
   }
 
-  public List<ValintakoeValinnanvaihe> getValinnanVaiheet() {
-    return valinnanVaiheet;
+  public UUID getId() {
+    return id;
   }
 
-  public void setValinnanVaiheet(List<ValintakoeValinnanvaihe> valinnanVaiheet) {
-    this.valinnanVaiheet = valinnanVaiheet;
+  public void setId(UUID id) {
+    this.id = id;
   }
 
-  public String getLaskettavaHakukohdeOid() {
-    return laskettavaHakukohdeOid;
+  public ValintakoeOsallistuminen getValintakoeOsallistuminen() {
+    return valintakoeOsallistuminen;
   }
 
-  public void setLaskettavaHakukohdeOid(String laskettavaHakukohdeOid) {
-    this.laskettavaHakukohdeOid = laskettavaHakukohdeOid;
+  public void setValintakoeOsallistuminen(ValintakoeOsallistuminen valintakoeOsallistuminen) {
+    this.valintakoeOsallistuminen = valintakoeOsallistuminen;
+  }
+
+  public Set<ValintakoeValinnanvaihe> getValintakoeValinnanvaiheet() {
+    return valintakoeValinnanvaiheet;
+  }
+
+  public List<ValintakoeValinnanvaihe> getValintakoeValinnanvaiheetAsList() {
+    return new ArrayList<>(valintakoeValinnanvaiheet);
+  }
+
+  public void setValintakoeValinnanvaiheet(Set<ValintakoeValinnanvaihe> valintakoeValinnanvaiheet) {
+    this.valintakoeValinnanvaiheet.clear();
+    this.valintakoeValinnanvaiheet.addAll(valintakoeValinnanvaiheet);
   }
 
   @Override

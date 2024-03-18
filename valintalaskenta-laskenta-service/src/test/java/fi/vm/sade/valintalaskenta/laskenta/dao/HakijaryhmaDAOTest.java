@@ -1,128 +1,141 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao;
 
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import fi.vm.sade.auditlog.User;
+import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import org.bson.types.ObjectId;
-import org.hamcrest.Matchers;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import fi.vm.sade.valintalaskenta.laskenta.dao.impl.HakijaryhmaDAOImpl;
+import fi.vm.sade.valintalaskenta.laskenta.dao.repository.HakijaryhmaHistoryRepository;
+import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
+import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
+import java.util.*;
+import java.util.stream.StreamSupport;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
-@ContextConfiguration(locations = "classpath:application-context-test.xml")
-@RunWith(SpringJUnit4ClassRunner.class)
-@TestExecutionListeners(
-    listeners = {
-      DependencyInjectionTestExecutionListener.class,
-      DirtiesContextTestExecutionListener.class
-    })
-public class HakijaryhmaDAOTest {
+public class HakijaryhmaDAOTest extends AbstractIntegrationTest {
 
-  @Rule public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
+  @Autowired private HakijaryhmaDAOImpl hakijaryhmaDAO;
 
-  @Autowired private ApplicationContext applicationContext;
+  @Autowired private HakijaryhmaHistoryRepository historyRepo;
 
-  @Autowired private HakijaryhmaDAO hakijaryhmaDAO;
+  @Autowired private ValintalaskentaModelMapper modelMapper;
 
   private final User auditUser = null;
 
-  @Test
-  @UsingDataSet(
-      locations = "hakijaryhmaMigrationTestData.json",
-      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-  public void testMigrationOfHakijaryma() {
-    Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("vanhaHakijaryhmaOid").get();
-    List<Jonosija> jonosijat = hakijaryhma.getJonosijat();
-    List<ObjectId> jonosijaIdt = hakijaryhma.getJonosijaIdt();
-    assertThat(jonosijat, Matchers.hasSize(3));
-    assertThat(jonosijaIdt, Matchers.hasSize(3));
-    for (int i = 0; i < Math.max(jonosijat.size(), jonosijaIdt.size()); i++) {
-      assertEquals(jonosijaIdt.get(i), jonosijat.get(i).getId());
-    }
+  private static final String HAKUKOHDE_OID = "1.2.246.562.20.18895322503";
+
+  @BeforeEach
+  public void clear() {
+    historyRepo.deleteAll();
   }
 
   @Test
-  @UsingDataSet(
-      locations = "hakijaryhmaMigrationTestData.json",
-      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-  public void testLoadingOfMigratedHakijaryhma() {
-    Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("migroituHakijaryhmaOid").get();
-    List<Jonosija> jonosijat = hakijaryhma.getJonosijat();
-    List<ObjectId> jonosijaIdt = hakijaryhma.getJonosijaIdt();
-    assertThat(jonosijat, Matchers.hasSize(3));
-    assertThat(jonosijaIdt, Matchers.hasSize(3));
-    for (int i = 0; i < Math.max(jonosijat.size(), jonosijaIdt.size()); i++) {
-      assertEquals(jonosijaIdt.get(i), jonosijat.get(i).getId());
-    }
-  }
-
-  @Test
-  @UsingDataSet(
-      locations = "hakijaryhmaMigrationTestData.json",
-      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-  public void testLoadingHakijaryhmaWithoutJonosijas() {
-    Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("tyhjaHakijaryhmaOid").get();
-    assertThat(hakijaryhma.getJonosijaIdt(), Matchers.empty());
-    assertThat(hakijaryhma.getJonosijat(), Matchers.empty());
-  }
-
-  @Test
-  @UsingDataSet(
-      locations = "hakijaryhmaMigrationTestData.json",
-      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-  public void testDeletingHakijaryhmaWithoutJonosijas() {
-    Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("tyhjaHakijaryhmaOid").get();
-    hakijaryhmaDAO.poistaHakijaryhma(hakijaryhma);
-    assertEquals(Optional.empty(), hakijaryhmaDAO.haeHakijaryhma("tyhjaHakijaryhmaOid"));
-  }
-
-  @Test
-  public void testSavingAndLoadingNewHakijaryhma() {
-    Hakijaryhma hakijaryhma = new Hakijaryhma();
-    hakijaryhma.setJonosijat(asList(new Jonosija(), new Jonosija()));
-    hakijaryhma.setHakijaryhmaOid("uusiHakijaryhmaOid");
+  public void savingAndLoadingNewHakijaryhma() {
+    Hakijaryhma hakijaryhma =
+        new Hakijaryhma(Arrays.asList(createJonosija("ruh-nuk"), createJonosija("sil-mak")));
+    hakijaryhma.hakijaryhmaOid = "uusiHakijaryhmaOid";
     hakijaryhmaDAO.create(hakijaryhma, auditUser);
     Hakijaryhma savedHakijaryhma = hakijaryhmaDAO.haeHakijaryhma("uusiHakijaryhmaOid").get();
-    assertThat(savedHakijaryhma.getJonosijat(), Matchers.hasSize(2));
-    assertThat(savedHakijaryhma.getJonosijaIdt(), Matchers.hasSize(2));
+    assertEquals(savedHakijaryhma.hakijaryhmaOid, "uusiHakijaryhmaOid");
+    assertEquals(2, savedHakijaryhma.jonosija.size());
   }
 
   @Test
-  @UsingDataSet(
-      locations = "multipleHakijaryhmasWithVaryingPriorities.json",
-      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-  public void allCallsSortHakijaryhmaEntitiesInPriorityAscendingOrder() throws Exception {
-    List<Hakijaryhma> fetched = hakijaryhmaDAO.haeHakijaryhmat("1.2.246.562.20.18895322503");
+  public void convertHakijaryhmaToDTO() {
+    Hakijaryhma hakijaryhma =
+        new Hakijaryhma(Arrays.asList(createJonosija("ruh-nuk"), createJonosija("sil-mak")));
+    hakijaryhma.hakijaryhmaOid = "uusiHakijaryhmaOid";
+    hakijaryhmaDAO.create(hakijaryhma, auditUser);
+
+    HakijaryhmaDTO dto =
+        modelMapper.map(
+            hakijaryhmaDAO.haeHakijaryhma("uusiHakijaryhmaOid").get(), HakijaryhmaDTO.class);
+    assertEquals(dto.getHakijaryhmaOid(), "uusiHakijaryhmaOid");
+    assertEquals(2, dto.getJonosijat().size());
+  }
+
+  @Test
+  public void allCallsSortHakijaryhmaEntitiesInPriorityAscendingOrder() {
+    hakijaryhmaDAO.create(createHakijaryhma("middlePriorityOid", 2), auditUser);
+    hakijaryhmaDAO.create(createHakijaryhma("lowestPriorityOid", 3), auditUser);
+    hakijaryhmaDAO.create(createHakijaryhma("highestPriorityOid", 1), auditUser);
+    List<Hakijaryhma> fetched = hakijaryhmaDAO.haeHakijaryhmat(HAKUKOHDE_OID);
     assertEquals(3, fetched.size());
 
     List<Hakijaryhma> sorted = new ArrayList<>(fetched);
-    sorted.sort(Comparator.comparing(Hakijaryhma::getPrioriteetti));
+    sorted.sort(Comparator.comparing(h -> h.prioriteetti));
 
-    assertEquals("Hakijaryhma entries are not sorted based on priority!", sorted, fetched);
+    assertEquals(sorted, fetched, "Hakijaryhma entries are not sorted based on priority!");
 
     assertEquals(
-        "lowest numeric priority should come first meaning it is the most important",
         asList("highestPriorityOid", "middlePriorityOid", "lowestPriorityOid"),
-        sorted.stream().map(Hakijaryhma::getHakijaryhmaOid).collect(toList()));
+        sorted.stream().map(h -> h.hakijaryhmaOid).collect(toList()),
+        "lowest numeric priority should come first meaning it is the most important");
+  }
+
+  @Test
+  public void modifyingHakijaryhmaInsertsRowToHistory() {
+    Hakijaryhma hakijaryhma =
+        new Hakijaryhma(Arrays.asList(createJonosija("ruh-nuk"), createJonosija("sil-mak")));
+    hakijaryhma.hakijaryhmaOid = "wanhaHakijaryhmaOid";
+    hakijaryhma.prioriteetti = 3;
+    hakijaryhmaDAO.create(hakijaryhma, auditUser);
+
+    assertEquals(0, historyRepo.findAll().spliterator().estimateSize());
+
+    hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("wanhaHakijaryhmaOid").orElseThrow();
+    hakijaryhma.prioriteetti = 8;
+    hakijaryhmaRepository.save(hakijaryhma);
+
+    List<HakijaryhmaHistory> historys =
+        StreamSupport.stream(historyRepo.findAll().spliterator(), false).toList();
+    assertEquals(1, historys.size());
+    assertEquals(3, historys.get(0).prioriteetti);
+    assertNotNull(historys.get(0).systemTime);
+
+    hakijaryhma = hakijaryhmaDAO.haeHakijaryhma("wanhaHakijaryhmaOid").orElseThrow();
+    hakijaryhma.prioriteetti = 6;
+    hakijaryhmaRepository.save(hakijaryhma);
+
+    historys = StreamSupport.stream(historyRepo.findAll().spliterator(), false).toList();
+    assertEquals(2, historys.size());
+    assertTrue(historys.stream().map(h -> h.prioriteetti).toList().containsAll(List.of(3, 8)));
+  }
+
+  @Test
+  public void deletingHakijaryhmaInsertsRowToHistory() {
+    Hakijaryhma hakijaryhma =
+        new Hakijaryhma(Arrays.asList(createJonosija("ruh-nuk"), createJonosija("sil-mak")));
+    hakijaryhma.hakijaryhmaOid = "wanhaHakijaryhmaOid";
+    hakijaryhmaDAO.create(hakijaryhma, auditUser);
+
+    assertEquals(0, historyRepo.findAll().spliterator().estimateSize());
+
+    hakijaryhmaDAO.poistaHakijaryhma(hakijaryhma);
+
+    List<HakijaryhmaHistory> historys =
+        StreamSupport.stream(historyRepo.findAll().spliterator(), false).toList();
+    assertEquals(1, historys.size());
+    assertNotNull(historys.get(0).systemTime);
+  }
+
+  private Hakijaryhma createHakijaryhma(String oid, int prioriteetti) {
+    Hakijaryhma hakijaryhma = new Hakijaryhma();
+    hakijaryhma.hakijaryhmaOid = oid;
+    hakijaryhma.prioriteetti = prioriteetti;
+    hakijaryhma.hakukohdeOid = HAKUKOHDE_OID;
+    return hakijaryhma;
+  }
+
+  private Jonosija createJonosija(String hakijaOid) {
+    Jonosija jonosija = new Jonosija();
+    jonosija.setHakijaOid(hakijaOid);
+    return jonosija;
   }
 }

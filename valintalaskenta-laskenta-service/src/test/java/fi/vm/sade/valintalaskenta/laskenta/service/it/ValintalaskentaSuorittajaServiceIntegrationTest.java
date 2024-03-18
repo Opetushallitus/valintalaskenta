@@ -1,9 +1,7 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.it;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
-import static com.lordofthejars.nosqlunit.core.LoadStrategyEnum.CLEAN_INSERT;
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi.LUKUARVO;
+import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.HYLATTY;
 import static fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakemus;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoJarjestyskriteeri;
@@ -11,57 +9,29 @@ import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoTaval
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteet;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteetJaTavallinenValinnanvaihe;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintatapajono;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import fi.vm.sade.service.valintaperusteet.dto.SyoteparametriDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetFunktiokutsuDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetValinnanVaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
-import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
-import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
-import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
-import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
+import fi.vm.sade.valintalaskenta.domain.testdata.TestEntityDataUtil;
+import fi.vm.sade.valintalaskenta.domain.valinta.*;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.ValintalaskentaSuorittajaService;
+import fi.vm.sade.valintalaskenta.testing.AbstractMocklessIntegrationTest;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.*;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
-@ContextConfiguration(locations = "classpath:application-context-test.xml")
-@RunWith(SpringJUnit4ClassRunner.class)
-@TestExecutionListeners(
-    listeners = {
-      DependencyInjectionTestExecutionListener.class,
-      DirtiesContextTestExecutionListener.class
-    })
-public class ValintalaskentaSuorittajaServiceIntegrationTest {
+public class ValintalaskentaSuorittajaServiceIntegrationTest
+    extends AbstractMocklessIntegrationTest {
   private final String uuid = null;
-  @Rule public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
-
-  @Autowired private ApplicationContext applicationContext;
 
   @Autowired private ValintalaskentaSuorittajaService valintalaskentaSuorittajaService;
 
@@ -264,7 +234,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
       assertEquals(hakuOid, valinnanvaihe1.getHakuOid());
       assertEquals(hakukohdeOid1, valinnanvaihe1.getHakukohdeOid());
       assertEquals(0, valinnanvaihe1.getJarjestysnumero());
-      assertEquals(valinnanvaiheOid1, valinnanvaihe1.getValinnanvaiheOid());
+      assertEquals(valinnanvaiheOid1, valinnanvaihe1.getValinnanVaiheOid());
       assertEquals(2, valinnanvaihe1.getValintatapajonot().size());
 
       Comparator<Jonosija> jonosijaComparator = Comparator.comparing(Jonosija::getHakemusOid);
@@ -276,17 +246,19 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         assertEquals(valintatapajonoOid1, jono.getValintatapajonoOid());
 
         assertEquals(2, jono.getJonosijat().size());
-        Collections.sort(jono.getJonosijat(), jonosijaComparator);
+        List<Jonosija> sijat = jono.getJonosijatAsList();
+        sijat.sort(jonosijaComparator);
 
         {
-          Jonosija jonosija1 = jono.getJonosijat().get(0);
+          Jonosija jonosija1 = sijat.get(0);
           assertEquals(hakemusOid1, jonosija1.getHakemusOid());
           assertEquals(hakijaOid1, jonosija1.getHakijaOid());
           assertEquals(1, jonosija1.getHakutoiveprioriteetti());
-          assertEquals(2, jonosija1.getJarjestyskriteeritulokset().size());
+          assertEquals(
+              2, jonosija1.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos1 =
-              jonosija1.getJarjestyskriteeritulokset().get(0);
+              jonosija1.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("100.0"), jarjestyskriteeritulos1.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos1.getTila());
@@ -298,7 +270,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
           assertNotNull(historia1.getHistoria());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos2 =
-              jonosija1.getJarjestyskriteeritulokset().get(1);
+              jonosija1.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(1);
           assertEquals(new BigDecimal("200.0"), jarjestyskriteeritulos2.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos2.getTila());
@@ -308,22 +280,22 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
               jarjestyskriteerihistoriaDAO.hae(jarjestyskriteeritulos2.getHistoria());
           assertNotNull(historia2);
           assertNotNull(historia2.getHistoria());
-          assertNotNull(historia2.getHistoriaGzip());
 
-          assertEquals(2, jonosija1.getFunktioTulokset().size());
-          assertEquals("100.0", jonosija1.getFunktioTulokset().get(0).getArvo());
-          assertEquals("200.0", jonosija1.getFunktioTulokset().get(1).getArvo());
+          assertEquals(2, jonosija1.getFunktioTulokset().funktioTulokset.size());
+          assertEquals("100.0", jonosija1.getFunktioTulokset().funktioTulokset.get(0).getArvo());
+          assertEquals("200.0", jonosija1.getFunktioTulokset().funktioTulokset.get(1).getArvo());
         }
 
         {
-          Jonosija jonosija2 = jono.getJonosijat().get(1);
+          Jonosija jonosija2 = sijat.get(1);
           assertEquals(hakemusOid2, jonosija2.getHakemusOid());
           assertEquals(hakijaOid2, jonosija2.getHakijaOid());
           assertEquals(2, jonosija2.getHakutoiveprioriteetti());
-          assertEquals(2, jonosija2.getJarjestyskriteeritulokset().size());
+          assertEquals(
+              2, jonosija2.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos1 =
-              jonosija2.getJarjestyskriteeritulokset().get(0);
+              jonosija2.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("100.0"), jarjestyskriteeritulos1.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos1.getTila());
@@ -333,10 +305,9 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
               jarjestyskriteerihistoriaDAO.hae(jarjestyskriteeritulos1.getHistoria());
           assertNotNull(historia1);
           assertNotNull(historia1.getHistoria());
-          assertNotNull(historia1.getHistoriaGzip());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos2 =
-              jonosija2.getJarjestyskriteeritulokset().get(1);
+              jonosija2.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(1);
           assertEquals(new BigDecimal("200.0"), jarjestyskriteeritulos2.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos2.getTila());
@@ -346,7 +317,6 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
               jarjestyskriteerihistoriaDAO.hae(jarjestyskriteeritulos2.getHistoria());
           assertNotNull(historia2);
           assertNotNull(historia2.getHistoria());
-          assertNotNull(historia2.getHistoriaGzip());
         }
       }
       {
@@ -356,17 +326,18 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         assertEquals(valintatapajonoOid2, jono.getValintatapajonoOid());
 
         assertEquals(2, jono.getJonosijat().size());
-        Collections.sort(jono.getJonosijat(), jonosijaComparator);
+        List<Jonosija> jonosijat = jono.getJonosijatAsList();
+        jonosijat.sort(jonosijaComparator);
 
         {
-          Jonosija jonosija = jono.getJonosijat().get(0);
+          Jonosija jonosija = jonosijat.get(0);
           assertEquals(hakemusOid1, jonosija.getHakemusOid());
           assertEquals(hakijaOid1, jonosija.getHakijaOid());
           assertEquals(1, jonosija.getHakutoiveprioriteetti());
-          assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+          assertEquals(1, jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos =
-              jonosija.getJarjestyskriteeritulokset().get(0);
+              jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("300.0"), jarjestyskriteeritulos.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
@@ -379,14 +350,14 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         }
 
         {
-          Jonosija jonosija = jono.getJonosijat().get(1);
+          Jonosija jonosija = jonosijat.get(1);
           assertEquals(hakemusOid2, jonosija.getHakemusOid());
           assertEquals(hakijaOid2, jonosija.getHakijaOid());
           assertEquals(2, jonosija.getHakutoiveprioriteetti());
-          assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+          assertEquals(1, jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos =
-              jonosija.getJarjestyskriteeritulokset().get(0);
+              jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("300.0"), jarjestyskriteeritulos.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
@@ -405,7 +376,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
       assertEquals(hakuOid, valinnanvaihe2.getHakuOid());
       assertEquals(hakukohdeOid1, valinnanvaihe2.getHakukohdeOid());
       assertEquals(1, valinnanvaihe2.getJarjestysnumero());
-      assertEquals(valinnanvaiheOid2, valinnanvaihe2.getValinnanvaiheOid());
+      assertEquals(valinnanvaiheOid2, valinnanvaihe2.getValinnanVaiheOid());
       assertEquals(1, valinnanvaihe2.getValintatapajonot().size());
 
       Comparator<Jonosija> jonosijaComparator = Comparator.comparing(Jonosija::getHakemusOid);
@@ -417,17 +388,18 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         assertEquals(valintatapajonoOid3, jono.getValintatapajonoOid());
 
         assertEquals(2, jono.getJonosijat().size());
-        Collections.sort(jono.getJonosijat(), jonosijaComparator);
+        List<Jonosija> sijat = jono.getJonosijatAsList();
+        sijat.sort(jonosijaComparator);
 
         {
-          Jonosija jonosija = jono.getJonosijat().get(0);
+          Jonosija jonosija = sijat.get(0);
           assertEquals(hakemusOid1, jonosija.getHakemusOid());
           assertEquals(hakijaOid1, jonosija.getHakijaOid());
           assertEquals(1, jonosija.getHakutoiveprioriteetti());
-          assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+          assertEquals(1, jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos =
-              jonosija.getJarjestyskriteeritulokset().get(0);
+              jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("400.0"), jarjestyskriteeritulos.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
@@ -438,17 +410,17 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
           assertNotNull(historia1);
           assertNotNull(historia1.getHistoria());
 
-          assertEquals(0, jonosija.getFunktioTulokset().size());
+          assertEquals(0, jonosija.getFunktioTulokset().funktioTulokset.size());
         }
         {
-          Jonosija jonosija = jono.getJonosijat().get(1);
+          Jonosija jonosija = sijat.get(1);
           assertEquals(hakemusOid2, jonosija.getHakemusOid());
           assertEquals(hakijaOid2, jonosija.getHakijaOid());
           assertEquals(2, jonosija.getHakutoiveprioriteetti());
-          assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+          assertEquals(1, jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos =
-              jonosija.getJarjestyskriteeritulokset().get(0);
+              jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("400.0"), jarjestyskriteeritulos.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
@@ -468,7 +440,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
       assertEquals(hakuOid, valinnanvaihe3.getHakuOid());
       assertEquals(hakukohdeOid2, valinnanvaihe3.getHakukohdeOid());
       assertEquals(0, valinnanvaihe3.getJarjestysnumero());
-      assertEquals(valinnanvaiheOid3, valinnanvaihe3.getValinnanvaiheOid());
+      assertEquals(valinnanvaiheOid3, valinnanvaihe3.getValinnanVaiheOid());
       assertEquals(2, valinnanvaihe3.getValintatapajonot().size());
 
       Comparator<Jonosija> jonosijaComparator = Comparator.comparing(Jonosija::getHakemusOid);
@@ -480,17 +452,19 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         assertEquals(valintatapajonoOid4, jono.getValintatapajonoOid());
 
         assertEquals(2, jono.getJonosijat().size());
-        Collections.sort(jono.getJonosijat(), jonosijaComparator);
+        List<Jonosija> jonot = jono.getJonosijatAsList();
+        jonot.sort(jonosijaComparator);
 
         {
-          Jonosija jonosija1 = jono.getJonosijat().get(0);
+          Jonosija jonosija1 = jonot.get(0);
           assertEquals(hakemusOid1, jonosija1.getHakemusOid());
           assertEquals(hakijaOid1, jonosija1.getHakijaOid());
           assertEquals(2, jonosija1.getHakutoiveprioriteetti());
-          assertEquals(2, jonosija1.getJarjestyskriteeritulokset().size());
+          assertEquals(
+              2, jonosija1.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos1 =
-              jonosija1.getJarjestyskriteeritulokset().get(0);
+              jonosija1.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("500.0"), jarjestyskriteeritulos1.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos1.getTila());
@@ -502,7 +476,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
           assertNotNull(historia1.getHistoria());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos2 =
-              jonosija1.getJarjestyskriteeritulokset().get(1);
+              jonosija1.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(1);
           assertEquals(new BigDecimal("600.0"), jarjestyskriteeritulos2.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos2.getTila());
@@ -512,19 +486,20 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
               jarjestyskriteerihistoriaDAO.hae(jarjestyskriteeritulos2.getHistoria());
           assertNotNull(historia2);
           assertNotNull(historia2.getHistoria());
-          assertEquals(1, jonosija1.getFunktioTulokset().size());
-          assertEquals("600.0", jonosija1.getFunktioTulokset().get(0).getArvo());
+          assertEquals(1, jonosija1.getFunktioTulokset().funktioTulokset.size());
+          assertEquals("600.0", jonosija1.getFunktioTulokset().funktioTulokset.get(0).getArvo());
         }
 
         {
-          Jonosija jonosija2 = jono.getJonosijat().get(1);
+          Jonosija jonosija2 = jonot.get(1);
           assertEquals(hakemusOid2, jonosija2.getHakemusOid());
           assertEquals(hakijaOid2, jonosija2.getHakijaOid());
           assertEquals(1, jonosija2.getHakutoiveprioriteetti());
-          assertEquals(2, jonosija2.getJarjestyskriteeritulokset().size());
+          assertEquals(
+              2, jonosija2.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos1 =
-              jonosija2.getJarjestyskriteeritulokset().get(0);
+              jonosija2.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("500.0"), jarjestyskriteeritulos1.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos1.getTila());
@@ -536,7 +511,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
           assertNotNull(historia1.getHistoria());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos2 =
-              jonosija2.getJarjestyskriteeritulokset().get(1);
+              jonosija2.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(1);
           assertEquals(new BigDecimal("600.0"), jarjestyskriteeritulos2.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos2.getTila());
@@ -555,17 +530,18 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         assertEquals(valintatapajonoOid5, jono.getValintatapajonoOid());
 
         assertEquals(2, jono.getJonosijat().size());
-        Collections.sort(jono.getJonosijat(), jonosijaComparator);
+        List<Jonosija> jonot = jono.getJonosijatAsList();
+        jonot.sort(jonosijaComparator);
 
         {
-          Jonosija jonosija = jono.getJonosijat().get(0);
+          Jonosija jonosija = jonot.get(0);
           assertEquals(hakemusOid1, jonosija.getHakemusOid());
           assertEquals(hakijaOid1, jonosija.getHakijaOid());
           assertEquals(2, jonosija.getHakutoiveprioriteetti());
-          assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+          assertEquals(1, jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos =
-              jonosija.getJarjestyskriteeritulokset().get(0);
+              jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("700.0"), jarjestyskriteeritulos.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
@@ -578,14 +554,14 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         }
 
         {
-          Jonosija jonosija = jono.getJonosijat().get(1);
+          Jonosija jonosija = jonot.get(1);
           assertEquals(hakemusOid2, jonosija.getHakemusOid());
           assertEquals(hakijaOid2, jonosija.getHakijaOid());
           assertEquals(1, jonosija.getHakutoiveprioriteetti());
-          assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+          assertEquals(1, jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos =
-              jonosija.getJarjestyskriteeritulokset().get(0);
+              jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("700.0"), jarjestyskriteeritulos.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
@@ -603,7 +579,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
       assertEquals(hakuOid, valinnanvaihe4.getHakuOid());
       assertEquals(hakukohdeOid2, valinnanvaihe4.getHakukohdeOid());
       assertEquals(1, valinnanvaihe4.getJarjestysnumero());
-      assertEquals(valinnanvaiheOid4, valinnanvaihe4.getValinnanvaiheOid());
+      assertEquals(valinnanvaiheOid4, valinnanvaihe4.getValinnanVaiheOid());
       assertEquals(1, valinnanvaihe4.getValintatapajonot().size());
 
       Comparator<Jonosija> jonosijaComparator = Comparator.comparing(Jonosija::getHakemusOid);
@@ -615,17 +591,19 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         assertEquals(valintatapajonoOid6, jono.getValintatapajonoOid());
 
         assertEquals(2, jono.getJonosijat().size());
-        Collections.sort(jono.getJonosijat(), jonosijaComparator);
+
+        List<Jonosija> jonot = jono.getJonosijatAsList();
+        jonot.sort(jonosijaComparator);
 
         {
-          Jonosija jonosija = jono.getJonosijat().get(0);
+          Jonosija jonosija = jonot.get(0);
           assertEquals(hakemusOid1, jonosija.getHakemusOid());
           assertEquals(hakijaOid1, jonosija.getHakijaOid());
           assertEquals(2, jonosija.getHakutoiveprioriteetti());
-          assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+          assertEquals(1, jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos =
-              jonosija.getJarjestyskriteeritulokset().get(0);
+              jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("800.0"), jarjestyskriteeritulos.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
@@ -637,14 +615,14 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
           assertNotNull(historia1.getHistoria());
         }
         {
-          Jonosija jonosija = jono.getJonosijat().get(1);
+          Jonosija jonosija = jonot.get(1);
           assertEquals(hakemusOid2, jonosija.getHakemusOid());
           assertEquals(hakijaOid2, jonosija.getHakijaOid());
           assertEquals(1, jonosija.getHakutoiveprioriteetti());
-          assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+          assertEquals(1, jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
           Jarjestyskriteeritulos jarjestyskriteeritulos =
-              jonosija.getJarjestyskriteeritulokset().get(0);
+              jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
           assertEquals(new BigDecimal("800.0"), jarjestyskriteeritulos.getArvo());
           assertEquals(
               JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, jarjestyskriteeritulos.getTila());
@@ -660,13 +638,14 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
   }
 
   @Test
-  @UsingDataSet(locations = "testViimeisinValinnanVaihe.json", loadStrategy = CLEAN_INSERT)
   public void testViimeisinValinnanVaihe() {
     final String hakemusOid = "1.2.246.562.11.00000072753";
     final String hakukohdeOid = "1.2.246.562.5.91937845484";
     final String hakuOid = "1.2.246.562.5.2013080813081926341927";
     final String valinnanVaiheOid = "vv3";
     final String valintatapajonoOid = "jono1";
+
+    luoEdellinenVaihe(hakemusOid, hakukohdeOid, hakuOid);
 
     ValintaperusteetDTO vv3 =
         luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 2);
@@ -683,23 +662,23 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
 
     Valinnanvaihe vaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanVaiheOid);
     assertNotNull(vaihe);
-    assertEquals(valinnanVaiheOid, vaihe.getValinnanvaiheOid());
+    assertEquals(valinnanVaiheOid, vaihe.getValinnanVaiheOid());
     assertEquals(1, vaihe.getValintatapajonot().size());
 
     Valintatapajono jono = vaihe.getValintatapajonot().get(0);
     assertEquals(valintatapajonoOid, jono.getValintatapajonoOid());
     assertEquals(1, jono.getJonosijat().size());
 
-    Jonosija jonosija = jono.getJonosijat().get(0);
+    Jonosija jonosija = jono.getJonosijatAsList().get(0);
     assertEquals(hakemusOid, jonosija.getHakemusOid());
-    assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+    assertEquals(1, jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
-    Jarjestyskriteeritulos tulos = jonosija.getJarjestyskriteeritulokset().get(0);
+    Jarjestyskriteeritulos tulos =
+        jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
     assertEquals(JarjestyskriteerituloksenTila.HYLATTY, tulos.getTila());
   }
 
   @Test
-  @UsingDataSet(locations = "testViimeisinValinnanVaihe.json", loadStrategy = CLEAN_INSERT)
   public void testPoistaHylatyt() {
     final String hakemusOid = "1.2.246.562.11.00000072753"; // Hylätty edellisessä vaiheessa
     final String hakemusOid2 = "1.2.246.562.11.00000072672";
@@ -707,6 +686,8 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
     final String hakuOid = "1.2.246.562.5.2013080813081926341927";
     final String valinnanVaiheOid = "vv3";
     final String valintatapajonoOid = "jono1";
+
+    luoEdellinenVaihe(hakemusOid, hakukohdeOid, hakuOid);
 
     ValintaperusteetDTO vv3 =
         luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 2);
@@ -726,23 +707,23 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
 
     Valinnanvaihe vaihe = valinnanvaiheDAO.haeValinnanvaihe(valinnanVaiheOid);
     assertNotNull(vaihe);
-    assertEquals(valinnanVaiheOid, vaihe.getValinnanvaiheOid());
+    assertEquals(valinnanVaiheOid, vaihe.getValinnanVaiheOid());
     assertEquals(1, vaihe.getValintatapajonot().size());
 
     Valintatapajono jono = vaihe.getValintatapajonot().get(0);
     assertEquals(valintatapajonoOid, jono.getValintatapajonoOid());
     assertEquals(1, jono.getJonosijat().size());
 
-    Jonosija jonosija = jono.getJonosijat().get(0);
+    Jonosija jonosija = jono.getJonosijatAsList().get(0);
     assertEquals(hakemusOid2, jonosija.getHakemusOid());
-    assertEquals(1, jonosija.getJarjestyskriteeritulokset().size());
+    assertEquals(1, jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.size());
 
-    Jarjestyskriteeritulos tulos = jonosija.getJarjestyskriteeritulokset().get(0);
+    Jarjestyskriteeritulos tulos =
+        jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
     assertEquals(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, tulos.getTila());
   }
 
   @Test
-  @UsingDataSet(locations = "voidaanHyvaksya.json", loadStrategy = CLEAN_INSERT)
   public void testValisijoitteluHylkaysHyvaksytty() {
 
     final String valinnanVaiheOid = "vv3";
@@ -751,6 +732,42 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
     final String hakukohdeOid = "1.2.246.562.20.66128426039";
     final String hakuOid = "1.2.246.562.29.173465377510";
     final String hakemusOid2 = "1.2.246.562.11.00001223556";
+    final String hakijaOid = "1.2.246.562.24.43656814814",
+        hakijaOid2 = "1.2.246.562.24.31678660760";
+
+    valinnanvaiheRepository.save(
+        TestEntityDataUtil.luoValinnanvaiheEntity(
+            hakuOid,
+            hakukohdeOid,
+            1,
+            "vv1",
+            Arrays.asList(
+                TestEntityDataUtil.luoValintatapaJonoEntity(
+                    0,
+                    Set.of(
+                        TestEntityDataUtil.luoHylattyJonosija(hakemusOid, hakijaOid),
+                        TestEntityDataUtil.luoHylattyJonosija(hakemusOid2, hakijaOid2)),
+                    "Ammattitutkinnolla ja ulkomaisella tutkinnolla hakevat",
+                    0,
+                    Tasasijasaanto.YLITAYTTO,
+                    "vtpj-1"),
+                TestEntityDataUtil.luoValintatapaJonoEntity(
+                    245,
+                    Set.of(
+                        TestEntityDataUtil.luoHylattyJonosijaValisijoittelussa(
+                            hakemusOid, hakijaOid),
+                        TestEntityDataUtil.luoHylattyJonosija(hakemusOid2, hakijaOid2)),
+                    "Ylioppilaat ja ammatillisella perustutkinnolla hakevat",
+                    1,
+                    Tasasijasaanto.YLITAYTTO,
+                    "vtpj-2"))));
+
+    valintakoeOsallistuminenRepository.save(
+        TestEntityDataUtil.luoValintakoeOsallistuminen(
+            hakemusOid, hakukohdeOid, hakuOid, hakijaOid, false));
+    valintakoeOsallistuminenRepository.save(
+        TestEntityDataUtil.luoValintakoeOsallistuminen(
+            hakemusOid2, hakukohdeOid, hakuOid, hakijaOid2, true));
 
     ValintaperusteetDTO vv3 =
         luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 3);
@@ -777,6 +794,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
             .findFirst()
             .get()
             .getJarjestyskriteeritulokset()
+            .jarjestyskriteeritulokset
             .get(0)
             .getTila());
     assertEquals(
@@ -786,6 +804,7 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
             .findFirst()
             .get()
             .getJarjestyskriteeritulokset()
+            .jarjestyskriteeritulokset
             .get(0)
             .getTila());
     assertEquals(
@@ -795,15 +814,13 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
             .findFirst()
             .get()
             .getJarjestyskriteeritulokset()
+            .jarjestyskriteeritulokset
             .get(0)
             .getKuvaus()
             .get("FI"));
   }
 
   @Test
-  @UsingDataSet(
-      locations = "toisessaKohteessaKoeJohonEiOsallistuta.json",
-      loadStrategy = CLEAN_INSERT)
   public void
       valisijoittelussaVoiTullaHyvaksytyksiVaikkaToiseltaKohteeltaEiLoytyisiKutsujaKaikkiinKohteenKokeisiin() {
     final String valinnanVaiheOid = "vv4";
@@ -811,6 +828,35 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
     final String hakemusOid = "1.2.246.562.11.00001212279";
     final String hakukohdeOid = "1.2.246.562.20.66128426039";
     final String hakuOid = "1.2.246.562.29.173465377510";
+    final String hakijaOid = "1.2.246.562.24.43656814814";
+
+    valinnanvaiheRepository.save(
+        TestEntityDataUtil.luoValinnanvaiheEntity(
+            hakuOid,
+            hakukohdeOid,
+            1,
+            "vv1",
+            Arrays.asList(
+                TestEntityDataUtil.luoValintatapaJonoEntity(
+                    0,
+                    Set.of(TestEntityDataUtil.luoHylattyJonosija(hakemusOid, hakijaOid)),
+                    "Ammattitutkinnolla ja ulkomaisella tutkinnolla hakevat",
+                    0,
+                    Tasasijasaanto.YLITAYTTO,
+                    "vtpj-1"),
+                TestEntityDataUtil.luoValintatapaJonoEntity(
+                    245,
+                    Set.of(
+                        TestEntityDataUtil.luoHylattyJonosijaValisijoittelussa(
+                            hakemusOid, hakijaOid)),
+                    "Ylioppilaat ja ammatillisella perustutkinnolla hakevat",
+                    1,
+                    Tasasijasaanto.YLITAYTTO,
+                    "vtpj-2"))));
+
+    valintakoeOsallistuminenRepository.save(
+        TestEntityDataUtil.luoValintakoeOsallistuminen(
+            hakemusOid, hakukohdeOid, hakuOid, hakijaOid, false));
 
     ValintaperusteetDTO vv3 =
         luoValintaperusteetJaTavallinenValinnanvaihe(hakuOid, hakukohdeOid, valinnanVaiheOid, 3);
@@ -832,17 +878,116 @@ public class ValintalaskentaSuorittajaServiceIntegrationTest {
         vaihe.getValintatapajonot().stream()
             .filter(j -> valintatapajonoOid.equals(j.getValintatapajonoOid()))
             .findFirst();
-    assertThat(jononTulos, isPresent());
+    assertTrue(jononTulos.isPresent());
 
     Optional<Jonosija> hakemuksenTulos =
         jononTulos.get().getJonosijat().stream()
             .filter(s -> hakemusOid.equals(s.getHakemusOid()))
             .findFirst();
-    assertThat(hakemuksenTulos, isPresent());
+    assertTrue(hakemuksenTulos.isPresent());
 
     List<Jarjestyskriteeritulos> jarjestyskriteeritulokset =
-        hakemuksenTulos.get().getJarjestyskriteeritulokset();
-    assertThat(jarjestyskriteeritulokset, hasSize(1));
+        hakemuksenTulos.get().getJarjestyskriteeritulokset().jarjestyskriteeritulokset;
+    assertEquals(1, jarjestyskriteeritulokset.size());
     assertEquals(HYVAKSYTTAVISSA, jarjestyskriteeritulokset.get(0).getTila());
+  }
+
+  private void luoEdellinenVaihe(String hakemusOid, String hakukohdeOid, String hakuOid) {
+    Valinnanvaihe edellinen =
+        TestEntityDataUtil.luoValinnanvaiheEntity(
+            hakuOid,
+            hakukohdeOid,
+            0,
+            "1388739479946-6344111160036037403",
+            List.of(
+                TestEntityDataUtil.luoValintatapaJonoEntity(
+                    10,
+                    Set.of(
+                        TestEntityDataUtil.luoJonosijaEntity(
+                            "1.2.246.562.11.00000072672",
+                            5,
+                            false,
+                            List.of(
+                                TestEntityDataUtil.luoJarjestyskriteeritulosEntity(
+                                    0.0, 0, HYVAKSYTTAVISSA))),
+                        TestEntityDataUtil.luoJonosijaEntity(
+                            hakemusOid,
+                            1,
+                            false,
+                            List.of(
+                                TestEntityDataUtil.luoJarjestyskriteeritulosEntity(
+                                    0.0, 0, HYLATTY))),
+                        TestEntityDataUtil.luoJonosijaEntity(
+                            "1.2.246.562.11.00000072740",
+                            3,
+                            false,
+                            List.of(
+                                TestEntityDataUtil.luoJarjestyskriteeritulosEntity(
+                                    0.0, 0, HYVAKSYTTAVISSA)))),
+                    "Harkinnanvaraisten käsittelyvaiheen valintatapajono",
+                    0,
+                    Tasasijasaanto.ARVONTA,
+                    "1388739480159-1173947553521563587")));
+    valinnanvaiheRepository.save(edellinen);
+
+    valintakoeOsallistuminenRepository.save(
+        TestEntityDataUtil.luoValintakoeOsallistuminen(
+            hakuOid,
+            "keijon-oidi",
+            hakemusOid,
+            Set.of(
+                TestEntityDataUtil.luoHakutoiveEntity(
+                    hakukohdeOid,
+                    Set.of(
+                        TestEntityDataUtil.luoValintakoeValinnanvaiheEntity(
+                            1,
+                            "13887394798212581302211576347831",
+                            List.of(
+                                TestEntityDataUtil.luoValintakoeEntity(
+                                    "13887394815186315041955335611484",
+                                    "kielikoe_tunniste",
+                                    Osallistuminen.EI_OSALLISTU,
+                                    true,
+                                    "HYVAKSYTTAVISSA"))))))));
+
+    valintakoeOsallistuminenRepository.save(
+        TestEntityDataUtil.luoValintakoeOsallistuminen(
+            hakuOid,
+            "valtsun-oidi",
+            "1.2.246.562.11.00000072672",
+            Set.of(
+                TestEntityDataUtil.luoHakutoiveEntity(
+                    hakukohdeOid,
+                    Set.of(
+                        TestEntityDataUtil.luoValintakoeValinnanvaiheEntity(
+                            1,
+                            "13887394798212581302211576347831",
+                            List.of(
+                                TestEntityDataUtil.luoValintakoeEntity(
+                                    "13887394815186315041955335611484",
+                                    "kielikoe_tunniste",
+                                    Osallistuminen.OSALLISTUU,
+                                    true,
+                                    "HYVAKSYTTAVISSA"))))))));
+
+    valintakoeOsallistuminenRepository.save(
+        TestEntityDataUtil.luoValintakoeOsallistuminen(
+            hakuOid,
+            "ullan-oidi",
+            "1.2.246.562.11.00000072740",
+            Set.of(
+                TestEntityDataUtil.luoHakutoiveEntity(
+                    hakukohdeOid,
+                    Set.of(
+                        TestEntityDataUtil.luoValintakoeValinnanvaiheEntity(
+                            1,
+                            "13887394798212581302211576347831",
+                            List.of(
+                                TestEntityDataUtil.luoValintakoeEntity(
+                                    "13887394815186315041955335611484",
+                                    "kielikoe_tunniste",
+                                    Osallistuminen.OSALLISTUU,
+                                    true,
+                                    "HYVAKSYTTAVISSA"))))))));
   }
 }

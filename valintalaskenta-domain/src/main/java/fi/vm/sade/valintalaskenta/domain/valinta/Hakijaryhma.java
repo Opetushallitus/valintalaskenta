@@ -1,109 +1,60 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import java.util.*;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceCreator;
 
-@Entity(value = "Hakijaryhma", noClassnameStored = true)
 public class Hakijaryhma {
-  public static final int CURRENT_SCHEMA_VERSION = 2;
 
-  @Id private ObjectId id;
+  @Id public UUID id;
 
-  private int schemaVersion = CURRENT_SCHEMA_VERSION;
+  public String hakijaryhmaOid;
 
-  @Indexed private String hakijaryhmaOid;
+  public int prioriteetti;
 
-  private int prioriteetti;
+  public Date createdAt = new Date();
 
-  private Date createdAt;
+  public String hakukohdeOid;
 
-  @Indexed(unique = false, dropDups = false)
-  private String hakukohdeOid;
+  public String nimi;
 
-  private String nimi;
+  public String kuvaus;
 
-  private String kuvaus;
+  public int kiintio;
 
-  private int kiintio;
+  public boolean kaytaKaikki;
 
-  private boolean kaytaKaikki;
+  public boolean tarkkaKiintio;
+  public boolean kaytetaanRyhmaanKuuluvia;
 
-  private boolean tarkkaKiintio;
+  public String hakijaryhmatyyppiKoodiuri;
 
-  private boolean kaytetaanRyhmaanKuuluvia;
+  public String valintatapajonoOid;
 
-  private String hakijaryhmatyyppikoodiUri;
+  public final Set<Jonosija> jonosija = new HashSet<>();
 
-  private String valintatapajonoOid;
-
-  private List<ObjectId> jonosijaIdt;
-
-  @Transient private List<Jonosija> jonosijat = new ArrayList<>();
-
-  @PrePersist
-  private void prePersist() {
-    createdAt = new Date();
+  @PersistenceCreator
+  public Hakijaryhma(Collection<Jonosija> jonosija) {
+    this.jonosija.addAll(jonosija);
   }
 
-  public void setId(ObjectId id) {
+  public Hakijaryhma() {}
+
+  public void setJonosija(Collection<Jonosija> jonosija) {
+    this.jonosija.clear();
+    this.jonosija.addAll(jonosija);
+  }
+
+  public UUID getId() {
+    return id;
+  }
+
+  public void setId(UUID id) {
     this.id = id;
-  }
-
-  public int getSchemaVersion() {
-    return schemaVersion;
-  }
-
-  public void setSchemaVersion(int schemaVersion) {
-    this.schemaVersion = schemaVersion;
   }
 
   public Date getCreatedAt() {
     return createdAt;
-  }
-
-  public void setCreatedAt(Date createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  public String getHakukohdeOid() {
-    return hakukohdeOid;
-  }
-
-  public void setHakukohdeOid(String hakukohdeOid) {
-    this.hakukohdeOid = hakukohdeOid;
-  }
-
-  public String getNimi() {
-    return nimi;
-  }
-
-  public void setNimi(String nimi) {
-    this.nimi = nimi;
-  }
-
-  public String getHakijaryhmaOid() {
-    return hakijaryhmaOid;
-  }
-
-  public void setHakijaryhmaOid(String hakijaryhmaOid) {
-    this.hakijaryhmaOid = hakijaryhmaOid;
-  }
-
-  public int getPrioriteetti() {
-    return prioriteetti;
-  }
-
-  public void setPrioriteetti(int prioriteetti) {
-    this.prioriteetti = prioriteetti;
-  }
-
-  public String getKuvaus() {
-    return kuvaus;
-  }
-
-  public void setKuvaus(String kuvaus) {
-    this.kuvaus = kuvaus;
   }
 
   public int getKiintio() {
@@ -114,28 +65,56 @@ public class Hakijaryhma {
     this.kiintio = kiintio;
   }
 
-  public boolean isKaytaKaikki() {
-    return kaytaKaikki;
+  public int getPrioriteetti() {
+    return prioriteetti;
   }
 
-  public void setKaytaKaikki(boolean kaytaKaikki) {
-    this.kaytaKaikki = kaytaKaikki;
+  public void setPrioriteetti(int prioriteetti) {
+    this.prioriteetti = prioriteetti;
   }
 
-  public boolean isTarkkaKiintio() {
-    return tarkkaKiintio;
+  public Set<Jonosija> getJonosijat() {
+    return jonosija;
   }
 
-  public void setTarkkaKiintio(boolean tarkkaKiintio) {
-    this.tarkkaKiintio = tarkkaKiintio;
+  public String getHakijaryhmaOid() {
+    return hakijaryhmaOid;
   }
 
-  public boolean isKaytetaanRyhmaanKuuluvia() {
-    return kaytetaanRyhmaanKuuluvia;
+  public void setHakijaryhmaOid(String hakijaryhmaOid) {
+    this.hakijaryhmaOid = hakijaryhmaOid;
   }
 
-  public void setKaytetaanRyhmaanKuuluvia(boolean kaytetaanRyhmaanKuuluvia) {
-    this.kaytetaanRyhmaanKuuluvia = kaytetaanRyhmaanKuuluvia;
+  public String getHakijaryhmatyyppiKoodiuri() {
+    return hakijaryhmatyyppiKoodiuri;
+  }
+
+  public void setHakijaryhmatyyppiKoodiuri(String hakijaryhmatyyppiKoodiuri) {
+    this.hakijaryhmatyyppiKoodiuri = hakijaryhmatyyppiKoodiuri;
+  }
+
+  public String getHakukohdeOid() {
+    return hakukohdeOid;
+  }
+
+  public void setHakukohdeOid(String hakukohdeOid) {
+    this.hakukohdeOid = hakukohdeOid;
+  }
+
+  public String getKuvaus() {
+    return kuvaus;
+  }
+
+  public void setKuvaus(String kuvaus) {
+    this.kuvaus = kuvaus;
+  }
+
+  public String getNimi() {
+    return nimi;
+  }
+
+  public void setNimi(String nimi) {
+    this.nimi = nimi;
   }
 
   public String getValintatapajonoOid() {
@@ -146,33 +125,31 @@ public class Hakijaryhma {
     this.valintatapajonoOid = valintatapajonoOid;
   }
 
-  public List<ObjectId> getJonosijaIdt() {
-    return jonosijaIdt == null ? new ArrayList<>() : jonosijaIdt;
+  public boolean isKaytaKaikki() {
+    return kaytaKaikki;
   }
 
-  public void setJonosijaIdt(List<ObjectId> jonosijaIdt) {
-    this.jonosijaIdt = jonosijaIdt;
+  public boolean isKaytetaanRyhmaanKuuluvia() {
+    return kaytetaanRyhmaanKuuluvia;
   }
 
-  public List<Jonosija> getJonosijat() {
-    if (null == jonosijat) {
-      throw new IllegalStateException(
-          String.format(
-              "Jonosijat not loaded for hakijaryhma %s with jonosijaids %s",
-              hakijaryhmaOid, jonosijaIdt));
-    }
-    return jonosijat;
+  public boolean isTarkkaKiintio() {
+    return tarkkaKiintio;
   }
 
-  public void setJonosijat(List<Jonosija> jonosijat) {
-    this.jonosijat = jonosijat;
+  public void setCreatedAt(Date createdAt) {
+    this.createdAt = createdAt;
   }
 
-  public String getHakijaryhmatyyppikoodiUri() {
-    return hakijaryhmatyyppikoodiUri;
+  public void setKaytaKaikki(boolean kaytaKaikki) {
+    this.kaytaKaikki = kaytaKaikki;
   }
 
-  public void setHakijaryhmatyyppikoodiUri(String hakijaryhmatyyppikoodiUri) {
-    this.hakijaryhmatyyppikoodiUri = hakijaryhmatyyppikoodiUri;
+  public void setKaytetaanRyhmaanKuuluvia(boolean kaytetaanRyhmaanKuuluvia) {
+    this.kaytetaanRyhmaanKuuluvia = kaytetaanRyhmaanKuuluvia;
+  }
+
+  public void setTarkkaKiintio(boolean tarkkaKiintio) {
+    this.tarkkaKiintio = tarkkaKiintio;
   }
 }

@@ -1,38 +1,16 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao;
 
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.data.util.Streamable;
 
-/** User: wuoti Date: 7.5.2013 Time: 9.19 */
-@ContextConfiguration(locations = "classpath:application-context-test.xml")
-@RunWith(SpringJUnit4ClassRunner.class)
-@TestExecutionListeners(
-    listeners = {
-      DependencyInjectionTestExecutionListener.class,
-      DirtiesContextTestExecutionListener.class
-    })
-public class ValintakoeOsallistuminenDAOTest {
-
-  @Rule public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test");
-
-  @Autowired private ApplicationContext applicationContext;
+public class ValintakoeOsallistuminenDAOTest extends AbstractIntegrationTest {
 
   @Autowired private ValintakoeOsallistuminenDAO valintakoeOsallistuminenDAO;
 
@@ -41,10 +19,7 @@ public class ValintakoeOsallistuminenDAOTest {
     Valintakoe valintakoe = new Valintakoe();
     valintakoe.setValintakoeOid(valintakoeOid);
     valintakoe.setValintakoeTunniste(valintakoetunniste);
-
-    OsallistuminenTulos osallistuminenTulos = new OsallistuminenTulos();
-    osallistuminenTulos.setOsallistuminen(osallistuminen);
-    valintakoe.setOsallistuminenTulos(osallistuminenTulos);
+    valintakoe.setOsallistuminen(osallistuminen);
 
     return valintakoe;
   }
@@ -52,7 +27,7 @@ public class ValintakoeOsallistuminenDAOTest {
   private static ValintakoeValinnanvaihe luoValinnanVaihe(
       String valinnanVaiheOid, int valinnanVaiheJarjestysluku) {
     ValintakoeValinnanvaihe valinnanVaihe = new ValintakoeValinnanvaihe();
-    valinnanVaihe.setValinnanVaiheOid(valinnanVaiheOid);
+    valinnanVaihe.setValinnanvaiheOid(valinnanVaiheOid);
     valinnanVaihe.setValinnanVaiheJarjestysluku(valinnanVaiheJarjestysluku);
     return valinnanVaihe;
   }
@@ -90,7 +65,7 @@ public class ValintakoeOsallistuminenDAOTest {
                   k % 2 == 0 ? Osallistuminen.EI_OSALLISTU : Osallistuminen.OSALLISTUU);
           vaihe.getValintakokeet().add(koe);
         }
-        hakutoive.getValinnanVaiheet().add(vaihe);
+        hakutoive.getValintakoeValinnanvaiheet().add(vaihe);
       }
       osallistuminen.getHakutoiveet().add(hakutoive);
     }
@@ -99,9 +74,8 @@ public class ValintakoeOsallistuminenDAOTest {
   }
 
   @Test
-  @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
   public void testCreateAndReadByHakuOidAndHakemusOid() {
-    assertEquals(0, valintakoeOsallistuminenDAO.readAll().size());
+    assertEquals(0, Streamable.of(valintakoeOsallistuminenRepository.findAll()).toList().size());
 
     String hakuOid = "hakuOid";
 
@@ -119,7 +93,7 @@ public class ValintakoeOsallistuminenDAOTest {
 
     valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen1);
     valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen2);
-    assertEquals(2, valintakoeOsallistuminenDAO.readAll().size());
+    assertEquals(2, Streamable.of(valintakoeOsallistuminenRepository.findAll()).toList().size());
 
     ValintakoeOsallistuminen haettu1 =
         valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(hakuOid, hakemusOid1);
@@ -133,17 +107,18 @@ public class ValintakoeOsallistuminenDAOTest {
   }
 
   @Test
-  @UsingDataSet(
-      locations = "testEdellinenOsallistuminen.json",
-      loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
   public void testHaeEdeltavaValinnanvaihe() {
-    assertNotNull(
-        valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid1", "hakuKohdeOid1", 1));
-    assertNull(
-        valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid1", "hakuKohdeOid2", 1));
-    assertNotNull(
-        valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid1", "hakuKohdeOid1", 6));
-    assertNotNull(
-        valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe("hakuOid1", "hakuKohdeOid4", 3));
+    ValintakoeOsallistuminen osallistuminen =
+        luoTestiOsallistuminen("hakemusOid1", "hakijaOid1", "hakuOid");
+    valintakoeOsallistuminenDAO.createOrUpdate(osallistuminen);
+    assertTrue(
+        valintakoeOsallistuminenDAO.onkoEdeltavaValinnanvaiheOlemassa("hakuOid", "hakutoive1", 2));
+    assertFalse(
+        valintakoeOsallistuminenDAO.onkoEdeltavaValinnanvaiheOlemassa(
+            "hakuOid", "hakuKohdeOid2", 2));
+    assertTrue(
+        valintakoeOsallistuminenDAO.onkoEdeltavaValinnanvaiheOlemassa("hakuOid", "hakutoive2", 4));
+    assertTrue(
+        valintakoeOsallistuminenDAO.onkoEdeltavaValinnanvaiheOlemassa("hakuOid", "hakutoive3", 3));
   }
 }

@@ -86,8 +86,7 @@ public class ValintatapajonoResourceImpl {
   @Operation(summary = "Muokkaa jonosijaa")
   @DeleteMapping(
       value = "/{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/jonosija",
-      produces = MediaType.APPLICATION_JSON_VALUE,
-      consumes = MediaType.APPLICATION_JSON_VALUE)
+      produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<MuokattuJonosijaDTO> poistaMuokattuJonosija(
       @Parameter(name = "valintatapajonoOid", required = true) @PathVariable("valintatapajonoOid")
           final String valintatapajonoOid,

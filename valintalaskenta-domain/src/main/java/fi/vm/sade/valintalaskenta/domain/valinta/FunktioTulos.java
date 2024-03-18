@@ -1,15 +1,29 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import org.mongodb.morphia.annotations.Embedded;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Embedded
 public class FunktioTulos {
+
+  @JsonProperty("tunniste")
   private String tunniste;
+
+  @JsonProperty("arvo")
   private String arvo;
+
+  @JsonProperty("nimiFi")
   private String nimiFi;
+
+  @JsonProperty("nimiSv")
   private String nimiSv;
+
+  @JsonProperty("nimiEn")
   private String nimiEn;
+
+  @JsonProperty("omaopintopolku")
   private boolean omaopintopolku;
+
+  public FunktioTulos() {}
+  ;
 
   public String getTunniste() {
     return tunniste;

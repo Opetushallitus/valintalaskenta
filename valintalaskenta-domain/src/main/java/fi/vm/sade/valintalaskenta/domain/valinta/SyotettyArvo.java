@@ -1,19 +1,35 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import org.mongodb.morphia.annotations.Embedded;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Embedded
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SyotettyArvo {
+
+  @JsonProperty("tunniste")
   private String tunniste;
+
+  @JsonProperty("arvo")
   private String arvo;
+
+  @JsonProperty("laskennallinenArvo")
   private String laskennallinenArvo;
+
+  @JsonProperty("osallistuminen")
   private String osallistuminen;
+
+  @JsonProperty("tyypinKoodiUri")
   private String tyypinKoodiUri;
+
+  @JsonProperty("tilastoidaan")
   private boolean tilastoidaan;
 
   public String getTunniste() {
     return tunniste;
   }
+
+  public SyotettyArvo() {}
+  ;
 
   public void setTunniste(String tunniste) {
     this.tunniste = tunniste;

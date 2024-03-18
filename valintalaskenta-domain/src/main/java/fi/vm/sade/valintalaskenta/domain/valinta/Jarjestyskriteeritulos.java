@@ -1,30 +1,42 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import fi.vm.sade.valintalaskenta.domain.converter.BigDecimalConverter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Converters;
-import org.mongodb.morphia.annotations.Embedded;
 
-@Embedded
-@Converters(BigDecimalConverter.class)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Jarjestyskriteeritulos {
 
+  @JsonProperty("prioriteetti")
   private int prioriteetti;
 
+  @JsonProperty("arvo")
   private BigDecimal arvo;
 
+  @JsonProperty("tila")
   private JarjestyskriteerituloksenTila tila;
 
-  private Map<String, String> kuvaus;
+  @JsonProperty("kuvausFI")
+  private String kuvausFI = "";
 
+  @JsonProperty("kuvausSV")
+  private String kuvausSV = "";
+
+  @JsonProperty("kuvausEN")
+  private String kuvausEN = "";
+
+  @JsonProperty("nimi")
   private String nimi;
 
+  @JsonProperty("tekninenKuvaus")
   private String tekninenKuvaus;
 
-  private ObjectId historia;
+  @JsonProperty("historia")
+  private UUID historia;
 
   public int getPrioriteetti() {
     return prioriteetti;
@@ -50,14 +62,6 @@ public class Jarjestyskriteeritulos {
     this.tila = tila;
   }
 
-  public ObjectId getHistoria() {
-    return historia;
-  }
-
-  public void setHistoria(ObjectId historia) {
-    this.historia = historia;
-  }
-
   public String getNimi() {
     return nimi;
   }
@@ -67,11 +71,23 @@ public class Jarjestyskriteeritulos {
   }
 
   public Map<String, String> getKuvaus() {
+    Map<String, String> kuvaus = new HashMap<>();
+    if (getKuvausFI() != null) {
+      kuvaus.put("FI", getKuvausFI());
+    }
+    if (getKuvausSV() != null) {
+      kuvaus.put("SV", getKuvausSV());
+    }
+    if (getKuvausEN() != null) {
+      kuvaus.put("EN", getKuvausEN());
+    }
     return kuvaus;
   }
 
   public void setKuvaus(Map<String, String> kuvaus) {
-    this.kuvaus = kuvaus;
+    this.setKuvausFI(kuvaus.get("FI"));
+    this.setKuvausEN(kuvaus.get("EN"));
+    this.setKuvausSV(kuvaus.get("SV"));
   }
 
   public String getTekninenKuvaus() {
@@ -85,5 +101,37 @@ public class Jarjestyskriteeritulos {
   @Override
   public String toString() {
     return ToStringBuilder.reflectionToString(this);
+  }
+
+  public String getKuvausEN() {
+    return kuvausEN;
+  }
+
+  public void setKuvausEN(String kuvausEn) {
+    this.kuvausEN = kuvausEn;
+  }
+
+  public String getKuvausFI() {
+    return kuvausFI;
+  }
+
+  public void setKuvausFI(String kuvausFI) {
+    this.kuvausFI = kuvausFI;
+  }
+
+  public String getKuvausSV() {
+    return kuvausSV;
+  }
+
+  public void setKuvausSV(String kuvausSV) {
+    this.kuvausSV = kuvausSV;
+  }
+
+  public UUID getHistoria() {
+    return historia;
+  }
+
+  public void setHistoria(UUID historia) {
+    this.historia = historia;
   }
 }
