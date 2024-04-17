@@ -1,50 +1,37 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Field;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Index;
-import org.mongodb.morphia.annotations.IndexOptions;
-import org.mongodb.morphia.annotations.Indexed;
-import org.mongodb.morphia.annotations.Indexes;
-import org.mongodb.morphia.annotations.PrePersist;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceCreator;
+import org.springframework.data.relational.core.mapping.Table;
 
-@Entity("ValintakoeOsallistuminen")
-@Indexes({
-  @Index(
-      fields = {@Field("hakuOid")},
-      options = @IndexOptions(name = "idx_haku"))
-})
+@Table("valintakoe_osallistuminen")
 public class ValintakoeOsallistuminen {
-  @Id private ObjectId id;
+  @Id private UUID id;
 
   private String hakuOid;
 
-  @Indexed(unique = true)
   private String hakemusOid;
 
-  @Indexed(unique = false)
   private String hakijaOid;
 
-  private String etunimi;
+  private Date createdAt = new Date();
 
-  private String sukunimi;
+  private final Set<Hakutoive> hakutoiveet = new HashSet<>();
 
-  private Date createdAt;
+  public ValintakoeOsallistuminen() {}
 
-  @Embedded private List<Hakutoive> hakutoiveet = new ArrayList<>();
+  @PersistenceCreator
+  public ValintakoeOsallistuminen(Set<Hakutoive> hakutoiveet) {
+    this.hakutoiveet.addAll(hakutoiveet);
+  }
 
-  public ObjectId getId() {
+  public UUID getId() {
     return id;
   }
 
-  public void setId(ObjectId id) {
+  public void setId(UUID id) {
     this.id = id;
   }
 
@@ -72,17 +59,17 @@ public class ValintakoeOsallistuminen {
     this.hakijaOid = hakijaOid;
   }
 
-  public List<Hakutoive> getHakutoiveet() {
+  public Set<Hakutoive> getHakutoiveet() {
     return hakutoiveet;
   }
 
-  public void setHakutoiveet(List<Hakutoive> hakutoiveet) {
-    this.hakutoiveet = hakutoiveet;
+  public List<Hakutoive> getHakutoiveetAsList() {
+    return new ArrayList<>(hakutoiveet);
   }
 
-  @PrePersist
-  private void prePersist() {
-    createdAt = new Date();
+  public void setHakutoiveet(Set<Hakutoive> hakutoiveet) {
+    this.hakutoiveet.clear();
+    this.hakutoiveet.addAll(hakutoiveet);
   }
 
   public Date getCreatedAt() {
@@ -91,22 +78,6 @@ public class ValintakoeOsallistuminen {
 
   public void setCreatedAt(Date createdAt) {
     this.createdAt = createdAt;
-  }
-
-  public String getSukunimi() {
-    return sukunimi;
-  }
-
-  public void setSukunimi(String sukunimi) {
-    this.sukunimi = sukunimi;
-  }
-
-  public String getEtunimi() {
-    return etunimi;
-  }
-
-  public void setEtunimi(String etunimi) {
-    this.etunimi = etunimi;
   }
 
   @Override

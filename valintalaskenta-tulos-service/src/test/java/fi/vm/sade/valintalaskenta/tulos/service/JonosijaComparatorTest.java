@@ -1,28 +1,19 @@
 package fi.vm.sade.valintalaskenta.tulos.service;
 
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverter;
+import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverterImpl;
 import java.util.List;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
+import org.junit.jupiter.api.Test;
 
-/**
- * Created with IntelliJ IDEA. User: kkammone
- *
- * <p>Date: 7.6.2013 Time: 9:18 To change this template use File | Settings | File Templates.
- */
-@ContextConfiguration(locations = "classpath:application-context-test.xml")
-@RunWith(org.springframework.test.context.junit4.SpringJUnit4ClassRunner.class)
-@UsingDataSet
 public class JonosijaComparatorTest {
 
-  @Autowired private ValintatulosConverter valintatulosConverter;
+  private ValintatulosConverter valintatulosConverter = new ValintatulosConverterImpl();
 
   @Test
   public void testComparator() {
@@ -55,8 +46,8 @@ public class JonosijaComparatorTest {
     s0t1.setPrioriteetti(1);
     s0t2.setArvo(new java.math.BigDecimal("2"));
     s0t2.setPrioriteetti(2);
-    sija0.getJarjestyskriteeritulokset().add(s0t1);
-    sija0.getJarjestyskriteeritulokset().add(s0t2);
+    sija0.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.add(s0t1);
+    sija0.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.add(s0t2);
     s0t1.setTila(JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI);
     sija0.setHarkinnanvarainen(true);
 
@@ -66,8 +57,8 @@ public class JonosijaComparatorTest {
     s1t1.setPrioriteetti(1);
     s1t2.setArvo(new java.math.BigDecimal("2"));
     s1t2.setPrioriteetti(2);
-    sija1.getJarjestyskriteeritulokset().add(s1t1);
-    sija1.getJarjestyskriteeritulokset().add(s1t1);
+    sija1.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.add(s1t1);
+    sija1.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.add(s1t1);
 
     Jarjestyskriteeritulos s2t1 = new Jarjestyskriteeritulos();
     Jarjestyskriteeritulos s2t2 = new Jarjestyskriteeritulos();
@@ -75,8 +66,8 @@ public class JonosijaComparatorTest {
     s2t1.setPrioriteetti(1);
     s2t2.setArvo(new java.math.BigDecimal("2"));
     s2t2.setPrioriteetti(2);
-    sija2.getJarjestyskriteeritulokset().add(s2t1);
-    sija2.getJarjestyskriteeritulokset().add(s2t2);
+    sija2.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.add(s2t1);
+    sija2.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.add(s2t2);
 
     Jarjestyskriteeritulos s3t1 = new Jarjestyskriteeritulos();
     Jarjestyskriteeritulos s3t2 = new Jarjestyskriteeritulos();
@@ -84,8 +75,8 @@ public class JonosijaComparatorTest {
     s3t1.setPrioriteetti(1);
     s3t2.setArvo(new java.math.BigDecimal("1"));
     s3t2.setPrioriteetti(2);
-    sija3.getJarjestyskriteeritulokset().add(s3t1);
-    sija3.getJarjestyskriteeritulokset().add(s3t2);
+    sija3.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.add(s3t1);
+    sija3.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.add(s3t2);
 
     Jarjestyskriteeritulos s4t1 = new Jarjestyskriteeritulos();
     Jarjestyskriteeritulos s4t2 = new Jarjestyskriteeritulos();
@@ -93,8 +84,8 @@ public class JonosijaComparatorTest {
     s4t1.setPrioriteetti(1);
     s4t2.setArvo(new java.math.BigDecimal("1"));
     s4t2.setPrioriteetti(2);
-    sija4.getJarjestyskriteeritulokset().add(s4t1);
-    sija4.getJarjestyskriteeritulokset().add(s4t2);
+    sija4.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.add(s4t1);
+    sija4.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.add(s4t2);
 
     Jarjestyskriteeritulos s5t1 = new Jarjestyskriteeritulos();
     Jarjestyskriteeritulos s5t2 = new Jarjestyskriteeritulos();
@@ -103,8 +94,8 @@ public class JonosijaComparatorTest {
     s5t2.setArvo(new java.math.BigDecimal("1000"));
     s5t2.setPrioriteetti(2);
     s5t1.setTila(JarjestyskriteerituloksenTila.HYLATTY);
-    sija5.getJarjestyskriteeritulokset().add(s5t1);
-    sija5.getJarjestyskriteeritulokset().add(s5t2);
+    sija5.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.add(s5t1);
+    sija5.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.add(s5t2);
 
     for (Jonosija j : list) {
       System.out.println("Before sort: " + j.getHakemusOid());
@@ -117,9 +108,9 @@ public class JonosijaComparatorTest {
       System.out.println("After sort: " + j.getHakemusOid());
     }
 
-    org.junit.Assert.assertEquals(a.get(0).getHakemusOid(), sija0.getHakemusOid());
-    org.junit.Assert.assertEquals(a.get(1).getHakemusOid(), sija3.getHakemusOid());
-    org.junit.Assert.assertEquals(a.get(2).getHakemusOid(), sija4.getHakemusOid());
-    org.junit.Assert.assertEquals(a.get(5).getHakemusOid(), sija5.getHakemusOid());
+    assertEquals(a.get(0).getHakemusOid(), sija0.getHakemusOid());
+    assertEquals(a.get(1).getHakemusOid(), sija3.getHakemusOid());
+    assertEquals(a.get(2).getHakemusOid(), sija4.getHakemusOid());
+    assertEquals(a.get(5).getHakemusOid(), sija5.getHakemusOid());
   }
 }

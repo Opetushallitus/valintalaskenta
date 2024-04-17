@@ -1,20 +1,48 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
 import fi.vm.sade.service.valintaperusteet.dto.model.Koekutsu;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.mongodb.morphia.annotations.Embedded;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 
-@Embedded
 public class Valintakoe {
+
+  @Id private UUID id;
+
   private String valintakoeOid;
+
   private String valintakoeTunniste;
+
   private String nimi;
   private boolean aktiivinen;
-  private OsallistuminenTulos osallistuminenTulos;
+
+  private Osallistuminen osallistuminen;
+
   private boolean lahetetaankoKoekutsut;
+
   private Integer kutsuttavienMaara;
+
   private Koekutsu kutsunKohde = Koekutsu.YLIN_TOIVE;
+
   private String kutsunKohdeAvain;
+
+  private String kuvausFI;
+  private String kuvausEN;
+
+  private String kuvausSV;
+
+  private String laskentaTila;
+
+  private Boolean laskentaTulos;
+
+  private String tekninenKuvaus;
+
+  @Transient private ValintakoeValinnanvaihe valintakoeValinnanvaihe;
+
+  public Valintakoe() {}
 
   public boolean isAktiivinen() {
     return aktiivinen;
@@ -48,12 +76,12 @@ public class Valintakoe {
     this.valintakoeTunniste = valintakoeTunniste;
   }
 
-  public OsallistuminenTulos getOsallistuminenTulos() {
-    return osallistuminenTulos;
+  public Osallistuminen getOsallistuminen() {
+    return osallistuminen;
   }
 
-  public void setOsallistuminenTulos(OsallistuminenTulos osallistuminenTulos) {
-    this.osallistuminenTulos = osallistuminenTulos;
+  public void setOsallistuminen(Osallistuminen osallistuminen) {
+    this.osallistuminen = osallistuminen;
   }
 
   public boolean isLahetetaankoKoekutsut() {
@@ -88,8 +116,110 @@ public class Valintakoe {
     this.kutsunKohdeAvain = kutsunKohdeAvain;
   }
 
+  public UUID getId() {
+    return id;
+  }
+
+  public void setId(UUID id) {
+    this.id = id;
+  }
+
+  public String getKuvausFI() {
+    return kuvausFI;
+  }
+
+  public void setKuvausFI(String kuvausFI) {
+    this.kuvausFI = kuvausFI;
+  }
+
+  public String getKuvausSV() {
+    return kuvausSV;
+  }
+
+  public void setKuvausSV(String kuvausSV) {
+    this.kuvausSV = kuvausSV;
+  }
+
+  public String getKuvausEN() {
+    return kuvausEN;
+  }
+
+  public void setKuvausEN(String kuvausEN) {
+    this.kuvausEN = kuvausEN;
+  }
+
+  public Boolean getLaskentaTulos() {
+    return laskentaTulos;
+  }
+
+  public void setLaskentaTulos(Boolean laskentaTulos) {
+    this.laskentaTulos = laskentaTulos;
+  }
+
+  public String getLaskentaTila() {
+    return laskentaTila;
+  }
+
+  public void setLaskentaTila(String laskentatila) {
+    this.laskentaTila = laskentatila;
+  }
+
+  public String getTekninenKuvaus() {
+    return tekninenKuvaus;
+  }
+
+  public void setTekninenKuvaus(String tekninenKuvaus) {
+    this.tekninenKuvaus = tekninenKuvaus;
+  }
+
+  public Map<String, String> getKuvaus() {
+    Map<String, String> kuvaus = new HashMap<>();
+    if (getKuvausFI() != null) {
+      kuvaus.put("FI", getKuvausFI());
+    }
+    if (getKuvausSV() != null) {
+      kuvaus.put("SV", getKuvausSV());
+    }
+    if (getKuvausEN() != null) {
+      kuvaus.put("EN", getKuvausEN());
+    }
+    return kuvaus;
+  }
+
+  public void setKuvaus(Map<String, String> kuvaus) {
+    if (kuvaus != null) {
+      if (kuvaus.get("FI") != null) {
+        this.setKuvausFI(kuvaus.get("FI"));
+      }
+      if (kuvaus.get("SV") != null) {
+        this.setKuvausEN(kuvaus.get("EN"));
+      }
+      if (kuvaus.get("EN") != null) {
+        this.setKuvausSV(kuvaus.get("SV"));
+      }
+    }
+  }
+
+  public OsallistuminenTulos getOsallistuminenTulos() {
+    OsallistuminenTulos tulos = new OsallistuminenTulos();
+    tulos.setLaskentaTulos(getLaskentaTulos());
+    tulos.setOsallistuminen(getOsallistuminen());
+    tulos.setKuvaus(getKuvaus());
+    tulos.setLaskentaTila(getLaskentaTila());
+    tulos.setTekninenKuvaus(getTekninenKuvaus());
+    return tulos;
+  }
+
   @Override
   public String toString() {
     return ToStringBuilder.reflectionToString(this);
+  }
+
+  public void setOsallistuminenTulos(OsallistuminenTulos osallistuminenTulos) {
+    setLaskentaTulos(osallistuminenTulos.getLaskentaTulos());
+    setOsallistuminen(osallistuminenTulos.getOsallistuminen());
+    setKuvaus(osallistuminenTulos.getKuvaus());
+    setLaskentaTila(osallistuminenTulos.getLaskentaTila());
+    setTekninenKuvaus(osallistuminenTulos.getTekninenKuvaus());
   }
 }

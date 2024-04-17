@@ -1,9 +1,18 @@
 spring:
   main:
     allow-bean-definition-overriding: true
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
+
+valintalaskenta-laskenta-service:
+  postgresql:
+    url: jdbc:postgresql://localhost:5555/valintalaskenta
+    user: app
+    password: app
+    maxactive: 10
+    maxwait: 3000
+    leakdetectionthresholdmillis: 1800000
+    driver: org.postgresql.Driver
+  organisaatio-service:
+    url:
 
 springdoc:
   show-actuator: false
@@ -54,3 +63,42 @@ logging:
     org.springframework.web: info
     org.hibernate: info
     com.github.dockerjava: info
+
+host:
+  host-virkailija: "localhost"
+
+web:
+  url:
+    cas: ""
+
+cas:
+  url: ""
+  login: "http://localhost:8080/valintalaskenta-laskenta-service"
+  service:
+    valintaperusteet-service: ""
+    sijoittelu-service: ""
+
+valintalaskentakoostepalvelu:
+  app:
+    username:
+      to:
+        sijoittelu: username
+    password:
+      to:
+        sijoittelu: password
+  sijoittelu:
+    rest:
+      url: ""
+  valintaperusteet:
+    ilb:
+      url: ""
+
+root:
+  organisaatio:
+    oid: ""
+
+aws:
+  region: ""
+  bucket:
+    name: ""
+    oldversionname: ""

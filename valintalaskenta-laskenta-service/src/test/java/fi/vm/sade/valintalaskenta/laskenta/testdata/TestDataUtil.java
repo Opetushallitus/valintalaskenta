@@ -1,13 +1,13 @@
 package fi.vm.sade.valintalaskenta.laskenta.testdata;
 
 import fi.vm.sade.service.valintaperusteet.dto.*;
+import fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi;
 import fi.vm.sade.service.valintaperusteet.dto.model.Koekutsu;
 import fi.vm.sade.service.valintaperusteet.dto.model.ValinnanVaiheTyyppi;
 import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.AvainArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.HakukohdeValintakoeData;
 import java.util.*;
 
@@ -71,6 +71,7 @@ public abstract class TestDataUtil {
       String valinnanVaiheOid,
       int valinnanVaiheJarjestysluku) {
     ValintaperusteetDTO perusteet = luoValintaperusteet(hakuOid, hakukohdeOid);
+    perusteet.setTarjoajaOid("tarjoaja");
     perusteet.setValinnanVaihe(
         luoTavallinenValinnanvaihe(valinnanVaiheOid, valinnanVaiheJarjestysluku));
     return perusteet;
@@ -170,7 +171,7 @@ public abstract class TestDataUtil {
   public static ValintakoeDTO luoValintakoe(
       String valintakoeOid, String tunniste, Koekutsu kutsunKohde, String kutsunKohdeAvain) {
     ValintakoeDTO koe = new ValintakoeDTO();
-    koe.setFunktiokutsu(new FunktiokutsuDTO());
+    koe.setFunktiokutsu(luoFunktioKutsu());
     koe.setTunniste(tunniste);
     koe.setOid(UUID.randomUUID().toString());
     koe.setLahetetaankoKoekutsut(true);
@@ -179,6 +180,16 @@ public abstract class TestDataUtil {
     koe.setKutsunKohde(kutsunKohde);
     koe.setKutsunKohdeAvain(kutsunKohdeAvain);
     return koe;
+  }
+
+  public static FunktiokutsuDTO luoFunktioKutsu() {
+    FunktiokutsuDTO kutsu = new FunktiokutsuDTO();
+    kutsu.setFunktionimi(Funktionimi.LUKUARVO);
+    SyoteparametriDTO param = new SyoteparametriDTO();
+    param.setArvo("5");
+    param.setAvain("luku");
+    kutsu.setSyoteparametrit(Set.of(param));
+    return kutsu;
   }
 
   public static HakukohdeDTO luoHakukohdeDTO(String hakukohdeOid, int prioriteetti) {

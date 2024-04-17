@@ -10,8 +10,8 @@ import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoJarjestyskriteerei
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
 import java.util.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.util.StopWatch;
 
 /** User: wuoti Date: 4.9.2013 Time: 14.44 */
@@ -19,7 +19,7 @@ public class ValisijoitteluKasittelijaTest {
 
   private ValisijoitteluKasittelija valisijoitteluKasittelija;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     valisijoitteluKasittelija = new ValisijoitteluKasittelija();
   }

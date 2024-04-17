@@ -3,7 +3,6 @@ package fi.vm.sade.valintalaskenta.tulos.resource.impl;
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ_UPDATE_CRUD;
 
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.MinimalJonoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,18 +46,5 @@ public class HakuResourceImpl {
   public List<ValintakoeOsallistuminenDTO> valintakoevirheet(
       @PathVariable("hakuOid") final String hakuOid) {
     return tulosService.haeValintakoevirheetHaulle(hakuOid);
-  }
-
-  /**
-   * ODW needs to load hakukohde valinnanvaihees but calling the api separatedly for each hakukohde
-   * is too slow. Added an API which returns only minimal information for haku and contains a list
-   * of valintatulos from those valinnanvaihe, which are siirretty sijoitteluun.
-   */
-  @PreAuthorize(READ_UPDATE_CRUD)
-  @GetMapping(
-      value = "/ilmanvalintalaskentaasijoitteluun",
-      produces = MediaType.APPLICATION_JSON_VALUE)
-  public List<MinimalJonoDTO> jonotSijoitteluun() {
-    return tulosService.haeSijoittelunKayttamatJonotIlmanValintalaskentaa();
   }
 }

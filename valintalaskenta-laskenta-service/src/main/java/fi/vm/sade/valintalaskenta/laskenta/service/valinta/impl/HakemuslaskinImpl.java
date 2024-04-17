@@ -79,14 +79,14 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
 
     JonosijaJaSyotetytArvot jonosija =
         getJonosijaJaSyotetytArvot(laskettavaHakemus, jonosijatHakemusOidinMukaan, hakemus);
-    jonosija.getJonosija().getJarjestyskriteeritulokset().add(jktulos);
+    jonosija.getJonosija().getJarjestyskriteeritulokset().jarjestyskriteeritulokset.add(jktulos);
     jonosija.lisaaSyotetytArvot(tulos.getSyotetytArvot());
     jonosija.lisaaFunktioTulokset(tulos.getFunktioTulokset());
 
     Jarjestyskriteerihistoria jkhistoria = new Jarjestyskriteerihistoria();
     jkhistoria.setHistoria(tulos.getHistoria());
     jarjestyskriteerihistoriaDAO.create(jkhistoria);
-    jktulos.setHistoria(jkhistoria.getId());
+    jktulos.setHistoria(jkhistoria.getTunniste());
   }
 
   @Override
@@ -106,14 +106,14 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
 
     JonosijaJaSyotetytArvot jonosija =
         getJonosijaJaSyotetytArvot(laskettavaHakemus, jonosijatHakemusOidinMukaan, hakemus);
-    jonosija.getJonosija().getJarjestyskriteeritulokset().add(jktulos);
+    jonosija.getJonosija().getJarjestyskriteeritulokset().jarjestyskriteeritulokset.add(jktulos);
     jonosija.lisaaSyotetytArvot(tulos.getSyotetytArvot());
     jonosija.lisaaFunktioTulokset(tulos.getFunktioTulokset());
 
     Jarjestyskriteerihistoria jkhistoria = new Jarjestyskriteerihistoria();
     jkhistoria.setHistoria(tulos.getHistoria());
     jarjestyskriteerihistoriaDAO.create(jkhistoria);
-    jktulos.setHistoria(jkhistoria.getId());
+    jktulos.setHistoria(jkhistoria.getTunniste());
   }
 
   @Override
@@ -127,7 +127,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
       Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan,
       String jkNimi,
       int jarjestysnumero,
-      ValintakoeOsallistuminen edellinenOsallituminen) {
+      boolean edellinenValinnanvaiheOnOlemassa) {
     Laskentatulos<BigDecimal> tulos =
         laskentaService.suoritaValintalaskenta(
             hakukohde, laskettavaHakemus.getLaskentahakemus(), kaikkiHakemukset, lukuarvofunktio);
@@ -140,7 +140,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         jonosijatHakemusOidinMukaan,
         jkNimi,
         jarjestysnumero,
-        edellinenOsallituminen);
+        edellinenValinnanvaiheOnOlemassa);
   }
 
   @Override
@@ -154,7 +154,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
       Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan,
       String jkNimi,
       int jarjestysnumero,
-      ValintakoeOsallistuminen edellinenOsallistuminen) {
+      boolean edellinenValinnanvaiheOnOlemassa) {
     Laskentatulos<Boolean> tulos =
         laskentaService.suoritaValintalaskenta(
             hakukohde, laskettavaHakemus.getLaskentahakemus(), kaikkiHakemukset, totuusarvofunktio);
@@ -166,7 +166,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
         jonosijatHakemusOidinMukaan,
         jkNimi,
         jarjestysnumero,
-        edellinenOsallistuminen);
+        edellinenValinnanvaiheOnOlemassa);
   }
 
   private void muodostaTulos(
@@ -177,7 +177,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
       Map<String, JonosijaJaSyotetytArvot> jonosijatHakemusOidinMukaan,
       String jkNimi,
       int jarjestysnumero,
-      ValintakoeOsallistuminen edellinenOsallistuminen) {
+      boolean edellinenValinnanvaiheOnOlemassa) {
     HakemusDTO hakemus = laskettavaHakemus.getHakemusDTO();
     TilaJaSelite tilaJaSelite =
         edellinenValinnanvaiheKasittelija.tilaEdellisenValinnanvaiheenMukaan(
@@ -185,7 +185,11 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
     Tila.Tilatyyppi uusinTila = tulos.getTila().getTilatyyppi();
     boolean voidaanHyvaksya =
         isVoidaanHyvaksyaVaikkaHylattyValisijoittelussa(
-            edellinenVaihe, jarjestysnumero, hakemus, tilaJaSelite, edellinenOsallistuminen);
+            edellinenVaihe,
+            jarjestysnumero,
+            hakemus,
+            tilaJaSelite,
+            edellinenValinnanvaiheOnOlemassa);
 
     // Yliajetaan hylkäys, jos hylätty välisijoittelussa, mutta saanut koekutsun
     if (uusinTila.equals(Tila.Tilatyyppi.HYVAKSYTTAVISSA)
@@ -260,14 +264,14 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
 
     JonosijaJaSyotetytArvot jonosija =
         getJonosijaJaSyotetytArvot(laskettavaHakemus, jonosijatHakemusOidinMukaan, hakemus);
-    jonosija.getJonosija().getJarjestyskriteeritulokset().add(jktulos);
+    jonosija.getJonosija().getJarjestyskriteeritulokset().jarjestyskriteeritulokset.add(jktulos);
     jonosija.lisaaSyotetytArvot(tulos.getSyotetytArvot());
     jonosija.lisaaFunktioTulokset(tulos.getFunktioTulokset());
 
     Jarjestyskriteerihistoria jkhistoria = new Jarjestyskriteerihistoria();
     jkhistoria.setHistoria(tulos.getHistoria());
     jarjestyskriteerihistoriaDAO.create(jkhistoria);
-    jktulos.setHistoria(jkhistoria.getId());
+    jktulos.setHistoria(jkhistoria.getTunniste());
   }
 
   private JonosijaJaSyotetytArvot getJonosijaJaSyotetytArvot(
@@ -309,7 +313,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
       int jarjestysnumero,
       HakemusDTO hakemus,
       TilaJaSelite tilaJaSelite,
-      ValintakoeOsallistuminen edellinenOsallistuminen) {
+      boolean edellinenValinnanvaiheOnOlemassa) {
     boolean voidaanHyvaksya = false;
     final boolean hakijaHylatty =
         tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY)
@@ -317,7 +321,7 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
             && edellinenVaihe.getJarjestysnumero() != jarjestysnumero - 1;
     if (hakijaHylatty) {
       if (edellinenVaihe.hylattyValisijoittelussa(hakemus.getHakemusoid())) {
-        if (edellinenOsallistuminen != null) {
+        if (edellinenValinnanvaiheOnOlemassa) {
           ValintakoeOsallistuminen hakijanOsallistumiset =
               valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(
                   hakemus.getHakuoid(), hakemus.getHakemusoid());
@@ -348,12 +352,10 @@ public class HakemuslaskinImpl implements HakemuslaskinService {
   private Jonosija muodostaJonosija(
       HakemusDTO hakemus, int prioriteetti, boolean harkinnanvaraisuus) {
     Jonosija jonosija = new Jonosija();
-    jonosija.setEtunimi(hakemus.getEtunimi());
     jonosija.setHakemusOid(hakemus.getHakemusoid());
     jonosija.setHakijaOid(hakemus.getHakijaOid());
     jonosija.setHakutoiveprioriteetti(prioriteetti);
     jonosija.setHarkinnanvarainen(harkinnanvaraisuus);
-    jonosija.setSukunimi(hakemus.getSukunimi());
 
     return jonosija;
   }

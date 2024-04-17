@@ -1,20 +1,16 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
-import java.util.ArrayList;
-import java.util.List;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.*;
+import java.util.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceCreator;
+import org.springframework.data.annotation.Transient;
 
-@Entity(value = "Valintatapajono", noClassnameStored = true)
 public class Valintatapajono {
-  public static final int CURRENT_SCHEMA_VERSION = 2;
 
-  @Id private ObjectId id;
+  @Id private UUID id;
 
-  private int schemaVersion = CURRENT_SCHEMA_VERSION;
-
-  @Indexed private String valintatapajonoOid;
+  private String valintatapajonoOid;
 
   private String nimi;
 
@@ -22,9 +18,6 @@ public class Valintatapajono {
 
   private int aloituspaikat;
 
-  /**
-   * Valintaperusteissa ylläpidettävä tieto siitä, onko tätä jonoa ylipäätään tarkoitus sijoitella.
-   */
   private boolean siirretaanSijoitteluun;
 
   private Tasasijasaanto tasasijasaanto;
@@ -45,22 +38,25 @@ public class Valintatapajono {
 
   private Boolean kaytetaanKokonaispisteita;
 
-  private List<ObjectId> jonosijaIdt;
+  private Set<Jonosija> jonosija = new HashSet<>();
 
-  @Transient private List<Jonosija> jonosijat;
+  @Transient private Valinnanvaihe valinnanvaihe;
 
   private Long sijoitteluajoId;
 
-  public void setId(ObjectId id) {
+  public Valintatapajono() {}
+
+  @PersistenceCreator
+  public Valintatapajono(Set<Jonosija> jonosija) {
+    this.jonosija.addAll(jonosija);
+  }
+
+  public void setId(UUID id) {
     this.id = id;
   }
 
-  public int getSchemaVersion() {
-    return schemaVersion;
-  }
-
-  public void setSchemaVersion(int schemaVersion) {
-    this.schemaVersion = schemaVersion;
+  public UUID getId() {
+    return id;
   }
 
   public String getValintatapajonoOid() {
@@ -119,26 +115,21 @@ public class Valintatapajono {
     this.eiVarasijatayttoa = eiVarasijatayttoa;
   }
 
-  public List<ObjectId> getJonosijaIdt() {
-    return jonosijaIdt == null ? new ArrayList<>() : jonosijaIdt;
+  public Set<Jonosija> getJonosijat() {
+    return jonosija;
   }
 
-  public void setJonosijaIdt(List<ObjectId> jonosijaIdt) {
-    this.jonosijaIdt = jonosijaIdt;
+  public List<Jonosija> getJonosijatAsList() {
+    return new ArrayList<>(jonosija);
   }
 
-  public List<Jonosija> getJonosijat() {
-    if (null == jonosijat) {
-      throw new IllegalStateException(
-          String.format(
-              "Jonosijat not loaded for valintatapajono %s with jonosijaids %s",
-              valintatapajonoOid, jonosijaIdt));
+  public void setJonosijat(Set<Jonosija> jonosijat) {
+    if (jonosijat == null) {
+      this.jonosija = null;
+    } else {
+      this.jonosija.clear();
+      this.jonosija.addAll(jonosijat);
     }
-    return jonosijat;
-  }
-
-  public void setJonosijat(List<Jonosija> jonosijat) {
-    this.jonosijat = jonosijat;
   }
 
   public Boolean getKaikkiEhdonTayttavatHyvaksytaan() {
@@ -187,5 +178,13 @@ public class Valintatapajono {
 
   public void setSijoitteluajoId(Long sijoitteluajoId) {
     this.sijoitteluajoId = sijoitteluajoId;
+  }
+
+  public Valinnanvaihe getValinnanVaihe() {
+    return valinnanvaihe;
+  }
+
+  public void setValinnanVaihe(Valinnanvaihe valinnanVaihe) {
+    this.valinnanvaihe = valinnanVaihe;
   }
 }

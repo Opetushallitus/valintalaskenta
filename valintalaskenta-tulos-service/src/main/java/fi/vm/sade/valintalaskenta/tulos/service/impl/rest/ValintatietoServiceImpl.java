@@ -39,16 +39,14 @@ public class ValintatietoServiceImpl implements ValintatietoService {
       Set<String> tunnisteet = new HashSet<String>(valintakoeTunnisteet);
       for (ValintakoeOsallistuminen koetulos : valinnanvaiheet) {
         for (Hakutoive hakutoive : koetulos.getHakutoiveet()) {
-          for (ValintakoeValinnanvaihe vaihe : hakutoive.getValinnanVaiheet()) {
+          for (ValintakoeValinnanvaihe vaihe : hakutoive.getValintakoeValinnanvaiheet()) {
             HakemusOsallistuminenDTO h = new HakemusOsallistuminenDTO();
             h.setHakukohdeOid(hakutoive.getHakukohdeOid());
             for (Valintakoe valintakoe : vaihe.getValintakokeet()) {
               if (tunnisteet.contains(valintakoe.getValintakoeTunniste())) {
                 ValintakoeOsallistuminenDTO osallistuminen = new ValintakoeOsallistuminenDTO();
                 osallistuminen.setOsallistuminen(
-                    modelMapper.map(
-                        valintakoe.getOsallistuminenTulos().getOsallistuminen(),
-                        OsallistuminenDTO.class));
+                    modelMapper.map(valintakoe.getOsallistuminen(), OsallistuminenDTO.class));
                 osallistuminen.setValintakoeOid(valintakoe.getValintakoeOid());
                 osallistuminen.setValintakoeTunniste(valintakoe.getValintakoeTunniste());
                 osallistuminen.setNimi(valintakoe.getNimi());
@@ -59,8 +57,6 @@ public class ValintatietoServiceImpl implements ValintatietoService {
             // valintakoe hakemukselle!
             if (!h.getOsallistumiset().isEmpty()) {
               h.setLuontiPvm(koetulos.getCreatedAt());
-              h.setEtunimi(koetulos.getEtunimi());
-              h.setSukunimi(koetulos.getSukunimi());
               h.setHakemusOid(koetulos.getHakemusOid());
               osallistumiset.add(h);
             }

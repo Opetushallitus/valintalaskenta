@@ -4,7 +4,7 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 
 import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteerihistoriaDTO;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
-import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
+import fi.vm.sade.valintalaskenta.tulos.service.JarjestyskriteerihistoriaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,14 +28,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class JonosijaHistoriaResourceImpl {
   protected static final Logger logger =
       LoggerFactory.getLogger(JonosijaHistoriaResourceImpl.class);
-  private final ValintalaskentaTulosService tulosService;
+  private final JarjestyskriteerihistoriaService historiaService;
   private final ValintalaskentaModelMapper modelMapper;
 
   @Autowired
   public JonosijaHistoriaResourceImpl(
-      final ValintalaskentaTulosService tulosService,
+      final JarjestyskriteerihistoriaService historiaService,
       final ValintalaskentaModelMapper modelMapper) {
-    this.tulosService = tulosService;
+    this.historiaService = historiaService;
     this.modelMapper = modelMapper;
   }
 
@@ -50,7 +50,7 @@ public class JonosijaHistoriaResourceImpl {
       @Parameter(name = "hakemusOid", required = true) @PathVariable("hakemusOid")
           final String hakemusOid) {
     return modelMapper.mapList(
-        tulosService.haeJonosijaHistoria(valintatapajonoOid, hakemusOid),
+        historiaService.findByValintatapajonoAndHakemusOid(valintatapajonoOid, hakemusOid),
         JarjestyskriteerihistoriaDTO.class);
   }
 }

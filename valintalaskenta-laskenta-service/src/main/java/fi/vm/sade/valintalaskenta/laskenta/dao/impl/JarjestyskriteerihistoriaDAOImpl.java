@@ -2,35 +2,49 @@ package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.util.JarjestyskriteeriKooderi;
-import java.util.stream.Stream;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.Datastore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import fi.vm.sade.valintalaskenta.tulos.dao.repository.JarjestyskriteerihistoriaRepository;
+import java.util.List;
+import java.util.UUID;
+import org.springframework.stereotype.Service;
 
-@Repository("jonosijaHistoriaDAO")
+@Service
 public class JarjestyskriteerihistoriaDAOImpl implements JarjestyskriteerihistoriaDAO {
-  private static final Logger LOG = LoggerFactory.getLogger(JarjestyskriteerihistoriaDAOImpl.class);
-  @Autowired private Datastore datastore;
+
+  private final JarjestyskriteerihistoriaRepository repository;
+
+  public JarjestyskriteerihistoriaDAOImpl(
+      JarjestyskriteerihistoriaRepository jarjestyskriteerihistoriaRepository) {
+    this.repository = jarjestyskriteerihistoriaRepository;
+  }
 
   @Override
   public void create(Jarjestyskriteerihistoria jarjestyskriteerihistoria) {
-    datastore.save(JarjestyskriteeriKooderi.enkoodaa(jarjestyskriteerihistoria));
+    if (jarjestyskriteerihistoria.getTunniste() == null) {
+      jarjestyskriteerihistoria.setTunniste(UUID.randomUUID());
+    }
+    repository.save(jarjestyskriteerihistoria);
   }
 
   @Override
-  public void delete(ObjectId id) {
-    datastore.delete(Jarjestyskriteerihistoria.class, id);
+  public void createVersionWithUpdate(UUID tunniste) {
+    Jarjestyskriteerihistoria historia = new Jarjestyskriteerihistoria();
+    historia.setTunniste(tunniste);
+    historia.setLaskettuUudelleen(true);
+    repository.save(historia);
   }
 
   @Override
-  public Jarjestyskriteerihistoria hae(ObjectId id) {
-    Jarjestyskriteerihistoria h =
-        datastore.find(Jarjestyskriteerihistoria.class).field("_id").equal(id).get();
-    Stream.of(h).filter(JarjestyskriteeriKooderi::tarvitseekoEnkoodata).forEach(this::create);
-    return JarjestyskriteeriKooderi.dekoodaa(h);
+  public void delete(Long id) {
+    repository.deleteById(id);
+  }
+
+  @Override
+  public Jarjestyskriteerihistoria hae(UUID id) {
+    return repository.findLatestByTunniste(id).orElse(null);
+  }
+
+  @Override
+  public List<Jarjestyskriteerihistoria> fetchOldest() {
+    return repository.fetchOldest();
   }
 }

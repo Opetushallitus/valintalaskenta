@@ -49,7 +49,7 @@ public class ValintakoelaskennanKumulatiivisetTulokset {
       return Collections.emptyList();
     }
     return osallistuminen.getHakutoiveet().stream()
-        .flatMap(ht -> ht.getValinnanVaiheet().stream())
+        .flatMap(ht -> ht.getValintakoeValinnanvaiheet().stream())
         .flatMap(vv -> vv.getValintakokeet().stream())
         .map(ToStringBuilder::reflectionToString)
         .collect(Collectors.toList());
@@ -75,7 +75,7 @@ public class ValintakoelaskennanKumulatiivisetTulokset {
             .findFirst();
     if (existingHakutoive.isPresent()) {
       laskettuHakutoive
-          .getValinnanVaiheet()
+          .getValintakoeValinnanvaiheet()
           .forEach(
               laskettuValinnanvaihe ->
                   lisaaValinnanvaihe(existingHakutoive.get(), laskettuValinnanvaihe));
@@ -87,16 +87,16 @@ public class ValintakoelaskennanKumulatiivisetTulokset {
   private void lisaaValinnanvaihe(
       Hakutoive existingHakutoive, ValintakoeValinnanvaihe laskettuValinnanvaihe) {
     Optional<ValintakoeValinnanvaihe> existingValinnanvaihe =
-        existingHakutoive.getValinnanVaiheet().stream()
+        existingHakutoive.getValintakoeValinnanvaiheet().stream()
             .filter(
-                vv -> vv.getValinnanVaiheOid().equals(laskettuValinnanvaihe.getValinnanVaiheOid()))
+                vv -> vv.getValinnanvaiheOid().equals(laskettuValinnanvaihe.getValinnanvaiheOid()))
             .findFirst();
     if (existingValinnanvaihe.isPresent()) {
       laskettuValinnanvaihe
           .getValintakokeet()
           .forEach(laskettuValintakoe -> lisaaKoe(existingValinnanvaihe.get(), laskettuValintakoe));
     } else {
-      existingHakutoive.getValinnanVaiheet().add(laskettuValinnanvaihe);
+      existingHakutoive.getValintakoeValinnanvaiheet().add(laskettuValinnanvaihe);
     }
   }
 

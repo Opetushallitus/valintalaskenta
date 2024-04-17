@@ -8,9 +8,15 @@ import fi.vm.sade.service.valintaperusteet.service.validointi.virhe.Virhetyyppi;
 import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteeritulosDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.HakutoiveDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.OsallistuminenTulosDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
+import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteeritulosContainer;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
+import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
 import java.util.*;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -25,7 +31,7 @@ public class ValintalaskentaModelMapper extends ModelMapper {
         new PropertyMap<ValinnanvaiheDTO, Valinnanvaihe>() {
           protected void configure() {
             map().setHakuOid(source.getHakuOid());
-            map().setValinnanvaiheOid(source.getValinnanvaiheoid());
+            map().setValinnanVaiheOid(source.getValinnanvaiheoid());
           }
         });
 
@@ -317,14 +323,14 @@ public class ValintalaskentaModelMapper extends ModelMapper {
         new PropertyMap<JonosijaDTO, Jonosija>() {
           @Override
           protected void configure() {
-            Converter<SortedSet<JarjestyskriteeritulosDTO>, List<Jarjestyskriteeritulos>>
+            Converter<SortedSet<JarjestyskriteeritulosDTO>, JarjestyskriteeritulosContainer>
                 dtoToJarjestyskriteeritulosConverter =
                     new Converter<
-                        SortedSet<JarjestyskriteeritulosDTO>, List<Jarjestyskriteeritulos>>() {
-                      public List<Jarjestyskriteeritulos> convert(
+                        SortedSet<JarjestyskriteeritulosDTO>, JarjestyskriteeritulosContainer>() {
+                      public JarjestyskriteeritulosContainer convert(
                           MappingContext<
                                   SortedSet<JarjestyskriteeritulosDTO>,
-                                  List<Jarjestyskriteeritulos>>
+                                  JarjestyskriteeritulosContainer>
                               context) {
                         List<Jarjestyskriteeritulos> result =
                             new ArrayList<Jarjestyskriteeritulos>();
@@ -337,13 +343,62 @@ public class ValintalaskentaModelMapper extends ModelMapper {
                           j.setTila(arg.getTila());
                           result.add(j);
                         }
-                        return result;
+                        return new JarjestyskriteeritulosContainer(result);
                       }
                     };
             using(dtoToJarjestyskriteeritulosConverter)
                 .map(source.getJarjestyskriteerit())
                 .setJarjestyskriteeritulokset(null);
+
             map().setHakutoiveprioriteetti(source.getPrioriteetti());
+          }
+        });
+
+    this.addMappings(
+        new PropertyMap<Hakutoive, HakutoiveDTO>() {
+
+          @Override
+          protected void configure() {
+            Converter<Set<ValintakoeValinnanvaihe>, List<ValintakoeValinnanvaiheDTO>> vkConverter =
+                mappingContext ->
+                    mappingContext.getSource().stream()
+                        .map(
+                            vaihe -> {
+                              ValintakoeValinnanvaiheDTO dto = new ValintakoeValinnanvaiheDTO();
+                              dto.setValintakokeet(
+                                  vaihe.getValintakokeet().stream()
+                                      .map(
+                                          koe -> {
+                                            fi.vm.sade.valintalaskenta.domain.dto.valintakoe
+                                                    .ValintakoeDTO
+                                                koeDTO =
+                                                    new fi.vm.sade.valintalaskenta.domain.dto
+                                                        .valintakoe.ValintakoeDTO();
+                                            koeDTO.setAktiivinen(koe.isAktiivinen());
+                                            koeDTO.setNimi(koe.getNimi());
+                                            koeDTO.setKutsuttavienMaara(koe.getKutsuttavienMaara());
+                                            koeDTO.setValintakoeOid(koe.getValintakoeOid());
+                                            koeDTO.setLahetetaankoKoekutsut(
+                                                koe.isLahetetaankoKoekutsut());
+                                            OsallistuminenTulosDTO osa =
+                                                new OsallistuminenTulosDTO();
+                                            osa.setOsallistuminen(koe.getOsallistuminen());
+                                            osa.setKuvaus(koe.getKuvaus());
+                                            osa.setLaskentaTila(koe.getLaskentaTila());
+                                            osa.setLaskentaTulos(koe.getLaskentaTulos());
+                                            koeDTO.setOsallistuminenTulos(osa);
+                                            koeDTO.setValintakoeTunniste(
+                                                koe.getValintakoeTunniste());
+                                            return koeDTO;
+                                          })
+                                      .toList());
+                              dto.setValinnanVaiheOid(vaihe.getValinnanvaiheOid());
+                              dto.setValinnanVaiheJarjestysluku(
+                                  vaihe.getValinnanVaiheJarjestysluku());
+                              return dto;
+                            })
+                        .toList();
+            using(vkConverter).map(source.getValintakoeValinnanvaiheet()).setValinnanVaiheet(null);
           }
         });
 
@@ -351,28 +406,21 @@ public class ValintalaskentaModelMapper extends ModelMapper {
         new PropertyMap<Jonosija, JonosijaDTO>() {
           @Override
           protected void configure() {
-            Converter<List<Jarjestyskriteeritulos>, SortedSet<JarjestyskriteeritulosDTO>>
+            Converter<JarjestyskriteeritulosContainer, SortedSet<JarjestyskriteeritulosDTO>>
                 JarjestyskriteeritulosToDtoConverter =
-                    new Converter<
-                        List<Jarjestyskriteeritulos>, SortedSet<JarjestyskriteeritulosDTO>>() {
-                      public SortedSet<JarjestyskriteeritulosDTO> convert(
-                          MappingContext<
-                                  List<Jarjestyskriteeritulos>,
-                                  SortedSet<JarjestyskriteeritulosDTO>>
-                              context) {
-                        SortedSet<JarjestyskriteeritulosDTO> result =
-                            new TreeSet<JarjestyskriteeritulosDTO>();
-                        for (Jarjestyskriteeritulos arg : context.getSource()) {
-                          JarjestyskriteeritulosDTO j = new JarjestyskriteeritulosDTO();
-                          j.setArvo(arg.getArvo());
-                          j.setKuvaus(arg.getKuvaus());
-                          j.setNimi(arg.getNimi());
-                          j.setPrioriteetti(arg.getPrioriteetti());
-                          j.setTila(arg.getTila());
-                          result.add(j);
-                        }
-                        return result;
+                    context -> {
+                      SortedSet<JarjestyskriteeritulosDTO> result = new TreeSet<>();
+                      for (Jarjestyskriteeritulos arg :
+                          context.getSource().getJarjestyskriteeritulokset()) {
+                        JarjestyskriteeritulosDTO j = new JarjestyskriteeritulosDTO();
+                        j.setArvo(arg.getArvo());
+                        j.setKuvaus(arg.getKuvaus());
+                        j.setNimi(arg.getNimi());
+                        j.setPrioriteetti(arg.getPrioriteetti());
+                        j.setTila(arg.getTila());
+                        result.add(j);
                       }
+                      return result;
                     };
             using(JarjestyskriteeritulosToDtoConverter)
                 .map(source.getJarjestyskriteeritulokset())

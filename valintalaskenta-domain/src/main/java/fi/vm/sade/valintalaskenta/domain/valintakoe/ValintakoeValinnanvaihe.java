@@ -1,24 +1,36 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.mongodb.morphia.annotations.Embedded;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceCreator;
+import org.springframework.data.annotation.Transient;
 
-@Embedded
 public class ValintakoeValinnanvaihe {
-  private String valinnanVaiheOid;
+
+  @Id private UUID id;
+
+  private String valinnanvaiheOid;
+
   private Integer valinnanVaiheJarjestysluku;
-  private Integer laskettavaJarjestysluku;
 
-  @Embedded private List<Valintakoe> valintakokeet = new ArrayList<>();
+  @Transient private Hakutoive hakutoive;
 
-  public String getValinnanVaiheOid() {
-    return valinnanVaiheOid;
+  private final Set<Valintakoe> valintakokeet = new HashSet<>();
+
+  public ValintakoeValinnanvaihe() {}
+
+  @PersistenceCreator
+  public ValintakoeValinnanvaihe(Set<Valintakoe> valintakokeet) {
+    this.valintakokeet.addAll(valintakokeet);
   }
 
-  public void setValinnanVaiheOid(String valinnanVaiheOid) {
-    this.valinnanVaiheOid = valinnanVaiheOid;
+  public String getValinnanvaiheOid() {
+    return valinnanvaiheOid;
+  }
+
+  public void setValinnanvaiheOid(String valinnanvaiheOid) {
+    this.valinnanvaiheOid = valinnanvaiheOid;
   }
 
   public Integer getValinnanVaiheJarjestysluku() {
@@ -29,20 +41,25 @@ public class ValintakoeValinnanvaihe {
     this.valinnanVaiheJarjestysluku = valinnanVaiheJarjestysluku;
   }
 
-  public List<Valintakoe> getValintakokeet() {
+  public Set<Valintakoe> getValintakokeet() {
     return valintakokeet;
   }
 
+  public List<Valintakoe> getValintakokeetAsList() {
+    return new ArrayList<>(valintakokeet);
+  }
+
   public void setValintakokeet(List<Valintakoe> valintakokeet) {
-    this.valintakokeet = valintakokeet;
+    this.valintakokeet.clear();
+    this.valintakokeet.addAll(valintakokeet);
   }
 
-  public Integer getLaskettavaJarjestysluku() {
-    return laskettavaJarjestysluku;
+  public Hakutoive getHakutoive() {
+    return hakutoive;
   }
 
-  public void setLaskettavaJarjestysluku(Integer laskettavaJarjestysluku) {
-    this.laskettavaJarjestysluku = laskettavaJarjestysluku;
+  public void setHakutoive(Hakutoive hakutoive) {
+    this.hakutoive = hakutoive;
   }
 
   @Override

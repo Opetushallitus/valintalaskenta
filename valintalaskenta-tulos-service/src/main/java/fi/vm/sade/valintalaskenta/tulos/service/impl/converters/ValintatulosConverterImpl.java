@@ -7,8 +7,11 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValintatapajonoDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
+import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluJonosija;
+import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluValintatapajono;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import java.util.*;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -56,12 +59,10 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
     for (ValintakoeOsallistuminen vko : osallistumiset) {
       ValintakoeOsallistuminenDTO dto = new ValintakoeOsallistuminenDTO();
       dto.setCreatedAt(vko.getCreatedAt());
-      dto.setEtunimi(vko.getEtunimi());
       dto.setHakemusOid(vko.getHakemusOid());
       dto.setHakijaOid(vko.getHakijaOid());
       dto.setHakuOid(vko.getHakuOid());
-      dto.setSukunimi(vko.getSukunimi());
-      dto.setHakutoiveet(convertHakutoive(vko.getHakutoiveet()));
+      dto.setHakutoiveet(convertHakutoive(vko.getHakutoiveetAsList()));
       dtot.add(dto);
     }
     return dtot;
@@ -73,7 +74,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
     for (Hakutoive ht : hakutoiveet) {
       HakutoiveDTO dto = new HakutoiveDTO();
       dto.setHakukohdeOid(ht.getHakukohdeOid());
-      dto.setValinnanVaiheet(convertValinnanVaihe(ht.getValinnanVaiheet()));
+      dto.setValinnanVaiheet(convertValinnanVaihe(ht.getValintakoeValinnanvaiheetAsList()));
       dtot.add(dto);
     }
     return dtot;
@@ -86,8 +87,8 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
     for (ValintakoeValinnanvaihe vv : valinnanVaiheet) {
       ValintakoeValinnanvaiheDTO dto = new ValintakoeValinnanvaiheDTO();
       dto.setValinnanVaiheJarjestysluku(vv.getValinnanVaiheJarjestysluku());
-      dto.setValinnanVaiheOid(vv.getValinnanVaiheOid());
-      dto.setValintakokeet(convertValintakoe(vv.getValintakokeet()));
+      dto.setValinnanVaiheOid(vv.getValinnanvaiheOid());
+      dto.setValintakokeet(convertValintakoe(vv.getValintakokeetAsList()));
       dtot.add(dto);
     }
     return dtot;
@@ -100,7 +101,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
       ValintakoeDTO dto = new ValintakoeDTO();
       dto.setValintakoeOid(koe.getValintakoeOid());
       dto.setValintakoeTunniste(koe.getValintakoeTunniste());
-      dto.setOsallistuminenTulos(convertOsallistuminenTulos(koe.getOsallistuminenTulos()));
+      dto.setOsallistuminenTulos(convertOsallistuminenTulos(koe));
       dto.setLahetetaankoKoekutsut(koe.isLahetetaankoKoekutsut());
       dto.setAktiivinen(koe.isAktiivinen());
       dto.setKutsuttavienMaara(koe.getKutsuttavienMaara());
@@ -110,13 +111,12 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
   }
 
   @Override
-  public OsallistuminenTulosDTO convertOsallistuminenTulos(
-      OsallistuminenTulos osallistuminenTulos) {
+  public OsallistuminenTulosDTO convertOsallistuminenTulos(Valintakoe valintakoe) {
     OsallistuminenTulosDTO dto = new OsallistuminenTulosDTO();
-    dto.setKuvaus(osallistuminenTulos.getKuvaus());
-    dto.setLaskentaTila(osallistuminenTulos.getLaskentaTila());
-    dto.setLaskentaTulos(osallistuminenTulos.getLaskentaTulos());
-    dto.setOsallistuminen(osallistuminenTulos.getOsallistuminen());
+    dto.setKuvaus(valintakoe.getKuvaus());
+    dto.setLaskentaTila(valintakoe.getLaskentaTila());
+    dto.setLaskentaTulos(valintakoe.getLaskentaTulos());
+    dto.setOsallistuminen(valintakoe.getOsallistuminen());
 
     return dto;
   }
@@ -126,7 +126,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
     ValintatietoValinnanvaiheDTO dto = new ValintatietoValinnanvaiheDTO();
     dto.setCreatedAt(valinnanvaihe.getCreatedAt());
     dto.setJarjestysnumero(valinnanvaihe.getJarjestysnumero());
-    dto.setValinnanvaiheoid(valinnanvaihe.getValinnanvaiheOid());
+    dto.setValinnanvaiheoid(valinnanvaihe.getValinnanVaiheOid());
     dto.setHakuOid(valinnanvaihe.getHakuOid());
     dto.setValintatapajonot(convertValintatapajono(valinnanvaihe.getValintatapajonot()));
     dto.setNimi(valinnanvaihe.getNimi());
@@ -197,15 +197,15 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
     }
     for (Jonosija jonosija : jonosijat) {
       JonosijaDTO dto = new JonosijaDTO();
-      dto.setEtunimi(jonosija.getEtunimi());
       dto.setHakemusOid(jonosija.getHakemusOid());
       dto.setHakijaOid(jonosija.getHakijaOid());
       dto.setPrioriteetti(jonosija.getHakutoiveprioriteetti());
-      dto.setSukunimi(jonosija.getSukunimi());
       dto.setJarjestyskriteerit(
-          new TreeSet<>(convertJarjestyskriteeri(jonosija.getJarjestyskriteeritulokset())));
+          new TreeSet<>(
+              convertJarjestyskriteeri(
+                  jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset)));
       dto.setSyotetytArvot(convertSyotettyArvo(jonosija.getSyotetytArvot()));
-      dto.setFunktioTulokset(convertFunktioTulos(jonosija.getFunktioTulokset()));
+      dto.setFunktioTulokset(convertFunktioTulos(jonosija.getFunktioTulokset().funktioTulokset));
       dto.setHylattyValisijoittelussa(jonosija.isHylattyValisijoittelussa());
       list.add(dto);
     }
@@ -213,14 +213,14 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
   }
 
   private List<SyotettyArvoDTO> convertSyotettyArvo(List<SyotettyArvo> syotetytArvot) {
-    List<SyotettyArvoDTO> dtos = new ArrayList<SyotettyArvoDTO>();
+    List<SyotettyArvoDTO> dtos = new ArrayList<>();
     for (SyotettyArvo sa : syotetytArvot) {
       dtos.add(convertSyotettyArvo(sa));
     }
     return dtos;
   }
 
-  private SyotettyArvoDTO convertSyotettyArvo(SyotettyArvo sa) {
+  public SyotettyArvoDTO convertSyotettyArvo(SyotettyArvo sa) {
     SyotettyArvoDTO dto = new SyotettyArvoDTO();
     dto.setArvo(sa.getArvo());
     dto.setLaskennallinenArvo(sa.getLaskennallinenArvo());
@@ -229,6 +229,59 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
     dto.setTyypinKoodiUri(sa.getTyypinKoodiUri());
     dto.setTilastoidaan(sa.isTilastoidaan());
     return dto;
+  }
+
+  @Override
+  public ValintatietoValintatapajonoDTO convertSijoitteluValintatapajono(
+      SijoitteluValintatapajono jono, List<SijoitteluJonosija> kriteeritValintatapajonolle) {
+
+    ValintatietoValintatapajonoDTO jonoDto = new ValintatietoValintatapajonoDTO();
+    jonoDto.setAloituspaikat(jono.aloituspaikat);
+    jonoDto.setEiVarasijatayttoa(jono.eiVarasijatayttoa);
+    jonoDto.setKaikkiEhdonTayttavatHyvaksytaan(jono.kaikkiEhdonTayttavatHyvaksytaan);
+    jonoDto.setKaytetaanKokonaispisteita(jono.kaytetaanKokonaisPisteita);
+    jonoDto.setKaytetaanValintalaskentaa(jono.kaytetaanValintalaskentaa);
+    jonoDto.setSijoitteluajoId(jono.sijoitteluajoId);
+    jonoDto.setSiirretaanSijoitteluun(jono.siirretaanSijoitteluun);
+    jonoDto.setPrioriteetti(jono.prioriteetti);
+    jonoDto.setTasasijasaanto(jono.tasasijasaanto);
+    jonoDto.setNimi(jono.nimi);
+    jonoDto.setOid(jono.valintatapajonoOid);
+    jonoDto.setPoissaOlevaTaytto(jono.poissaOlevaTaytto);
+    jonoDto.setValmisSijoiteltavaksi(jono.valmisSijoiteltavaksi);
+
+    jonoDto.setJonosijat(
+        kriteeritValintatapajonolle.stream().map(this::convertJonosijaDTOForSijoittelu).toList());
+
+    return jonoDto;
+  }
+
+  private JonosijaDTO convertJonosijaDTOForSijoittelu(SijoitteluJonosija jonosija) {
+    JonosijaDTO jonosijaDTO = new JonosijaDTO();
+    jonosijaDTO.setHakemusOid(jonosija.hakemusOid);
+    jonosijaDTO.setHakijaOid(jonosija.hakijaOid);
+    jonosijaDTO.setPrioriteetti(jonosija.hakutoiveprioriteetti);
+    jonosijaDTO.setSyotetytArvot(
+        jonosija.syotetytArvot.syotetytArvot.stream().map(this::convertSyotettyArvo).toList());
+    jonosijaDTO.setHylattyValisijoittelussa(jonosija.hylattyValisijoittelussa);
+
+    jonosijaDTO.setJarjestyskriteerit(
+        new TreeSet<>(
+            jonosija.jarjestyskriteeritulokset.jarjestyskriteeritulokset.stream()
+                .map(this::convertSijoitteluJarjestyskriteeritulosToDTO)
+                .collect(Collectors.toSet())));
+    return jonosijaDTO;
+  }
+
+  private JarjestyskriteeritulosDTO convertSijoitteluJarjestyskriteeritulosToDTO(
+      Jarjestyskriteeritulos kri) {
+    JarjestyskriteeritulosDTO kriDTO = new JarjestyskriteeritulosDTO();
+    kriDTO.setArvo(kri.getArvo());
+    kriDTO.setPrioriteetti(kri.getPrioriteetti());
+    kriDTO.setTila(kri.getTila());
+    kriDTO.setNimi(kri.getNimi());
+    kriDTO.setKuvaus(kri.getKuvaus());
+    return kriDTO;
   }
 
   private List<FunktioTulosDTO> convertFunktioTulos(List<FunktioTulos> funktioTulokset) {

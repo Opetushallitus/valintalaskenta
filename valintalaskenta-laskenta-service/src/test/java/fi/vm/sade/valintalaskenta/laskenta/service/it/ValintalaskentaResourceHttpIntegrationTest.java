@@ -2,59 +2,43 @@ package fi.vm.sade.valintalaskenta.laskenta.service.it;
 
 import static org.asynchttpclient.Dsl.asyncHttpClient;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyListOf;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
-import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
-import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetHakijaryhmaDTO;
 import fi.vm.sade.valintalaskenta.domain.HakukohteenLaskennanTila;
-import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.Laskentakutsu;
 import fi.vm.sade.valintalaskenta.domain.dto.SuoritustiedotDTO;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija.ValisijoiteltavatJonot;
-import fi.vm.sade.valintalaskenta.laskenta.testing.TestApp;
+import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
 import fi.vm.sade.valintalaskenta.tulos.RestClientUtil;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 import org.asynchttpclient.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Matchers;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-public class ValintalaskentaResourceHttpIntegrationTest {
+public class ValintalaskentaResourceHttpIntegrationTest extends AbstractIntegrationTest {
   private final String hakukohdeOid = "hakukohdeOid";
-  private ApplicationContext applicationContext;
+
+  @Autowired private ApplicationContext applicationContext;
   private boolean mayFinish;
   private boolean finished;
   private AsyncHttpClient asyncHttpClient = asyncHttpClient();
-
-  @Before
-  public void setUp() {
-    TestApp.startTestApp();
-    applicationContext = TestApp.ApplicationContextGetter.applicationContext;
-  }
-
-  @After
-  public void tearDown() {
-    TestApp.stopTestApp();
-  }
 
   @Test
   public void successfulLaskentaBecomesReady() throws Exception {
     mockValisijoiteltavatJonotCall();
     when(getBean(ValintalaskentaService.class)
             .laskeKaikki(
-                anyListOf(HakemusDTO.class),
-                anyListOf(ValintaperusteetDTO.class),
-                anyListOf(ValintaperusteetHakijaryhmaDTO.class),
-                Matchers.eq(hakukohdeOid),
+                anyList(),
+                anyList(),
+                anyList(),
+                ArgumentMatchers.eq(hakukohdeOid),
                 any(String.class),
                 anyBoolean()))
         .thenReturn("Onnistui!");
@@ -73,10 +57,10 @@ public class ValintalaskentaResourceHttpIntegrationTest {
     mockValisijoiteltavatJonotCall();
     when(getBean(ValintalaskentaService.class)
             .laskeKaikki(
-                anyListOf(HakemusDTO.class),
-                anyListOf(ValintaperusteetDTO.class),
-                anyListOf(ValintaperusteetHakijaryhmaDTO.class),
-                Matchers.eq(hakukohdeOid),
+                anyList(),
+                anyList(),
+                anyList(),
+                ArgumentMatchers.eq(hakukohdeOid),
                 any(String.class),
                 anyBoolean()))
         .thenThrow(new RuntimeException(getClass().getSimpleName() + "-failure"));
@@ -95,10 +79,10 @@ public class ValintalaskentaResourceHttpIntegrationTest {
     mockValisijoiteltavatJonotCall();
     when(getBean(ValintalaskentaService.class)
             .laskeKaikki(
-                anyListOf(HakemusDTO.class),
-                anyListOf(ValintaperusteetDTO.class),
-                anyListOf(ValintaperusteetHakijaryhmaDTO.class),
-                Matchers.eq(hakukohdeOid),
+                anyList(),
+                anyList(),
+                anyList(),
+                ArgumentMatchers.eq(hakukohdeOid),
                 any(String.class),
                 anyBoolean()))
         .thenAnswer(
@@ -123,8 +107,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
 
   @Test
   public void crashingLaskenta() throws InterruptedException, ExecutionException {
-    when(getBean(ValisijoitteluKasittelija.class)
-            .valisijoiteltavatJonot(anyListOf(LaskeDTO.class), any()))
+    when(getBean(ValisijoitteluKasittelija.class).valisijoiteltavatJonot(anyList(), any()))
         .thenThrow(
             new RuntimeException(
                 ValisijoitteluKasittelija.class.getSimpleName()
@@ -152,8 +135,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
   }
 
   private void mockValisijoiteltavatJonotCall() {
-    when(getBean(ValisijoitteluKasittelija.class)
-            .valisijoiteltavatJonot(anyListOf(LaskeDTO.class), any()))
+    when(getBean(ValisijoitteluKasittelija.class).valisijoiteltavatJonot(anyList(), any()))
         .thenReturn(new ValisijoiteltavatJonot(Collections.emptySet(), Collections.emptyMap()));
   }
 
@@ -204,7 +186,7 @@ public class ValintalaskentaResourceHttpIntegrationTest {
 
   private String call(final String uri, final String method, final Object body)
       throws ExecutionException, InterruptedException {
-    final String baseAddress = System.getProperty("TestApp.server.rootUrl");
+    final String baseAddress = "http://localhost:" + port + "/resources";
     return asyncHttpClient
         .executeRequest(request(String.format("%s/%s", baseAddress, uri), method, body))
         .toCompletableFuture()

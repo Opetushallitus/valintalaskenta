@@ -5,13 +5,12 @@ import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakuk
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoHakukohdeValintakoeData;
 import static fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil.luoValintaperusteetJaValintakoeValinnanvaihe;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.argThat;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
 import fi.vm.sade.service.valintaperusteet.dto.HakukohteenValintaperusteDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
@@ -47,10 +46,9 @@ import java.util.Map;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
 import org.springframework.test.util.ReflectionTestUtils;
 
 /** User: wuoti Date: 3.5.2013 Time: 12.00 */
@@ -72,7 +70,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
   private ValintakoelaskennanKumulatiivisetTulokset kumulatiivisetTulokset =
       new ValintakoelaskennanKumulatiivisetTulokset();
 
-  @Before
+  @BeforeEach
   public void setUp() {
     valintakoeOsallistuminenDAOMock = mock(ValintakoeOsallistuminenDAO.class);
     valintakoeosallistumislaskinMock = mock(Valintakoeosallistumislaskin.class);
@@ -123,7 +121,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     final OsallistuminenTulos osallistuminenTulos = new OsallistuminenTulos();
     osallistuminenTulos.setOsallistuminen(Osallistuminen.OSALLISTUU);
     when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(
-            any(Hakukohde.class), any(Hakemus.class), any(Funktiokutsu.class)))
+            any(Hakukohde.class), any(), any()))
         .thenReturn(osallistuminenTulos);
 
     ArgumentCaptor<ValintakoeOsallistuminen> captor =
@@ -131,6 +129,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     valintakoelaskentaSuorittajaService.laske(
         hakemus,
         Collections.singletonList(valintaperusteet1),
+        new HashMap<>(),
         uuid,
         kumulatiivisetTulokset,
         korkeakouluhaku);
@@ -140,11 +139,11 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     assertEquals(
         "movember",
         osallistuminen
-            .getHakutoiveet()
+            .getHakutoiveetAsList()
             .get(0)
-            .getValinnanVaiheet()
+            .getValintakoeValinnanvaiheetAsList()
             .get(0)
-            .getValintakokeet()
+            .getValintakokeetAsList()
             .get(0)
             .getValintakoeTunniste());
   }
@@ -185,6 +184,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     valintakoelaskentaSuorittajaService.laske(
         hakemus,
         Collections.singletonList(valintaperusteet1),
+        new HashMap<>(),
         uuid,
         kumulatiivisetTulokset,
         korkeakouluhaku);
@@ -232,6 +232,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     valintakoelaskentaSuorittajaService.laske(
         hakemus,
         Collections.singletonList(valintaperusteet1),
+        new HashMap<>(),
         uuid,
         kumulatiivisetTulokset,
         korkeakouluhaku);
@@ -272,30 +273,26 @@ public class ValintakoelaskentaSuorittajaServiceTest {
             valintakoetunniste);
 
     when(valinnanvaiheDAOMock.haeEdeltavaValinnanvaihe(
-            Matchers.any(), Matchers.eq(hakukohdeOid1), Matchers.eq(valinnanVaiheJarjestysluku1)))
+            any(), eq(hakukohdeOid1), eq(valinnanVaiheJarjestysluku1)))
         .thenReturn(null);
     when(valinnanvaiheDAOMock.haeEdeltavaValinnanvaihe(
-            Matchers.any(), Matchers.eq(hakukohdeOid2), Matchers.eq(valinnanVaiheJarjestysluku2)))
+            any(), eq(hakukohdeOid2), eq(valinnanVaiheJarjestysluku2)))
         .thenReturn(null);
 
-    when(valintakoeOsallistuminenDAOMock.haeEdeltavaValinnanvaihe(
-            Matchers.eq(hakuOid),
-            Matchers.eq(hakukohdeOid1),
-            Matchers.eq(valinnanVaiheJarjestysluku1)))
-        .thenReturn(new ValintakoeOsallistuminen());
-    when(valintakoeOsallistuminenDAOMock.haeEdeltavaValinnanvaihe(
-            Matchers.eq(hakuOid),
-            Matchers.eq(hakukohdeOid2),
-            Matchers.eq(valinnanVaiheJarjestysluku2)))
-        .thenReturn(new ValintakoeOsallistuminen());
+    when(valintakoeOsallistuminenDAOMock.onkoEdeltavaValinnanvaiheOlemassa(
+            eq(hakuOid), eq(hakukohdeOid1), eq(valinnanVaiheJarjestysluku1)))
+        .thenReturn(true);
+    when(valintakoeOsallistuminenDAOMock.onkoEdeltavaValinnanvaiheOlemassa(
+            eq(hakuOid), eq(hakukohdeOid2), eq(valinnanVaiheJarjestysluku2)))
+        .thenReturn(true);
 
     Valinnanvaihe viimeisin1 = new Valinnanvaihe();
     Valinnanvaihe viimeisin2 = new Valinnanvaihe();
     when(valinnanvaiheDAOMock.haeViimeisinValinnanvaihe(
-            Matchers.any(), Matchers.eq(hakukohdeOid1), Matchers.eq(valinnanVaiheJarjestysluku1)))
+            any(), eq(hakukohdeOid1), eq(valinnanVaiheJarjestysluku1)))
         .thenReturn(viimeisin1);
     when(valinnanvaiheDAOMock.haeViimeisinValinnanvaihe(
-            Matchers.any(), Matchers.eq(hakukohdeOid2), Matchers.eq(valinnanVaiheJarjestysluku2)))
+            any(), eq(hakukohdeOid2), eq(valinnanVaiheJarjestysluku2)))
         .thenReturn(viimeisin2);
 
     final Map<String, String> hyvaksyttavissaSelite = new HashMap<>();
@@ -309,10 +306,10 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     final TilaJaSelite ts1 = new TilaJaSelite(JarjestyskriteerituloksenTila.VIRHE, virheSelite);
 
     when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(
-            Matchers.any(), Matchers.any(), Matchers.eq(viimeisin1), any(), any()))
+            any(), any(), eq(viimeisin1), any(), any()))
         .thenReturn(ts0);
     when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(
-            Matchers.any(), Matchers.any(), Matchers.eq(viimeisin2), any(), any()))
+            any(), any(), eq(viimeisin2), any(), any()))
         .thenReturn(ts1);
 
     final OsallistuminenTulos osallistuu1 = new OsallistuminenTulos();
@@ -322,11 +319,11 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     osallistuu2.setOsallistuminen(Osallistuminen.OSALLISTUU);
 
     when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(
-            argThat(hasOid(hakukohdeOid1)), Matchers.any(), Matchers.any()))
+            argThat(hasOid(hakukohdeOid1)), any(), any()))
         .thenReturn(osallistuu1);
 
     when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(
-            argThat(hasOid(hakukohdeOid2)), Matchers.any(), Matchers.any()))
+            argThat(hasOid(hakukohdeOid2)), any(), any()))
         .thenReturn(osallistuu2);
 
     when(valintakoeOsallistuminenDAOMock.readByHakuOidAndHakemusOid(anyString(), anyString()))
@@ -339,26 +336,26 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     valintaperusteet.add(valintaperusteet2);
 
     valintakoelaskentaSuorittajaService.laske(
-        hakemus, valintaperusteet, uuid, kumulatiivisetTulokset, korkeakouluhaku);
+        hakemus, valintaperusteet, new HashMap<>(), uuid, kumulatiivisetTulokset, korkeakouluhaku);
     verify(valintakoeOsallistuminenDAOMock, times(1)).createOrUpdate(captor.capture());
 
     ValintakoeOsallistuminen osallistuminen = captor.getValue();
 
-    List<Hakutoive> hakutoiveet = osallistuminen.getHakutoiveet();
+    List<Hakutoive> hakutoiveet = osallistuminen.getHakutoiveetAsList();
     Collections.sort(hakutoiveet, (o1, o2) -> o1.getHakukohdeOid().compareTo(o2.getHakukohdeOid()));
     {
       Hakutoive hakutoive1 = hakutoiveet.get(0);
-      ValintakoeValinnanvaihe vaihe1 = hakutoive1.getValinnanVaiheet().get(0);
+      ValintakoeValinnanvaihe vaihe1 = hakutoive1.getValintakoeValinnanvaiheetAsList().get(0);
 
-      Valintakoe vk1 = vaihe1.getValintakokeet().get(0);
+      Valintakoe vk1 = vaihe1.getValintakokeetAsList().get(0);
       assertEquals(Osallistuminen.OSALLISTUU, vk1.getOsallistuminenTulos().getOsallistuminen());
     }
 
     {
       Hakutoive hakutoive2 = hakutoiveet.get(1);
-      ValintakoeValinnanvaihe vaihe2 = hakutoive2.getValinnanVaiheet().get(0);
+      ValintakoeValinnanvaihe vaihe2 = hakutoive2.getValintakoeValinnanvaiheetAsList().get(0);
 
-      Valintakoe vk1 = vaihe2.getValintakokeet().get(0);
+      Valintakoe vk1 = vaihe2.getValintakokeetAsList().get(0);
       assertEquals(Osallistuminen.EI_OSALLISTU, vk1.getOsallistuminenTulos().getOsallistuminen());
     }
   }
@@ -411,17 +408,17 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     final TilaJaSelite ts1 = new TilaJaSelite(JarjestyskriteerituloksenTila.VIRHE, virheSelite);
 
     when(valinnanvaiheDAOMock.haeEdeltavaValinnanvaihe(
-            Matchers.any(), Matchers.eq(hakukohdeOid1), Matchers.eq(valinnanVaiheJarjestysluku1)))
+            any(), eq(hakukohdeOid1), eq(valinnanVaiheJarjestysluku1)))
         .thenReturn(v0);
     when(valinnanvaiheDAOMock.haeEdeltavaValinnanvaihe(
-            Matchers.any(), Matchers.eq(hakukohdeOid2), Matchers.eq(valinnanVaiheJarjestysluku2)))
+            any(), eq(hakukohdeOid2), eq(valinnanVaiheJarjestysluku2)))
         .thenReturn(v1);
 
     when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(
-            Matchers.any(), Matchers.any(), Matchers.eq(v0), any(), any()))
+            any(), any(), eq(v0), any(), any()))
         .thenReturn(ts0);
     when(edellinenValinnanvaiheKasittelijaMock.tilaEdellisenValinnanvaiheenMukaan(
-            Matchers.any(), Matchers.any(), Matchers.eq(v1), any(), any()))
+            any(), any(), eq(v1), any(), any()))
         .thenReturn(ts1);
 
     final OsallistuminenTulos osallistuu1 = new OsallistuminenTulos();
@@ -431,11 +428,11 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     osallistuu2.setOsallistuminen(Osallistuminen.OSALLISTUU);
 
     when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(
-            argThat(hasOid(hakukohdeOid1)), Matchers.any(), Matchers.any()))
+            argThat(hasOid(hakukohdeOid1)), any(), any()))
         .thenReturn(osallistuu1);
 
     when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(
-            argThat(hasOid(hakukohdeOid2)), Matchers.any(), Matchers.any()))
+            argThat(hasOid(hakukohdeOid2)), any(), any()))
         .thenReturn(osallistuu2);
 
     when(valintakoeOsallistuminenDAOMock.readByHakuOidAndHakemusOid(anyString(), anyString()))
@@ -448,26 +445,26 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     valintaperusteet.add(valintaperusteet2);
 
     valintakoelaskentaSuorittajaService.laske(
-        hakemus, valintaperusteet, uuid, kumulatiivisetTulokset, korkeakouluhaku);
+        hakemus, valintaperusteet, new HashMap<>(), uuid, kumulatiivisetTulokset, korkeakouluhaku);
     verify(valintakoeOsallistuminenDAOMock, times(1)).createOrUpdate(captor.capture());
 
     ValintakoeOsallistuminen osallistuminen = captor.getValue();
 
-    List<Hakutoive> hakutoiveet = osallistuminen.getHakutoiveet();
+    List<Hakutoive> hakutoiveet = osallistuminen.getHakutoiveetAsList();
     Collections.sort(hakutoiveet, (o1, o2) -> o1.getHakukohdeOid().compareTo(o2.getHakukohdeOid()));
     {
       Hakutoive hakutoive1 = hakutoiveet.get(0);
-      ValintakoeValinnanvaihe vaihe1 = hakutoive1.getValinnanVaiheet().get(0);
+      ValintakoeValinnanvaihe vaihe1 = hakutoive1.getValintakoeValinnanvaiheetAsList().get(0);
 
-      Valintakoe vk1 = vaihe1.getValintakokeet().get(0);
+      Valintakoe vk1 = vaihe1.getValintakokeetAsList().get(0);
       assertEquals(Osallistuminen.OSALLISTUU, vk1.getOsallistuminenTulos().getOsallistuminen());
     }
 
     {
       Hakutoive hakutoive2 = hakutoiveet.get(1);
-      ValintakoeValinnanvaihe vaihe2 = hakutoive2.getValinnanVaiheet().get(0);
+      ValintakoeValinnanvaihe vaihe2 = hakutoive2.getValintakoeValinnanvaiheetAsList().get(0);
 
-      Valintakoe vk1 = vaihe2.getValintakokeet().get(0);
+      Valintakoe vk1 = vaihe2.getValintakokeetAsList().get(0);
       assertEquals(Osallistuminen.EI_OSALLISTU, vk1.getOsallistuminenTulos().getOsallistuminen());
     }
   }
@@ -512,11 +509,11 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     osallistuu2.setOsallistuminen(Osallistuminen.OSALLISTUU);
 
     when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(
-            argThat(hasOid(hakukohdeOid1)), Matchers.any(), Matchers.any()))
+            argThat(hasOid(hakukohdeOid1)), any(), any()))
         .thenReturn(osallistuu1);
 
     when(valintakoeosallistumislaskinMock.laskeOsallistuminenYhdelleHakukohteelle(
-            argThat(hasOid(hakukohdeOid2)), Matchers.any(), Matchers.any()))
+            argThat(hasOid(hakukohdeOid2)), any(), any()))
         .thenReturn(osallistuu2);
 
     when(valintakoeOsallistuminenDAOMock.readByHakuOidAndHakemusOid(anyString(), anyString()))
@@ -529,7 +526,7 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     valintaperusteet.add(valintaperusteet2);
 
     valintakoelaskentaSuorittajaService.laske(
-        hakemus, valintaperusteet, uuid, kumulatiivisetTulokset, korkeakouluhaku);
+        hakemus, valintaperusteet, new HashMap<>(), uuid, kumulatiivisetTulokset, korkeakouluhaku);
     verify(valintakoeOsallistuminenDAOMock, times(1)).createOrUpdate(captor.capture());
 
     ValintakoeOsallistuminen osallistuminen = captor.getValue();
@@ -539,19 +536,19 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     assertEquals(hakuOid, osallistuminen.getHakuOid());
     assertEquals(2, osallistuminen.getHakutoiveet().size());
 
-    List<Hakutoive> hakutoiveet = osallistuminen.getHakutoiveet();
+    List<Hakutoive> hakutoiveet = osallistuminen.getHakutoiveetAsList();
     Collections.sort(hakutoiveet, (o1, o2) -> o1.getHakukohdeOid().compareTo(o2.getHakukohdeOid()));
     {
       Hakutoive hakutoive1 = hakutoiveet.get(0);
       assertEquals(hakutoive1.getHakukohdeOid(), hakukohdeOid1);
-      assertEquals(1, hakutoive1.getValinnanVaiheet().size());
+      assertEquals(1, hakutoive1.getValintakoeValinnanvaiheet().size());
 
-      ValintakoeValinnanvaihe vaihe1 = hakutoive1.getValinnanVaiheet().get(0);
-      assertEquals(valinnanVaiheOid1, vaihe1.getValinnanVaiheOid());
+      ValintakoeValinnanvaihe vaihe1 = hakutoive1.getValintakoeValinnanvaiheetAsList().get(0);
+      assertEquals(valinnanVaiheOid1, vaihe1.getValinnanvaiheOid());
       assertEquals(valinnanVaiheJarjestysluku1, vaihe1.getValinnanVaiheJarjestysluku().intValue());
       assertEquals(1, vaihe1.getValintakokeet().size());
 
-      Valintakoe vk1 = vaihe1.getValintakokeet().get(0);
+      Valintakoe vk1 = vaihe1.getValintakokeetAsList().get(0);
       assertEquals(valintakoetunniste, vk1.getValintakoeTunniste());
       assertEquals(Osallistuminen.OSALLISTUU, vk1.getOsallistuminenTulos().getOsallistuminen());
     }
@@ -559,14 +556,14 @@ public class ValintakoelaskentaSuorittajaServiceTest {
     {
       Hakutoive hakutoive2 = hakutoiveet.get(1);
       assertEquals(hakukohdeOid2, hakutoive2.getHakukohdeOid());
-      assertEquals(1, hakutoive2.getValinnanVaiheet().size());
+      assertEquals(1, hakutoive2.getValintakoeValinnanvaiheet().size());
 
-      ValintakoeValinnanvaihe vaihe2 = hakutoive2.getValinnanVaiheet().get(0);
-      assertEquals(valinnanVaiheOid2, vaihe2.getValinnanVaiheOid());
+      ValintakoeValinnanvaihe vaihe2 = hakutoive2.getValintakoeValinnanvaiheetAsList().get(0);
+      assertEquals(valinnanVaiheOid2, vaihe2.getValinnanvaiheOid());
       assertEquals(valinnanVaiheJarjestysluku2, vaihe2.getValinnanVaiheJarjestysluku().intValue());
       assertEquals(1, vaihe2.getValintakokeet().size());
 
-      Valintakoe vk2 = vaihe2.getValintakokeet().get(0);
+      Valintakoe vk2 = vaihe2.getValintakokeetAsList().get(0);
       assertEquals(valintakoetunniste, vk2.getValintakoeTunniste());
       assertEquals(Osallistuminen.EI_OSALLISTU, vk2.getOsallistuminenTulos().getOsallistuminen());
     }

@@ -1,23 +1,41 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.PrePersist;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 
-@Entity("Jarjestyskriteerihistoria")
 public class Jarjestyskriteerihistoria {
-  @Id private ObjectId id;
+
+  public static final String FILENAME_PREFIX = "JARHIS_", FILENAME_SUFFIX = ".zip";
+
+  @Id private Long id;
+
+  private UUID tunniste;
 
   private String historia;
 
-  private byte[] historiaGzip;
+  @Transient private byte[] historiaGzip;
 
-  public ObjectId getId() {
+  private boolean laskettuUudelleen = false;
+
+  private Date createdAt = new Date();
+
+  public static final String TAG_VALINTALASKENTA = "valintalaskenta",
+      TAG_JARJESTYSKRIHISTORIA = "jarjestyskriteerihistoria";
+
+  public static final List<String> TAGS = List.of(TAG_VALINTALASKENTA, TAG_JARJESTYSKRIHISTORIA);
+
+  public Long getId() {
     return id;
   }
 
-  public void setId(ObjectId id) {
+  public String getFilename() {
+    return String.join("", FILENAME_PREFIX, this.getTunniste().toString(), FILENAME_SUFFIX);
+  }
+
+  public void setId(Long id) {
     this.id = id;
   }
 
@@ -37,10 +55,27 @@ public class Jarjestyskriteerihistoria {
     this.historia = historia;
   }
 
-  @PrePersist
-  public void preventBothZipAndHistoryToBeSaved() {
-    if (historia != null && historiaGzip != null) {
-      historia = null;
-    }
+  public boolean isLaskettuUudelleen() {
+    return laskettuUudelleen;
+  }
+
+  public void setLaskettuUudelleen(boolean laskettuUudelleen) {
+    this.laskettuUudelleen = laskettuUudelleen;
+  }
+
+  public Date getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(Date createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public UUID getTunniste() {
+    return tunniste;
+  }
+
+  public void setTunniste(UUID tunniste) {
+    this.tunniste = tunniste;
   }
 }

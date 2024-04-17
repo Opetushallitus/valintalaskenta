@@ -1,17 +1,14 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
+import java.util.UUID;
+import org.springframework.data.annotation.Id;
 
-@Entity("HarkinnanvarainenHyvaksyminen")
 public class HarkinnanvarainenHyvaksyminen {
-  @Id private ObjectId id;
+  @Id private UUID id;
 
   private HarkinnanvaraisuusTila harkinnanvaraisuusTila;
 
   private String hakukohdeOid;
-
   private String hakemusOid;
 
   private String hakuOid;
@@ -46,5 +43,13 @@ public class HarkinnanvarainenHyvaksyminen {
 
   public void setHakuOid(String hakuOid) {
     this.hakuOid = hakuOid;
+  }
+
+  public UUID getId() {
+    return id;
+  }
+
+  public void setId(UUID id) {
+    this.id = id;
   }
 }

@@ -79,7 +79,7 @@ public class EdellinenValinnanvaiheKasittelija {
 
     List<TilaJaSelite> tilat = new ArrayList<>();
     for (final Valintatapajono jono : edellinenValinnanvaihe.getValintatapajonot()) {
-      Jonosija jonosija = getJonosijaForHakemus(hakemusOid, jono.getJonosijat());
+      Jonosija jonosija = getJonosijaForHakemus(hakemusOid, jono.getJonosijatAsList());
 
       TilaJaSelite tilaJonossa;
       if (jonosija == null) {
@@ -89,13 +89,14 @@ public class EdellinenValinnanvaiheKasittelija {
             VIRHE,
             suomenkielinenMap(
                 "Hakemus ei ole ollut mukana laskennassa edellisessä valinnan vaiheessa"));
-      } else if (jonosija.getJarjestyskriteeritulokset().isEmpty()) {
+      } else if (jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.isEmpty()) {
         // Mitä tehdään, jos hakemukselle ei ole laskentatulosta? Kai se on hyväksyttävissä
         tilaJonossa =
             new TilaJaSelite(
                 HYVAKSYTTAVISSA, suomenkielinenMap("Hakemukselle ei ole laskentatulosta jonossa"));
       } else {
-        Jarjestyskriteeritulos tulos = jonosija.getJarjestyskriteeritulokset().get(0);
+        Jarjestyskriteeritulos tulos =
+            jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset.get(0);
 
         Optional<MuokattuJonosija> muokattuJonosija =
             Optional.ofNullable(
@@ -147,7 +148,7 @@ public class EdellinenValinnanvaiheKasittelija {
     Set<String> muidenkohteidenKoetunnisteet =
         vanhatOsallistumiset.getHakutoiveet().stream()
             .filter(ht -> !ht.getHakukohdeOid().equals(valintaperusteetDTO.getHakukohdeOid()))
-            .flatMap(ht -> ht.getValinnanVaiheet().stream())
+            .flatMap(ht -> ht.getValintakoeValinnanvaiheet().stream())
             .flatMap(vv -> vv.getValintakokeet().stream())
             .map(Valintakoe::getValintakoeTunniste)
             .collect(Collectors.toSet());
@@ -233,14 +234,14 @@ public class EdellinenValinnanvaiheKasittelija {
     List<String> kohteenValintakokeet =
         hakijanOsallistumiset.getHakutoiveet().stream()
             .filter(h -> h.getHakukohdeOid().equals(hakukohdeOid))
-            .flatMap(h -> h.getValinnanVaiheet().stream())
+            .flatMap(h -> h.getValintakoeValinnanvaiheet().stream())
             .flatMap(v -> v.getValintakokeet().stream())
             .map(Valintakoe::getValintakoeTunniste)
             .collect(Collectors.toList());
 
     return hakijanOsallistumiset.getHakutoiveet().stream()
         .filter(h -> !h.getHakukohdeOid().equals(hakukohdeOid))
-        .flatMap(h -> h.getValinnanVaiheet().stream())
+        .flatMap(h -> h.getValintakoeValinnanvaiheet().stream())
         .flatMap(v -> v.getValintakokeet().stream())
         .anyMatch(
             k ->

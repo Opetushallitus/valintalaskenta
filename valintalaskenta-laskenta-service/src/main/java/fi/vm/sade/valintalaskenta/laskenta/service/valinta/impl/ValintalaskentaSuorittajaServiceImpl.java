@@ -20,13 +20,7 @@ import fi.vm.sade.service.valintaperusteet.service.validointi.virhe.Laskentakaav
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
-import fi.vm.sade.valintalaskenta.domain.valinta.Hakijaryhma;
-import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
-import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulos;
-import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
+import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.HakijaryhmaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValinnanvaiheDAO;
@@ -128,14 +122,14 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
       valinnanvaihe.setHakukohdeOid(hakukohdeOid);
       valinnanvaihe.setHakuOid(hakuOid);
       valinnanvaihe.setJarjestysnumero(jarjestysnumero);
-      valinnanvaihe.setValinnanvaiheOid(valinnanvaiheOid);
+      valinnanvaihe.setValinnanVaiheOid(valinnanvaiheOid);
       valinnanvaihe.setTarjoajaOid(vp.getTarjoajaOid());
       valinnanvaihe.setNimi(vp.getValinnanVaihe().getNimi());
 
       heitaPoikkeusJosValintatapajonoJaaIlmanTuloksia(uuid, vaihe, valinnanvaihe);
 
-      ValintakoeOsallistuminen edellinenOsallistuminen =
-          valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(
+      boolean edellinenValinnanvaiheOnOlemassa =
+          valintakoeOsallistuminenDAO.onkoEdeltavaValinnanvaiheOlemassa(
               hakuOid, hakukohdeOid, jarjestysnumero);
 
       searchForPassives("PRE", valinnanvaihe, hakemukset);
@@ -151,7 +145,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
           edellinenVaihe,
           viimeisinVaihe,
           valinnanvaihe,
-          edellinenOsallistuminen,
+          edellinenValinnanvaiheOnOlemassa,
           korkeakouluhaku);
 
       searchForPassives("POST ", valinnanvaihe, hakemukset);
@@ -273,11 +267,6 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         hakemukset.size(),
         passiveHakemusOids.size(),
         goodHakemusOids.size());
-    if (!passiveHakemusOids.isEmpty()) {
-      for (Valintatapajono j : uusi.getValintatapajonot()) {
-        valinnanvaiheDAO.poistaJononJonosijatHakemusOideilla(j, passiveHakemusOids);
-      }
-    }
   }
 
   private boolean emptyHakemuksetOrValinnanVaiheTyyppiValintakoe(
@@ -294,10 +283,8 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
       String hakuOid,
       Valinnanvaihe edellinenVaihe) {
     if (edellinenVaihe == null && jarjestysnumero > 0) {
-      ValintakoeOsallistuminen edellinenOsallistuminen =
-          valintakoeOsallistuminenDAO.haeEdeltavaValinnanvaihe(
-              hakuOid, hakukohdeOid, jarjestysnumero);
-      if (edellinenOsallistuminen == null) {
+      if (!valintakoeOsallistuminenDAO.onkoEdeltavaValinnanvaiheOlemassa(
+          hakuOid, hakukohdeOid, jarjestysnumero)) {
         LOG.warn(
             "(Uuid={}) Valinnanvaiheen järjestysnumero on suurempi kuin 0, mutta edellistä valinnanvaihetta ei löytynyt",
             uuid);
@@ -402,17 +389,16 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                 }
 
                 for (JonosijaJaSyotetytArvot js : jonosijatHakemusOidinMukaan.values()) {
-                  hakijaryhma.getJonosijat().add(createJonosija(js));
+                  hakijaryhma.jonosija.add(createJonosija(js));
                 }
                 List<Hakijaryhma> vanhatSamallaOidilla =
                     vanhatHakijaryhmat.stream()
-                        .filter(
-                            vh -> vh.getHakijaryhmaOid().equals(hakijaryhma.getHakijaryhmaOid()))
-                        .collect(Collectors.toList());
+                        .filter(vh -> vh.hakijaryhmaOid.equals(hakijaryhma.hakijaryhmaOid))
+                        .toList();
                 LOG.info(
                     "(Uuid={}) Persistoidaan hakijaryhmä {} ja poistetaan sen aiemmat versiot ({} kpl).",
                     uuid,
-                    hakijaryhma.getHakijaryhmaOid(),
+                    hakijaryhma.hakijaryhmaOid,
                     vanhatSamallaOidilla.size());
                 vanhatSamallaOidilla.forEach(hakijaryhmaDAO::poistaHakijaryhma);
                 hakijaryhmaDAO.createWithoutAuditLogging(hakijaryhma);
@@ -442,7 +428,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
       funktioTulos.setNimiSv(a.getNimiSv());
       funktioTulos.setNimiEn(a.getNimiEn());
       funktioTulos.setOmaopintopolku(a.isOmaopintopolku());
-      jonosija.getFunktioTulokset().add(funktioTulos);
+      jonosija.getFunktioTulokset().funktioTulokset.add(funktioTulos);
     }
     return jonosija;
   }
@@ -458,7 +444,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
       Valinnanvaihe edellinenVaihe,
       Valinnanvaihe viimeisinVaihe,
       Valinnanvaihe valinnanvaihe,
-      ValintakoeOsallistuminen edellinenOsallistuminen,
+      boolean edellinenValinnanvaiheOnOlemassa,
       boolean korkeakouluhaku) {
     for (ValintatapajonoJarjestyskriteereillaDTO j : vaihe.getValintatapajono()) {
       if (j.getEiLasketaPaivamaaranJalkeen() != null
@@ -514,7 +500,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                   jonosijatHakemusOidinMukaan,
                   jk.getNimi(),
                   jarjestysnumero,
-                  edellinenOsallistuminen);
+                  edellinenValinnanvaiheOnOlemassa);
             } else {
               hakemuslaskinService.suoritaLaskentaHakemukselle(
                   new Hakukohde(hakukohdeOid, hakukohteenValintaperusteet, korkeakouluhaku),
@@ -526,7 +512,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                   jonosijatHakemusOidinMukaan,
                   jk.getNimi(),
                   jarjestysnumero,
-                  edellinenOsallistuminen);
+                  edellinenValinnanvaiheOnOlemassa);
             }
             processed++;
             if (processed % 100 == 0 || processed == hakemukset.size()) {
@@ -544,15 +530,16 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         jono.setJonosijat(
             jonosijatHakemusOidinMukaan.values().stream()
                 .map(this::createJonosija)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toSet()));
 
         if (j.isPoistetaankoHylatyt()) {
-          List<Jonosija> filteroity =
+          Set<Jonosija> filteroity =
               jono.getJonosijat().stream()
                   .filter(
                       sija -> {
                         boolean tila =
                             !sija.getJarjestyskriteeritulokset()
+                                .jarjestyskriteeritulokset
                                 .get(0)
                                 .getTila()
                                 .equals(JarjestyskriteerituloksenTila.HYLATTY);
@@ -563,7 +550,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
                         return tila
                             || tilaJaSelite.getTila().equals(JarjestyskriteerituloksenTila.HYLATTY);
                       })
-                  .collect(Collectors.toList());
+                  .collect(Collectors.toSet());
           jono.setJonosijat(filteroity);
         }
         // Tässä vois ehkä poistella vähän myös passivoitujen hakemuksien tuloksia?
@@ -641,7 +628,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
         valinnanvaiheDAO.haeValinnanvaiheetJarjestysnumerolla(
             hakuOid, hakukohdeOid, jarjestysnumero);
     for (Valinnanvaihe vaihe : vaiheet) {
-      if (!vaihe.getValinnanvaiheOid().equals(valinnanvaiheOid)) {
+      if (!vaihe.getValinnanVaiheOid().equals(valinnanvaiheOid)) {
         valinnanvaiheDAO.poistaValinnanvaihe(vaihe);
       }
     }
@@ -663,8 +650,9 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
       if (!jononTulostaEiSaaLaskeaUudestaan(jono, valinnanvaiheValintaperusteissa)
           && (jono.getKaytetaanValintalaskentaa() == null || jono.getKaytetaanValintalaskentaa())) {
         for (Jonosija jonosija : jono.getJonosijat()) {
-          for (Jarjestyskriteeritulos tulos : jonosija.getJarjestyskriteeritulokset()) {
-            jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
+          for (Jarjestyskriteeritulos tulos :
+              jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset) {
+            jarjestyskriteerihistoriaDAO.createVersionWithUpdate(tulos.getHistoria());
           }
         }
         poistettavat.add(jono);
@@ -702,44 +690,44 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
             .collect(Collectors.toList());
 
     hakijaryhmaDAO.haeHakijaryhmat(hakukohdeOid).stream()
-        .filter(h -> !oidit.contains(h.getHakijaryhmaOid()))
+        .filter(h -> !oidit.contains(h.hakijaryhmaOid))
         .forEach(
             h -> {
               LOG.info(
                   "(Uuid={}) Poistetaan hakukohteelta {} hakijaryhmä {}, jota ei löydy enää valintaperusteista.",
                   uuid,
                   hakukohdeOid,
-                  h.getHakijaryhmaOid());
+                  h.hakijaryhmaOid);
               hakijaryhmaDAO.poistaHakijaryhma(h);
             });
   }
 
   private Hakijaryhma haeTaiLuoHakijaryhma(ValintaperusteetHakijaryhmaDTO dto) {
     Hakijaryhma hakijaryhma = hakijaryhmaDAO.haeHakijaryhma(dto.getOid()).orElse(new Hakijaryhma());
-    hakijaryhma.setHakijaryhmaOid(dto.getOid());
-    hakijaryhma.setHakukohdeOid(dto.getHakukohdeOid());
-    hakijaryhma.setKaytaKaikki(dto.isKaytaKaikki());
-    hakijaryhma.setKaytetaanRyhmaanKuuluvia(dto.isKaytetaanRyhmaanKuuluvia());
-    hakijaryhma.setKiintio(dto.getKiintio());
-    hakijaryhma.setKuvaus(dto.getKuvaus());
-    hakijaryhma.setNimi(dto.getNimi());
-    hakijaryhma.setPrioriteetti(dto.getPrioriteetti());
-    hakijaryhma.setTarkkaKiintio(dto.isTarkkaKiintio());
-    hakijaryhma.setValintatapajonoOid(dto.getValintatapajonoOid());
+    hakijaryhma.hakijaryhmaOid = dto.getOid();
+    hakijaryhma.hakukohdeOid = dto.getHakukohdeOid();
+    hakijaryhma.kaytaKaikki = dto.isKaytaKaikki();
+    hakijaryhma.kaytetaanRyhmaanKuuluvia = dto.isKaytetaanRyhmaanKuuluvia();
+    hakijaryhma.kiintio = dto.getKiintio();
+    hakijaryhma.kuvaus = dto.getKuvaus();
+    hakijaryhma.nimi = dto.getNimi();
+    hakijaryhma.prioriteetti = dto.getPrioriteetti();
+    hakijaryhma.tarkkaKiintio = dto.isTarkkaKiintio();
+    hakijaryhma.valintatapajonoOid = dto.getValintatapajonoOid();
     if (dto.getHakijaryhmatyyppikoodi() != null) {
-      hakijaryhma.setHakijaryhmatyyppikoodiUri(dto.getHakijaryhmatyyppikoodi().getUri());
+      hakijaryhma.hakijaryhmatyyppiKoodiuri = dto.getHakijaryhmatyyppikoodi().getUri();
     }
-
     poistaVanhatHistoriat(hakijaryhma);
-    hakijaryhma.getJonosijat().clear();
+    hakijaryhma.jonosija.clear();
 
     return hakijaryhma;
   }
 
   private void poistaVanhatHistoriat(Hakijaryhma hakijaryhma) {
-    for (Jonosija jonosija : hakijaryhma.getJonosijat()) {
-      for (Jarjestyskriteeritulos tulos : jonosija.getJarjestyskriteeritulokset()) {
-        jarjestyskriteerihistoriaDAO.delete(tulos.getHistoria());
+    for (Jonosija jonosija : hakijaryhma.jonosija) {
+      for (Jarjestyskriteeritulos tulos :
+          jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset) {
+        jarjestyskriteerihistoriaDAO.createVersionWithUpdate(tulos.getHistoria());
       }
     }
   }
