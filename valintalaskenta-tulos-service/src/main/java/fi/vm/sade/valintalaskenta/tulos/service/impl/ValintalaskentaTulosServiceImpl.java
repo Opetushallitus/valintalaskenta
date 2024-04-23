@@ -27,11 +27,7 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.Valintakoe;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeValinnanvaihe;
 import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
-import fi.vm.sade.valintalaskenta.tulos.dao.HarkinnanvarainenHyvaksyminenDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.TulosHakijaryhmaDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.TulosValinnanvaiheDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.TulosValintakoeOsallistuminenDAO;
+import fi.vm.sade.valintalaskenta.tulos.dao.*;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.service.AuthorizationUtil;
@@ -48,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -72,6 +69,8 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
 
   private final ValintalaskentaModelMapper modelMapper;
 
+  private final TulosValintatapajonoDAO tulosValintatapajonoDAO;
+
   private final LaskentaAuditLog auditLog;
 
   @Value("${root.organisaatio.oid}")
@@ -85,6 +84,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
       MuokattuJonosijaDAO muokattuJonosijaDAO,
       ValintatulosConverter valintatulosConverter,
       HarkinnanvarainenHyvaksyminenDAO harkinnanvarainenHyvaksyminenDAO,
+      TulosValintatapajonoDAO tulosValintatapajonoDAO,
       ValintalaskentaModelMapper modelMapper,
       @Qualifier("LaskentaAuditLog") LaskentaAuditLog auditLog) {
     this.tulosValinnanvaiheDAO = tulosValinnanvaiheDAO;
@@ -93,6 +93,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     this.muokattuJonosijaDAO = muokattuJonosijaDAO;
     this.valintatulosConverter = valintatulosConverter;
     this.harkinnanvarainenHyvaksyminenDAO = harkinnanvarainenHyvaksyminenDAO;
+    this.tulosValintatapajonoDAO = tulosValintatapajonoDAO;
     this.modelMapper = modelMapper;
     this.auditLog = auditLog;
   }
@@ -751,6 +752,14 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
       saveMuokattuJonosija(muokattuJonosija, auditUser);
       return muokattuJonosija;
     }
+  }
+
+  @Override
+  public Optional<Valintatapajono> paivitaValmisSijoiteltavaksi(
+      @Param("valintatapajonoOid") String valintatapajonoOid,
+      @Param("valmisSijoiteltavaksi") boolean valmisSijoiteltavaksi) {
+    return tulosValintatapajonoDAO.paivitaValmisSijoiteltavaksi(
+        valintatapajonoOid, valmisSijoiteltavaksi);
   }
 
   private void saveMuokattuJonosija(MuokattuJonosija muokattuJonosija, User auditUser) {
