@@ -82,4 +82,7 @@ public interface ValintalaskentaTulosService {
       List<String> hakukohdeOids);
 
   List<ValintakoeOsallistuminen> haeValintakoeOsallistumisetByHakijas(List<String> hakijaOids);
+
+  Optional<Valintatapajono> paivitaValmisSijoiteltavaksi(
+      String valintatapajonoOid, boolean valmisSijoiteltavaksi);
 }

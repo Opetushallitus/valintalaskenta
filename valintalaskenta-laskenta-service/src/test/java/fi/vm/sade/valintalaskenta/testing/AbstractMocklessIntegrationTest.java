@@ -2,9 +2,9 @@ package fi.vm.sade.valintalaskenta.testing;
 
 import fi.vm.sade.valintalaskenta.laskenta.App;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.*;
-import fi.vm.sade.valintalaskenta.tulos.dao.repository.HarkinnanvarainenHyvaksyminenRepository;
-import fi.vm.sade.valintalaskenta.tulos.dao.repository.MuokattuJonosijaRepository;
-import fi.vm.sade.valintalaskenta.tulos.dao.repository.ValintatapajonoRepository;
+import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosHarkinnanvarainenHyvaksyminenRepository;
+import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosMuokattuJonosijaRepository;
+import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosValintatapajonoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,23 +26,24 @@ public class AbstractMocklessIntegrationTest {
 
   @Autowired protected ValintakoeOsallistuminenRepository valintakoeOsallistuminenRepository;
 
-  @Autowired protected MuokattuJonosijaRepository muokattuJonosijaRepository;
+  @Autowired protected TulosMuokattuJonosijaRepository tulosMuokattuJonosijaRepository;
 
   @Autowired
-  protected HarkinnanvarainenHyvaksyminenRepository harkinnanvarainenHyvaksyminenRepository;
+  protected TulosHarkinnanvarainenHyvaksyminenRepository
+      tulosHarkinnanvarainenHyvaksyminenRepository;
 
   @Autowired protected JonosijaRepository jonosijaRepository;
 
-  @Autowired protected ValintatapajonoRepository valintatapajonoRepository;
+  @Autowired protected TulosValintatapajonoRepository tulosValintatapajonoRepository;
 
   @LocalServerPort protected Integer port;
 
   @BeforeEach
   public void setUp() {
-    harkinnanvarainenHyvaksyminenRepository.deleteAll();
-    muokattuJonosijaRepository.deleteAll();
+    tulosHarkinnanvarainenHyvaksyminenRepository.deleteAll();
+    tulosMuokattuJonosijaRepository.deleteAll();
     jonosijaRepository.deleteAll();
-    valintatapajonoRepository.deleteAll();
+    tulosValintatapajonoRepository.deleteAll();
     valinnanvaiheRepository.deleteAll();
     hakijaryhmaRepository.deleteAll();
     valintakoeOsallistuminenRepository.deleteAll();

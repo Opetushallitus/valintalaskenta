@@ -2,16 +2,16 @@ package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvarainenHyvaksyminen;
 import fi.vm.sade.valintalaskenta.tulos.dao.HarkinnanvarainenHyvaksyminenDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.repository.HarkinnanvarainenHyvaksyminenRepository;
+import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosHarkinnanvarainenHyvaksyminenRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
 public class HarkinnanvarainenHyvaksyminenDAOImpl implements HarkinnanvarainenHyvaksyminenDAO {
 
-  private final HarkinnanvarainenHyvaksyminenRepository repo;
+  private final TulosHarkinnanvarainenHyvaksyminenRepository repo;
 
-  public HarkinnanvarainenHyvaksyminenDAOImpl(HarkinnanvarainenHyvaksyminenRepository repo) {
+  public HarkinnanvarainenHyvaksyminenDAOImpl(TulosHarkinnanvarainenHyvaksyminenRepository repo) {
     this.repo = repo;
   }
 

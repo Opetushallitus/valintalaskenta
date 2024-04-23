@@ -226,14 +226,14 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
                 100.0, 0, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA),
             TestEntityDataUtil.luoJarjestyskriteeritulosEntity(
                 5.0, 1, JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA)));
-    muokattuJonosijaRepository.save(mjs);
+    tulosMuokattuJonosijaRepository.save(mjs);
 
     HarkinnanvarainenHyvaksyminen hyvaksyminen = new HarkinnanvarainenHyvaksyminen();
     hyvaksyminen.setHarkinnanvaraisuusTila(HarkinnanvaraisuusTila.HYVAKSYTTY);
     hyvaksyminen.setHakukohdeOid("hakukohdeOid1");
     hyvaksyminen.setHakuOid("hakuOid1");
     hyvaksyminen.setHakemusOid("hakemusOid2");
-    harkinnanvarainenHyvaksyminenRepository.save(hyvaksyminen);
+    tulosHarkinnanvarainenHyvaksyminenRepository.save(hyvaksyminen);
 
     {
       HakemusDTO hakemus =

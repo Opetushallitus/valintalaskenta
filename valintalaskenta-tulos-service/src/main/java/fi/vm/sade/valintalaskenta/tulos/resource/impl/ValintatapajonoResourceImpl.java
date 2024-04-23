@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -118,30 +117,14 @@ public class ValintatapajonoResourceImpl {
   public ResponseEntity<ValintatapajonoDTO> muokkaaSijotteluStatusta(
       @Parameter(name = "valintatapajonoOid", required = true) @PathVariable("valintatapajonoOid")
           final String valintatapajonoOid,
-      @Parameter(name = "status", required = true) @RequestParam("status") final boolean status,
+      @Parameter(name = "status", required = true) @RequestParam("status")
+          final boolean valmisSijoiteltavaksi,
       @RequestBody final ValintatapajonoDTO valintatapajono,
       final HttpServletRequest request) {
     User user = auditLog.getUser(request);
 
-    Consumer<Valintatapajono> valintatapajonoMuokkausFunktio =
-        jono -> {
-          // Käyttöliittymä kutsuu
-          // ValintaperusteetResourceV2::updateAutomaattinenSijoitteluunSiirto(valintatapajonoOid,
-          // status, request)
-          jono.setAloituspaikat(valintatapajono.getAloituspaikat());
-          jono.setEiVarasijatayttoa(valintatapajono.getEiVarasijatayttoa());
-          jono.setKaikkiEhdonTayttavatHyvaksytaan(
-              valintatapajono.getKaikkiEhdonTayttavatHyvaksytaan());
-          jono.setKaytetaanValintalaskentaa(valintatapajono.getKaytetaanValintalaskentaa());
-          jono.setNimi(valintatapajono.getNimi());
-          jono.setPoissaOlevaTaytto(valintatapajono.getPoissaOlevaTaytto());
-          jono.setPrioriteetti(valintatapajono.getPrioriteetti());
-          jono.setSiirretaanSijoitteluun(valintatapajono.getSiirretaanSijoitteluun());
-          jono.setValmisSijoiteltavaksi(status);
-        };
-
     Map<String, String> additionalAuditFields = new HashMap<>();
-    additionalAuditFields.put("valmissijoiteltavaksi", String.valueOf(status));
+    additionalAuditFields.put("valmissijoiteltavaksi", String.valueOf(valmisSijoiteltavaksi));
     auditLog.log(
         LaskentaAudit.AUDIT,
         auditLog.getUser(request),
@@ -152,8 +135,7 @@ public class ValintatapajonoResourceImpl {
         additionalAuditFields);
 
     Optional<Valintatapajono> dto =
-        tulosService.muokkaaValintatapajonoa(
-            valintatapajonoOid, valintatapajonoMuokkausFunktio, user);
+        tulosService.paivitaValmisSijoiteltavaksi(valintatapajonoOid, valmisSijoiteltavaksi);
     return dto.map(
             jono -> ResponseEntity.accepted().body(modelMapper.map(jono, ValintatapajonoDTO.class)))
         .orElse(ResponseEntity.notFound().build());

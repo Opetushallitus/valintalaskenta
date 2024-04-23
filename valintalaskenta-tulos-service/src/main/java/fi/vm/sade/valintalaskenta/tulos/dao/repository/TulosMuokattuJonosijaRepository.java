@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.repository.CrudRepository;
 
-public interface MuokattuJonosijaRepository extends CrudRepository<MuokattuJonosija, UUID> {
+public interface TulosMuokattuJonosijaRepository extends CrudRepository<MuokattuJonosija, UUID> {
 
   List<MuokattuJonosija> findMuokattuJonosijasByHakuOid(String hakuOid);
 

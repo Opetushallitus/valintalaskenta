@@ -2,7 +2,7 @@ package fi.vm.sade.valintalaskenta.laskenta.dao.impl;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
 import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.repository.JarjestyskriteerihistoriaRepository;
+import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosJarjestyskriteerihistoriaRepository;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class JarjestyskriteerihistoriaDAOImpl implements JarjestyskriteerihistoriaDAO {
 
-  private final JarjestyskriteerihistoriaRepository repository;
+  private final TulosJarjestyskriteerihistoriaRepository repository;
 
   public JarjestyskriteerihistoriaDAOImpl(
-      JarjestyskriteerihistoriaRepository jarjestyskriteerihistoriaRepository) {
-    this.repository = jarjestyskriteerihistoriaRepository;
+      TulosJarjestyskriteerihistoriaRepository tulosJarjestyskriteerihistoriaRepository) {
+    this.repository = tulosJarjestyskriteerihistoriaRepository;
   }
 
   @Override
