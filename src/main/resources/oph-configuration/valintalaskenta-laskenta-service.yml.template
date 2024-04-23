@@ -87,3 +87,8 @@ aws:
   bucket:
     name: {{valintalaskentalaskentaservice_aws_bucket_name}}
     oldversionname: {{valintalaskentalaskentaservice_oldversion_aws_bucket_name}}
+  siirtotiedosto:
+    bucket-name: {{valintalaskentalaskentaservice_siirtotiedosto_bucket_name}}
+    bucket-target-role-arn: {{valintalaskentalaskentaservice_siirtotiedosto_bucket_target_role_arn}}
+    max-hakukohde-count-in-file: {{valintaperusteet_siirtotiedosto_max_hakukohde_count_in_file}}
+    max-hakemus-count-in-file: {{valintaperusteet_siirtotiedosto_max_hakemus_count_in_file}}

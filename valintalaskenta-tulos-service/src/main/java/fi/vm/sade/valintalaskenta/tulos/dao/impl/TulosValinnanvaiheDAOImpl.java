@@ -5,6 +5,7 @@ import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluValintatapajono;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosValinnanvaiheRepository;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
@@ -76,5 +77,13 @@ public class TulosValinnanvaiheDAOImpl implements TulosValinnanvaiheDAO {
   @Override
   public List<SijoitteluJonosija> haeJarjestyskriteerituloksetJonosijoillaHaulle(String hakuOid) {
     return repo.haeSijoittelunJonosijatJaJarjestyskriteerit(hakuOid);
+  }
+
+  @Override
+  public List<String> readNewOrModifiedHakukohdeOids(
+      LocalDateTime startDatetime, LocalDateTime endDatatime) {
+    return startDatetime != null
+        ? repo.findHakukohdeOidsByTimeRange(startDatetime, endDatatime)
+        : repo.findHakukohdeOidsByEndTime(endDatatime);
   }
 }
