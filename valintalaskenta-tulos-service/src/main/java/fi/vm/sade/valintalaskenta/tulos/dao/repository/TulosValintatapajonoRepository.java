@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.repository.CrudRepository;
 
-public interface ValintatapajonoRepository extends CrudRepository<Valintatapajono, UUID> {
+public interface TulosValintatapajonoRepository extends CrudRepository<Valintatapajono, UUID> {
 
   Optional<Valintatapajono> findValintatapajonoByValintatapajonoOid(String valintatapajonoOid);
 }
