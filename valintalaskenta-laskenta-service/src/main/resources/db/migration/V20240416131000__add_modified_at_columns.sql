@@ -19,6 +19,16 @@ alter table valintakoe_valinnanvaihe
 alter table valintakoe
     add column if not exists last_modified timestamptz;
 
+CREATE INDEX IF NOT EXISTS valinnanvaihe_last_modified_idx ON valinnanvaihe (last_modified);
+CREATE INDEX IF NOT EXISTS valintatapajono_last_modified_idx ON valintatapajono (last_modified);
+CREATE INDEX IF NOT EXISTS jonosija_last_modified_idx ON jonosija (last_modified);
+CREATE INDEX IF NOT EXISTS muokattu_jonosija_last_modified_idx ON muokattu_jonosija (last_modified);
+CREATE INDEX IF NOT EXISTS Harkinnanvarainen_hyvaksyminen_last_modified_idx ON Harkinnanvarainen_hyvaksyminen (last_modified);
+CREATE INDEX IF NOT EXISTS valintakoe_osallistuminen_created_at_idx ON valintakoe_osallistuminen (created_at);
+CREATE INDEX IF NOT EXISTS hakutoive_created_at_idx ON hakutoive (created_at);
+CREATE INDEX IF NOT EXISTS valintakoe_valinnanvaihe_last_modified_idx ON valintakoe_valinnanvaihe (last_modified);
+CREATE INDEX IF NOT EXISTS valintakoe_last_modified_idx ON valintakoe (last_modified);
+
 -- Luodaan funktio joka hoitaa aikaleiman päivityksen
 create or replace function set_last_modified() returns trigger as
 $$
