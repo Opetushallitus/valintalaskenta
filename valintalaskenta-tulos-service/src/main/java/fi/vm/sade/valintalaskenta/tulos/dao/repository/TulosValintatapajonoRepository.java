@@ -12,7 +12,7 @@ public interface TulosValintatapajonoRepository extends CrudRepository<Valintata
   Optional<Valintatapajono> findValintatapajonoByValintatapajonoOid(String valintatapajonoOid);
 
   @Query(
-      "update Valintatapajono vtj set valmis_sijoiteltavaksi = :valmisSijoiteltavaksi where vtj.valintatapajonoOid = :valintatapajonoOid returning *;")
+      "update Valintatapajono vtj set valmis_sijoiteltavaksi = :valmisSijoiteltavaksi where vtj.valintatapajono_oid = :valintatapajonoOid returning *;")
   Optional<Valintatapajono> paivitaValmisSijoiteltavaksi(
       @Param("valintatapajonoOid") String valintatapajonoOid,
       @Param("valmisSijoiteltavaksi") boolean valmisSijoiteltavaksi);
