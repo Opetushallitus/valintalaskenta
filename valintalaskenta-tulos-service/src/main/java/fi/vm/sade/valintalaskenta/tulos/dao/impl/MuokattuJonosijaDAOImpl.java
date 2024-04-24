@@ -2,7 +2,7 @@ package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.tulos.dao.MuokattuJonosijaDAO;
-import fi.vm.sade.valintalaskenta.tulos.dao.repository.MuokattuJonosijaRepository;
+import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosMuokattuJonosijaRepository;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 public class MuokattuJonosijaDAOImpl implements MuokattuJonosijaDAO {
   private static final Logger LOGGER = LoggerFactory.getLogger(MuokattuJonosijaDAOImpl.class);
 
-  private final MuokattuJonosijaRepository repo;
+  private final TulosMuokattuJonosijaRepository repo;
 
-  public MuokattuJonosijaDAOImpl(MuokattuJonosijaRepository repo) {
+  public MuokattuJonosijaDAOImpl(TulosMuokattuJonosijaRepository repo) {
     this.repo = repo;
   }
 

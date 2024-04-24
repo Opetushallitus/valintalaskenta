@@ -40,6 +40,7 @@ public class ValintaLaskentaTulosServiceImplTest {
           Mockito.mock(MuokattuJonosijaDAO.class),
           Mockito.mock(ValintatulosConverter.class),
           Mockito.mock(HarkinnanvarainenHyvaksyminenDAO.class),
+          Mockito.mock(TulosValintatapajonoDAO.class),
           mapper,
           Mockito.mock(LaskentaAuditLog.class));
 

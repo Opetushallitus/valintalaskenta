@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.repository.CrudRepository;
 
-public interface HarkinnanvarainenHyvaksyminenRepository
+public interface TulosHarkinnanvarainenHyvaksyminenRepository
     extends CrudRepository<HarkinnanvarainenHyvaksyminen, UUID> {
 
   Optional<HarkinnanvarainenHyvaksyminen>

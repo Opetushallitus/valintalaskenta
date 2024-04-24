@@ -8,7 +8,7 @@ import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-public interface JarjestyskriteerihistoriaRepository
+public interface TulosJarjestyskriteerihistoriaRepository
     extends CrudRepository<Jarjestyskriteerihistoria, Long> {
 
   @Query("select * from Jarjestyskriteerihistoria ORDER BY id ASC LIMIT 1000")

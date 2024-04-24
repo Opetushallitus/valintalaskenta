@@ -2,10 +2,10 @@ package fi.vm.sade.valintalaskenta.testing;
 
 import fi.vm.sade.valintalaskenta.laskenta.App;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.*;
-import fi.vm.sade.valintalaskenta.tulos.dao.repository.HarkinnanvarainenHyvaksyminenRepository;
-import fi.vm.sade.valintalaskenta.tulos.dao.repository.JarjestyskriteerihistoriaRepository;
-import fi.vm.sade.valintalaskenta.tulos.dao.repository.MuokattuJonosijaRepository;
-import fi.vm.sade.valintalaskenta.tulos.dao.repository.ValintatapajonoRepository;
+import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosHarkinnanvarainenHyvaksyminenRepository;
+import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosJarjestyskriteerihistoriaRepository;
+import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosMuokattuJonosijaRepository;
+import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosValintatapajonoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,28 +27,30 @@ public abstract class AbstractIntegrationTest {
 
   @Autowired protected ValintakoeOsallistuminenRepository valintakoeOsallistuminenRepository;
 
-  @Autowired protected ValintatapajonoRepository valintatapajonoRepository;
+  @Autowired protected TulosValintatapajonoRepository tulosValintatapajonoRepository;
 
   @Autowired protected JonosijaRepository jonosijaRepository;
 
-  @Autowired protected MuokattuJonosijaRepository muokattuJonosijaRepository;
+  @Autowired protected TulosMuokattuJonosijaRepository tulosMuokattuJonosijaRepository;
 
   @Autowired
-  protected HarkinnanvarainenHyvaksyminenRepository harkinnanvarainenHyvaksyminenRepository;
+  protected TulosHarkinnanvarainenHyvaksyminenRepository
+      tulosHarkinnanvarainenHyvaksyminenRepository;
 
-  @Autowired protected JarjestyskriteerihistoriaRepository jarjestyskriteerihistoriaRepository;
+  @Autowired
+  protected TulosJarjestyskriteerihistoriaRepository tulosJarjestyskriteerihistoriaRepository;
 
   @LocalServerPort protected Integer port;
 
   @BeforeEach
   public void setUp() {
-    harkinnanvarainenHyvaksyminenRepository.deleteAll();
-    muokattuJonosijaRepository.deleteAll();
+    tulosHarkinnanvarainenHyvaksyminenRepository.deleteAll();
+    tulosMuokattuJonosijaRepository.deleteAll();
     jonosijaRepository.deleteAll();
-    valintatapajonoRepository.deleteAll();
+    tulosValintatapajonoRepository.deleteAll();
     valinnanvaiheRepository.deleteAll();
     hakijaryhmaRepository.deleteAll();
     valintakoeOsallistuminenRepository.deleteAll();
-    jarjestyskriteerihistoriaRepository.deleteAll();
+    tulosJarjestyskriteerihistoriaRepository.deleteAll();
   }
 }
