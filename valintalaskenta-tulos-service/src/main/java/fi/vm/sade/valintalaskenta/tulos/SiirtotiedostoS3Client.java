@@ -8,6 +8,7 @@ import fi.vm.sade.valinta.dokumenttipalvelu.dto.ObjectMetadata;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +59,7 @@ public class SiirtotiedostoS3Client {
               "valintalaskenta",
               dataType,
               "",
-              new ByteArrayInputStream(jsonArray.toString().getBytes()),
+              new ByteArrayInputStream(jsonArray.toString().getBytes(StandardCharsets.UTF_8)),
               2);
       return result.key;
     } catch (Exception e) {
