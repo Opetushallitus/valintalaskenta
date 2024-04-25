@@ -34,10 +34,12 @@ public class MuokattuJonosija {
   }
 
   public List<Jarjestyskriteeritulos> getJarjestyskriteerit() {
+    ensureJarjestystulosContainerInitialized();
     return jarjestyskriteeritulokset.jarjestyskriteeritulokset;
   }
 
   public void setJarjestyskriteerit(Set<Jarjestyskriteeritulos> jarjestyskriteerit) {
+    ensureJarjestystulosContainerInitialized();
     this.jarjestyskriteeritulokset.jarjestyskriteeritulokset.clear();
     this.jarjestyskriteeritulokset.jarjestyskriteeritulokset.addAll(jarjestyskriteerit);
     this.jarjestaJarjestyskriteeritulokset();
@@ -97,6 +99,12 @@ public class MuokattuJonosija {
 
   public void setHarkinnanvarainen(Boolean harkinnanvarainen) {
     this.harkinnanvarainen = harkinnanvarainen;
+  }
+
+  private void ensureJarjestystulosContainerInitialized() {
+    if (this.jarjestyskriteeritulokset == null) {
+      this.jarjestyskriteeritulokset = new JarjestyskriteeritulosContainer();
+    }
   }
 
   private void jarjestaJarjestyskriteeritulokset() {
