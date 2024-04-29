@@ -3,12 +3,10 @@ package fi.vm.sade.valintalaskenta.tulos;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.stream.JsonWriter;
 import fi.vm.sade.valinta.dokumenttipalvelu.SiirtotiedostoPalvelu;
 import fi.vm.sade.valinta.dokumenttipalvelu.dto.ObjectMetadata;
-import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
+import java.io.*;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,29 +36,34 @@ public class SiirtotiedostoS3Client {
     this.maxHakemusCountInFile = maxHakemusCountInFile;
   }
 
-  public String createSiirtotiedostoForValintakoeOsallistumiset(
-      List<ValintakoeOsallistuminen> data) {
+  public String createSiirtotiedostoForTulosdata(List<?> data, String dataType) {
     JsonArray jsonArray = new JsonArray(data.size());
     data.forEach(item -> jsonArray.add(gson.toJsonTree(item)));
-    return doCreateSiirtotiedosto(jsonArray, "valintakoe_osallistuminen");
+
+    try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+      try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream)) {
+        JsonWriter jsonWriter = new JsonWriter(outputStreamWriter);
+        jsonWriter.beginArray();
+        for (Object dto : data) {
+          gson.toJson(gson.toJsonTree(dto), jsonWriter);
+        }
+        jsonWriter.endArray();
+        jsonWriter.close();
+
+        try (ByteArrayInputStream inputStream =
+            new ByteArrayInputStream(outputStream.toByteArray())) {
+          return doCreateSiirtotiedosto(inputStream, dataType);
+        }
+      }
+    } catch (IOException ioe) {
+      throw new RuntimeException("JSONin muodostaminen epäonnistui;", ioe);
+    }
   }
 
-  public String createSiirtotiedostoForValintalaskennanTulokset(
-      List<ValintatietoValinnanvaiheDTO> data) {
-    JsonArray jsonArray = new JsonArray(data.size());
-    data.forEach(item -> jsonArray.add(gson.toJsonTree(item)));
-    return doCreateSiirtotiedosto(jsonArray, "valintalaskennan_tulos");
-  }
-
-  private String doCreateSiirtotiedosto(JsonArray jsonArray, String dataType) {
+  private String doCreateSiirtotiedosto(InputStream inputStream, String dataType) {
     try {
       ObjectMetadata result =
-          siirtotiedostoPalvelu.saveSiirtotiedosto(
-              "valintalaskenta",
-              dataType,
-              "",
-              new ByteArrayInputStream(jsonArray.toString().getBytes(StandardCharsets.UTF_8)),
-              2);
+          siirtotiedostoPalvelu.saveSiirtotiedosto("valintalaskenta", dataType, "", inputStream, 2);
       return result.key;
     } catch (Exception e) {
       logger.error("Siirtotiedoston luonti epäonnistui; ", e);

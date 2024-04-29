@@ -55,7 +55,8 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
         osallistumiset.add(valintalaskentaTulosService.haeValintakoeOsallistumiset(hakemusOid));
       }
       siirtotiedostoKeys.add(
-          siirtotiedostoS3Client.createSiirtotiedostoForValintakoeOsallistumiset(osallistumiset));
+          siirtotiedostoS3Client.createSiirtotiedostoForTulosdata(
+              osallistumiset, "valintakoe_osallistuminen"));
     }
     LOGGER.info(
         "Kirjoitettiin yhteensä {} hakemuksen valintakoeosallistumiset {} siirtotiedostoon.",
@@ -79,8 +80,9 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
         tulokset.add(valintalaskentaTulosService.haeValinnanvaiheetHakukohteelle(hakukohdeOid));
       }
       siirtotiedostoKeys.add(
-          siirtotiedostoS3Client.createSiirtotiedostoForValintalaskennanTulokset(
-              tulokset.stream().flatMap(List::stream).collect(Collectors.toList())));
+          siirtotiedostoS3Client.createSiirtotiedostoForTulosdata(
+              tulokset.stream().flatMap(List::stream).collect(Collectors.toList()),
+              "valintalaskennan_tulos"));
     }
     LOGGER.info(
         "Kirjoitettiin yhteensä {} valintalaskennan tulosta {} siirtotiedostoon.",
