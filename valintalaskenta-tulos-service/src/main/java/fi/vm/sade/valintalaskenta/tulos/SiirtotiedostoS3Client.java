@@ -37,9 +37,6 @@ public class SiirtotiedostoS3Client {
   }
 
   public String createSiirtotiedostoForTulosdata(List<?> data, String dataType) {
-    JsonArray jsonArray = new JsonArray(data.size());
-    data.forEach(item -> jsonArray.add(gson.toJsonTree(item)));
-
     try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
       try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream)) {
         JsonWriter jsonWriter = new JsonWriter(outputStreamWriter);
