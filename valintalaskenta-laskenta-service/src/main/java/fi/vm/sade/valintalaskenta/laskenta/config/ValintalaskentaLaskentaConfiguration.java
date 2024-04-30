@@ -101,6 +101,24 @@ public class ValintalaskentaLaskentaConfiguration {
             "CasSecurityTicket"));
   }
 
+  @Bean(name = "seurantaCasClient")
+  public CasClient seurantaServiceCasClient(
+      @Value("${web.url.cas}") final String casUrl,
+      @Value("${cas.service.seuranta-service}") final String targetUrl,
+      @Value("${valintalaskentakoostepalvelu.app.username.to.sijoittelu}") final String username,
+      @Value("${valintalaskentakoostepalvelu.app.password.to.sijoittelu}") final String password) {
+    return new CasClient(
+        CasConfig.CasConfig(
+            username,
+            password,
+            casUrl,
+            targetUrl,
+            "CSRF",
+            CALLER_ID.value(),
+            "JSESSIONID",
+            "/j_spring_cas_security_check"));
+  }
+
   @Value("${valintalaskenta-laskenta-service.global.http.connectionTimeoutMillis:59999}")
   private Integer clientConnectionTimeout;
 
