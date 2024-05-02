@@ -1,0 +1,1 @@
+ALTER TABLE muokattu_jonosija DROP CONSTRAINT IF EXISTS fk_valintatapajono_oid;
