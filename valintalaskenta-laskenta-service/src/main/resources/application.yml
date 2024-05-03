@@ -6,13 +6,13 @@ spring:
 
 valintalaskenta-laskenta-service:
   postgresql:
-    url: jdbc:postgresql://localhost:5555/valintalaskenta
+    url: jdbc:aws-wrapper:postgresql://localhost:5555/valintalaskenta
     user: app
     password: app
     maxactive: 10
     maxwait: 3000
     leakdetectionthresholdmillis: 1800000
-    driver: org.postgresql.Driver
+    driver: software.amazon.jdbc.Driver
   organisaatio-service:
     url:
 
