@@ -146,7 +146,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl
             if (edellisenVaiheenJarjestysluku >= 0) {
               edellinenVaihe = hakukohteenTulokset.get(edellisenVaiheenJarjestysluku);
               if (edellinenVaihe == null) {
-                LOG.error(
+                LOG.warn(
                     "FIXME Aiempia tuloksia ei löytynyt, vaikka oletettavasti pitäisi! "
                         + "Yritetään vielä hakea vanhalla tavalla edellisen vaiheen tulokset.");
                 edellinenVaihe =
