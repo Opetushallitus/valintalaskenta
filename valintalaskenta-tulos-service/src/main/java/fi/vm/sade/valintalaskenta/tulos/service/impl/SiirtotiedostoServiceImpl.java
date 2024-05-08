@@ -3,11 +3,12 @@ package fi.vm.sade.valintalaskenta.tulos.service.impl;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
-import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.tulos.SiirtotiedostoS3Client;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValintakoeOsallistuminenDAO;
+import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.service.SiirtotiedostoService;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import java.time.LocalDateTime;
@@ -26,6 +27,7 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
   private final TulosValintakoeOsallistuminenDAO tulosValintakoeOsallistuminenDAO;
   private final TulosValinnanvaiheDAO tulosValinnanvaiheDAO;
   private final ValintalaskentaTulosService valintalaskentaTulosService;
+  private final ValintalaskentaModelMapper modelMapper;
 
   private final SiirtotiedostoS3Client siirtotiedostoS3Client;
 
@@ -34,10 +36,12 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
       final TulosValintakoeOsallistuminenDAO tulosValintakoeOsallistuminenDAO,
       final TulosValinnanvaiheDAO tulosValinnanvaiheDAO,
       final ValintalaskentaTulosService tulosService,
+      final ValintalaskentaModelMapper modelMapper,
       final SiirtotiedostoS3Client siirtotiedostoS3Client) {
     this.tulosValintakoeOsallistuminenDAO = tulosValintakoeOsallistuminenDAO;
     this.tulosValinnanvaiheDAO = tulosValinnanvaiheDAO;
     this.valintalaskentaTulosService = tulosService;
+    this.modelMapper = modelMapper;
     this.siirtotiedostoS3Client = siirtotiedostoS3Client;
   }
 
@@ -50,9 +54,12 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
         Lists.partition(hakemusOids, siirtotiedostoS3Client.getMaxHakemusCountInFile());
     List<String> siirtotiedostoKeys = new ArrayList<>();
     for (List<String> hakemusOidChunk : partitions) {
-      List<ValintakoeOsallistuminen> osallistumiset = new ArrayList<>();
+      List<ValintakoeOsallistuminenDTO> osallistumiset = new ArrayList<>();
       for (String hakemusOid : hakemusOidChunk) {
-        osallistumiset.add(valintalaskentaTulosService.haeValintakoeOsallistumiset(hakemusOid));
+        osallistumiset.add(
+            modelMapper.map(
+                valintalaskentaTulosService.haeValintakoeOsallistumiset(hakemusOid),
+                ValintakoeOsallistuminenDTO.class));
       }
       siirtotiedostoKeys.add(
           siirtotiedostoS3Client.createSiirtotiedostoForTulosdata(
