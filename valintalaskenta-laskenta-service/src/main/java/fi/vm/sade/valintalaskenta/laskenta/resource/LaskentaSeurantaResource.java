@@ -3,7 +3,7 @@ package fi.vm.sade.valintalaskenta.laskenta.resource;
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.OPH_CRUD;
 
 import fi.vm.sade.javautils.nio.cas.CasClient;
-import fi.vm.sade.valintalaskenta.laskenta.resource.dto.seuranta.*;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
 import fi.vm.sade.valintalaskenta.tulos.RestClientUtil;
 import java.util.Collections;
 import java.util.HashMap;

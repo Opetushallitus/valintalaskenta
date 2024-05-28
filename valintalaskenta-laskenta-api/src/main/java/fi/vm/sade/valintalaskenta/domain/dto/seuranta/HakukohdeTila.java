@@ -1,4 +1,4 @@
-package fi.vm.sade.valintalaskenta.laskenta.resource.dto.seuranta;
+package fi.vm.sade.valintalaskenta.domain.dto.seuranta;
 
 public enum HakukohdeTila {
   TEKEMATTA,
