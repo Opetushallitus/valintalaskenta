@@ -1,4 +1,4 @@
-package fi.vm.sade.valintalaskenta.laskenta.resource.dao;
+package fi.vm.sade.valintalaskenta.laskenta.dao;
 
 import static org.junit.Assert.*;
 
@@ -36,6 +36,7 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
   @Test
   public void testaaMeneillaanOlevienResetointi() {
     final String hakukohde = randomHakukohde();
+
     final String uuid = aloitaUusiLaskenta(Optional.of(hakukohde));
 
     final String hakukohde2 = randomHakukohde();

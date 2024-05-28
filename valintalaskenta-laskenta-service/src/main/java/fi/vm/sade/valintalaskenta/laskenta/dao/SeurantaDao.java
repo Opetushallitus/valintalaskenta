@@ -1,4 +1,4 @@
-package fi.vm.sade.valintalaskenta.laskenta.resource.dao;
+package fi.vm.sade.valintalaskenta.laskenta.dao;
 
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
 import java.util.Collection;
@@ -60,10 +60,5 @@ public interface SeurantaDao {
 
   void resetoiMeneillaanOlevatLaskennat();
 
-  // void lisaaIlmoitus(String uuid, String hakukohdeOid, Ilmoitus ilmoitus);
-
-  /**
-   * @return uuid
-   */
   String otaSeuraavaLaskentaTyonAlle();
 }
