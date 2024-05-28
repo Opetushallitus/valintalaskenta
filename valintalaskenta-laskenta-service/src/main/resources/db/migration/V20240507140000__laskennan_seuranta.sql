@@ -4,6 +4,8 @@ CREATE TABLE IF NOT EXISTS seuranta_laskennat (
     nimi        TEXT,
     hakuoid     TEXT NOT NULL,
     luotu       TIMESTAMP NOT NULL,
+    aloitettu   TIMESTAMP,
+    lopetettu   TIMESTAMP,
     tila        TEXT NOT NULL,
     tyyppi      TEXT NOT NULL,
     valinnanvaihe INTEGER,
