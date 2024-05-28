@@ -2,9 +2,8 @@ package fi.vm.sade.valintalaskenta.laskenta.resource;
 
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.OPH_CRUD;
 
-import com.google.gson.GsonBuilder;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
-import fi.vm.sade.valintalaskenta.laskenta.resource.dao.SeurantaDao;
+import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +36,7 @@ public class LaskentaSeurantaResource {
   /** Yhteenvedot olemassa olevista tietyn tyyppisista laskennoista haulle */
   @PreAuthorize(OPH_CRUD)
   @GetMapping(value = "/hae/{hakuOid}/tyyppi/{tyyppi}", produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<Collection<YhteenvetoDto>> hae(
+  ResponseEntity<Collection<YhteenvetoDto>> haeLaskennanYhteenvedotHaulleTyypilla(
       @PathVariable("hakuOid") String hakuOid, @PathVariable("tyyppi") LaskentaTyyppi tyyppi) {
     return ResponseEntity.status(HttpStatus.OK)
         .body(seurantaDao.haeYhteenvedotHaulle(hakuOid, tyyppi));
@@ -46,7 +45,7 @@ public class LaskentaSeurantaResource {
   /** Yhteenvedot olemassa olevista laskennoista haulle */
   @PreAuthorize(OPH_CRUD)
   @GetMapping(value = "/hae/{hakuOid}/kaynnissa", produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<Collection<YhteenvetoDto>> haeKaynnissaOlevatLaskennat(
+  ResponseEntity<Collection<YhteenvetoDto>> haeKaynnissaOlevienLaskentojenYhteenvedot(
       @PathVariable("hakuOid") String hakuOid) {
     return ResponseEntity.status(HttpStatus.OK)
         .body(seurantaDao.haeKaynnissaOlevienYhteenvedotHaulle(hakuOid));
@@ -83,12 +82,10 @@ public class LaskentaSeurantaResource {
     try {
       LaskentaDto l = seurantaDao.haeLaskenta(uuid);
       if (l == null) {
-        // LOG.error("SeurantaDao palautti null olion uuid:lle {}", uuid);
         throw new RuntimeException("SeurantaDao palautti null olion uuid:lle " + uuid);
       }
       return ResponseEntity.status(HttpStatus.OK).body(l);
     } catch (Exception e) {
-      // LOG.error("Ei saatu laskentaa uuid:lle " + uuid, e);
       throw e;
     }
   }
@@ -99,12 +96,10 @@ public class LaskentaSeurantaResource {
     try {
       LaskentaDto l = seurantaDao.haeLaskenta(uuid);
       if (l == null) {
-        LOG.error("SeurantaDao palautti null olion uuid:lle {}", uuid);
         throw new RuntimeException("SeurantaDao palautti null olion uuid:lle " + uuid);
       }
       return ResponseEntity.status(HttpStatus.OK).body(l);
     } catch (Exception e) {
-      // LOG.error("Ei saatu laskentaa uuid:lle " + uuid, e);
       throw e;
     }
   }
@@ -256,7 +251,7 @@ public class LaskentaSeurantaResource {
   @PutMapping(
       value = "/kuormantasaus/laskenta/{uuid}/tila/{tila}/hakukohde/{hakukohteentila}",
       produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<YhteenvetoDto> merkkaaLaskennanTila(
+  ResponseEntity<YhteenvetoDto> merkkaaLaskennanJaHakukohteidenTila(
       @PathVariable("uuid") String uuid,
       @PathVariable("tila") LaskentaTila tila,
       @PathVariable("hakukohteentila") HakukohdeTila hakukohteentila) {
@@ -275,7 +270,7 @@ public class LaskentaSeurantaResource {
       value = "/kuormantasaus/laskenta/{uuid}/tila/{tila}/hakukohde/{hakukohteentila}",
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<YhteenvetoDto> merkkaaLaskennanTila(
+  ResponseEntity<YhteenvetoDto> merkkaaLaskennanJaHakukohteidenTila(
       @PathVariable("uuid") String uuid,
       @PathVariable("tila") LaskentaTila tila,
       @PathVariable("hakukohteentila") HakukohdeTila hakukohteentila,
@@ -312,21 +307,16 @@ public class LaskentaSeurantaResource {
       @RequestParam(name = "valintakoelaskenta", required = false) Boolean valintakoelaskenta,
       @RequestBody List<HakukohdeDto> hakukohdeOids) {
     if (hakukohdeOids == null) {
-      LOG.error("Laskentaa ei luoda tyhjalle (null) hakukohdedto referenssille!");
       throw new NullPointerException(
           "Laskentaa ei luoda tyhjalle (null) hakukohdedto referenssille!");
     }
     if (hakukohdeOids.isEmpty()) {
-      LOG.error("Laskentaa ei luoda tyhjalle (koko on nolla) hakukohdedto joukolle!");
       throw new NullPointerException(
           "Laskentaa ei luoda tyhjalle (koko on nolla) hakukohdedto joukolle!");
     }
     hakukohdeOids.forEach(
         hk -> {
           if (hk.getHakukohdeOid() == null || hk.getOrganisaatioOid() == null) {
-            LOG.error(
-                "Laskentaa ei luoda hakukohdejoukkoobjektille koska joukossa oli hakukohde \r\n{}",
-                new GsonBuilder().setPrettyPrinting().create().toJson(hk));
             throw new NullPointerException(
                 "Laskentaa ei luoda hakukohdejoukkoobjektille koska joukossa oli null referensseja sisaltava hakukohde!");
           }
