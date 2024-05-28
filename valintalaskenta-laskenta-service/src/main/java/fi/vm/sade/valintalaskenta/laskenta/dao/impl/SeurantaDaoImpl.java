@@ -328,6 +328,14 @@ public class SeurantaDaoImpl implements SeurantaDao {
       this.paivitaIlmoitus(uuid, ilmoitusDtoOptional.get());
     }
 
+    // päivitetään tieto koska laskenta on lopetettu
+    if (tila != LaskentaTila.MENEILLAAN) {
+      this.jdbcTemplate.update(
+          "UPDATE seuranta_laskennat SET lopetettu=?::timestamptz WHERE uuid=?::uuid",
+          Instant.now().toString(),
+          uuid);
+    }
+
     Optional<Laskenta> laskenta =
         this.getLaskennat(Collections.singleton(UUID.fromString(uuid))).stream().findFirst();
     return laskenta.map(l -> laskentaAsYhteenvetoDto(l, jonosijaProvider())).orElse(null);
@@ -522,15 +530,27 @@ public class SeurantaDaoImpl implements SeurantaDao {
 
   @Override
   public String otaSeuraavaLaskentaTyonAlle() {
-    Collection<UUID> uuids =
-        this.jdbcTemplate.query(
-            "UPDATE seuranta_laskennat SET tila = ? "
-                + "WHERE uuid = (SELECT uuid FROM seuranta_laskennat WHERE tila=? ORDER BY luotu ASC LIMIT 1 FOR UPDATE) "
-                + "RETURNING uuid",
-            uuidRowMapper,
-            LaskentaTila.MENEILLAAN.toString(),
-            LaskentaTila.ALOITTAMATTA.toString());
-    return uuids.stream().map(uuid -> uuid.toString()).findFirst().orElse(null);
+    Optional<UUID> uuid =
+        this.jdbcTemplate
+            .query(
+                "UPDATE seuranta_laskennat SET tila = ? "
+                    + "WHERE uuid = (SELECT uuid FROM seuranta_laskennat WHERE tila=? ORDER BY luotu ASC LIMIT 1 FOR UPDATE) "
+                    + "RETURNING uuid",
+                uuidRowMapper,
+                LaskentaTila.MENEILLAAN.toString(),
+                LaskentaTila.ALOITTAMATTA.toString())
+            .stream()
+            .findFirst();
+
+    if (uuid.isPresent()) {
+      // päivitetään tieto koska laskenta on aloitettu
+      this.jdbcTemplate.update(
+          "UPDATE seuranta_laskennat SET aloitettu=?::timestamptz WHERE uuid=?::uuid",
+          Instant.now().toString(),
+          uuid.get());
+    }
+
+    return uuid.map(id -> id.toString()).orElse(null);
   }
 
   private static class Laskenta {
