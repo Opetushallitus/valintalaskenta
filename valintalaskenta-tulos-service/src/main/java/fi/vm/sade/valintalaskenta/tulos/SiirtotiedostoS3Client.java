@@ -35,7 +35,8 @@ public class SiirtotiedostoS3Client {
     this.maxHakemusCountInFile = maxHakemusCountInFile;
   }
 
-  public String createSiirtotiedostoForTulosdata(List<?> data, String dataType) {
+  public String createSiirtotiedostoForTulosdata(
+      List<?> data, String dataType, String opId, int opSubId) {
     try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
       try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream)) {
         JsonWriter jsonWriter = new JsonWriter(outputStreamWriter);
@@ -48,7 +49,7 @@ public class SiirtotiedostoS3Client {
 
         try (ByteArrayInputStream inputStream =
             new ByteArrayInputStream(outputStream.toByteArray())) {
-          return doCreateSiirtotiedosto(inputStream, dataType);
+          return doCreateSiirtotiedosto(inputStream, dataType, opId, opSubId);
         }
       }
     } catch (IOException ioe) {
@@ -56,10 +57,12 @@ public class SiirtotiedostoS3Client {
     }
   }
 
-  private String doCreateSiirtotiedosto(InputStream inputStream, String dataType) {
+  private String doCreateSiirtotiedosto(
+      InputStream inputStream, String dataType, String opId, int opSubId) {
     try {
       ObjectMetadata result =
-          siirtotiedostoPalvelu.saveSiirtotiedosto("valintalaskenta", dataType, "", inputStream, 2);
+          siirtotiedostoPalvelu.saveSiirtotiedosto(
+              "valintalaskenta", dataType, "", opId, opSubId, inputStream, 2);
       return result.key;
     } catch (Exception e) {
       logger.error("Siirtotiedoston luonti epäonnistui; ", e);

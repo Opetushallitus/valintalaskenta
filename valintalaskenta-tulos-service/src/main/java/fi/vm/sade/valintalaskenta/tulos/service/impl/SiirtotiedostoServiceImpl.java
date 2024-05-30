@@ -14,6 +14,7 @@ import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,8 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
   @Override
   public String createSiirtotiedostotForValintakoeOsallistumiset(
       LocalDateTime startDatetime, LocalDateTime endDatatime) {
+    String opId = UUID.randomUUID().toString();
+    int opSubId = 1;
     List<String> hakemusOids =
         tulosValintakoeOsallistuminenDAO.readNewOrModifiedHakemusOids(startDatetime, endDatatime);
     List<List<String>> partitions =
@@ -63,7 +66,7 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
       }
       siirtotiedostoKeys.add(
           siirtotiedostoS3Client.createSiirtotiedostoForTulosdata(
-              osallistumiset, "valintakoe_osallistuminen"));
+              osallistumiset, "valintakoe_osallistuminen", opId, opSubId++));
     }
     LOGGER.info(
         "Kirjoitettiin yhteensä {} hakemuksen valintakoeosallistumiset {} siirtotiedostoon.",
@@ -75,6 +78,8 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
   @Override
   public String createSiirtotiedostotForValintalaskennanTulokset(
       LocalDateTime startDatetime, LocalDateTime endDatatime) {
+    String opId = UUID.randomUUID().toString();
+    int opSubId = 1;
     List<String> hakukohdeOids =
         tulosValinnanvaiheDAO.readNewOrModifiedHakukohdeOids(startDatetime, endDatatime);
     List<List<String>> partitions =
@@ -89,7 +94,9 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
       siirtotiedostoKeys.add(
           siirtotiedostoS3Client.createSiirtotiedostoForTulosdata(
               tulokset.stream().flatMap(List::stream).collect(Collectors.toList()),
-              "valintalaskennan_tulos"));
+              "valintalaskennan_tulos",
+              opId,
+              opSubId));
     }
     LOGGER.info(
         "Kirjoitettiin yhteensä {} valintalaskennan tulosta {} siirtotiedostoon.",
