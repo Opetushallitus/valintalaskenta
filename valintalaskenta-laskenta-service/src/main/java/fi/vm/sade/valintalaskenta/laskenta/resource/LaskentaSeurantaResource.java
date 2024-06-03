@@ -2,6 +2,8 @@ package fi.vm.sade.valintalaskenta.laskenta.resource;
 
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @PreAuthorize(
     "hasAnyRole('ROLE_APP_VALINTOJENTOTEUTTAMINEN_CRUD', 'ROLE_APP_VALINTOJENTOTEUTTAMINEN_READ_UPDATE')")
 @RequestMapping(value = "/resources/seuranta")
+@Tag(name = "/resources/seuranta", description = "Resurssi laskennan seurantaan")
 public class LaskentaSeurantaResource {
 
   private static final Logger LOG = LoggerFactory.getLogger(LaskentaSeurantaResource.class);
@@ -27,20 +30,22 @@ public class LaskentaSeurantaResource {
 
   /** Yhteenvedot olemassa olevista laskennoista haulle */
   @GetMapping(value = "/hae/{hakuOid}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Hakee yhteenvedot haun laskennoille oid:n perusteella")
   ResponseEntity<Collection<YhteenvetoDto>> hae(@PathVariable("hakuOid") String hakuOid) {
     return ResponseEntity.status(HttpStatus.OK).body(seurantaDao.haeYhteenvedotHaulle(hakuOid));
   }
 
   /** Yhteenvedot olemassa olevista tietyn tyyppisista laskennoista haulle */
   @GetMapping(value = "/hae/{hakuOid}/tyyppi/{tyyppi}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Hakee yhteenvedot haun laskennoille oid:n ja tyypin perusteella")
   ResponseEntity<Collection<YhteenvetoDto>> haeLaskennanYhteenvedotHaulleTyypilla(
       @PathVariable("hakuOid") String hakuOid, @PathVariable("tyyppi") LaskentaTyyppi tyyppi) {
     return ResponseEntity.status(HttpStatus.OK)
         .body(seurantaDao.haeYhteenvedotHaulle(hakuOid, tyyppi));
   }
 
-  /** Yhteenvedot olemassa olevista laskennoista haulle */
   @GetMapping(value = "/hae/{hakuOid}/kaynnissa", produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Hakee yhteenvedot käynnissäolevista laskennoista haulle")
   ResponseEntity<Collection<YhteenvetoDto>> haeKaynnissaOlevienLaskentojenYhteenvedot(
       @PathVariable("hakuOid") String hakuOid) {
     return ResponseEntity.status(HttpStatus.OK)
@@ -51,6 +56,7 @@ public class LaskentaSeurantaResource {
   @GetMapping(
       value = "/yhteenvetokaikillelaskennoille",
       produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Hakee yhteenvedot kaikista laskennoista")
   ResponseEntity<Collection<YhteenvetoDto>> haeYhteenvetoKaikilleLaskennoille() {
     return ResponseEntity.status(HttpStatus.OK)
         .body(seurantaDao.haeYhteenvetoKaikilleLaskennoille());
@@ -59,6 +65,7 @@ public class LaskentaSeurantaResource {
   @GetMapping(
       value = "/laskenta/otaSeuraavaLaskentaTyonAlle",
       produces = MediaType.TEXT_PLAIN_VALUE)
+  @Operation(summary = "Aloittaa seuraavan laskennan")
   ResponseEntity<String> otaSeuraavaLaskentaTyonAlle() {
     Optional<String> uuid = Optional.ofNullable(seurantaDao.otaSeuraavaLaskentaTyonAlle());
     LOG.info("Ota seuraava tyon alle: " + (uuid.isPresent() ? uuid.get() : "Ei tyota"));
@@ -71,6 +78,7 @@ public class LaskentaSeurantaResource {
   }
 
   @GetMapping(value = "/laskenta/{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Palauttaa laskennan oid:n perusteella")
   ResponseEntity<LaskentaDto> laskenta(@PathVariable("uuid") String uuid) {
     try {
       LaskentaDto l = seurantaDao.haeLaskenta(uuid);
@@ -84,6 +92,7 @@ public class LaskentaSeurantaResource {
   }
 
   @GetMapping(value = "/kuormantasaus/laskenta/{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Palauttaa laskennan oid:n perusteella")
   ResponseEntity<LaskentaDto> kuormantasausLaskenta(@PathVariable("uuid") String uuid) {
     try {
       LaskentaDto l = seurantaDao.haeLaskenta(uuid);
@@ -97,6 +106,7 @@ public class LaskentaSeurantaResource {
   }
 
   @GetMapping(value = "/lataa/{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Palauttaa laskennan tiedostona uuid:n perusteella")
   ResponseEntity<LaskentaDto> lataa(@PathVariable("uuid") String uuid) {
     LaskentaDto laskenta = seurantaDao.haeLaskenta(uuid);
     return ResponseEntity.status(HttpStatus.OK)
@@ -106,14 +116,15 @@ public class LaskentaSeurantaResource {
   }
 
   @GetMapping(value = "/yhteenveto/{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Palauttaa laskennan yhteenvedon uuid:n perusteella")
   ResponseEntity<YhteenvetoDto> yhteenveto(@PathVariable("uuid") String uuid) {
     return ResponseEntity.status(HttpStatus.OK).body(seurantaDao.haeYhteenveto(uuid));
   }
 
-  /** Paivittaa yksittaisen hakukohteen tilaa laskennassa */
   @PutMapping(
       value = "/kuormantasaus/laskenta/{uuid}/hakukohde/{hakukohdeOid}/tila/{tila}",
       produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Paivittaa yksittaisen hakukohteen tilaa laskennassa")
   ResponseEntity<YhteenvetoDto> merkkaaHakukohteenTila(
       @PathVariable("uuid") String uuid,
       @PathVariable("hakukohdeOid") String hakukohdeOid,
@@ -134,11 +145,11 @@ public class LaskentaSeurantaResource {
     }
   }
 
-  /** Paivittaa yksittaisen hakukohteen tilaa laskennassa ja jattaa ilmoituksen */
   @PostMapping(
       value = "/kuormantasaus/laskenta/{uuid}/hakukohde/{hakukohdeOid}/tila/{tila}",
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Paivittaa yksittaisen hakukohteen tilaa laskennassa ja jattaa ilmoituksen")
   ResponseEntity<YhteenvetoDto> merkkaaHakukohteenTila(
       @PathVariable("uuid") String uuid,
       @PathVariable("hakukohdeOid") String hakukohdeOid,
@@ -160,11 +171,11 @@ public class LaskentaSeurantaResource {
     }
   }
 
-  /** Jattaa ilmoituksen */
   @PostMapping(
       value = "/kuormantasaus/laskenta/{uuid}/hakukohde/{hakukohdeOid}",
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Lisää ilmoituksen hakukohteelle")
   ResponseEntity<YhteenvetoDto> lisaaIlmoitusHakukohteelle(
       @PathVariable("uuid") String uuid,
       @PathVariable("hakukohdeOid") String hakukohdeOid,
@@ -179,10 +190,10 @@ public class LaskentaSeurantaResource {
     return ResponseEntity.status(HttpStatus.OK).body(y);
   }
 
-  /** Resetoi hakukohteiden tilat. Poistaa logit. Sailoo valmiit tilat. */
   @PutMapping(
       value = "/kuormantasaus/laskenta/{uuid}/resetoi",
       produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Resetoi keskeneräisten hakukohteiden laskentojen tilat")
   ResponseEntity<LaskentaDto> resetoiTilat(@PathVariable("uuid") String uuid) {
     try {
       LaskentaDto ldto = seurantaDao.resetoiEiValmiitHakukohteet(uuid, true);
@@ -196,10 +207,10 @@ public class LaskentaSeurantaResource {
     }
   }
 
-  /** Paivittaa laskennan tilan */
   @PutMapping(
       value = "/kuormantasaus/laskenta/{uuid}/tila/{tila}",
       produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Paivittaa laskennan tilan")
   ResponseEntity<YhteenvetoDto> merkkaaLaskennanTila(
       @PathVariable("uuid") String uuid, @PathVariable("tila") LaskentaTila tila) {
     YhteenvetoDto y = seurantaDao.merkkaaTila(uuid, tila, Optional.empty());
@@ -216,6 +227,7 @@ public class LaskentaSeurantaResource {
       value = "/kuormantasaus/laskenta/{uuid}/tila/{tila}",
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Paivittaa laskennan tilan")
   ResponseEntity<YhteenvetoDto> merkkaaLaskennanTila(
       @PathVariable("uuid") String uuid,
       @PathVariable("tila") LaskentaTila tila,
@@ -230,10 +242,10 @@ public class LaskentaSeurantaResource {
     return ResponseEntity.status(HttpStatus.OK).body(y);
   }
 
-  /** Paivittaa laskennan tilan ja kaikki hakukohteet samalla */
   @PutMapping(
       value = "/kuormantasaus/laskenta/{uuid}/tila/{tila}/hakukohde/{hakukohteentila}",
       produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Paivittaa laskennan ja hakukohteiden tilan")
   ResponseEntity<YhteenvetoDto> merkkaaLaskennanJaHakukohteidenTila(
       @PathVariable("uuid") String uuid,
       @PathVariable("tila") LaskentaTila tila,
@@ -252,6 +264,7 @@ public class LaskentaSeurantaResource {
       value = "/kuormantasaus/laskenta/{uuid}/tila/{tila}/hakukohde/{hakukohteentila}",
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Paivittaa laskennan ja hakukohteiden tilan ja jättää ilmoituksen")
   ResponseEntity<YhteenvetoDto> merkkaaLaskennanJaHakukohteidenTila(
       @PathVariable("uuid") String uuid,
       @PathVariable("tila") LaskentaTila tila,
@@ -268,15 +281,11 @@ public class LaskentaSeurantaResource {
     return ResponseEntity.status(HttpStatus.OK).body(y);
   }
 
-  /**
-   * Luo uuden laskennan seurantaan
-   *
-   * @return UUID
-   */
   @PostMapping(
       value = "/kuormantasaus/laskenta/{hakuOid}/tyyppi/{tyyppi}",
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Luo uuden laskennan")
   ResponseEntity<TunnisteDto> luoLaskenta(
       @PathVariable("hakuOid") String hakuOid,
       @PathVariable("tyyppi") LaskentaTyyppi tyyppi,
@@ -316,14 +325,10 @@ public class LaskentaSeurantaResource {
                 hakukohdeOids));
   }
 
-  /**
-   * Poistaa laskennan
-   *
-   * @return 200 OK jos onnistui
-   */
   @DeleteMapping(
       value = "/kuormantasaus/laskenta/{uuid}",
       produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Poistaa laskennan")
   ResponseEntity<String> poistaLaskenta(@PathVariable("uuid") String uuid) {
     seurantaDao.poistaLaskenta(uuid);
     return ResponseEntity.status(HttpStatus.OK).build();
