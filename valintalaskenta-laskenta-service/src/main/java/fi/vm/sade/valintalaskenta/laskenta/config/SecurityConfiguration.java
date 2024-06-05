@@ -25,7 +25,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-@Profile("!dev")
+@Profile({"default", "dev"})
 @Configuration
 @Order(2)
 @EnableMethodSecurity(securedEnabled = true)
