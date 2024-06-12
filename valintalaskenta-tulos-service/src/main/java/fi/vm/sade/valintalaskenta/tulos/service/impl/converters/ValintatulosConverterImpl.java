@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.tulos.service.impl.converters;
 import com.google.common.collect.Maps;
 import fi.vm.sade.valintalaskenta.domain.comparator.JonosijaDTOComparator;
 import fi.vm.sade.valintalaskenta.domain.dto.*;
+import fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValintatapajonoDTO;
@@ -10,10 +11,12 @@ import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluValintatapajono;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -31,6 +34,94 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
       list.add(convertValinnanvaihe(valinnanVaihe));
     }
     return list;
+  }
+
+  @Override
+  public List<ValintatietoValinnanvaiheSiirtotiedostoDTO> convertValinnanvaiheListForSiirtotiedosto(
+      List<ValintatietoValinnanvaiheDTO> valinnanVaiheList) {
+    List<ValintatietoValinnanvaiheSiirtotiedostoDTO> vaiheet = new ArrayList<>();
+    SimpleDateFormat dateFormatter =
+        new SimpleDateFormat(SiirtotiedostoConstants.SIIRTOTIEDOSTO_DATETIME_FORMAT);
+    for (ValintatietoValinnanvaiheDTO valinnanVaiheDTO : valinnanVaiheList) {
+      ValintatietoValinnanvaiheSiirtotiedostoDTO newVaihe =
+          new ValintatietoValinnanvaiheSiirtotiedostoDTO();
+      BeanUtils.copyProperties(
+          valinnanVaiheDTO, newVaihe, "lastModifiedAsDate", "valintatapajonot");
+      newVaihe.setLastModified(dateFormatter.format(valinnanVaiheDTO.getLastModified()));
+      for (ValintatietoValintatapajonoDTO jonoDTO : valinnanVaiheDTO.getValintatapajonot()) {
+        ValintatietoValintatapajonoSiirtotiedostoDTO newJono =
+            new ValintatietoValintatapajonoSiirtotiedostoDTO();
+        BeanUtils.copyProperties(jonoDTO, newJono, "lastModifiedAsDate", "jonosijat");
+        newJono.setLastModified(dateFormatter.format(jonoDTO.getLastModified()));
+        for (JonosijaDTO jonosijaDTO : jonoDTO.getJonosijat()) {
+          JonosijaSiirtotiedostoDTO newJonosijaDTO = new JonosijaSiirtotiedostoDTO();
+          BeanUtils.copyProperties(
+              jonosijaDTO,
+              newJonosijaDTO,
+              "lastModifiedAsDate",
+              "jarjestyskriteerit",
+              "syotetytArvot",
+              "funktioTulokset");
+          newJonosijaDTO.setLastModified(dateFormatter.format(jonosijaDTO.getLastModified()));
+          newJono.getJonosijat().add(newJonosijaDTO);
+          for (JarjestyskriteeritulosDTO tulosDTO : jonosijaDTO.getJarjestyskriteerit()) {
+            JarjestyskriteeritulosSiirtotiedostoDTO newTulosDTO =
+                new JarjestyskriteeritulosSiirtotiedostoDTO();
+            BeanUtils.copyProperties(tulosDTO, newTulosDTO);
+            newJonosijaDTO.getJarjestyskriteerit().add(newTulosDTO);
+          }
+          for (SyotettyArvoDTO arvoDTO : jonosijaDTO.getSyotetytArvot()) {
+            SyotettyArvoSiirtotiedostoDTO newArvoDTO = new SyotettyArvoSiirtotiedostoDTO();
+            BeanUtils.copyProperties(arvoDTO, newArvoDTO);
+            newJonosijaDTO.getSyotetytArvot().add(newArvoDTO);
+          }
+          for (FunktioTulosDTO tulosDTO : jonosijaDTO.getFunktioTulokset()) {
+            FunktioTulosSiirtotiedostoDTO newTulosDTO = new FunktioTulosSiirtotiedostoDTO();
+            BeanUtils.copyProperties(tulosDTO, newTulosDTO);
+            newJonosijaDTO.getFunktioTulokset().add(newTulosDTO);
+          }
+        }
+        newVaihe.getValintatapajonot().add(newJono);
+      }
+      vaiheet.add(newVaihe);
+    }
+    return vaiheet;
+  }
+
+  @Override
+  public List<ValintakoeOsallistuminenSiirtotiedostoDTO>
+      convertValintakoeOsallistuminenListForSiirtotiedosto(
+          List<ValintakoeOsallistuminenDTO> valintakoeOsallistuminenList) {
+    SimpleDateFormat dateFormatter =
+        new SimpleDateFormat(SiirtotiedostoConstants.SIIRTOTIEDOSTO_DATETIME_FORMAT);
+    List<ValintakoeOsallistuminenSiirtotiedostoDTO> osallistumiset = new ArrayList<>();
+    for (ValintakoeOsallistuminenDTO vko : valintakoeOsallistuminenList) {
+      ValintakoeOsallistuminenSiirtotiedostoDTO vkoDto =
+          new ValintakoeOsallistuminenSiirtotiedostoDTO();
+      BeanUtils.copyProperties(vko, vkoDto, "hakutoiveet");
+      vkoDto.setLastModified(dateFormatter.format(vko.getCreatedAt()));
+      for (HakutoiveDTO toive : vko.getHakutoiveet()) {
+        HakutoiveSiirtotiedostoDTO htDto = new HakutoiveSiirtotiedostoDTO();
+        BeanUtils.copyProperties(toive, htDto, "valinnanVaiheet");
+        htDto.setLastModified(dateFormatter.format(toive.getCreatedAt()));
+        for (ValintakoeValinnanvaiheDTO vaihe : toive.getValinnanVaiheet()) {
+          ValintakoeValinnanvaiheSiirtotiedostoDTO vaiheDto =
+              new ValintakoeValinnanvaiheSiirtotiedostoDTO();
+          BeanUtils.copyProperties(vaihe, vaiheDto, "valintakokeet", "lastModified");
+          vaiheDto.setLastModified(dateFormatter.format(vaihe.getLastModified()));
+          for (ValintakoeDTO koe : vaihe.getValintakokeet()) {
+            ValintakoeSiirtotiedostoDTO koeDto = new ValintakoeSiirtotiedostoDTO();
+            BeanUtils.copyProperties(koe, koeDto, "lastModified");
+            koeDto.setLastModified(dateFormatter.format(koe.getLastModified()));
+            vaiheDto.getValintakokeet().add(koeDto);
+          }
+          htDto.getValinnanVaiheet().add(vaiheDto);
+        }
+        vkoDto.getHakutoiveet().add(htDto);
+      }
+      osallistumiset.add(vkoDto);
+    }
+    return osallistumiset;
   }
 
   @Override
@@ -130,6 +221,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
     dto.setHakuOid(valinnanvaihe.getHakuOid());
     dto.setValintatapajonot(convertValintatapajono(valinnanvaihe.getValintatapajonot()));
     dto.setNimi(valinnanvaihe.getNimi());
+    dto.setLastModified(valinnanvaihe.getLastModified());
     return dto;
   }
 
@@ -160,6 +252,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
         dto.setSijoitteluajoId(valintatapajono.getSijoitteluajoId());
       }
       dto.setKaytetaanKokonaispisteita(valintatapajono.getKaytetaanKokonaispisteita());
+      dto.setLastModified(valintatapajono.getLastModified());
       list.add(dto);
     }
     return list;
@@ -207,6 +300,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
       dto.setSyotetytArvot(convertSyotettyArvo(jonosija.getSyotetytArvot()));
       dto.setFunktioTulokset(convertFunktioTulos(jonosija.getFunktioTulokset().funktioTulokset));
       dto.setHylattyValisijoittelussa(jonosija.isHylattyValisijoittelussa());
+      dto.setLastModified(jonosija.getLastModified());
       list.add(dto);
     }
     return list;

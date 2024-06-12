@@ -7,6 +7,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.JonoDto;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.ValintatietoValinnanvaiheSiirtotiedostoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvarainenHyvaksyminen;
@@ -27,6 +28,9 @@ public interface ValintalaskentaTulosService {
   HakemusDTO haeTuloksetHakemukselle(String hakuoid, String hakemusoid);
 
   List<ValintatietoValinnanvaiheDTO> haeValinnanvaiheetHakukohteelle(String hakukohdeoid);
+
+  List<ValintatietoValinnanvaiheSiirtotiedostoDTO> haeValinnanvaiheetHakukohteelleForSiirtotiedosto(
+      String hakukohdeoid);
 
   Optional<HakukohdeDTO> haeValinnanvaiheetHakukohteelleJaJonolle(
       String hakukohdeoid, List<String> valintatapajonot);

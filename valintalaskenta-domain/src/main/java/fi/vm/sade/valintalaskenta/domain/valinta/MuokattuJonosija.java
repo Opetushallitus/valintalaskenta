@@ -26,6 +26,8 @@ public class MuokattuJonosija {
 
   private String muutos;
 
+  private Date lastModified;
+
   @Column("jarjestyskriteeritulokset")
   private JarjestyskriteeritulosContainer jarjestyskriteeritulokset;
 
@@ -140,5 +142,13 @@ public class MuokattuJonosija {
 
   public void setMuutos(String muutos) {
     this.muutos = muutos;
+  }
+
+  public Date getLastModified() {
+    return lastModified;
+  }
+
+  public void setLastModified(Date lastModified) {
+    this.lastModified = lastModified;
   }
 }
