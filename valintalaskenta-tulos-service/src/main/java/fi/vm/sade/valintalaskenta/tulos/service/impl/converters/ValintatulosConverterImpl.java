@@ -40,29 +40,28 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
   public List<ValintatietoValinnanvaiheSiirtotiedostoDTO> convertValinnanvaiheListForSiirtotiedosto(
       List<ValintatietoValinnanvaiheDTO> valinnanVaiheList) {
     List<ValintatietoValinnanvaiheSiirtotiedostoDTO> vaiheet = new ArrayList<>();
-    SimpleDateFormat dateFormatter =
+    SimpleDateFormat sdf =
         new SimpleDateFormat(SiirtotiedostoConstants.SIIRTOTIEDOSTO_DATETIME_FORMAT);
     for (ValintatietoValinnanvaiheDTO valinnanVaiheDTO : valinnanVaiheList) {
       ValintatietoValinnanvaiheSiirtotiedostoDTO newVaihe =
           new ValintatietoValinnanvaiheSiirtotiedostoDTO();
-      BeanUtils.copyProperties(
-          valinnanVaiheDTO, newVaihe, "lastModifiedAsDate", "valintatapajonot");
-      newVaihe.setLastModified(dateFormatter.format(valinnanVaiheDTO.getLastModified()));
+      BeanUtils.copyProperties(valinnanVaiheDTO, newVaihe, "lastModified", "valintatapajonot");
+      newVaihe.setLastModified(formatDate(sdf, valinnanVaiheDTO.getLastModified()));
       for (ValintatietoValintatapajonoDTO jonoDTO : valinnanVaiheDTO.getValintatapajonot()) {
         ValintatietoValintatapajonoSiirtotiedostoDTO newJono =
             new ValintatietoValintatapajonoSiirtotiedostoDTO();
-        BeanUtils.copyProperties(jonoDTO, newJono, "lastModifiedAsDate", "jonosijat");
-        newJono.setLastModified(dateFormatter.format(jonoDTO.getLastModified()));
+        BeanUtils.copyProperties(jonoDTO, newJono, "lastModified", "jonosijat");
+        newJono.setLastModified(formatDate(sdf, jonoDTO.getLastModified()));
         for (JonosijaDTO jonosijaDTO : jonoDTO.getJonosijat()) {
           JonosijaSiirtotiedostoDTO newJonosijaDTO = new JonosijaSiirtotiedostoDTO();
           BeanUtils.copyProperties(
               jonosijaDTO,
               newJonosijaDTO,
-              "lastModifiedAsDate",
+              "lastModified",
               "jarjestyskriteerit",
               "syotetytArvot",
               "funktioTulokset");
-          newJonosijaDTO.setLastModified(dateFormatter.format(jonosijaDTO.getLastModified()));
+          newJonosijaDTO.setLastModified(formatDate(sdf, jonosijaDTO.getLastModified()));
           newJono.getJonosijat().add(newJonosijaDTO);
           for (JarjestyskriteeritulosDTO tulosDTO : jonosijaDTO.getJarjestyskriteerit()) {
             JarjestyskriteeritulosSiirtotiedostoDTO newTulosDTO =
@@ -92,27 +91,27 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
   public List<ValintakoeOsallistuminenSiirtotiedostoDTO>
       convertValintakoeOsallistuminenListForSiirtotiedosto(
           List<ValintakoeOsallistuminenDTO> valintakoeOsallistuminenList) {
-    SimpleDateFormat dateFormatter =
+    SimpleDateFormat sdf =
         new SimpleDateFormat(SiirtotiedostoConstants.SIIRTOTIEDOSTO_DATETIME_FORMAT);
     List<ValintakoeOsallistuminenSiirtotiedostoDTO> osallistumiset = new ArrayList<>();
     for (ValintakoeOsallistuminenDTO vko : valintakoeOsallistuminenList) {
       ValintakoeOsallistuminenSiirtotiedostoDTO vkoDto =
           new ValintakoeOsallistuminenSiirtotiedostoDTO();
       BeanUtils.copyProperties(vko, vkoDto, "hakutoiveet");
-      vkoDto.setLastModified(dateFormatter.format(vko.getCreatedAt()));
+      vkoDto.setLastModified(formatDate(sdf, vko.getCreatedAt()));
       for (HakutoiveDTO toive : vko.getHakutoiveet()) {
         HakutoiveSiirtotiedostoDTO htDto = new HakutoiveSiirtotiedostoDTO();
         BeanUtils.copyProperties(toive, htDto, "valinnanVaiheet");
-        htDto.setLastModified(dateFormatter.format(toive.getCreatedAt()));
+        htDto.setLastModified(formatDate(sdf, toive.getCreatedAt()));
         for (ValintakoeValinnanvaiheDTO vaihe : toive.getValinnanVaiheet()) {
           ValintakoeValinnanvaiheSiirtotiedostoDTO vaiheDto =
               new ValintakoeValinnanvaiheSiirtotiedostoDTO();
           BeanUtils.copyProperties(vaihe, vaiheDto, "valintakokeet", "lastModified");
-          vaiheDto.setLastModified(dateFormatter.format(vaihe.getLastModified()));
+          vaiheDto.setLastModified(formatDate(sdf, vaihe.getLastModified()));
           for (ValintakoeDTO koe : vaihe.getValintakokeet()) {
             ValintakoeSiirtotiedostoDTO koeDto = new ValintakoeSiirtotiedostoDTO();
             BeanUtils.copyProperties(koe, koeDto, "lastModified");
-            koeDto.setLastModified(dateFormatter.format(koe.getLastModified()));
+            koeDto.setLastModified(formatDate(sdf, koe.getLastModified()));
             vaiheDto.getValintakokeet().add(koeDto);
           }
           htDto.getValinnanVaiheet().add(vaiheDto);
@@ -122,6 +121,10 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
       osallistumiset.add(vkoDto);
     }
     return osallistumiset;
+  }
+
+  private String formatDate(SimpleDateFormat sdf, Date date) {
+    return date != null ? sdf.format(date) : null;
   }
 
   @Override
