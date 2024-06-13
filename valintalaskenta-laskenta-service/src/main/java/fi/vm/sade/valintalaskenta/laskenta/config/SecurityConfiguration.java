@@ -19,15 +19,17 @@ import org.springframework.security.cas.authentication.CasAuthenticationProvider
 import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
 import org.springframework.security.cas.web.CasAuthenticationFilter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 @Profile("!dev")
 @Configuration
 @Order(2)
-// @EnableMethodSecurity(securedEnabled = true)
-// @EnableWebSecurity
+@EnableMethodSecurity(securedEnabled = true)
+@EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   private static final Logger LOG = LoggerFactory.getLogger(SecurityConfiguration.class);
   private CasProperties casProperties;
@@ -146,7 +148,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Override
   public void configure(WebSecurity web) throws Exception {
-    web.ignoring().antMatchers("/**", "/v3/api-docs/**", "/swagger-ui/**");
+    web.ignoring().antMatchers("/v3/api-docs/**", "/swagger-ui/**");
   }
 
   @Override
