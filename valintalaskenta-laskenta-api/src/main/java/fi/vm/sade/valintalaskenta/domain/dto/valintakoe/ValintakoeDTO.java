@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain.dto.valintakoe;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.Date;
 
 @Schema(name = "valintalaskenta.valintakoe.ValintakoeDTO", description = "Valintakoe")
 public class ValintakoeDTO {
@@ -30,6 +31,9 @@ public class ValintakoeDTO {
 
   @Schema(description = "Kutsuttavien määrä", required = true)
   private Integer kutsuttavienMaara;
+
+  @Schema(hidden = true)
+  private Date lastModified;
 
   public Boolean getKutsutaankoKaikki() {
     return kutsutaankoKaikki;
@@ -93,5 +97,13 @@ public class ValintakoeDTO {
 
   public void setKutsuttavienMaara(final Integer kutsuttavienMaara) {
     this.kutsuttavienMaara = kutsuttavienMaara;
+  }
+
+  public void setLastModified(Date lastModified) {
+    this.lastModified = lastModified;
+  }
+
+  public Date getLastModified() {
+    return lastModified;
   }
 }

@@ -18,6 +18,8 @@ public class ValintakoeValinnanvaihe {
 
   private final Set<Valintakoe> valintakokeet = new HashSet<>();
 
+  private Date lastModified;
+
   public ValintakoeValinnanvaihe() {}
 
   @PersistenceCreator
@@ -60,6 +62,14 @@ public class ValintakoeValinnanvaihe {
 
   public void setHakutoive(Hakutoive hakutoive) {
     this.hakutoive = hakutoive;
+  }
+
+  public Date getLastModified() {
+    return lastModified;
+  }
+
+  public void setLastModified(Date lastModified) {
+    this.lastModified = lastModified;
   }
 
   @Override

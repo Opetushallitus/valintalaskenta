@@ -3,14 +3,16 @@ package fi.vm.sade.valintalaskenta.tulos.service.impl;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.ValintakoeOsallistuminenSiirtotiedostoDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.ValintatietoValinnanvaiheSiirtotiedostoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.tulos.SiirtotiedostoS3Client;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.service.SiirtotiedostoService;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
+import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,7 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
   private final TulosValinnanvaiheDAO tulosValinnanvaiheDAO;
   private final ValintalaskentaTulosService valintalaskentaTulosService;
   private final ValintalaskentaModelMapper modelMapper;
+  private final ValintatulosConverter valintatulosConverter;
 
   private final SiirtotiedostoS3Client siirtotiedostoS3Client;
 
@@ -38,11 +41,13 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
       final TulosValinnanvaiheDAO tulosValinnanvaiheDAO,
       final ValintalaskentaTulosService tulosService,
       final ValintalaskentaModelMapper modelMapper,
+      final ValintatulosConverter valintatulosConverter,
       final SiirtotiedostoS3Client siirtotiedostoS3Client) {
     this.tulosValintakoeOsallistuminenDAO = tulosValintakoeOsallistuminenDAO;
     this.tulosValinnanvaiheDAO = tulosValinnanvaiheDAO;
     this.valintalaskentaTulosService = tulosService;
     this.modelMapper = modelMapper;
+    this.valintatulosConverter = valintatulosConverter;
     this.siirtotiedostoS3Client = siirtotiedostoS3Client;
   }
 
@@ -50,7 +55,6 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
   public String createSiirtotiedostotForValintakoeOsallistumiset(
       LocalDateTime startDatetime, LocalDateTime endDatatime) {
     String opId = UUID.randomUUID().toString();
-    int opSubId = 1;
     List<String> hakemusOids =
         tulosValintakoeOsallistuminenDAO.readNewOrModifiedHakemusOids(startDatetime, endDatatime);
     List<List<String>> partitions =
@@ -64,9 +68,15 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
                 valintalaskentaTulosService.haeValintakoeOsallistumiset(hakemusOid),
                 ValintakoeOsallistuminenDTO.class));
       }
+      List<ValintakoeOsallistuminenSiirtotiedostoDTO> osallistumisetAsSiirtotiedostoData =
+          valintatulosConverter.convertValintakoeOsallistuminenListForSiirtotiedosto(
+              osallistumiset);
       siirtotiedostoKeys.add(
           siirtotiedostoS3Client.createSiirtotiedostoForTulosdata(
-              osallistumiset, "valintakoe_osallistuminen", opId, opSubId++));
+              osallistumisetAsSiirtotiedostoData,
+              "valintakoe_osallistuminen",
+              opId,
+              siirtotiedostoKeys.size() + 1));
     }
     LOGGER.info(
         "Kirjoitettiin yhteensä {} hakemuksen valintakoeosallistumiset {} siirtotiedostoon.",
@@ -79,24 +89,25 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
   public String createSiirtotiedostotForValintalaskennanTulokset(
       LocalDateTime startDatetime, LocalDateTime endDatatime) {
     String opId = UUID.randomUUID().toString();
-    int opSubId = 1;
     List<String> hakukohdeOids =
         tulosValinnanvaiheDAO.readNewOrModifiedHakukohdeOids(startDatetime, endDatatime);
     List<List<String>> partitions =
         Lists.partition(hakukohdeOids, siirtotiedostoS3Client.getMaxHakukohdeCountInFile());
     List<String> siirtotiedostoKeys = new ArrayList<>();
     for (List<String> hakekohdeOidChunk : partitions) {
-      List<List<ValintatietoValinnanvaiheDTO>> tulokset = new ArrayList<>();
+      List<List<ValintatietoValinnanvaiheSiirtotiedostoDTO>> tulokset = new ArrayList<>();
       for (String hakukohdeOid : hakekohdeOidChunk) {
 
-        tulokset.add(valintalaskentaTulosService.haeValinnanvaiheetHakukohteelle(hakukohdeOid));
+        tulokset.add(
+            valintalaskentaTulosService.haeValinnanvaiheetHakukohteelleForSiirtotiedosto(
+                hakukohdeOid));
       }
       siirtotiedostoKeys.add(
           siirtotiedostoS3Client.createSiirtotiedostoForTulosdata(
               tulokset.stream().flatMap(List::stream).collect(Collectors.toList()),
               "valintalaskennan_tulos",
               opId,
-              opSubId));
+              siirtotiedostoKeys.size() + 1));
     }
     LOGGER.info(
         "Kirjoitettiin yhteensä {} valintalaskennan tulosta {} siirtotiedostoon.",

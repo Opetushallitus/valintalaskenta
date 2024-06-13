@@ -55,42 +55,45 @@ public interface TulosValinnanvaiheRepository extends CrudRepository<Valinnanvai
       @Param("hakuOid") String hakuOid);
 
   @Query(
-      "select hk_oid from ("
-          + "select hakukohde_oid hk_oid from valinnanvaihe where last_modified between :start and :end"
-          + " union "
-          + "select vv.hakukohde_oid hk_oid from valinnanvaihe vv "
-          + "join valintatapajono vtpj on vtpj.valinnanvaihe = vv.id where vtpj.last_modified between :start and :end"
-          + " union "
-          + "select vv.hakukohde_oid hk_oid from valinnanvaihe vv "
-          + "join Valintatapajono vtpj on vtpj.valinnanvaihe = vv.id join jonosija js on js.valintatapajono = vtpj.id "
-          + "where js.last_modified between :start and :end"
-          + " union "
-          + "select vv.hakukohde_oid hk_oid from valinnanvaihe vv "
-          + "join muokattu_jonosija mjs on mjs.hakukohde_oid = vv.hakukohde_oid "
-          + "where mjs.last_modified between :start and :end"
-          + " union "
-          + "select vv.hakukohde_oid hk_oid from valinnanvaihe vv "
-          + "join harkinnanvarainen_hyvaksyminen hh on hh.hakukohde_oid = vv.hakukohde_oid "
-          + "where hh.last_modified between :start and :end) hks")
+      """
+      select hk_oid from (
+        select hakukohde_oid hk_oid from valinnanvaihe where last_modified >= :start and last_modified < :end
+              union
+        select vv.hakukohde_oid hk_oid from valinnanvaihe vv
+          join valintatapajono vtpj on vtpj.valinnanvaihe = vv.id
+            where vtpj.last_modified >= :start and vtpj.last_modified < :end
+              union
+        select vv.hakukohde_oid hk_oid from valinnanvaihe vv
+          join Valintatapajono vtpj on vtpj.valinnanvaihe = vv.id join jonosija js on js.valintatapajono = vtpj.id
+            where js.last_modified >= :start and js.last_modified < :end
+              union
+        select vv.hakukohde_oid hk_oid from valinnanvaihe vv
+          join muokattu_jonosija mjs on mjs.hakukohde_oid = vv.hakukohde_oid
+            where mjs.last_modified >= :start and mjs.last_modified < :end
+              union
+        select vv.hakukohde_oid hk_oid from valinnanvaihe vv
+          join harkinnanvarainen_hyvaksyminen hh on hh.hakukohde_oid = vv.hakukohde_oid
+            where hh.last_modified >= :start and hh.last_modified < :end) hks""")
   List<String> findHakukohdeOidsByTimeRange(
       @Param("start") LocalDateTime startDateTime, @Param("end") LocalDateTime endDatetime);
 
   @Query(
-      "select hk_oid from ("
-          + "select hakukohde_oid hk_oid from valinnanvaihe where last_modified < :end"
-          + " union "
-          + "select vv.hakukohde_oid hk_oid from valinnanvaihe vv "
-          + "join valintatapajono vtpj on vtpj.valinnanvaihe = vv.id where vtpj.last_modified < :end"
-          + " union "
-          + "select vv.hakukohde_oid hk_oid from valinnanvaihe vv "
-          + "join Valintatapajono vtpj on vtpj.valinnanvaihe = vv.id join jonosija js on js.valintatapajono = vtpj.id "
-          + "where js.last_modified < :end"
-          + " union "
-          + "select vv.hakukohde_oid hk_oid from valinnanvaihe vv "
-          + "join muokattu_jonosija mjs on mjs.hakukohde_oid = vv.hakukohde_oid where mjs.last_modified < :end"
-          + " union "
-          + "select vv.hakukohde_oid hk_oid from valinnanvaihe vv "
-          + "join harkinnanvarainen_hyvaksyminen hh on hh.hakukohde_oid = vv.hakukohde_oid "
-          + "where hh.last_modified < :end) hks")
+      """
+      select hk_oid from (
+        select hakukohde_oid hk_oid from valinnanvaihe where last_modified < :end
+              union
+        select vv.hakukohde_oid hk_oid from valinnanvaihe vv
+          join valintatapajono vtpj on vtpj.valinnanvaihe = vv.id where vtpj.last_modified < :end
+              union
+        select vv.hakukohde_oid hk_oid from valinnanvaihe vv
+          join Valintatapajono vtpj on vtpj.valinnanvaihe = vv.id join jonosija js on js.valintatapajono = vtpj.id
+            where js.last_modified < :end
+              union
+        select vv.hakukohde_oid hk_oid from valinnanvaihe vv
+          join muokattu_jonosija mjs on mjs.hakukohde_oid = vv.hakukohde_oid where mjs.last_modified < :end
+            union
+        select vv.hakukohde_oid hk_oid from valinnanvaihe vv
+          join harkinnanvarainen_hyvaksyminen hh on hh.hakukohde_oid = vv.hakukohde_oid
+            where hh.last_modified < :end) hks""")
   List<String> findHakukohdeOidsByEndTime(@Param("end") LocalDateTime endDatetime);
 }

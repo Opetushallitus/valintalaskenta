@@ -13,6 +13,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.JonoDto;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.ValintatietoValinnanvaiheSiirtotiedostoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.HakutoiveDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeValinnanvaiheDTO;
@@ -241,6 +242,9 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         jarjestyskriteeritulos.setKuvaus(new HashMap<>());
       }
       jonosija.setTuloksenTila(JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI);
+      if (safeCheckDateIsAfter(hyvaksyminen.getLastModified(), jonosija.getLastModified())) {
+        jonosija.setLastModified(hyvaksyminen.getLastModified());
+      }
     }
   }
 
@@ -279,7 +283,20 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
     if (jonosijaMuokattu) {
       jonosijaDTO.setMuokattu(true);
+      if (safeCheckDateIsAfter(muokattuJonosija.getLastModified(), jonosijaDTO.getLastModified())) {
+        jonosijaDTO.setLastModified(muokattuJonosija.getLastModified());
+      }
     }
+  }
+
+  private boolean safeCheckDateIsAfter(Date date1, Date date2) {
+    if (date1 != null && date2 == null) {
+      return true;
+    }
+    if (date1 == null) {
+      return false;
+    }
+    return date1.after(date2);
   }
 
   private Map<Integer, Jarjestyskriteeritulos> jarjestyskriteeritPrioriteetitMukaan(
@@ -307,6 +324,17 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         valintatulosConverter.convertValinnanvaiheList(valinnanVaihes);
     applyMuokatutJonosijatToValinnanvaihe(hakukohdeoid, valintatietoValinnanVaihes);
     return valintatietoValinnanVaihes;
+  }
+
+  @Override
+  public List<ValintatietoValinnanvaiheSiirtotiedostoDTO>
+      haeValinnanvaiheetHakukohteelleForSiirtotiedosto(String hakukohdeoid) {
+    List<Valinnanvaihe> valinnanVaihes = tulosValinnanvaiheDAO.readByHakukohdeOid(hakukohdeoid);
+    List<ValintatietoValinnanvaiheDTO> valintatietoValinnanVaihes =
+        valintatulosConverter.convertValinnanvaiheList(valinnanVaihes);
+    applyMuokatutJonosijatToValinnanvaihe(hakukohdeoid, valintatietoValinnanVaihes);
+    return valintatulosConverter.convertValinnanvaiheListForSiirtotiedosto(
+        valintatietoValinnanVaihes);
   }
 
   @Override

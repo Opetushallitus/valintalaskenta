@@ -8,6 +8,7 @@ import fi.vm.sade.service.valintaperusteet.service.validointi.virhe.Virhetyyppi;
 import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteeritulosDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.HakutoiveDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.OsallistuminenTulosDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeValinnanvaiheDTO;
@@ -389,12 +390,14 @@ public class ValintalaskentaModelMapper extends ModelMapper {
                                             koeDTO.setOsallistuminenTulos(osa);
                                             koeDTO.setValintakoeTunniste(
                                                 koe.getValintakoeTunniste());
+                                            koeDTO.setLastModified(koe.getLastModified());
                                             return koeDTO;
                                           })
                                       .toList());
                               dto.setValinnanVaiheOid(vaihe.getValinnanvaiheOid());
                               dto.setValinnanVaiheJarjestysluku(
                                   vaihe.getValinnanVaiheJarjestysluku());
+                              dto.setLastModified(vaihe.getLastModified());
                               return dto;
                             })
                         .toList();

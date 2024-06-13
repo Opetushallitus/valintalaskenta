@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain.valintakoe;
 
 import fi.vm.sade.service.valintaperusteet.dto.model.Koekutsu;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -41,6 +42,8 @@ public class Valintakoe {
   private String tekninenKuvaus;
 
   @Transient private ValintakoeValinnanvaihe valintakoeValinnanvaihe;
+
+  private Date lastModified;
 
   public Valintakoe() {}
 
@@ -221,5 +224,13 @@ public class Valintakoe {
     setKuvaus(osallistuminenTulos.getKuvaus());
     setLaskentaTila(osallistuminenTulos.getLaskentaTila());
     setTekninenKuvaus(osallistuminenTulos.getTekninenKuvaus());
+  }
+
+  public Date getLastModified() {
+    return lastModified;
+  }
+
+  public void setLastModified(Date lastModified) {
+    this.lastModified = lastModified;
   }
 }

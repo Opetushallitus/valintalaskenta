@@ -24,6 +24,8 @@ public class Valinnanvaihe {
 
   private List<Valintatapajono> valintatapajonot = new ArrayList<>();
 
+  private Date lastModified;
+
   public Valinnanvaihe() {}
 
   @PersistenceCreator
@@ -119,5 +121,13 @@ public class Valinnanvaihe {
         .flatMap(j -> j.getJonosijat().stream())
         .filter(j -> j.getHakemusOid().equals(hakemusoid))
         .anyMatch(Jonosija::isHylattyValisijoittelussa);
+  }
+
+  public Date getLastModified() {
+    return lastModified;
+  }
+
+  public void setLastModified(Date lastModified) {
+    this.lastModified = lastModified;
   }
 }

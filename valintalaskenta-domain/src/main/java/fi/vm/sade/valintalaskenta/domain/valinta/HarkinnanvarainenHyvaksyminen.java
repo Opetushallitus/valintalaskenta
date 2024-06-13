@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.domain.valinta;
 
+import java.util.Date;
 import java.util.UUID;
 import org.springframework.data.annotation.Id;
 
@@ -12,6 +13,8 @@ public class HarkinnanvarainenHyvaksyminen {
   private String hakemusOid;
 
   private String hakuOid;
+
+  private Date lastModified;
 
   public String getHakemusOid() {
     return hakemusOid;
@@ -51,5 +54,13 @@ public class HarkinnanvarainenHyvaksyminen {
 
   public void setId(UUID id) {
     this.id = id;
+  }
+
+  public Date getLastModified() {
+    return lastModified;
+  }
+
+  public void setLastModified(Date lastModified) {
+    this.lastModified = lastModified;
   }
 }
