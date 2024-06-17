@@ -51,6 +51,11 @@ jobs:
             valintalaskenta-laskenta-service/target
             valintalaskenta-tulos-service/target
           key: ${{ github.sha }}
+      - name: Upload kayttooikeus-jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: valintalaskenta-laskenta-service-jar
+          path: valintalaskenta-laskenta-service/target/valintalaskenta-laskenta-service.jar
 
   deploy-container:
     needs: [test-and-build]
@@ -60,7 +65,9 @@ jobs:
       base-image: baseimage-fatjar-openjdk17:master
       configfolder: src/main/resources/oph-configuration
       jarfile: valintalaskenta-laskenta-service
-      jarfolder: valintalaskenta-laskenta-service/target
+      jarfolder: .
+      download-artifact: true
+      download-artifact-name: valintalaskenta-laskenta-service-jar
     secrets:
       AWS_UTILITY_ROLE_ARN: ${{ secrets.AWS_OPH_UTILITY_ROLE_ARN }}
 
