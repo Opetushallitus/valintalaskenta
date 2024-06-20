@@ -2,10 +2,7 @@ package fi.vm.sade.valintalaskenta.domain.dto;
 
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteerituloksenTila;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 @Schema(name = "JonosijaDTO", description = "Jonosija")
 public class JonosijaDTO {
@@ -81,6 +78,9 @@ public class JonosijaDTO {
 
   @Schema(description = "Onko jonosijaa muokattu manuaalisesti")
   private boolean muokattu = false;
+
+  @Schema(hidden = true)
+  private Date lastModified;
 
   @Schema(description = "Onko hakemus hylätty välisijoittelussa")
   private boolean hylattyValisijoittelussa = false;
@@ -169,8 +169,16 @@ public class JonosijaDTO {
     return muokattu;
   }
 
+  public Date getLastModified() {
+    return lastModified;
+  }
+
   public void setMuokattu(boolean muokattu) {
     this.muokattu = muokattu;
+  }
+
+  public void setLastModified(Date lastModified) {
+    this.lastModified = lastModified;
   }
 
   public List<SyotettyArvoDTO> getSyotetytArvot() {

@@ -4,6 +4,7 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosValintakoeOsallistuminenRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -40,5 +41,13 @@ public class TulosValintakoeOsallistuminenDAOImpl implements TulosValintakoeOsal
   public List<ValintakoeOsallistuminen> findByHakuAndOsallistuminen(
       String hakuOid, Osallistuminen osallistuminen) {
     return repo.findDistinctByHakuAndOsallistuminen(hakuOid, osallistuminen);
+  }
+
+  @Override
+  public List<String> readNewOrModifiedHakemusOids(
+      LocalDateTime startDatetime, LocalDateTime endDatatime) {
+    return startDatetime != null
+        ? repo.findHakemusOidsByTimeRange(startDatetime, endDatatime)
+        : repo.findHakemusOidsByEndTime(endDatatime);
   }
 }

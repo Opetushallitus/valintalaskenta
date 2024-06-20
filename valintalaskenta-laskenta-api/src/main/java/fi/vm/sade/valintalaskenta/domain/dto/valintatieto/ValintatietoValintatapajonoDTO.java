@@ -32,6 +32,9 @@ public class ValintatietoValintatapajonoDTO extends ValintatapajonoDTO {
   @Schema(description = "Erillishaussa käytetty sijoitteluajo", required = false)
   private Long sijoitteluajoId;
 
+  @Schema(hidden = true)
+  private Date lastModified;
+
   public ValintatietoValintatapajonoDTO() {}
 
   public ValintatietoValintatapajonoDTO(
@@ -135,6 +138,14 @@ public class ValintatietoValintatapajonoDTO extends ValintatapajonoDTO {
 
   public void setSijoitteluajoId(Long sijoitteluajoId) {
     this.sijoitteluajoId = sijoitteluajoId;
+  }
+
+  public void setLastModified(Date lastModified) {
+    this.lastModified = lastModified;
+  }
+
+  public Date getLastModified() {
+    return lastModified;
   }
 
   public boolean empty() {

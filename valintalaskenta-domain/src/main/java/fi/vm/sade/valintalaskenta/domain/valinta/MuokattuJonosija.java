@@ -26,6 +26,8 @@ public class MuokattuJonosija {
 
   private String muutos;
 
+  private Date lastModified;
+
   @Column("jarjestyskriteeritulokset")
   private JarjestyskriteeritulosContainer jarjestyskriteeritulokset;
 
@@ -34,10 +36,12 @@ public class MuokattuJonosija {
   }
 
   public List<Jarjestyskriteeritulos> getJarjestyskriteerit() {
+    ensureJarjestystulosContainerInitialized();
     return jarjestyskriteeritulokset.jarjestyskriteeritulokset;
   }
 
   public void setJarjestyskriteerit(Set<Jarjestyskriteeritulos> jarjestyskriteerit) {
+    ensureJarjestystulosContainerInitialized();
     this.jarjestyskriteeritulokset.jarjestyskriteeritulokset.clear();
     this.jarjestyskriteeritulokset.jarjestyskriteeritulokset.addAll(jarjestyskriteerit);
     this.jarjestaJarjestyskriteeritulokset();
@@ -99,6 +103,12 @@ public class MuokattuJonosija {
     this.harkinnanvarainen = harkinnanvarainen;
   }
 
+  private void ensureJarjestystulosContainerInitialized() {
+    if (this.jarjestyskriteeritulokset == null) {
+      this.jarjestyskriteeritulokset = new JarjestyskriteeritulosContainer();
+    }
+  }
+
   private void jarjestaJarjestyskriteeritulokset() {
     Collections.sort(
         jarjestyskriteeritulokset.jarjestyskriteeritulokset,
@@ -132,5 +142,13 @@ public class MuokattuJonosija {
 
   public void setMuutos(String muutos) {
     this.muutos = muutos;
+  }
+
+  public Date getLastModified() {
+    return lastModified;
+  }
+
+  public void setLastModified(Date lastModified) {
+    this.lastModified = lastModified;
   }
 }

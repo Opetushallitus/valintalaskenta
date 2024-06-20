@@ -25,7 +25,7 @@
     <properties>
         <valinta-sharedutils.version>5.11-SNAPSHOT</valinta-sharedutils.version>
         <sijoittelu.version>7.6.0-SNAPSHOT</sijoittelu.version>
-        <dokumenttipalvelu.version>6.11-SNAPSHOT</dokumenttipalvelu.version>
+        <dokumenttipalvelu.version>6.12-SNAPSHOT</dokumenttipalvelu.version>
 
         <httpcomponents.version>4.5.14</httpcomponents.version>
         <modelmapper.version>3.1.1</modelmapper.version>
