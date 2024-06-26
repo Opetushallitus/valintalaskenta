@@ -398,11 +398,11 @@ public class LaskentaSeurantaResource {
                 "userOID",
                 List.of(userOID),
                 "haunnimi",
-                List.of(URLEncoder.encode(haunnimi)),
+                List.of(haunnimi),
                 "erillishaku",
                 List.of(erillishaku.toString())));
     if (nimi != null) {
-      queryParams.put("nimi", List.of(URLEncoder.encode(nimi)));
+      queryParams.put("nimi", List.of(nimi));
     }
     if (valinnanvaihe != null) {
       queryParams.put("valinnanvaihe", List.of(valinnanvaihe.toString()));
