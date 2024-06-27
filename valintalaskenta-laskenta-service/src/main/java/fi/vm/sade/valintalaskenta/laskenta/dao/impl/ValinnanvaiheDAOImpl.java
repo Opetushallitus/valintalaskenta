@@ -11,6 +11,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -68,6 +69,7 @@ public class ValinnanvaiheDAOImpl implements ValinnanvaiheDAO {
         hakuOid, hakukohdeOid, jarjestysnumero);
   }
 
+  @Transactional(propagation = Propagation.MANDATORY)
   @Override
   public void saveOrUpdate(Valinnanvaihe valinnanvaihe) {
     valinnanvaihe.setCreatedAt(new Date());
