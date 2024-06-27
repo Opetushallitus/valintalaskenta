@@ -10,6 +10,7 @@ import java.util.*;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
 
@@ -93,6 +94,7 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
   }
 
   @Test
+  @Transactional
   public void testSavingAndLoadingNewValinnanvaihe() {
     Valinnanvaihe valinnanvaihe = createValinnanvaihe(1);
     Valintatapajono valintatapajono = new Valintatapajono();
@@ -121,6 +123,7 @@ public class ValinnanvaiheDAOTest extends AbstractIntegrationTest {
   }
 
   @Test
+  @Transactional
   public void testSavingLargeValinnanvaihe() {
     long timeStart = System.currentTimeMillis();
 

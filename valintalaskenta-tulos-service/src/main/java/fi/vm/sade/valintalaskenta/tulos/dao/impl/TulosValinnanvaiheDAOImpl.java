@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TulosValinnanvaiheDAOImpl implements TulosValinnanvaiheDAO {
@@ -61,6 +62,7 @@ public class TulosValinnanvaiheDAOImpl implements TulosValinnanvaiheDAO {
   }
 
   @Override
+  @Transactional
   public UUID saveVaihe(Valinnanvaihe vaihe) {
     if (vaihe.getCreatedAt() == null) {
       vaihe.setCreatedAt(new Date());
