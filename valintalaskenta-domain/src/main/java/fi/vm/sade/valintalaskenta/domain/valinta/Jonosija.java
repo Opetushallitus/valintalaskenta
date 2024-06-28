@@ -32,8 +32,6 @@ public class Jonosija {
   @Column("funktio_tulokset")
   private FunktioTulosContainer funktioTulokset;
 
-  private Date lastModified;
-
   public Jonosija() {
     syotetytArvot = new SyotettyArvoContainer();
     funktioTulokset = new FunktioTulosContainer();
@@ -141,13 +139,5 @@ public class Jonosija {
 
   public void setValintatapajono(Valintatapajono valintatapajono) {
     this.valintatapajono = valintatapajono;
-  }
-
-  public Date getLastModified() {
-    return lastModified;
-  }
-
-  public void setLastModified(Date lastModified) {
-    this.lastModified = lastModified;
   }
 }
