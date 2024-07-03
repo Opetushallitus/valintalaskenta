@@ -1,7 +1,5 @@
 package fi.vm.sade.valintalaskenta.laskenta.resource;
 
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.OPH_CRUD;
-
 import fi.vm.sade.javautils.nio.cas.CasClient;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
 import fi.vm.sade.valintalaskenta.tulos.RestClientUtil;
@@ -22,7 +20,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize(
+    "hasAnyRole('ROLE_APP_VALINTOJENTOTEUTTAMINEN_CRUD', 'ROLE_APP_VALINTOJENTOTEUTTAMINEN_READ_UPDATE')")
 @RequestMapping(value = "/resources/seuranta")
 public class LaskentaSeurantaResource {
 
@@ -47,7 +46,6 @@ public class LaskentaSeurantaResource {
   }
 
   /** Yhteenvedot olemassa olevista laskennoista haulle */
-  @PreAuthorize(OPH_CRUD)
   @GetMapping(value = "/hae/{hakuOid}", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<String> hae(@PathVariable("hakuOid") String hakuOid) {
     Response response =
@@ -62,7 +60,6 @@ public class LaskentaSeurantaResource {
   }
 
   /** Yhteenvedot olemassa olevista tietyn tyyppisista laskennoista haulle */
-  @PreAuthorize(OPH_CRUD)
   @GetMapping(value = "/hae/{hakuOid}/tyyppi/{tyyppi}", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<String> hae(
       @PathVariable("hakuOid") String hakuOid, @PathVariable("tyyppi") LaskentaTyyppi tyyppi) {
@@ -79,7 +76,6 @@ public class LaskentaSeurantaResource {
   }
 
   /** Yhteenvedot olemassa olevista laskennoista haulle */
-  @PreAuthorize(OPH_CRUD)
   @GetMapping(value = "/hae/{hakuOid}/kaynnissa", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<String> haeKaynnissaOlevatLaskennat(@PathVariable("hakuOid") String hakuOid) {
     Response response =
@@ -94,7 +90,6 @@ public class LaskentaSeurantaResource {
   }
 
   /** Yhteenvedot olemassa olevista laskennoista */
-  @PreAuthorize(OPH_CRUD)
   @GetMapping(
       value = "/yhteenvetokaikillelaskennoille",
       produces = MediaType.APPLICATION_JSON_VALUE)
@@ -111,7 +106,6 @@ public class LaskentaSeurantaResource {
     return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
   }
 
-  @PreAuthorize(OPH_CRUD)
   @GetMapping(
       value = "/laskenta/otaSeuraavaLaskentaTyonAlle",
       produces = MediaType.TEXT_PLAIN_VALUE)
@@ -131,7 +125,6 @@ public class LaskentaSeurantaResource {
     return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
   }
 
-  @PreAuthorize(OPH_CRUD)
   @GetMapping(value = "/laskenta/{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<String> laskenta(@PathVariable("uuid") String uuid) {
     Response response =
@@ -145,7 +138,6 @@ public class LaskentaSeurantaResource {
     return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
   }
 
-  @PreAuthorize(OPH_CRUD)
   @GetMapping(value = "/kuormantasaus/laskenta/{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<String> kuormantasausLaskenta(@PathVariable("uuid") String uuid) {
     Response response =
@@ -160,7 +152,6 @@ public class LaskentaSeurantaResource {
     return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
   }
 
-  @PreAuthorize(OPH_CRUD)
   @GetMapping(value = "/lataa/{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<String> lataa(@PathVariable("uuid") String uuid) {
     Response response =
@@ -174,7 +165,6 @@ public class LaskentaSeurantaResource {
     return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
   }
 
-  @PreAuthorize(OPH_CRUD)
   @GetMapping(value = "/yhteenveto/{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<String> yhteenveto(@PathVariable("uuid") String uuid) {
     Response response =
@@ -189,7 +179,6 @@ public class LaskentaSeurantaResource {
   }
 
   /** Paivittaa yksittaisen hakukohteen tilaa laskennassa */
-  @PreAuthorize(OPH_CRUD)
   @PutMapping(
       value = "/kuormantasaus/laskenta/{uuid}/hakukohde/{hakukohdeOid}/tila/{tila}",
       produces = MediaType.APPLICATION_JSON_VALUE)
@@ -211,7 +200,6 @@ public class LaskentaSeurantaResource {
   }
 
   /** Paivittaa yksittaisen hakukohteen tilaa laskennassa ja jattaa ilmoituksen */
-  @PreAuthorize(OPH_CRUD)
   @PostMapping(
       value = "/kuormantasaus/laskenta/{uuid}/hakukohde/{hakukohdeOid}/tila/{tila}",
       consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -237,7 +225,6 @@ public class LaskentaSeurantaResource {
   }
 
   /** Jattaa ilmoituksen */
-  @PreAuthorize(OPH_CRUD)
   @PostMapping(
       value = "/kuormantasaus/laskenta/{uuid}/hakukohde/{hakukohdeOid}",
       consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -262,7 +249,6 @@ public class LaskentaSeurantaResource {
   }
 
   /** Resetoi hakukohteiden tilat. Poistaa logit. Sailoo valmiit tilat. */
-  @PreAuthorize(OPH_CRUD)
   @PutMapping(
       value = "/kuormantasaus/laskenta/{uuid}/resetoi",
       produces = MediaType.APPLICATION_JSON_VALUE)
@@ -281,7 +267,6 @@ public class LaskentaSeurantaResource {
   }
 
   /** Paivittaa laskennan tilan */
-  @PreAuthorize(OPH_CRUD)
   @PutMapping(
       value = "/kuormantasaus/laskenta/{uuid}/tila/{tila}",
       produces = MediaType.APPLICATION_JSON_VALUE)
@@ -300,7 +285,6 @@ public class LaskentaSeurantaResource {
     return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
   }
 
-  @PreAuthorize(OPH_CRUD)
   @PostMapping(
       value = "/kuormantasaus/laskenta/{uuid}/tila/{tila}",
       consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -325,7 +309,6 @@ public class LaskentaSeurantaResource {
   }
 
   /** Paivittaa laskennan tilan ja kaikki hakukohteet samalla */
-  @PreAuthorize(OPH_CRUD)
   @PutMapping(
       value = "/kuormantasaus/laskenta/{uuid}/tila/{tila}/hakukohde/{hakukohteentila}",
       produces = MediaType.APPLICATION_JSON_VALUE)
@@ -346,7 +329,6 @@ public class LaskentaSeurantaResource {
     return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
   }
 
-  @PreAuthorize(OPH_CRUD)
   @PostMapping(
       value = "/kuormantasaus/laskenta/{uuid}/tila/{tila}/hakukohde/{hakukohteentila}",
       consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -376,7 +358,6 @@ public class LaskentaSeurantaResource {
    *
    * @return UUID
    */
-  @PreAuthorize(OPH_CRUD)
   @PostMapping(
       value = "/kuormantasaus/laskenta/{hakuOid}/tyyppi/{tyyppi}",
       consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -429,7 +410,6 @@ public class LaskentaSeurantaResource {
    *
    * @return 200 OK jos onnistui
    */
-  @PreAuthorize(OPH_CRUD)
   @DeleteMapping(
       value = "/kuormantasaus/laskenta/{uuid}",
       produces = MediaType.APPLICATION_JSON_VALUE)
