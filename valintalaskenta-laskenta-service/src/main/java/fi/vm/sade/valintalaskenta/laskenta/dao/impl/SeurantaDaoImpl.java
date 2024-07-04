@@ -168,9 +168,12 @@ public class SeurantaDaoImpl implements SeurantaDao {
   }
 
   @Override
-  public Collection<YhteenvetoDto> haeYhteenvetoKaikilleLaskennoille() {
+  public Collection<YhteenvetoDto> haeYhteenvetoKaikilleLaskennoille(Instant luotuAlkaen) {
     Collection<UUID> uuids =
-        this.jdbcTemplate.query("SELECT uuid FROM seuranta_laskennat", uuidRowMapper);
+        this.jdbcTemplate.query(
+            "SELECT uuid FROM seuranta_laskennat WHERE luotu>=?::timestamptz",
+            uuidRowMapper,
+            luotuAlkaen.toString());
     return this.getLaskennat(uuids).stream()
         .map(laskenta -> laskentaAsYhteenvetoDto(laskenta, jonosijaProvider()))
         .collect(Collectors.toList());

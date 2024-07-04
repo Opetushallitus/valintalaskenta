@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao;
 
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
@@ -29,7 +30,7 @@ public interface SeurantaDao {
   Collection<YhteenvetoDto> haeKaynnissaOlevienYhteenvedotHaulle(String hakuOid);
 
   /** Yhteenvedot kaynnissa olevien laskentojen kulusta */
-  Collection<YhteenvetoDto> haeYhteenvetoKaikilleLaskennoille();
+  Collection<YhteenvetoDto> haeYhteenvetoKaikilleLaskennoille(Instant luotuAlkaen);
 
   TunnisteDto luoLaskenta(
       String userOID,
