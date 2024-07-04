@@ -4,6 +4,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.time.Instant;
 import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +60,9 @@ public class LaskentaSeurantaResource {
   @Operation(summary = "Hakee yhteenvedot kaikista laskennoista")
   ResponseEntity<Collection<YhteenvetoDto>> haeYhteenvetoKaikilleLaskennoille() {
     return ResponseEntity.status(HttpStatus.OK)
-        .body(seurantaDao.haeYhteenvetoKaikilleLaskennoille());
+        .body(
+            seurantaDao.haeYhteenvetoKaikilleLaskennoille(
+                Instant.now().minusSeconds(60 * 60 * 24)));
   }
 
   @GetMapping(
