@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta.config;
 
+import static fi.vm.sade.valinta.sharedutils.http.HttpResource.CSRF_VALUE;
 import static fi.vm.sade.valintalaskenta.laskenta.config.ConfigEnums.CALLER_ID;
 import static fi.vm.sade.valintalaskenta.tulos.RestClientUtil.get;
 import static fi.vm.sade.valintalaskenta.tulos.RestClientUtil.post;
@@ -7,6 +8,7 @@ import static fi.vm.sade.valintalaskenta.tulos.RestClientUtil.post;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.reflect.TypeToken;
 import fi.vm.sade.javautils.nio.cas.CasClient;
+import fi.vm.sade.javautils.nio.cas.CasClientBuilder;
 import fi.vm.sade.javautils.nio.cas.CasConfig;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaServiceImpl;
@@ -69,17 +71,17 @@ public class ValintalaskentaLaskentaConfiguration {
       @Value("${cas.service.sijoittelu-service}") final String targetUrl,
       @Value("${valintalaskentakoostepalvelu.app.username.to.sijoittelu}") final String username,
       @Value("${valintalaskentakoostepalvelu.app.password.to.sijoittelu}") final String password) {
-    return new CasClient(
-        CasConfig.CustomServiceTicketHeaderCasConfig(
-            username,
-            password,
-            casUrl,
-            targetUrl,
-            "CSRF",
-            CALLER_ID.value(),
-            "JSESSIONID",
-            "/j_spring_cas_security_check",
-            "CasSecurityTicket"));
+    return CasClientBuilder.build(
+        new CasConfig.CasConfigBuilder(
+                username,
+                password,
+                casUrl,
+                targetUrl,
+                CSRF_VALUE,
+                CALLER_ID.value(),
+                "/j_spring_cas_security_check")
+            .setJsessionName("JSESSIONID")
+            .build());
   }
 
   @Bean(name = "valintaperusteetServiceCasClient")
@@ -88,17 +90,17 @@ public class ValintalaskentaLaskentaConfiguration {
       @Value("${cas.service.valintaperusteet-service}") final String targetUrl,
       @Value("${valintalaskentakoostepalvelu.app.username.to.sijoittelu}") final String username,
       @Value("${valintalaskentakoostepalvelu.app.password.to.sijoittelu}") final String password) {
-    return new CasClient(
-        CasConfig.CustomServiceTicketHeaderCasConfig(
-            username,
-            password,
-            casUrl,
-            targetUrl,
-            "CSRF",
-            CALLER_ID.value(),
-            "JSESSIONID",
-            "/j_spring_cas_security_check",
-            "CasSecurityTicket"));
+    return CasClientBuilder.build(
+        new CasConfig.CasConfigBuilder(
+                username,
+                password,
+                casUrl,
+                targetUrl,
+                CSRF_VALUE,
+                CALLER_ID.value(),
+                "/j_spring_cas_security_check")
+            .setJsessionName("JSESSIONID")
+            .build());
   }
 
   @Bean(name = "seurantaCasClient")
@@ -107,16 +109,17 @@ public class ValintalaskentaLaskentaConfiguration {
       @Value("${cas.service.seuranta-service}") final String targetUrl,
       @Value("${valintalaskentakoostepalvelu.app.username.to.sijoittelu}") final String username,
       @Value("${valintalaskentakoostepalvelu.app.password.to.sijoittelu}") final String password) {
-    return new CasClient(
-        CasConfig.CasConfig(
-            username,
-            password,
-            casUrl,
-            targetUrl,
-            "CSRF",
-            CALLER_ID.value(),
-            "JSESSIONID",
-            "/j_spring_cas_security_check"));
+    return CasClientBuilder.build(
+        new CasConfig.CasConfigBuilder(
+                username,
+                password,
+                casUrl,
+                targetUrl,
+                CSRF_VALUE,
+                CALLER_ID.value(),
+                "/j_spring_cas_security_check")
+            .setJsessionName("JSESSIONID")
+            .build());
   }
 
   @Value("${valintalaskenta-laskenta-service.global.http.connectionTimeoutMillis:59999}")
