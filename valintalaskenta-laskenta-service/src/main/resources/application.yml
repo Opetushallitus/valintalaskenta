@@ -47,6 +47,7 @@ server:
 
 valintalaskenta:
   uses-ssl-proxy: false
+  enable-siirtotiedosto-service: true
 
 cas-service:
   service: http://localhost:${server.port}/valintalaskenta-laskenta-service
