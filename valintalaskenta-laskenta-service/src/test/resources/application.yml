@@ -2,10 +2,6 @@
 spring:
   main:
     allow-bean-definition-overriding: true
-  profiles:
-    group:
-      test: dev
-      test-mockless: dev
   datasource:
     hikari:
       data-source-properties:

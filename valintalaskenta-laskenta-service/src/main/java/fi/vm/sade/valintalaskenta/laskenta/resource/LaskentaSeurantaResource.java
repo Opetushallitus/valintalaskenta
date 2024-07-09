@@ -1,18 +1,14 @@
 package fi.vm.sade.valintalaskenta.laskenta.resource;
 
-import fi.vm.sade.javautils.nio.cas.CasClient;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
-import fi.vm.sade.valintalaskenta.tulos.RestClientUtil;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.asynchttpclient.Request;
-import org.asynchttpclient.RequestBuilder;
-import org.asynchttpclient.Response;
-import org.asynchttpclient.util.HttpConstants;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
+import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import java.time.Instant;
+import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,346 +18,278 @@ import org.springframework.web.bind.annotation.*;
 @PreAuthorize(
     "hasAnyRole('ROLE_APP_VALINTOJENTOTEUTTAMINEN_CRUD', 'ROLE_APP_VALINTOJENTOTEUTTAMINEN_READ_UPDATE')")
 @RequestMapping(value = "/resources/seuranta")
+@Tag(name = "/resources/seuranta", description = "Resurssi laskennan seurantaan")
 public class LaskentaSeurantaResource {
 
-  private CasClient seurantaCasClient;
+  private static final Logger LOG = LoggerFactory.getLogger(LaskentaSeurantaResource.class);
 
-  private String seurantaBaseUrl;
+  private final SeurantaDao seurantaDao;
 
-  public LaskentaSeurantaResource(
-      @Qualifier("seurantaCasClient") CasClient seurantaCasClient,
-      @Value("${valintalaskentakoostepalvelu.seuranta.rest.url}") String seurantaBaseUrl) {
-    this.seurantaCasClient = seurantaCasClient;
-    this.seurantaBaseUrl = seurantaBaseUrl;
-  }
-
-  public static org.asynchttpclient.Response execute(
-      final CasClient casClient, final Request request) {
-    try {
-      return casClient.executeBlocking(request);
-    } catch (final Exception e) {
-      throw new RuntimeException(e);
-    }
+  public LaskentaSeurantaResource(SeurantaDao seurantaDao) {
+    this.seurantaDao = seurantaDao;
   }
 
   /** Yhteenvedot olemassa olevista laskennoista haulle */
   @GetMapping(value = "/hae/{hakuOid}", produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<String> hae(@PathVariable("hakuOid") String hakuOid) {
-    Response response =
-        execute(
-            this.seurantaCasClient,
-            RestClientUtil.request(
-                    String.format("%s/seuranta/hae/%s", this.seurantaBaseUrl, hakuOid),
-                    HttpConstants.Methods.GET,
-                    Collections.emptyMap())
-                .build());
-    return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
+  @Operation(summary = "Hakee yhteenvedot haun laskennoille oid:n perusteella")
+  ResponseEntity<Collection<YhteenvetoDto>> hae(@PathVariable("hakuOid") String hakuOid) {
+    return ResponseEntity.status(HttpStatus.OK).body(seurantaDao.haeYhteenvedotHaulle(hakuOid));
   }
 
   /** Yhteenvedot olemassa olevista tietyn tyyppisista laskennoista haulle */
   @GetMapping(value = "/hae/{hakuOid}/tyyppi/{tyyppi}", produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<String> hae(
+  @Operation(summary = "Hakee yhteenvedot haun laskennoille oid:n ja tyypin perusteella")
+  ResponseEntity<Collection<YhteenvetoDto>> haeLaskennanYhteenvedotHaulleTyypilla(
       @PathVariable("hakuOid") String hakuOid, @PathVariable("tyyppi") LaskentaTyyppi tyyppi) {
-    Response response =
-        execute(
-            this.seurantaCasClient,
-            RestClientUtil.request(
-                    String.format(
-                        "%s/seuranta/hae/%s/tyyppi/%s", this.seurantaBaseUrl, hakuOid, tyyppi),
-                    HttpConstants.Methods.GET,
-                    Collections.emptyMap())
-                .build());
-    return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(seurantaDao.haeYhteenvedotHaulle(hakuOid, tyyppi));
   }
 
-  /** Yhteenvedot olemassa olevista laskennoista haulle */
   @GetMapping(value = "/hae/{hakuOid}/kaynnissa", produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<String> haeKaynnissaOlevatLaskennat(@PathVariable("hakuOid") String hakuOid) {
-    Response response =
-        execute(
-            this.seurantaCasClient,
-            RestClientUtil.request(
-                    String.format("%s/seuranta/hae/%s/kaynnissa", this.seurantaBaseUrl, hakuOid),
-                    HttpConstants.Methods.GET,
-                    Collections.emptyMap())
-                .build());
-    return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
+  @Operation(summary = "Hakee yhteenvedot käynnissäolevista laskennoista haulle")
+  ResponseEntity<Collection<YhteenvetoDto>> haeKaynnissaOlevienLaskentojenYhteenvedot(
+      @PathVariable("hakuOid") String hakuOid) {
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(seurantaDao.haeKaynnissaOlevienYhteenvedotHaulle(hakuOid));
   }
 
   /** Yhteenvedot olemassa olevista laskennoista */
   @GetMapping(
       value = "/yhteenvetokaikillelaskennoille",
       produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<String> haeYhteenvetoKaikilleLaskennoille() {
-    Response response =
-        execute(
-            this.seurantaCasClient,
-            RestClientUtil.request(
-                    String.format(
-                        "%s/seuranta/yhteenvetokaikillelaskennoille", this.seurantaBaseUrl),
-                    HttpConstants.Methods.GET,
-                    Collections.emptyMap())
-                .build());
-    return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
+  @Operation(summary = "Hakee yhteenvedot kaikista laskennoista")
+  ResponseEntity<Collection<YhteenvetoDto>> haeYhteenvetoKaikilleLaskennoille() {
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(
+            seurantaDao.haeYhteenvetoKaikilleLaskennoille(
+                Instant.now().minusSeconds(60 * 60 * 24)));
   }
 
   @GetMapping(
       value = "/laskenta/otaSeuraavaLaskentaTyonAlle",
       produces = MediaType.TEXT_PLAIN_VALUE)
+  @Operation(summary = "Aloittaa seuraavan laskennan")
   ResponseEntity<String> otaSeuraavaLaskentaTyonAlle() {
-    Response response =
-        execute(
-            this.seurantaCasClient,
-            new RequestBuilder()
-                .setUrl(
-                    String.format(
-                        "%s/seuranta/laskenta/otaSeuraavaLaskentaTyonAlle", this.seurantaBaseUrl))
-                .setMethod(HttpConstants.Methods.GET)
-                .addHeader("Accept", "text/plain")
-                .setRequestTimeout(120000)
-                .setReadTimeout(120000)
-                .build());
-    return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
+    Optional<String> uuid = Optional.ofNullable(seurantaDao.otaSeuraavaLaskentaTyonAlle());
+    LOG.info("Ota seuraava tyon alle: " + (uuid.isPresent() ? uuid.get() : "Ei tyota"));
+    if (uuid.isPresent()) {
+      final String u = uuid.get();
+      return ResponseEntity.status(HttpStatus.OK).body(u);
+    } else {
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
   }
 
   @GetMapping(value = "/laskenta/{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<String> laskenta(@PathVariable("uuid") String uuid) {
-    Response response =
-        execute(
-            this.seurantaCasClient,
-            RestClientUtil.request(
-                    String.format("%s/seuranta/laskenta/%s", this.seurantaBaseUrl, uuid),
-                    HttpConstants.Methods.GET,
-                    Collections.emptyMap())
-                .build());
-    return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
+  @Operation(summary = "Palauttaa laskennan oid:n perusteella")
+  ResponseEntity<LaskentaDto> laskenta(@PathVariable("uuid") String uuid) {
+    try {
+      LaskentaDto l = seurantaDao.haeLaskenta(uuid);
+      if (l == null) {
+        throw new RuntimeException("SeurantaDao palautti null olion uuid:lle " + uuid);
+      }
+      return ResponseEntity.status(HttpStatus.OK).body(l);
+    } catch (Exception e) {
+      throw e;
+    }
   }
 
   @GetMapping(value = "/kuormantasaus/laskenta/{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<String> kuormantasausLaskenta(@PathVariable("uuid") String uuid) {
-    Response response =
-        execute(
-            this.seurantaCasClient,
-            RestClientUtil.request(
-                    String.format(
-                        "%s/seuranta/kuormantasaus/laskenta/%s", this.seurantaBaseUrl, uuid),
-                    HttpConstants.Methods.GET,
-                    Collections.emptyMap())
-                .build());
-    return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
+  @Operation(summary = "Palauttaa laskennan oid:n perusteella")
+  ResponseEntity<LaskentaDto> kuormantasausLaskenta(@PathVariable("uuid") String uuid) {
+    try {
+      LaskentaDto l = seurantaDao.haeLaskenta(uuid);
+      if (l == null) {
+        throw new RuntimeException("SeurantaDao palautti null olion uuid:lle " + uuid);
+      }
+      return ResponseEntity.status(HttpStatus.OK).body(l);
+    } catch (Exception e) {
+      throw e;
+    }
   }
 
   @GetMapping(value = "/lataa/{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<String> lataa(@PathVariable("uuid") String uuid) {
-    Response response =
-        execute(
-            this.seurantaCasClient,
-            RestClientUtil.request(
-                    String.format("%s/seuranta/lataa/%s", this.seurantaBaseUrl, uuid),
-                    HttpConstants.Methods.GET,
-                    Collections.emptyMap())
-                .build());
-    return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
+  @Operation(summary = "Palauttaa laskennan tiedostona uuid:n perusteella")
+  ResponseEntity<LaskentaDto> lataa(@PathVariable("uuid") String uuid) {
+    LaskentaDto laskenta = seurantaDao.haeLaskenta(uuid);
+    return ResponseEntity.status(HttpStatus.OK)
+        .header(
+            "Content-Disposition", "attachment; filename=laskenta_" + laskenta.getUuid() + ".json")
+        .body(laskenta);
   }
 
   @GetMapping(value = "/yhteenveto/{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<String> yhteenveto(@PathVariable("uuid") String uuid) {
-    Response response =
-        execute(
-            this.seurantaCasClient,
-            RestClientUtil.request(
-                    String.format("%s/seuranta/yhteenveto/%s", this.seurantaBaseUrl, uuid),
-                    HttpConstants.Methods.GET,
-                    Collections.emptyMap())
-                .build());
-    return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
+  @Operation(summary = "Palauttaa laskennan yhteenvedon uuid:n perusteella")
+  ResponseEntity<YhteenvetoDto> yhteenveto(@PathVariable("uuid") String uuid) {
+    return ResponseEntity.status(HttpStatus.OK).body(seurantaDao.haeYhteenveto(uuid));
   }
 
-  /** Paivittaa yksittaisen hakukohteen tilaa laskennassa */
   @PutMapping(
       value = "/kuormantasaus/laskenta/{uuid}/hakukohde/{hakukohdeOid}/tila/{tila}",
       produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<String> merkkaaHakukohteenTila(
+  @Operation(summary = "Paivittaa yksittaisen hakukohteen tilaa laskennassa")
+  ResponseEntity<YhteenvetoDto> merkkaaHakukohteenTila(
       @PathVariable("uuid") String uuid,
       @PathVariable("hakukohdeOid") String hakukohdeOid,
       @PathVariable("tila") HakukohdeTila tila) {
-    Response response =
-        execute(
-            this.seurantaCasClient,
-            RestClientUtil.request(
-                    String.format(
-                        "%s/seuranta/kuormantasaus/laskenta/%s/hakukohde/%s/tila/%s",
-                        this.seurantaBaseUrl, uuid, hakukohdeOid, tila),
-                    HttpConstants.Methods.PUT,
-                    Collections.emptyMap())
-                .build());
-    return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
+    try {
+      YhteenvetoDto y = seurantaDao.merkkaaTila(uuid, hakukohdeOid, tila);
+      if (y == null) {
+        LOG.error(
+            "Seurantaan markattiin hakukohteen {} tila {} laskentaan {} mutta ei saatu yhteenvetoa lisayksesta!",
+            hakukohdeOid,
+            tila,
+            uuid);
+      }
+      return ResponseEntity.status(HttpStatus.OK).body(y);
+    } catch (Exception e) {
+      LOG.error("Tilan merkkauksessa tapahtui poikkeus. Kayttoliittymaa ei ehka paivitetty", e);
+      throw e;
+    }
   }
 
-  /** Paivittaa yksittaisen hakukohteen tilaa laskennassa ja jattaa ilmoituksen */
   @PostMapping(
       value = "/kuormantasaus/laskenta/{uuid}/hakukohde/{hakukohdeOid}/tila/{tila}",
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<String> merkkaaHakukohteenTila(
+  @Operation(summary = "Paivittaa yksittaisen hakukohteen tilaa laskennassa ja jattaa ilmoituksen")
+  ResponseEntity<YhteenvetoDto> merkkaaHakukohteenTila(
       @PathVariable("uuid") String uuid,
       @PathVariable("hakukohdeOid") String hakukohdeOid,
       @PathVariable("tila") HakukohdeTila tila,
       @RequestBody IlmoitusDto ilmoitus) {
-    Response response =
-        execute(
-            this.seurantaCasClient,
-            RestClientUtil.request(
-                    String.format(
-                        "%s/seuranta/kuormantasaus/laskenta/%s/hakukohde/%s/tila/%s",
-                        this.seurantaBaseUrl, uuid, hakukohdeOid, tila),
-                    HttpConstants.Methods.POST,
-                    Collections.emptyMap())
-                .setBody(RestClientUtil.GSON.toJson(ilmoitus))
-                .addHeader("Content-Type", "application/json")
-                .build());
-    return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
+    try {
+      YhteenvetoDto y = seurantaDao.merkkaaTila(uuid, hakukohdeOid, tila, ilmoitus);
+      if (y == null) {
+        LOG.error(
+            "Seurantaan markattiin hakukohteen {} tila {} laskentaan {} mutta ei saatu yhteenvetoa lisayksesta!",
+            hakukohdeOid,
+            tila,
+            uuid);
+      }
+      return ResponseEntity.status(HttpStatus.OK).body(y);
+    } catch (Exception e) {
+      LOG.error("Tilan merkkauksessa tapahtui poikkeus. Kayttoliittymaa ei ehka paivitetty", e);
+      throw e;
+    }
   }
 
-  /** Jattaa ilmoituksen */
   @PostMapping(
       value = "/kuormantasaus/laskenta/{uuid}/hakukohde/{hakukohdeOid}",
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<String> lisaaIlmoitusHakukohteelle(
+  @Operation(summary = "Lisää ilmoituksen hakukohteelle")
+  ResponseEntity<YhteenvetoDto> lisaaIlmoitusHakukohteelle(
       @PathVariable("uuid") String uuid,
       @PathVariable("hakukohdeOid") String hakukohdeOid,
       @RequestBody IlmoitusDto ilmoitus) {
-    Response response =
-        execute(
-            this.seurantaCasClient,
-            RestClientUtil.request(
-                    String.format(
-                        "%s/seuranta/kuormantasaus/laskenta/%s/hakukohde/%s",
-                        this.seurantaBaseUrl, uuid, hakukohdeOid),
-                    HttpConstants.Methods.POST,
-                    Collections.emptyMap())
-                .setBody(RestClientUtil.GSON.toJson(ilmoitus))
-                .addHeader("Content-Type", "application/json")
-                .build());
-    return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
+    YhteenvetoDto y = seurantaDao.lisaaIlmoitus(uuid, hakukohdeOid, ilmoitus);
+    if (y == null) {
+      LOG.error(
+          "Seurantaan lisattiin ilmoitus laskentaan {} hakukohteelle {} mutta ei saatu yhteenvetoa lisayksesta!",
+          uuid,
+          hakukohdeOid);
+    }
+    return ResponseEntity.status(HttpStatus.OK).body(y);
   }
 
-  /** Resetoi hakukohteiden tilat. Poistaa logit. Sailoo valmiit tilat. */
   @PutMapping(
       value = "/kuormantasaus/laskenta/{uuid}/resetoi",
       produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<String> resetoiTilat(@PathVariable("uuid") String uuid) {
-    Response response =
-        execute(
-            this.seurantaCasClient,
-            RestClientUtil.request(
-                    String.format(
-                        "%s/seuranta/kuormantasaus/laskenta/%s/resetoi",
-                        this.seurantaBaseUrl, uuid),
-                    HttpConstants.Methods.PUT,
-                    Collections.emptyMap())
-                .build());
-    return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
+  @Operation(summary = "Resetoi keskeneräisten hakukohteiden laskentojen tilat")
+  ResponseEntity<LaskentaDto> resetoiTilat(@PathVariable("uuid") String uuid) {
+    try {
+      LaskentaDto ldto = seurantaDao.resetoiEiValmiitHakukohteet(uuid, true);
+      if (ldto == null) {
+        LOG.error("Laskennan {} tila resetoitiin mutta ei saatu yhteenvetoa resetoinnista!", uuid);
+      }
+      return ResponseEntity.status(HttpStatus.OK).body(ldto);
+    } catch (Exception e) {
+      LOG.error("Seurantapalvelu epaonnistui resetoimaan laskennan uuid=" + uuid, e);
+      throw e;
+    }
   }
 
-  /** Paivittaa laskennan tilan */
   @PutMapping(
       value = "/kuormantasaus/laskenta/{uuid}/tila/{tila}",
       produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<String> merkkaaLaskennanTila(
+  @Operation(summary = "Paivittaa laskennan tilan")
+  ResponseEntity<YhteenvetoDto> merkkaaLaskennanTila(
       @PathVariable("uuid") String uuid, @PathVariable("tila") LaskentaTila tila) {
-    Response response =
-        execute(
-            this.seurantaCasClient,
-            RestClientUtil.request(
-                    String.format(
-                        "%s/seuranta/kuormantasaus/laskenta/%s/tila/%s",
-                        this.seurantaBaseUrl, uuid, tila),
-                    HttpConstants.Methods.PUT,
-                    Collections.emptyMap())
-                .build());
-    return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
+    YhteenvetoDto y = seurantaDao.merkkaaTila(uuid, tila, Optional.empty());
+    if (y == null) {
+      LOG.error(
+          "Seurantaan paivitettiin laskennan {} tila {} mutta ei saatu yhteenvetoa lisayksesta!",
+          uuid,
+          tila);
+    }
+    return ResponseEntity.status(HttpStatus.OK).body(y);
   }
 
   @PostMapping(
       value = "/kuormantasaus/laskenta/{uuid}/tila/{tila}",
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<String> merkkaaLaskennanTila(
+  @Operation(summary = "Paivittaa laskennan tilan")
+  ResponseEntity<YhteenvetoDto> merkkaaLaskennanTila(
       @PathVariable("uuid") String uuid,
       @PathVariable("tila") LaskentaTila tila,
       @RequestBody IlmoitusDto ilmoitus) {
-    Response response =
-        execute(
-            this.seurantaCasClient,
-            RestClientUtil.request(
-                    String.format(
-                        "%s/seuranta/kuormantasaus/laskenta/%s/tila/%s",
-                        this.seurantaBaseUrl, uuid, tila),
-                    HttpConstants.Methods.POST,
-                    Collections.emptyMap())
-                .setBody(RestClientUtil.GSON.toJson(ilmoitus))
-                .addHeader("Content-Type", "application/json")
-                .build());
-    return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
+    YhteenvetoDto y = seurantaDao.merkkaaTila(uuid, tila, Optional.ofNullable(ilmoitus));
+    if (y == null) {
+      LOG.error(
+          "Seurantaan paivitettiin laskennan {} tila {} mutta ei saatu yhteenvetoa lisayksesta!",
+          uuid,
+          tila);
+    }
+    return ResponseEntity.status(HttpStatus.OK).body(y);
   }
 
-  /** Paivittaa laskennan tilan ja kaikki hakukohteet samalla */
   @PutMapping(
       value = "/kuormantasaus/laskenta/{uuid}/tila/{tila}/hakukohde/{hakukohteentila}",
       produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<String> merkkaaLaskennanTila(
+  @Operation(summary = "Paivittaa laskennan ja hakukohteiden tilan")
+  ResponseEntity<YhteenvetoDto> merkkaaLaskennanJaHakukohteidenTila(
       @PathVariable("uuid") String uuid,
       @PathVariable("tila") LaskentaTila tila,
       @PathVariable("hakukohteentila") HakukohdeTila hakukohteentila) {
-    Response response =
-        execute(
-            this.seurantaCasClient,
-            RestClientUtil.request(
-                    String.format(
-                        "%s/seuranta/kuormantasaus/laskenta/%s/tila/%s/hakukohde/%s",
-                        this.seurantaBaseUrl, uuid, tila, hakukohteentila),
-                    HttpConstants.Methods.PUT,
-                    Collections.emptyMap())
-                .build());
-    return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
+    YhteenvetoDto y = seurantaDao.merkkaaTila(uuid, tila, hakukohteentila, Optional.empty());
+    if (y == null) {
+      LOG.error(
+          "Seurantaan paivitettiin laskennan {} tila {} mutta ei saatu yhteenvetoa lisayksesta!",
+          uuid,
+          tila);
+    }
+    return ResponseEntity.status(HttpStatus.OK).body(y);
   }
 
   @PostMapping(
       value = "/kuormantasaus/laskenta/{uuid}/tila/{tila}/hakukohde/{hakukohteentila}",
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<String> merkkaaLaskennanTila(
+  @Operation(summary = "Paivittaa laskennan ja hakukohteiden tilan ja jättää ilmoituksen")
+  ResponseEntity<YhteenvetoDto> merkkaaLaskennanJaHakukohteidenTila(
       @PathVariable("uuid") String uuid,
       @PathVariable("tila") LaskentaTila tila,
       @PathVariable("hakukohteentila") HakukohdeTila hakukohteentila,
       @RequestBody IlmoitusDto ilmoitus) {
-    Response response =
-        execute(
-            this.seurantaCasClient,
-            RestClientUtil.request(
-                    String.format(
-                        "%s/seuranta/kuormantasaus/laskenta/%s/tila/%s/hakukohde/%s",
-                        this.seurantaBaseUrl, uuid, tila, hakukohteentila),
-                    HttpConstants.Methods.POST,
-                    Collections.emptyMap())
-                .setBody(RestClientUtil.GSON.toJson(ilmoitus))
-                .addHeader("Content-Type", "application/json")
-                .build());
-    return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
+    YhteenvetoDto y =
+        seurantaDao.merkkaaTila(uuid, tila, hakukohteentila, Optional.ofNullable(ilmoitus));
+    if (y == null) {
+      LOG.error(
+          "Seurantaan paivitettiin laskennan {} tila {} mutta ei saatu yhteenvetoa lisayksesta!",
+          uuid,
+          tila);
+    }
+    return ResponseEntity.status(HttpStatus.OK).body(y);
   }
 
-  /**
-   * Luo uuden laskennan seurantaan
-   *
-   * @return UUID
-   */
   @PostMapping(
       value = "/kuormantasaus/laskenta/{hakuOid}/tyyppi/{tyyppi}",
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<String> luoLaskenta(
+  @Operation(summary = "Luo uuden laskennan")
+  ResponseEntity<TunnisteDto> luoLaskenta(
       @PathVariable("hakuOid") String hakuOid,
       @PathVariable("tyyppi") LaskentaTyyppi tyyppi,
       @RequestParam("userOID") String userOID,
@@ -371,57 +299,41 @@ public class LaskentaSeurantaResource {
       @RequestParam(name = "valinnanvaihe", required = false) Integer valinnanvaihe,
       @RequestParam(name = "valintakoelaskenta", required = false) Boolean valintakoelaskenta,
       @RequestBody List<HakukohdeDto> hakukohdeOids) {
-    Map<String, List<String>> queryParams =
-        new HashMap(
-            Map.of(
-                "userOID",
-                List.of(userOID),
-                "haunnimi",
-                List.of(haunnimi),
-                "erillishaku",
-                List.of(erillishaku.toString())));
-    if (nimi != null) {
-      queryParams.put("nimi", List.of(nimi));
+    if (hakukohdeOids == null) {
+      throw new NullPointerException(
+          "Laskentaa ei luoda tyhjalle (null) hakukohdedto referenssille!");
     }
-    if (valinnanvaihe != null) {
-      queryParams.put("valinnanvaihe", List.of(valinnanvaihe.toString()));
+    if (hakukohdeOids.isEmpty()) {
+      throw new NullPointerException(
+          "Laskentaa ei luoda tyhjalle (koko on nolla) hakukohdedto joukolle!");
     }
-    if (valintakoelaskenta != null) {
-      queryParams.put("valintakoelaskenta", List.of(valintakoelaskenta.toString()));
-    }
-    Response response =
-        execute(
-            this.seurantaCasClient,
-            RestClientUtil.request(
-                    String.format(
-                        "%s/seuranta/kuormantasaus/laskenta/%s/tyyppi/%s",
-                        this.seurantaBaseUrl, hakuOid, tyyppi),
-                    HttpConstants.Methods.POST,
-                    queryParams)
-                .setBody(RestClientUtil.GSON.toJson(hakukohdeOids))
-                .addHeader("Content-Type", "application/json")
-                .build());
-    return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
+    hakukohdeOids.forEach(
+        hk -> {
+          if (hk.getHakukohdeOid() == null || hk.getOrganisaatioOid() == null) {
+            throw new NullPointerException(
+                "Laskentaa ei luoda hakukohdejoukkoobjektille koska joukossa oli null referensseja sisaltava hakukohde!");
+          }
+        });
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(
+            seurantaDao.luoLaskenta(
+                userOID,
+                haunnimi,
+                nimi,
+                hakuOid,
+                tyyppi,
+                erillishaku,
+                valinnanvaihe,
+                valintakoelaskenta,
+                hakukohdeOids));
   }
 
-  /**
-   * Poistaa laskennan
-   *
-   * @return 200 OK jos onnistui
-   */
   @DeleteMapping(
       value = "/kuormantasaus/laskenta/{uuid}",
       produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Poistaa laskennan")
   ResponseEntity<String> poistaLaskenta(@PathVariable("uuid") String uuid) {
-    Response response =
-        execute(
-            this.seurantaCasClient,
-            RestClientUtil.request(
-                    String.format(
-                        "%s/seuranta/kuormantasaus/laskenta/%s", this.seurantaBaseUrl, uuid),
-                    HttpConstants.Methods.DELETE,
-                    Collections.emptyMap())
-                .build());
-    return ResponseEntity.status(response.getStatusCode()).body(response.getResponseBody());
+    seurantaDao.poistaLaskenta(uuid);
+    return ResponseEntity.status(HttpStatus.OK).build();
   }
 }
