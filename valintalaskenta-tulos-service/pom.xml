@@ -147,7 +147,7 @@
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.java-utils</groupId>
-            <artifactId>java-cas-refactored</artifactId>
+            <artifactId>java-cas</artifactId>
         </dependency>
 
 
