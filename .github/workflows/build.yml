@@ -112,7 +112,8 @@ jobs:
         env:
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           git clone https://github.com/Opetushallitus/ci-tools.git
           source ci-tools/common/setup-tools.sh
-          mvn deploy -B -pl fi.vm.sade.valintaperusteet:valintalaskenta,valintalaskenta-laskenta-api,valintalaskenta-domain,valintalaskenta-tulos-service -DskipTests --settings ci-tools/common/maven-settings.xml
+          mvn deploy -B -pl fi.vm.sade.valintaperusteet:valintalaskenta,valintalaskenta-laskenta-api,valintalaskenta-domain,valintalaskenta-tulos-service -DskipTests --settings settings.xml
