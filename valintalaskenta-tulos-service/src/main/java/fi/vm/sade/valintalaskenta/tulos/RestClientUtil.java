@@ -8,7 +8,6 @@ import fi.vm.sade.javautils.nio.cas.CasClient;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import org.asynchttpclient.Request;
 import org.asynchttpclient.RequestBuilder;
 import org.asynchttpclient.Response;
@@ -40,8 +39,8 @@ public class RestClientUtil {
   public static org.asynchttpclient.Response execute(
       final CasClient casClient, final Request request) {
     try {
-      return casClient.executeWithServiceTicketBlocking(request);
-    } catch (final ExecutionException e) {
+      return casClient.executeBlocking(request);
+    } catch (final Exception e) {
       throw new RuntimeException(e);
     }
   }

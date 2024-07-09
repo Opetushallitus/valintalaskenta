@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import org.asynchttpclient.Request;
 import org.asynchttpclient.RequestBuilder;
 import org.asynchttpclient.Response;
@@ -40,7 +39,7 @@ public class LaskentaSeurantaResource {
       final CasClient casClient, final Request request) {
     try {
       return casClient.executeBlocking(request);
-    } catch (final ExecutionException e) {
+    } catch (final Exception e) {
       throw new RuntimeException(e);
     }
   }
