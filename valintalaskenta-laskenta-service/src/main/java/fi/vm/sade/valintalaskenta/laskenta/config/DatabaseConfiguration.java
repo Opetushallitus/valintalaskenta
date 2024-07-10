@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import com.zaxxer.hikari.SQLExceptionOverride;
 import fi.vm.sade.valintalaskenta.domain.valinta.FunktioTulosContainer;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteeritulosContainer;
 import fi.vm.sade.valintalaskenta.domain.valinta.SyotettyArvoContainer;
@@ -29,6 +30,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionManager;
+import software.amazon.jdbc.util.SqlState;
 
 @Configuration
 @EnableJdbcRepositories(
@@ -74,6 +76,7 @@ class DatabaseConfiguration extends AbstractJdbcConfiguration {
     config.setIdleTimeout(TimeUnit.MINUTES.toMillis(Long.parseLong(idleTimeout)));
     config.setMinimumIdle(Integer.parseInt(minIdle));
     config.setRegisterMbeans(false);
+    config.setExceptionOverrideClassName("software.amazon.jdbc.util.HikariCPSQLException");
     final Properties dsProperties = new Properties();
     dsProperties.setProperty("url", url);
     dsProperties.setProperty("user", user);
@@ -160,6 +163,18 @@ class DatabaseConfiguration extends AbstractJdbcConfiguration {
         return mapper.readValue(pgObject.getValue(), targetClazz);
       } catch (JsonProcessingException e) {
         throw new RuntimeException(e);
+      }
+    }
+  }
+
+  public class HikariCPSQLException implements SQLExceptionOverride {
+    public Override adjudicate(final SQLException sqlException) {
+      String sqlState = sqlException.getSQLState();
+      if (sqlState.equalsIgnoreCase(SqlState.COMMUNICATION_LINK_CHANGED.getState())
+          || sqlState.equalsIgnoreCase(SqlState.CONNECTION_FAILURE_DURING_TRANSACTION.getState())) {
+        return Override.DO_NOT_EVICT;
+      } else {
+        return Override.CONTINUE_EVICT;
       }
     }
   }

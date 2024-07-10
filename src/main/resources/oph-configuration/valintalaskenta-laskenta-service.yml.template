@@ -69,7 +69,7 @@ valintalaskentakoostepalvelu:
 
 valintalaskenta-laskenta-service:
   postgresql:
-    url: jdbc:aws-wrapper:postgresql://{{host_postgresql_valintalaskenta}}:{{port_postgresql}}/valintalaskenta?ApplicationName=valintalaskenta-laskenta-service&failoverMode=reader-or-writer&enableClusterAwareFailover=true
+    url: jdbc:aws-wrapper:postgresql://{{host_postgresql_valintalaskenta}}:{{port_postgresql}}/valintalaskenta?ApplicationName=valintalaskenta-laskenta-service&clusterInstanceHostPattern={{host_postgresql_valintalaskenta_instance_pattern}}
     user: {{postgres_app_user}}
     password: {{host_postgresql_valintalaskenta_app_password}}
     driver: software.amazon.jdbc.Driver
@@ -78,12 +78,11 @@ valintalaskenta-laskenta-service:
             wrapperPlugins: auroraConnectionTracker,readWriteSplitting,failover,efm2
             wrapperDialect: aurora-pg
         exception-override-class-name: software.amazon.jdbc.util.HikariCPSQLException
-        max-lifetime: 5000
-        minimum-idle: 0
-        maximum-pool-size: {{host_postgresql_valintalaskenta_max_active}}
+        max-lifetime: 840000
+        minimum-idle: 10
+        maximum-pool-size: 20
         idle-timeout: 900000
-        leak-detection-threshold: 1800000
-        connection-timeout: {{host_postgresql_valintalaskenta_max_wait}}
+        read-only: true
   global:
     http:
       connectionTimeoutMillis: {{valintalaskentalaskentaservice_global_http_connectiontimeoutmillis}}
