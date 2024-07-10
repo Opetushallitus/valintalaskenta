@@ -11,6 +11,10 @@ spring:
       data-source-properties:
         reWriteBatchedInserts: true
 
+valintalaskenta:
+  uses-ssl-proxy: false
+  enable-siirtotiedosto-service: true
+
 valintalaskenta-laskenta-service:
   postgresql:
     url: jdbc:tc:postgresql:15.4:///test_database

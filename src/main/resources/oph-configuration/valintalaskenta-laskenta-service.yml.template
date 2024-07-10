@@ -29,6 +29,7 @@ cas:
 
 valintalaskenta:
   uses-ssl-proxy: true
+  enable-siirtotiedosto-service: true
 
 # Aseta vähintään nämä ympäristökohtaiset arvot
 
