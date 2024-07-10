@@ -79,8 +79,7 @@ valintalaskenta-laskenta-service:
             wrapperDialect: aurora-pg
         exception-override-class-name: software.amazon.jdbc.util.HikariCPSQLException
         max-lifetime: 840000
-        minimum-idle: 10
-        maximum-pool-size: 20
+        maximum-pool-size: {{host_postgresql_valintalaskenta_max_active}}
         idle-timeout: 900000
         read-only: true
   global:

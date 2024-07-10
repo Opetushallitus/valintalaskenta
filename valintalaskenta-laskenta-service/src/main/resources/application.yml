@@ -3,6 +3,9 @@ spring:
     allow-bean-definition-overriding: true
   flyway:
     enabled: true
+  datasource:
+    hikari:
+      register-mbeans: true
 
 valintalaskenta-laskenta-service:
   postgresql:
@@ -14,7 +17,7 @@ valintalaskenta-laskenta-service:
     leakdetectionthresholdmillis: 1800000
     driver: software.amazon.jdbc.Driver
   organisaatio-service:
-    url:
+    url: 
 
 springdoc:
   show-actuator: false
