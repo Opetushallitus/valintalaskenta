@@ -70,7 +70,8 @@ public class JarjestyskriteerihistoriaUploader {
           jarjestyskriteerihistoria.getFilename(),
           Jarjestyskriteerihistoria.TAGS,
           "application/zip",
-          new ByteArrayInputStream(enkoodattu.getHistoriaGzip()));
+          new ByteArrayInputStream(enkoodattu.getHistoriaGzip()),
+          true);
       LOG.info("UPLOAD took " + (System.currentTimeMillis() - currentTime));
     } catch (CompletionException | DocumentIdAlreadyExistsException e) {
       if (e instanceof DocumentIdAlreadyExistsException
