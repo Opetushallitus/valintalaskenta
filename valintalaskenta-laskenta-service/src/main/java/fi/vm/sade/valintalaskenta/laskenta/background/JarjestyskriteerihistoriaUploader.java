@@ -34,9 +34,11 @@ public class JarjestyskriteerihistoriaUploader {
     this.oldVersionBucketName = oldBucketName;
   }
 
-  @Scheduled(initialDelay = 15, fixedDelay = 10, timeUnit = TimeUnit.SECONDS)
+  @Scheduled(initialDelay = 5, fixedDelay = 10, timeUnit = TimeUnit.SECONDS)
   public void moveJarjestyskriteeriHistoriaFromDatabaseToS3() {
+    Long currentTime = System.currentTimeMillis();
     List<Jarjestyskriteerihistoria> historyIds = historiaDAO.fetchOldest();
+    LOG.info("Fetching historias took " + (System.currentTimeMillis() - currentTime));
     if (historyIds.isEmpty()) {
       LOG.debug("Jarjestyskriteerihistorioita ei löytynyt kannasta");
     } else {
@@ -50,18 +52,23 @@ public class JarjestyskriteerihistoriaUploader {
     } else {
       upload(jarjestyskriteerihistoria);
     }
+    Long currentTime = System.currentTimeMillis();
     historiaDAO.delete(jarjestyskriteerihistoria.getId());
+    LOG.info("Deleting history took " + (System.currentTimeMillis() - currentTime));
   }
 
   private void upload(Jarjestyskriteerihistoria jarjestyskriteerihistoria) {
+    Long currentTime = System.currentTimeMillis();
     Jarjestyskriteerihistoria enkoodattu =
         JarjestyskriteeriKooderi.enkoodaa(jarjestyskriteerihistoria);
+    LOG.info("Enkoodaus kesti " + (System.currentTimeMillis() - currentTime));
     dokumenttipalvelu.save(
         jarjestyskriteerihistoria.getTunniste().toString(),
         jarjestyskriteerihistoria.getFilename(),
         Jarjestyskriteerihistoria.TAGS,
         "application/zip",
         new ByteArrayInputStream(enkoodattu.getHistoriaGzip()));
+    LOG.info("UPLOAD took " + (System.currentTimeMillis() - currentTime));
   }
 
   private void update(Jarjestyskriteerihistoria jarjestyskriteerihistoria) {

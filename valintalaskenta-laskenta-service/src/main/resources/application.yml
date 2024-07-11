@@ -93,6 +93,9 @@ valintalaskentakoostepalvelu:
     password:
       to:
         sijoittelu: password
+  seuranta:
+    rest:
+      url: ""
   sijoittelu:
     rest:
       url: ""
