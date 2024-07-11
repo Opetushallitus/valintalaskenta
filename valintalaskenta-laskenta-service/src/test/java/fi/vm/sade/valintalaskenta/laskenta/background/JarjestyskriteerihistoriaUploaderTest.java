@@ -1,7 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta.background;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -34,7 +33,7 @@ public class JarjestyskriteerihistoriaUploaderTest {
     when(dao.fetchOldest()).thenReturn(List.of(createHistoria(false)));
     uploader.moveJarjestyskriteeriHistoriaFromDatabaseToS3();
     verify(dokumenttipalvelu)
-        .save(anyString(), anyString(), any(), anyString(), any(InputStream.class));
+        .save(anyString(), anyString(), any(), anyString(), any(InputStream.class), eq(true));
     verify(dao).delete(any(Long.class));
   }
 
