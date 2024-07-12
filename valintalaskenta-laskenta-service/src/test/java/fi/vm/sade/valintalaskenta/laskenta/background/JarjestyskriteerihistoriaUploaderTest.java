@@ -16,11 +16,11 @@ import org.mockito.Mockito;
 
 public class JarjestyskriteerihistoriaUploaderTest {
 
-  private Dokumenttipalvelu dokumenttipalvelu = Mockito.mock(Dokumenttipalvelu.class);
+  private final Dokumenttipalvelu dokumenttipalvelu = Mockito.mock(Dokumenttipalvelu.class);
 
-  private JarjestyskriteerihistoriaDAO dao = Mockito.mock(JarjestyskriteerihistoriaDAO.class);
+  private final JarjestyskriteerihistoriaDAO dao = Mockito.mock(JarjestyskriteerihistoriaDAO.class);
 
-  private JarjestyskriteerihistoriaUploader uploader =
+  private final JarjestyskriteerihistoriaUploader uploader =
       new JarjestyskriteerihistoriaUploader(dokumenttipalvelu, dao, "old");
 
   @BeforeEach
@@ -33,7 +33,7 @@ public class JarjestyskriteerihistoriaUploaderTest {
     when(dao.fetchOldest()).thenReturn(List.of(createHistoria(false)));
     uploader.moveJarjestyskriteeriHistoriaFromDatabaseToS3();
     verify(dokumenttipalvelu)
-        .save(anyString(), anyString(), any(), anyString(), any(InputStream.class), eq(true));
+        .putObject(anyString(), anyString(), anyString(), any(InputStream.class));
     verify(dao).delete(any(Long.class));
   }
 
