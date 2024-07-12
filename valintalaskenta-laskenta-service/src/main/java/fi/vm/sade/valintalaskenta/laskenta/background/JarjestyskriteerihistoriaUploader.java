@@ -34,7 +34,7 @@ public class JarjestyskriteerihistoriaUploader {
     this.oldVersionBucketName = oldBucketName;
   }
 
-  @Scheduled(initialDelay = 5, fixedDelay = 10, timeUnit = TimeUnit.SECONDS)
+  @Scheduled(initialDelay = 15, fixedDelay = 10, timeUnit = TimeUnit.SECONDS)
   public void moveJarjestyskriteeriHistoriaFromDatabaseToS3() {
     List<Jarjestyskriteerihistoria> historyIds = historiaDAO.fetchOldest();
     if (historyIds.isEmpty()) {
