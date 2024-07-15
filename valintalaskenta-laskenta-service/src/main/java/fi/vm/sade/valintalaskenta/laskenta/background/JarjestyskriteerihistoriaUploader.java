@@ -56,10 +56,12 @@ public class JarjestyskriteerihistoriaUploader {
   private void upload(Jarjestyskriteerihistoria jarjestyskriteerihistoria) {
     Jarjestyskriteerihistoria enkoodattu =
         JarjestyskriteeriKooderi.enkoodaa(jarjestyskriteerihistoria);
-    dokumenttipalvelu.save(
-        jarjestyskriteerihistoria.getTunniste().toString(),
+    String key =
+        dokumenttipalvelu.composeKey(
+            Jarjestyskriteerihistoria.TAGS, jarjestyskriteerihistoria.getTunniste().toString());
+    dokumenttipalvelu.putObject(
+        key,
         jarjestyskriteerihistoria.getFilename(),
-        Jarjestyskriteerihistoria.TAGS,
         "application/zip",
         new ByteArrayInputStream(enkoodattu.getHistoriaGzip()));
   }
