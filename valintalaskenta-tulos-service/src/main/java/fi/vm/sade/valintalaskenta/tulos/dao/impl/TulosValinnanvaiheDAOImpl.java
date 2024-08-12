@@ -82,8 +82,6 @@ public class TulosValinnanvaiheDAOImpl implements TulosValinnanvaiheDAO {
   @Override
   public List<String> readNewOrModifiedHakukohdeOids(
       LocalDateTime startDatetime, LocalDateTime endDatatime) {
-    return startDatetime != null
-        ? repo.findHakukohdeOidsByTimeRange(startDatetime, endDatatime)
-        : repo.findHakukohdeOidsByEndTime(endDatatime);
+    return repo.findHakukohdeOidsByTimeRange(startDatetime, endDatatime);
   }
 }

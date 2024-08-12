@@ -8,6 +8,7 @@ import fi.vm.sade.valintalaskenta.tulos.service.SiirtotiedostoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
@@ -58,7 +59,11 @@ public class SiirtotiedostoResourceImpl {
   public ResponseEntity<String> valintakoeOsallistumiset(
       @Parameter(description = "Alkuaika") @RequestParam(required = false) String startDatetime,
       @Parameter(description = "Loppuaika") @RequestParam(required = false) String endDatetime) {
-    LocalDateTime start = parseDateTime(startDatetime, "Alkuaika", null);
+    LocalDateTime start =
+        parseDateTime(
+            startDatetime,
+            "Alkuaika",
+            ZonedDateTime.ofInstant(Instant.ofEpochSecond(0), SIIRTOTIEDOSTO_TIMEZONE));
     LocalDateTime end =
         parseDateTime(endDatetime, "Loppuaika", ZonedDateTime.now(SIIRTOTIEDOSTO_TIMEZONE));
     String response =

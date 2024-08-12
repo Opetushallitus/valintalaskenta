@@ -46,8 +46,6 @@ public class TulosValintakoeOsallistuminenDAOImpl implements TulosValintakoeOsal
   @Override
   public List<String> readNewOrModifiedHakemusOids(
       LocalDateTime startDatetime, LocalDateTime endDatatime) {
-    return startDatetime != null
-        ? repo.findHakemusOidsByTimeRange(startDatetime, endDatatime)
-        : repo.findHakemusOidsByEndTime(endDatatime);
+    return repo.findHakemusOidsByTimeRange(startDatetime, endDatatime);
   }
 }
