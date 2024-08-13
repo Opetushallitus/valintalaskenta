@@ -1,75 +1,73 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.impl;
 
+import static fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.SiirtotiedostoConstants.SIIRTOTIEDOSTO_TIMEZONE;
+
 import fi.vm.sade.valintalaskenta.domain.siirtotiedosto.Poistettu;
 import fi.vm.sade.valintalaskenta.tulos.dao.PoistettuDAO;
+import fi.vm.sade.valintalaskenta.tulos.dao.util.PoistettuRowMapper;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import java.util.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class PoistettuDAOImpl implements PoistettuDAO {
-  @PersistenceContext private EntityManager entityManager;
+  private final NamedParameterJdbcTemplate jdbcTemplate;
+
+  private PoistettuRowMapper rowMapper = new PoistettuRowMapper();
+
+  @Autowired
+  public PoistettuDAOImpl(final NamedParameterJdbcTemplate jdbcTemplate) {
+    this.jdbcTemplate = jdbcTemplate;
+  }
 
   @Override
   public List<Poistettu> findPoistetut(
       EntityType entityType, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    Date start = Date.from(startDateTime.atZone(SIIRTOTIEDOSTO_TIMEZONE).toInstant());
+    Date end = Date.from(endDateTime.atZone(SIIRTOTIEDOSTO_TIMEZONE).toInstant());
     return switch (entityType) {
       case VALINNANVAIHE -> doFindPoistetut(
-          "valinnanvaihe",
-          "valinnanvaihe_history",
-          "null",
-          "valinnanvaihe_oid",
-          startDateTime,
-          endDateTime);
+          "valinnanvaihe", "valinnanvaihe_history", "null", "valinnanvaihe_oid", start, end);
       case VALINTATAPAJONO -> doFindPoistetut(
           "valintatapajono",
           "valintatapajono_history",
           "valinnanvaihe",
           "valintatapajono_oid",
-          startDateTime,
-          endDateTime);
+          start,
+          end);
       case JONOSIJA -> doFindPoistetut(
-          "jonosija",
-          "jonosija_history",
-          "valintatapajono",
-          "hakemus_oid",
-          startDateTime,
-          endDateTime);
+          "jonosija", "jonosija_history", "valintatapajono", "hakemus_oid", start, end);
       case VALINTAKOE_OSALLISTUMINEN -> doFindPoistetut(
           "valintakoe_osallistuminen",
           "valintakoe_osallistuminen_history",
           "null",
           "hakemus_oid",
-          startDateTime,
-          endDateTime);
+          start,
+          end);
       case HAKUTOIVE -> doFindPoistetut(
           "hakutoive",
           "hakutoive_history",
           "valintakoe_osallistuminen",
           "hakukohde_oid",
-          startDateTime,
-          endDateTime);
+          start,
+          end);
       case VALINTAKOE_VALINNANVAIHE -> doFindPoistetut(
           "valintakoe_valinnanvaihe",
           "valintakoe_valinnanvaihe_history",
           "hakutoive",
           "valinnanvaihe_oid",
-          startDateTime,
-          endDateTime);
+          start,
+          end);
       case VALINTAKOE -> doFindPoistetut(
           "valintakoe",
           "valintakoe_history",
           "valintakoe_valinnanvaihe",
           "valintakoe_oid",
-          startDateTime,
-          endDateTime);
+          start,
+          end);
     };
   }
 
@@ -78,14 +76,14 @@ public class PoistettuDAOImpl implements PoistettuDAO {
       String historyTableName,
       String parentIdFieldName,
       String tunnisteFieldName,
-      LocalDateTime start,
-      LocalDateTime end) {
+      Date start,
+      Date end) {
     String sqlTemplate =
         """
             select distinct on (id) id, %s as parentId, %s from %s hist
               where upper(hist.system_time) is not null and
-                upper(hist.system_time) >= :startDateTime and
-                upper(hist.system_time) <  :endDateTime and
+                upper(hist.system_time) >= :start and
+                upper(hist.system_time) <  :end and
                 not exists (select 1 from %s where id = hist.id)""";
     String tunnisteSelectPart =
         "tunniste".equals(tunnisteFieldName)
@@ -94,14 +92,8 @@ public class PoistettuDAOImpl implements PoistettuDAO {
     String sql =
         String.format(
             sqlTemplate, parentIdFieldName, tunnisteSelectPart, historyTableName, tableName);
-    Query query =
-        entityManager
-            .createNativeQuery(sql)
-            .setParameter("startDateTime", start)
-            .setParameter("endDateTime", end);
-    @SuppressWarnings("unchecked")
-    List<Object[]> resultList = (List<Object[]>) query.getResultList();
-    return resultList.stream().map(Poistettu::new).collect(Collectors.toList());
+    return jdbcTemplate.query(
+        sql, new MapSqlParameterSource("start", start).addValue("end", end), rowMapper);
   }
 
   @Override
@@ -127,12 +119,8 @@ public class PoistettuDAOImpl implements PoistettuDAO {
         select distinct on (id) id, %s as parentId, %s as tunniste from %s
         where id in (:ids)""";
     String sql = String.format(sqlTemplate, parentIdFieldName, tunnisteFieldName, tableName);
-    Query query = entityManager.createNativeQuery(sql).setParameter("ids", ids);
-    @SuppressWarnings("unchecked")
-    List<Object[]> resultList = (List<Object[]>) query.getResultList();
-    return resultList.stream()
-        .map(Poistettu::new)
+    return jdbcTemplate.query(sql, new MapSqlParameterSource("ids", ids), rowMapper).stream()
         .map(p -> p.setDeletedItself(false))
-        .collect(Collectors.toList());
+        .toList();
   }
 }

@@ -10,10 +10,10 @@ public class Poistettu {
 
   public Poistettu() {}
 
-  public Poistettu(Object[] raw) {
-    this.id = raw[0] != null ? UUID.fromString(raw[0].toString()) : null;
-    this.parentId = raw[1] != null ? UUID.fromString(raw[1].toString()) : null;
-    this.tunniste = raw[2] != null ? raw[2].toString() : null;
+  public Poistettu(UUID id, UUID parentId, String tunniste) {
+    this.id = id;
+    this.parentId = parentId;
+    this.tunniste = tunniste;
   }
 
   public UUID getId() {

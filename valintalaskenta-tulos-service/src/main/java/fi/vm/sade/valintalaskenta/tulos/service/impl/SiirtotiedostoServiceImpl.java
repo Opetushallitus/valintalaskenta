@@ -43,6 +43,7 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
 
   private final TulosValintakoeOsallistuminenDAO tulosValintakoeOsallistuminenDAO;
   private final TulosValinnanvaiheDAO tulosValinnanvaiheDAO;
+
   private final PoistettuDAO poistettuDAO;
   private final ValintalaskentaTulosService valintalaskentaTulosService;
   private final ValintalaskentaModelMapper modelMapper;
@@ -109,7 +110,7 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
         "Kirjoitettiin yhteensä {} hakemuksen valintakoeosallistumiset {} siirtotiedostoon.",
         hakemusOids.size() + poistetut.getPoistetut().size(),
         siirtotiedostoKeys.size());
-    return resultJson(siirtotiedostoKeys, hakemusOids.size());
+    return resultJson(siirtotiedostoKeys, hakemusOids.size() + poistetut.getPoistetut().size());
   }
 
   private PoistettuValintakoeOsallistuminenDTO findPoistetutValintakoeOsallistumiset(

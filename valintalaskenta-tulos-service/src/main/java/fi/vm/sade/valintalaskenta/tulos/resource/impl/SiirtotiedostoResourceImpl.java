@@ -79,7 +79,11 @@ public class SiirtotiedostoResourceImpl {
   public ResponseEntity<String> valintalaskennanTulokset(
       @Parameter(description = "Alkuaika") @RequestParam(required = false) String startDatetime,
       @Parameter(description = "Loppuaika") @RequestParam(required = false) String endDatetime) {
-    LocalDateTime start = parseDateTime(startDatetime, "Alkuaika", null);
+    LocalDateTime start =
+        parseDateTime(
+            startDatetime,
+            "Alkuaika",
+            ZonedDateTime.ofInstant(Instant.ofEpochSecond(0), SIIRTOTIEDOSTO_TIMEZONE));
     LocalDateTime end =
         parseDateTime(endDatetime, "Loppuaika", ZonedDateTime.now(SIIRTOTIEDOSTO_TIMEZONE));
     String response =
