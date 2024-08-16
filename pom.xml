@@ -29,9 +29,9 @@
 
         <httpcomponents.version>4.5.14</httpcomponents.version>
         <modelmapper.version>3.1.1</modelmapper.version>
-        <spring.boot.version>2.7.18</spring.boot.version>
+        <spring.boot.version>3.0.0</spring.boot.version>
         <spring.version>5.3.29</spring.version>
-        <spring.security.version>5.7.12</spring.security.version>
+        <spring.security.version>6.0.0</spring.security.version>
         <jackson.version>2.15.0</jackson.version>
         <legacy-jackson.version>1.9.13</legacy-jackson.version>
         <jasig.cas.version>3.6.4</jasig.cas.version>
