@@ -6,7 +6,9 @@ import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.util.JarjestyskriteeriKooderi;
 import java.io.ByteArrayInputStream;
 import java.util.List;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.TimeUnit;
+import org.flywaydb.core.internal.util.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,8 +75,12 @@ public class JarjestyskriteerihistoriaUploader {
             Jarjestyskriteerihistoria.TAGS, jarjestyskriteerihistoria.getTunniste().toString());
     try {
       dokumenttipalvelu.moveToAnotherBucket(key, oldVersionBucketName);
-    } catch (NoSuchKeyException e) {
-      LOG.warn("Siirrettävää järjestyskriteehistoriaa ei löytynyt avaimella {}", key, e);
+    } catch (NoSuchKeyException | CompletionException e) {
+      if (ExceptionUtils.getRootCause(e) instanceof NoSuchKeyException) {
+        LOG.warn("Siirrettävää järjestyskriteehistoriaa ei löytynyt avaimella {}", key, e);
+      } else {
+        throw e;
+      }
     }
   }
 }
