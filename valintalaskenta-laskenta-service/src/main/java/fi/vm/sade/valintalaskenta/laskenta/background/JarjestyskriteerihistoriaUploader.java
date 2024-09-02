@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
 @Component
 public class JarjestyskriteerihistoriaUploader {
@@ -70,6 +71,10 @@ public class JarjestyskriteerihistoriaUploader {
     String key =
         dokumenttipalvelu.composeKey(
             Jarjestyskriteerihistoria.TAGS, jarjestyskriteerihistoria.getTunniste().toString());
-    dokumenttipalvelu.moveToAnotherBucket(key, oldVersionBucketName);
+    try {
+      dokumenttipalvelu.moveToAnotherBucket(key, oldVersionBucketName);
+    } catch (NoSuchKeyException e) {
+      LOG.warn("Siirrettävää järjestyskriteehistoriaa ei löytynyt avaimella {}", key, e);
+    }
   }
 }
