@@ -48,6 +48,11 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>software.amazon.jdbc</groupId>
+                <artifactId>aws-advanced-jdbc-wrapper</artifactId>
+                <version>2.3.6</version>
+            </dependency>
+            <dependency>
                 <groupId>fi.vm.sade.valintaperusteet</groupId>
                 <artifactId>sharedutils</artifactId>
                 <version>${valinta-sharedutils.version}</version>
