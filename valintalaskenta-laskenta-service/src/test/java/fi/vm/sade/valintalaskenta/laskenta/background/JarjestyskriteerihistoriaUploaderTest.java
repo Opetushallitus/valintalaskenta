@@ -1,8 +1,7 @@
 package fi.vm.sade.valintalaskenta.laskenta.background;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import fi.vm.sade.valinta.dokumenttipalvelu.Dokumenttipalvelu;
 import fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteerihistoria;
@@ -13,6 +12,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
 public class JarjestyskriteerihistoriaUploaderTest {
 
@@ -43,6 +43,30 @@ public class JarjestyskriteerihistoriaUploaderTest {
     uploader.moveJarjestyskriteeriHistoriaFromDatabaseToS3();
     verify(dokumenttipalvelu).moveToAnotherBucket(anyString(), anyString());
     verify(dao).delete(any(Long.class));
+  }
+
+  @Test
+  public void deletesHistoriaWhenUpdateOperationFailsToNoSuchKeyException() {
+    when(dao.fetchOldest()).thenReturn(List.of(createHistoria(true)));
+    doThrow(Mockito.mock(NoSuchKeyException.class))
+        .when(dokumenttipalvelu)
+        .moveToAnotherBucket(anyString(), anyString());
+    uploader.moveJarjestyskriteeriHistoriaFromDatabaseToS3();
+    verify(dao).delete(any(Long.class));
+  }
+
+  @Test
+  public void doesNotDeleteHistoriaWhenUpdateOperationFailsToSomeOtherError() {
+    when(dao.fetchOldest()).thenReturn(List.of(createHistoria(true)));
+    doThrow(mock(NullPointerException.class))
+        .when(dokumenttipalvelu)
+        .moveToAnotherBucket(anyString(), anyString());
+    try {
+      uploader.moveJarjestyskriteeriHistoriaFromDatabaseToS3();
+    } catch (Exception ignored) {
+
+    }
+    verify(dao, never()).delete(any(Long.class));
   }
 
   private Jarjestyskriteerihistoria createHistoria(boolean vanha) {

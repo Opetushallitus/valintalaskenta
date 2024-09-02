@@ -6,12 +6,15 @@ import fi.vm.sade.valintalaskenta.laskenta.dao.JarjestyskriteerihistoriaDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.util.JarjestyskriteeriKooderi;
 import java.io.ByteArrayInputStream;
 import java.util.List;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.TimeUnit;
+import org.flywaydb.core.internal.util.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
 @Component
 public class JarjestyskriteerihistoriaUploader {
@@ -70,6 +73,14 @@ public class JarjestyskriteerihistoriaUploader {
     String key =
         dokumenttipalvelu.composeKey(
             Jarjestyskriteerihistoria.TAGS, jarjestyskriteerihistoria.getTunniste().toString());
-    dokumenttipalvelu.moveToAnotherBucket(key, oldVersionBucketName);
+    try {
+      dokumenttipalvelu.moveToAnotherBucket(key, oldVersionBucketName);
+    } catch (NoSuchKeyException | CompletionException e) {
+      if (ExceptionUtils.getRootCause(e) instanceof NoSuchKeyException) {
+        LOG.warn("Siirrettävää järjestyskriteehistoriaa ei löytynyt avaimella {}", key, e);
+      } else {
+        throw e;
+      }
+    }
   }
 }
