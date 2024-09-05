@@ -57,8 +57,12 @@ public class SiirtotiedostoResourceImpl {
       summary =
           "Luo siirtotiedostot annetulla aikavälillä luoduista / muutetuista valintakoeosallistumisista hakemuksittain")
   public ResponseEntity<String> valintakoeOsallistumiset(
-      @Parameter(description = "Alkuaika") @RequestParam(required = false) String startDatetime,
-      @Parameter(description = "Loppuaika") @RequestParam(required = false) String endDatetime) {
+      @Parameter(description = "Alkuaika muodossa yyyy-MM-dd'T'HH:mm:ss")
+          @RequestParam(required = false)
+          String startDatetime,
+      @Parameter(description = "Loppuaika muodossa yyyy-MM-dd'T'HH:mm:ss")
+          @RequestParam(required = false)
+          String endDatetime) {
     LocalDateTime start =
         parseDateTime(
             startDatetime,
@@ -77,8 +81,12 @@ public class SiirtotiedostoResourceImpl {
       summary =
           "Luo siirtotiedostot annetulla aikavälillä luoduista / muutetuista valintalaskennan tuloksista hakukohteittain")
   public ResponseEntity<String> valintalaskennanTulokset(
-      @Parameter(description = "Alkuaika") @RequestParam(required = false) String startDatetime,
-      @Parameter(description = "Loppuaika") @RequestParam(required = false) String endDatetime) {
+      @Parameter(description = "Alkuaika muodossa yyyy-MM-dd'T'HH:mm:ss")
+          @RequestParam(required = false)
+          String startDatetime,
+      @Parameter(description = "Loppuaika muodossa yyyy-MM-dd'T'HH:mm:ss")
+          @RequestParam(required = false)
+          String endDatetime) {
     LocalDateTime start =
         parseDateTime(
             startDatetime,
