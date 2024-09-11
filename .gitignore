@@ -17,3 +17,6 @@ bower_components
 .DS_Store
 .~lock*
 .opintopolku-local
+
+# tänne talletetaan esim. lokaalin setupin salasanat
+valintalaskenta-laskenta-service/src/test/resources/application-dev.properties

@@ -50,6 +50,7 @@ root:
     oid: 123.21.23.424
 
 host:
+  virkailija: localhost
   host-cas: localhost
   host-virkailija: localhost
 
