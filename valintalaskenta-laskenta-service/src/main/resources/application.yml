@@ -6,9 +6,6 @@ spring:
 
 valintalaskenta-laskenta-service:
   postgresql:
-    url: jdbc:postgresql://localhost:5555/valintalaskenta
-    user: app
-    password: app
     maxactive: 10
     maxwait: 3000
     leakdetectionthresholdmillis: 1800000
@@ -50,7 +47,6 @@ valintalaskenta:
   enable-siirtotiedosto-service: true
 
 cas-service:
-  service: http://localhost:${server.port}/valintalaskenta-laskenta-service
   send-renew: false
   key: valintalaskenta-laskenta-service
 
@@ -67,12 +63,6 @@ logging:
     org.hibernate: info
     com.github.dockerjava: info
 
-host:
-  cas: virkailija.testiopintopolku.fi
-  virkailija: localhost:8080
-  host-virkailija: virkailija.testiopintopolku.fi
-  host-alb: https://virkailija.testiopintopolku.fi
-
 web:
   url:
     cas: https://${host.cas}/cas
@@ -80,38 +70,9 @@ web:
 cas:
   url: https://${host.cas}/cas
   login: https://${host.cas}/cas/login
-  service:
-    valintaperusteet-service: ""
-    sijoittelu-service: ""
-    seuranta-service: ""
-
-valintalaskentakoostepalvelu:
-  app:
-    username:
-      to:
-        sijoittelu: username
-    password:
-      to:
-        sijoittelu: password
-  seuranta:
-    rest:
-      url: ""
-  sijoittelu:
-    rest:
-      url: ""
-  valintaperusteet:
-    ilb:
-      url: ""
-
-root:
-  organisaatio:
-    oid: ""
 
 aws:
   region: eu-west-1
-  bucket:
-    name: ""
-    oldversionname: ""
   siirtotiedosto:
     bucket-name: testi-siirtotiedostot
     bucket-target-role-arn: arn:aws:iam::xxxxxxxxxxxx:role/opintopolku-s3-cross-account-role
