@@ -1,9 +1,9 @@
 package fi.vm.sade.valinta.kooste.external.resource.valintalaskenta.impl;
 
 import com.google.gson.reflect.TypeToken;
+import fi.vm.sade.valinta.kooste.external.resource.UrlConfiguration;
 import fi.vm.sade.valinta.kooste.external.resource.valintalaskenta.ValintalaskentaValintakoeAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.viestintapalvelu.RestCasClient;
-import fi.vm.sade.valinta.kooste.url.UrlConfiguration;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.HakemusOsallistuminenDTO;
 import java.util.Collection;

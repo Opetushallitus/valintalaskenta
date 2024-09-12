@@ -5,11 +5,11 @@ import static fi.vm.sade.javautils.httpclient.OphHttpClient.Header.CONTENT_TYPE;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import fi.vm.sade.valinta.kooste.external.resource.UrlConfiguration;
 import fi.vm.sade.valinta.kooste.external.resource.valintapiste.dto.PisteetWithLastModified;
 import fi.vm.sade.valinta.kooste.external.resource.valintapiste.dto.Valintapisteet;
 import fi.vm.sade.valinta.kooste.external.resource.valintatulosservice.dto.AuditSession;
 import fi.vm.sade.valinta.kooste.external.resource.viestintapalvelu.RestCasClient;
-import fi.vm.sade.valinta.kooste.url.UrlConfiguration;
 import fi.vm.sade.valinta.sharedutils.http.DateDeserializer;
 import io.reactivex.Observable;
 import jakarta.ws.rs.core.GenericType;

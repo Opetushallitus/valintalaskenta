@@ -2,9 +2,9 @@ package fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.impl;
 
 import com.google.gson.reflect.TypeToken;
 import fi.vm.sade.valinta.kooste.external.resource.HttpClient;
+import fi.vm.sade.valinta.kooste.external.resource.UrlConfiguration;
 import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.OhjausparametritAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.dto.ParametritDTO;
-import fi.vm.sade.valinta.kooste.url.UrlConfiguration;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package fi.vm.sade.valinta.kooste.hakemus.dto;
+package fi.vm.sade.valinta.kooste.external.resource.hakuapp.dto;
 
 import fi.vm.sade.valinta.kooste.util.HakemusWrapper;
 import java.util.Collection;

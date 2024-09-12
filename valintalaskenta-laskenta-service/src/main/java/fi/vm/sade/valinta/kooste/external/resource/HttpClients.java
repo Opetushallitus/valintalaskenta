@@ -6,7 +6,6 @@ import fi.vm.sade.javautils.nio.cas.CasConfig;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.impl.TarjontaAsyncResourceImpl;
 import fi.vm.sade.valinta.kooste.external.resource.valintatulosservice.impl.ValintaTulosServiceAsyncResourceImpl;
 import fi.vm.sade.valinta.kooste.external.resource.viestintapalvelu.RestCasClient;
-import fi.vm.sade.valinta.kooste.url.UrlConfiguration;
 import fi.vm.sade.valinta.sharedutils.http.DateDeserializer;
 import java.net.CookieManager;
 import java.time.Duration;
