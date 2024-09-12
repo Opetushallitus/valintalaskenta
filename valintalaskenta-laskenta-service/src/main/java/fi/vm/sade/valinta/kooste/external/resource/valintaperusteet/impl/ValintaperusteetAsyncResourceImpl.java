@@ -5,7 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import fi.vm.sade.service.valintaperusteet.dto.*;
 import fi.vm.sade.valinta.kooste.external.resource.valintaperusteet.ValintaperusteetAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.viestintapalvelu.RestCasClient;
-import fi.vm.sade.valinta.kooste.url.UrlConfiguration;
+import fi.vm.sade.valinta.kooste.external.resource.UrlConfiguration;
 import io.reactivex.Observable;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
