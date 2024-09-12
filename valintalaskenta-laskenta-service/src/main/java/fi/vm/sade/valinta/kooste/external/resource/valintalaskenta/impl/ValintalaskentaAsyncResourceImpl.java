@@ -4,9 +4,9 @@ import static fi.vm.sade.valintalaskenta.domain.HakukohteenLaskennanTila.*;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import fi.vm.sade.valinta.kooste.external.resource.UrlConfiguration;
 import fi.vm.sade.valinta.kooste.external.resource.valintalaskenta.ValintalaskentaAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.viestintapalvelu.RestCasClient;
-import fi.vm.sade.valinta.kooste.external.resource.UrlConfiguration;
 import fi.vm.sade.valinta.kooste.util.CompletableFutureUtil;
 import fi.vm.sade.valinta.sharedutils.http.DateDeserializer;
 import fi.vm.sade.valintalaskenta.domain.dto.*;
