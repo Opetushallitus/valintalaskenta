@@ -1,9 +1,9 @@
 package fi.vm.sade.valinta.kooste.external.resource.seuranta.impl;
 
 import com.google.gson.reflect.TypeToken;
+import fi.vm.sade.valinta.kooste.external.resource.UrlConfiguration;
 import fi.vm.sade.valinta.kooste.external.resource.seuranta.LaskentaSeurantaAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.viestintapalvelu.RestCasClient;
-import fi.vm.sade.valinta.kooste.url.UrlConfiguration;
 import fi.vm.sade.valinta.kooste.valintalaskenta.resource.LaskentaParams;
 import fi.vm.sade.valinta.seuranta.dto.*;
 import io.reactivex.Observable;

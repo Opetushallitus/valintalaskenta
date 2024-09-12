@@ -1,4 +1,4 @@
-package fi.vm.sade.valinta.kooste.url;
+package fi.vm.sade.valinta.kooste.external.resource;
 
 import fi.vm.sade.properties.OphProperties;
 import java.nio.file.Paths;
