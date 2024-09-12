@@ -1,4 +1,4 @@
-package fi.vm.sade.valinta.kooste.hakemus.dto;
+package fi.vm.sade.valinta.kooste.external.resource.hakuapp.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
