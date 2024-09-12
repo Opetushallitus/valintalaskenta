@@ -11,6 +11,7 @@ import fi.vm.sade.tarjonta.service.resources.v1.dto.*;
 import fi.vm.sade.tarjonta.service.resources.v1.dto.koulutus.KomoV1RDTO;
 import fi.vm.sade.tarjonta.service.resources.v1.dto.koulutus.KoulutusV1RDTO;
 import fi.vm.sade.valinta.kooste.external.resource.HttpClient;
+import fi.vm.sade.valinta.kooste.external.resource.UrlConfiguration;
 import fi.vm.sade.valinta.kooste.external.resource.kouta.KoutaHakukohde;
 import fi.vm.sade.valinta.kooste.external.resource.kouta.dto.HakukohderyhmaHakukohde;
 import fi.vm.sade.valinta.kooste.external.resource.kouta.dto.KoutaHakukohdeDTO;
@@ -19,7 +20,6 @@ import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.dto.Parametr
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.*;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.dto.*;
 import fi.vm.sade.valinta.kooste.external.resource.viestintapalvelu.RestCasClient;
-import fi.vm.sade.valinta.kooste.url.UrlConfiguration;
 import fi.vm.sade.valinta.kooste.util.CompletableFutureUtil;
 import fi.vm.sade.valinta.sharedutils.http.DateDeserializer;
 import java.lang.reflect.ParameterizedType;
