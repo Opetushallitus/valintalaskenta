@@ -1,7 +1,5 @@
 package fi.vm.sade.valintalaskenta.laskenta.resource;
 
-import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.OPH_CRUD;
-
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetValinnanVaiheDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoJarjestyskriteereillaDTO;
@@ -35,14 +33,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@PreAuthorize("isAuthenticated()")
-@RequestMapping(value = "/resources/valintalaskenta")
+@Component
 public class ValintalaskentaResourceImpl {
   private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaResourceImpl.class);
 
@@ -76,8 +71,6 @@ public class ValintalaskentaResourceImpl {
             Math.max(Runtime.getRuntime().availableProcessors(), parallelismFromConfig));
   }
 
-  @PreAuthorize(OPH_CRUD)
-  @GetMapping(value = "/status/{key}", produces = MediaType.TEXT_PLAIN_VALUE)
   public String status(@PathVariable("key") final String pollKey) throws Exception {
     try {
       return pidaKirjaaMeneillaanOlevista(pollKey, false);
@@ -87,11 +80,6 @@ public class ValintalaskentaResourceImpl {
     }
   }
 
-  @PreAuthorize(OPH_CRUD)
-  @PostMapping(
-      value = "/laske",
-      produces = MediaType.TEXT_PLAIN_VALUE,
-      consumes = MediaType.APPLICATION_JSON_VALUE)
   public String laske(@RequestBody final Laskentakutsu laskentakutsu) throws Exception {
     try {
       String pollKey = laskentakutsu.getPollKey();
@@ -117,11 +105,6 @@ public class ValintalaskentaResourceImpl {
     }
   }
 
-  @PreAuthorize(OPH_CRUD)
-  @PostMapping(
-      value = "/valintakokeet",
-      produces = MediaType.TEXT_PLAIN_VALUE,
-      consumes = MediaType.APPLICATION_JSON_VALUE)
   public String valintakokeet(@RequestBody final Laskentakutsu laskentakutsu) throws Exception {
     try {
       String pollKey = laskentakutsu.getPollKey();
@@ -148,11 +131,6 @@ public class ValintalaskentaResourceImpl {
     }
   }
 
-  @PreAuthorize(OPH_CRUD)
-  @PostMapping(
-      value = "/laskekaikki",
-      produces = MediaType.TEXT_PLAIN_VALUE,
-      consumes = MediaType.APPLICATION_JSON_VALUE)
   public String laskeKaikki(@RequestBody final Laskentakutsu laskentakutsu) throws Exception {
     try {
       String pollKey = laskentakutsu.getPollKey();
@@ -178,11 +156,6 @@ public class ValintalaskentaResourceImpl {
     }
   }
 
-  @PreAuthorize(OPH_CRUD)
-  @PostMapping(
-      value = "/laskejasijoittele",
-      produces = MediaType.TEXT_PLAIN_VALUE,
-      consumes = MediaType.APPLICATION_JSON_VALUE)
   public String laskeJaSijoittele(@RequestBody final Laskentakutsu laskentakutsu) {
     try {
       laskentakutsu.populoiSuoritustiedotLaskeDtoille();
