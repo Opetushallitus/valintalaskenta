@@ -1,4 +1,4 @@
-package fi.vm.sade.valinta.kooste.external.resource.seuranta;
+package fi.vm.sade.valinta.kooste.seuranta;
 
 import fi.vm.sade.valinta.kooste.valintalaskenta.resource.LaskentaParams;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 
-public interface LaskentaSeurantaAsyncResource {
+public interface LaskentaSeurantaService {
 
   Observable<Optional<String>> otaSeuraavaLaskentaTyonAlle();
 

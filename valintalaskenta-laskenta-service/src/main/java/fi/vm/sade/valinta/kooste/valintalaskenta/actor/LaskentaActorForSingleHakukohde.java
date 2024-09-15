@@ -4,7 +4,7 @@ import static fi.vm.sade.valinta.kooste.valintalaskenta.actor.LaskentaActorForSi
 import static fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto.ilmoitus;
 import static fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto.virheilmoitus;
 
-import fi.vm.sade.valinta.kooste.external.resource.seuranta.LaskentaSeurantaAsyncResource;
+import fi.vm.sade.valinta.kooste.seuranta.LaskentaSeurantaService;
 import fi.vm.sade.valinta.kooste.valintalaskenta.actor.dto.HakukohdeJaOrganisaatio;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.HakukohdeTila;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto;
@@ -35,7 +35,7 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
   private final Function<? super HakukohdeJaOrganisaatio, ? extends Observable<?>>
       hakukohteenLaskenta;
   private final LaskentaSupervisor laskentaSupervisor;
-  private final LaskentaSeurantaAsyncResource laskentaSeurantaAsyncResource;
+  private final LaskentaSeurantaService laskentaSeurantaService;
   private final int splittaus;
   private final ConcurrentLinkedQueue<HakukohdeJaOrganisaatio> hakukohdeQueue;
   private final ConcurrentLinkedQueue<HakukohdeJaOrganisaatio> retryQueue =
@@ -47,12 +47,12 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
       LaskentaActorParams actorParams,
       Function<? super HakukohdeJaOrganisaatio, ? extends Observable<?>> hakukohteenLaskenta,
       LaskentaSupervisor laskentaSupervisor,
-      LaskentaSeurantaAsyncResource laskentaSeurantaAsyncResource,
+      LaskentaSeurantaService laskentaSeurantaService,
       int splittaus) {
     this.actorParams = actorParams;
     this.hakukohteenLaskenta = hakukohteenLaskenta;
     this.laskentaSupervisor = laskentaSupervisor;
-    this.laskentaSeurantaAsyncResource = laskentaSeurantaAsyncResource;
+    this.laskentaSeurantaService = laskentaSeurantaService;
     this.splittaus = splittaus;
     hakukohdeQueue = new ConcurrentLinkedQueue<>(actorParams.getHakukohdeOids());
     this.isValintaryhmalaskenta = actorParams.isValintaryhmalaskenta();
@@ -132,7 +132,7 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
     }
     if (!isValintaryhmalaskenta) {
       HakukohdeTila tila = HakukohdeTila.VALMIS;
-      laskentaSeurantaAsyncResource
+      laskentaSeurantaService
           .merkkaaHakukohteenTila(uuid(), hakukohdeOid, tila, Optional.empty())
           .subscribeOn(Schedulers.newThread())
           .subscribe(
@@ -177,7 +177,7 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
       if (!isValintaryhmalaskenta) {
         try {
           HakukohdeTila tila = HakukohdeTila.KESKEYTETTY;
-          laskentaSeurantaAsyncResource
+          laskentaSeurantaService
               .merkkaaHakukohteenTila(
                   uuid(),
                   hakukohdeOid,
@@ -251,12 +251,12 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
     if (!COMPLETE.equals(state.get())) {
       LOG.warn("#### (Uuid={}) Laskenta lopetettu", uuid());
       tilanmerkkausObservable =
-          laskentaSeurantaAsyncResource.merkkaaLaskennanTila(
+          laskentaSeurantaService.merkkaaLaskennanTila(
               uuid(), LaskentaTila.PERUUTETTU, Optional.of(ilmoitus("Laskenta on peruutettu")));
     } else if (valintaryhmalaskennanTulos.isPresent()) {
       LOG.error("#### (Uuid={}) Valintaryhmälaskenta on epäonnistunut.", uuid());
       tilanmerkkausObservable =
-          laskentaSeurantaAsyncResource.merkkaaLaskennanTila(
+          laskentaSeurantaService.merkkaaLaskennanTila(
               uuid(), LaskentaTila.PERUUTETTU, valintaryhmalaskennanTulos);
     } else {
       LOG.info(
@@ -267,7 +267,7 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
           retryTotal.get(),
           failedTotal.get());
       tilanmerkkausObservable =
-          laskentaSeurantaAsyncResource.merkkaaLaskennanTila(
+          laskentaSeurantaService.merkkaaLaskennanTila(
               uuid(), LaskentaTila.VALMIS, Optional.empty());
     }
     tilanmerkkausObservable
