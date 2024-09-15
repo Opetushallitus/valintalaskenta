@@ -2,7 +2,7 @@ package fi.vm.sade.valinta.kooste.valintalaskenta.resource;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import fi.vm.sade.valinta.kooste.external.resource.seuranta.LaskentaSeurantaAsyncResource;
+import fi.vm.sade.valinta.kooste.seuranta.LaskentaSeurantaService;
 import fi.vm.sade.valinta.kooste.util.ExcelExportUtil;
 import fi.vm.sade.valinta.kooste.valintalaskenta.excel.LaskentaDtoAsExcel;
 import java.util.List;
@@ -20,7 +20,7 @@ public class ValintalaskentaStatusExcelHandler {
   private static final Logger LOG =
       LoggerFactory.getLogger(ValintalaskentaStatusExcelHandler.class);
 
-  @Autowired private LaskentaSeurantaAsyncResource seurantaAsyncResource;
+  @Autowired private LaskentaSeurantaService seurantaAsyncResource;
 
   public ResponseEntity<byte[]> createTimeoutErrorXls(final String uuid) {
     final List<Object[]> grid = Lists.newArrayList();
