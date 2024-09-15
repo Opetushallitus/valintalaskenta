@@ -2,7 +2,7 @@ package fi.vm.sade.valinta.kooste.valintalaskenta.resource;
 
 import fi.vm.sade.service.valintaperusteet.dto.HakukohdeViiteDTO;
 import fi.vm.sade.valinta.kooste.dto.Vastaus;
-import fi.vm.sade.valinta.kooste.external.resource.seuranta.LaskentaSeurantaAsyncResource;
+import fi.vm.sade.valinta.kooste.seuranta.LaskentaSeurantaService;
 import fi.vm.sade.valinta.kooste.external.resource.valintaperusteet.ValintaperusteetAsyncResource;
 import fi.vm.sade.valinta.kooste.security.HakukohdeOIDAuthorityCheck;
 import fi.vm.sade.valinta.kooste.valintalaskenta.actor.dto.HakukohdeJaOrganisaatio;
@@ -39,7 +39,7 @@ public class ValintalaskentaKerrallaService {
   @Autowired private ValintalaskentaKerrallaRouteValvomo valintalaskentaValvomo;
   @Autowired private ValintaperusteetAsyncResource valintaperusteetAsyncResource;
   @Autowired private ValintalaskentaKerrallaRoute valintalaskentaRoute;
-  @Autowired private LaskentaSeurantaAsyncResource seurantaAsyncResource;
+  @Autowired private LaskentaSeurantaService seurantaAsyncResource;
 
   public ValintalaskentaKerrallaService() {}
 

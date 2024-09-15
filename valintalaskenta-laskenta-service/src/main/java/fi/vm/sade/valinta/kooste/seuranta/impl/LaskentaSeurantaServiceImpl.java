@@ -1,8 +1,8 @@
-package fi.vm.sade.valinta.kooste.external.resource.seuranta.impl;
+package fi.vm.sade.valinta.kooste.seuranta.impl;
 
 import com.google.gson.reflect.TypeToken;
 import fi.vm.sade.valinta.kooste.external.resource.UrlConfiguration;
-import fi.vm.sade.valinta.kooste.external.resource.seuranta.LaskentaSeurantaAsyncResource;
+import fi.vm.sade.valinta.kooste.seuranta.LaskentaSeurantaService;
 import fi.vm.sade.valinta.kooste.external.resource.viestintapalvelu.RestCasClient;
 import fi.vm.sade.valinta.kooste.valintalaskenta.resource.LaskentaParams;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
@@ -23,7 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LaskentaSeurantaAsyncResourceImpl implements LaskentaSeurantaAsyncResource {
+public class LaskentaSeurantaServiceImpl implements LaskentaSeurantaService {
   private final Logger LOG = LoggerFactory.getLogger(getClass());
 
   private final RestCasClient restCasClient;
@@ -31,7 +31,7 @@ public class LaskentaSeurantaAsyncResourceImpl implements LaskentaSeurantaAsyncR
   private final UrlConfiguration urlConfiguration;
 
   @Autowired
-  public LaskentaSeurantaAsyncResourceImpl(
+  public LaskentaSeurantaServiceImpl(
       @Qualifier("ValintalaskentaCasClient") RestCasClient restCasClient) {
     this.restCasClient = restCasClient;
     this.urlConfiguration = UrlConfiguration.getInstance();
