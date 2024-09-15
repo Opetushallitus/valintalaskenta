@@ -1,17 +1,8 @@
 package fi.vm.sade.valintalaskenta.testing;
 
 import fi.vm.sade.valinta.kooste.external.resource.viestintapalvelu.RestCasClient;
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicReference;
-import javax.servlet.*;
-import org.apache.cxf.interceptor.Fault;
-import org.apache.cxf.message.Message;
-import org.apache.cxf.phase.AbstractPhaseInterceptor;
-import org.apache.cxf.phase.Phase;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.Dsl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

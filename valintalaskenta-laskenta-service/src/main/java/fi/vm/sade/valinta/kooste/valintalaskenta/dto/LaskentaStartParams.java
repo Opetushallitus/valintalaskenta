@@ -2,7 +2,7 @@ package fi.vm.sade.valinta.kooste.valintalaskenta.dto;
 
 import fi.vm.sade.valinta.kooste.external.resource.valintatulosservice.dto.AuditSession;
 import fi.vm.sade.valinta.kooste.valintalaskenta.actor.dto.HakukohdeJaOrganisaatio;
-import fi.vm.sade.valinta.seuranta.dto.LaskentaTyyppi;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
 import java.util.Collection;
 
 public class LaskentaStartParams implements LaskentaInfo {

@@ -17,7 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     classes = {App.class},
     args = {"--add-opens=java.base/java.lang=ALL-UNNAMED"})
-@Import({TestConfigurationWithMocks.class,KoosteTestProfileConfiguration.class})
+@Import({TestConfigurationWithMocks.class, KoosteTestProfileConfiguration.class})
 @ActiveProfiles("test")
 public abstract class AbstractIntegrationTest {
 
