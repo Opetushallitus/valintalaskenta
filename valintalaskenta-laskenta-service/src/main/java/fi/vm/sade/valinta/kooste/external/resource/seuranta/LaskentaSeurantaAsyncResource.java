@@ -1,7 +1,7 @@
 package fi.vm.sade.valinta.kooste.external.resource.seuranta;
 
 import fi.vm.sade.valinta.kooste.valintalaskenta.resource.LaskentaParams;
-import fi.vm.sade.valinta.seuranta.dto.*;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
 import io.reactivex.Observable;
 import java.util.List;
 import java.util.Optional;

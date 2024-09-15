@@ -17,7 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
     classes = {App.class},
     args = {"--add-opens=java.base/java.lang=ALL-UNNAMED"})
 @ActiveProfiles("test-mockless")
-@Import({TestConfigurationWithoutMocks.class,KoosteTestProfileConfiguration.class})
+@Import({TestConfigurationWithoutMocks.class, KoosteTestProfileConfiguration.class})
 public class AbstractMocklessIntegrationTest {
 
   @Autowired protected HakijaryhmaRepository hakijaryhmaRepository;
