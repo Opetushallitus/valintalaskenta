@@ -1,7 +1,7 @@
 package fi.vm.sade.valinta.kooste.valintalaskenta.resource;
 
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Maski;
-import fi.vm.sade.valinta.seuranta.dto.LaskentaTyyppi;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
 import java.util.Optional;
 import org.apache.commons.lang.StringUtils;
 

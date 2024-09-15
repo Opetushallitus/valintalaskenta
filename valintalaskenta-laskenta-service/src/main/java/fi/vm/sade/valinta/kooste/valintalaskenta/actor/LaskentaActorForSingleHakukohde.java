@@ -1,14 +1,14 @@
 package fi.vm.sade.valinta.kooste.valintalaskenta.actor;
 
 import static fi.vm.sade.valinta.kooste.valintalaskenta.actor.LaskentaActorForSingleHakukohde.State.*;
-import static fi.vm.sade.valinta.seuranta.dto.IlmoitusDto.ilmoitus;
-import static fi.vm.sade.valinta.seuranta.dto.IlmoitusDto.virheilmoitus;
+import static fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto.ilmoitus;
+import static fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto.virheilmoitus;
 
 import fi.vm.sade.valinta.kooste.external.resource.seuranta.LaskentaSeurantaAsyncResource;
 import fi.vm.sade.valinta.kooste.valintalaskenta.actor.dto.HakukohdeJaOrganisaatio;
-import fi.vm.sade.valinta.seuranta.dto.HakukohdeTila;
-import fi.vm.sade.valinta.seuranta.dto.IlmoitusDto;
-import fi.vm.sade.valinta.seuranta.dto.LaskentaTila;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.HakukohdeTila;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTila;
 import io.reactivex.Observable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;

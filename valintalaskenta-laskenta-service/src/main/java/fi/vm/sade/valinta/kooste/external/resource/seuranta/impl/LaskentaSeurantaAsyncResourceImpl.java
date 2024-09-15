@@ -5,7 +5,7 @@ import fi.vm.sade.valinta.kooste.external.resource.UrlConfiguration;
 import fi.vm.sade.valinta.kooste.external.resource.seuranta.LaskentaSeurantaAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.viestintapalvelu.RestCasClient;
 import fi.vm.sade.valinta.kooste.valintalaskenta.resource.LaskentaParams;
-import fi.vm.sade.valinta.seuranta.dto.*;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
 import io.reactivex.Observable;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;

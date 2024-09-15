@@ -14,8 +14,8 @@ import fi.vm.sade.valinta.kooste.valintalaskenta.actor.dto.HakukohdeJaOrganisaat
 import fi.vm.sade.valinta.kooste.valintalaskenta.actor.laskenta.LaskentaStarterActor;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.LaskentaStartParams;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Maski;
-import fi.vm.sade.valinta.seuranta.dto.*;
-import fi.vm.sade.valinta.seuranta.dto.LaskentaTyyppi;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
 import io.reactivex.Observable;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
