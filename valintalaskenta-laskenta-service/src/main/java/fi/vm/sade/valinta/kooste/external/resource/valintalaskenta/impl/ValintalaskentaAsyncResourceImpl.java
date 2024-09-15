@@ -22,8 +22,7 @@ public class ValintalaskentaAsyncResourceImpl implements ValintalaskentaAsyncRes
   private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaAsyncResourceImpl.class);
   private final Gson gson;
 
-  @Autowired
-  ValintalaskentaResourceImpl valintalaskentaResource;
+  @Autowired ValintalaskentaResourceImpl valintalaskentaResource;
 
   public ValintalaskentaAsyncResourceImpl() {
     this.gson = DateDeserializer.gsonBuilder().create();
@@ -41,7 +40,8 @@ public class ValintalaskentaAsyncResourceImpl implements ValintalaskentaAsyncRes
               laskentakutsu.getSuoritustiedotDtoBase64Gzip().length()));
     }
     try {
-      return Observable.fromFuture(CompletableFuture.completedFuture(valintalaskentaResource.laske(laskentakutsu)));
+      return Observable.fromFuture(
+          CompletableFuture.completedFuture(valintalaskentaResource.laske(laskentakutsu)));
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -59,10 +59,11 @@ public class ValintalaskentaAsyncResourceImpl implements ValintalaskentaAsyncRes
               laskentakutsu.getSuoritustiedotDtoBase64Gzip().length()));
     }
     try {
-      return Observable.fromFuture(CompletableFuture.completedFuture(valintalaskentaResource.valintakokeet(laskentakutsu)));
+      return Observable.fromFuture(
+          CompletableFuture.completedFuture(valintalaskentaResource.valintakokeet(laskentakutsu)));
     } catch (Exception e) {
       throw new RuntimeException(e);
-      //throw e;
+      // throw e;
     }
   }
 
@@ -78,16 +79,19 @@ public class ValintalaskentaAsyncResourceImpl implements ValintalaskentaAsyncRes
               laskentakutsu.getSuoritustiedotDtoBase64Gzip().length()));
     }
     try {
-      return Observable.fromFuture(CompletableFuture.completedFuture(valintalaskentaResource.laskeKaikki(laskentakutsu)));
+      return Observable.fromFuture(
+          CompletableFuture.completedFuture(valintalaskentaResource.laskeKaikki(laskentakutsu)));
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
 
   /**
-   * Tiksussa b15df0500 Merge remote-tracking branch 'origin/VTKU-181__valintaryhmalaskennan_kutsu_pienempiin_paloihin'
-   * tämän kutsun siirto valintalaskentakoostepalvelusta valintalaskentaan oli palasteltu moneen kutsuun. Kun kutsu
-   * ei enää mene verkon yli ei (käsittääkseni) ole enää mitää syytä palastella joten palatta takaisin yhteen kutsuun.
+   * Tiksussa b15df0500 Merge remote-tracking branch
+   * 'origin/VTKU-181__valintaryhmalaskennan_kutsu_pienempiin_paloihin' tämän kutsun siirto
+   * valintalaskentakoostepalvelusta valintalaskentaan oli palasteltu moneen kutsuun. Kun kutsu ei
+   * enää mene verkon yli ei (käsittääkseni) ole enää mitää syytä palastella joten palatta takaisin
+   * yhteen kutsuun.
    */
   @Override
   public Observable<String> laskeJaSijoittele(
@@ -96,11 +100,16 @@ public class ValintalaskentaAsyncResourceImpl implements ValintalaskentaAsyncRes
     if (LOG.isDebugEnabled()) {
       lista.forEach(this::logitaKokotiedot);
       logitaSuoritustietojenKoko(suoritustiedot);
-      LOG.debug(String.format("Suoritustietojen koko base64-gzippinä: %d", laskentakutsu.getSuoritustiedotDtoBase64Gzip().length()));
+      LOG.debug(
+          String.format(
+              "Suoritustietojen koko base64-gzippinä: %d",
+              laskentakutsu.getSuoritustiedotDtoBase64Gzip().length()));
     }
 
     try {
-      return Observable.fromFuture(CompletableFuture.completedFuture(valintalaskentaResource.laskeJaSijoittele(laskentakutsu)));
+      return Observable.fromFuture(
+          CompletableFuture.completedFuture(
+              valintalaskentaResource.laskeJaSijoittele(laskentakutsu)));
     } catch (Exception e) {
       throw e;
     }
