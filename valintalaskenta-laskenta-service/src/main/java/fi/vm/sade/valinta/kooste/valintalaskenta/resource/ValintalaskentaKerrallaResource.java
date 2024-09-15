@@ -5,7 +5,7 @@ import static java.util.Arrays.asList;
 
 import fi.vm.sade.valinta.kooste.AuthorizationUtil;
 import fi.vm.sade.valinta.kooste.dto.Vastaus;
-import fi.vm.sade.valinta.kooste.external.resource.seuranta.LaskentaSeurantaAsyncResource;
+import fi.vm.sade.valinta.kooste.seuranta.LaskentaSeurantaService;
 import fi.vm.sade.valinta.kooste.security.AuthorityCheckService;
 import fi.vm.sade.valinta.kooste.security.HakukohdeOIDAuthorityCheck;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Laskenta;
@@ -53,7 +53,7 @@ public class ValintalaskentaKerrallaResource {
   @Autowired private ValintalaskentaKerrallaRouteValvomo valintalaskentaValvomo;
   @Autowired private ValintalaskentaKerrallaService valintalaskentaKerrallaService;
   @Autowired private ValintalaskentaStatusExcelHandler valintalaskentaStatusExcelHandler;
-  @Autowired private LaskentaSeurantaAsyncResource seurantaAsyncResource;
+  @Autowired private LaskentaSeurantaService seurantaAsyncResource;
   @Autowired private AuthorityCheckService authorityCheckService;
 
   @PostMapping(value = "/haku/{hakuOid}/tyyppi/HAKU", produces = MediaType.APPLICATION_JSON_VALUE)
