@@ -1,6 +1,6 @@
 package fi.vm.sade.valinta.kooste.valintalaskenta.resource;
 
-import static fi.vm.sade.valinta.seuranta.dto.IlmoitusDto.ilmoitus;
+import static fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto.ilmoitus;
 import static java.util.Arrays.asList;
 
 import fi.vm.sade.valinta.kooste.AuthorizationUtil;
@@ -11,9 +11,9 @@ import fi.vm.sade.valinta.kooste.security.HakukohdeOIDAuthorityCheck;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Laskenta;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Maski;
 import fi.vm.sade.valinta.kooste.valintalaskenta.route.ValintalaskentaKerrallaRouteValvomo;
-import fi.vm.sade.valinta.seuranta.dto.LaskentaDto;
-import fi.vm.sade.valinta.seuranta.dto.LaskentaTila;
-import fi.vm.sade.valinta.seuranta.dto.LaskentaTyyppi;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTila;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
 import io.reactivex.Observable;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

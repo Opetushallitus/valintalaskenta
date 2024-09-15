@@ -82,7 +82,7 @@ public class LaskentaActorParams {
 
   /** Tilapainen workaround resurssin valinnanvaiheen normalisointiin. */
   public LaskentaTyyppi getLaskentaTyyppi() {
-    if (fi.vm.sade.valinta.seuranta.dto.LaskentaTyyppi.VALINTARYHMA.equals(
+    if (fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi.VALINTARYHMA.equals(
         laskentaStartParams.getTyyppi())) {
       return LaskentaTyyppi.VALINTARYHMALASKENTA;
     }
