@@ -4,7 +4,7 @@ import akka.actor.ActorRef;
 import fi.vm.sade.service.valintaperusteet.dto.HakukohdeViiteDTO;
 import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.OhjausparametritAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.dto.ParametritDTO;
-import fi.vm.sade.valinta.kooste.external.resource.seuranta.LaskentaSeurantaAsyncResource;
+import fi.vm.sade.valinta.kooste.seuranta.LaskentaSeurantaService;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.Haku;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.TarjontaAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.valintaperusteet.ValintaperusteetAsyncResource;
@@ -33,14 +33,14 @@ public class LaskentaStarter {
 
   private final OhjausparametritAsyncResource ohjausparametritAsyncResource;
   private final ValintaperusteetAsyncResource valintaperusteetAsyncResource;
-  private final LaskentaSeurantaAsyncResource seurantaAsyncResource;
+  private final LaskentaSeurantaService seurantaAsyncResource;
   private final TarjontaAsyncResource tarjontaAsyncResource;
 
   @Autowired
   public LaskentaStarter(
       OhjausparametritAsyncResource ohjausparametritAsyncResource,
       ValintaperusteetAsyncResource valintaperusteetAsyncResource,
-      LaskentaSeurantaAsyncResource seurantaAsyncResource,
+      LaskentaSeurantaService seurantaAsyncResource,
       TarjontaAsyncResource tarjontaAsyncResource) {
     this.ohjausparametritAsyncResource = ohjausparametritAsyncResource;
     this.valintaperusteetAsyncResource = valintaperusteetAsyncResource;
