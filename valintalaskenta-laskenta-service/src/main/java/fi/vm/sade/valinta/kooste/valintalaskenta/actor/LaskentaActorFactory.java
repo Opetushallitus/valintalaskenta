@@ -15,7 +15,7 @@ import fi.vm.sade.valinta.kooste.external.resource.hakuapp.ApplicationAsyncResou
 import fi.vm.sade.valinta.kooste.external.resource.koski.KoskiOppija;
 import fi.vm.sade.valinta.kooste.external.resource.oppijanumerorekisteri.OppijanumerorekisteriAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.oppijanumerorekisteri.dto.HenkiloViiteDto;
-import fi.vm.sade.valinta.kooste.external.resource.seuranta.LaskentaSeurantaAsyncResource;
+import fi.vm.sade.valinta.kooste.seuranta.LaskentaSeurantaService;
 import fi.vm.sade.valinta.kooste.external.resource.suoritusrekisteri.SuoritusrekisteriAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.suoritusrekisteri.dto.Oppija;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.Haku;
@@ -65,7 +65,7 @@ public class LaskentaActorFactory {
   private final ApplicationAsyncResource applicationAsyncResource;
   private final AtaruAsyncResource ataruAsyncResource;
   private final ValintaperusteetAsyncResource valintaperusteetAsyncResource;
-  private final LaskentaSeurantaAsyncResource laskentaSeurantaAsyncResource;
+  private final LaskentaSeurantaService laskentaSeurantaAsyncResource;
   private final SuoritusrekisteriAsyncResource suoritusrekisteriAsyncResource;
   private final OppijanumerorekisteriAsyncResource oppijanumerorekisteriAsyncResource;
   private final TarjontaAsyncResource tarjontaAsyncResource;
@@ -80,7 +80,7 @@ public class LaskentaActorFactory {
       ApplicationAsyncResource applicationAsyncResource,
       AtaruAsyncResource ataruAsyncResource,
       ValintaperusteetAsyncResource valintaperusteetAsyncResource,
-      LaskentaSeurantaAsyncResource laskentaSeurantaAsyncResource,
+      LaskentaSeurantaService laskentaSeurantaService,
       SuoritusrekisteriAsyncResource suoritusrekisteriAsyncResource,
       TarjontaAsyncResource tarjontaAsyncResource,
       ValintapisteAsyncResource valintapisteAsyncResource,
@@ -92,7 +92,7 @@ public class LaskentaActorFactory {
     this.applicationAsyncResource = applicationAsyncResource;
     this.ataruAsyncResource = ataruAsyncResource;
     this.valintaperusteetAsyncResource = valintaperusteetAsyncResource;
-    this.laskentaSeurantaAsyncResource = laskentaSeurantaAsyncResource;
+    this.laskentaSeurantaAsyncResource = laskentaSeurantaService;
     this.suoritusrekisteriAsyncResource = suoritusrekisteriAsyncResource;
     this.tarjontaAsyncResource = tarjontaAsyncResource;
     this.valintapisteAsyncResource = valintapisteAsyncResource;

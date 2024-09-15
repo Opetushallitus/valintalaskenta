@@ -9,7 +9,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.typesafe.config.ConfigFactory;
 import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.dto.ParametritDTO;
-import fi.vm.sade.valinta.kooste.external.resource.seuranta.LaskentaSeurantaAsyncResource;
+import fi.vm.sade.valinta.kooste.seuranta.LaskentaSeurantaService;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.Haku;
 import fi.vm.sade.valinta.kooste.external.resource.valintatulosservice.dto.AuditSession;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Laskenta;
@@ -44,7 +44,7 @@ public class LaskentaActorSystem
 
   private final LaskentaActorFactory laskentaActorFactory;
 
-  private final LaskentaSeurantaAsyncResource seurantaAsyncResource;
+  private final LaskentaSeurantaService seurantaAsyncResource;
   private final ActorSystem actorSystem;
   private final ActorRef laskennanKaynnistajaActor;
   private final Map<String, LaskentaActorWrapper> runningLaskentas = Maps.newConcurrentMap();
@@ -52,7 +52,7 @@ public class LaskentaActorSystem
 
   @Autowired
   public LaskentaActorSystem(
-      LaskentaSeurantaAsyncResource seurantaAsyncResource,
+      LaskentaSeurantaService seurantaAsyncResource,
       LaskentaStarter laskentaStarter,
       LaskentaActorFactory laskentaActorFactory,
       @Value("${valintalaskentakoostepalvelu.maxWorkerCount:8}") int maxWorkers) {
