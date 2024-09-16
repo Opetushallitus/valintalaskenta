@@ -20,7 +20,6 @@ import fi.vm.sade.valinta.kooste.external.resource.suoritusrekisteri.Suoritusrek
 import fi.vm.sade.valinta.kooste.external.resource.suoritusrekisteri.dto.Oppija;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.Haku;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.TarjontaAsyncResource;
-import fi.vm.sade.valinta.kooste.external.resource.valintalaskenta.ValintalaskentaAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.valintaperusteet.ValintaperusteetAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.valintapiste.ValintapisteAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.valintapiste.dto.PisteetWithLastModified;
@@ -33,7 +32,9 @@ import fi.vm.sade.valinta.sharedutils.AuditLog;
 import fi.vm.sade.valinta.sharedutils.ValintaResource;
 import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.Laskentakutsu;
 import fi.vm.sade.valintalaskenta.domain.dto.SuoritustiedotDTO;
+import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import io.reactivex.Observable;
 import java.math.BigDecimal;
 import java.util.*;
@@ -61,7 +62,7 @@ public class LaskentaActorFactory {
   private static final Logger LOG = LoggerFactory.getLogger(LaskentaActorFactory.class);
 
   private final ValintapisteAsyncResource valintapisteAsyncResource;
-  private final ValintalaskentaAsyncResource valintalaskentaAsyncResource;
+  private final ValintalaskentaResourceImpl valintalaskentaResource;
   private final ApplicationAsyncResource applicationAsyncResource;
   private final AtaruAsyncResource ataruAsyncResource;
   private final ValintaperusteetAsyncResource valintaperusteetAsyncResource;
@@ -76,7 +77,7 @@ public class LaskentaActorFactory {
   @Autowired
   public LaskentaActorFactory(
       @Value("${valintalaskentakoostepalvelu.laskennan.splittaus:1}") int splittaus,
-      ValintalaskentaAsyncResource valintalaskentaAsyncResource,
+      ValintalaskentaResourceImpl valintalaskentaResource,
       ApplicationAsyncResource applicationAsyncResource,
       AtaruAsyncResource ataruAsyncResource,
       ValintaperusteetAsyncResource valintaperusteetAsyncResource,
@@ -88,7 +89,7 @@ public class LaskentaActorFactory {
       HakemuksetConverterUtil hakemuksetConverterUtil,
       OppijanumerorekisteriAsyncResource oppijanumerorekisteriAsyncResource) {
     this.splittaus = splittaus;
-    this.valintalaskentaAsyncResource = valintalaskentaAsyncResource;
+    this.valintalaskentaResource = valintalaskentaResource;
     this.applicationAsyncResource = applicationAsyncResource;
     this.ataruAsyncResource = ataruAsyncResource;
     this.valintaperusteetAsyncResource = valintaperusteetAsyncResource;
@@ -182,8 +183,17 @@ public class LaskentaActorFactory {
                                   + allLaskeDTOs.size()
                                   + "!");
                         }
-                        return valintalaskentaAsyncResource.laskeJaSijoittele(
-                            uuid, allLaskeDTOs, suoritustiedot);
+                        /*
+                        * Tiksussa b15df0500 Merge remote-tracking branch
+                        * 'origin/VTKU-181__valintaryhmalaskennan_kutsu_pienempiin_paloihin' tämän kutsun siirto
+                        * valintalaskentakoostepalvelusta valintalaskentaan oli palasteltu moneen kutsuun. Kun kutsu ei
+                        * enää mene verkon yli ei (käsittääkseni) ole enää mitää syytä palastella joten palatta takaisin
+                        * yhteen kutsuun.
+                        */
+                        Laskentakutsu laskentakutsu = Laskentakutsu.valintaRyhmaLaskentaKutsu(allLaskeDTOs, suoritustiedot);
+                        return Observable.fromFuture(
+                            CompletableFuture.completedFuture(
+                                valintalaskentaResource.laskeJaSijoittele(laskentakutsu)));
                       });
           return laskenta;
         });
@@ -238,9 +248,11 @@ public class LaskentaActorFactory {
                                   hakukohdeOid);
                             }
                           },
-                          laskeDTO ->
-                              valintalaskentaAsyncResource.valintakokeet(
-                                  laskeDTO, suoritustiedot)));
+                          laskeDTO -> {
+                            Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDTO, suoritustiedot);
+                            return Observable.fromFuture(
+                                CompletableFuture.completedFuture(valintalaskentaResource.valintakokeet(laskentakutsu)));
+                          }));
           return laskenta;
         });
   }
@@ -313,8 +325,11 @@ public class LaskentaActorFactory {
                                   hakukohdeOid);
                             }
                           },
-                          laskeDTO ->
-                              valintalaskentaAsyncResource.laske(laskeDTO, suoritustiedot)));
+                          laskeDTO -> {
+                            Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDTO, suoritustiedot);
+                            return Observable.fromFuture(
+                                CompletableFuture.completedFuture(valintalaskentaResource.laske(laskentakutsu)));
+                          }));
           return laskenta;
         });
   }
@@ -366,8 +381,11 @@ public class LaskentaActorFactory {
                                   hakukohdeOid);
                             }
                           },
-                          laskeDTO ->
-                              valintalaskentaAsyncResource.laskeKaikki(laskeDTO, suoritustiedot)));
+                          laskeDTO -> {
+                            Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDTO, suoritustiedot);
+                            return Observable.fromFuture(
+                                CompletableFuture.completedFuture(valintalaskentaResource.laskeKaikki(laskentakutsu)));
+                          }));
           return laskenta;
         });
   }

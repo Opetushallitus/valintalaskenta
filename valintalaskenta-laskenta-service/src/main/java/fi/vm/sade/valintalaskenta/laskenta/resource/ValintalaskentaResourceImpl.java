@@ -80,7 +80,7 @@ public class ValintalaskentaResourceImpl {
     }
   }
 
-  public String laske(@RequestBody final Laskentakutsu laskentakutsu) throws Exception {
+  public String laske(final Laskentakutsu laskentakutsu) {
     try {
       String pollKey = laskentakutsu.getPollKey();
       laskentakutsu.populoiSuoritustiedotLaskeDtoille();
@@ -105,7 +105,7 @@ public class ValintalaskentaResourceImpl {
     }
   }
 
-  public String valintakokeet(@RequestBody final Laskentakutsu laskentakutsu) throws Exception {
+  public String valintakokeet(final Laskentakutsu laskentakutsu) {
     try {
       String pollKey = laskentakutsu.getPollKey();
       laskentakutsu.populoiSuoritustiedotLaskeDtoille();
@@ -131,7 +131,7 @@ public class ValintalaskentaResourceImpl {
     }
   }
 
-  public String laskeKaikki(@RequestBody final Laskentakutsu laskentakutsu) throws Exception {
+  public String laskeKaikki(final Laskentakutsu laskentakutsu) {
     try {
       String pollKey = laskentakutsu.getPollKey();
       laskentakutsu.populoiSuoritustiedotLaskeDtoille();
