@@ -34,18 +34,17 @@ public class Laskentakutsu {
   }
 
   private Laskentakutsu(boolean isValintaryhmalaskenta, String uuid) {
-    this.isValintaryhmalaskenta = true;
+    this.isValintaryhmalaskenta = isValintaryhmalaskenta;
     this.laskeDTO = null;
     this.uuid = uuid;
     this.pollKey = uuid + "_valintaryhmalaskenta";
   }
 
-  // Tulkitaan laskentakutsu valintaryhmälaskennaksi aina, jos parametri on lista laskeDTO-arvoja
-
-  public Laskentakutsu(List<LaskeDTO> laskeDTOs, SuoritustiedotDTO suoritustiedotDTO) {
-    this(true, laskeDTOs.iterator().next().getUuid());
-    this.suoritustiedotDtoBase64Gzip = toBase64Gzip(suoritustiedotDTO);
-    this.laskeDTOs = laskeDTOs;
+  public static Laskentakutsu valintaRyhmaLaskentaKutsu(List<LaskeDTO> laskeDTOs, SuoritustiedotDTO suoritustiedotDTO) {
+    Laskentakutsu laskentakutsu = new Laskentakutsu(true, laskeDTOs.iterator().next().getUuid());
+    laskentakutsu.suoritustiedotDtoBase64Gzip = toBase64Gzip(suoritustiedotDTO);
+    laskentakutsu.laskeDTOs = laskeDTOs;
+    return laskentakutsu;
   }
 
   public static String toBase64Gzip(SuoritustiedotDTO suoritustiedotDTO) {
@@ -96,16 +95,5 @@ public class Laskentakutsu {
     if (laskeDTO != null) {
       laskeDTO.populoiSuoritustiedotHakemuksille(suoritustiedotDTO);
     }
-  }
-
-  public synchronized void lisaaLaskeDto(LaskeDTO laskeDto) {
-    if (laskeDTOs == null) {
-      laskeDTOs = new LinkedList<>();
-    }
-    laskeDTOs.add(laskeDto);
-  }
-
-  public static Laskentakutsu luoTyhjaValintaryhmaLaskentaPalasissaSiirtoaVarten(String uuid) {
-    return new Laskentakutsu(true, uuid);
   }
 }
