@@ -16,15 +16,15 @@ public class DevApp {
     System.setProperty("valintalaskenta-laskenta-service.postgresql.password", "password");
     System.setProperty("valintalaskenta-laskenta-service.postgresql.password", "password");
 
-    System.setProperty("host.virkailija", "virkailija.hahtuvaopintopolku.fi");
-    System.setProperty("host.cas", "virkailija.hahtuvaopintopolku.fi");
+    System.setProperty("host.virkailija", "virkailija.untuvaopintopolku.fi");
+    System.setProperty("host.cas", "virkailija.untuvaopintopolku.fi");
     System.setProperty("host.alb", "http://localhost:8888");
-    System.setProperty("host.host-virkailija", "virkailija.hahtuvaopintopolku.fi");
+    System.setProperty("host.host-virkailija", "virkailija.untuvaopintopolku.fi");
     System.setProperty("host.host-alb", "http://localhost:8888");
 
     System.setProperty(
         "cas-service.service",
-        "https://virkailija.hahtuvaopintopolku.fi/valintalaskenta-laskenta-service");
+        "https://virkailija.untuvaopintopolku.fi/valintalaskenta-laskenta-service");
 
     System.setProperty("server.servlet.context-path", App.CONTEXT_PATH);
 
