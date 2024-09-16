@@ -266,7 +266,7 @@ public class ValintalaskentaResourceIntegrationTest extends AbstractMocklessInte
     do {
       returnValue =
           valintalaskentaResource.laskeJaSijoittele(
-              new Laskentakutsu(Arrays.asList(laskeDto1, laskeDto2), new SuoritustiedotDTO()));
+              Laskentakutsu.valintaRyhmaLaskentaKutsu(Arrays.asList(laskeDto1, laskeDto2), new SuoritustiedotDTO()));
       Thread.sleep(50);
     } while (!(returnValue.equals(HakukohteenLaskennanTila.VALMIS)
         || returnValue.equals(HakukohteenLaskennanTila.VIRHE)));
