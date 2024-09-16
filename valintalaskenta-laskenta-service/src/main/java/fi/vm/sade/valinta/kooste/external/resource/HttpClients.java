@@ -284,22 +284,6 @@ public class HttpClients {
     return defaultHttpClientBuilder(cookieManager).build();
   }
 
-  @Profile({"default", "dev"})
-  @Bean(name = "ValintalaskentaCasClient")
-  @Autowired
-  public RestCasClient getValintalaskentaCasClient(
-      @Value("${cas.service.valintalaskenta-service}") String service,
-      @Value("${valintalaskentakoostepalvelu.app.username.to.valintatieto}") String username,
-      @Value("${valintalaskentakoostepalvelu.app.password.to.valintatieto}") String password) {
-    String ticketsUrl = UrlConfiguration.getInstance().url("cas.tickets");
-    return new RestCasClient(
-        new CasConfig.CasConfigBuilder(
-                username, password, ticketsUrl, service, CSRF_VALUE, CALLER_ID, "")
-            .setJsessionName("JSESSIONID")
-            .build(),
-        DateDeserializer.gsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create());
-  }
-
   @Bean(name = "ValintaperusteetInternalHttpClient")
   @Autowired
   public java.net.http.HttpClient getValintaperusteetInternalHttpClient(

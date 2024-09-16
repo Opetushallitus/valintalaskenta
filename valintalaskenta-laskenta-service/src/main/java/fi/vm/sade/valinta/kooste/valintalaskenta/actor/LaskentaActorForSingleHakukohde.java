@@ -9,6 +9,7 @@ import fi.vm.sade.valinta.kooste.valintalaskenta.actor.dto.HakukohdeJaOrganisaat
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.HakukohdeTila;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTila;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.YhteenvetoDto;
 import io.reactivex.Observable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -247,7 +248,7 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
   }
 
   public void lopeta() {
-    final Observable<ResponseEntity> tilanmerkkausObservable;
+    final Observable<YhteenvetoDto> tilanmerkkausObservable;
     if (!COMPLETE.equals(state.get())) {
       LOG.warn("#### (Uuid={}) Laskenta lopetettu", uuid());
       tilanmerkkausObservable =
