@@ -1,190 +1,128 @@
 package fi.vm.sade.valinta.kooste.seuranta.impl;
 
-import com.google.gson.reflect.TypeToken;
-import fi.vm.sade.valinta.kooste.external.resource.UrlConfiguration;
 import fi.vm.sade.valinta.kooste.seuranta.LaskentaSeurantaService;
-import fi.vm.sade.valinta.kooste.external.resource.viestintapalvelu.RestCasClient;
 import fi.vm.sade.valinta.kooste.valintalaskenta.resource.LaskentaParams;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
+import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 import io.reactivex.Observable;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
-import org.apache.commons.lang3.StringUtils;
+import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 public class LaskentaSeurantaServiceImpl implements LaskentaSeurantaService {
   private final Logger LOG = LoggerFactory.getLogger(getClass());
 
-  private final RestCasClient restCasClient;
-
-  private final UrlConfiguration urlConfiguration;
+  private final SeurantaDao seurantaDao;
 
   @Autowired
-  public LaskentaSeurantaServiceImpl(
-      @Qualifier("ValintalaskentaCasClient") RestCasClient restCasClient) {
-    this.restCasClient = restCasClient;
-    this.urlConfiguration = UrlConfiguration.getInstance();
+  public LaskentaSeurantaServiceImpl(SeurantaDao seurantaDao) {
+    this.seurantaDao = seurantaDao;
   }
 
   @Override
   public Observable<Optional<String>> otaSeuraavaLaskentaTyonAlle() {
-    Function<String, Optional<String>> extractor =
-        response -> StringUtils.isBlank(response) ? Optional.empty() : Optional.of(response);
-    return Observable.fromFuture(
-        this.restCasClient
-            .get(
-                this.urlConfiguration.url(
-                    "seuranta-service.seuranta.laskenta.otaseuraavalaskentatyonalle"),
-                Map.of("Accept", "text/plain"),
-                10 * 60 * 1000)
-            .thenApply(response -> response.getResponseBody())
-            .thenApply(extractor));
+    return Observable.fromFuture(CompletableFuture.completedFuture(Optional.ofNullable(seurantaDao.otaSeuraavaLaskentaTyonAlle())));
   }
 
   public Observable<LaskentaDto> laskenta(String uuid) {
-    return Observable.fromFuture(
-        this.restCasClient.get(
-            this.urlConfiguration.url("seuranta-service.seuranta.kuormantasaus.laskenta", uuid),
-            new TypeToken<LaskentaDto>() {},
-            Collections.emptyMap(),
-            10 * 60 * 1000));
+    LaskentaDto l = seurantaDao.haeLaskenta(uuid);
+    if (l == null) {
+      throw new RuntimeException("SeurantaDao palautti null olion uuid:lle " + uuid);
+    }
+    return Observable.fromFuture(CompletableFuture.completedFuture(l));
   }
 
   public Observable<LaskentaDto> resetoiTilat(String uuid) {
-    return Observable.fromFuture(
-        this.restCasClient.put(
-            this.urlConfiguration.url(
-                "seuranta-service.seuranta.kuormantasaus.laskenta.resetoi", uuid),
-            new TypeToken<LaskentaDto>() {},
-            uuid,
-            Collections.emptyMap(),
-            10 * 60 * 1000));
+    LaskentaDto ldto = seurantaDao.resetoiEiValmiitHakukohteet(uuid, true);
+    if (ldto == null) {
+      LOG.error("Laskennan {} tila resetoitiin mutta ei saatu yhteenvetoa resetoinnista!", uuid);
+    }
+    return Observable.fromFuture(CompletableFuture.completedFuture(ldto));
   }
 
   public Observable<TunnisteDto> luoLaskenta(
       LaskentaParams laskentaParams, List<HakukohdeDto> hakukohdeOids) {
-
-    String url =
-        this.urlConfiguration.url(
-            "seuranta-service.seuranta.kuormantasaus.laskenta.tyyppi",
-            laskentaParams.getHakuOid(),
-            laskentaParams.getLaskentatyyppi());
-    url += "?userOID=" + URLEncoder.encode(laskentaParams.getUserOID(), StandardCharsets.UTF_8);
-    if (laskentaParams.getNimi() != null) {
-      url += "&nimi=" + URLEncoder.encode(laskentaParams.getNimi(), StandardCharsets.UTF_8);
+    if (hakukohdeOids == null) {
+      throw new NullPointerException(
+          "Laskentaa ei luoda tyhjalle (null) hakukohdedto referenssille!");
     }
-    url += "&haunnimi=" + URLEncoder.encode(laskentaParams.getHaunNimi(), StandardCharsets.UTF_8);
-    url += "&erillishaku=" + laskentaParams.isErillishaku();
-    if (laskentaParams.getValinnanvaihe() != null) {
-      url += "&valinnanvaihe=" + laskentaParams.getValinnanvaihe();
+    if (hakukohdeOids.isEmpty()) {
+      throw new NullPointerException(
+          "Laskentaa ei luoda tyhjalle (koko on nolla) hakukohdedto joukolle!");
     }
-    if (laskentaParams.getIsValintakoelaskenta() != null) {
-      url += "&valintakoelaskenta=" + laskentaParams.getIsValintakoelaskenta();
-    }
-
-    return Observable.fromFuture(
-        this.restCasClient.post(
-            url, new TypeToken<>() {}, hakukohdeOids, Collections.emptyMap(), 10 * 60 * 1000));
+    hakukohdeOids.forEach(
+        hk -> {
+          if (hk.getHakukohdeOid() == null || hk.getOrganisaatioOid() == null) {
+            throw new NullPointerException(
+                "Laskentaa ei luoda hakukohdejoukkoobjektille koska joukossa oli null referensseja sisaltava hakukohde!");
+          }
+        });
+    return Observable.fromFuture(CompletableFuture.completedFuture(seurantaDao.luoLaskenta(
+        laskentaParams.getUserOID(),
+        laskentaParams.getHaunNimi(),
+        laskentaParams.getNimi(),
+        laskentaParams.getHakuOid(),
+        laskentaParams.getLaskentatyyppi(),
+        laskentaParams.isErillishaku(),
+        laskentaParams.getValinnanvaihe(),
+        laskentaParams.getIsValintakoelaskenta(),
+        hakukohdeOids)));
   }
 
-  public Observable<ResponseEntity> merkkaaLaskennanTila(
+  public Observable<YhteenvetoDto> merkkaaLaskennanTila(
       String uuid, LaskentaTila tila, Optional<IlmoitusDto> ilmoitusDtoOptional) {
-    String url =
-        this.urlConfiguration.url(
-            "seuranta-service.seuranta.kuormantasaus.laskenta.tila", uuid, tila);
-    try {
-      if (ilmoitusDtoOptional.isPresent()) {
-        return Observable.fromFuture(
-            this.restCasClient
-                .post(url, ilmoitusDtoOptional.get(), Collections.emptyMap(), 10 * 60 * 1000)
-                .thenApply(r -> ResponseEntity.ok().build()));
-      } else {
-        return Observable.fromFuture(
-            this.restCasClient
-                .put(url, tila, Collections.emptyMap(), 10 * 60 * 1000)
-                .thenApply(r -> ResponseEntity.ok().build()));
-      }
-    } catch (Exception e) {
-      LOG.error("Seurantapalvelun kutsu paatyi virheeseen!" + url, e);
-      return Observable.error(e);
+    YhteenvetoDto y = seurantaDao.merkkaaTila(uuid, tila, ilmoitusDtoOptional);
+    if (y == null) {
+      LOG.error(
+          "Seurantaan paivitettiin laskennan {} tila {} mutta ei saatu yhteenvetoa lisayksesta!",
+          uuid,
+          tila);
     }
+    return Observable.fromFuture(CompletableFuture.completedFuture(y));
   }
 
-  public Observable<ResponseEntity> merkkaaLaskennanTila(
+  public Observable<YhteenvetoDto> merkkaaLaskennanTila(
       String uuid,
       LaskentaTila tila,
       HakukohdeTila hakukohdetila,
       Optional<IlmoitusDto> ilmoitusDtoOptional) {
-    String url =
-        this.urlConfiguration.url(
-            "seuranta-service.seuranta.kuormantasaus.laskenta.tila.hakukohde",
-            uuid,
-            tila,
-            hakukohdetila);
-    try {
-      if (ilmoitusDtoOptional.isPresent()) {
-        return Observable.fromFuture(
-            this.restCasClient
-                .post(url, ilmoitusDtoOptional.get(), Collections.emptyMap(), 10 * 60 * 1000)
-                .thenApply(r -> ResponseEntity.ok().build()));
-      } else {
-        return Observable.fromFuture(
-            this.restCasClient
-                .put(url, new TypeToken<>() {}, tila, Collections.emptyMap(), 10 * 60 * 1000)
-                .thenApply(r -> ResponseEntity.ok().build()));
-      }
-    } catch (Exception e) {
-      LOG.error("Seurantapalvelun kutsu " + url + " laskennalle " + uuid + " paatyi virheeseen", e);
-      return Observable.error(e);
+
+    YhteenvetoDto y =
+        seurantaDao.merkkaaTila(uuid, tila, hakukohdetila, ilmoitusDtoOptional);
+    if (y == null) {
+      LOG.error(
+          "Seurantaan paivitettiin laskennan {} tila {} mutta ei saatu yhteenvetoa lisayksesta!",
+          uuid,
+          tila);
     }
+    return Observable.fromFuture(CompletableFuture.completedFuture(y));
   }
 
   @Override
-  public Observable<ResponseEntity> merkkaaHakukohteenTila(
+  public Observable<YhteenvetoDto> merkkaaHakukohteenTila(
       String uuid,
       String hakukohdeOid,
       HakukohdeTila tila,
       Optional<IlmoitusDto> ilmoitusDtoOptional) {
-    String url =
-        this.urlConfiguration.url(
-            "seuranta-service.seuranta.kuormantasaus.laskenta.hakukohde.tila",
-            uuid,
-            hakukohdeOid,
-            tila);
-    try {
-      if (ilmoitusDtoOptional.isPresent()) {
-        return Observable.fromFuture(
-            this.restCasClient
-                .post(url, ilmoitusDtoOptional.get(), Collections.emptyMap(), 10 * 60 * 1000)
-                .thenApply(r -> ResponseEntity.ok().build()));
-      } else {
-        return Observable.fromFuture(
-            this.restCasClient
-                .put(url, new TypeToken<>() {}, tila, Collections.emptyMap(), 10 * 60 * 1000)
-                .thenApply(r -> ResponseEntity.ok().build()));
-      }
-    } catch (Exception e) {
-      LOG.error(
-          "Seurantapalvelun kutsu "
-              + url
-              + " laskennalle "
-              + uuid
-              + " ja hakukohteelle "
-              + hakukohdeOid
-              + " paatyi virheeseen",
-          e);
-      return Observable.error(e);
+
+    YhteenvetoDto y;
+    if(ilmoitusDtoOptional.isPresent()) {
+      y = seurantaDao.merkkaaTila(uuid, hakukohdeOid, tila, ilmoitusDtoOptional.get());
+    } else {
+      y = seurantaDao.merkkaaTila(uuid, hakukohdeOid, tila);
     }
+    if (y == null) {
+      LOG.error(
+          "Seurantaan markattiin hakukohteen {} tila {} laskentaan {} mutta ei saatu yhteenvetoa lisayksesta!",
+          hakukohdeOid,
+          tila,
+          uuid);
+    }
+    return Observable.fromFuture(CompletableFuture.completedFuture(y));
   }
 }

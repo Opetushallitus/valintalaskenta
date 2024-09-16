@@ -18,18 +18,18 @@ public interface LaskentaSeurantaService {
   Observable<TunnisteDto> luoLaskenta(
       LaskentaParams laskentaParams, List<HakukohdeDto> hakukohdeOids);
 
-  Observable<ResponseEntity> merkkaaHakukohteenTila(
+  Observable<YhteenvetoDto> merkkaaHakukohteenTila(
       String uuid,
       String hakukohdeOid,
       HakukohdeTila tila,
       Optional<IlmoitusDto> ilmoitusDtoOptional);
 
-  Observable<ResponseEntity> merkkaaLaskennanTila(
+  Observable<YhteenvetoDto> merkkaaLaskennanTila(
       String uuid,
       LaskentaTila tila,
       HakukohdeTila hakukohdetila,
       Optional<IlmoitusDto> ilmoitusDtoOptional);
 
-  Observable<ResponseEntity> merkkaaLaskennanTila(
+  Observable<YhteenvetoDto> merkkaaLaskennanTila(
       String uuid, LaskentaTila tila, Optional<IlmoitusDto> ilmoitusDtoOptional);
 }
