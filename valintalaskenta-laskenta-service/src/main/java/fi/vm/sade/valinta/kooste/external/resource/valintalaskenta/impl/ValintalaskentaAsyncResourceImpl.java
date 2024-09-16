@@ -96,7 +96,7 @@ public class ValintalaskentaAsyncResourceImpl implements ValintalaskentaAsyncRes
   @Override
   public Observable<String> laskeJaSijoittele(
       String uuid, List<LaskeDTO> lista, SuoritustiedotDTO suoritustiedot) {
-    Laskentakutsu laskentakutsu = new Laskentakutsu(lista, suoritustiedot);
+    Laskentakutsu laskentakutsu = Laskentakutsu.valintaRyhmaLaskentaKutsu(lista, suoritustiedot);
     if (LOG.isDebugEnabled()) {
       lista.forEach(this::logitaKokotiedot);
       logitaSuoritustietojenKoko(suoritustiedot);
