@@ -16,6 +16,22 @@ public class LaskentaParams {
   private final Optional<Maski> maski;
   private final boolean isErillishaku;
 
+  /**
+   *
+   * @param userOID               haun käynnistäneen käyttäjän tunniste, ei vaikuta laskentaan mutta näytetään
+   *                              valintalaskennan hallinnassa
+   * @param haunNimi              haun nimi, ei vaikuta laskentaan mutta näytetään valintalaskennan hallinnassa
+   * @param nimi                  laskennan nimi, ei vaikuta laskentaan mutta näytetään valintalaskennan hallinnassa
+   * @param laskentatyyppi        määrittää laskennan tyypin (haku, hakukohde, valintaryhmä)
+   * @param isValintakoelaskenta  valintakoelaskentaa käytetään selvittämään ketkä hakijat tulevat kutsutuksi
+   *                              valintakokeeseen
+   * @param valinnanvaihe         määrittää että laskennassa lasketaan vain tietty valinnan vaihe
+   * @param hakuOid               laskettavan haun tunniste
+   * @param maski                 maskitoiminnin avulla laskenta voidaan rajoittaa tiettyihin hakukohteisiin joko
+   *                              white- tai blacklistillä
+   * @param isErillishaku         erillishakutoiminnolla haun päätteeksi suoritetaan sijoittelu kunkin hakukohteen
+   *                              sisällä, ts. ei kaikkien haun hakukohteiden yli
+   */
   public LaskentaParams(
       String userOID,
       String haunNimi,
