@@ -42,7 +42,9 @@ import org.springframework.web.context.request.async.DeferredResult;
     name = "/valintalaskentakerralla",
     description = "Valintalaskenta kaikille valinnanvaiheille kerralla")
 public class ValintalaskentaKerrallaResource {
+
   private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaKerrallaResource.class);
+
   private static final List<String> valintalaskentaAllowedRoles =
       asList(
           "ROLE_APP_VALINTOJENTOTEUTTAMINEN_CRUD",
@@ -56,6 +58,18 @@ public class ValintalaskentaKerrallaResource {
   @Autowired private LaskentaSeurantaService seurantaAsyncResource;
   @Autowired private AuthorityCheckService authorityCheckService;
 
+  /**
+   * Luo seurantaan suoritettavan valintalaskennan koko haulle.
+   *
+   * @param hakuOid             haun tunniste
+   * @param erillishaku         onko kyseessä erillishaku (haku jonka päätteeksi suoritetaan sijoittelu)
+   * @param valinnanvaihe       mikä valinnanvaihe lasketaan (null => lasketaan kaikki)
+   * @param valintakoelaskenta  onko kyseessä valintakoelaskenta
+   * @param haunnimi            haun nimi
+   * @param nimi                laskennan nimi
+   *
+   * @return                    luodun laskennan tiedot
+   */
   @PostMapping(value = "/haku/{hakuOid}/tyyppi/HAKU", produces = MediaType.APPLICATION_JSON_VALUE)
   public DeferredResult<ResponseEntity<Vastaus>> valintalaskentaKokoHaulle(
       @PathVariable("hakuOid") String hakuOid,
@@ -65,8 +79,8 @@ public class ValintalaskentaKerrallaResource {
       @RequestParam(value = "haunnimi", required = false) String haunnimi,
       @RequestParam(value = "nimi", required = false) String nimi) {
     authorityCheckService.checkAuthorizationForHaku(hakuOid, valintalaskentaAllowedRoles);
-    DeferredResult<ResponseEntity<Vastaus>> result = new DeferredResult<>(1 * 60 * 1000l);
 
+    DeferredResult<ResponseEntity<Vastaus>> result = new DeferredResult<>(1 * 60 * 1000l);
     try {
       result.onTimeout(
           () -> {
@@ -77,7 +91,7 @@ public class ValintalaskentaKerrallaResource {
                 valintakoelaskenta);
             result.setErrorResult(
                 ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
-                    .body("Ajo laskennalle aikakatkaistu!"));
+                    .body("Laskennan luonti aikakatkaistu!"));
           });
 
       final String userOID = AuthorizationUtil.getCurrentUser();
@@ -94,15 +108,31 @@ public class ValintalaskentaKerrallaResource {
               Boolean.TRUE.equals(erillishaku)),
           result);
     } catch (Throwable e) {
-      LOG.error("Laskennan kaynnistamisessa tapahtui odottamaton virhe!", e);
+      LOG.error("Laskennan luonnissa tapahtui odottamaton virhe!", e);
       result.setErrorResult(
           ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-              .body("Odottamaton virhe laskennan kaynnistamisessa! " + e.getMessage()));
+              .body("Odottamaton virhe laskennan luonnissa! " + e.getMessage()));
     }
 
     return result;
   }
 
+  /**
+   * Luo seurantaan suoritettavan valintalaskennan osalle haun hakukohteista.
+   *
+   * @param hakuOid             haun tunniste
+   * @param erillishaku         onko kyseessä erillishaku (haku jonka päätteeksi suoritetaan sijoittelu)
+   * @param valinnanvaihe       mikä valinnanvaihe lasketaan (null => lasketaan kaikki)
+   * @param valintakoelaskenta  onko kyseessä valintakoelaskenta
+   * @param haunnimi            haun nimi
+   * @param nimi                laskennan nimi
+   * @param valintaryhmaOid     valintaryhmän tunniste (käytetään toistaiseksi vain autorisoinnissa)
+   * @param laskentatyyppi      laskennan tyyppi ()
+   * @param whitelist           onko laskettavat hakukohteet kaikista hakukohteista määritelty white- vai blacklistinä
+   * @param stringMaski         maski joka sisältää write- tai blacklistin
+   *
+   * @return                    luodun laskennan tiedot
+   */
   @PostMapping(
       value = "/haku/{hakuOid}/tyyppi/{tyyppi}/whitelist/{whitelist:.+}",
       consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -178,6 +208,13 @@ public class ValintalaskentaKerrallaResource {
     return result;
   }
 
+  /**
+   * Käynnistää olemassaolevan laskennan uudelleen
+   *
+   * @param uuid  laskennan tunniste
+   *
+   * @return      uudelleenkäynnistety laskennan tiedot
+   */
   @PostMapping(value = "/uudelleenyrita/{uuid:.+}", produces = MediaType.APPLICATION_JSON_VALUE)
   public DeferredResult<ResponseEntity<Vastaus>> uudelleenajoLaskennalle(
       @PathVariable("uuid") String uuid) {
@@ -217,6 +254,11 @@ public class ValintalaskentaKerrallaResource {
     }
   }
 
+  /**
+   * Palauttaa käynnissäolevien laskentojen tilan
+   *
+   * @return
+   */
   @GetMapping(value = "/status", produces = MediaType.APPLICATION_JSON_VALUE)
   @Operation(
       summary = "Valintalaskennan tila",
@@ -229,6 +271,13 @@ public class ValintalaskentaKerrallaResource {
     return valintalaskentaValvomo.runningLaskentas();
   }
 
+  /**
+   * Palauttaa yksittäisen laskennan tilan
+   *
+   * @param uuid  laskennan tunniste
+   *
+   * @return      laskennan tila
+   */
   @GetMapping(value = "/status/{uuid:.+}", produces = MediaType.APPLICATION_JSON_VALUE)
   @Operation(
       summary = "Valintalaskennan tila",
@@ -250,6 +299,12 @@ public class ValintalaskentaKerrallaResource {
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Valintalaskenta ei ole muistissa!");
   }
 
+  /**
+   * Palauttaa yksittäisen valintalaskennan tilan Excel-tiedostona
+   *
+   * @param uuid  valintalaskennan tunniste
+   * @return      statusexcel
+   */
   @GetMapping(value = "/status/{uuid}/xls", produces = "application/vnd.ms-excel")
   @Operation(
       summary = "Valintalaskennan tila",
@@ -327,6 +382,14 @@ public class ValintalaskentaKerrallaResource {
     return result;
   }
 
+  /**
+   * Peruuttaa luodun laskennan
+   *
+   * @param uuid                            laskennan tunniste
+   * @param lopetaVainJonossaOlevaLaskenta  peruutetaan laskenta vain jos sitä ei vielä ole käynnistetty
+   *
+   * @return                                tyhjä
+   */
   @DeleteMapping(value = "/haku/{uuid:.+}")
   public ResponseEntity<String> lopetaLaskenta(
       @PathVariable("uuid") String uuid,
@@ -356,7 +419,6 @@ public class ValintalaskentaKerrallaResource {
         .merkkaaLaskennanTila(
             uuid, LaskentaTila.PERUUTETTU, Optional.of(ilmoitus("Peruutettu käyttäjän toimesta")))
         .subscribe(ok -> stop(uuid), nok -> stop(uuid));
-    return;
   }
 
   private void stop(String uuid) {
