@@ -39,7 +39,7 @@ public class ValintalaskentaKerrallaService {
   @Autowired private ValintalaskentaKerrallaRouteValvomo valintalaskentaValvomo;
   @Autowired private ValintaperusteetAsyncResource valintaperusteetAsyncResource;
   @Autowired private ValintalaskentaKerrallaRoute valintalaskentaRoute;
-  @Autowired private LaskentaSeurantaService seurantaAsyncResource;
+  @Autowired private LaskentaSeurantaService laskentaSeurantaService;
 
   public ValintalaskentaKerrallaService() {}
 
@@ -129,7 +129,7 @@ public class ValintalaskentaKerrallaService {
   }
 
   private void resetoiTilat(String uuid, DeferredResult<ResponseEntity<Vastaus>> result) {
-    seurantaAsyncResource
+    laskentaSeurantaService
         .resetoiTilat(uuid)
         .flatMap(
             (LaskentaDto laskenta) ->
@@ -205,7 +205,7 @@ public class ValintalaskentaKerrallaService {
       DeferredResult<ResponseEntity<Vastaus>> result) {
     final List<HakukohdeDto> hakukohdeDtos = toHakukohdeDto(hakukohdeData);
     validateHakukohdeDtos(hakukohdeData, hakukohdeDtos, result);
-    seurantaAsyncResource
+    laskentaSeurantaService
         .luoLaskenta(laskentaParams, hakukohdeDtos)
         .subscribe(
             laskennanAloitus::accept,
@@ -222,7 +222,7 @@ public class ValintalaskentaKerrallaService {
       Consumer<TunnisteDto> laskennanAloitus,
       LaskentaParams laskentaParams,
       DeferredResult<ResponseEntity<Vastaus>> result) {
-    seurantaAsyncResource
+    laskentaSeurantaService
         .luoLaskenta(laskentaParams, hakukohdeDtos)
         .subscribe(
             laskennanAloitus::accept,
