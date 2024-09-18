@@ -123,34 +123,30 @@ public class LaskentaActorSystem
   }
 
   public void fetchAndStartLaskenta() {
-    seurantaAsyncResource
-        .otaSeuraavaLaskentaTyonAlle()
-        .subscribe(
-            this::startLaskentaIfWorkAvailable,
-            (Throwable t) -> {
-              LOG.warn("Uutta laskentaa ei saatu tyon alle seurannasta. Yritetään uudelleen.", t);
-              _fetchAndStartLaskentaRetry(); // FIXME kill me OK-152
-            });
+    try {
+      this.startLaskentaIfWorkAvailable(seurantaAsyncResource.otaSeuraavaLaskentaTyonAlle());
+    } catch(Throwable t) {
+      LOG.warn("Uutta laskentaa ei saatu tyon alle seurannasta. Yritetään uudelleen.", t);
+      _fetchAndStartLaskentaRetry(); // FIXME kill me OK-152
+    }
   }
 
   private void _fetchAndStartLaskentaRetry() {
-    seurantaAsyncResource
-        .otaSeuraavaLaskentaTyonAlle()
-        .subscribe(
-            this::startLaskentaIfWorkAvailable,
-            (Throwable t) -> {
-              String message = "Uutta laskentaa ei saatu tyon alle seurannasta.";
-              LOG.error(message, t);
-              actorSystem
-                  .scheduler()
-                  .scheduleOnce(
-                      FiniteDuration.create(5, TimeUnit.SECONDS),
-                      laskennanKaynnistajaActor,
-                      new WorkerAvailable(),
-                      actorSystem.dispatcher(),
-                      ActorRef.noSender());
-              throw new RuntimeException(message, t);
-            });
+    try {
+      this.startLaskentaIfWorkAvailable(seurantaAsyncResource.otaSeuraavaLaskentaTyonAlle());
+    } catch(Throwable t) {
+      String message = "Uutta laskentaa ei saatu tyon alle seurannasta.";
+      LOG.error(message, t);
+      actorSystem
+          .scheduler()
+          .scheduleOnce(
+              FiniteDuration.create(5, TimeUnit.SECONDS),
+              laskennanKaynnistajaActor,
+              new WorkerAvailable(),
+              actorSystem.dispatcher(),
+              ActorRef.noSender());
+      throw new RuntimeException(message, t);
+    }
   }
 
   private void startLaskentaIfWorkAvailable(Optional<String> uuid) {

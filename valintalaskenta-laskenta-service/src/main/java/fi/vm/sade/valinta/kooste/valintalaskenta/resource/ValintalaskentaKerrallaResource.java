@@ -14,6 +14,7 @@ import fi.vm.sade.valinta.kooste.valintalaskenta.route.ValintalaskentaKerrallaRo
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTila;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.TunnisteDto;
 import io.reactivex.Observable;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -55,7 +56,7 @@ public class ValintalaskentaKerrallaResource {
   @Autowired private ValintalaskentaKerrallaRouteValvomo valintalaskentaValvomo;
   @Autowired private ValintalaskentaKerrallaService valintalaskentaKerrallaService;
   @Autowired private ValintalaskentaStatusExcelHandler valintalaskentaStatusExcelHandler;
-  @Autowired private LaskentaSeurantaService seurantaAsyncResource;
+  @Autowired private LaskentaSeurantaService laskentaSeurantaService;
   @Autowired private AuthorityCheckService authorityCheckService;
 
   /**
@@ -95,7 +96,7 @@ public class ValintalaskentaKerrallaResource {
           });
 
       final String userOID = AuthorizationUtil.getCurrentUser();
-      valintalaskentaKerrallaService.kaynnistaLaskentaHaulle(
+      TunnisteDto tunniste = valintalaskentaKerrallaService.kaynnistaLaskentaHaulle(
           new LaskentaParams(
               userOID,
               haunnimi,
@@ -105,15 +106,16 @@ public class ValintalaskentaKerrallaResource {
               valinnanvaihe,
               hakuOid,
               Optional.empty(),
-              Boolean.TRUE.equals(erillishaku)),
-          result);
+              Boolean.TRUE.equals(erillishaku)));
+
+      result.setResult(ResponseEntity.status(HttpStatus.OK)
+          .body(Vastaus.laskennanSeuraus(tunniste.getUuid(), tunniste.getLuotiinkoUusiLaskenta())));
     } catch (Throwable e) {
       LOG.error("Laskennan luonnissa tapahtui odottamaton virhe!", e);
       result.setErrorResult(
           ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
               .body("Odottamaton virhe laskennan luonnissa! " + e.getMessage()));
     }
-
     return result;
   }
 
@@ -181,7 +183,7 @@ public class ValintalaskentaKerrallaResource {
                 authorityCheckService.getAuthorityCheckForRoles(valintalaskentaAllowedRoles));
       }
 
-      valintalaskentaKerrallaService.kaynnistaLaskentaHaulle(
+      TunnisteDto tunniste = valintalaskentaKerrallaService.kaynnistaLaskentaHaulle(
           new LaskentaParams(
               userOID,
               haunnimi,
@@ -192,9 +194,9 @@ public class ValintalaskentaKerrallaResource {
               hakuOid,
               Optional.of(maski),
               Boolean.TRUE.equals(erillishaku)),
-          result,
           authorityCheckObservable);
-
+      result.setResult(ResponseEntity.status(HttpStatus.OK)
+          .body(Vastaus.laskennanSeuraus(tunniste.getUuid(), tunniste.getLuotiinkoUusiLaskenta())));
     } catch (AccessDeniedException e) {
       result.setErrorResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage()));
     } catch (Throwable e) {
@@ -360,7 +362,7 @@ public class ValintalaskentaKerrallaResource {
     checkAuthorizationForLaskentaFromSeuranta(uuid)
         .subscribe(
             allowed -> {
-              seurantaAsyncResource
+              laskentaSeurantaService
                   .laskenta(uuid)
                   .subscribe(
                       laskenta -> result.setResult(ResponseEntity.of(Optional.of(laskenta))),
@@ -416,7 +418,7 @@ public class ValintalaskentaKerrallaResource {
       }
     }
     stop(uuid);
-    seurantaAsyncResource
+    laskentaSeurantaService
         .merkkaaLaskennanTila(
             uuid, LaskentaTila.PERUUTETTU, Optional.of(ilmoitus("Peruutettu käyttäjän toimesta")))
         .subscribe(ok -> stop(uuid), nok -> stop(uuid));
@@ -477,11 +479,11 @@ public class ValintalaskentaKerrallaResource {
     // Tallenna tätä pyyntöä suorittavan säikeen konteksti, jotta samaan käyttäjätietoon
     // voidaan viitata tarkastelun suorittavasta säikeestä.
     AuthorityCheckService.Context context = authorityCheckService.getContext();
-    return getLaskentaDtoFromSeuranta(uuid)
+    return laskentaSeurantaService.laskenta(uuid)
         .map(laskentaDto -> checkAuthorizationForLaskentaInContext(context, laskentaDto));
   }
 
   private Observable<LaskentaDto> getLaskentaDtoFromSeuranta(String uuid) {
-    return seurantaAsyncResource.laskenta(uuid);
+    return laskentaSeurantaService.laskenta(uuid);
   }
 }
