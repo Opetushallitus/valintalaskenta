@@ -25,8 +25,8 @@ public class LaskentaSeurantaServiceImpl implements LaskentaSeurantaService {
   }
 
   @Override
-  public Observable<Optional<String>> otaSeuraavaLaskentaTyonAlle() {
-    return Observable.fromFuture(CompletableFuture.completedFuture(Optional.ofNullable(seurantaDao.otaSeuraavaLaskentaTyonAlle())));
+  public Optional<String> otaSeuraavaLaskentaTyonAlle() {
+    return Optional.ofNullable(seurantaDao.otaSeuraavaLaskentaTyonAlle());
   }
 
   public Observable<LaskentaDto> laskenta(String uuid) {
@@ -45,7 +45,7 @@ public class LaskentaSeurantaServiceImpl implements LaskentaSeurantaService {
     return Observable.fromFuture(CompletableFuture.completedFuture(ldto));
   }
 
-  public Observable<TunnisteDto> luoLaskenta(
+  public TunnisteDto luoLaskenta(
       LaskentaParams laskentaParams, List<HakukohdeDto> hakukohdeOids) {
     if (hakukohdeOids == null) {
       throw new NullPointerException(
@@ -62,7 +62,7 @@ public class LaskentaSeurantaServiceImpl implements LaskentaSeurantaService {
                 "Laskentaa ei luoda hakukohdejoukkoobjektille koska joukossa oli null referensseja sisaltava hakukohde!");
           }
         });
-    return Observable.fromFuture(CompletableFuture.completedFuture(seurantaDao.luoLaskenta(
+    return seurantaDao.luoLaskenta(
         laskentaParams.getUserOID(),
         laskentaParams.getHaunNimi(),
         laskentaParams.getNimi(),
@@ -71,7 +71,7 @@ public class LaskentaSeurantaServiceImpl implements LaskentaSeurantaService {
         laskentaParams.isErillishaku(),
         laskentaParams.getValinnanvaihe(),
         laskentaParams.getIsValintakoelaskenta(),
-        hakukohdeOids)));
+        hakukohdeOids);
   }
 
   public Observable<YhteenvetoDto> merkkaaLaskennanTila(

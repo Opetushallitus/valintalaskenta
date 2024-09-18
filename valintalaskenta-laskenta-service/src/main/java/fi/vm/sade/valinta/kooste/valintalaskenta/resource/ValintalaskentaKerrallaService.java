@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -43,14 +42,32 @@ public class ValintalaskentaKerrallaService {
 
   public ValintalaskentaKerrallaService() {}
 
-  public void kaynnistaLaskentaHaulle(
-      LaskentaParams laskentaParams, DeferredResult<ResponseEntity<Vastaus>> result) {
-    kaynnistaLaskentaHaulle(laskentaParams, result, Observable.empty());
+  private void autorisoiHakukohteet(String hakuOid,
+                                    Collection<HakukohdeJaOrganisaatio> haunHakukohteetOids,
+                                    Observable<HakukohdeOIDAuthorityCheck> authCheck) {
+    authCheck
+        .blockingNext()
+        .forEach(
+            authorityCheck ->
+                haunHakukohteetOids.forEach(
+                    hk -> {
+                      if (!authorityCheck.test(hk.getHakukohdeOid())) {
+                        LOG.error(
+                            String.format(
+                                "Ei oikeutta aloittaa laskentaa hakukohteelle %s haussa %s",
+                                hk.getHakukohdeOid(), hakuOid));
+                        throw new AccessDeniedException(
+                            "Ei oikeutta aloittaa laskentaa");
+                      }
+                    }));
   }
 
-  public void kaynnistaLaskentaHaulle(
+  public TunnisteDto kaynnistaLaskentaHaulle(LaskentaParams laskentaParams) {
+    return kaynnistaLaskentaHaulle(laskentaParams, Observable.empty());
+  }
+
+  public TunnisteDto kaynnistaLaskentaHaulle(
       LaskentaParams laskentaParams,
-      DeferredResult<ResponseEntity<Vastaus>> result,
       Observable<HakukohdeOIDAuthorityCheck> authCheck) {
     String hakuOid = laskentaParams.getHakuOid();
     Optional<String> uuidForExistingNonMaskedLaskenta =
@@ -62,53 +79,33 @@ public class ValintalaskentaKerrallaService {
           "Laskenta on jo kaynnissa haulle {} joten palautetaan seurantatunnus({}) ajossa olevaan hakuun",
           uuid,
           uuid);
-      result.setResult(redirectResponse(new TunnisteDto(uuid, false)));
-    } else {
-      LOG.info("Aloitetaan laskenta haulle {}", hakuOid);
-      valintaperusteetAsyncResource
-          .haunHakukohteet(hakuOid)
-          .subscribe(
-              (List<HakukohdeViiteDTO> hakukohdeViitteet) -> {
-                Collection<HakukohdeJaOrganisaatio> haunHakukohteetOids =
-                    kasitteleHakukohdeViitteet(
-                        hakukohdeViitteet, hakuOid, laskentaParams.getMaski(), result);
-
-                if (!LaskentaTyyppi.VALINTARYHMA.equals(laskentaParams.getLaskentatyyppi())) {
-                  authCheck
-                      .blockingNext()
-                      .forEach(
-                          authorityCheck ->
-                              haunHakukohteetOids.forEach(
-                                  hk -> {
-                                    if (!authorityCheck.test(hk.getHakukohdeOid())) {
-                                      LOG.error(
-                                          String.format(
-                                              "Ei oikeutta aloittaa laskentaa hakukohteelle %s haussa %s",
-                                              hk.getHakukohdeOid(), hakuOid));
-                                      throw new AccessDeniedException(
-                                          "Ei oikeutta aloittaa laskentaa");
-                                    }
-                                  }));
-                }
-
-                createLaskenta(
-                    haunHakukohteetOids,
-                    (TunnisteDto uuid) -> notifyWorkAvailable(uuid, result),
-                    laskentaParams,
-                    result);
-              },
-              (Throwable poikkeus) -> {
-                LOG.error("kaynnistaLaskentaHaulle throws", poikkeus);
-                result.setErrorResult(errorResponse(poikkeus.getMessage()));
-              });
+      return new TunnisteDto(uuid, false);
     }
+
+    LOG.info("Aloitetaan laskenta haulle {}", hakuOid);
+    List<HakukohdeViiteDTO> hakukohdeViitteet = valintaperusteetAsyncResource.haunHakukohteet(hakuOid).blockingFirst();
+    Collection<HakukohdeJaOrganisaatio> haunHakukohteetOids =
+        kasitteleHakukohdeViitteet(
+            hakukohdeViitteet, hakuOid, laskentaParams.getMaski());
+
+    if (!LaskentaTyyppi.VALINTARYHMA.equals(laskentaParams.getLaskentatyyppi())) {
+      this.autorisoiHakukohteet(hakuOid, haunHakukohteetOids, authCheck);
+    }
+
+    final List<HakukohdeDto> hakukohdeDtos = toHakukohdeDto(haunHakukohteetOids);
+    validateHakukohdeDtos(haunHakukohteetOids, hakukohdeDtos);
+    TunnisteDto tunniste =  laskentaSeurantaService.luoLaskenta(laskentaParams, hakukohdeDtos);
+    if (tunniste.getLuotiinkoUusiLaskenta()) {
+      valintalaskentaRoute.workAvailable();
+    }
+    return tunniste;
   }
 
   public void kaynnistaLaskentaUudelleen(
       final String uuid, final DeferredResult<ResponseEntity<Vastaus>> result) {
     valintalaskentaValvomo
         .fetchLaskenta(uuid)
-        .filter(ValintalaskentaKerrallaService::ajossaolevaLaskenta)
+        .filter(laskenta -> !laskenta.isValmis())
         .ifPresentOrElse(
             laskenta -> {
               palautaAjossaolevaLaskenta(uuid, result);
@@ -116,10 +113,6 @@ public class ValintalaskentaKerrallaService {
             () -> {
               resetoiTilat(uuid, result);
             });
-  }
-
-  private static final boolean ajossaolevaLaskenta(Laskenta laskenta) {
-    return !laskenta.isValmis();
   }
 
   private void palautaAjossaolevaLaskenta(
@@ -158,8 +151,7 @@ public class ValintalaskentaKerrallaService {
   private static Collection<HakukohdeJaOrganisaatio> kasitteleHakukohdeViitteet(
       final List<HakukohdeViiteDTO> hakukohdeViitteet,
       final String hakuOid,
-      final Optional<Maski> maski,
-      final DeferredResult<ResponseEntity<Vastaus>> result) {
+      final Optional<Maski> maski) {
     LOG.info("Tarkastellaan hakukohdeviitteita haulle {}", hakuOid);
 
     if (hakukohdeViitteet == null || hakukohdeViitteet.isEmpty()) {
@@ -182,7 +174,6 @@ public class ValintalaskentaKerrallaService {
               + hakuOid
               + " ei saatu hakukohteita! Onko valinnat synkronoitu tarjonnan kanssa?";
       LOG.error(msg);
-      result.setErrorResult(errorResponse(msg));
       throw new RuntimeException(msg);
     } else {
       return oids;
@@ -198,48 +189,12 @@ public class ValintalaskentaKerrallaService {
     result.setResult(redirectResponse(uuid));
   }
 
-  private void createLaskenta(
-      Collection<HakukohdeJaOrganisaatio> hakukohdeData,
-      Consumer<TunnisteDto> laskennanAloitus,
-      LaskentaParams laskentaParams,
-      DeferredResult<ResponseEntity<Vastaus>> result) {
-    final List<HakukohdeDto> hakukohdeDtos = toHakukohdeDto(hakukohdeData);
-    validateHakukohdeDtos(hakukohdeData, hakukohdeDtos, result);
-    laskentaSeurantaService
-        .luoLaskenta(laskentaParams, hakukohdeDtos)
-        .subscribe(
-            laskennanAloitus::accept,
-            (Throwable t) -> {
-              LOG.info(
-                  "Seurannasta uuden laskennan haku paatyi virheeseen. Yritetään uudelleen.", t);
-              createLaskentaRetry(
-                  hakukohdeDtos, laskennanAloitus, laskentaParams, result); // FIXME kill me OK-152!
-            });
-  }
-
-  private void createLaskentaRetry(
-      List<HakukohdeDto> hakukohdeDtos,
-      Consumer<TunnisteDto> laskennanAloitus,
-      LaskentaParams laskentaParams,
-      DeferredResult<ResponseEntity<Vastaus>> result) {
-    laskentaSeurantaService
-        .luoLaskenta(laskentaParams, hakukohdeDtos)
-        .subscribe(
-            laskennanAloitus::accept,
-            (Throwable t) -> {
-              LOG.error("Seurannasta uuden laskennan haku paatyi virheeseen", t);
-              result.setErrorResult(errorResponse(t.getMessage()));
-            });
-  }
-
   private static void validateHakukohdeDtos(
       Collection<HakukohdeJaOrganisaatio> hakukohdeData,
-      List<HakukohdeDto> hakukohdeDtos,
-      DeferredResult<ResponseEntity<Vastaus>> result) {
+      List<HakukohdeDto> hakukohdeDtos) {
     if (hakukohdeDtos.isEmpty()) {
       String msg = "Laskentaa ei voida aloittaa hakukohteille joilta puuttuu organisaatio!";
       LOG.error(msg);
-      result.setErrorResult(errorResponse(msg));
       throw new RuntimeException(msg);
     }
     if (hakukohdeDtos.size() < hakukohdeData.size()) {

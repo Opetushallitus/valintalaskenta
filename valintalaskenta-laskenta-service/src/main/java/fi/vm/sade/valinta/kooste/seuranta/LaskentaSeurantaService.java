@@ -5,17 +5,16 @@ import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
 import io.reactivex.Observable;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.http.ResponseEntity;
 
 public interface LaskentaSeurantaService {
 
-  Observable<Optional<String>> otaSeuraavaLaskentaTyonAlle();
+  Optional<String> otaSeuraavaLaskentaTyonAlle();
 
   Observable<LaskentaDto> laskenta(String uuid);
 
   Observable<LaskentaDto> resetoiTilat(String uuid);
 
-  Observable<TunnisteDto> luoLaskenta(
+  TunnisteDto luoLaskenta(
       LaskentaParams laskentaParams, List<HakukohdeDto> hakukohdeOids);
 
   Observable<YhteenvetoDto> merkkaaHakukohteenTila(
