@@ -256,7 +256,7 @@ public class ValintalaskentaKerrallaResource {
   private void kaynnistaLaskentaUudelleen(
       String uuid, DeferredResult<ResponseEntity<Vastaus>> result) {
     try {
-      valintalaskentaKerrallaService.kaynnistaLaskentaUudelleen(uuid, result);
+      valintalaskentaKerrallaService.kaynnistaLaskentaUudelleen(uuid);
     } catch (Throwable e) {
       LOG.error("Laskennan kaynnistamisessa tapahtui odottamaton virhe", e);
       result.setErrorResult(
