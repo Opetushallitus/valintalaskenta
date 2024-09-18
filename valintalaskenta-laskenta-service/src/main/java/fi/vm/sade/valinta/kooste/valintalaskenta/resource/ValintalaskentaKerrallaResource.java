@@ -3,8 +3,10 @@ package fi.vm.sade.valinta.kooste.valintalaskenta.resource;
 import static fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto.ilmoitus;
 import static java.util.Arrays.asList;
 
+import fi.vm.sade.service.valintaperusteet.dto.HakukohdeViiteDTO;
 import fi.vm.sade.valinta.kooste.AuthorizationUtil;
 import fi.vm.sade.valinta.kooste.dto.Vastaus;
+import fi.vm.sade.valinta.kooste.external.resource.valintaperusteet.ValintaperusteetAsyncResource;
 import fi.vm.sade.valinta.kooste.seuranta.LaskentaSeurantaService;
 import fi.vm.sade.valinta.kooste.security.AuthorityCheckService;
 import fi.vm.sade.valinta.kooste.security.HakukohdeOIDAuthorityCheck;
@@ -22,6 +24,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -58,6 +61,7 @@ public class ValintalaskentaKerrallaResource {
   @Autowired private ValintalaskentaStatusExcelHandler valintalaskentaStatusExcelHandler;
   @Autowired private LaskentaSeurantaService laskentaSeurantaService;
   @Autowired private AuthorityCheckService authorityCheckService;
+  @Autowired private ValintaperusteetAsyncResource valintaperusteetAsyncResource;
 
   /**
    * Luo seurantaan suoritettavan valintalaskennan koko haulle.
@@ -96,6 +100,7 @@ public class ValintalaskentaKerrallaResource {
           });
 
       final String userOID = AuthorizationUtil.getCurrentUser();
+      List<HakukohdeViiteDTO> hakukohdeViitteet = valintaperusteetAsyncResource.haunHakukohteet(hakuOid).blockingFirst();
       TunnisteDto tunniste = valintalaskentaKerrallaService.kaynnistaLaskentaHaulle(
           new LaskentaParams(
               userOID,
@@ -106,7 +111,8 @@ public class ValintalaskentaKerrallaResource {
               valinnanvaihe,
               hakuOid,
               Optional.empty(),
-              Boolean.TRUE.equals(erillishaku)));
+              Boolean.TRUE.equals(erillishaku)),
+          hakukohdeViitteet);
 
       result.setResult(ResponseEntity.status(HttpStatus.OK)
           .body(Vastaus.laskennanSeuraus(tunniste.getUuid(), tunniste.getLuotiinkoUusiLaskenta())));
@@ -172,15 +178,18 @@ public class ValintalaskentaKerrallaResource {
       Maski maski = whitelist ? Maski.whitelist(stringMaski) : Maski.blacklist(stringMaski);
       final String userOID = AuthorizationUtil.getCurrentUser();
 
-      Observable<HakukohdeOIDAuthorityCheck> authorityCheckObservable;
+      List<HakukohdeViiteDTO> hakukohdeViitteet = valintaperusteetAsyncResource.haunHakukohteet(hakuOid).blockingFirst();
       if (LaskentaTyyppi.VALINTARYHMA.equals(laskentatyyppi)) {
+        // TODO: kiellä maskin käyttö valintaryhmälaskennassa
+
         authorityCheckService.checkAuthorizationForValintaryhma(
             valintaryhmaOid, valintalaskentaAllowedRoles);
-        authorityCheckObservable = Observable.empty();
       } else {
-        authorityCheckObservable =
+        Observable<HakukohdeOIDAuthorityCheck> authorityCheckObservable =
             Observable.fromFuture(
                 authorityCheckService.getAuthorityCheckForRoles(valintalaskentaAllowedRoles));
+
+        this.autorisoiHakukohteet(hakuOid, hakukohdeViitteet, authorityCheckObservable);
       }
 
       TunnisteDto tunniste = valintalaskentaKerrallaService.kaynnistaLaskentaHaulle(
@@ -194,7 +203,7 @@ public class ValintalaskentaKerrallaResource {
               hakuOid,
               Optional.of(maski),
               Boolean.TRUE.equals(erillishaku)),
-          authorityCheckObservable);
+          hakukohdeViitteet);
       result.setResult(ResponseEntity.status(HttpStatus.OK)
           .body(Vastaus.laskennanSeuraus(tunniste.getUuid(), tunniste.getLuotiinkoUusiLaskenta())));
     } catch (AccessDeniedException e) {
@@ -425,6 +434,26 @@ public class ValintalaskentaKerrallaResource {
 
   private void stop(String uuid) {
     valintalaskentaValvomo.fetchLaskenta(uuid).ifPresent(Laskenta::lopeta);
+  }
+
+  private void autorisoiHakukohteet(String hakuOid,
+                                    Collection<HakukohdeViiteDTO> haunHakukohdeViitteet,
+                                    Observable<HakukohdeOIDAuthorityCheck> authCheck) {
+    authCheck
+        .blockingNext()
+        .forEach(
+            authorityCheck ->
+                haunHakukohdeViitteet.forEach(
+                    hk -> {
+                      if (!authorityCheck.test(hk.getOid())) {
+                        LOG.error(
+                            String.format(
+                                "Ei oikeutta aloittaa laskentaa hakukohteelle %s haussa %s",
+                                hk.getOid(), hakuOid));
+                        throw new AccessDeniedException(
+                            "Ei oikeutta aloittaa laskentaa");
+                      }
+                    }));
   }
 
   private String hakukohdeOidsFromMaskiToString(List<String> maski) {
