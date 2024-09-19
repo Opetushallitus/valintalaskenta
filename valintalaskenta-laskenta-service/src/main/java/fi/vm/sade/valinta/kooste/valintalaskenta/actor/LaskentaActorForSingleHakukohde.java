@@ -4,17 +4,18 @@ import static fi.vm.sade.valinta.kooste.valintalaskenta.actor.LaskentaActorForSi
 import static fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto.ilmoitus;
 import static fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto.virheilmoitus;
 
-import fi.vm.sade.valinta.kooste.seuranta.LaskentaSeurantaService;
 import fi.vm.sade.valinta.kooste.valintalaskenta.actor.dto.HakukohdeJaOrganisaatio;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.HakukohdeTila;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTila;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.YhteenvetoDto;
+import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 import io.reactivex.Observable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -23,7 +24,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 
 class LaskentaActorForSingleHakukohde implements LaskentaActor {
   private static final Logger LOG = LoggerFactory.getLogger(LaskentaActorForSingleHakukohde.class);
@@ -36,7 +36,7 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
   private final Function<? super HakukohdeJaOrganisaatio, ? extends Observable<?>>
       hakukohteenLaskenta;
   private final LaskentaSupervisor laskentaSupervisor;
-  private final LaskentaSeurantaService laskentaSeurantaService;
+  private final SeurantaDao seurantaDao;
   private final int splittaus;
   private final ConcurrentLinkedQueue<HakukohdeJaOrganisaatio> hakukohdeQueue;
   private final ConcurrentLinkedQueue<HakukohdeJaOrganisaatio> retryQueue =
@@ -48,12 +48,12 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
       LaskentaActorParams actorParams,
       Function<? super HakukohdeJaOrganisaatio, ? extends Observable<?>> hakukohteenLaskenta,
       LaskentaSupervisor laskentaSupervisor,
-      LaskentaSeurantaService laskentaSeurantaService,
+      SeurantaDao seurantaDao,
       int splittaus) {
     this.actorParams = actorParams;
     this.hakukohteenLaskenta = hakukohteenLaskenta;
     this.laskentaSupervisor = laskentaSupervisor;
-    this.laskentaSeurantaService = laskentaSeurantaService;
+    this.seurantaDao = seurantaDao;
     this.splittaus = splittaus;
     hakukohdeQueue = new ConcurrentLinkedQueue<>(actorParams.getHakukohdeOids());
     this.isValintaryhmalaskenta = actorParams.isValintaryhmalaskenta();
@@ -133,8 +133,7 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
     }
     if (!isValintaryhmalaskenta) {
       HakukohdeTila tila = HakukohdeTila.VALMIS;
-      laskentaSeurantaService
-          .merkkaaHakukohteenTila(uuid(), hakukohdeOid, tila, Optional.empty())
+      Observable.fromFuture(CompletableFuture.completedFuture(seurantaDao.merkkaaTila(uuid(), hakukohdeOid, tila)))
           .subscribeOn(Schedulers.newThread())
           .subscribe(
               ok ->
@@ -178,14 +177,12 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
       if (!isValintaryhmalaskenta) {
         try {
           HakukohdeTila tila = HakukohdeTila.KESKEYTETTY;
-          laskentaSeurantaService
-              .merkkaaHakukohteenTila(
+          Observable.fromFuture(CompletableFuture.completedFuture(seurantaDao.merkkaaTila(
                   uuid(),
                   hakukohdeOid,
                   tila,
-                  Optional.of(
-                      virheilmoitus(
-                          failure.getMessage(), Arrays.toString(failure.getStackTrace()))))
+                  virheilmoitus(
+                      failure.getMessage(), Arrays.toString(failure.getStackTrace())))))
               .subscribeOn(Schedulers.newThread())
               .subscribe(
                   ok ->
@@ -248,16 +245,16 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
   }
 
   public void lopeta() {
-    final Observable<YhteenvetoDto> tilanmerkkausObservable;
+    final YhteenvetoDto yhteenvetoDto;
     if (!COMPLETE.equals(state.get())) {
       LOG.warn("#### (Uuid={}) Laskenta lopetettu", uuid());
-      tilanmerkkausObservable =
-          laskentaSeurantaService.merkkaaLaskennanTila(
+      yhteenvetoDto =
+          seurantaDao.merkkaaTila(
               uuid(), LaskentaTila.PERUUTETTU, Optional.of(ilmoitus("Laskenta on peruutettu")));
     } else if (valintaryhmalaskennanTulos.isPresent()) {
       LOG.error("#### (Uuid={}) Valintaryhmälaskenta on epäonnistunut.", uuid());
-      tilanmerkkausObservable =
-          laskentaSeurantaService.merkkaaLaskennanTila(
+      yhteenvetoDto =
+          seurantaDao.merkkaaTila(
               uuid(), LaskentaTila.PERUUTETTU, valintaryhmalaskennanTulos);
     } else {
       LOG.info(
@@ -267,11 +264,11 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
           successTotal.get(),
           retryTotal.get(),
           failedTotal.get());
-      tilanmerkkausObservable =
-          laskentaSeurantaService.merkkaaLaskennanTila(
+      yhteenvetoDto =
+          seurantaDao.merkkaaTila(
               uuid(), LaskentaTila.VALMIS, Optional.empty());
     }
-    tilanmerkkausObservable
+    Observable.fromFuture(CompletableFuture.completedFuture(yhteenvetoDto))
         .subscribeOn(Schedulers.newThread())
         .subscribe(
             response -> laskentaSupervisor.ready(uuid()),
