@@ -1,7 +1,6 @@
 package fi.vm.sade.valinta.kooste.valintalaskenta.resource;
 
 import fi.vm.sade.service.valintaperusteet.dto.HakukohdeViiteDTO;
-import fi.vm.sade.valinta.kooste.seuranta.LaskentaSeurantaService;
 import fi.vm.sade.valinta.kooste.valintalaskenta.actor.dto.HakukohdeJaOrganisaatio;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Laskenta;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.LaskentaInfo;
@@ -10,16 +9,23 @@ import fi.vm.sade.valinta.kooste.valintalaskenta.route.ValintalaskentaKerrallaRo
 import fi.vm.sade.valinta.kooste.valintalaskenta.route.ValintalaskentaKerrallaRouteValvomo;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.HakukohdeDto;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTila;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.TunnisteDto;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
+import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
+import io.reactivex.Observable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import static fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto.ilmoitus;
 
 @Service
 public class ValintalaskentaKerrallaService {
@@ -27,7 +33,7 @@ public class ValintalaskentaKerrallaService {
 
   @Autowired private ValintalaskentaKerrallaRouteValvomo valintalaskentaValvomo;
   @Autowired private ValintalaskentaKerrallaRoute valintalaskentaRoute;
-  @Autowired private LaskentaSeurantaService laskentaSeurantaService;
+  @Autowired private SeurantaDao seurantaDao;
 
   public ValintalaskentaKerrallaService() {}
 
@@ -53,7 +59,16 @@ public class ValintalaskentaKerrallaService {
 
     final List<HakukohdeDto> hakukohdeDtos = toHakukohdeDto(haunHakukohteetOids);
     validateHakukohdeDtos(haunHakukohteetOids, hakukohdeDtos);
-    TunnisteDto tunniste =  laskentaSeurantaService.luoLaskenta(laskentaParams, hakukohdeDtos);
+    TunnisteDto tunniste = seurantaDao.luoLaskenta(
+        laskentaParams.getUserOID(),
+        laskentaParams.getHaunNimi(),
+        laskentaParams.getNimi(),
+        laskentaParams.getHakuOid(),
+        laskentaParams.getLaskentatyyppi(),
+        laskentaParams.isErillishaku(),
+        laskentaParams.getValinnanvaihe(),
+        laskentaParams.getIsValintakoelaskenta(),
+        hakukohdeDtos);
     if (tunniste.getLuotiinkoUusiLaskenta()) {
       valintalaskentaRoute.workAvailable();
     }
@@ -66,17 +81,48 @@ public class ValintalaskentaKerrallaService {
       return new TunnisteDto(uuid, false);
     }
 
-    LaskentaDto laskentaDto = laskentaSeurantaService.resetoiTilat(uuid).blockingFirst();
+    LaskentaDto laskentaDto = seurantaDao.resetoiEiValmiitHakukohteet(uuid, true);
+    if (laskentaDto == null) {
+      LOG.error("Laskennan {} tila resetoitiin mutta ei saatu yhteenvetoa resetoinnista!", uuid);
+    }
+
     if (laskentaDto.getLuotiinkoUusiLaskenta()) {
       valintalaskentaRoute.workAvailable();
     }
     return new TunnisteDto(laskentaDto.getUuid(), laskentaDto.getLuotiinkoUusiLaskenta());
   }
 
+  public void peruutaLaskenta(String uuid, Boolean lopetaVainJonossaOlevaLaskenta) {
+    if (Boolean.TRUE.equals(lopetaVainJonossaOlevaLaskenta)) {
+      boolean onkoLaskentaVielaJonossa = valintalaskentaValvomo.fetchLaskenta(uuid) == null;
+      if (!onkoLaskentaVielaJonossa) {
+        // Laskentaa suoritetaan jo joten ei pysayteta
+        return;
+      }
+    }
+    stop(uuid);
+    Observable.fromFuture(CompletableFuture.completedFuture(seurantaDao
+        .merkkaaTila(
+            uuid, LaskentaTila.PERUUTETTU, Optional.of(ilmoitus("Peruutettu käyttäjän toimesta")))))
+        .subscribe(ok -> stop(uuid), nok -> stop(uuid));
+  }
+
+  private void stop(String uuid) {
+    valintalaskentaValvomo.fetchLaskenta(uuid).ifPresent(Laskenta::lopeta);
+  }
+
   private Optional<Laskenta> haeAjossaOlevaLaskentaHaulle(final String hakuOid) {
     return valintalaskentaValvomo.runningLaskentas().stream()
         .filter(l -> hakuOid.equals(l.getHakuOid()) && !l.isOsittainenLaskenta())
         .findFirst();
+  }
+
+  public Observable<LaskentaDto> haeLaskenta(String uuid) {
+    LaskentaDto l = seurantaDao.haeLaskenta(uuid).get();
+    if (l == null) {
+      throw new RuntimeException("SeurantaDao palautti null olion uuid:lle " + uuid);
+    }
+    return Observable.fromFuture(CompletableFuture.completedFuture(l));
   }
 
   private static Collection<HakukohdeJaOrganisaatio> kasitteleHakukohdeViitteet(
@@ -114,11 +160,23 @@ public class ValintalaskentaKerrallaService {
   private static void validateHakukohdeDtos(
       Collection<HakukohdeJaOrganisaatio> hakukohdeData,
       List<HakukohdeDto> hakukohdeDtos) {
+    if (hakukohdeDtos == null) {
+      throw new NullPointerException(
+          "Laskentaa ei luoda tyhjalle (null) hakukohdedto referenssille!");
+    }
     if (hakukohdeDtos.isEmpty()) {
       String msg = "Laskentaa ei voida aloittaa hakukohteille joilta puuttuu organisaatio!";
       LOG.error(msg);
-      throw new RuntimeException(msg);
+      throw new RuntimeException(
+          "Laskentaa ei luoda tyhjalle (koko on nolla) hakukohdedto joukolle!");
     }
+    hakukohdeDtos.forEach(
+        hk -> {
+          if (hk.getHakukohdeOid() == null || hk.getOrganisaatioOid() == null) {
+            throw new NullPointerException(
+                "Laskentaa ei luoda hakukohdejoukkoobjektille koska joukossa oli null referensseja sisaltava hakukohde!");
+          }
+        });
     if (hakukohdeDtos.size() < hakukohdeData.size()) {
       LOG.warn(
           "Hakukohteita puuttuvien organisaatio-oidien vuoksi filtteroinnin jalkeen {}/{}!",
