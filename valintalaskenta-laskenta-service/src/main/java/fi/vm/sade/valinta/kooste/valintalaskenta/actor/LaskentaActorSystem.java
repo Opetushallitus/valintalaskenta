@@ -9,7 +9,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.typesafe.config.ConfigFactory;
 import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.dto.ParametritDTO;
-import fi.vm.sade.valinta.kooste.seuranta.LaskentaSeurantaService;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.Haku;
 import fi.vm.sade.valinta.kooste.external.resource.valintatulosservice.dto.AuditSession;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Laskenta;
@@ -20,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+
+import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,21 +45,21 @@ public class LaskentaActorSystem
 
   private final LaskentaActorFactory laskentaActorFactory;
 
-  private final LaskentaSeurantaService seurantaAsyncResource;
   private final ActorSystem actorSystem;
   private final ActorRef laskennanKaynnistajaActor;
   private final Map<String, LaskentaActorWrapper> runningLaskentas = Maps.newConcurrentMap();
   private final LaskentaStarter laskentaStarter;
+  private final SeurantaDao seurantaDao;
 
   @Autowired
   public LaskentaActorSystem(
-      LaskentaSeurantaService seurantaAsyncResource,
       LaskentaStarter laskentaStarter,
       LaskentaActorFactory laskentaActorFactory,
+      SeurantaDao seurantaDao,
       @Value("${valintalaskentakoostepalvelu.maxWorkerCount:8}") int maxWorkers) {
     this.laskentaActorFactory = laskentaActorFactory;
     this.laskentaStarter = laskentaStarter;
-    this.seurantaAsyncResource = seurantaAsyncResource;
+    this.seurantaDao = seurantaDao;
     this.actorSystem =
         ActorSystem.create("ValintalaskentaActorSystem", ConfigFactory.defaultOverrides());
     laskennanKaynnistajaActor = actorSystem.actorOf(props(this, maxWorkers));
@@ -124,7 +125,7 @@ public class LaskentaActorSystem
 
   public void fetchAndStartLaskenta() {
     try {
-      this.startLaskentaIfWorkAvailable(seurantaAsyncResource.otaSeuraavaLaskentaTyonAlle());
+      this.startLaskentaIfWorkAvailable(seurantaDao.otaSeuraavaLaskentaTyonAlle());
     } catch(Throwable t) {
       LOG.warn("Uutta laskentaa ei saatu tyon alle seurannasta. Yritetään uudelleen.", t);
       _fetchAndStartLaskentaRetry(); // FIXME kill me OK-152
@@ -133,7 +134,7 @@ public class LaskentaActorSystem
 
   private void _fetchAndStartLaskentaRetry() {
     try {
-      this.startLaskentaIfWorkAvailable(seurantaAsyncResource.otaSeuraavaLaskentaTyonAlle());
+      this.startLaskentaIfWorkAvailable(seurantaDao.otaSeuraavaLaskentaTyonAlle());
     } catch(Throwable t) {
       String message = "Uutta laskentaa ei saatu tyon alle seurannasta.";
       LOG.error(message, t);

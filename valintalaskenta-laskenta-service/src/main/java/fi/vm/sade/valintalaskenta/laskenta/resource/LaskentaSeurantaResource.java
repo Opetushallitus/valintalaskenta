@@ -70,7 +70,7 @@ public class LaskentaSeurantaResource {
       produces = MediaType.TEXT_PLAIN_VALUE)
   @Operation(summary = "Aloittaa seuraavan laskennan")
   ResponseEntity<String> otaSeuraavaLaskentaTyonAlle() {
-    Optional<String> uuid = Optional.ofNullable(seurantaDao.otaSeuraavaLaskentaTyonAlle());
+    Optional<String> uuid = seurantaDao.otaSeuraavaLaskentaTyonAlle();
     LOG.info("Ota seuraava tyon alle: " + (uuid.isPresent() ? uuid.get() : "Ei tyota"));
     if (uuid.isPresent()) {
       final String u = uuid.get();
@@ -84,11 +84,11 @@ public class LaskentaSeurantaResource {
   @Operation(summary = "Palauttaa laskennan oid:n perusteella")
   ResponseEntity<LaskentaDto> laskenta(@PathVariable("uuid") String uuid) {
     try {
-      LaskentaDto l = seurantaDao.haeLaskenta(uuid);
-      if (l == null) {
+      Optional<LaskentaDto> l = seurantaDao.haeLaskenta(uuid);
+      if (l.isEmpty()) {
         throw new RuntimeException("SeurantaDao palautti null olion uuid:lle " + uuid);
       }
-      return ResponseEntity.status(HttpStatus.OK).body(l);
+      return ResponseEntity.status(HttpStatus.OK).body(l.get());
     } catch (Exception e) {
       throw e;
     }
@@ -98,11 +98,11 @@ public class LaskentaSeurantaResource {
   @Operation(summary = "Palauttaa laskennan oid:n perusteella")
   ResponseEntity<LaskentaDto> kuormantasausLaskenta(@PathVariable("uuid") String uuid) {
     try {
-      LaskentaDto l = seurantaDao.haeLaskenta(uuid);
-      if (l == null) {
+      Optional<LaskentaDto> l = seurantaDao.haeLaskenta(uuid);
+      if (l.isEmpty()) {
         throw new RuntimeException("SeurantaDao palautti null olion uuid:lle " + uuid);
       }
-      return ResponseEntity.status(HttpStatus.OK).body(l);
+      return ResponseEntity.status(HttpStatus.OK).body(l.get());
     } catch (Exception e) {
       throw e;
     }
@@ -111,11 +111,11 @@ public class LaskentaSeurantaResource {
   @GetMapping(value = "/lataa/{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
   @Operation(summary = "Palauttaa laskennan tiedostona uuid:n perusteella")
   ResponseEntity<LaskentaDto> lataa(@PathVariable("uuid") String uuid) {
-    LaskentaDto laskenta = seurantaDao.haeLaskenta(uuid);
+    Optional<LaskentaDto> laskenta = seurantaDao.haeLaskenta(uuid);
     return ResponseEntity.status(HttpStatus.OK)
         .header(
-            "Content-Disposition", "attachment; filename=laskenta_" + laskenta.getUuid() + ".json")
-        .body(laskenta);
+            "Content-Disposition", "attachment; filename=laskenta_" + laskenta.get().getUuid() + ".json")
+        .body(laskenta.get());
   }
 
   @GetMapping(value = "/yhteenveto/{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)

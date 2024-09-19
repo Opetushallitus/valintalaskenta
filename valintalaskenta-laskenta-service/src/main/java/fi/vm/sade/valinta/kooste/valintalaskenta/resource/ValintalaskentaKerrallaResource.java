@@ -1,20 +1,17 @@
 package fi.vm.sade.valinta.kooste.valintalaskenta.resource;
 
-import static fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto.ilmoitus;
 import static java.util.Arrays.asList;
 
 import fi.vm.sade.service.valintaperusteet.dto.HakukohdeViiteDTO;
 import fi.vm.sade.valinta.kooste.AuthorizationUtil;
 import fi.vm.sade.valinta.kooste.dto.Vastaus;
 import fi.vm.sade.valinta.kooste.external.resource.valintaperusteet.ValintaperusteetAsyncResource;
-import fi.vm.sade.valinta.kooste.seuranta.LaskentaSeurantaService;
 import fi.vm.sade.valinta.kooste.security.AuthorityCheckService;
 import fi.vm.sade.valinta.kooste.security.HakukohdeOIDAuthorityCheck;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Laskenta;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Maski;
 import fi.vm.sade.valinta.kooste.valintalaskenta.route.ValintalaskentaKerrallaRouteValvomo;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
-import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTila;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.TunnisteDto;
 import io.reactivex.Observable;
@@ -59,7 +56,6 @@ public class ValintalaskentaKerrallaResource {
   @Autowired private ValintalaskentaKerrallaRouteValvomo valintalaskentaValvomo;
   @Autowired private ValintalaskentaKerrallaService valintalaskentaKerrallaService;
   @Autowired private ValintalaskentaStatusExcelHandler valintalaskentaStatusExcelHandler;
-  @Autowired private LaskentaSeurantaService laskentaSeurantaService;
   @Autowired private AuthorityCheckService authorityCheckService;
   @Autowired private ValintaperusteetAsyncResource valintaperusteetAsyncResource;
 
@@ -370,8 +366,7 @@ public class ValintalaskentaKerrallaResource {
     checkAuthorizationForLaskentaFromSeuranta(uuid)
         .subscribe(
             allowed -> {
-              laskentaSeurantaService
-                  .laskenta(uuid)
+              valintalaskentaKerrallaService.haeLaskenta(uuid)
                   .subscribe(
                       laskenta -> result.setResult(ResponseEntity.of(Optional.of(laskenta))),
                       poikkeus -> {
@@ -412,28 +407,9 @@ public class ValintalaskentaKerrallaResource {
     // Jos käyttöoikeustarkastelu epäonnistuu, tulee poikkeus, tämän suoritus
     // keskeytyy ja poikkeus muuttuu http-virhekoodiksi.
     checkAuthorizationForLaskentaFromSeuranta(uuid).blockingFirst();
-    peruutaLaskenta(uuid, lopetaVainJonossaOlevaLaskenta);
+    valintalaskentaKerrallaService.peruutaLaskenta(uuid, lopetaVainJonossaOlevaLaskenta);
     // Palauta OK odottamatta vastausta peruutuspyyntöön
     return ResponseEntity.status(HttpStatus.OK).build();
-  }
-
-  private void peruutaLaskenta(String uuid, Boolean lopetaVainJonossaOlevaLaskenta) {
-    if (Boolean.TRUE.equals(lopetaVainJonossaOlevaLaskenta)) {
-      boolean onkoLaskentaVielaJonossa = valintalaskentaValvomo.fetchLaskenta(uuid) == null;
-      if (!onkoLaskentaVielaJonossa) {
-        // Laskentaa suoritetaan jo joten ei pysayteta
-        return;
-      }
-    }
-    stop(uuid);
-    laskentaSeurantaService
-        .merkkaaLaskennanTila(
-            uuid, LaskentaTila.PERUUTETTU, Optional.of(ilmoitus("Peruutettu käyttäjän toimesta")))
-        .subscribe(ok -> stop(uuid), nok -> stop(uuid));
-  }
-
-  private void stop(String uuid) {
-    valintalaskentaValvomo.fetchLaskenta(uuid).ifPresent(Laskenta::lopeta);
   }
 
   private void autorisoiHakukohteet(String hakuOid,
@@ -506,12 +482,7 @@ public class ValintalaskentaKerrallaResource {
   private Observable<Boolean> checkAuthorizationForLaskentaFromSeuranta(String uuid) {
     // Tallenna tätä pyyntöä suorittavan säikeen konteksti, jotta samaan käyttäjätietoon
     // voidaan viitata tarkastelun suorittavasta säikeestä.
-    AuthorityCheckService.Context context = authorityCheckService.getContext();
-    return laskentaSeurantaService.laskenta(uuid)
-        .map(laskentaDto -> checkAuthorizationForLaskentaInContext(context, laskentaDto));
-  }
-
-  private Observable<LaskentaDto> getLaskentaDtoFromSeuranta(String uuid) {
-    return laskentaSeurantaService.laskenta(uuid);
+    return valintalaskentaKerrallaService.haeLaskenta(uuid)
+        .map(laskentaDto -> checkAuthorizationForLaskentaInContext(authorityCheckService.getContext(), laskentaDto));
   }
 }

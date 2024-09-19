@@ -15,7 +15,6 @@ import fi.vm.sade.valinta.kooste.external.resource.hakuapp.ApplicationAsyncResou
 import fi.vm.sade.valinta.kooste.external.resource.koski.KoskiOppija;
 import fi.vm.sade.valinta.kooste.external.resource.oppijanumerorekisteri.OppijanumerorekisteriAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.oppijanumerorekisteri.dto.HenkiloViiteDto;
-import fi.vm.sade.valinta.kooste.seuranta.LaskentaSeurantaService;
 import fi.vm.sade.valinta.kooste.external.resource.suoritusrekisteri.SuoritusrekisteriAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.suoritusrekisteri.dto.Oppija;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.Haku;
@@ -34,6 +33,7 @@ import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.Laskentakutsu;
 import fi.vm.sade.valintalaskenta.domain.dto.SuoritustiedotDTO;
+import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import io.reactivex.Observable;
 import java.math.BigDecimal;
@@ -66,7 +66,7 @@ public class LaskentaActorFactory {
   private final ApplicationAsyncResource applicationAsyncResource;
   private final AtaruAsyncResource ataruAsyncResource;
   private final ValintaperusteetAsyncResource valintaperusteetAsyncResource;
-  private final LaskentaSeurantaService laskentaSeurantaAsyncResource;
+  private final SeurantaDao seurantaDao;
   private final SuoritusrekisteriAsyncResource suoritusrekisteriAsyncResource;
   private final OppijanumerorekisteriAsyncResource oppijanumerorekisteriAsyncResource;
   private final TarjontaAsyncResource tarjontaAsyncResource;
@@ -81,7 +81,7 @@ public class LaskentaActorFactory {
       ApplicationAsyncResource applicationAsyncResource,
       AtaruAsyncResource ataruAsyncResource,
       ValintaperusteetAsyncResource valintaperusteetAsyncResource,
-      LaskentaSeurantaService laskentaSeurantaService,
+      SeurantaDao seurantaDao,
       SuoritusrekisteriAsyncResource suoritusrekisteriAsyncResource,
       TarjontaAsyncResource tarjontaAsyncResource,
       ValintapisteAsyncResource valintapisteAsyncResource,
@@ -93,7 +93,7 @@ public class LaskentaActorFactory {
     this.applicationAsyncResource = applicationAsyncResource;
     this.ataruAsyncResource = ataruAsyncResource;
     this.valintaperusteetAsyncResource = valintaperusteetAsyncResource;
-    this.laskentaSeurantaAsyncResource = laskentaSeurantaService;
+    this.seurantaDao = seurantaDao;
     this.suoritusrekisteriAsyncResource = suoritusrekisteriAsyncResource;
     this.tarjontaAsyncResource = tarjontaAsyncResource;
     this.valintapisteAsyncResource = valintapisteAsyncResource;
@@ -452,7 +452,7 @@ public class LaskentaActorFactory {
       LaskentaActorParams actorParams,
       io.reactivex.functions.Function<? super HakukohdeJaOrganisaatio, ? extends Observable<?>> r) {
     return new LaskentaActorForSingleHakukohde(
-        actorParams, r, laskentaSupervisor, laskentaSeurantaAsyncResource, splittaus);
+        actorParams, r, laskentaSupervisor, seurantaDao, splittaus);
   }
 
   private CompletableFuture<LaskeDTO> getLaskeDtoFuture(

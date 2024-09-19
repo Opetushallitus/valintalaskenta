@@ -2,11 +2,14 @@ package fi.vm.sade.valinta.kooste.valintalaskenta.resource;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import fi.vm.sade.valinta.kooste.seuranta.LaskentaSeurantaService;
 import fi.vm.sade.valinta.kooste.util.ExcelExportUtil;
 import fi.vm.sade.valinta.kooste.valintalaskenta.excel.LaskentaDtoAsExcel;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
+import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
+import io.reactivex.Observable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +23,7 @@ public class ValintalaskentaStatusExcelHandler {
   private static final Logger LOG =
       LoggerFactory.getLogger(ValintalaskentaStatusExcelHandler.class);
 
-  @Autowired private LaskentaSeurantaService seurantaAsyncResource;
+  @Autowired private SeurantaDao seurantaDao;
 
   public ResponseEntity<byte[]> createTimeoutErrorXls(final String uuid) {
     final List<Object[]> grid = Lists.newArrayList();
@@ -37,8 +40,7 @@ public class ValintalaskentaStatusExcelHandler {
   }
 
   public void getStatusXls(final String uuid, DeferredResult<ResponseEntity<byte[]>> result) {
-    seurantaAsyncResource
-        .laskenta(uuid)
+    Observable.fromFuture(CompletableFuture.completedFuture(seurantaDao.haeLaskenta(uuid).get()))
         .subscribe(
             laskenta -> {
               try {
