@@ -81,16 +81,15 @@ public class ValintalaskentaKerrallaResource {
       final String userOID = AuthorizationUtil.getCurrentUser();
       List<HakukohdeViiteDTO> hakukohdeViitteet = valintaperusteetAsyncResource.haunHakukohteet(hakuOid).blockingFirst();
       TunnisteDto tunniste = valintalaskentaKerrallaService.kaynnistaLaskentaHaulle(
-          new LaskentaParams(
-              userOID,
-              haunnimi,
-              nimi,
-              LaskentaTyyppi.HAKU,
-              valintakoelaskenta,
-              valinnanvaihe,
-              hakuOid,
-              Optional.empty(),
-              Boolean.TRUE.equals(erillishaku)),
+          userOID,
+          haunnimi,
+          nimi,
+          LaskentaTyyppi.HAKU,
+          valintakoelaskenta,
+          valinnanvaihe,
+          hakuOid,
+          Optional.empty(),
+          Boolean.TRUE.equals(erillishaku),
           hakukohdeViitteet);
 
       result.setResult(ResponseEntity.status(HttpStatus.OK)
@@ -150,16 +149,15 @@ public class ValintalaskentaKerrallaResource {
       }
 
       TunnisteDto tunniste = valintalaskentaKerrallaService.kaynnistaLaskentaHaulle(
-          new LaskentaParams(
-              userOID,
-              haunnimi,
-              nimi,
-              laskentatyyppi,
-              valintakoelaskenta,
-              valinnanvaihe,
-              hakuOid,
-              Optional.of(maski),
-              Boolean.TRUE.equals(erillishaku)),
+          userOID,
+          haunnimi,
+          nimi,
+          laskentatyyppi,
+          valintakoelaskenta,
+          valinnanvaihe,
+          hakuOid,
+          Optional.of(maski),
+          Boolean.TRUE.equals(erillishaku),
           hakukohdeViitteet);
       result.setResult(ResponseEntity.status(HttpStatus.OK)
           .body(Vastaus.laskennanSeuraus(tunniste.getUuid(), tunniste.getLuotiinkoUusiLaskenta())));
