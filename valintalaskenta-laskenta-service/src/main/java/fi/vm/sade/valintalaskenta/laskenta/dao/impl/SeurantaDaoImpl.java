@@ -144,14 +144,14 @@ public class SeurantaDaoImpl implements SeurantaDao {
   }
 
   @Override
-  public LaskentaDto haeLaskenta(String uuid) {
+  public Optional<LaskentaDto> haeLaskenta(String uuid) {
     Optional<Laskenta> laskenta =
         this.getLaskennat(Collections.singleton(UUID.fromString(uuid))).stream().findFirst();
     if (!laskenta.isPresent()) {
       LOG.error("Laskentaa ei ole olemassa uuid:lla {}", uuid);
       throw new RuntimeException("Laskentaa ei ole olemassa uuid:lla " + uuid);
     }
-    return laskenta.get().asDto(jonosijaProvider(), true);
+    return laskenta.map(l -> l.asDto(jonosijaProvider(), true));
   }
 
   @Override
@@ -532,7 +532,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
   }
 
   @Override
-  public String otaSeuraavaLaskentaTyonAlle() {
+  public Optional<String> otaSeuraavaLaskentaTyonAlle() {
     Optional<UUID> uuid =
         this.jdbcTemplate
             .query(
@@ -553,7 +553,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
           uuid.get());
     }
 
-    return uuid.map(id -> id.toString()).orElse(null);
+    return uuid.map(id -> id.toString());
   }
 
   private static class Laskenta {
