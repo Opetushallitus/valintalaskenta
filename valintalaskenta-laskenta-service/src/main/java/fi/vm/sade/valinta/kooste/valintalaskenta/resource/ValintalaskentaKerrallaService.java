@@ -117,12 +117,8 @@ public class ValintalaskentaKerrallaService {
         .findFirst();
   }
 
-  public Observable<LaskentaDto> haeLaskenta(String uuid) {
-    LaskentaDto l = seurantaDao.haeLaskenta(uuid).get();
-    if (l == null) {
-      throw new RuntimeException("SeurantaDao palautti null olion uuid:lle " + uuid);
-    }
-    return Observable.fromFuture(CompletableFuture.completedFuture(l));
+  public Optional<LaskentaDto> haeLaskenta(String uuid) {
+    return Optional.ofNullable(seurantaDao.haeLaskenta(uuid).get());
   }
 
   private static Collection<HakukohdeJaOrganisaatio> kasitteleHakukohdeViitteet(
