@@ -7,10 +7,8 @@ import fi.vm.sade.valinta.kooste.valintalaskenta.dto.LaskentaInfo;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Maski;
 import fi.vm.sade.valinta.kooste.valintalaskenta.route.ValintalaskentaKerrallaRoute;
 import fi.vm.sade.valinta.kooste.valintalaskenta.route.ValintalaskentaKerrallaRouteValvomo;
-import fi.vm.sade.valintalaskenta.domain.dto.seuranta.HakukohdeDto;
-import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
-import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTila;
-import fi.vm.sade.valintalaskenta.domain.dto.seuranta.TunnisteDto;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -37,11 +35,37 @@ public class ValintalaskentaKerrallaService {
 
   public ValintalaskentaKerrallaService() {}
 
-  public TunnisteDto kaynnistaLaskentaHaulle(LaskentaParams laskentaParams,
-                                             List<HakukohdeViiteDTO> hakukohdeViitteet) {
-    String hakuOid = laskentaParams.getHakuOid();
+  /**
+   * Käynnistää uuden laskennan
+   *
+   * @param userOID               haun käynnistäneen käyttäjän tunniste, ei vaikuta laskentaan mutta näytetään
+   *                              valintalaskennan hallinnassa
+   * @param haunNimi              haun nimi, ei vaikuta laskentaan mutta näytetään valintalaskennan hallinnassa
+   * @param nimi                  laskennan nimi, ei vaikuta laskentaan mutta näytetään valintalaskennan hallinnassa
+   * @param laskentatyyppi        määrittää laskennan tyypin (haku, hakukohde, valintaryhmä)
+   * @param isValintakoelaskenta  valintakoelaskentaa käytetään selvittämään ketkä hakijat tulevat kutsutuksi
+   *                              valintakokeeseen
+   * @param valinnanvaihe         määrittää että laskennassa lasketaan vain tietty valinnan vaihe
+   * @param hakuOid               laskettavan haun tunniste
+   * @param maski                 maskitoiminnin avulla laskenta voidaan rajoittaa tiettyihin hakukohteisiin joko
+   *                              white- tai blacklistillä
+   * @param isErillishaku         erillishakutoiminnolla haun päätteeksi suoritetaan sijoittelu kunkin hakukohteen
+   *                              sisällä, ts. ei kaikkien haun hakukohteiden yli
+   * @param hakukohdeViitteet     laskettavat hakukohteet
+   */
+  public TunnisteDto kaynnistaLaskentaHaulle(
+      String userOID,
+      String haunNimi,
+      String nimi,
+      LaskentaTyyppi laskentatyyppi,
+      Boolean isValintakoelaskenta,
+      Integer valinnanvaihe,
+      String hakuOid,
+      Optional<Maski> maski,
+      boolean isErillishaku,
+      List<HakukohdeViiteDTO> hakukohdeViitteet) {
     Optional<String> uuidForExistingNonMaskedLaskenta =
-        uuidForExistingNonMaskedLaskenta(laskentaParams.getMaski(), hakuOid);
+        uuidForExistingNonMaskedLaskenta(maski, hakuOid);
 
     if (uuidForExistingNonMaskedLaskenta.isPresent()) {
       String uuid = uuidForExistingNonMaskedLaskenta.get();
@@ -55,19 +79,19 @@ public class ValintalaskentaKerrallaService {
     LOG.info("Aloitetaan laskenta haulle {}", hakuOid);
     Collection<HakukohdeJaOrganisaatio> haunHakukohteetOids =
         kasitteleHakukohdeViitteet(
-            hakukohdeViitteet, hakuOid, laskentaParams.getMaski());
+            hakukohdeViitteet, hakuOid, maski);
 
     final List<HakukohdeDto> hakukohdeDtos = toHakukohdeDto(haunHakukohteetOids);
     validateHakukohdeDtos(haunHakukohteetOids, hakukohdeDtos);
     TunnisteDto tunniste = seurantaDao.luoLaskenta(
-        laskentaParams.getUserOID(),
-        laskentaParams.getHaunNimi(),
-        laskentaParams.getNimi(),
-        laskentaParams.getHakuOid(),
-        laskentaParams.getLaskentatyyppi(),
-        laskentaParams.isErillishaku(),
-        laskentaParams.getValinnanvaihe(),
-        laskentaParams.getIsValintakoelaskenta(),
+        userOID,
+        haunNimi,
+        nimi,
+        hakuOid,
+        laskentatyyppi,
+        isErillishaku,
+        valinnanvaihe,
+        isValintakoelaskenta,
         hakukohdeDtos);
     if (tunniste.getLuotiinkoUusiLaskenta()) {
       valintalaskentaRoute.workAvailable();
