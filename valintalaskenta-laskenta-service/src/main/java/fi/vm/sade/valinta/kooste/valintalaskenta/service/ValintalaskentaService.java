@@ -1,4 +1,4 @@
-package fi.vm.sade.valinta.kooste.valintalaskenta.resource;
+package fi.vm.sade.valinta.kooste.valintalaskenta.service;
 
 import fi.vm.sade.service.valintaperusteet.dto.HakukohdeViiteDTO;
 import fi.vm.sade.valinta.kooste.valintalaskenta.actor.dto.HakukohdeJaOrganisaatio;
@@ -26,14 +26,14 @@ import org.springframework.stereotype.Service;
 import static fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto.ilmoitus;
 
 @Service
-public class ValintalaskentaKerrallaService {
-  private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaKerrallaService.class);
+public class ValintalaskentaService {
+  private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaService.class);
 
   @Autowired private ValintalaskentaKerrallaRouteValvomo valintalaskentaValvomo;
   @Autowired private ValintalaskentaKerrallaRoute valintalaskentaRoute;
   @Autowired private SeurantaDao seurantaDao;
 
-  public ValintalaskentaKerrallaService() {}
+  public ValintalaskentaService() {}
 
   /**
    * Käynnistää uuden laskennan
