@@ -12,7 +12,7 @@ public interface SeurantaDao {
   void siivoa(Date viimeinenSailottavaPaivamaara);
 
   /** Kaikki laskentaan liittyva tieto */
-  LaskentaDto haeLaskenta(String uuid);
+  Optional<LaskentaDto> haeLaskenta(String uuid);
 
   /** Yhteenveto laskennan kulusta */
   YhteenvetoDto haeYhteenveto(String uuid);
@@ -61,5 +61,5 @@ public interface SeurantaDao {
 
   void resetoiMeneillaanOlevatLaskennat();
 
-  String otaSeuraavaLaskentaTyonAlle();
+  Optional<String> otaSeuraavaLaskentaTyonAlle();
 }
