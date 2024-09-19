@@ -4,7 +4,6 @@ import akka.actor.ActorRef;
 import fi.vm.sade.service.valintaperusteet.dto.HakukohdeViiteDTO;
 import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.OhjausparametritAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.dto.ParametritDTO;
-import fi.vm.sade.valinta.kooste.seuranta.LaskentaSeurantaService;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.Haku;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.TarjontaAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.valintaperusteet.ValintaperusteetAsyncResource;
@@ -16,8 +15,10 @@ import fi.vm.sade.valinta.kooste.valintalaskenta.dto.LaskentaStartParams;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Maski;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
+import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 import io.reactivex.Observable;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
@@ -33,27 +34,26 @@ public class LaskentaStarter {
 
   private final OhjausparametritAsyncResource ohjausparametritAsyncResource;
   private final ValintaperusteetAsyncResource valintaperusteetAsyncResource;
-  private final LaskentaSeurantaService seurantaAsyncResource;
   private final TarjontaAsyncResource tarjontaAsyncResource;
+  private final SeurantaDao seurantaDao;
 
   @Autowired
   public LaskentaStarter(
       OhjausparametritAsyncResource ohjausparametritAsyncResource,
       ValintaperusteetAsyncResource valintaperusteetAsyncResource,
-      LaskentaSeurantaService seurantaAsyncResource,
-      TarjontaAsyncResource tarjontaAsyncResource) {
+      TarjontaAsyncResource tarjontaAsyncResource,
+      SeurantaDao seurantaDao) {
     this.ohjausparametritAsyncResource = ohjausparametritAsyncResource;
     this.valintaperusteetAsyncResource = valintaperusteetAsyncResource;
-    this.seurantaAsyncResource = seurantaAsyncResource;
     this.tarjontaAsyncResource = tarjontaAsyncResource;
+    this.seurantaDao = seurantaDao;
   }
 
   public void fetchLaskentaParams(
       ActorRef laskennanKaynnistajaActor,
       final String uuid,
       final BiConsumer<Haku, LaskentaActorParams> startActor) {
-    seurantaAsyncResource
-        .laskenta(uuid)
+    Observable.fromFuture(CompletableFuture.completedFuture(seurantaDao.haeLaskenta(uuid).get()))
         .subscribe(
             (LaskentaDto laskenta) -> {
               String hakuOid = laskenta.getHakuOid();
@@ -202,16 +202,10 @@ public class LaskentaStarter {
     Optional<IlmoitusDto> ilmoitusDtoOptional =
         t.map(
             poikkeus -> IlmoitusDto.virheilmoitus(msg, Arrays.toString(poikkeus.getStackTrace())));
-    seurantaAsyncResource
-        .merkkaaLaskennanTila(uuid, tila, hakukohdetila, ilmoitusDtoOptional)
-        .subscribe(
-            ok -> {},
-            fail ->
-                LOG.error(
-                    String.format(
-                        "(UUID = %s) Laskennan tilan (laskenta=%s, hakukohde=%s) merkkaaminen epaonnistui!",
-                        uuid, tila, hakukohdetila),
-                    fail));
+
+    seurantaDao.merkkaaTila(uuid, tila, hakukohdetila, ilmoitusDtoOptional);
+
+    // TODO: tämä toimii käsittääkseni oikein vain jos laskenta oli käynnissä
     laskennanKaynnistajaActor.tell(new LaskentaStarterActor.WorkerAvailable(), ActorRef.noSender());
   }
 
