@@ -7,24 +7,19 @@ import fi.vm.sade.valinta.kooste.AuthorizationUtil;
 import fi.vm.sade.valinta.kooste.dto.Vastaus;
 import fi.vm.sade.valinta.kooste.external.resource.valintaperusteet.ValintaperusteetAsyncResource;
 import fi.vm.sade.valinta.kooste.security.AuthorityCheckService;
-import fi.vm.sade.valinta.kooste.security.HakukohdeOIDAuthorityCheck;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Laskenta;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Maski;
 import fi.vm.sade.valinta.kooste.valintalaskenta.route.ValintalaskentaKerrallaRouteValvomo;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.TunnisteDto;
-import io.reactivex.Observable;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,18 +78,6 @@ public class ValintalaskentaKerrallaResource {
 
     DeferredResult<ResponseEntity<Vastaus>> result = new DeferredResult<>(1 * 60 * 1000l);
     try {
-      result.onTimeout(
-          () -> {
-            LOG.error(
-                "Laskennan kaynnistys timeuottasi kutsulle /haku/{}/tyyppi/HAKU?valinnanvaihe={}&valintakoelaskenta={}\r\n{}",
-                hakuOid,
-                valinnanvaihe,
-                valintakoelaskenta);
-            result.setErrorResult(
-                ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
-                    .body("Laskennan luonti aikakatkaistu!"));
-          });
-
       final String userOID = AuthorizationUtil.getCurrentUser();
       List<HakukohdeViiteDTO> hakukohdeViitteet = valintaperusteetAsyncResource.haunHakukohteet(hakuOid).blockingFirst();
       TunnisteDto tunniste = valintalaskentaKerrallaService.kaynnistaLaskentaHaulle(
@@ -155,37 +138,15 @@ public class ValintalaskentaKerrallaResource {
     DeferredResult<ResponseEntity<Vastaus>> result = new DeferredResult<>(1 * 60 * 1000l);
 
     try {
-      result.onTimeout(
-          () -> {
-            final String hakukohdeOids = hakukohdeOidsFromMaskiToString(stringMaski);
-            LOG.error(
-                "Laskennan kaynnistys timeouttasi kutsulle /haku/{}/tyyppi/{}/whitelist/{}?valinnanvaihe={}&valintakoelaskenta={}\r\n{}",
-                hakuOid,
-                laskentatyyppi,
-                whitelist,
-                valinnanvaihe,
-                valintakoelaskenta,
-                hakukohdeOids);
-            result.setErrorResult(
-                ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
-                    .body("Uudelleen ajo laskennalle aikakatkaistu!"));
-          });
-
       Maski maski = whitelist ? Maski.whitelist(stringMaski) : Maski.blacklist(stringMaski);
       final String userOID = AuthorizationUtil.getCurrentUser();
 
       List<HakukohdeViiteDTO> hakukohdeViitteet = valintaperusteetAsyncResource.haunHakukohteet(hakuOid).blockingFirst();
       if (LaskentaTyyppi.VALINTARYHMA.equals(laskentatyyppi)) {
         // TODO: kiellä maskin käyttö valintaryhmälaskennassa
-
-        authorityCheckService.checkAuthorizationForValintaryhma(
-            valintaryhmaOid, valintalaskentaAllowedRoles);
+        authorityCheckService.checkAuthorizationForValintaryhma(valintaryhmaOid, valintalaskentaAllowedRoles);
       } else {
-        Observable<HakukohdeOIDAuthorityCheck> authorityCheckObservable =
-            Observable.fromFuture(
-                authorityCheckService.getAuthorityCheckForRoles(valintalaskentaAllowedRoles));
-
-        this.autorisoiHakukohteet(hakuOid, hakukohdeViitteet, authorityCheckObservable);
+        authorityCheckService.checkAuthorizationForHakukohteet(hakukohdeViitteet.stream().map(hk -> hk.getOid()).toList(), valintalaskentaAllowedRoles);
       }
 
       TunnisteDto tunniste = valintalaskentaKerrallaService.kaynnistaLaskentaHaulle(
@@ -226,31 +187,14 @@ public class ValintalaskentaKerrallaResource {
   public DeferredResult<ResponseEntity<Vastaus>> uudelleenajoLaskennalle(
       @PathVariable("uuid") String uuid) {
     DeferredResult<ResponseEntity<Vastaus>> result = new DeferredResult<>(1 * 60 * 1000l);
-    result.onTimeout(
-        () -> {
-          LOG.error("Uudelleen ajo laskennalle({}) timeouttasi!", uuid);
-          result.setErrorResult(
-              ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
-                  .body("Uudelleen ajo laskennalle timeouttasi!"));
-        });
 
-    checkAuthorizationForLaskentaFromSeuranta(uuid)
-        .subscribe(
-            allowed -> {
-              kaynnistaLaskentaUudelleen(uuid, result);
-            },
-            error -> {
-              LOG.error(
-                  "Valintalaskennan uudelleenajo epäonnistui, koska käyttöoikeudet eivät riittäneet!");
-              result.setErrorResult(
-                  ResponseEntity.status(HttpStatus.FORBIDDEN).body(error.getMessage()));
-            });
+    if(!checkAuthorizationForLaskenta(uuid)) {
+      String message = "Valintalaskennan uudelleenajo epäonnistui, koska käyttöoikeudet eivät riittäneet!";
+      LOG.error(message);
+      result.setErrorResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body(message));
+      return result;
+    }
 
-    return result;
-  }
-
-  private void kaynnistaLaskentaUudelleen(
-      String uuid, DeferredResult<ResponseEntity<Vastaus>> result) {
     try {
       valintalaskentaKerrallaService.kaynnistaLaskentaUudelleen(uuid);
     } catch (Throwable e) {
@@ -259,6 +203,8 @@ public class ValintalaskentaKerrallaResource {
           ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
               .body("Odottamaton virhe laskennan kaynnistamisessa! " + e.getMessage()));
     }
+
+    return result;
   }
 
   /**
@@ -294,7 +240,12 @@ public class ValintalaskentaKerrallaResource {
             content = @Content(schema = @Schema(implementation = Laskenta.class)))
       })
   public ResponseEntity<? extends Object> status(@PathVariable("uuid") String uuid) {
-    checkAuthorizationForLaskentaFromSeuranta(uuid);
+    if(!checkAuthorizationForLaskenta(uuid)) {
+      String message = "Käyttäjällä ei ole oikeuksian laskentaan";
+      LOG.error(message);
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
+    }
+
     Optional<ResponseEntity<Laskenta>> result =
         valintalaskentaValvomo
             .fetchLaskenta(uuid)
@@ -321,25 +272,20 @@ public class ValintalaskentaKerrallaResource {
             content = @Content(schema = @Schema(implementation = byte[].class)))
       })
   public DeferredResult<ResponseEntity<byte[]>> statusXls(@PathVariable("uuid") final String uuid) {
-
     DeferredResult<ResponseEntity<byte[]>> result = new DeferredResult<>(15 * 60 * 1000l);
     result.onTimeout(
         () -> {
           result.setErrorResult(valintalaskentaStatusExcelHandler.createTimeoutErrorXls(uuid));
         });
 
-    checkAuthorizationForLaskentaFromSeuranta(uuid)
-        .subscribe(
-            allowed -> {
-              valintalaskentaStatusExcelHandler.getStatusXls(uuid, result);
-            },
-            error -> {
-              LOG.error(
-                  "Valintalaskennan tilan haku epäonnistui, koska käyttöoikeudet eivät riittäneet!");
-              result.setErrorResult(
-                  ResponseEntity.status(HttpStatus.FORBIDDEN).body(error.getMessage()));
-            });
+    if(!checkAuthorizationForLaskenta(uuid)) {
+      String message = "Valintalaskennan tilan haku epäonnistui, koska käyttöoikeudet eivät riittäneet!";
+      LOG.error(message);
+      result.setErrorResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body(message));
+      return result;
+    }
 
+    valintalaskentaStatusExcelHandler.getStatusXls(uuid, result);
     return result;
   }
 
@@ -363,28 +309,14 @@ public class ValintalaskentaKerrallaResource {
                   .body("Valintalaskennan tilan hakeminen timeouttasi!"));
         });
 
-    checkAuthorizationForLaskentaFromSeuranta(uuid)
-        .subscribe(
-            allowed -> {
-              valintalaskentaKerrallaService.haeLaskenta(uuid)
-                  .subscribe(
-                      laskenta -> result.setResult(ResponseEntity.of(Optional.of(laskenta))),
-                      poikkeus -> {
-                        LOG.error(
-                            "Tietojen haussa seurantapalvelusta(/laskenta/"
-                                + uuid
-                                + ") tapahtui virhe",
-                            poikkeus);
-                        result.setErrorResult(poikkeus);
-                      });
-            },
-            error -> {
-              LOG.error(
-                  "Valintalaskennan tilan haku epäonnistui, koska käyttöoikeudet eivät riittäneet!");
-              result.setErrorResult(
-                  ResponseEntity.status(HttpStatus.FORBIDDEN).body(error.getMessage()));
-            });
+    if(!checkAuthorizationForLaskenta(uuid)) {
+      String message = "Valintalaskennan tilan haku epäonnistui, koska käyttöoikeudet eivät riittäneet!";
+      LOG.error(message);
+      result.setErrorResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body(message));
+      return result;
+    }
 
+    result.setResult(ResponseEntity.of(valintalaskentaKerrallaService.haeLaskenta(uuid)));
     return result;
   }
 
@@ -404,85 +336,22 @@ public class ValintalaskentaKerrallaResource {
     if (uuid == null) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Uuid on pakollinen");
     }
-    // Jos käyttöoikeustarkastelu epäonnistuu, tulee poikkeus, tämän suoritus
-    // keskeytyy ja poikkeus muuttuu http-virhekoodiksi.
-    checkAuthorizationForLaskentaFromSeuranta(uuid).blockingFirst();
+
+    if(!checkAuthorizationForLaskenta(uuid)) {
+      String message = "Valintalaskennan lopettaminen epäonnistui, koska käyttöoikeudet eivät riittäneet!";
+      LOG.error(message);
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
+    }
+
     valintalaskentaKerrallaService.peruutaLaskenta(uuid, lopetaVainJonossaOlevaLaskenta);
     // Palauta OK odottamatta vastausta peruutuspyyntöön
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
-  private void autorisoiHakukohteet(String hakuOid,
-                                    Collection<HakukohdeViiteDTO> haunHakukohdeViitteet,
-                                    Observable<HakukohdeOIDAuthorityCheck> authCheck) {
-    authCheck
-        .blockingNext()
-        .forEach(
-            authorityCheck ->
-                haunHakukohdeViitteet.forEach(
-                    hk -> {
-                      if (!authorityCheck.test(hk.getOid())) {
-                        LOG.error(
-                            String.format(
-                                "Ei oikeutta aloittaa laskentaa hakukohteelle %s haussa %s",
-                                hk.getOid(), hakuOid));
-                        throw new AccessDeniedException(
-                            "Ei oikeutta aloittaa laskentaa");
-                      }
-                    }));
-  }
-
-  private String hakukohdeOidsFromMaskiToString(List<String> maski) {
-    if (maski != null && !maski.isEmpty()) {
-      try {
-        Object[] hakukohdeOidArray = maski.toArray();
-        StringBuilder sb = new StringBuilder();
-        sb.append(
-            Arrays.toString(
-                Arrays.copyOfRange(hakukohdeOidArray, 0, Math.min(hakukohdeOidArray.length, 10))));
-        if (hakukohdeOidArray.length > 10) {
-          sb.append(" ensimmaiset 10 hakukohdetta maskissa jossa on yhteensa hakukohteita ")
-              .append(hakukohdeOidArray.length);
-        } else {
-          sb.append(" maskin hakukohteet");
-        }
-        return sb.toString();
-      } catch (Exception e) {
-        LOG.error("hakukohdeOidsFromMaskiToString", e);
-        return e.getMessage();
-      }
-    }
-    return null;
-  }
-
-  private Boolean checkAuthorizationForLaskentaInContext(
-      AuthorityCheckService.Context context, LaskentaDto laskentaDto) {
-    if (LaskentaTyyppi.HAKU.equals(laskentaDto.getTyyppi())) {
-      authorityCheckService.withContext(
-          context,
-          () -> {
-            authorityCheckService.checkAuthorizationForHaku(
-                laskentaDto.getHakuOid(), valintalaskentaAllowedRoles);
-          });
-    } else {
-      final List<String> hakukohdeOids =
-          laskentaDto.getHakukohteet().stream()
-              .map(hk -> hk.getHakukohdeOid())
-              .collect(Collectors.toList());
-      authorityCheckService.withContext(
-          context,
-          () -> {
-            authorityCheckService.checkAuthorizationForHakukohteet(
-                hakukohdeOids, valintalaskentaAllowedRoles);
-          });
-    }
-    return Boolean.TRUE;
-  }
-
-  private Observable<Boolean> checkAuthorizationForLaskentaFromSeuranta(String uuid) {
-    // Tallenna tätä pyyntöä suorittavan säikeen konteksti, jotta samaan käyttäjätietoon
-    // voidaan viitata tarkastelun suorittavasta säikeestä.
+  private Boolean checkAuthorizationForLaskenta(String uuid) {
     return valintalaskentaKerrallaService.haeLaskenta(uuid)
-        .map(laskentaDto -> checkAuthorizationForLaskentaInContext(authorityCheckService.getContext(), laskentaDto));
+        .map(laskentaDto -> authorityCheckService.checkAuthorizationForLaskenta(
+            laskentaDto, valintalaskentaAllowedRoles))
+        .orElse(false);
   }
 }
