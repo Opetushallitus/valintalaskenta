@@ -10,6 +10,8 @@ import fi.vm.sade.valinta.kooste.security.AuthorityCheckService;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Laskenta;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Maski;
 import fi.vm.sade.valinta.kooste.valintalaskenta.route.ValintalaskentaKerrallaRouteValvomo;
+import fi.vm.sade.valinta.kooste.valintalaskenta.service.ValintalaskentaService;
+import fi.vm.sade.valinta.kooste.valintalaskenta.service.ValintalaskentaStatusExcelService;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.TunnisteDto;
@@ -37,9 +39,9 @@ import org.springframework.web.context.request.async.DeferredResult;
 @Tag(
     name = "/valintalaskentakerralla",
     description = "Valintalaskenta kaikille valinnanvaiheille kerralla")
-public class ValintalaskentaKerrallaResource {
+public class ValintalaskentaResource {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaKerrallaResource.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaResource.class);
 
   private static final List<String> valintalaskentaAllowedRoles =
       asList(
@@ -49,8 +51,8 @@ public class ValintalaskentaKerrallaResource {
           "ROLE_APP_VALINTOJENTOTEUTTAMINENKK_READ_UPDATE");
 
   @Autowired private ValintalaskentaKerrallaRouteValvomo valintalaskentaValvomo;
-  @Autowired private ValintalaskentaKerrallaService valintalaskentaKerrallaService;
-  @Autowired private ValintalaskentaStatusExcelHandler valintalaskentaStatusExcelHandler;
+  @Autowired private ValintalaskentaService valintalaskentaService;
+  @Autowired private ValintalaskentaStatusExcelService valintalaskentaStatusExcelService;
   @Autowired private AuthorityCheckService authorityCheckService;
   @Autowired private ValintaperusteetAsyncResource valintaperusteetAsyncResource;
 
@@ -80,7 +82,7 @@ public class ValintalaskentaKerrallaResource {
     try {
       final String userOID = AuthorizationUtil.getCurrentUser();
       List<HakukohdeViiteDTO> hakukohdeViitteet = valintaperusteetAsyncResource.haunHakukohteet(hakuOid).blockingFirst();
-      TunnisteDto tunniste = valintalaskentaKerrallaService.kaynnistaLaskentaHaulle(
+      TunnisteDto tunniste = valintalaskentaService.kaynnistaLaskentaHaulle(
           userOID,
           haunnimi,
           nimi,
@@ -148,7 +150,7 @@ public class ValintalaskentaKerrallaResource {
         authorityCheckService.checkAuthorizationForHakukohteet(hakukohdeViitteet.stream().map(hk -> hk.getOid()).toList(), valintalaskentaAllowedRoles);
       }
 
-      TunnisteDto tunniste = valintalaskentaKerrallaService.kaynnistaLaskentaHaulle(
+      TunnisteDto tunniste = valintalaskentaService.kaynnistaLaskentaHaulle(
           userOID,
           haunnimi,
           nimi,
@@ -194,7 +196,7 @@ public class ValintalaskentaKerrallaResource {
     }
 
     try {
-      valintalaskentaKerrallaService.kaynnistaLaskentaUudelleen(uuid);
+      valintalaskentaService.kaynnistaLaskentaUudelleen(uuid);
     } catch (Throwable e) {
       LOG.error("Laskennan kaynnistamisessa tapahtui odottamaton virhe", e);
       result.setErrorResult(
@@ -273,7 +275,7 @@ public class ValintalaskentaKerrallaResource {
     DeferredResult<ResponseEntity<byte[]>> result = new DeferredResult<>(15 * 60 * 1000l);
     result.onTimeout(
         () -> {
-          result.setErrorResult(valintalaskentaStatusExcelHandler.createTimeoutErrorXls(uuid));
+          result.setErrorResult(valintalaskentaStatusExcelService.createTimeoutErrorXls(uuid));
         });
 
     if(!checkAuthorizationForLaskenta(uuid)) {
@@ -283,7 +285,7 @@ public class ValintalaskentaKerrallaResource {
       return result;
     }
 
-    valintalaskentaStatusExcelHandler.getStatusXls(uuid, result);
+    valintalaskentaStatusExcelService.getStatusXls(uuid, result);
     return result;
   }
 
@@ -314,7 +316,7 @@ public class ValintalaskentaKerrallaResource {
       return result;
     }
 
-    result.setResult(ResponseEntity.of(valintalaskentaKerrallaService.haeLaskenta(uuid)));
+    result.setResult(ResponseEntity.of(valintalaskentaService.haeLaskenta(uuid)));
     return result;
   }
 
@@ -341,13 +343,13 @@ public class ValintalaskentaKerrallaResource {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
     }
 
-    valintalaskentaKerrallaService.peruutaLaskenta(uuid, lopetaVainJonossaOlevaLaskenta);
+    valintalaskentaService.peruutaLaskenta(uuid, lopetaVainJonossaOlevaLaskenta);
     // Palauta OK odottamatta vastausta peruutuspyyntöön
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
   private Boolean checkAuthorizationForLaskenta(String uuid) {
-    return valintalaskentaKerrallaService.haeLaskenta(uuid)
+    return valintalaskentaService.haeLaskenta(uuid)
         .map(laskentaDto -> authorityCheckService.checkAuthorizationForLaskenta(
             laskentaDto, valintalaskentaAllowedRoles))
         .orElse(false);
