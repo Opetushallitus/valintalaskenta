@@ -174,7 +174,7 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
             new HakukohdeDto("hk3", "oo3"));
     seurantaDao.luoLaskenta(
         "U0", "", "", hakuOid, LaskentaTyyppi.HAKU, true, null, null, hakukohdeOids);
-    String uuid = seurantaDao.otaSeuraavaLaskentaTyonAlle().get();
+    String uuid = seurantaDao.otaSeuraavaLaskentaTyonAlle().map(l -> l.getUuid()).get();
     seurantaDao.merkkaaTila(uuid, "hk3", HakukohdeTila.KESKEYTETTY);
     seurantaDao.merkkaaTila(uuid, "hk2", HakukohdeTila.VALMIS);
     seurantaDao.merkkaaTila(uuid, "hk1", HakukohdeTila.KESKEYTETTY);
@@ -232,7 +232,7 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
             new HakukohdeDto("hk3", "oo3"));
     seurantaDao.luoLaskenta(
         "U0", "", "", hakuOid, LaskentaTyyppi.VALINTARYHMA, true, null, null, hakukohdeOids);
-    String uuid = seurantaDao.otaSeuraavaLaskentaTyonAlle().get();
+    String uuid = seurantaDao.otaSeuraavaLaskentaTyonAlle().map(l -> l.getUuid()).get();
     YhteenvetoDto y =
         seurantaDao.merkkaaTila(
             uuid,
@@ -257,7 +257,7 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
 
     seurantaDao.luoLaskenta(
         "U0", "", "", hakuOid, LaskentaTyyppi.VALINTARYHMA, true, null, null, hakukohdeOids);
-    String uuid = seurantaDao.otaSeuraavaLaskentaTyonAlle().get();
+    String uuid = seurantaDao.otaSeuraavaLaskentaTyonAlle().map(l -> l.getUuid()).get();
     YhteenvetoDto y =
         seurantaDao.merkkaaTila(
             uuid,
@@ -314,7 +314,7 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
 
   private String aloitaUusiLaskenta(Optional<String> hakukohdeOid) {
     luoUusiLaskenta(hakukohdeOid);
-    return seurantaDao.otaSeuraavaLaskentaTyonAlle().get();
+    return seurantaDao.otaSeuraavaLaskentaTyonAlle().map(l -> l.getUuid()).get();
   }
 
   private void assertOikeaLaskentaEiOleNull(String uuid, YhteenvetoDto y) {
