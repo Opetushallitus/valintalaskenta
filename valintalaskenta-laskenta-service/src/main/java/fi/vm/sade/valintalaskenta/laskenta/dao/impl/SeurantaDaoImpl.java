@@ -532,7 +532,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
   }
 
   @Override
-  public Optional<String> otaSeuraavaLaskentaTyonAlle() {
+  public Optional<LaskentaDto> otaSeuraavaLaskentaTyonAlle() {
     Optional<UUID> uuid =
         this.jdbcTemplate
             .query(
@@ -553,7 +553,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
           uuid.get());
     }
 
-    return uuid.map(id -> id.toString());
+    return uuid.map(id -> this.haeLaskenta(id.toString()).get());
   }
 
   private static class Laskenta {
