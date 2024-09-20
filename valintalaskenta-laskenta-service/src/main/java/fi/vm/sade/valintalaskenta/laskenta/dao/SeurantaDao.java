@@ -61,5 +61,5 @@ public interface SeurantaDao {
 
   void resetoiMeneillaanOlevatLaskennat();
 
-  Optional<String> otaSeuraavaLaskentaTyonAlle();
+  Optional<LaskentaDto> otaSeuraavaLaskentaTyonAlle();
 }

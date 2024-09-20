@@ -10,11 +10,18 @@ import com.google.common.collect.Maps;
 import com.typesafe.config.ConfigFactory;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Laskenta;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.LaskentaStartParams;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import fi.vm.sade.valinta.kooste.valintalaskenta.service.LaskentaParameterService;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.HakukohdeTila;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTila;
 import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,17 +47,17 @@ public class LaskentaActorSystem
   private final ActorSystem actorSystem;
   private final ActorRef laskennanKaynnistajaActor;
   private final Map<String, LaskentaActorWrapper> runningLaskentas = Maps.newConcurrentMap();
-  private final LaskentaStarter laskentaStarter;
+  private final LaskentaParameterService laskentaParameterService;
   private final SeurantaDao seurantaDao;
 
   @Autowired
   public LaskentaActorSystem(
-      LaskentaStarter laskentaStarter,
+      LaskentaParameterService laskentaParameterService,
       LaskentaActorFactory laskentaActorFactory,
       SeurantaDao seurantaDao,
       @Value("${valintalaskentakoostepalvelu.maxWorkerCount:8}") int maxWorkers) {
     this.laskentaActorFactory = laskentaActorFactory;
-    this.laskentaStarter = laskentaStarter;
+    this.laskentaParameterService = laskentaParameterService;
     this.seurantaDao = seurantaDao;
     this.actorSystem =
         ActorSystem.create("ValintalaskentaActorSystem", ConfigFactory.defaultOverrides());
@@ -130,21 +137,50 @@ public class LaskentaActorSystem
     }
   }
 
-  private void startLaskentaIfWorkAvailable(Optional<String> uuid) {
-    if (!uuid.isPresent()) {
+  private void startLaskentaIfWorkAvailable(Optional<LaskentaDto> laskenta) {
+    if (!laskenta.isPresent()) {
       LOG.trace("Ei laskettavaa");
       laskennanKaynnistajaActor.tell(new NoWorkAvailable(), ActorRef.noSender());
     } else {
-      LOG.info("Luodaan ja aloitetaan Laskenta uuid:lle {}", uuid.get());
-      laskentaStarter.fetchLaskentaParams(
-          laskennanKaynnistajaActor,
-          uuid.get(),
-          (haku, params) ->
-              startLaskentaActor(
-                  params.getLaskentaStartParams(),
-                  laskentaActorFactory.createLaskentaActor(
-                      params.getLaskentaStartParams().getAuditSession(), this, haku, params)));
+      LOG.info("Luodaan ja aloitetaan Laskenta uuid:lle {}", laskenta.get().getUuid());
+
+      try {
+        LaskentaActorParams params = laskentaParameterService.fetchLaskentaParams(laskenta.get());
+        if(params.getHakukohdeOids().isEmpty()) {
+          cancelLaskenta(
+              "Haulla "
+                  + laskenta.get().getUuid()
+                  + " ei saatu hakukohteita! Onko valinnat synkronoitu tarjonnan kanssa?",
+              null,
+              laskenta.get().getUuid());
+        } else {
+          startLaskentaActor(
+              params.getLaskentaStartParams(),
+              laskentaActorFactory.createLaskentaActor(
+                  params.getLaskentaStartParams().getAuditSession(), this, params));
+        }
+      } catch (Throwable t) {
+        cancelLaskenta(
+            "Taustatietojen haku epäonnistui haku epäonnistui",
+            Optional.of(t),
+            laskenta.get().getUuid());
+      }
     }
+  }
+
+  private void cancelLaskenta(String msg, Optional<Throwable> t, String uuid) {
+    if (t.isPresent()) LOG.error(msg, t);
+    else LOG.error(msg);
+    LaskentaTila tila = LaskentaTila.VALMIS;
+    HakukohdeTila hakukohdetila = HakukohdeTila.KESKEYTETTY;
+    Optional<IlmoitusDto> ilmoitusDtoOptional =
+        t.map(
+            poikkeus -> IlmoitusDto.virheilmoitus(msg, Arrays.toString(poikkeus.getStackTrace())));
+
+    seurantaDao.merkkaaTila(uuid, tila, hakukohdetila, ilmoitusDtoOptional);
+
+    // TODO: tämä toimii käsittääkseni oikein vain jos laskenta oli käynnissä
+    laskennanKaynnistajaActor.tell(new LaskentaStarterActor.WorkerAvailable(), ActorRef.noSender());
   }
 
   protected void startLaskentaActor(LaskentaStartParams params, LaskentaActor laskentaActor) {
