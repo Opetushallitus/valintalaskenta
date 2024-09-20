@@ -1,7 +1,7 @@
 package fi.vm.sade.valinta.kooste.valintalaskenta.dto;
 
 import com.google.common.collect.Sets;
-import fi.vm.sade.valinta.kooste.valintalaskenta.actor.dto.HakukohdeJaOrganisaatio;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
