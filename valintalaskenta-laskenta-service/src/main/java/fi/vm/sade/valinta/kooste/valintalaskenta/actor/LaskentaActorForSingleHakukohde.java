@@ -4,7 +4,7 @@ import static fi.vm.sade.valinta.kooste.valintalaskenta.actor.LaskentaActorForSi
 import static fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto.ilmoitus;
 import static fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto.virheilmoitus;
 
-import fi.vm.sade.valinta.kooste.valintalaskenta.actor.dto.HakukohdeJaOrganisaatio;
+import fi.vm.sade.valinta.kooste.valintalaskenta.dto.HakukohdeJaOrganisaatio;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.HakukohdeTila;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTila;
