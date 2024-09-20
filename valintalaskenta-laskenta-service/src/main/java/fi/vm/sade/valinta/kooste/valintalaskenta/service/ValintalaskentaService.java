@@ -1,12 +1,10 @@
 package fi.vm.sade.valinta.kooste.valintalaskenta.service;
 
 import fi.vm.sade.service.valintaperusteet.dto.HakukohdeViiteDTO;
+import fi.vm.sade.valinta.kooste.valintalaskenta.actor.LaskentaSupervisor;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.HakukohdeJaOrganisaatio;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Laskenta;
-import fi.vm.sade.valinta.kooste.valintalaskenta.dto.LaskentaInfo;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Maski;
-import fi.vm.sade.valinta.kooste.valintalaskenta.route.ValintalaskentaKerrallaRoute;
-import fi.vm.sade.valinta.kooste.valintalaskenta.route.ValintalaskentaKerrallaRouteValvomo;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
 
 import java.util.Collection;
@@ -29,8 +27,7 @@ import static fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto.ilmoitu
 public class ValintalaskentaService {
   private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaService.class);
 
-  @Autowired private ValintalaskentaKerrallaRouteValvomo valintalaskentaValvomo;
-  @Autowired private ValintalaskentaKerrallaRoute valintalaskentaRoute;
+  @Autowired private LaskentaSupervisor laskentaSupervisor;
   @Autowired private SeurantaDao seurantaDao;
 
   public ValintalaskentaService() {}
@@ -94,13 +91,13 @@ public class ValintalaskentaService {
         isValintakoelaskenta,
         hakukohdeDtos);
     if (tunniste.getLuotiinkoUusiLaskenta()) {
-      valintalaskentaRoute.workAvailable();
+      laskentaSupervisor.workAvailable();
     }
     return tunniste;
   }
 
   public TunnisteDto kaynnistaLaskentaUudelleen(final String uuid) {
-    Optional<Laskenta> laskenta = valintalaskentaValvomo.fetchLaskenta(uuid);
+    Optional<Laskenta> laskenta = laskentaSupervisor.fetchLaskenta(uuid);
     if(laskenta.isPresent() && !laskenta.get().isValmis()) {
       return new TunnisteDto(uuid, false);
     }
@@ -111,14 +108,14 @@ public class ValintalaskentaService {
     }
 
     if (laskentaDto.getLuotiinkoUusiLaskenta()) {
-      valintalaskentaRoute.workAvailable();
+      laskentaSupervisor.workAvailable();
     }
     return new TunnisteDto(laskentaDto.getUuid(), laskentaDto.getLuotiinkoUusiLaskenta());
   }
 
   public void peruutaLaskenta(String uuid, Boolean lopetaVainJonossaOlevaLaskenta) {
     if (Boolean.TRUE.equals(lopetaVainJonossaOlevaLaskenta)) {
-      boolean onkoLaskentaVielaJonossa = valintalaskentaValvomo.fetchLaskenta(uuid) == null;
+      boolean onkoLaskentaVielaJonossa = laskentaSupervisor.fetchLaskenta(uuid) == null;
       if (!onkoLaskentaVielaJonossa) {
         // Laskentaa suoritetaan jo joten ei pysayteta
         return;
@@ -132,11 +129,11 @@ public class ValintalaskentaService {
   }
 
   private void stop(String uuid) {
-    valintalaskentaValvomo.fetchLaskenta(uuid).ifPresent(Laskenta::lopeta);
+    laskentaSupervisor.fetchLaskenta(uuid).ifPresent(Laskenta::lopeta);
   }
 
   private Optional<Laskenta> haeAjossaOlevaLaskentaHaulle(final String hakuOid) {
-    return valintalaskentaValvomo.runningLaskentas().stream()
+    return laskentaSupervisor.runningLaskentas().stream()
         .filter(l -> hakuOid.equals(l.getHakuOid()) && !l.isOsittainenLaskenta())
         .findFirst();
   }
@@ -223,6 +220,6 @@ public class ValintalaskentaService {
         !maski.isPresent() || !maski.get().isMask()
             ? haeAjossaOlevaLaskentaHaulle(hakuOid)
             : Optional.empty();
-    return ajossaOlevaLaskentaHaulle.map(LaskentaInfo::getUuid);
+    return ajossaOlevaLaskentaHaulle.map(Laskenta::getUuid);
   }
 }
