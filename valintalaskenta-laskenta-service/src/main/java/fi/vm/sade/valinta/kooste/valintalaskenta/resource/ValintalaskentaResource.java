@@ -11,7 +11,6 @@ import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Laskenta;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Maski;
 import fi.vm.sade.valinta.kooste.valintalaskenta.route.ValintalaskentaKerrallaRouteValvomo;
 import fi.vm.sade.valinta.kooste.valintalaskenta.service.ValintalaskentaService;
-import fi.vm.sade.valinta.kooste.valintalaskenta.service.ValintalaskentaStatusExcelService;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.TunnisteDto;
@@ -52,7 +51,6 @@ public class ValintalaskentaResource {
 
   @Autowired private ValintalaskentaKerrallaRouteValvomo valintalaskentaValvomo;
   @Autowired private ValintalaskentaService valintalaskentaService;
-  @Autowired private ValintalaskentaStatusExcelService valintalaskentaStatusExcelService;
   @Autowired private AuthorityCheckService authorityCheckService;
   @Autowired private ValintaperusteetAsyncResource valintaperusteetAsyncResource;
 
@@ -271,7 +269,7 @@ public class ValintalaskentaResource {
       })
   public DeferredResult<ResponseEntity<byte[]>> statusXls(@PathVariable("uuid") final String uuid) {
     DeferredResult<ResponseEntity<byte[]>> result = new DeferredResult<>(15 * 60 * 1000l);
-    result.onTimeout(() -> result.setErrorResult(valintalaskentaStatusExcelService.createTimeoutErrorXls(uuid)));
+    result.onTimeout(() -> result.setErrorResult(StatusExcelUtil.createTimeoutErrorXls(uuid)));
 
     try {
       Optional<LaskentaDto> laskenta = valintalaskentaService.haeLaskenta(uuid);
@@ -279,7 +277,7 @@ public class ValintalaskentaResource {
         result.setErrorResult(ResponseEntity.status(HttpStatus.GONE).body("Laskentaa" + uuid + " ei löytynyt"));
       } else {
         authorityCheckService.checkAuthorizationForLaskenta(laskenta.get(), valintalaskentaAllowedRoles);
-        valintalaskentaStatusExcelService.getStatusXls(uuid, result);
+        result.setResult(StatusExcelUtil.getStatusXls(laskenta.get()));
       }
     } catch (AccessDeniedException e) {
       result.setErrorResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage()));

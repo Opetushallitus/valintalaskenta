@@ -1,32 +1,23 @@
-package fi.vm.sade.valinta.kooste.valintalaskenta.service;
+package fi.vm.sade.valinta.kooste.valintalaskenta.resource;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import fi.vm.sade.valinta.kooste.util.ExcelExportUtil;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
-import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
-import io.reactivex.Observable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.async.DeferredResult;
 
-@Service
-public class ValintalaskentaStatusExcelService {
+public class StatusExcelUtil {
   private static final Logger LOG =
-      LoggerFactory.getLogger(ValintalaskentaStatusExcelService.class);
+      LoggerFactory.getLogger(StatusExcelUtil.class);
 
-  @Autowired private SeurantaDao seurantaDao;
-
-  public ResponseEntity<byte[]> createTimeoutErrorXls(final String uuid) {
+  public static ResponseEntity<byte[]> createTimeoutErrorXls(final String uuid) {
     final List<Object[]> grid = Lists.newArrayList();
     grid.add(
         new Object[] {
@@ -40,37 +31,18 @@ public class ValintalaskentaStatusExcelService {
     return excelResponse("yhteenveto_aikakatkaistu.xls", bytes);
   }
 
-  public void getStatusXls(final String uuid, DeferredResult<ResponseEntity<byte[]>> result) {
-    Observable.fromFuture(CompletableFuture.completedFuture(seurantaDao.haeLaskenta(uuid).get()))
-        .subscribe(
-            laskenta -> {
-              try {
-                byte[] bytes = laskentaDtoAsExcel(laskenta);
-                result.setResult(excelResponse("yhteenveto.xls", bytes));
-              } catch (Throwable e) {
-                LOG.error(
-                    "Excelin muodostuksessa(kohteelle /laskenta/" + uuid + ") tapahtui virhe", e);
-                result.setResult(
-                    luoVirheExcelVastaus(
-                        "yhteenveto_virhe.xls", "Virhe Excelin muodostuksessa!", e));
-                throw e;
-              }
-            },
-            poikkeus -> {
-              LOG.error(
-                  "Excelin tietojen haussa seurantapalvelusta(/laskenta/"
-                      + uuid
-                      + ") tapahtui virhe",
-                  poikkeus);
-              result.setResult(
-                  luoVirheExcelVastaus(
-                      "yhteenveto_seurantavirhe.xls",
-                      "Virhe seurantapavelun kutsumisessa!",
-                      poikkeus));
-            });
+  public static ResponseEntity<byte[]> getStatusXls(LaskentaDto laskenta) {
+    try {
+        byte[] bytes = laskentaDtoAsExcel(laskenta);
+        return excelResponse("yhteenveto.xls", bytes);
+    } catch(Throwable e) {
+      LOG.error(
+          "Excelin muodostuksessa(kohteelle /laskenta/" + laskenta.getUuid() + ") tapahtui virhe", e);
+      return luoVirheExcelVastaus("yhteenveto_virhe.xls", "Virhe Excelin muodostuksessa!", e);
+    }
   }
 
-  private ResponseEntity<byte[]> luoVirheExcelVastaus(
+  private static ResponseEntity<byte[]> luoVirheExcelVastaus(
       final String tiedostonNimi, final String virheViesti, final Throwable poikkeus) {
     final List<Object[]> grid = Lists.newArrayList();
     grid.add(new Object[] {virheViesti});
@@ -84,7 +56,7 @@ public class ValintalaskentaStatusExcelService {
     return excelResponse(tiedostonNimi, bytes);
   }
 
-  private ResponseEntity<byte[]> excelResponse(final String tiedostonnimi, byte[] bytes) {
+  private static ResponseEntity<byte[]> excelResponse(final String tiedostonnimi, byte[] bytes) {
     return ResponseEntity.status(HttpStatus.OK)
         .header("Content-Length", bytes.length + "")
         .header("Content-Type", "application/vnd.ms-excel")
@@ -92,7 +64,7 @@ public class ValintalaskentaStatusExcelService {
         .body(bytes);
   }
 
-  private byte[] getExcelSheetAndGridBytes(final String sheetName, final List<Object[]> grid) {
+  private static byte[] getExcelSheetAndGridBytes(final String sheetName, final List<Object[]> grid) {
     final Map<String, Object[][]> sheetAndGrid = Maps.newHashMap();
     sheetAndGrid.put(sheetName, grid.toArray(new Object[][] {}));
 
