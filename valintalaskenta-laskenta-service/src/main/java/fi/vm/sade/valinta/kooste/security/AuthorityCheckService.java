@@ -68,8 +68,7 @@ public class AuthorityCheckService {
     Collection<? extends GrantedAuthority> userRoles = getRoles();
 
     if (containsOphRole(userRoles)) {
-      // on OPH-käyttäjä, ei tarvitse käydä läpi organisaatioita
-      return;
+      return; // on OPH-käyttäjä, ei tarvitse käydä läpi organisaatioita
     }
 
     Haku haku;
@@ -97,10 +96,11 @@ public class AuthorityCheckService {
     }
 
     HakukohdeOIDAuthorityCheck authCheck = getAuthorityCheckForRoles(requiredRoles);
-    boolean isAuthorized = hakukohdeOids.stream().anyMatch(authCheck);
-    if (!isAuthorized) {
+    Collection<String> notAuthorizedHakukohteet = hakukohdeOids.stream().filter(hk -> !authCheck.test(hk)).toList();
+    if (notAuthorizedHakukohteet.size()>0) {
       String msg =
-          String.format("Käyttäjällä ei oikeutta yhteenkään hakukohteeseen: %s", hakukohdeOids);
+          String.format("Käyttäjällä ei oikeutta seuraaviin hakukohteisiin: %s",
+              notAuthorizedHakukohteet.stream().collect(Collectors.joining(",")));
       LOG.error(msg);
       throw new AccessDeniedException(msg);
     }
@@ -174,18 +174,14 @@ public class AuthorityCheckService {
     }
   }
 
-  public Boolean checkAuthorizationForLaskenta(LaskentaDto laskentaDto, Collection<String> requiredRoles) {
+  public void checkAuthorizationForLaskenta(LaskentaDto laskentaDto, Collection<String> requiredRoles) {
     if (LaskentaTyyppi.HAKU.equals(laskentaDto.getTyyppi())) {
-      this.checkAuthorizationForHaku(
-          laskentaDto.getHakuOid(), requiredRoles);
+      this.checkAuthorizationForHaku(laskentaDto.getHakuOid(), requiredRoles);
     } else {
-      final List<String> hakukohdeOids =
-          laskentaDto.getHakukohteet().stream()
-              .map(hk -> hk.getHakukohdeOid())
-              .collect(Collectors.toList());
-      this.checkAuthorizationForHakukohteet(
-          hakukohdeOids, requiredRoles);
+      final List<String> hakukohdeOids = laskentaDto.getHakukohteet().stream()
+          .map(hk -> hk.getHakukohdeOid())
+          .collect(Collectors.toList());
+      this.checkAuthorizationForHakukohteet(hakukohdeOids, requiredRoles);
     }
-    return Boolean.TRUE;
   }
 }
