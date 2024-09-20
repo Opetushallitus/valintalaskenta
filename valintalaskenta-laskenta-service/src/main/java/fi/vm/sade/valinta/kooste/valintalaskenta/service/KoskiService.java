@@ -1,4 +1,4 @@
-package fi.vm.sade.valinta.kooste.valintalaskenta.actor;
+package fi.vm.sade.valinta.kooste.valintalaskenta.service;
 
 import com.google.gson.Gson;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
