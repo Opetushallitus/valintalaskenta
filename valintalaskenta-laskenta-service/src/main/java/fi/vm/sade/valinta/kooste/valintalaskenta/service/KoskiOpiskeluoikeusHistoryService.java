@@ -1,4 +1,4 @@
-package fi.vm.sade.valinta.kooste.valintalaskenta.actor;
+package fi.vm.sade.valinta.kooste.valintalaskenta.service;
 
 import static fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi.ITEROIAMMATILLISETTUTKINNOT;
 import static fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi.ITEROIAMMATILLISETTUTKINNOT_LEIKKURIPVM_PARAMETRI;
