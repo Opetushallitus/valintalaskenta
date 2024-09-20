@@ -7,9 +7,9 @@ import fi.vm.sade.valinta.kooste.AuthorizationUtil;
 import fi.vm.sade.valinta.kooste.dto.Vastaus;
 import fi.vm.sade.valinta.kooste.external.resource.valintaperusteet.ValintaperusteetAsyncResource;
 import fi.vm.sade.valinta.kooste.security.AuthorityCheckService;
+import fi.vm.sade.valinta.kooste.valintalaskenta.actor.LaskentaSupervisor;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Laskenta;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Maski;
-import fi.vm.sade.valinta.kooste.valintalaskenta.route.ValintalaskentaKerrallaRouteValvomo;
 import fi.vm.sade.valinta.kooste.valintalaskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
@@ -49,7 +49,7 @@ public class ValintalaskentaResource {
           "ROLE_APP_VALINTOJENTOTEUTTAMINENKK_CRUD",
           "ROLE_APP_VALINTOJENTOTEUTTAMINENKK_READ_UPDATE");
 
-  @Autowired private ValintalaskentaKerrallaRouteValvomo valintalaskentaValvomo;
+  @Autowired private LaskentaSupervisor laskentaSupervisor;
   @Autowired private ValintalaskentaService valintalaskentaService;
   @Autowired private AuthorityCheckService authorityCheckService;
   @Autowired private ValintaperusteetAsyncResource valintaperusteetAsyncResource;
@@ -215,7 +215,7 @@ public class ValintalaskentaResource {
             content = @Content(schema = @Schema(implementation = Laskenta.class)))
       })
   public List<Laskenta> status() {
-    return valintalaskentaValvomo.runningLaskentas();
+    return laskentaSupervisor.runningLaskentas();
   }
 
   /**
@@ -241,7 +241,7 @@ public class ValintalaskentaResource {
       }
 
       authorityCheckService.checkAuthorizationForLaskenta(laskenta.get(), valintalaskentaAllowedRoles);
-      return valintalaskentaValvomo
+      return laskentaSupervisor
           .fetchLaskenta(uuid)
           .map(l -> ResponseEntity.status(HttpStatus.OK).body((Object)l))
           .orElse(ResponseEntity.status(HttpStatus.GONE).body("Valintalaskenta ei ole muistissa!"));
