@@ -8,13 +8,8 @@ import akka.actor.TypedActor;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.typesafe.config.ConfigFactory;
-import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.dto.ParametritDTO;
-import fi.vm.sade.valinta.kooste.external.resource.tarjonta.Haku;
-import fi.vm.sade.valinta.kooste.external.resource.valintatulosservice.dto.AuditSession;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Laskenta;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.LaskentaStartParams;
-import fi.vm.sade.valinta.kooste.valintalaskenta.route.ValintalaskentaKerrallaRoute;
-import fi.vm.sade.valinta.kooste.valintalaskenta.route.ValintalaskentaKerrallaRouteValvomo;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -37,10 +32,7 @@ import scala.concurrent.duration.FiniteDuration;
     objectName = "OPH:name=LaskentaActorSystem",
     description = "LaskentaActorSystem mbean")
 public class LaskentaActorSystem
-    implements ValintalaskentaKerrallaRouteValvomo,
-        ValintalaskentaKerrallaRoute,
-        LaskentaSupervisor,
-        ApplicationListener<ContextRefreshedEvent> {
+    implements LaskentaSupervisor, ApplicationListener<ContextRefreshedEvent> {
   private static final Logger LOG = LoggerFactory.getLogger(LaskentaActorSystem.class);
 
   private final LaskentaActorFactory laskentaActorFactory;
@@ -88,18 +80,6 @@ public class LaskentaActorSystem
   @Override
   public void onApplicationEvent(ContextRefreshedEvent event) {
     laskennanKaynnistajaActor.tell(new StartAllWorkers(), ActorRef.noSender());
-  }
-
-  @Override
-  public void suoritaValintalaskentaKerralla(
-      final Haku haku,
-      final ParametritDTO parametritDTO,
-      final LaskentaStartParams laskentaStartParams) {
-    AuditSession auditSession = laskentaStartParams.getAuditSession();
-    LaskentaActor laskentaActor =
-        laskentaActorFactory.createLaskentaActor(
-            auditSession, this, haku, new LaskentaActorParams(laskentaStartParams, parametritDTO));
-    startLaskentaActor(laskentaStartParams, laskentaActor);
   }
 
   @Override
