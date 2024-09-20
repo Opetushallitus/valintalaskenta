@@ -1,6 +1,6 @@
 package fi.vm.sade.valinta.kooste.valintalaskenta.actor;
 
-import static fi.vm.sade.valinta.kooste.valintalaskenta.actor.laskenta.LaskentaStarterActor.*;
+import static fi.vm.sade.valinta.kooste.valintalaskenta.actor.LaskentaStarterActor.*;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
