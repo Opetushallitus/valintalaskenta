@@ -1,4 +1,4 @@
-package fi.vm.sade.valinta.kooste.valintalaskenta.actor.dto;
+package fi.vm.sade.valinta.kooste.valintalaskenta.dto;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
