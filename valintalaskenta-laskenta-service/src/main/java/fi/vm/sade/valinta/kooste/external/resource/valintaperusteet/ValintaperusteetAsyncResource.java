@@ -17,7 +17,7 @@ public interface ValintaperusteetAsyncResource {
   CompletableFuture<List<ValintaperusteetHakijaryhmaDTO>> haeHakijaryhmat(String hakukohdeOid);
 
   // @GET /valintaperusteet-service/resources/hakukohde/haku/{}
-  Observable<List<HakukohdeViiteDTO>> haunHakukohteet(String hakuOid);
+  CompletableFuture<List<HakukohdeViiteDTO>> haunHakukohteet(String hakuOid);
 
   CompletableFuture<List<ValintaperusteetDTO>> haeValintaperusteet(
       String hakukohdeOid, Integer valinnanVaiheJarjestysluku);

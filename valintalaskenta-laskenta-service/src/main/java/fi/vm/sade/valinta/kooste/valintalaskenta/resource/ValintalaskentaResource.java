@@ -79,7 +79,7 @@ public class ValintalaskentaResource {
     try {
       authorityCheckService.checkAuthorizationForHaku(hakuOid, valintalaskentaAllowedRoles);
 
-      List<HakukohdeViiteDTO> hakukohdeViitteet = valintaperusteetAsyncResource.haunHakukohteet(hakuOid).blockingFirst();
+      List<HakukohdeViiteDTO> hakukohdeViitteet = valintaperusteetAsyncResource.haunHakukohteet(hakuOid).get();
       TunnisteDto tunniste = valintalaskentaService.kaynnistaLaskentaHaulle(
           AuthorizationUtil.getCurrentUser(),
           haunnimi,
@@ -138,7 +138,7 @@ public class ValintalaskentaResource {
     DeferredResult<ResponseEntity<Vastaus>> result = new DeferredResult<>(1 * 60 * 1000l);
 
     try {
-      List<HakukohdeViiteDTO> hakukohdeViitteet = valintaperusteetAsyncResource.haunHakukohteet(hakuOid).blockingFirst();
+      List<HakukohdeViiteDTO> hakukohdeViitteet = valintaperusteetAsyncResource.haunHakukohteet(hakuOid).get();
       if (LaskentaTyyppi.VALINTARYHMA.equals(laskentatyyppi)) {
         authorityCheckService.checkAuthorizationForValintaryhma(valintaryhmaOid, valintalaskentaAllowedRoles);
       } else {
