@@ -1,8 +1,8 @@
-package fi.vm.sade.valinta.kooste.valintalaskenta.actor.laskenta;
+package fi.vm.sade.valinta.kooste.valintalaskenta.actor;
 
 import akka.actor.Props;
 import akka.actor.UntypedActor;
-import fi.vm.sade.valinta.kooste.valintalaskenta.actor.LaskentaSupervisor;
+
 import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
