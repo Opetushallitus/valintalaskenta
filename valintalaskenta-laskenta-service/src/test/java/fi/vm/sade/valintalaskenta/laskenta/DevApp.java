@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Profile;
 @Profile("dev")
 public class DevApp {
 
-  private static final String ENVIRONMENT = "hahtuva";
+  private static final String ENVIRONMENT = "untuva";
 
   public static void main(String[] args) {
     System.setProperty("spring.profiles.active", "dev");
