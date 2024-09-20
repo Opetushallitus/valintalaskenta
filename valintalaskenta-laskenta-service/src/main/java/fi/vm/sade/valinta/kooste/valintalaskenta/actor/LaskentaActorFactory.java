@@ -141,11 +141,11 @@ public class LaskentaActorFactory {
   private LaskentaActor createValintaryhmaActor(
       AuditSession auditSession,
       LaskentaSupervisor laskentaSupervisor,
-      Haku haku,
       LaskentaActorParams a,
       Date nyt) {
     LaskentaActorParams fakeOnlyOneHakukohdeParams =
         new LaskentaActorParams(
+            a.getHaku(),
             a.getLaskentaStartParams(),
             Collections.singletonList(new HakukohdeJaOrganisaatio()),
             a.getParametritDTO());
@@ -170,7 +170,7 @@ public class LaskentaActorFactory {
               h ->
                   Observable.fromFuture(
                       fetchResourcesForOneLaskenta(
-                          auditSession, uuid, haku, h, a, true, true, suoritustiedot, nyt));
+                          auditSession, uuid, h, a, true, true, suoritustiedot, nyt));
 
           Observable<String> laskenta =
               fetchRecursively(fetchLaskeDTO, recursiveSequentialFetch)
@@ -212,7 +212,6 @@ public class LaskentaActorFactory {
   private LaskentaActor createValintakoelaskentaActor(
       AuditSession auditSession,
       LaskentaSupervisor laskentaSupervisor,
-      Haku haku,
       LaskentaActorParams actorParams,
       Date nyt) {
     final String uuid = actorParams.getUuid();
@@ -227,7 +226,6 @@ public class LaskentaActorFactory {
                       fetchResourcesForOneLaskenta(
                           auditSession,
                           uuid,
-                          haku,
                           hakukohdeOid,
                           actorParams,
                           false,
@@ -283,7 +281,6 @@ public class LaskentaActorFactory {
   private LaskentaActor createValintalaskentaActor(
       AuditSession auditSession,
       LaskentaSupervisor laskentaSupervisor,
-      Haku haku,
       LaskentaActorParams actorParams) {
     final String uuid = actorParams.getUuid();
     final Date nyt = new Date();
@@ -304,7 +301,6 @@ public class LaskentaActorFactory {
                       fetchResourcesForOneLaskenta(
                           auditSession,
                           uuid,
-                          haku,
                           hakukohdeOid,
                           actorParams,
                           false,
@@ -341,7 +337,6 @@ public class LaskentaActorFactory {
   private LaskentaActor createValintalaskentaJaValintakoelaskentaActor(
       AuditSession auditSession,
       LaskentaSupervisor laskentaSupervisor,
-      Haku haku,
       LaskentaActorParams actorParams,
       Date nyt) {
     final String uuid = actorParams.getUuid();
@@ -360,7 +355,6 @@ public class LaskentaActorFactory {
                       fetchResourcesForOneLaskenta(
                           auditSession,
                           uuid,
-                          haku,
                           hakukohdeOid,
                           actorParams,
                           false,
@@ -397,7 +391,6 @@ public class LaskentaActorFactory {
   public LaskentaActor createLaskentaActor(
       AuditSession auditSession,
       LaskentaSupervisor laskentaSupervisor,
-      Haku haku,
       LaskentaActorParams actorParams) {
     final Date nyt = new Date();
     LOG.info(
@@ -407,31 +400,31 @@ public class LaskentaActorFactory {
 
     if (LaskentaTyyppi.VALINTARYHMALASKENTA.equals(actorParams.getLaskentaTyyppi())) {
       LOG.info("Muodostetaan VALINTARYHMALASKENTA");
-      auditLogLaskentaStart(auditSession, actorParams, haku.oid, "VALINTARYHMALASKENTA");
-      return createValintaryhmaActor(auditSession, laskentaSupervisor, haku, actorParams, nyt);
+      auditLogLaskentaStart(auditSession, actorParams, "VALINTARYHMALASKENTA");
+      return createValintaryhmaActor(auditSession, laskentaSupervisor, actorParams, nyt);
     }
     if (LaskentaTyyppi.VALINTAKOELASKENTA.equals(actorParams.getLaskentaTyyppi())) {
       LOG.info("Muodostetaan VALINTAKOELASKENTA");
-      auditLogLaskentaStart(auditSession, actorParams, haku.oid, "VALINTAKOELASKENTA");
+      auditLogLaskentaStart(auditSession, actorParams, "VALINTAKOELASKENTA");
       return createValintakoelaskentaActor(
-          auditSession, laskentaSupervisor, haku, actorParams, nyt);
+          auditSession, laskentaSupervisor, actorParams, nyt);
     }
     if (LaskentaTyyppi.VALINTALASKENTA.equals(actorParams.getLaskentaTyyppi())) {
       LOG.info("Muodostetaan VALINTALASKENTA");
-      auditLogLaskentaStart(auditSession, actorParams, haku.oid, "VALINTALASKENTA");
-      return createValintalaskentaActor(auditSession, laskentaSupervisor, haku, actorParams);
+      auditLogLaskentaStart(auditSession, actorParams,"VALINTALASKENTA");
+      return createValintalaskentaActor(auditSession, laskentaSupervisor, actorParams);
     }
     LOG.info(
         "Muodostetaan KAIKKI VAIHEET LASKENTA koska valinnanvaihe oli {} ja valintakoelaskenta ehto {}",
         actorParams.getValinnanvaihe(),
         actorParams.isValintakoelaskenta());
-    auditLogLaskentaStart(auditSession, actorParams, haku.oid, "KAIKKI VAIHEET LASKENTA");
+    auditLogLaskentaStart(auditSession, actorParams, "KAIKKI VAIHEET LASKENTA");
     return createValintalaskentaJaValintakoelaskentaActor(
-        auditSession, laskentaSupervisor, haku, actorParams, nyt);
+        auditSession, laskentaSupervisor, actorParams, nyt);
   }
 
   private void auditLogLaskentaStart(
-      AuditSession auditSession, LaskentaActorParams actorParams, String hakuOid, String tyyppi) {
+      AuditSession auditSession, LaskentaActorParams actorParams, String tyyppi) {
     Map<String, String> additionalAuditInfo = new HashMap<>();
     additionalAuditInfo.put("tyyppi", tyyppi);
     additionalAuditInfo.put("uuid", actorParams.getLaskentaStartParams().getUuid());
@@ -446,7 +439,7 @@ public class LaskentaActorFactory {
         auditSession.asAuditUser(),
         ValintaperusteetOperation.LASKENTATOTEUTUS_LUONTI,
         ValintaResource.LASKENTATOTEUTUS,
-        hakuOid,
+        actorParams.getHakuOid(),
         Changes.EMPTY,
         additionalAuditInfo);
   }
@@ -597,13 +590,13 @@ public class LaskentaActorFactory {
   private CompletableFuture<LaskeDTO> fetchResourcesForOneLaskenta(
       final AuditSession auditSession,
       final String uuid,
-      Haku haku,
       final String hakukohdeOid,
       LaskentaActorParams actorParams,
       boolean retryHakemuksetAndOppijat,
       boolean withHakijaRyhmat,
       SuoritustiedotDTO suoritustiedotDTO,
       Date nyt) {
+    final Haku haku = actorParams.getHaku();
     final String hakuOid = haku.oid;
 
     PyynnonTunniste tunniste =

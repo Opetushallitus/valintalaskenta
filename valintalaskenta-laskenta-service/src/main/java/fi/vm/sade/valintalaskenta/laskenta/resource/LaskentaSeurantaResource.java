@@ -70,7 +70,7 @@ public class LaskentaSeurantaResource {
       produces = MediaType.TEXT_PLAIN_VALUE)
   @Operation(summary = "Aloittaa seuraavan laskennan")
   ResponseEntity<String> otaSeuraavaLaskentaTyonAlle() {
-    Optional<String> uuid = seurantaDao.otaSeuraavaLaskentaTyonAlle();
+    Optional<String> uuid = seurantaDao.otaSeuraavaLaskentaTyonAlle().map(l -> l.getUuid());
     LOG.info("Ota seuraava tyon alle: " + (uuid.isPresent() ? uuid.get() : "Ei tyota"));
     if (uuid.isPresent()) {
       final String u = uuid.get();
