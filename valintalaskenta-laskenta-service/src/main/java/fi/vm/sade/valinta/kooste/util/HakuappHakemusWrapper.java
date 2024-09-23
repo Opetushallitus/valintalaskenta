@@ -4,7 +4,7 @@ import static fi.vm.sade.valinta.kooste.util.Converter.*;
 import static java.util.Collections.emptyList;
 
 import com.google.common.collect.Lists;
-import fi.vm.sade.valinta.kooste.erillishaku.excel.Maksuvelvollisuus;
+import fi.vm.sade.valinta.kooste.external.resource.hakuapp.dto.Maksuvelvollisuus;
 import fi.vm.sade.valinta.kooste.external.resource.ataru.dto.AtaruHakutoive;
 import fi.vm.sade.valinta.kooste.external.resource.hakuapp.dto.Eligibility;
 import fi.vm.sade.valinta.kooste.external.resource.hakuapp.dto.Hakemus;
