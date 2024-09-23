@@ -1,11 +1,10 @@
 package fi.vm.sade.valinta.kooste.external.resource.valintaperusteet.impl;
 
-import com.google.common.collect.Lists;
 import com.google.gson.reflect.TypeToken;
 import fi.vm.sade.service.valintaperusteet.dto.*;
 import fi.vm.sade.valinta.kooste.external.resource.UrlConfiguration;
 import fi.vm.sade.valinta.kooste.external.resource.valintaperusteet.ValintaperusteetAsyncResource;
-import fi.vm.sade.valinta.kooste.external.resource.viestintapalvelu.RestCasClient;
+import fi.vm.sade.valinta.kooste.external.resource.RestCasClient;
 import io.reactivex.Observable;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -13,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,18 +27,6 @@ public class ValintaperusteetAsyncResourceImpl implements ValintaperusteetAsyncR
       @Qualifier("ValintaperusteetCasClient") RestCasClient httpClient) {
     this.httpClient = httpClient;
     this.urlConfiguration = UrlConfiguration.getInstance();
-  }
-
-  public Observable<List<ValinnanVaiheJonoillaDTO>> haeIlmanlaskentaa(String hakukohdeOid) {
-    LOG.info("Valinnanvaiheiden haku...");
-    return Observable.fromFuture(
-        this.httpClient.get(
-            this.urlConfiguration.url(
-                "valintaperusteet-service.valintalaskentakoostepalvelu.hakukohde.ilmanlaskentaa",
-                hakukohdeOid),
-            new TypeToken<List<ValinnanVaiheJonoillaDTO>>() {},
-            Collections.emptyMap(),
-            10 * 60 * 1000));
   }
 
   public CompletableFuture<List<ValintaperusteetHakijaryhmaDTO>> haeHakijaryhmat(
@@ -82,43 +68,6 @@ public class ValintaperusteetAsyncResourceImpl implements ValintaperusteetAsyncR
   }
 
   @Override
-  public Observable<ResponseEntity> tuoHakukohde(HakukohdeImportDTO hakukohde) {
-    return Observable.fromFuture(
-        this.httpClient
-            .post(
-                this.urlConfiguration.url(
-                    "valintaperusteet-service.valintalaskentakoostepalvelu.valintaperusteet.tuohakukohde"),
-                hakukohde,
-                Collections.emptyMap(),
-                10 * 60 * 1000)
-            .thenApply(r -> ResponseEntity.status(r.getStatusCode()).build()));
-  }
-
-  @Override
-  public CompletableFuture<List<ValintaperusteDTO>> findAvaimet(String hakukohdeOid) {
-    return httpClient.get(
-        this.urlConfiguration.url(
-            "valintaperusteet-service.valintalaskentakoostepalvelu.hakukohde.avaimet.oid",
-            hakukohdeOid),
-        new TypeToken<List<ValintaperusteDTO>>() {},
-        Collections.emptyMap(),
-        60 * 60 * 1000);
-  }
-
-  @Override
-  public Observable<List<HakukohdeJaValintaperusteDTO>> findAvaimet(
-      Collection<String> hakukohdeOids) {
-    return Observable.fromFuture(
-        this.httpClient.post(
-            this.urlConfiguration.url(
-                "valintaperusteet-service.valintalaskentakoostepalvelu.hakukohde.avaimet"),
-            new TypeToken<List<HakukohdeJaValintaperusteDTO>>() {},
-            Lists.newArrayList(hakukohdeOids),
-            Collections.emptyMap(),
-            10 * 60 * 1000));
-  }
-
-  @Override
   public Observable<List<ValintaperusteetDTO>> valintaperusteet(String valinnanvaiheOid) {
     return Observable.fromFuture(
         this.httpClient.get(
@@ -128,68 +77,6 @@ public class ValintaperusteetAsyncResourceImpl implements ValintaperusteetAsyncR
             new TypeToken<List<ValintaperusteetDTO>>() {},
             Collections.emptyMap(),
             10 * 60 * 1000));
-  }
-
-  @Override
-  public Observable<List<HakukohdeJaValintakoeDTO>> haeValintakokeetHakukohteille(
-      Collection<String> hakukohdeOids) {
-    return Observable.fromFuture(
-        this.httpClient.post(
-            this.urlConfiguration.url(
-                "valintaperusteet-service.valintalaskentakoostepalvelu.hakukohde.valintakoe"),
-            new TypeToken<List<HakukohdeJaValintakoeDTO>>() {},
-            hakukohdeOids,
-            Collections.emptyMap(),
-            10 * 60 * 1000));
-  }
-
-  @Override
-  public Observable<List<HakukohdeJaValintakoeDTO>> haeValintakokeetHakutoiveille(
-      Collection<String> hakukohdeOids) {
-    return Observable.fromFuture(
-        this.httpClient.post(
-            this.urlConfiguration.url(
-                "valintaperusteet-service.valintalaskentakoostepalvelu.hakukohde.valintakoe"),
-            new TypeToken<List<HakukohdeJaValintakoeDTO>>() {},
-            Lists.newArrayList(hakukohdeOids),
-            Collections.emptyMap(),
-            10 * 60 * 1000));
-  }
-
-  @Override
-  public Observable<Map<String, List<ValintatapajonoDTO>>> haeValintatapajonotSijoittelulle(
-      Collection<String> hakukohdeOids) {
-    return Observable.fromFuture(
-        this.httpClient.post(
-            this.urlConfiguration.url(
-                "valintaperusteet-service.valintalaskentakoostepalvelu.valintatapajono"),
-            new TypeToken<Map<String, List<ValintatapajonoDTO>>>() {},
-            hakukohdeOids,
-            Collections.emptyMap(),
-            10 * 60 * 1000));
-  }
-
-  @Override
-  public Observable<List<ValintakoeDTO>> haeValintakokeetHakukohteelle(String hakukohdeOid) {
-    return Observable.fromFuture(
-        this.httpClient.get(
-            this.urlConfiguration.url(
-                "valintaperusteet-service.valintalaskentakoostepalvelu.valintakoe", hakukohdeOid),
-            new TypeToken<List<ValintakoeDTO>>() {},
-            Collections.emptyMap(),
-            10 * 60 * 1000));
-  }
-
-  @Override
-  public Observable<Set<String>> haeHakukohteetValinnanvaiheelle(String oid) {
-    String url =
-        this.urlConfiguration.url(
-            "valintaperusteet-service.valintalaskentakoostepalvelu.valinnanvaihe.hakukohteet", oid);
-    LOG.info("Calling url {}", url);
-
-    return Observable.fromFuture(
-        this.httpClient.get(
-            url, new TypeToken<Set<String>>() {}, Collections.emptyMap(), 10 * 60 * 1000));
   }
 
   @Override

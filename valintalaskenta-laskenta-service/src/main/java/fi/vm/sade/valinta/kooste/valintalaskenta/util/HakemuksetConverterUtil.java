@@ -245,27 +245,6 @@ public class HakemuksetConverterUtil {
                     && Integer.parseInt(aa.getArvo()) < 2018);
   }
 
-  public void mergeKeysOfOppijaAndHakemus(
-      boolean hakijallaOnHenkilotunnus,
-      Haku haku,
-      String hakukohdeOid,
-      ParametritDTO parametritDTO,
-      Map<String, Exception> errors,
-      Oppija oppija,
-      HakemusDTO hakemusDTO,
-      Boolean fetchEnsikertalaisuus) {
-    mergeKeysOfOppijaAndHakemus(
-        hakijallaOnHenkilotunnus,
-        haku,
-        hakukohdeOid,
-        parametritDTO,
-        errors,
-        oppija,
-        hakemusDTO,
-        fetchEnsikertalaisuus,
-        null);
-  }
-
   private Optional<String> getKieliForKomo(Oppija o, String komo) {
     return o.getSuoritukset().stream()
         .filter(

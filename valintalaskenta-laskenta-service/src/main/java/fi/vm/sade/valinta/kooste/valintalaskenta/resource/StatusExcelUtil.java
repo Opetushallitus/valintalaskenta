@@ -2,7 +2,7 @@ package fi.vm.sade.valinta.kooste.valintalaskenta.resource;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import fi.vm.sade.valinta.kooste.util.ExcelExportUtil;
+import fi.vm.sade.valinta.kooste.util.excel.ExcelExportUtil;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

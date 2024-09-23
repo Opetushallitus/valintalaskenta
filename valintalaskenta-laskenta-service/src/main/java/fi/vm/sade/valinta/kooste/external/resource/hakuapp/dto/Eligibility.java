@@ -1,7 +1,5 @@
 package fi.vm.sade.valinta.kooste.external.resource.hakuapp.dto;
 
-import fi.vm.sade.valinta.kooste.erillishaku.excel.Maksuvelvollisuus;
-
 public class Eligibility {
   private String aoId;
   private String status;
