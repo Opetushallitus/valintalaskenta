@@ -1,10 +1,9 @@
-package fi.vm.sade.valinta.kooste.util;
+package fi.vm.sade.valinta.kooste.util.excel;
 
 import static org.apache.poi.ss.usermodel.HorizontalAlignment.CENTER;
 
 import fi.vm.sade.javautils.poi.OphCellStyles.OphXssfCellStyles;
-import fi.vm.sade.valinta.kooste.util.excel.Highlight;
-import fi.vm.sade.valinta.kooste.util.excel.Span;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
