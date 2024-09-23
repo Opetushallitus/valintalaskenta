@@ -1,7 +1,6 @@
 package fi.vm.sade.valinta.kooste;
 
 import fi.vm.sade.javautils.http.HttpServletRequestUtils;
-import fi.vm.sade.valinta.kooste.external.resource.valintatulosservice.dto.AuditSession;
 import fi.vm.sade.valinta.sharedutils.AuditLog;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
