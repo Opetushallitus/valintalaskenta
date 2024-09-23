@@ -1,4 +1,4 @@
-package fi.vm.sade.valinta.kooste.erillishaku.excel;
+package fi.vm.sade.valinta.kooste.external.resource.hakuapp.dto;
 
 public final class Maksuvelvollisuus {
   public static final String NOT_CHECKED = "NOT_CHECKED";

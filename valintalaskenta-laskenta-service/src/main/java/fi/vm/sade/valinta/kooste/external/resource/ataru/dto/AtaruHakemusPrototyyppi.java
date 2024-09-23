@@ -1,11 +1,14 @@
 package fi.vm.sade.valinta.kooste.external.resource.ataru.dto;
 
-import fi.vm.sade.valinta.kooste.erillishaku.excel.ErillishakuRivi;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class AtaruHakemusPrototyyppi {
+
+  public static final DateTimeFormatter SYNTYMAAIKAFORMAT =
+      DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
   private String hakukohdeOid;
   private String hakuOid;
@@ -243,7 +246,7 @@ public class AtaruHakemusPrototyyppi {
     }
 
     LocalDate localDate = syntymaAika.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-    return localDate.format(ErillishakuRivi.SYNTYMAAIKAFORMAT);
+    return localDate.format(SYNTYMAAIKAFORMAT);
   }
 
   public static String parseDate(final LocalDate syntymaAika) {
@@ -251,7 +254,7 @@ public class AtaruHakemusPrototyyppi {
       return null;
     }
 
-    return syntymaAika.format(ErillishakuRivi.SYNTYMAAIKAFORMAT);
+    return syntymaAika.format(SYNTYMAAIKAFORMAT);
   }
 
   /**
