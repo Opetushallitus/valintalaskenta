@@ -4,7 +4,6 @@ import static fi.vm.sade.valinta.sharedutils.http.HttpResource.CSRF_VALUE;
 
 import fi.vm.sade.javautils.nio.cas.CasConfig;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.impl.TarjontaAsyncResourceImpl;
-import fi.vm.sade.valinta.kooste.external.resource.valintatulosservice.impl.ValintaTulosServiceAsyncResourceImpl;
 import fi.vm.sade.valinta.kooste.external.resource.viestintapalvelu.RestCasClient;
 import fi.vm.sade.valinta.sharedutils.http.DateDeserializer;
 import java.net.CookieManager;
@@ -144,14 +143,6 @@ public class HttpClients {
                 username, password, ticketsUrl, service, CSRF_VALUE, CALLER_ID, "")
             .setJsessionName("session")
             .build());
-  }
-
-  @Bean(name = "ValintaTulosServiceHttpClient")
-  @Autowired
-  public HttpClient getValintaTulosServiceHttpClient(CookieManager cookieManager) {
-    return new HttpClient(
-        defaultHttpClientBuilder(cookieManager).build(),
-        ValintaTulosServiceAsyncResourceImpl.getGson());
   }
 
   @Bean(name = "OhjausparametritHttpClient")
