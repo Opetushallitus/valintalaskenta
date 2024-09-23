@@ -1,26 +1,18 @@
 package fi.vm.sade.valinta.kooste.external.resource.harkinnanvaraisuus.impl;
 
-import fi.vm.sade.valinta.kooste.external.resource.ataru.AtaruAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.harkinnanvaraisuus.HarkinnanvaraisuudenSyy;
 import fi.vm.sade.valinta.kooste.external.resource.harkinnanvaraisuus.HarkinnanvaraisuusAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.harkinnanvaraisuus.dto.HakemuksenHarkinnanvaraisuus;
 import fi.vm.sade.valinta.kooste.external.resource.harkinnanvaraisuus.dto.HakutoiveenHarkinnanvaraisuus;
-import fi.vm.sade.valinta.kooste.external.resource.oppijanumerorekisteri.OppijanumerorekisteriAsyncResource;
-import fi.vm.sade.valinta.kooste.external.resource.oppijanumerorekisteri.dto.HenkiloViiteDto;
-import fi.vm.sade.valinta.kooste.external.resource.suoritusrekisteri.SuoritusrekisteriAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.suoritusrekisteri.dto.Oppija;
 import fi.vm.sade.valinta.kooste.external.resource.suoritusrekisteri.dto.Suoritus;
 import fi.vm.sade.valinta.kooste.external.resource.suoritusrekisteri.dto.SuoritusJaArvosanat;
-import fi.vm.sade.valinta.kooste.util.HakemusWrapper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,9 +26,6 @@ public class HarkinnanvaraisuusAsyncResourceImpl implements HarkinnanvaraisuusAs
   private static final Logger LOG =
       LoggerFactory.getLogger(HarkinnanvaraisuusAsyncResourceImpl.class);
 
-  private final AtaruAsyncResource ataruAsyncResource;
-  private final SuoritusrekisteriAsyncResource suoritusrekisteriAsyncResource;
-  private final OppijanumerorekisteriAsyncResource oppijanumerorekisteriAsyncResource;
   private final LocalDateTime suoritusValmisDeadline;
 
   public static final org.joda.time.format.DateTimeFormatter VALMISTUMINEN_DTF =
@@ -45,13 +34,7 @@ public class HarkinnanvaraisuusAsyncResourceImpl implements HarkinnanvaraisuusAs
   @Autowired
   public HarkinnanvaraisuusAsyncResourceImpl(
       @Value("${valintalaskentakoostepalvelu.harkinnanvaraisuus.paattely.leikkuripvm:2022-02-02}")
-          String suoritusValmisDeadlinePvm,
-      AtaruAsyncResource ataruAsyncResource,
-      SuoritusrekisteriAsyncResource suoritusrekisteriAsyncResource,
-      OppijanumerorekisteriAsyncResource oppijanumerorekisteriAsyncResource) {
-    this.ataruAsyncResource = ataruAsyncResource;
-    this.suoritusrekisteriAsyncResource = suoritusrekisteriAsyncResource;
-    this.oppijanumerorekisteriAsyncResource = oppijanumerorekisteriAsyncResource;
+          String suoritusValmisDeadlinePvm) {
     this.suoritusValmisDeadline = LocalDate.parse(suoritusValmisDeadlinePvm).atStartOfDay();
   }
 
@@ -240,141 +223,6 @@ public class HarkinnanvaraisuusAsyncResourceImpl implements HarkinnanvaraisuusAs
             .map(hh -> hh.getHakukohdeOid() + " - " + hh.getHarkinnanvaraisuudenSyy())
             .collect(Collectors.toList()));
     return result;
-  }
-
-  private List<Oppija> findOppijasForHakija(
-      String oidFromHakemus, List<Oppija> oppijas, List<HenkiloViiteDto> henkiloviittees) {
-    List<String> aliakset = new ArrayList<>();
-    aliakset.add(oidFromHakemus);
-    List<HenkiloViiteDto> hakijanViitteet =
-        henkiloviittees.stream()
-            .filter(hv -> List.of(hv.getHenkiloOid(), hv.getMasterOid()).contains(oidFromHakemus))
-            .collect(Collectors.toList());
-    hakijanViitteet.forEach(
-        viite -> aliakset.addAll(List.of(viite.getHenkiloOid(), viite.getMasterOid())));
-    List<Oppija> hakijanOppijat =
-        oppijas.stream()
-            .filter(oppija -> aliakset.contains(oppija.getOppijanumero()))
-            .collect(Collectors.toList());
-    LOG.info(
-        "Hakemukselle {} aliaksia yhteensä {}, oppijoita {}",
-        oidFromHakemus,
-        aliakset.size(),
-        hakijanOppijat.size());
-    return hakijanOppijat;
-  }
-
-  public CompletableFuture<List<HakemuksenHarkinnanvaraisuus>> getHarkinnanvaraisuudetForHakemukses(
-      List<String> hakemusOids) {
-    LOG.info(
-        "Haetaan harkinnanvaraisuudet hakemuksille: {}, deadline {}",
-        hakemusOids,
-        suoritusValmisDeadline);
-    CompletableFuture<List<HakemusWrapper>> hakemukset =
-        ataruAsyncResource.getApplicationsByOidsWithHarkinnanvaraisuustieto(hakemusOids);
-
-    CompletableFuture<List<HenkiloViiteDto>> viitteet =
-        hakemukset.thenComposeAsync(
-            h -> {
-              LOG.info("Saatiin Atarusta {} hakemusta, haetaan henkilöviitteet", h.size());
-              return oppijanumerorekisteriAsyncResource.haeHenkiloOidDuplikaatit(
-                  h.stream().map(HakemusWrapper::getPersonOid).collect(Collectors.toSet()));
-            });
-
-    CompletableFuture<List<Oppija>> suoritukset =
-        hakemukset.thenComposeAsync(
-            h ->
-                viitteet.thenComposeAsync(
-                    v -> {
-                      {
-                        LOG.info(
-                            "Saatiin Atarusta {} hakemusta, haetaan suoritukset hakijoille",
-                            h.size());
-                        List<String> oids =
-                            h.stream()
-                                .map(HakemusWrapper::getPersonOid)
-                                .collect(Collectors.toList());
-                        List<String> aliases =
-                            v.stream()
-                                .map(viite -> List.of(viite.getHenkiloOid(), viite.getMasterOid()))
-                                .flatMap(List::stream)
-                                .collect(Collectors.toList());
-                        List<String> oidsToGet =
-                            Stream.of(oids, aliases)
-                                .flatMap(List::stream)
-                                .distinct()
-                                .collect(Collectors.toList());
-                        LOG.info(
-                            "Saatiin Atarusta {} hakemusta, haetaan suoritukset hakijoille, henkilos+aliases {}",
-                            h.size(),
-                            oidsToGet.size());
-                        return suoritusrekisteriAsyncResource
-                            .getSuorituksetForOppijasWithoutEnsikertalaisuus(oidsToGet);
-                      }
-                    }));
-
-    return hakemukset.thenComposeAsync(
-        hak ->
-            suoritukset.thenComposeAsync(
-                suor ->
-                    viitteet.thenComposeAsync(
-                        viit -> {
-                          LOG.info(
-                              "synkataan harkinnanvaraisuudet {} hakemukselle, oppijoita {}, henkiloViitteita {}",
-                              hak.size(),
-                              suor.size(),
-                              viit.size());
-                          List<HakemuksenHarkinnanvaraisuus> result =
-                              hak.stream()
-                                  .map(
-                                      h ->
-                                          syncHarkinnanvaraisuusForHakemus(
-                                              h.getOid(),
-                                              h.getPersonOid(),
-                                              h.ataruHakutoiveet().stream()
-                                                  .map(
-                                                      ht ->
-                                                          new HakutoiveenHarkinnanvaraisuus(
-                                                              ht.getHakukohdeOid(),
-                                                              ht.getHarkinnanvaraisuus()))
-                                                  .collect(Collectors.toList()),
-                                              findOppijasForHakija(h.getPersonOid(), suor, viit)))
-                                  .collect(Collectors.toList());
-                          return CompletableFuture.completedFuture(result);
-                        })));
-  }
-
-  public CompletableFuture<List<HakemuksenHarkinnanvaraisuus>> getSyncedHarkinnanvaraisuudes(
-      List<HakemuksenHarkinnanvaraisuus> atarunTiedot) {
-    CompletableFuture<List<Oppija>> suoritukset =
-        suoritusrekisteriAsyncResource.getSuorituksetForOppijasWithoutEnsikertalaisuus(
-            atarunTiedot.stream()
-                .map(HakemuksenHarkinnanvaraisuus::getHenkiloOid)
-                .collect(Collectors.toList()));
-
-    CompletableFuture<List<HenkiloViiteDto>> viitteet =
-        oppijanumerorekisteriAsyncResource.haeHenkiloOidDuplikaatit(
-            atarunTiedot.stream()
-                .map(HakemuksenHarkinnanvaraisuus::getHenkiloOid)
-                .collect(Collectors.toSet()));
-
-    return suoritukset.thenComposeAsync(
-        suor ->
-            viitteet.thenComposeAsync(
-                viit -> {
-                  LOG.info("synkataan harkinnanvaraisuudet {} hakemukselle ", atarunTiedot.size());
-                  List<HakemuksenHarkinnanvaraisuus> result =
-                      atarunTiedot.stream()
-                          .map(
-                              hh ->
-                                  syncHarkinnanvaraisuusForHakemus(
-                                      hh.getHakemusOid(),
-                                      hh.getHenkiloOid(),
-                                      hh.getHakutoiveet(),
-                                      findOppijasForHakija(hh.getHenkiloOid(), suor, viit)))
-                          .collect(Collectors.toList());
-                  return CompletableFuture.completedFuture(result);
-                }));
   }
 
   @Override

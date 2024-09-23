@@ -5,18 +5,15 @@ import com.google.gson.reflect.TypeToken;
 import fi.vm.sade.valinta.kooste.external.resource.UrlConfiguration;
 import fi.vm.sade.valinta.kooste.external.resource.ataru.AtaruAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.ataru.dto.AtaruHakemus;
-import fi.vm.sade.valinta.kooste.external.resource.ataru.dto.AtaruHakemusPrototyyppi;
-import fi.vm.sade.valinta.kooste.external.resource.ataru.dto.AtaruSyntheticApplicationResponse;
 import fi.vm.sade.valinta.kooste.external.resource.koodisto.KoodistoCachedAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.koodisto.dto.Koodi;
 import fi.vm.sade.valinta.kooste.external.resource.oppijanumerorekisteri.OppijanumerorekisteriAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.oppijanumerorekisteri.dto.HenkiloPerustietoDto;
 import fi.vm.sade.valinta.kooste.external.resource.oppijanumerorekisteri.dto.KansalaisuusDto;
-import fi.vm.sade.valinta.kooste.external.resource.viestintapalvelu.RestCasClient;
+import fi.vm.sade.valinta.kooste.external.resource.RestCasClient;
 import fi.vm.sade.valinta.kooste.util.AtaruHakemusWrapper;
 import fi.vm.sade.valinta.kooste.util.CompletableFutureUtil;
 import fi.vm.sade.valinta.kooste.util.HakemusWrapper;
-import io.reactivex.Observable;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -243,34 +240,8 @@ public class AtaruAsyncResourceImpl implements AtaruAsyncResource {
   }
 
   @Override
-  public CompletableFuture<List<HakemusWrapper>> getApplicationsByHakukohde(String hakukohdeOid) {
-    return getApplications(hakukohdeOid, Lists.newArrayList(), false);
-  }
-
-  @Override
   public CompletableFuture<List<HakemusWrapper>> getApplicationsByHakukohde(
       String hakukohdeOid, boolean withHarkinnanvaraisuustieto) {
     return getApplications(hakukohdeOid, Lists.newArrayList(), withHarkinnanvaraisuustieto);
-  }
-
-  @Override
-  public CompletableFuture<List<HakemusWrapper>> getApplicationsByOids(List<String> oids) {
-    return getApplications(null, oids, false);
-  }
-
-  @Override
-  public CompletableFuture<List<HakemusWrapper>> getApplicationsByOidsWithHarkinnanvaraisuustieto(
-      List<String> oids) {
-    return getApplications(null, oids, true);
-  }
-
-  @Override
-  public Observable<List<AtaruSyntheticApplicationResponse>> putApplicationPrototypes(
-      Collection<AtaruHakemusPrototyyppi> hakemusPrototyypit) {
-    String url = this.urlConfiguration.url("ataru.post-synthetic-applications");
-
-    return Observable.fromFuture(
-        this.casClient.post(
-            url, new TypeToken<>() {}, hakemusPrototyypit, Collections.emptyMap(), 60 * 60 * 1000));
   }
 }
