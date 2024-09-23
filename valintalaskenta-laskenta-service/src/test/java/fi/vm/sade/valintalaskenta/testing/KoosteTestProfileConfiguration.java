@@ -1,6 +1,6 @@
 package fi.vm.sade.valintalaskenta.testing;
 
-import fi.vm.sade.valinta.kooste.external.resource.viestintapalvelu.RestCasClient;
+import fi.vm.sade.valinta.kooste.external.resource.RestCasClient;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.Dsl;
 import org.springframework.context.annotation.Bean;
@@ -23,11 +23,6 @@ public class KoosteTestProfileConfiguration {
     return REST_CAS_CLIENT;
   }
 
-  @Bean(name = "SijoitteluServiceCasClient")
-  public RestCasClient getSijoitteluServiceCasClient() {
-    return REST_CAS_CLIENT;
-  }
-
   @Bean(name = "HakukohderyhmapalveluCasClient")
   public RestCasClient getHakukohderyhmapalveluCasClient() {
     return REST_CAS_CLIENT;
@@ -35,11 +30,6 @@ public class KoosteTestProfileConfiguration {
 
   @Bean(name = "KoutaCasClient")
   public RestCasClient getKoutaCasClient() {
-    return REST_CAS_CLIENT;
-  }
-
-  @Bean(name = "ViestintapalveluCasClient")
-  public RestCasClient getViestintapalveluCasClient() {
     return REST_CAS_CLIENT;
   }
 
@@ -65,21 +55,6 @@ public class KoosteTestProfileConfiguration {
 
   @Bean(name = "ValintaperusteetCasClient")
   public RestCasClient getValintaperusteetCasClient() {
-    return REST_CAS_CLIENT;
-  }
-
-  @Bean(name = "ryhmasahkopostiCasClient")
-  public RestCasClient getRyhmasahkopostiCasClient() {
-    return REST_CAS_CLIENT;
-  }
-
-  @Bean(name = "OppijantunnistusCasClient")
-  public RestCasClient getOppijantunnistusCasClient() {
-    return REST_CAS_CLIENT;
-  }
-
-  @Bean(name = "SeurantaCasClient")
-  public RestCasClient getSeurantaCasClient() {
     return REST_CAS_CLIENT;
   }
 }

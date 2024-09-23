@@ -8,8 +8,8 @@ import com.google.gson.reflect.TypeToken;
 import fi.vm.sade.valinta.kooste.external.resource.UrlConfiguration;
 import fi.vm.sade.valinta.kooste.external.resource.valintapiste.dto.PisteetWithLastModified;
 import fi.vm.sade.valinta.kooste.external.resource.valintapiste.dto.Valintapisteet;
-import fi.vm.sade.valinta.kooste.external.resource.valintatulosservice.dto.AuditSession;
-import fi.vm.sade.valinta.kooste.external.resource.viestintapalvelu.RestCasClient;
+import fi.vm.sade.valinta.kooste.AuditSession;
+import fi.vm.sade.valinta.kooste.external.resource.RestCasClient;
 import fi.vm.sade.valinta.sharedutils.http.DateDeserializer;
 import io.reactivex.Observable;
 import jakarta.ws.rs.core.GenericType;
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ValintapisteAsyncResourceImpl implements ValintapisteAsyncResource {
-  public static final String OK = "";
   private final RestCasClient casClient;
 
   public static final Gson GSON = DateDeserializer.gsonBuilder().create();
@@ -71,38 +70,6 @@ public class ValintapisteAsyncResourceImpl implements ValintapisteAsyncResource 
   }
 
   @Override
-  public CompletableFuture<PisteetWithLastModified> getValintapisteet(
-      String hakuOID, String hakukohdeOID, AuditSession auditSession) {
-    Map<String, String> query = new HashMap<>();
-    setAuditInfo(query, auditSession);
-    String url =
-        this.urlConfiguration.url("valintapiste-service.get.pisteet", hakuOID, hakukohdeOID, query);
-
-    return casClient
-        .get(url, Map.of("Accept", "application/json"), 10 * 1000)
-        .thenApply(
-            response ->
-                new PisteetWithLastModified(
-                    Optional.ofNullable(response.getHeaders().get(LAST_MODIFIED)),
-                    GSON.fromJson(
-                        response.getResponseBody(),
-                        new TypeToken<List<Valintapisteet>>() {}.getType())));
-  }
-
-  @Override
-  public Observable<PisteetWithLastModified> getValintapisteet(
-      Collection<String> hakemusOIDs, AuditSession auditSession) {
-    Map<String, String> query = new HashMap<>();
-    setAuditInfo(query, auditSession);
-    String url =
-        this.urlConfiguration.url("valintapiste-service.get.pisteet.with.hakemusoids", query);
-    Observable<org.asynchttpclient.Response> response =
-        Observable.fromFuture(
-            this.casClient.post(url, hakemusOIDs, Collections.emptyMap(), 30 * 60 * 1000));
-    return response.switchMap(this::handleResponse);
-  }
-
-  @Override
   public CompletableFuture<PisteetWithLastModified> getValintapisteetWithHakemusOidsAsFuture(
       List<String> hakemusOIDs, AuditSession auditSession) {
     Map<String, String> query = new HashMap<>();
@@ -123,32 +90,5 @@ public class ValintapisteAsyncResourceImpl implements ValintapisteAsyncResource 
                     GSON.fromJson(
                         response.getResponseBody(),
                         new TypeToken<List<Valintapisteet>>() {}.getType())));
-  }
-
-  @Override
-  public CompletableFuture<Set<String>> putValintapisteet(
-      Optional<String> ifUnmodifiedSince, List<Valintapisteet> pisteet, AuditSession auditSession) {
-    Map<String, String> query = new HashMap<>();
-    query.put("save-partially", "true");
-    setAuditInfo(query, auditSession);
-    String url = this.urlConfiguration.url("valintapiste-service.put.pisteet", query);
-
-    return casClient
-        .put(
-            url,
-            pisteet,
-            ifUnmodifiedSince.isPresent()
-                ? Map.of(
-                    IF_UNMODIFIED_SINCE,
-                    ifUnmodifiedSince.get(),
-                    "Content-Type",
-                    "application/json")
-                : Map.of("Content-Type", "application/json"),
-            30 * 60 * 1000)
-        .thenApplyAsync(
-            response -> {
-              return GSON.fromJson(
-                  response.getResponseBody(), new TypeToken<Set<String>>() {}.getType());
-            });
   }
 }
