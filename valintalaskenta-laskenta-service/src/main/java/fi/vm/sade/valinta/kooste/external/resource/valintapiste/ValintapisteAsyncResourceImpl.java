@@ -11,12 +11,8 @@ import fi.vm.sade.valinta.kooste.external.resource.valintapiste.dto.Valintapiste
 import fi.vm.sade.valinta.kooste.AuditSession;
 import fi.vm.sade.valinta.kooste.external.resource.RestCasClient;
 import fi.vm.sade.valinta.sharedutils.http.DateDeserializer;
-import io.reactivex.Observable;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import javax.ws.rs.core.GenericType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -28,38 +24,10 @@ public class ValintapisteAsyncResourceImpl implements ValintapisteAsyncResource 
 
   private final UrlConfiguration urlConfiguration;
 
-  Logger LOG = LoggerFactory.getLogger(ValintapisteAsyncResource.class);
-
   public ValintapisteAsyncResourceImpl(
       @Qualifier("ValintapisteServiceCasClient") RestCasClient casClient) {
     this.casClient = casClient;
     this.urlConfiguration = UrlConfiguration.getInstance();
-  }
-
-  private Observable<PisteetWithLastModified> handleResponse(
-      org.asynchttpclient.Response response) {
-    if (response.getStatusCode() != 200) {
-      return Observable.error(new RuntimeException("Valintapisteitä ei saatu luettua palvelusta!"));
-    } else {
-      try {
-        List<Valintapisteet> pisteet =
-            GSON.fromJson(
-                response.getResponseBody(), new GenericType<List<Valintapisteet>>() {}.getType());
-        if (pisteet == null) {
-          String s = response.getResponseBody();
-          LOG.error("Valintapisteet null! Response {}", s);
-          String url = response.getUri().toUrl();
-          return Observable.error(
-              new RuntimeException(String.format("Null response for url %s", url)));
-        } else {
-          return Observable.just(
-              new PisteetWithLastModified(
-                  Optional.ofNullable(response.getHeader(LAST_MODIFIED)), pisteet));
-        }
-      } catch (Exception e) {
-        return Observable.error(e);
-      }
-    }
   }
 
   private void setAuditInfo(Map<String, String> query, AuditSession auditSession) {
