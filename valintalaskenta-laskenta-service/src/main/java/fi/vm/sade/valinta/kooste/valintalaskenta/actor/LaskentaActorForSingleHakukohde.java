@@ -8,14 +8,12 @@ import fi.vm.sade.valinta.kooste.valintalaskenta.dto.HakukohdeJaOrganisaatio;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.HakukohdeTila;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTila;
-import fi.vm.sade.valintalaskenta.domain.dto.seuranta.YhteenvetoDto;
 import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
-import io.reactivex.Observable;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -33,7 +31,7 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
   private final AtomicInteger retryTotal = new AtomicInteger(0);
   private final AtomicInteger failedTotal = new AtomicInteger(0);
   private final LaskentaActorParams actorParams;
-  private final Function<? super HakukohdeJaOrganisaatio, ? extends Observable<?>>
+  private final Function<? super HakukohdeJaOrganisaatio, ? extends CompletableFuture<?>>
       hakukohteenLaskenta;
   private final LaskentaSupervisor laskentaSupervisor;
   private final SeurantaDao seurantaDao;
@@ -46,7 +44,7 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
 
   public LaskentaActorForSingleHakukohde(
       LaskentaActorParams actorParams,
-      Function<? super HakukohdeJaOrganisaatio, ? extends Observable<?>> hakukohteenLaskenta,
+      Function<? super HakukohdeJaOrganisaatio, ? extends CompletableFuture<?>> hakukohteenLaskenta,
       LaskentaSupervisor laskentaSupervisor,
       SeurantaDao seurantaDao,
       int splittaus) {
@@ -93,20 +91,13 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
     if (hkJaOrg.isPresent()) {
       try {
         HakukohdeJaOrganisaatio hakukohdeJaOrganisaatio = hkJaOrg.get();
-        String hakukohdeOid = hakukohdeJaOrganisaatio.getHakukohdeOid();
-        Observable<Object> laskentaTimer =
-            Observable.timer(3L, TimeUnit.HOURS)
-                .switchMap(
-                    t ->
-                        Observable.error(
-                            new TimeoutException(
-                                "Laskentaa odotettiin 90 minuuttia ja ohitettiin")));
-        Observable.amb(
-                Arrays.asList(hakukohteenLaskenta.apply(hakukohdeJaOrganisaatio), laskentaTimer))
-            .subscribeOn(Schedulers.newThread())
-            .subscribe(
-                s -> handleSuccessfulLaskentaResult(fromRetryQueue, hakukohdeOid),
-                e -> handleFailedLaskentaResult(fromRetryQueue, hakukohdeJaOrganisaatio, e));
+        hakukohteenLaskenta.apply(hakukohdeJaOrganisaatio).orTimeout(3L, TimeUnit.HOURS).thenApply(result -> {
+          handleSuccessfulLaskentaResult(fromRetryQueue, hakukohdeJaOrganisaatio.getHakukohdeOid());
+          return null;
+        }).exceptionally(e -> {
+          handleFailedLaskentaResult(fromRetryQueue, hakukohdeJaOrganisaatio, e);
+          return null;
+        });
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
@@ -133,20 +124,18 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
     }
     if (!isValintaryhmalaskenta) {
       HakukohdeTila tila = HakukohdeTila.VALMIS;
-      Observable.fromFuture(CompletableFuture.completedFuture(seurantaDao.merkkaaTila(uuid(), hakukohdeOid, tila)))
-          .subscribeOn(Schedulers.newThread())
-          .subscribe(
-              ok ->
-                  LOG.info(
-                      "(Uuid={}) Hakukohteen ({}) laskenta on valmis, hakukohteen tila saatiin merkattua seurantaan.",
-                      uuid(),
-                      hakukohdeOid),
-              t ->
-                  LOG.error(
-                      String.format(
-                          "(UUID = %s) Hakukohteen (%s) tilan (%s) merkkaaminen epaonnistui!",
-                          uuid(), hakukohdeOid, tila),
-                      t));
+      try {
+        seurantaDao.merkkaaTila(uuid(), hakukohdeOid, tila);
+        LOG.info(
+            "(Uuid={}) Hakukohteen ({}) laskenta on valmis, hakukohteen tila saatiin merkattua seurantaan.",
+            uuid(),
+            hakukohdeOid);
+      } catch (Exception e) {
+        LOG.error(
+            String.format(
+                "(UUID = %s) Hakukohteen (%s) tilan (%s) merkkaaminen epaonnistui!",
+                uuid(), hakukohdeOid, tila), e);
+      }
     } else {
       LOG.info(
           "Ei merkitä valintaryhmälaskennan hakukohteiden tilaa seurantaan. (Onnistunut laskenta)");
@@ -175,33 +164,24 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
           totalKohteet(),
           failure);
       if (!isValintaryhmalaskenta) {
+        HakukohdeTila tila = HakukohdeTila.KESKEYTETTY;
         try {
-          HakukohdeTila tila = HakukohdeTila.KESKEYTETTY;
-          Observable.fromFuture(CompletableFuture.completedFuture(seurantaDao.merkkaaTila(
-                  uuid(),
-                  hakukohdeOid,
-                  tila,
-                  virheilmoitus(
-                      failure.getMessage(), Arrays.toString(failure.getStackTrace())))))
-              .subscribeOn(Schedulers.newThread())
-              .subscribe(
-                  ok ->
-                      LOG.error(
-                          "(Uuid={}) Laskenta epäonnistui hakukohteelle {}, tila merkattu onnistuneesti seurantaan ",
-                          uuid(),
-                          hakukohdeOid),
-                  t ->
-                      LOG.error(
-                          String.format(
-                              "(UUID = %s) Hakukohteen (%s) tilan (%s) merkkaaminen epaonnistui!",
-                              uuid(), hakukohdeOid, tila),
-                          t));
-        } catch (Throwable e1) {
-          LOG.error(
-              "(Uuid={}) Hakukohteen ({}) laskenta epäonnistui mutta ei saatu merkattua ",
+          seurantaDao.merkkaaTila(
               uuid(),
               hakukohdeOid,
-              e1);
+              tila,
+              virheilmoitus(
+                  failure.getMessage(), Arrays.toString(failure.getStackTrace())));
+          LOG.error(
+              "(Uuid={}) Laskenta epäonnistui hakukohteelle {}, tila merkattu onnistuneesti seurantaan ",
+              uuid(),
+              hakukohdeOid);
+        } catch(Exception e) {
+          LOG.error(
+              String.format(
+                  "(UUID = %s) Hakukohteen (%s) tilan (%s) merkkaaminen epaonnistui!",
+                  uuid(), hakukohdeOid, tila),
+              e);
         }
       } else {
         LOG.error(
@@ -245,17 +225,13 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
   }
 
   public void lopeta() {
-    final YhteenvetoDto yhteenvetoDto;
     if (!COMPLETE.equals(state.get())) {
       LOG.warn("#### (Uuid={}) Laskenta lopetettu", uuid());
-      yhteenvetoDto =
-          seurantaDao.merkkaaTila(
-              uuid(), LaskentaTila.PERUUTETTU, Optional.of(ilmoitus("Laskenta on peruutettu")));
+      seurantaDao.merkkaaTila(
+          uuid(), LaskentaTila.PERUUTETTU, Optional.of(ilmoitus("Laskenta on peruutettu")));
     } else if (valintaryhmalaskennanTulos.isPresent()) {
       LOG.error("#### (Uuid={}) Valintaryhmälaskenta on epäonnistunut.", uuid());
-      yhteenvetoDto =
-          seurantaDao.merkkaaTila(
-              uuid(), LaskentaTila.PERUUTETTU, valintaryhmalaskennanTulos);
+      seurantaDao.merkkaaTila(uuid(), LaskentaTila.PERUUTETTU, valintaryhmalaskennanTulos);
     } else {
       LOG.info(
           "#### (Uuid={}) Laskenta valmis koska ei enää hakukohteita käsiteltävänä. "
@@ -264,15 +240,9 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
           successTotal.get(),
           retryTotal.get(),
           failedTotal.get());
-      yhteenvetoDto =
-          seurantaDao.merkkaaTila(
-              uuid(), LaskentaTila.VALMIS, Optional.empty());
+      seurantaDao.merkkaaTila(uuid(), LaskentaTila.VALMIS, Optional.empty());
     }
-    Observable.fromFuture(CompletableFuture.completedFuture(yhteenvetoDto))
-        .subscribeOn(Schedulers.newThread())
-        .subscribe(
-            response -> laskentaSupervisor.ready(uuid()),
-            e -> LOG.error("Ongelma laskennan merkkaamisessa loppuneeksi", e));
+    laskentaSupervisor.ready(uuid());
   }
 
   public void postStop() {

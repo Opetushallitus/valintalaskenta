@@ -5,7 +5,6 @@ import fi.vm.sade.service.valintaperusteet.dto.*;
 import fi.vm.sade.valinta.kooste.external.resource.UrlConfiguration;
 import fi.vm.sade.valinta.kooste.external.resource.valintaperusteet.ValintaperusteetAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.RestCasClient;
-import io.reactivex.Observable;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
@@ -68,27 +67,14 @@ public class ValintaperusteetAsyncResourceImpl implements ValintaperusteetAsyncR
   }
 
   @Override
-  public Observable<List<ValintaperusteetDTO>> valintaperusteet(String valinnanvaiheOid) {
-    return Observable.fromFuture(
-        this.httpClient.get(
-            this.urlConfiguration.url(
-                "valintaperusteet-service.valintalaskentakoostepalvelu.valinnanvaihe.valintaperusteet",
-                valinnanvaiheOid),
-            new TypeToken<List<ValintaperusteetDTO>>() {},
-            Collections.emptyMap(),
-            10 * 60 * 1000));
-  }
-
-  @Override
-  public Observable<String> haeValintaryhmaVastuuorganisaatio(String valintaryhmaOid) {
+  public CompletableFuture<String> haeValintaryhmaVastuuorganisaatio(String valintaryhmaOid) {
     String url =
         this.urlConfiguration.url(
             "valintaperusteet-service.valintalaskentakoostepalvelu.valintaryhma.vastuuorganisaatio",
             valintaryhmaOid);
     LOG.info("Calling url {}", url);
-    return Observable.fromFuture(
-        this.httpClient
-            .get(url, Map.of("Accept", "text/plain"), 10 * 60 * 1000)
-            .thenApply(response -> response.getResponseBody()));
+    return this.httpClient
+        .get(url, Map.of("Accept", "text/plain"), 10 * 60 * 1000)
+        .thenApply(response -> response.getResponseBody());
   }
 }
