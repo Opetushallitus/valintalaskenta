@@ -8,7 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import fi.vm.sade.valinta.kooste.external.resource.UrlConfiguration;
 import fi.vm.sade.valinta.kooste.external.resource.valintapiste.dto.PisteetWithLastModified;
 import fi.vm.sade.valinta.kooste.external.resource.valintapiste.dto.Valintapisteet;
-import fi.vm.sade.valinta.kooste.external.resource.valintatulosservice.dto.AuditSession;
+import fi.vm.sade.valinta.kooste.AuditSession;
 import fi.vm.sade.valinta.kooste.external.resource.RestCasClient;
 import fi.vm.sade.valinta.sharedutils.http.DateDeserializer;
 import io.reactivex.Observable;

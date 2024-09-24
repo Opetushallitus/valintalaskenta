@@ -1,4 +1,4 @@
-package fi.vm.sade.valinta.kooste.external.resource.valintatulosservice.dto;
+package fi.vm.sade.valinta.kooste;
 
 import fi.vm.sade.auditlog.User;
 import java.net.InetAddress;
