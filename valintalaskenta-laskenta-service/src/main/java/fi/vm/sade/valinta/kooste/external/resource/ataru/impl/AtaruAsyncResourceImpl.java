@@ -244,10 +244,4 @@ public class AtaruAsyncResourceImpl implements AtaruAsyncResource {
       String hakukohdeOid, boolean withHarkinnanvaraisuustieto) {
     return getApplications(hakukohdeOid, Lists.newArrayList(), withHarkinnanvaraisuustieto);
   }
-
-  @Override
-  public CompletableFuture<List<HakemusWrapper>> getApplicationsByOidsWithHarkinnanvaraisuustieto(
-      List<String> oids) {
-    return getApplications(null, oids, true);
-  }
 }

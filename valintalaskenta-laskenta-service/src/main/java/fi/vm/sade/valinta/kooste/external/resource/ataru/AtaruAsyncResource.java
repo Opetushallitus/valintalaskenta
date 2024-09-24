@@ -15,7 +15,4 @@ public interface AtaruAsyncResource {
    */
   CompletableFuture<List<HakemusWrapper>> getApplicationsByHakukohde(
       String hakukohdeOid, boolean withHarkinnanvaraisuustieto);
-
-  CompletableFuture<List<HakemusWrapper>> getApplicationsByOidsWithHarkinnanvaraisuustieto(
-      List<String> oids);
 }
