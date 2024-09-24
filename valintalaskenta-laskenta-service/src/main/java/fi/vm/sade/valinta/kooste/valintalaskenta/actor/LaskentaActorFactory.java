@@ -619,7 +619,7 @@ public class LaskentaActorFactory {
           createResurssiFuture(
               tunniste,
               "applicationAsyncResource.getApplicationsByOid",
-              () -> applicationAsyncResource.getApplicationsByOid(hakuOid, hakukohdeOid),
+              () -> applicationAsyncResource.getApplicationsByOids(hakuOid, Collections.singletonList(hakukohdeOid)),
               retryHakemuksetAndOppijat);
     }
     CompletableFuture<List<HenkiloViiteDto>> henkiloViitteet =
