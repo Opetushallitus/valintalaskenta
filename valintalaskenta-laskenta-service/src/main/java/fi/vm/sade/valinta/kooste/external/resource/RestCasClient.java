@@ -1,4 +1,4 @@
-package fi.vm.sade.valinta.kooste.external.resource.viestintapalvelu;
+package fi.vm.sade.valinta.kooste.external.resource;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

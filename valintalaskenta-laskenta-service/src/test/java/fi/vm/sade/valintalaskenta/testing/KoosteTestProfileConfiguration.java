@@ -1,7 +1,6 @@
 package fi.vm.sade.valintalaskenta.testing;
 
-import fi.vm.sade.valinta.kooste.external.resource.viestintapalvelu.RestCasClient;
-import javax.servlet.*;
+import fi.vm.sade.valinta.kooste.external.resource.RestCasClient;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.Dsl;
 import org.springframework.context.annotation.Bean;
