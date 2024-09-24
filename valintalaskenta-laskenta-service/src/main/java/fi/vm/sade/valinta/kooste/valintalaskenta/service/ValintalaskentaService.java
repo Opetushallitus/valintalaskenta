@@ -11,11 +11,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
-import io.reactivex.Observable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,15 +119,12 @@ public class ValintalaskentaService {
         return;
       }
     }
-    stop(uuid);
-    Observable.fromFuture(CompletableFuture.completedFuture(seurantaDao
-        .merkkaaTila(
-            uuid, LaskentaTila.PERUUTETTU, Optional.of(ilmoitus("Peruutettu käyttäjän toimesta")))))
-        .subscribe(ok -> stop(uuid), nok -> stop(uuid));
-  }
-
-  private void stop(String uuid) {
-    laskentaSupervisor.fetchLaskenta(uuid).ifPresent(Laskenta::lopeta);
+    try {
+      seurantaDao.merkkaaTila(uuid, LaskentaTila.PERUUTETTU,
+          Optional.of(ilmoitus("Peruutettu käyttäjän toimesta")));
+    } finally {
+      laskentaSupervisor.fetchLaskenta(uuid).ifPresent(Laskenta::lopeta);
+    }
   }
 
   private Optional<Laskenta> haeAjossaOlevaLaskentaHaulle(final String hakuOid) {
