@@ -1,7 +1,7 @@
-package fi.vm.sade.valinta.kooste.external.resource.kouta;
+package fi.vm.sade.valinta.kooste.external.resource.tarjonta;
 
-import fi.vm.sade.valinta.kooste.external.resource.kouta.dto.KoutaValintakoeDTO;
-import fi.vm.sade.valinta.kooste.external.resource.tarjonta.AbstractValintakoe;
+import fi.vm.sade.valinta.kooste.external.resource.tarjonta.dto.KoutaValintakoeDTO;
+
 import java.math.BigDecimal;
 
 public class KoutaValintakoe extends AbstractValintakoe {

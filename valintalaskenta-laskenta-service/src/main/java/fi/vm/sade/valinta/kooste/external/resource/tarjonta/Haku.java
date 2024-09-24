@@ -88,6 +88,7 @@ public class Haku {
     this.ataruLomakeAvain = dto.hakulomakeAtaruId;
   }
 
+  // TODO: korjaa harhaanjohtava metodin nimi!!!
   public Haku withSynteettisetHakemukset(Boolean synteettisetHakemukset) {
     this.synteettisetHakemukset = synteettisetHakemukset;
     return this;

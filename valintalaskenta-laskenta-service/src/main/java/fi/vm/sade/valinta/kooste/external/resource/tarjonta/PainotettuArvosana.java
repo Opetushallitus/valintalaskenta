@@ -1,6 +1,6 @@
-package fi.vm.sade.valinta.kooste.external.resource.kouta;
+package fi.vm.sade.valinta.kooste.external.resource.tarjonta;
 
-import fi.vm.sade.valinta.kooste.external.resource.kouta.dto.PainotettuArvosanaDTO;
+import fi.vm.sade.valinta.kooste.external.resource.tarjonta.dto.PainotettuArvosanaDTO;
 import java.math.BigDecimal;
 
 public class PainotettuArvosana {

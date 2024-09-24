@@ -1,7 +1,7 @@
-package fi.vm.sade.valinta.kooste.external.resource.kouta;
+package fi.vm.sade.valinta.kooste.external.resource.tarjonta;
 
-import fi.vm.sade.valinta.kooste.external.resource.kouta.dto.KoutaHakukohdeDTO;
-import fi.vm.sade.valinta.kooste.external.resource.tarjonta.AbstractHakukohde;
+import fi.vm.sade.valinta.kooste.external.resource.tarjonta.dto.KoutaHakukohdeDTO;
+
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;

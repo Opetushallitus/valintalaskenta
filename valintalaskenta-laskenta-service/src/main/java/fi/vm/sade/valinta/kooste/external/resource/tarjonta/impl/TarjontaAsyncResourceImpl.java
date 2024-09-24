@@ -12,9 +12,9 @@ import fi.vm.sade.tarjonta.service.resources.v1.dto.koulutus.KomoV1RDTO;
 import fi.vm.sade.tarjonta.service.resources.v1.dto.koulutus.KoulutusV1RDTO;
 import fi.vm.sade.valinta.kooste.external.resource.HttpClient;
 import fi.vm.sade.valinta.kooste.external.resource.UrlConfiguration;
-import fi.vm.sade.valinta.kooste.external.resource.kouta.KoutaHakukohde;
-import fi.vm.sade.valinta.kooste.external.resource.kouta.dto.HakukohderyhmaHakukohde;
-import fi.vm.sade.valinta.kooste.external.resource.kouta.dto.KoutaHakukohdeDTO;
+import fi.vm.sade.valinta.kooste.external.resource.tarjonta.KoutaHakukohde;
+import fi.vm.sade.valinta.kooste.external.resource.tarjonta.dto.HakukohderyhmaHakukohde;
+import fi.vm.sade.valinta.kooste.external.resource.tarjonta.dto.KoutaHakukohdeDTO;
 import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.OhjausparametritAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.dto.ParametritDTO;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.*;
@@ -43,6 +43,8 @@ public class TarjontaAsyncResourceImpl implements TarjontaAsyncResource {
   private final HttpClient client;
   private final RestCasClient koutaClient;
   private final RestCasClient hakukohderyhmapalveluClient;
+
+  // TODO: yritä päästä tästä eroon!!!
   private final OhjausparametritAsyncResource ohjausparametritAsyncResource;
   private final Integer KOUTA_OID_LENGTH = 35;
 

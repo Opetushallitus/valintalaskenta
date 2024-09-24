@@ -1,4 +1,4 @@
-package fi.vm.sade.valinta.kooste.external.resource.kouta.dto;
+package fi.vm.sade.valinta.kooste.external.resource.tarjonta.dto;
 
 import java.util.List;
 
