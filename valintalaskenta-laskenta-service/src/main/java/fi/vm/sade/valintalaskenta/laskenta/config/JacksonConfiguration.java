@@ -1,4 +1,4 @@
-package fi.vm.sade.valintalaskenta.laskenta;
+package fi.vm.sade.valintalaskenta.laskenta.config;
 
 import com.fasterxml.jackson.core.StreamReadConstraints;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;

@@ -1,9 +1,6 @@
 package fi.vm.sade.valinta.kooste.valintalaskenta.actor;
 
-import static fi.vm.sade.valinta.sharedutils.http.ObservableUtil.wrapAsRunOnlyOnceObservable;
-import static io.reactivex.Observable.just;
 import static java.util.Collections.emptyList;
-import static org.apache.commons.lang3.tuple.Pair.of;
 
 import fi.vm.sade.auditlog.Changes;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
@@ -36,17 +33,12 @@ import fi.vm.sade.valintalaskenta.domain.dto.Laskentakutsu;
 import fi.vm.sade.valintalaskenta.domain.dto.SuoritustiedotDTO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
-import io.reactivex.Observable;
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,38 +95,6 @@ public class LaskentaActorFactory {
     this.oppijanumerorekisteriAsyncResource = oppijanumerorekisteriAsyncResource;
   }
 
-  private Pair<String, Collection<String>> headAndTail(Collection<String> c) {
-    String head = c.iterator().next();
-    Collection<String> tail = c.stream().skip(1L).collect(Collectors.toList());
-    return Pair.of(head, tail);
-  }
-
-  private Observable<Pair<Collection<String>, List<LaskeDTO>>> fetchRecursively(
-      Function<String, Observable<LaskeDTO>> haeLaskeDTOHakukohteelle,
-      Observable<Pair<Collection<String>, List<LaskeDTO>>> tulosObservable) {
-    return tulosObservable.switchMap(
-        haetutResurssit -> {
-          Collection<String> oids = haetutResurssit.getKey();
-          if (oids.isEmpty()) {
-            return tulosObservable;
-          } else {
-            Pair<String, Collection<String>> headWithTail = headAndTail(oids);
-            Observable<Pair<Collection<String>, List<LaskeDTO>>> aiemmatJaUusiResurssi =
-                haeLaskeDTOHakukohteelle
-                    .apply(headWithTail.getKey())
-                    .map(
-                        laskeDTO ->
-                            Pair.of(
-                                headWithTail.getRight(),
-                                Stream.concat(
-                                        Stream.of(laskeDTO), haetutResurssit.getRight().stream())
-                                    .collect(Collectors.toList())));
-            return aiemmatJaUusiResurssi.switchMap(
-                haetut -> fetchRecursively(haeLaskeDTOHakukohteelle, Observable.just(haetut)));
-          }
-        });
-  }
-
   private LaskentaActor createValintaryhmaActor(
       AuditSession auditSession,
       LaskentaSupervisor laskentaSupervisor,
@@ -160,42 +120,30 @@ public class LaskentaActorFactory {
           String hakukohteidenNimi =
               String.format("Valintaryhmälaskenta %s hakukohteella", hakukohdeOids.size());
           LOG.info("(Uuid={}) {}", uuid, hakukohteidenNimi);
-          Observable<Pair<Collection<String>, List<LaskeDTO>>> recursiveSequentialFetch =
-              just(of(hakukohdeOids, emptyList()));
 
-          Function<String, Observable<LaskeDTO>> fetchLaskeDTO =
-              h ->
-                  Observable.fromFuture(
-                      fetchResourcesForOneLaskenta(
-                          auditSession, uuid, h, a, true, true, suoritustiedot, nyt));
-
-          Observable<String> laskenta =
-              fetchRecursively(fetchLaskeDTO, recursiveSequentialFetch)
-                  .switchMap(
-                      hksAndDtos -> {
-                        List<LaskeDTO> allLaskeDTOs = hksAndDtos.getRight();
-                        if (!hksAndDtos.getKey().isEmpty()) { // sanity check
-                          throw new RuntimeException("Kaikkia hakukohteita ei ollut vielä haettu!");
-                        } else if (allLaskeDTOs.size() != hakukohdeOids.size()) {
-                          throw new RuntimeException(
-                              "Hakukohteita oli "
-                                  + hakukohdeOids.size()
-                                  + " mutta haettuja laskeDTOita oli "
-                                  + allLaskeDTOs.size()
-                                  + "!");
-                        }
-                        /*
-                        * Tiksussa b15df0500 Merge remote-tracking branch
-                        * 'origin/VTKU-181__valintaryhmalaskennan_kutsu_pienempiin_paloihin' tämän kutsun siirto
-                        * valintalaskentakoostepalvelusta valintalaskentaan oli palasteltu moneen kutsuun. Kun kutsu ei
-                        * enää mene verkon yli ei (käsittääkseni) ole enää mitää syytä palastella joten palatta takaisin
-                        * yhteen kutsuun.
-                        */
-                        Laskentakutsu laskentakutsu = Laskentakutsu.valintaRyhmaLaskentaKutsu(allLaskeDTOs, suoritustiedot);
-                        return Observable.fromFuture(
-                            CompletableFuture.completedFuture(
-                                valintalaskentaResource.laskeJaSijoittele(laskentakutsu)));
-                      });
+          CompletableFuture<String> laskenta = CompletableFuture.supplyAsync(() ->
+            hakukohdeOids.stream().map(hakukohdeOid -> fetchResourcesForOneLaskenta(
+                auditSession, uuid, hakukohdeOid, a, true, true, suoritustiedot, nyt)
+                .join()).toList())
+              .thenApply(laskeDTOs -> {
+                if (laskeDTOs.size() != hakukohdeOids.size()) {
+                  throw new RuntimeException(
+                      "Hakukohteita oli "
+                          + hakukohdeOids.size()
+                          + " mutta haettuja laskeDTOita oli "
+                          + laskeDTOs.size()
+                          + "!");
+                }
+                /*
+                 * Tiksussa b15df0500 Merge remote-tracking branch
+                 * 'origin/VTKU-181__valintaryhmalaskennan_kutsu_pienempiin_paloihin' tämän kutsun siirto
+                 * valintalaskentakoostepalvelusta valintalaskentaan oli palasteltu moneen kutsuun. Kun kutsu ei
+                 * enää mene verkon yli ei (käsittääkseni) ole enää mitää syytä palastella joten palatta takaisin
+                 * yhteen kutsuun.
+                 */
+                Laskentakutsu laskentakutsu = Laskentakutsu.valintaRyhmaLaskentaKutsu(laskeDTOs, suoritustiedot);
+                return valintalaskentaResource.laskeJaSijoittele(laskentakutsu);
+              });
           return laskenta;
         });
   }
@@ -218,61 +166,21 @@ public class LaskentaActorFactory {
         hakukohdeJaOrganisaatio -> {
           String hakukohdeOid = hakukohdeJaOrganisaatio.getHakukohdeOid();
           SuoritustiedotDTO suoritustiedot = new SuoritustiedotDTO();
-          Observable<String> laskenta =
-              Observable.fromFuture(
-                      fetchResourcesForOneLaskenta(
-                          auditSession,
-                          uuid,
-                          hakukohdeOid,
-                          actorParams,
-                          false,
-                          false,
-                          suoritustiedot,
-                          nyt))
-                  .switchMap(
-                      timedSwitchMap(
-                          (took, exception) -> {
-                            if (exception.isPresent()) {
-                              LOG.error(
-                                  "(Uuid={}) (Kesto {}s) Laskenta hakukohteelle {} on päättynyt virheeseen: {}",
-                                  uuid,
-                                  millisToString(took),
-                                  hakukohdeOid,
-                                  exception.get());
-                            } else {
-                              LOG.info(
-                                  "(Uuid={}) (Kesto {}s) Laskenta hakukohteelle {} on päättynyt onnistuneesti.",
-                                  uuid,
-                                  millisToString(took),
-                                  hakukohdeOid);
-                            }
-                          },
-                          laskeDTO -> {
-                            Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDTO, suoritustiedot);
-                            return Observable.fromFuture(
-                                CompletableFuture.completedFuture(valintalaskentaResource.valintakokeet(laskentakutsu)));
-                          }));
+
+          CompletableFuture<String> laskenta = fetchResourcesForOneLaskenta(
+              auditSession,
+              uuid,
+              hakukohdeOid,
+              actorParams,
+              false,
+              false,
+              suoritustiedot,
+              nyt).thenApply(laskeDTO -> {
+                Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDTO, suoritustiedot);
+                return valintalaskentaResource.valintakokeet(laskentakutsu);
+          });
           return laskenta;
         });
-  }
-
-  private <A, T> io.reactivex.functions.Function<A, Observable<T>> timedSwitchMap(
-      BiConsumer<Long, Optional<Throwable>> log,
-      Function<A, Observable<T>> f) { // Function<A,Observable<T>> switchMap) {
-    return (A a) -> {
-      long start = System.currentTimeMillis();
-      Observable<T> t = wrapAsRunOnlyOnceObservable(f.apply(a));
-      t.subscribe(
-          (n) -> log.accept(System.currentTimeMillis() - start, Optional.empty()),
-          (n) -> log.accept(System.currentTimeMillis() - start, Optional.ofNullable(n)));
-      return t;
-    };
-  }
-
-  private static String millisToString(long millis) {
-    return new BigDecimal(millis)
-        .divide(new BigDecimal(1000), 2, BigDecimal.ROUND_HALF_UP)
-        .toPlainString();
   }
 
   private LaskentaActor createValintalaskentaActor(
@@ -293,40 +201,18 @@ public class LaskentaActorFactory {
           LOG.info("(Uuid={}) Haetaan laskennan resursseja hakukohteelle {}", uuid, hakukohdeOid);
 
           SuoritustiedotDTO suoritustiedot = new SuoritustiedotDTO();
-          Observable<String> laskenta =
-              Observable.fromFuture(
-                      fetchResourcesForOneLaskenta(
-                          auditSession,
-                          uuid,
-                          hakukohdeOid,
-                          actorParams,
-                          false,
-                          true,
-                          suoritustiedot,
-                          nyt))
-                  .switchMap(
-                      timedSwitchMap(
-                          (took, exception) -> {
-                            if (exception.isPresent()) {
-                              LOG.error(
-                                  "(Uuid={}) (Kesto {}s) Laskenta hakukohteelle {} on päättynyt virheeseen: {}",
-                                  uuid,
-                                  millisToString(took),
-                                  hakukohdeOid,
-                                  exception.get());
-                            } else {
-                              LOG.info(
-                                  "(Uuid={}) (Kesto {}s) Laskenta hakukohteelle {} on päättynyt onnistuneesti.",
-                                  uuid,
-                                  millisToString(took),
-                                  hakukohdeOid);
-                            }
-                          },
-                          laskeDTO -> {
-                            Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDTO, suoritustiedot);
-                            return Observable.fromFuture(
-                                CompletableFuture.completedFuture(valintalaskentaResource.laske(laskentakutsu)));
-                          }));
+          CompletableFuture<String> laskenta = fetchResourcesForOneLaskenta(
+              auditSession,
+              uuid,
+              hakukohdeOid,
+              actorParams,
+              false,
+              true,
+              suoritustiedot,
+              nyt).thenApply(laskeDTO -> {
+                Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDTO, suoritustiedot);
+                return valintalaskentaResource.laske(laskentakutsu);
+              });
           return laskenta;
         });
   }
@@ -347,40 +233,19 @@ public class LaskentaActorFactory {
               uuid,
               hakukohdeOid);
           SuoritustiedotDTO suoritustiedot = new SuoritustiedotDTO();
-          Observable<String> laskenta =
-              Observable.fromFuture(
-                      fetchResourcesForOneLaskenta(
-                          auditSession,
-                          uuid,
-                          hakukohdeOid,
-                          actorParams,
-                          false,
-                          true,
-                          suoritustiedot,
-                          nyt))
-                  .switchMap(
-                      timedSwitchMap(
-                          (took, exception) -> {
-                            if (exception.isPresent()) {
-                              LOG.error(
-                                  "(Uuid={}) (Kesto {}s) Laskenta hakukohteelle {} on päättynyt virheeseen: {}",
-                                  uuid,
-                                  millisToString(took),
-                                  hakukohdeOid,
-                                  exception.get());
-                            } else {
-                              LOG.info(
-                                  "(Uuid={}) (Kesto {}s) Laskenta hakukohteelle {} on päättynyt onnistuneesti.",
-                                  uuid,
-                                  millisToString(took),
-                                  hakukohdeOid);
-                            }
-                          },
-                          laskeDTO -> {
-                            Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDTO, suoritustiedot);
-                            return Observable.fromFuture(
-                                CompletableFuture.completedFuture(valintalaskentaResource.laskeKaikki(laskentakutsu)));
-                          }));
+
+          CompletableFuture<String> laskenta = fetchResourcesForOneLaskenta(
+              auditSession,
+              uuid,
+              hakukohdeOid,
+              actorParams,
+              false,
+              true,
+              suoritustiedot,
+              nyt).thenApply(laskeDTO -> {
+                Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDTO, suoritustiedot);
+                return valintalaskentaResource.laskeKaikki(laskentakutsu);
+          });
           return laskenta;
         });
   }
@@ -444,7 +309,7 @@ public class LaskentaActorFactory {
   private LaskentaActor laskentaHakukohteittainActor(
       LaskentaSupervisor laskentaSupervisor,
       LaskentaActorParams actorParams,
-      io.reactivex.functions.Function<? super HakukohdeJaOrganisaatio, ? extends Observable<?>> r) {
+      Function<? super HakukohdeJaOrganisaatio, ? extends CompletableFuture<?>> r) {
     return new LaskentaActorForSingleHakukohde(
         actorParams, r, laskentaSupervisor, seurantaDao, splittaus);
   }

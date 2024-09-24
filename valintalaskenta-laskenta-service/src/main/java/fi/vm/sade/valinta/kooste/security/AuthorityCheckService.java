@@ -146,23 +146,18 @@ public class AuthorityCheckService {
       return;
     }
 
-    boolean isAuthorized =
-        valintaperusteetAsyncResource
-            .haeValintaryhmaVastuuorganisaatio(valintaryhmaOid)
-            .map(
-                (vastuuorganisaatioOid) -> {
-                  if (vastuuorganisaatioOid == null) {
-                    LOG.error(
-                        "Valintaryhmän {} vastuuorganisaatio on null; vain OPH:lla oikeus valintaryhmään.",
-                        valintaryhmaOid);
-                    return false;
-                  } else {
-                    return isAuthorizedForAnyParentOid(
-                        Collections.singleton(vastuuorganisaatioOid), userRoles, requiredRoles);
-                  }
-                })
-            .timeout(2, MINUTES)
-            .blockingFirst();
+    boolean isAuthorized = valintaperusteetAsyncResource.haeValintaryhmaVastuuorganisaatio(valintaryhmaOid)
+        .thenApply(vastuuorganisaatioOid -> {
+          if (vastuuorganisaatioOid == null) {
+            LOG.error(
+                "Valintaryhmän {} vastuuorganisaatio on null; vain OPH:lla oikeus valintaryhmään.",
+                valintaryhmaOid);
+            return false;
+          } else {
+            return isAuthorizedForAnyParentOid(
+                Collections.singleton(vastuuorganisaatioOid), userRoles, requiredRoles);
+          }
+    }).join();
 
     if (!isAuthorized) {
       String msg =
