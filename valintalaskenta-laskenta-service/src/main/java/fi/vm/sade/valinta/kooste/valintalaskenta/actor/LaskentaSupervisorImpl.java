@@ -38,9 +38,9 @@ import scala.concurrent.duration.FiniteDuration;
 @ManagedResource(
     objectName = "OPH:name=LaskentaActorSystem",
     description = "LaskentaActorSystem mbean")
-public class LaskentaActorSystem
+public class LaskentaSupervisorImpl
     implements LaskentaSupervisor, ApplicationListener<ContextRefreshedEvent> {
-  private static final Logger LOG = LoggerFactory.getLogger(LaskentaActorSystem.class);
+  private static final Logger LOG = LoggerFactory.getLogger(LaskentaSupervisorImpl.class);
 
   private final LaskentaActorFactory laskentaActorFactory;
 
@@ -51,7 +51,7 @@ public class LaskentaActorSystem
   private final SeurantaDao seurantaDao;
 
   @Autowired
-  public LaskentaActorSystem(
+  public LaskentaSupervisorImpl(
       LaskentaParameterService laskentaParameterService,
       LaskentaActorFactory laskentaActorFactory,
       SeurantaDao seurantaDao,
