@@ -1,4 +1,4 @@
-package fi.vm.sade.valinta.kooste.dto;
+package fi.vm.sade.valinta.kooste.valintalaskenta.resource;
 
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
