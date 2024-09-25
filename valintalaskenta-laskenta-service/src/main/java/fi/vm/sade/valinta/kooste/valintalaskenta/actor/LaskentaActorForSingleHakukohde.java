@@ -9,9 +9,9 @@ import fi.vm.sade.valintalaskenta.domain.dto.seuranta.HakukohdeTila;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTila;
 import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
-import io.reactivex.Observable;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -31,7 +31,7 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
   private final AtomicInteger retryTotal = new AtomicInteger(0);
   private final AtomicInteger failedTotal = new AtomicInteger(0);
   private final LaskentaActorParams actorParams;
-  private final Function<? super HakukohdeJaOrganisaatio, ? extends Observable<?>>
+  private final Function<? super HakukohdeJaOrganisaatio, ? extends CompletableFuture<?>>
       hakukohteenLaskenta;
   private final LaskentaSupervisor laskentaSupervisor;
   private final SeurantaDao seurantaDao;
@@ -44,7 +44,7 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
 
   public LaskentaActorForSingleHakukohde(
       LaskentaActorParams actorParams,
-      Function<? super HakukohdeJaOrganisaatio, ? extends Observable<?>> hakukohteenLaskenta,
+      Function<? super HakukohdeJaOrganisaatio, ? extends CompletableFuture<?>> hakukohteenLaskenta,
       LaskentaSupervisor laskentaSupervisor,
       SeurantaDao seurantaDao,
       int splittaus) {
@@ -91,20 +91,13 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
     if (hkJaOrg.isPresent()) {
       try {
         HakukohdeJaOrganisaatio hakukohdeJaOrganisaatio = hkJaOrg.get();
-        String hakukohdeOid = hakukohdeJaOrganisaatio.getHakukohdeOid();
-        Observable<Object> laskentaTimer =
-            Observable.timer(3L, TimeUnit.HOURS)
-                .switchMap(
-                    t ->
-                        Observable.error(
-                            new TimeoutException(
-                                "Laskentaa odotettiin 90 minuuttia ja ohitettiin")));
-        Observable.amb(
-                Arrays.asList(hakukohteenLaskenta.apply(hakukohdeJaOrganisaatio), laskentaTimer))
-            .subscribeOn(Schedulers.newThread())
-            .subscribe(
-                s -> handleSuccessfulLaskentaResult(fromRetryQueue, hakukohdeOid),
-                e -> handleFailedLaskentaResult(fromRetryQueue, hakukohdeJaOrganisaatio, e));
+        hakukohteenLaskenta.apply(hakukohdeJaOrganisaatio).orTimeout(3L, TimeUnit.HOURS).thenApply(result -> {
+          handleSuccessfulLaskentaResult(fromRetryQueue, hakukohdeJaOrganisaatio.getHakukohdeOid());
+          return null;
+        }).exceptionally(e -> {
+          handleFailedLaskentaResult(fromRetryQueue, hakukohdeJaOrganisaatio, e);
+          return null;
+        });
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
