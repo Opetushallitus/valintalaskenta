@@ -105,7 +105,6 @@ public class LaskentaActorFactory {
       Date nyt) {
     LaskentaActorParams fakeOnlyOneHakukohdeParams =
         new LaskentaActorParams(
-            a.getHaku(),
             a.getLaskentaStartParams(),
             Collections.singletonList(new HakukohdeJaOrganisaatio()),
             a.getParametritDTO());
@@ -461,7 +460,8 @@ public class LaskentaActorFactory {
       boolean withHakijaRyhmat,
       SuoritustiedotDTO suoritustiedotDTO,
       Date nyt) {
-    final Haku haku = actorParams.getHaku();
+    // TODO: tätä ei pidä hakea joka hakukohteelle uudestaan
+    final Haku haku = tarjontaAsyncResource.haeHaku(actorParams.getHakuOid()).join();
     final String hakuOid = haku.oid;
 
     PyynnonTunniste tunniste =
