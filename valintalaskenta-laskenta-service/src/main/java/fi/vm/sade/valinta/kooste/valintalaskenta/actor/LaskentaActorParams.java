@@ -7,14 +7,12 @@ import java.util.Collection;
 public class LaskentaActorParams {
   private final LaskentaStartParams laskentaStartParams;
   private final Collection<HakukohdeJaOrganisaatio> hakukohdeOids;
-  private boolean isValintaryhmalaskenta;
 
   public LaskentaActorParams(
       LaskentaStartParams laskentaStartParams,
       Collection<HakukohdeJaOrganisaatio> hakukohdeOids) {
     this.laskentaStartParams = laskentaStartParams;
     this.hakukohdeOids = hakukohdeOids;
-    this.isValintaryhmalaskenta = false;
   }
 
   public String getUuid() {
@@ -47,14 +45,6 @@ public class LaskentaActorParams {
 
   public Collection<HakukohdeJaOrganisaatio> getHakukohdeOids() {
     return hakukohdeOids;
-  }
-
-  public void setValintaryhmalaskenta(boolean value) {
-    this.isValintaryhmalaskenta = value;
-  }
-
-  public boolean isValintaryhmalaskenta() {
-    return this.isValintaryhmalaskenta;
   }
 
   /** Tilapainen workaround resurssin valinnanvaiheen normalisointiin. */
