@@ -2,7 +2,6 @@ package fi.vm.sade.valinta.kooste.valintalaskenta.dto;
 
 import fi.vm.sade.valinta.kooste.AuditSession;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
-import java.util.Collection;
 
 public class LaskentaStartParams {
   private static final Integer HAE_KAIKKI_VALINNANVAIHEET = -1;
