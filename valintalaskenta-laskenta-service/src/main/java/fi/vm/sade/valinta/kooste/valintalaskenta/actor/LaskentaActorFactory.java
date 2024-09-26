@@ -10,6 +10,8 @@ import fi.vm.sade.valinta.kooste.KoosteAudit;
 import fi.vm.sade.valinta.kooste.external.resource.ataru.AtaruAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.hakuapp.ApplicationAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.koski.KoskiOppija;
+import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.OhjausparametritAsyncResource;
+import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.dto.ParametritDTO;
 import fi.vm.sade.valinta.kooste.external.resource.oppijanumerorekisteri.OppijanumerorekisteriAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.oppijanumerorekisteri.dto.HenkiloViiteDto;
 import fi.vm.sade.valinta.kooste.external.resource.suoritusrekisteri.SuoritusrekisteriAsyncResource;
@@ -23,6 +25,7 @@ import fi.vm.sade.valinta.kooste.AuditSession;
 import fi.vm.sade.valinta.kooste.util.HakemusWrapper;
 import fi.vm.sade.valinta.kooste.valintalaskenta.actor.LaskentaResurssinhakuWrapper.PyynnonTunniste;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.HakukohdeJaOrganisaatio;
+import fi.vm.sade.valinta.kooste.valintalaskenta.dto.LaskentaStartParams;
 import fi.vm.sade.valinta.kooste.valintalaskenta.service.KoskiService;
 import fi.vm.sade.valinta.kooste.valintalaskenta.util.HakemuksetConverterUtil;
 import fi.vm.sade.valinta.sharedutils.AuditLog;
@@ -65,6 +68,8 @@ public class LaskentaActorFactory {
   private final TarjontaAsyncResource tarjontaAsyncResource;
   private final KoskiService koskiService;
   private final HakemuksetConverterUtil hakemuksetConverterUtil;
+  private final OhjausparametritAsyncResource ohjausparametritAsyncResource;
+
   private volatile int splittaus;
 
   @Autowired
@@ -80,7 +85,8 @@ public class LaskentaActorFactory {
       ValintapisteAsyncResource valintapisteAsyncResource,
       KoskiService koskiService,
       HakemuksetConverterUtil hakemuksetConverterUtil,
-      OppijanumerorekisteriAsyncResource oppijanumerorekisteriAsyncResource) {
+      OppijanumerorekisteriAsyncResource oppijanumerorekisteriAsyncResource,
+      OhjausparametritAsyncResource ohjausparametritAsyncResource) {
     this.splittaus = splittaus;
     this.valintalaskentaResource = valintalaskentaResource;
     this.applicationAsyncResource = applicationAsyncResource;
@@ -93,10 +99,10 @@ public class LaskentaActorFactory {
     this.koskiService = koskiService;
     this.hakemuksetConverterUtil = hakemuksetConverterUtil;
     this.oppijanumerorekisteriAsyncResource = oppijanumerorekisteriAsyncResource;
+    this.ohjausparametritAsyncResource = ohjausparametritAsyncResource;
   }
 
   private LaskentaActor createValintaryhmaActor(
-      AuditSession auditSession,
       LaskentaSupervisor laskentaSupervisor,
       LaskentaActorParams a,
       Date nyt) {
@@ -121,7 +127,7 @@ public class LaskentaActorFactory {
 
           CompletableFuture<String> laskenta = CompletableFuture.supplyAsync(() ->
             hakukohdeOids.stream().map(hakukohdeOid -> fetchResourcesForOneLaskenta(
-                auditSession, uuid, hakukohdeOid, a, true, true, nyt)
+                hakukohdeOid, a.getLaskentaStartParams(), true, true, nyt)
                 .join()).toList())
               .thenApply(laskeDTOs -> {
                 if (laskeDTOs.size() != hakukohdeOids.size()) {
@@ -153,11 +159,9 @@ public class LaskentaActorFactory {
   }
 
   private LaskentaActor createValintakoelaskentaActor(
-      AuditSession auditSession,
       LaskentaSupervisor laskentaSupervisor,
       LaskentaActorParams actorParams,
       Date nyt) {
-    final String uuid = actorParams.getUuid();
     return laskentaHakukohteittainActor(
         laskentaSupervisor,
         actorParams,
@@ -165,10 +169,8 @@ public class LaskentaActorFactory {
           String hakukohdeOid = hakukohdeJaOrganisaatio.getHakukohdeOid();
 
           CompletableFuture<String> laskenta = fetchResourcesForOneLaskenta(
-              auditSession,
-              uuid,
               hakukohdeOid,
-              actorParams,
+              actorParams.getLaskentaStartParams(),
               false,
               false,
               nyt).thenApply(laskeDTO -> {
@@ -180,7 +182,6 @@ public class LaskentaActorFactory {
   }
 
   private LaskentaActor createValintalaskentaActor(
-      AuditSession auditSession,
       LaskentaSupervisor laskentaSupervisor,
       LaskentaActorParams actorParams) {
     final String uuid = actorParams.getUuid();
@@ -197,10 +198,8 @@ public class LaskentaActorFactory {
           LOG.info("(Uuid={}) Haetaan laskennan resursseja hakukohteelle {}", uuid, hakukohdeOid);
 
           CompletableFuture<String> laskenta = fetchResourcesForOneLaskenta(
-              auditSession,
-              uuid,
               hakukohdeOid,
-              actorParams,
+              actorParams.getLaskentaStartParams(),
               false,
               true,
               nyt).thenApply(laskeDTO -> {
@@ -212,7 +211,6 @@ public class LaskentaActorFactory {
   }
 
   private LaskentaActor createValintalaskentaJaValintakoelaskentaActor(
-      AuditSession auditSession,
       LaskentaSupervisor laskentaSupervisor,
       LaskentaActorParams actorParams,
       Date nyt) {
@@ -228,10 +226,8 @@ public class LaskentaActorFactory {
               hakukohdeOid);
 
           CompletableFuture<String> laskenta = fetchResourcesForOneLaskenta(
-              auditSession,
-              uuid,
               hakukohdeOid,
-              actorParams,
+              actorParams.getLaskentaStartParams(),
               false,
               true,
               nyt).thenApply(laskeDTO -> {
@@ -255,26 +251,24 @@ public class LaskentaActorFactory {
     if (LaskentaTyyppi.VALINTARYHMALASKENTA.equals(actorParams.getLaskentaTyyppi())) {
       LOG.info("Muodostetaan VALINTARYHMALASKENTA");
       auditLogLaskentaStart(auditSession, actorParams, "VALINTARYHMALASKENTA");
-      return createValintaryhmaActor(auditSession, laskentaSupervisor, actorParams, nyt);
+      return createValintaryhmaActor(laskentaSupervisor, actorParams, nyt);
     }
     if (LaskentaTyyppi.VALINTAKOELASKENTA.equals(actorParams.getLaskentaTyyppi())) {
       LOG.info("Muodostetaan VALINTAKOELASKENTA");
       auditLogLaskentaStart(auditSession, actorParams, "VALINTAKOELASKENTA");
-      return createValintakoelaskentaActor(
-          auditSession, laskentaSupervisor, actorParams, nyt);
+      return createValintakoelaskentaActor(laskentaSupervisor, actorParams, nyt);
     }
     if (LaskentaTyyppi.VALINTALASKENTA.equals(actorParams.getLaskentaTyyppi())) {
       LOG.info("Muodostetaan VALINTALASKENTA");
       auditLogLaskentaStart(auditSession, actorParams,"VALINTALASKENTA");
-      return createValintalaskentaActor(auditSession, laskentaSupervisor, actorParams);
+      return createValintalaskentaActor(laskentaSupervisor, actorParams);
     }
     LOG.info(
         "Muodostetaan KAIKKI VAIHEET LASKENTA koska valinnanvaihe oli {} ja valintakoelaskenta ehto {}",
         actorParams.getValinnanvaihe(),
         actorParams.isValintakoelaskenta());
     auditLogLaskentaStart(auditSession, actorParams, "KAIKKI VAIHEET LASKENTA");
-    return createValintalaskentaJaValintakoelaskentaActor(
-        auditSession, laskentaSupervisor, actorParams, nyt);
+    return createValintalaskentaJaValintakoelaskentaActor(laskentaSupervisor, actorParams, nyt);
   }
 
   private void auditLogLaskentaStart(
@@ -284,7 +278,7 @@ public class LaskentaActorFactory {
     additionalAuditInfo.put("uuid", actorParams.getLaskentaStartParams().getUuid());
     additionalAuditInfo.put(
         "hakukohteet",
-        actorParams.getLaskentaStartParams().getHakukohdeDtos().stream()
+        actorParams.getHakukohdeOids().stream()
             .map(HakukohdeJaOrganisaatio::getHakukohdeOid)
             .collect(Collectors.toList())
             .toString());
@@ -308,9 +302,10 @@ public class LaskentaActorFactory {
 
   private CompletableFuture<LaskeDTO> getLaskeDtoFuture(
       String uuid,
-      Haku haku,
+      CompletableFuture<Haku> haku,
       String hakukohdeOid,
-      LaskentaActorParams actorParams,
+      LaskentaStartParams laskentaStartParams,
+      CompletableFuture<ParametritDTO> parametritDTO,
       boolean withHakijaRyhmat,
       CompletableFuture<List<ValintaperusteetDTO>> valintaperusteetF,
       CompletableFuture<List<Oppija>> oppijatF,
@@ -320,6 +315,8 @@ public class LaskentaActorFactory {
       CompletableFuture<List<HakemusWrapper>> hakemuksetF,
       CompletableFuture<Map<String, KoskiOppija>> koskiOppijaByOppijaOidF) {
     return CompletableFuture.allOf(
+            haku,
+            parametritDTO,
             valintapisteetForHakukohdesF,
             hakijaryhmatF,
             valintaperusteetF,
@@ -352,17 +349,17 @@ public class LaskentaActorFactory {
               if (!withHakijaRyhmat) {
                 return new LaskeDTO(
                     uuid,
-                    haku.isKorkeakouluhaku(),
-                    actorParams.isErillishaku(),
+                    haku.join().isKorkeakouluhaku(),
+                    laskentaStartParams.isErillishaku(),
                     hakukohdeOid,
                     hakemuksetConverterUtil.muodostaHakemuksetDTOfromHakemukset(
-                        haku,
+                        haku.join(),
                         hakukohdeOid,
                         ryhmatHakukohteittain,
                         hakemukset,
                         pisteetWithLastModified.valintapisteet,
                         oppijat,
-                        actorParams.getParametritDTO(),
+                        parametritDTO.join(),
                         true,
                         true),
                     valintaperusteet);
@@ -370,17 +367,17 @@ public class LaskentaActorFactory {
               } else {
                 return new LaskeDTO(
                     uuid,
-                    haku.isKorkeakouluhaku(),
-                    actorParams.isErillishaku(),
+                    haku.join().isKorkeakouluhaku(),
+                    laskentaStartParams.isErillishaku(),
                     hakukohdeOid,
                     hakemuksetConverterUtil.muodostaHakemuksetDTOfromHakemukset(
-                        haku,
+                        haku.join(),
                         hakukohdeOid,
                         ryhmatHakukohteittain,
                         hakemukset,
                         pisteetWithLastModified.valintapisteet,
                         oppijat,
-                        actorParams.getParametritDTO(),
+                        parametritDTO.join(),
                         true,
                         true),
                     valintaperusteet,
@@ -442,43 +439,47 @@ public class LaskentaActorFactory {
   }
 
   private CompletableFuture<LaskeDTO> fetchResourcesForOneLaskenta(
-      final AuditSession auditSession,
-      final String uuid,
       final String hakukohdeOid,
-      LaskentaActorParams actorParams,
+      LaskentaStartParams laskentaStartParams,
       boolean retryHakemuksetAndOppijat,
       boolean withHakijaRyhmat,
       Date nyt) {
+
+    // TODO: tämän pitäisi olla hypernopea joten ei syytä kakutukseen
+    final CompletableFuture<ParametritDTO> parametritDTOFuture = ohjausparametritAsyncResource.haeHaunOhjausparametrit(laskentaStartParams.getHakuOid());
+    // TODO: tätä ei ehkä kannata hakea joka hakukohteelle uudestaan
+    final CompletableFuture<Haku> hakuFuture = tarjontaAsyncResource.haeHaku(laskentaStartParams.getHakuOid());
+
     // TODO: tämän sisältö (tai tämä) kannattaa ehkä kakuttaa uuid:llä jottei koskesta haeta samoja oppijoita aina uudestaan
     SuoritustiedotDTO suoritustiedotDTO = new SuoritustiedotDTO();
 
-    // TODO: tätä ei ehkä kannata hakea joka hakukohteelle uudestaan
-    final Haku haku = tarjontaAsyncResource.haeHaku(actorParams.getHakuOid()).join();
-    final String hakuOid = haku.oid;
+    final String hakuOid = laskentaStartParams.getHakuOid();
 
     PyynnonTunniste tunniste =
         new PyynnonTunniste(
-            "Please put individual resource source identifier here!", uuid, hakukohdeOid);
+            "Please put individual resource source identifier here!", laskentaStartParams.getUuid(), hakukohdeOid);
 
-    CompletableFuture<List<HakemusWrapper>> hakemukset;
-    if (haku.isHakemuspalvelu()) {
-      boolean haetaanHarkinnanvaraisuudet = haku.isAmmatillinenJaLukio() && haku.isKoutaHaku();
-      hakemukset =
-          createResurssiFuture(
-              tunniste,
-              "applicationAsyncResource.getApplications",
-              () ->
-                  ataruAsyncResource.getApplicationsByHakukohde(
-                      hakukohdeOid, haetaanHarkinnanvaraisuudet),
-              retryHakemuksetAndOppijat);
-    } else {
-      hakemukset =
-          createResurssiFuture(
-              tunniste,
-              "applicationAsyncResource.getApplicationsByOid",
-              () -> applicationAsyncResource.getApplicationsByOids(hakuOid, Collections.singletonList(hakukohdeOid)),
-              retryHakemuksetAndOppijat);
-    }
+    CompletableFuture<List<HakemusWrapper>> hakemukset = hakuFuture
+      .thenCompose(haku -> {
+        if (haku.isHakemuspalvelu()) {
+          boolean haetaanHarkinnanvaraisuudet = haku.isAmmatillinenJaLukio() && haku.isKoutaHaku();
+          return createResurssiFuture(
+            tunniste,
+            "applicationAsyncResource.getApplications",
+            () ->
+                ataruAsyncResource.getApplicationsByHakukohde(
+                    hakukohdeOid, haetaanHarkinnanvaraisuudet),
+            retryHakemuksetAndOppijat);
+        } else {
+          return createResurssiFuture(
+            tunniste,
+            "applicationAsyncResource.getApplicationsByOid",
+            () -> applicationAsyncResource.getApplicationsByOids(hakuOid, Collections.singletonList(hakukohdeOid)),
+            retryHakemuksetAndOppijat);
+        }
+      });
+
+
     CompletableFuture<List<HenkiloViiteDto>> henkiloViitteet =
         hakemukset.thenComposeAsync(
             hws -> {
@@ -528,7 +529,7 @@ public class LaskentaActorFactory {
             "valintaperusteetAsyncResource.haeValintaperusteet",
             () ->
                 valintaperusteetAsyncResource.haeValintaperusteet(
-                    hakukohdeOid, actorParams.getValinnanvaihe()));
+                    hakukohdeOid, laskentaStartParams.getValinnanvaihe()));
     CompletableFuture<Map<String, List<String>>> hakukohdeRyhmasForHakukohdes =
         createResurssiFuture(
             tunniste,
@@ -544,7 +545,7 @@ public class LaskentaActorFactory {
                   "valintapisteAsyncResource.getValintapisteetWithHakemusOidsAsFuture",
                   () ->
                       valintapisteAsyncResource.getValintapisteetWithHakemusOidsAsFuture(
-                          hakemusOids, auditSession),
+                          hakemusOids, laskentaStartParams.getAuditSession()),
                   retryHakemuksetAndOppijat);
             });
     CompletableFuture<List<ValintaperusteetHakijaryhmaDTO>> hakijaryhmat =
@@ -564,13 +565,14 @@ public class LaskentaActorFactory {
 
     LOG.info(
         "(Uuid: {}) Odotetaan kaikkien resurssihakujen valmistumista hakukohteelle {}, jotta voidaan palauttaa ne yhtenä pakettina.",
-        uuid,
+        laskentaStartParams.getUuid(),
         hakukohdeOid);
     return getLaskeDtoFuture(
-        uuid,
-        haku,
+        laskentaStartParams.getUuid(),
+        hakuFuture,
         hakukohdeOid,
-        actorParams,
+        laskentaStartParams,
+        parametritDTOFuture,
         withHakijaRyhmat,
         valintaperusteet,
         oppijasForOidsFromHakemukses,
