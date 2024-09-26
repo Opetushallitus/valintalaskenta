@@ -109,7 +109,6 @@ public class LaskentaActorFactory {
             Collections.singletonList(new HakukohdeJaOrganisaatio()),
             a.getParametritDTO());
     fakeOnlyOneHakukohdeParams.setValintaryhmalaskenta(true);
-    final SuoritustiedotDTO suoritustiedot = new SuoritustiedotDTO();
     return laskentaHakukohteittainActor(
         laskentaSupervisor,
         fakeOnlyOneHakukohdeParams,
@@ -125,7 +124,7 @@ public class LaskentaActorFactory {
 
           CompletableFuture<String> laskenta = CompletableFuture.supplyAsync(() ->
             hakukohdeOids.stream().map(hakukohdeOid -> fetchResourcesForOneLaskenta(
-                auditSession, uuid, hakukohdeOid, a, true, true, suoritustiedot, nyt)
+                auditSession, uuid, hakukohdeOid, a, true, true, nyt)
                 .join()).toList())
               .thenApply(laskeDTOs -> {
                 if (laskeDTOs.size() != hakukohdeOids.size()) {
@@ -167,7 +166,6 @@ public class LaskentaActorFactory {
         actorParams,
         hakukohdeJaOrganisaatio -> {
           String hakukohdeOid = hakukohdeJaOrganisaatio.getHakukohdeOid();
-          SuoritustiedotDTO suoritustiedot = new SuoritustiedotDTO();
 
           CompletableFuture<String> laskenta = fetchResourcesForOneLaskenta(
               auditSession,
@@ -176,7 +174,6 @@ public class LaskentaActorFactory {
               actorParams,
               false,
               false,
-              suoritustiedot,
               nyt).thenApply(laskeDTO -> {
                 Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDTO);
                 return valintalaskentaResource.valintakokeet(laskentakutsu);
@@ -202,7 +199,6 @@ public class LaskentaActorFactory {
           String hakukohdeOid = hakukohdeJaOrganisaatio.getHakukohdeOid();
           LOG.info("(Uuid={}) Haetaan laskennan resursseja hakukohteelle {}", uuid, hakukohdeOid);
 
-          SuoritustiedotDTO suoritustiedot = new SuoritustiedotDTO();
           CompletableFuture<String> laskenta = fetchResourcesForOneLaskenta(
               auditSession,
               uuid,
@@ -210,7 +206,6 @@ public class LaskentaActorFactory {
               actorParams,
               false,
               true,
-              suoritustiedot,
               nyt).thenApply(laskeDTO -> {
                 Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDTO);
                 return valintalaskentaResource.laske(laskentakutsu);
@@ -234,7 +229,6 @@ public class LaskentaActorFactory {
               "(Uuid={}) Haetaan laskennan + valintakoelaskennan resursseja hakukohteelle {}",
               uuid,
               hakukohdeOid);
-          SuoritustiedotDTO suoritustiedot = new SuoritustiedotDTO();
 
           CompletableFuture<String> laskenta = fetchResourcesForOneLaskenta(
               auditSession,
@@ -243,7 +237,6 @@ public class LaskentaActorFactory {
               actorParams,
               false,
               true,
-              suoritustiedot,
               nyt).thenApply(laskeDTO -> {
                 Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDTO);
                 return valintalaskentaResource.laskeKaikki(laskentakutsu);
@@ -458,9 +451,11 @@ public class LaskentaActorFactory {
       LaskentaActorParams actorParams,
       boolean retryHakemuksetAndOppijat,
       boolean withHakijaRyhmat,
-      SuoritustiedotDTO suoritustiedotDTO,
       Date nyt) {
-    // TODO: tätä ei pidä hakea joka hakukohteelle uudestaan
+    // TODO: tämän sisältö (tai tämä) kannattaa ehkä kakuttaa uuid:llä jottei koskesta haeta samoja oppijoita aina uudestaan
+    SuoritustiedotDTO suoritustiedotDTO = new SuoritustiedotDTO();
+
+    // TODO: tätä ei ehkä kannata hakea joka hakukohteelle uudestaan
     final Haku haku = tarjontaAsyncResource.haeHaku(actorParams.getHakuOid()).join();
     final String hakuOid = haku.oid;
 
