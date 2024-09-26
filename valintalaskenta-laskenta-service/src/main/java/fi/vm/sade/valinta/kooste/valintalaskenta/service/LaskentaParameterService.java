@@ -98,8 +98,8 @@ public class LaskentaParameterService {
             LaskentaTyyppi.VALINTARYHMA.equals(laskenta.getTyyppi()),
             laskenta.getValinnanvaihe(),
             laskenta.getValintakoelaskenta(),
-            haunHakukohdeOidit,
             laskenta.getTyyppi()),
+        haunHakukohdeOidit,
         parametrit);
   }
 
