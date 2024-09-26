@@ -113,7 +113,6 @@ public class LaskentaActorFactory {
         new LaskentaActorParams(
             a.getLaskentaStartParams(),
             Collections.singletonList(new HakukohdeJaOrganisaatio()));
-    fakeOnlyOneHakukohdeParams.setValintaryhmalaskenta(true);
     return laskentaHakukohteittainActor(
         laskentaSupervisor,
         fakeOnlyOneHakukohdeParams,
