@@ -140,7 +140,7 @@ public class LaskentaActorFactory {
                  * enää mene verkon yli ei (käsittääkseni) ole enää mitää syytä palastella joten palatta takaisin
                  * yhteen kutsuun.
                  */
-                Laskentakutsu laskentakutsu = Laskentakutsu.valintaRyhmaLaskentaKutsu(laskeDTOs, suoritustiedot);
+                Laskentakutsu laskentakutsu = Laskentakutsu.valintaRyhmaLaskentaKutsu(laskeDTOs);
                 return valintalaskentaResource.laskeJaSijoittele(laskentakutsu);
               });
           return laskenta;
@@ -175,7 +175,7 @@ public class LaskentaActorFactory {
               false,
               suoritustiedot,
               nyt).thenApply(laskeDTO -> {
-                Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDTO, suoritustiedot);
+                Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDTO);
                 return valintalaskentaResource.valintakokeet(laskentakutsu);
           });
           return laskenta;
@@ -209,7 +209,7 @@ public class LaskentaActorFactory {
               true,
               suoritustiedot,
               nyt).thenApply(laskeDTO -> {
-                Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDTO, suoritustiedot);
+                Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDTO);
                 return valintalaskentaResource.laske(laskentakutsu);
               });
           return laskenta;
@@ -242,7 +242,7 @@ public class LaskentaActorFactory {
               true,
               suoritustiedot,
               nyt).thenApply(laskeDTO -> {
-                Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDTO, suoritustiedot);
+                Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDTO);
                 return valintalaskentaResource.laskeKaikki(laskentakutsu);
           });
           return laskenta;
@@ -583,7 +583,10 @@ public class LaskentaActorFactory {
         valintapisteetHakemuksille,
         hakijaryhmat,
         hakemukset,
-        koskiOppijaByOppijaOid);
+        koskiOppijaByOppijaOid).thenApply(laskeDTO -> {
+          laskeDTO.populoiSuoritustiedotHakemuksille(suoritustiedotDTO);
+          return laskeDTO;
+    });
   }
 
   private <T> CompletableFuture<T> createResurssiFuture(
