@@ -1,22 +1,18 @@
 package fi.vm.sade.valinta.kooste.valintalaskenta.actor;
 
-import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.dto.ParametritDTO;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.HakukohdeJaOrganisaatio;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.LaskentaStartParams;
 import java.util.Collection;
 
 public class LaskentaActorParams {
   private final LaskentaStartParams laskentaStartParams;
-  private final ParametritDTO parametritDTO;
   private final Collection<HakukohdeJaOrganisaatio> hakukohdeOids;
   private boolean isValintaryhmalaskenta;
 
   public LaskentaActorParams(
       LaskentaStartParams laskentaStartParams,
-      Collection<HakukohdeJaOrganisaatio> hakukohdeOids,
-      ParametritDTO parametritDTO) {
+      Collection<HakukohdeJaOrganisaatio> hakukohdeOids) {
     this.laskentaStartParams = laskentaStartParams;
-    this.parametritDTO = parametritDTO;
     this.hakukohdeOids = hakukohdeOids;
     this.isValintaryhmalaskenta = false;
   }
@@ -31,10 +27,6 @@ public class LaskentaActorParams {
 
   public LaskentaStartParams getLaskentaStartParams() {
     return laskentaStartParams;
-  }
-
-  public ParametritDTO getParametritDTO() {
-    return parametritDTO;
   }
 
   public boolean isErillishaku() {
