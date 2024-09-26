@@ -103,7 +103,7 @@ public class ValintalaskentaResourceIntegrationTest extends AbstractMocklessInte
     LaskeDTO laskeDtoYhdenKoekutsunKanssa =
         readJson("laskeDTOYhdenKoekutsuVaiheenKanssa.json", new TypeToken<LaskeDTO>() {});
     Laskentakutsu laskentakutsu =
-        new Laskentakutsu(laskeDtoYhdenKoekutsunKanssa, new SuoritustiedotDTO());
+        new Laskentakutsu(laskeDtoYhdenKoekutsunKanssa);
     valintalaskentaResource.toteutaLaskeKaikki(laskentakutsu);
 
     ValintakoeOsallistuminen osallistuminen =
@@ -132,7 +132,7 @@ public class ValintalaskentaResourceIntegrationTest extends AbstractMocklessInte
     LaskeDTO laskeDtoUseammanKoekutsunKanssa =
         readJson("laskeDTOUseammanKoekutsuVaiheenKanssa.json", new TypeToken<>() {});
     Laskentakutsu laskentakutsu =
-        new Laskentakutsu(laskeDtoUseammanKoekutsunKanssa, new SuoritustiedotDTO());
+        new Laskentakutsu(laskeDtoUseammanKoekutsunKanssa);
 
     valintalaskentaResource.toteutaLaskeKaikki(laskentakutsu);
 
@@ -266,7 +266,7 @@ public class ValintalaskentaResourceIntegrationTest extends AbstractMocklessInte
     do {
       returnValue =
           valintalaskentaResource.laskeJaSijoittele(
-              Laskentakutsu.valintaRyhmaLaskentaKutsu(Arrays.asList(laskeDto1, laskeDto2), new SuoritustiedotDTO()));
+              Laskentakutsu.valintaRyhmaLaskentaKutsu(Arrays.asList(laskeDto1, laskeDto2)));
       Thread.sleep(50);
     } while (!(returnValue.equals(HakukohteenLaskennanTila.VALMIS)
         || returnValue.equals(HakukohteenLaskennanTila.VIRHE)));
