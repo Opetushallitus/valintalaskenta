@@ -5,6 +5,8 @@ import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
 import java.util.Collection;
 
 public class LaskentaStartParams {
+  private static final Integer HAE_KAIKKI_VALINNANVAIHEET = -1;
+
   private static final String NIMI_FORMAT = "Laskenta hakuOid(%s) uuid(%s) hakukohteita(%d)";
   private final String uuid;
   private final String hakuOid;
@@ -13,7 +15,6 @@ public class LaskentaStartParams {
   private final boolean erillishaku;
   private final Boolean valintakoelaskenta;
   private final boolean valintaryhmalaskenta;
-  private final Collection<HakukohdeJaOrganisaatio> hakukohdeDtos;
   private final LaskentaTyyppi tyyppi;
   private final AuditSession auditSession;
 
@@ -26,7 +27,6 @@ public class LaskentaStartParams {
       boolean valintaryhmalaskenta,
       Integer valinnanvaihe,
       Boolean valintakoelaskenta,
-      Collection<HakukohdeJaOrganisaatio> hakukohdeDtos,
       LaskentaTyyppi tyyppi) {
     this.auditSession = auditSession;
     this.uuid = uuid;
@@ -35,7 +35,6 @@ public class LaskentaStartParams {
     this.valintaryhmalaskenta = valintaryhmalaskenta;
     this.valinnanvaihe = valinnanvaihe;
     this.valintakoelaskenta = valintakoelaskenta;
-    this.hakukohdeDtos = hakukohdeDtos;
     this.tyyppi = tyyppi;
     this.erillishaku = erillishaku;
   }
@@ -48,12 +47,11 @@ public class LaskentaStartParams {
     return tyyppi;
   }
 
-  public Collection<HakukohdeJaOrganisaatio> getHakukohdeDtos() {
-    return hakukohdeDtos;
-  }
-
+  /** Tilapainen workaround resurssin valinnanvaiheen normalisointiin. */
   public Integer getValinnanvaihe() {
-    return valinnanvaihe;
+    return HAE_KAIKKI_VALINNANVAIHEET.equals(this.valinnanvaihe)
+        ? null
+        : this.valinnanvaihe;
   }
 
   public Boolean getValintakoelaskenta() {
@@ -82,9 +80,5 @@ public class LaskentaStartParams {
 
   public String getUuid() {
     return uuid;
-  }
-
-  public String toString() {
-    return String.format(NIMI_FORMAT, hakuOid, uuid, hakukohdeDtos.size());
   }
 }
