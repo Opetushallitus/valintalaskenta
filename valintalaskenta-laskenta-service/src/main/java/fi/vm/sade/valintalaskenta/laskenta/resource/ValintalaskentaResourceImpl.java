@@ -71,15 +71,6 @@ public class ValintalaskentaResourceImpl {
             Math.max(Runtime.getRuntime().availableProcessors(), parallelismFromConfig));
   }
 
-  public String status(@PathVariable("key") final String pollKey) throws Exception {
-    try {
-      return pidaKirjaaMeneillaanOlevista(pollKey, false);
-    } catch (Exception e) {
-      LOG.error("Odottamaton virhe : pidaKirjaaMeneillaanOlevista", e);
-      throw e;
-    }
-  }
-
   public String laske(final Laskentakutsu laskentakutsu) {
     try {
       String pollKey = laskentakutsu.getPollKey();
