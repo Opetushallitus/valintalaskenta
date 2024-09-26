@@ -1,7 +1,6 @@
 package fi.vm.sade.valinta.kooste.valintalaskenta.actor;
 
 import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.dto.ParametritDTO;
-import fi.vm.sade.valinta.kooste.external.resource.tarjonta.Haku;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.HakukohdeJaOrganisaatio;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.LaskentaStartParams;
 import java.util.Collection;
@@ -10,15 +9,13 @@ import java.util.stream.Collectors;
 public class LaskentaActorParams {
   private static final Integer HAE_KAIKKI_VALINNANVAIHEET = -1;
 
-  private final Haku haku;
   private final LaskentaStartParams laskentaStartParams;
   private final ParametritDTO parametritDTO;
   private final Collection<HakukohdeJaOrganisaatio> hakukohdeOids;
   private boolean isValintaryhmalaskenta;
 
-  public LaskentaActorParams(Haku haku, LaskentaStartParams laskentaStartParams, ParametritDTO parametritDTO) {
+  public LaskentaActorParams(LaskentaStartParams laskentaStartParams, ParametritDTO parametritDTO) {
     this(
-        haku,
         laskentaStartParams,
         laskentaStartParams.getHakukohdeDtos().stream()
             .map(hk -> new HakukohdeJaOrganisaatio(hk.getHakukohdeOid(), hk.getOrganisaatioOid()))
@@ -27,18 +24,14 @@ public class LaskentaActorParams {
   }
 
   public LaskentaActorParams(
-      Haku haku,
       LaskentaStartParams laskentaStartParams,
       Collection<HakukohdeJaOrganisaatio> hakukohdeOids,
       ParametritDTO parametritDTO) {
-    this.haku = haku;
     this.laskentaStartParams = laskentaStartParams;
     this.parametritDTO = parametritDTO;
     this.hakukohdeOids = hakukohdeOids;
     this.isValintaryhmalaskenta = false;
   }
-
-  public Haku getHaku() { return this.haku; }
 
   public String getUuid() {
     return laskentaStartParams.getUuid();
