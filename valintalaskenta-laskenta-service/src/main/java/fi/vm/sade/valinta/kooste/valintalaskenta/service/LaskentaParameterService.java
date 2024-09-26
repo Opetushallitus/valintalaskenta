@@ -2,7 +2,6 @@ package fi.vm.sade.valinta.kooste.valintalaskenta.service;
 
 import fi.vm.sade.service.valintaperusteet.dto.HakukohdeViiteDTO;
 import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.OhjausparametritAsyncResource;
-import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.dto.ParametritDTO;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.Haku;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.TarjontaAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.valintaperusteet.ValintaperusteetAsyncResource;
@@ -26,16 +25,13 @@ import org.springframework.stereotype.Service;
 public class LaskentaParameterService {
   private static final Logger LOG = LoggerFactory.getLogger(LaskentaParameterService.class);
 
-  private final OhjausparametritAsyncResource ohjausparametritAsyncResource;
   private final ValintaperusteetAsyncResource valintaperusteetAsyncResource;
   private final TarjontaAsyncResource tarjontaAsyncResource;
 
   @Autowired
   public LaskentaParameterService(
-      OhjausparametritAsyncResource ohjausparametritAsyncResource,
       ValintaperusteetAsyncResource valintaperusteetAsyncResource,
       TarjontaAsyncResource tarjontaAsyncResource) {
-    this.ohjausparametritAsyncResource = ohjausparametritAsyncResource;
     this.valintaperusteetAsyncResource = valintaperusteetAsyncResource;
     this.tarjontaAsyncResource = tarjontaAsyncResource;
   }
@@ -49,12 +45,11 @@ public class LaskentaParameterService {
 
     CompletableFuture<Haku> haku = tarjontaAsyncResource.haeHaku(hakuOid);
     CompletableFuture<List<HakukohdeViiteDTO>> hakukohteet = valintaperusteetAsyncResource.haunHakukohteet(hakuOid);
-    CompletableFuture<ParametritDTO> parametrit = ohjausparametritAsyncResource.haeHaunOhjausparametrit(hakuOid);
-    CompletableFuture.allOf(haku, hakukohteet, parametrit).join();
+    CompletableFuture.allOf(haku, hakukohteet).join();
 
     try {
       Collection<HakukohdeJaOrganisaatio> hakukohdeOids = maskHakukohteet(hakuOid, hakukohteet.get(), laskenta);
-      return laskentaActorParams(hakuOid, laskenta, hakukohdeOids, parametrit.get());
+      return laskentaActorParams(hakuOid, laskenta, hakukohdeOids);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -86,8 +81,7 @@ public class LaskentaParameterService {
   private static LaskentaActorParams laskentaActorParams(
       String hakuOid,
       LaskentaDto laskenta,
-      Collection<HakukohdeJaOrganisaatio> haunHakukohdeOidit,
-      ParametritDTO parametrit) {
+      Collection<HakukohdeJaOrganisaatio> haunHakukohdeOidit) {
     return new LaskentaActorParams(
         new LaskentaStartParams(
             koosteAuditSession(laskenta),
@@ -99,8 +93,7 @@ public class LaskentaParameterService {
             laskenta.getValinnanvaihe(),
             laskenta.getValintakoelaskenta(),
             laskenta.getTyyppi()),
-        haunHakukohdeOidit,
-        parametrit);
+        haunHakukohdeOidit);
   }
 
   private static List<HakukohdeJaOrganisaatio> publishedNonNulltoHakukohdeJaOrganisaatio(
