@@ -147,8 +147,7 @@ public class ValintalaskentaResourceHttpIntegrationTest extends AbstractIntegrat
             false,
             "hakukohdeOid",
             Collections.emptyList(),
-            Collections.emptyList()),
-        new SuoritustiedotDTO());
+            Collections.emptyList()));
   }
 
   private String waitForEventualStatus(Laskentakutsu laskentakutsu, String expectedStatus)
