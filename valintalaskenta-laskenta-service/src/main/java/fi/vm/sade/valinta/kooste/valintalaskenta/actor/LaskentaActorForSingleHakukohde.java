@@ -54,7 +54,7 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
     this.seurantaDao = seurantaDao;
     this.splittaus = splittaus;
     hakukohdeQueue = new ConcurrentLinkedQueue<>(actorParams.getHakukohdeOids());
-    this.isValintaryhmalaskenta = actorParams.isValintaryhmalaskenta();
+    this.isValintaryhmalaskenta = actorParams.getLaskentaStartParams().isValintaryhmalaskenta();
     this.valintaryhmalaskennanTulos = Optional.empty();
   }
 
