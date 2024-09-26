@@ -54,7 +54,7 @@ public class LaskentaParameterService {
 
     try {
       Collection<HakukohdeJaOrganisaatio> hakukohdeOids = maskHakukohteet(hakuOid, hakukohteet.get(), laskenta);
-      return laskentaActorParams(haku.get(), hakuOid, laskenta, hakukohdeOids, parametrit.get());
+      return laskentaActorParams(hakuOid, laskenta, hakukohdeOids, parametrit.get());
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -84,13 +84,11 @@ public class LaskentaParameterService {
   }
 
   private static LaskentaActorParams laskentaActorParams(
-      Haku haku,
       String hakuOid,
       LaskentaDto laskenta,
       Collection<HakukohdeJaOrganisaatio> haunHakukohdeOidit,
       ParametritDTO parametrit) {
     return new LaskentaActorParams(
-        haku,
         new LaskentaStartParams(
             koosteAuditSession(laskenta),
             laskenta.getUuid(),
