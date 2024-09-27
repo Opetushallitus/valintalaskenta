@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
@@ -33,7 +32,6 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
   private final LaskentaActorParams actorParams;
   private final Function<? super HakukohdeJaOrganisaatio, ? extends CompletableFuture<?>>
       hakukohteenLaskenta;
-  private final LaskentaSupervisor laskentaSupervisor;
   private final SeurantaDao seurantaDao;
   private final int splittaus;
   private final ConcurrentLinkedQueue<HakukohdeJaOrganisaatio> hakukohdeQueue;
@@ -45,12 +43,10 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
   public LaskentaActorForSingleHakukohde(
       LaskentaActorParams actorParams,
       Function<? super HakukohdeJaOrganisaatio, ? extends CompletableFuture<?>> hakukohteenLaskenta,
-      LaskentaSupervisor laskentaSupervisor,
       SeurantaDao seurantaDao,
       int splittaus) {
     this.actorParams = actorParams;
     this.hakukohteenLaskenta = hakukohteenLaskenta;
-    this.laskentaSupervisor = laskentaSupervisor;
     this.seurantaDao = seurantaDao;
     this.splittaus = splittaus;
     hakukohdeQueue = new ConcurrentLinkedQueue<>(actorParams.getHakukohdeOids());
@@ -242,7 +238,6 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
           failedTotal.get());
       seurantaDao.merkkaaTila(uuid(), LaskentaTila.VALMIS, Optional.empty());
     }
-    laskentaSupervisor.ready(uuid());
   }
 
   public void postStop() {
