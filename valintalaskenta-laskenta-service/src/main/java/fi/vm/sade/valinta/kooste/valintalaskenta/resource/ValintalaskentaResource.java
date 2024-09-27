@@ -3,10 +3,10 @@ package fi.vm.sade.valinta.kooste.valintalaskenta.resource;
 import static java.util.Arrays.asList;
 
 import fi.vm.sade.service.valintaperusteet.dto.HakukohdeViiteDTO;
+import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
 import fi.vm.sade.valinta.kooste.AuthorizationUtil;
 import fi.vm.sade.valinta.kooste.external.resource.valintaperusteet.ValintaperusteetAsyncResource;
 import fi.vm.sade.valinta.kooste.security.AuthorityCheckService;
-import fi.vm.sade.valinta.kooste.valintalaskenta.actor.LaskentaSupervisor;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Laskenta;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Maski;
 import fi.vm.sade.valinta.kooste.valintalaskenta.service.ValintalaskentaService;
@@ -48,10 +48,11 @@ public class ValintalaskentaResource {
           "ROLE_APP_VALINTOJENTOTEUTTAMINENKK_CRUD",
           "ROLE_APP_VALINTOJENTOTEUTTAMINENKK_READ_UPDATE");
 
-  @Autowired private LaskentaSupervisor laskentaSupervisor;
   @Autowired private ValintalaskentaService valintalaskentaService;
   @Autowired private AuthorityCheckService authorityCheckService;
   @Autowired private ValintaperusteetAsyncResource valintaperusteetAsyncResource;
+  @Autowired
+  private LaskentaService laskentaService;
 
   /**
    * Luo seurantaan suoritettavan valintalaskennan koko haulle.
@@ -214,7 +215,7 @@ public class ValintalaskentaResource {
             content = @Content(schema = @Schema(implementation = Laskenta.class)))
       })
   public List<Laskenta> status() {
-    return laskentaSupervisor.runningLaskentas();
+    return valintalaskentaService.runningLaskentas();
   }
 
   /**
@@ -240,7 +241,7 @@ public class ValintalaskentaResource {
       }
 
       authorityCheckService.checkAuthorizationForLaskenta(laskenta.get(), valintalaskentaAllowedRoles);
-      return laskentaSupervisor
+      return valintalaskentaService
           .fetchLaskenta(uuid)
           .map(l -> ResponseEntity.status(HttpStatus.OK).body((Object)l))
           .orElse(ResponseEntity.status(HttpStatus.GONE).body("Valintalaskenta ei ole muistissa!"));

@@ -1,8 +1,6 @@
 package fi.vm.sade.valinta.kooste.valintalaskenta.actor;
 
-import akka.actor.TypedActor;
-
-public interface LaskentaActor extends TypedActor.PostStop {
+public interface LaskentaActor {
   String getHakuOid();
 
   boolean isValmis();

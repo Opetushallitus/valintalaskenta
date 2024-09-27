@@ -21,7 +21,6 @@ import fi.vm.sade.valinta.kooste.external.resource.tarjonta.TarjontaAsyncResourc
 import fi.vm.sade.valinta.kooste.external.resource.valintaperusteet.ValintaperusteetAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.valintapiste.ValintapisteAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.valintapiste.dto.PisteetWithLastModified;
-import fi.vm.sade.valinta.kooste.AuditSession;
 import fi.vm.sade.valinta.kooste.util.HakemusWrapper;
 import fi.vm.sade.valinta.kooste.valintalaskenta.actor.LaskentaResurssinhakuWrapper.PyynnonTunniste;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.HakukohdeJaOrganisaatio;
@@ -103,7 +102,6 @@ public class LaskentaActorFactory {
   }
 
   private LaskentaActor createValintaryhmaActor(
-      LaskentaSupervisor laskentaSupervisor,
       LaskentaActorParams a,
       Date nyt) {
     LaskentaActorParams fakeOnlyOneHakukohdeParams =
@@ -111,7 +109,6 @@ public class LaskentaActorFactory {
             a.getLaskentaStartParams(),
             Collections.singletonList(new HakukohdeJaOrganisaatio()));
     return laskentaHakukohteittainActor(
-        laskentaSupervisor,
         fakeOnlyOneHakukohdeParams,
         hakukohdeJaOrganisaatio -> {
           String uuid = a.getUuid();
@@ -157,11 +154,9 @@ public class LaskentaActorFactory {
   }
 
   private LaskentaActor createValintakoelaskentaActor(
-      LaskentaSupervisor laskentaSupervisor,
       LaskentaActorParams actorParams,
       Date nyt) {
     return laskentaHakukohteittainActor(
-        laskentaSupervisor,
         actorParams,
         hakukohdeJaOrganisaatio -> {
           String hakukohdeOid = hakukohdeJaOrganisaatio.getHakukohdeOid();
@@ -180,7 +175,6 @@ public class LaskentaActorFactory {
   }
 
   private LaskentaActor createValintalaskentaActor(
-      LaskentaSupervisor laskentaSupervisor,
       LaskentaActorParams actorParams) {
     final String uuid = actorParams.getUuid();
     final Date nyt = new Date();
@@ -189,7 +183,6 @@ public class LaskentaActorFactory {
             "Jos laskennassa %s on jonoja, joita ei lasketa %s jälkeen, ei haeta niille tietoja Koskesta.",
             actorParams.getUuid(), nyt));
     return laskentaHakukohteittainActor(
-        laskentaSupervisor,
         actorParams,
         hakukohdeJaOrganisaatio -> {
           String hakukohdeOid = hakukohdeJaOrganisaatio.getHakukohdeOid();
@@ -209,12 +202,10 @@ public class LaskentaActorFactory {
   }
 
   private LaskentaActor createValintalaskentaJaValintakoelaskentaActor(
-      LaskentaSupervisor laskentaSupervisor,
       LaskentaActorParams actorParams,
       Date nyt) {
     final String uuid = actorParams.getUuid();
     return laskentaHakukohteittainActor(
-        laskentaSupervisor,
         actorParams,
         hakukohdeJaOrganisaatio -> {
           String hakukohdeOid = hakukohdeJaOrganisaatio.getHakukohdeOid();
@@ -237,8 +228,6 @@ public class LaskentaActorFactory {
   }
 
   public LaskentaActor createLaskentaActor(
-      AuditSession auditSession,
-      LaskentaSupervisor laskentaSupervisor,
       LaskentaActorParams actorParams) {
     final Date nyt = new Date();
     LOG.info(
@@ -248,29 +237,28 @@ public class LaskentaActorFactory {
 
     if (LaskentaTyyppi.VALINTARYHMALASKENTA.equals(actorParams.getLaskentaTyyppi())) {
       LOG.info("Muodostetaan VALINTARYHMALASKENTA");
-      auditLogLaskentaStart(auditSession, actorParams, "VALINTARYHMALASKENTA");
-      return createValintaryhmaActor(laskentaSupervisor, actorParams, nyt);
+      auditLogLaskentaStart(actorParams, "VALINTARYHMALASKENTA");
+      return createValintaryhmaActor(actorParams, nyt);
     }
     if (LaskentaTyyppi.VALINTAKOELASKENTA.equals(actorParams.getLaskentaTyyppi())) {
       LOG.info("Muodostetaan VALINTAKOELASKENTA");
-      auditLogLaskentaStart(auditSession, actorParams, "VALINTAKOELASKENTA");
-      return createValintakoelaskentaActor(laskentaSupervisor, actorParams, nyt);
+      auditLogLaskentaStart(actorParams, "VALINTAKOELASKENTA");
+      return createValintakoelaskentaActor(actorParams, nyt);
     }
     if (LaskentaTyyppi.VALINTALASKENTA.equals(actorParams.getLaskentaTyyppi())) {
       LOG.info("Muodostetaan VALINTALASKENTA");
-      auditLogLaskentaStart(auditSession, actorParams,"VALINTALASKENTA");
-      return createValintalaskentaActor(laskentaSupervisor, actorParams);
+      auditLogLaskentaStart(actorParams,"VALINTALASKENTA");
+      return createValintalaskentaActor(actorParams);
     }
     LOG.info(
         "Muodostetaan KAIKKI VAIHEET LASKENTA koska valinnanvaihe oli {} ja valintakoelaskenta ehto {}",
         actorParams.getValinnanvaihe(),
         actorParams.isValintakoelaskenta());
-    auditLogLaskentaStart(auditSession, actorParams, "KAIKKI VAIHEET LASKENTA");
-    return createValintalaskentaJaValintakoelaskentaActor(laskentaSupervisor, actorParams, nyt);
+    auditLogLaskentaStart(actorParams, "KAIKKI VAIHEET LASKENTA");
+    return createValintalaskentaJaValintakoelaskentaActor(actorParams, nyt);
   }
 
-  private void auditLogLaskentaStart(
-      AuditSession auditSession, LaskentaActorParams actorParams, String tyyppi) {
+  private void auditLogLaskentaStart(LaskentaActorParams actorParams, String tyyppi) {
     Map<String, String> additionalAuditInfo = new HashMap<>();
     additionalAuditInfo.put("tyyppi", tyyppi);
     additionalAuditInfo.put("uuid", actorParams.getLaskentaStartParams().getUuid());
@@ -282,7 +270,7 @@ public class LaskentaActorFactory {
             .toString());
     AuditLog.log(
         KoosteAudit.AUDIT,
-        auditSession.asAuditUser(),
+        actorParams.getLaskentaStartParams().getAuditSession().asAuditUser(),
         ValintaperusteetOperation.LASKENTATOTEUTUS_LUONTI,
         ValintaResource.LASKENTATOTEUTUS,
         actorParams.getHakuOid(),
@@ -291,11 +279,10 @@ public class LaskentaActorFactory {
   }
 
   private LaskentaActor laskentaHakukohteittainActor(
-      LaskentaSupervisor laskentaSupervisor,
       LaskentaActorParams actorParams,
       Function<? super HakukohdeJaOrganisaatio, ? extends CompletableFuture<?>> r) {
     return new LaskentaActorForSingleHakukohde(
-        actorParams, r, laskentaSupervisor, seurantaDao, splittaus);
+        actorParams, r, seurantaDao, splittaus);
   }
 
   private CompletableFuture<LaskeDTO> getLaskeDtoFuture(
