@@ -23,16 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ForkJoinPool;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
@@ -46,9 +42,6 @@ public class ValintalaskentaResourceImpl {
   private final ValiSijoitteluResource valiSijoitteluResource;
   private final ErillisSijoitteluResource erillisSijoitteluResource;
   private final ValintaperusteetValintatapajonoResource valintatapajonoResource;
-  private final ExecutorService executorService;
-
-  private static volatile ConcurrentHashMap<String, String> hakukohteetLaskettavina;
 
   @Autowired
   public ValintalaskentaResourceImpl(
@@ -56,121 +49,56 @@ public class ValintalaskentaResourceImpl {
       ValisijoitteluKasittelija valisijoitteluKasittelija,
       ValiSijoitteluResource valiSijoitteluResource,
       ErillisSijoitteluResource erillisSijoitteluResource,
-      ValintaperusteetValintatapajonoResource valintatapajonoResource,
-      @Value("${valintalaskenta-laskenta-service.parallelism:1}") int parallelismFromConfig) {
+      ValintaperusteetValintatapajonoResource valintatapajonoResource) {
     this.valintalaskentaService = valintalaskentaService;
     this.valisijoitteluKasittelija = valisijoitteluKasittelija;
     this.valiSijoitteluResource = valiSijoitteluResource;
     this.erillisSijoitteluResource = erillisSijoitteluResource;
     this.valintatapajonoResource = valintatapajonoResource;
-
-    hakukohteetLaskettavina = new ConcurrentHashMap<>();
-
-    this.executorService =
-        Executors.newWorkStealingPool(
-            Math.max(Runtime.getRuntime().availableProcessors(), parallelismFromConfig));
   }
 
   public String laske(final Laskentakutsu laskentakutsu) {
     try {
-      String pollKey = laskentakutsu.getPollKey();
-      String status = pidaKirjaaMeneillaanOlevista(pollKey);
-      if (!status.equals(HakukohteenLaskennanTila.UUSI)) {
-        return status;
-      } else {
-        // Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran samalle
-        // tunnisteelle vaikka pyyntöjä tulisi useita
-        try {
-          executorService.submit(
-              timeRunnable.apply(laskentakutsu.getUuid(), () -> toteutaLaskenta(laskentakutsu)));
-          return HakukohteenLaskennanTila.UUSI;
-        } catch (Exception e) {
-          LOG.error("Virhe laskennan suorituksessa, ", e);
-          throw e;
-        }
-      }
+      timeRunnable.apply(laskentakutsu.getUuid(), () -> toteutaLaskenta(laskentakutsu));
+      return HakukohteenLaskennanTila.UUSI;
     } catch (Exception e) {
-      LOG.error("Odottamaton virhe : laske(Laskentakutsu laskentakutsu)", e);
+      LOG.error("Virhe laskennan suorituksessa, ", e);
       throw e;
     }
   }
 
   public String valintakokeet(final Laskentakutsu laskentakutsu) {
     try {
-      String pollKey = laskentakutsu.getPollKey();
-      String status = pidaKirjaaMeneillaanOlevista(pollKey);
-      if (!status.equals(HakukohteenLaskennanTila.UUSI)) {
-        return status;
-      } else {
-        // Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran samalle
-        // tunnisteelle vaikka pyyntöjä tulisi useita
-        try {
-          executorService.submit(
-              timeRunnable.apply(
-                  laskentakutsu.getUuid(), () -> toteutaValintakoeLaskenta(laskentakutsu)));
-          return HakukohteenLaskennanTila.UUSI;
-        } catch (Exception e) {
-          LOG.error("Virhe laskennan suorituksessa, ", e);
-          throw e;
-        }
-      }
+      timeRunnable.apply(laskentakutsu.getUuid(), () -> toteutaValintakoeLaskenta(laskentakutsu));
+      return HakukohteenLaskennanTila.UUSI;
     } catch (Exception e) {
-      LOG.error("Odottamaton virhe: valintakokeet(Laskentakutsu laskentakutsu)", e);
+      LOG.error("Virhe laskennan suorituksessa, ", e);
       throw e;
     }
   }
 
   public String laskeKaikki(final Laskentakutsu laskentakutsu) {
     try {
-      String pollKey = laskentakutsu.getPollKey();
-      String status = pidaKirjaaMeneillaanOlevista(pollKey);
-      if (!status.equals(HakukohteenLaskennanTila.UUSI)) {
-        return status;
-      } else {
-        // Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran samalle
-        // tunnisteelle vaikka pyyntöjä tulisi useita
-        try {
-          executorService.submit(
-              timeRunnable.apply(laskentakutsu.getUuid(), () -> toteutaLaskeKaikki(laskentakutsu)));
-          return HakukohteenLaskennanTila.UUSI;
-        } catch (Exception e) {
-          LOG.error("Virhe laskennan suorituksessa, ", e);
-          throw e;
-        }
-      }
+      timeRunnable.apply(laskentakutsu.getUuid(), () -> toteutaLaskeKaikki(laskentakutsu));
+      return HakukohteenLaskennanTila.UUSI;
     } catch (Exception e) {
-      LOG.error("Odottamaton virhe: laskeKaikki(Laskentakutsu laskentakutsu)", e);
+      LOG.error("Virhe laskennan suorituksessa, ", e);
       throw e;
     }
   }
 
   public String laskeJaSijoittele(@RequestBody final Laskentakutsu laskentakutsu) {
+    List<LaskeDTO> lista = laskentakutsu.getLaskeDTOs();
+    if (lista == null || lista.isEmpty()) {
+      LOG.error(
+          "Laskejasijoittele-rajapinta sai syötteeksi tyhjän listan, joten laskentaa ei voida toteuttaa. lopetetaan.");
+      return HakukohteenLaskennanTila.VIRHE;
+    }
     try {
-      List<LaskeDTO> lista = laskentakutsu.getLaskeDTOs();
-      String pollKey = laskentakutsu.getPollKey();
-      if (lista == null || lista.isEmpty()) {
-        LOG.error(
-            "Laskejasijoittele-rajapinta sai syötteeksi tyhjän listan, joten laskentaa ei voida toteuttaa. lopetetaan.");
-        return HakukohteenLaskennanTila.VIRHE;
-      }
-      String status = pidaKirjaaMeneillaanOlevista(pollKey);
-      if (!status.equals(HakukohteenLaskennanTila.UUSI)) {
-        return status;
-      } else {
-        // Luodaan uusi laskentatoteutus hakukohteelle, tämä käynnistetään vain kerran samalle
-        // tunnisteelle vaikka pyyntöjä tulisi useita
-        try {
-          executorService.submit(
-              timeRunnable.apply(
-                  laskentakutsu.getUuid(), () -> toteutaLaskeJaSijoittele(laskentakutsu)));
-          return HakukohteenLaskennanTila.UUSI;
-        } catch (Exception e) {
-          LOG.error("Virhe laskennan suorituksessa, ", e);
-          throw e;
-        }
-      }
+      timeRunnable.apply(laskentakutsu.getUuid(), () -> toteutaLaskeJaSijoittele(laskentakutsu));
+      return HakukohteenLaskennanTila.UUSI;
     } catch (Exception e) {
-      LOG.error("Odottamaton virhe: laskeJaSijoittele(Laskentakutsu laskentakutsu) ", e);
+      LOG.error("Virhe laskennan suorituksessa, ", e);
       throw e;
     }
   }
@@ -260,65 +188,6 @@ public class ValintalaskentaResourceImpl {
     stopWatch.stop();
   }
 
-  private String pidaKirjaaMeneillaanOlevista(String pollKey) {
-    return pidaKirjaaMeneillaanOlevista(pollKey, true);
-  }
-
-  private String pidaKirjaaMeneillaanOlevista(String pollKey, boolean luoJosPuuttuu) {
-    if (!hakukohteetLaskettavina.containsKey(pollKey)) {
-      if (luoJosPuuttuu) {
-        LOG.info(String.format("Luodaan uusi laskettava hakukohde. %s", pollKey));
-        ForkJoinPool forkJoinPool = (ForkJoinPool) this.executorService;
-        LOG.info(
-            String.format(
-                "Parallelism %d, pool size %d",
-                forkJoinPool.getParallelism(), forkJoinPool.getPoolSize()));
-        hakukohteetLaskettavina.put(pollKey, HakukohteenLaskennanTila.KESKEN);
-        return HakukohteenLaskennanTila.UUSI;
-      } else {
-        LOG.error(
-            String.format(
-                "Haettiin statusta laskennalle %s, mutta laskentaa ei ole olemassa. Onko palvelin käynnistetty välissä uudelleen?",
-                pollKey));
-        return HakukohteenLaskennanTila.VIRHE;
-      }
-    } else if (hakukohteetLaskettavina.get(pollKey).equals(HakukohteenLaskennanTila.VALMIS)) {
-      LOG.info(String.format("Kohteen laskenta on valmistunut. %s", pollKey));
-      // hakukohteetLaskettavina.remove(key); //!! Joissain tilanteissa käynnistetään tarpeettomasti
-      // uusi laskenta
-      return HakukohteenLaskennanTila.VALMIS;
-    } else if (hakukohteetLaskettavina.get(pollKey).equals(HakukohteenLaskennanTila.VIRHE)) {
-      LOG.error(String.format("Kohteen laskennassa on tapahtunut virhe. %s", pollKey));
-      return HakukohteenLaskennanTila.VIRHE;
-    } else {
-      LOG.info(String.format("Hakukohteen laskenta on edelleen kesken. %s", pollKey));
-      return HakukohteenLaskennanTila.KESKEN;
-    }
-  }
-
-  // Tilaa päivitetään vain, jos se on tällä hetkellä KESKEN.
-  private void paivitaKohteenLaskennanTila(String pollKey, String tila, StopWatch stopWatch) {
-    stopWatch.start("Päivitetään kohteen laskenta tilaan: " + tila);
-    if (hakukohteetLaskettavina.containsKey(pollKey)) {
-      if (hakukohteetLaskettavina.get(pollKey).equals(HakukohteenLaskennanTila.KESKEN)) {
-        if (tila.equals(HakukohteenLaskennanTila.VALMIS)) {
-          LOG.info("Ollaan valmiita, merkataan kohteen laskennan tila valmiiksi. {} {}", pollKey);
-        }
-        hakukohteetLaskettavina.replace(pollKey, tila);
-      } else {
-        LOG.error(
-            "(Pollkey: {}) Yritettiin päivittää sellaisen laskennan tilaa, joka ei ollut tilassa KESKEN. Ei päivitetty. tila nyt: {} ",
-            pollKey,
-            hakukohteetLaskettavina.get(pollKey));
-      }
-    } else {
-      LOG.error(
-          "(Pollkey: {}) Yritettiin päivittää sellaisen laskennan tilaa, jota ei vaikuta olevan olemassa.",
-          pollKey);
-    }
-    stopWatch.stop();
-  }
-
   private boolean isErillisHaku(LaskeDTO laskeDTO, ValintaperusteetDTO valintaperusteetDTO) {
     return laskeDTO.isErillishaku()
         && valintaperusteetDTO.getViimeinenValinnanvaihe()
@@ -327,7 +196,6 @@ public class ValintalaskentaResourceImpl {
 
   private void toteutaLaskenta(Laskentakutsu laskentakutsu) {
     LaskeDTO laskeDTO = laskentakutsu.getLaskeDTO();
-    String pollkey = laskentakutsu.getPollKey();
 
     StopWatch stopWatch =
         new StopWatch(
@@ -396,14 +264,12 @@ public class ValintalaskentaResourceImpl {
           Collections.singletonList(laskeDTO));
       stopWatch.stop();
 
-      paivitaKohteenLaskennanTila(pollkey, HakukohteenLaskennanTila.VALMIS, stopWatch);
       LOG.info(stopWatch.prettyPrint());
     } catch (Exception e) {
       if (stopWatch.isRunning()) {
         stopWatch.stop();
       }
       LOG.error(String.format("Valintalaskenta epaonnistui! uuid=%s", laskeDTO.getUuid()), e);
-      paivitaKohteenLaskennanTila(pollkey, HakukohteenLaskennanTila.VIRHE, stopWatch);
       LOG.info(stopWatch.prettyPrint());
     }
   }
@@ -412,7 +278,6 @@ public class ValintalaskentaResourceImpl {
     StopWatch stopWatch =
         new StopWatch("Toteutetaan valintakoelaskenta laskentakutsulle " + laskentakutsu.getUuid());
     LaskeDTO laskeDTO = laskentakutsu.getLaskeDTO();
-    String pollkey = laskentakutsu.getPollKey();
 
     try {
       stopWatch.start(
@@ -444,21 +309,18 @@ public class ValintalaskentaResourceImpl {
           Collections.singletonList(laskeDTO));
       stopWatch.stop();
 
-      paivitaKohteenLaskennanTila(pollkey, HakukohteenLaskennanTila.VALMIS, stopWatch);
       LOG.info(stopWatch.prettyPrint());
     } catch (Exception e) {
       LOG.error(String.format("Valintakoelaskenta epaonnistui! uuid=%s", laskeDTO.getUuid()), e);
       if (stopWatch.isRunning()) {
         stopWatch.stop();
       }
-      paivitaKohteenLaskennanTila(pollkey, HakukohteenLaskennanTila.VIRHE, stopWatch);
       LOG.info(stopWatch.prettyPrint());
     }
   }
 
   public void toteutaLaskeKaikki(Laskentakutsu laskentakutsu) {
     LaskeDTO laskeDTO = laskentakutsu.getLaskeDTO();
-    String pollkey = laskentakutsu.getPollKey();
 
     StopWatch stopWatch =
         new StopWatch(
@@ -612,7 +474,6 @@ public class ValintalaskentaResourceImpl {
           String.format(
               "(Uuid=%s) Laskenta suoritettu hakukohteessa %s",
               laskeDTO.getUuid(), laskeDTO.getHakukohdeOid()));
-      paivitaKohteenLaskennanTila(pollkey, HakukohteenLaskennanTila.VALMIS, stopWatch);
       LOG.info(stopWatch.prettyPrint());
     } catch (Exception e) {
       LOG.error(
@@ -623,14 +484,12 @@ public class ValintalaskentaResourceImpl {
         stopWatch.stop();
       }
 
-      paivitaKohteenLaskennanTila(pollkey, HakukohteenLaskennanTila.VIRHE, stopWatch);
       LOG.info(stopWatch.prettyPrint());
     }
   }
 
   private void toteutaLaskeJaSijoittele(Laskentakutsu laskentakutsu) {
     List<LaskeDTO> lista = laskentakutsu.getLaskeDTOs();
-    String pollKey = laskentakutsu.getPollKey();
     StopWatch stopWatch =
         new StopWatch("Suoritetaan valintaryhmälaskenta uuid:lla " + lista.get(0).getUuid());
     LOG.info(String.format("Aloitetaan valintaryhmälaskenta uuid:lla %s", lista.get(0).getUuid()));
@@ -788,8 +647,6 @@ public class ValintalaskentaResourceImpl {
                       if (stopWatch.isRunning()) {
                         stopWatch.stop();
                       }
-                      paivitaKohteenLaskennanTila(
-                          pollKey, HakukohteenLaskennanTila.VIRHE, stopWatch);
                       LOG.error(
                           String.format(
                               "(Uuid=%s, %s=%s/%s, hakukohde=%s/%s) virhe hakukohteelle %s",
@@ -816,7 +673,6 @@ public class ValintalaskentaResourceImpl {
       valintalaskentaService.siivoaValintakoeOsallistumisetPuuttuviltaValinnanvaiheilta(lista);
       stopWatch.stop();
 
-      paivitaKohteenLaskennanTila(pollKey, HakukohteenLaskennanTila.VALMIS, stopWatch);
       LOG.info(stopWatch.prettyPrint());
     } catch (Throwable t) {
       LOG.error(
@@ -825,7 +681,6 @@ public class ValintalaskentaResourceImpl {
       if (stopWatch.isRunning()) {
         stopWatch.stop();
       }
-      paivitaKohteenLaskennanTila(pollKey, HakukohteenLaskennanTila.VIRHE, stopWatch);
       LOG.info(stopWatch.prettyPrint());
     }
   }
@@ -842,27 +697,27 @@ public class ValintalaskentaResourceImpl {
     stopWatch.stop();
   }
 
-  private BiFunction<String, Runnable, Runnable> timeRunnable =
-      (uuid, r) ->
-          () -> {
-            long start = System.currentTimeMillis();
-            try {
-              r.run();
-            } catch (Throwable t) {
-              long end = System.currentTimeMillis();
-              LOG.error(
-                  String.format(
-                      "(Uuid=%s) (Kesto %ss) Odottamaton virhe.",
-                      uuid, millisToString(end - start)),
-                  t);
-              throw t;
-            } finally {
-              long end = System.currentTimeMillis();
-              LOG.info(
-                  String.format(
-                      "(Uuid=%s) (Kesto %ss) Laskenta valmis!", uuid, millisToString(end - start)));
-            }
-          };
+  private BiFunction<String, Runnable, Void> timeRunnable =
+      (uuid, r) -> {
+        long start = System.currentTimeMillis();
+        try {
+          r.run();
+        } catch (Throwable t) {
+          long end = System.currentTimeMillis();
+          LOG.error(
+              String.format(
+                  "(Uuid=%s) (Kesto %ss) Odottamaton virhe.",
+                  uuid, millisToString(end - start)),
+              t);
+          throw t;
+        } finally {
+          long end = System.currentTimeMillis();
+          LOG.info(
+              String.format(
+                  "(Uuid=%s) (Kesto %ss) Laskenta valmis!", uuid, millisToString(end - start)));
+        }
+        return null;
+      };
 
   private static String millisToString(long millis) {
     return new BigDecimal(millis)
