@@ -556,6 +556,16 @@ public class SeurantaDaoImpl implements SeurantaDao {
     return uuid.map(id -> this.haeLaskenta(id.toString()).get());
   }
 
+  @Override
+  public Collection<LaskentaDto> haeKaynnissaOlevatLaskennat() {
+    Collection<UUID> uuids =
+        this.jdbcTemplate.query(
+            "SELECT uuid FROM seuranta_laskennat WHERE tila=?",
+            uuidRowMapper,
+            LaskentaTila.MENEILLAAN.toString());
+    return this.getLaskennat(uuids).stream().map(l -> l.asDto(jonosijaProvider(), false)).toList();
+    }
+
   private static class Laskenta {
     private static final Logger LOG = LoggerFactory.getLogger(Laskenta.class);
 
