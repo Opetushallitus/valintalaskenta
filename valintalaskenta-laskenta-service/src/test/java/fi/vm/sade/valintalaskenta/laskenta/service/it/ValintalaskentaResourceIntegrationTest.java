@@ -92,8 +92,7 @@ public class ValintalaskentaResourceIntegrationTest extends AbstractMocklessInte
             valisijoitteluKasittelija,
             mockValisijoitteluResource,
             erillisSijoitteluResource,
-            mockValintatapajonoResource,
-            -1);
+            mockValintatapajonoResource);
   }
 
   @Test
