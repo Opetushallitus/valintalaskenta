@@ -1,7 +1,6 @@
 package fi.vm.sade.valinta.kooste.valintalaskenta.service;
 
 import fi.vm.sade.service.valintaperusteet.dto.HakukohdeViiteDTO;
-import fi.vm.sade.valinta.kooste.valintalaskenta.actor.LaskentaSupervisor;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.HakukohdeJaOrganisaatio;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Laskenta;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Maski;
@@ -25,7 +24,6 @@ import static fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto.ilmoitu
 public class ValintalaskentaService {
   private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaService.class);
 
-  @Autowired private LaskentaSupervisor laskentaSupervisor;
   @Autowired private SeurantaDao seurantaDao;
 
   public ValintalaskentaService() {}
@@ -88,14 +86,11 @@ public class ValintalaskentaService {
         valinnanvaihe,
         isValintakoelaskenta,
         hakukohdeDtos);
-    if (tunniste.getLuotiinkoUusiLaskenta()) {
-      laskentaSupervisor.workAvailable();
-    }
     return tunniste;
   }
 
   public TunnisteDto kaynnistaLaskentaUudelleen(final String uuid) {
-    Optional<Laskenta> laskenta = laskentaSupervisor.fetchLaskenta(uuid);
+    Optional<Laskenta> laskenta = this.fetchLaskenta(uuid);
     if(laskenta.isPresent() && !laskenta.get().isValmis()) {
       return new TunnisteDto(uuid, false);
     }
@@ -104,16 +99,12 @@ public class ValintalaskentaService {
     if (laskentaDto == null) {
       LOG.error("Laskennan {} tila resetoitiin mutta ei saatu yhteenvetoa resetoinnista!", uuid);
     }
-
-    if (laskentaDto.getLuotiinkoUusiLaskenta()) {
-      laskentaSupervisor.workAvailable();
-    }
     return new TunnisteDto(laskentaDto.getUuid(), laskentaDto.getLuotiinkoUusiLaskenta());
   }
 
   public void peruutaLaskenta(String uuid, Boolean lopetaVainJonossaOlevaLaskenta) {
     if (Boolean.TRUE.equals(lopetaVainJonossaOlevaLaskenta)) {
-      boolean onkoLaskentaVielaJonossa = laskentaSupervisor.fetchLaskenta(uuid) == null;
+      boolean onkoLaskentaVielaJonossa = this.fetchLaskenta(uuid) == null;
       if (!onkoLaskentaVielaJonossa) {
         // Laskentaa suoritetaan jo joten ei pysayteta
         return;
@@ -123,18 +114,79 @@ public class ValintalaskentaService {
       seurantaDao.merkkaaTila(uuid, LaskentaTila.PERUUTETTU,
           Optional.of(ilmoitus("Peruutettu käyttäjän toimesta")));
     } finally {
-      laskentaSupervisor.fetchLaskenta(uuid).ifPresent(Laskenta::lopeta);
+      this.fetchLaskenta(uuid).ifPresent(Laskenta::lopeta);
     }
   }
 
   private Optional<Laskenta> haeAjossaOlevaLaskentaHaulle(final String hakuOid) {
-    return laskentaSupervisor.runningLaskentas().stream()
+    return this.runningLaskentas().stream()
         .filter(l -> hakuOid.equals(l.getHakuOid()) && !l.isOsittainenLaskenta())
         .findFirst();
   }
 
   public Optional<LaskentaDto> haeLaskenta(String uuid) {
     return Optional.ofNullable(seurantaDao.haeLaskenta(uuid).get());
+  }
+
+  public List<Laskenta> runningLaskentas() {
+    return seurantaDao.haeKaynnissaOlevatLaskennat().stream().map(laskenta -> {
+      Laskenta l = new Laskenta() {
+        @Override
+        public boolean isValmis() {
+          return laskenta.getTila()==LaskentaTila.VALMIS;
+        }
+
+        @Override
+        public String getUuid() {
+          return laskenta.getUuid();
+        }
+
+        @Override
+        public String getHakuOid() {
+          return laskenta.getHakuOid();
+        }
+
+        @Override
+        public boolean isOsittainenLaskenta() {
+          throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void lopeta() {
+          throw new UnsupportedOperationException();
+        }
+      };
+      return l;
+    }).toList();
+  }
+
+  public Optional<Laskenta> fetchLaskenta(String uuid) {
+    return seurantaDao.haeLaskenta(uuid).map(laskenta -> new Laskenta() {
+      @Override
+      public boolean isValmis() {
+        return laskenta.getTila()==LaskentaTila.VALMIS;
+      }
+
+      @Override
+      public String getUuid() {
+        return laskenta.getUuid();
+      }
+
+      @Override
+      public String getHakuOid() {
+        return laskenta.getHakuOid();
+      }
+
+      @Override
+      public boolean isOsittainenLaskenta() {
+        throw new UnsupportedOperationException();
+      }
+
+      @Override
+      public void lopeta() {
+        throw new UnsupportedOperationException();
+      }
+    });
   }
 
   private static Collection<HakukohdeJaOrganisaatio> kasitteleHakukohdeViitteet(
