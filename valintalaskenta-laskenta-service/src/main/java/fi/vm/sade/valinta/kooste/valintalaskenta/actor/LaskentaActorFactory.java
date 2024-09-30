@@ -103,18 +103,16 @@ public class LaskentaActorFactory {
   }
 
   private LaskentaActor createValintaryhmaActor(
-      LaskentaActorParams a,
+      LaskentaStartParams laskentaStartParams,
+      Collection<HakukohdeJaOrganisaatio> hakukohteet,
       Date nyt) {
-    LaskentaActorParams fakeOnlyOneHakukohdeParams =
-        new LaskentaActorParams(
-            a.getLaskentaStartParams(),
-            Collections.singletonList(new HakukohdeJaOrganisaatio()));
     return new LaskentaActorForSingleHakukohde(
-        fakeOnlyOneHakukohdeParams,
+        laskentaStartParams,
+        Collections.singletonList(new HakukohdeJaOrganisaatio()),
         hakukohdeJaOrganisaatio -> {
-          String uuid = a.getUuid();
+          String uuid = laskentaStartParams.getUuid();
           Collection<String> hakukohdeOids =
-              a.getHakukohdeOids().stream()
+              hakukohteet.stream()
                   .map(HakukohdeJaOrganisaatio::getHakukohdeOid)
                   .collect(Collectors.toList());
           String hakukohteidenNimi =
@@ -123,7 +121,7 @@ public class LaskentaActorFactory {
 
           CompletableFuture<String> laskenta = CompletableFuture.supplyAsync(() ->
             hakukohdeOids.stream().map(hakukohdeOid -> fetchResourcesForOneLaskenta(
-                hakukohdeOid, a.getLaskentaStartParams(), true, true, nyt)
+                hakukohdeOid, laskentaStartParams, true, true, nyt)
                 .join()).toList())
               .thenApply(laskeDTOs -> {
                 if (laskeDTOs.size() != hakukohdeOids.size()) {
@@ -141,7 +139,7 @@ public class LaskentaActorFactory {
                  * enää mene verkon yli ei (käsittääkseni) ole enää mitää syytä palastella joten palatta takaisin
                  * yhteen kutsuun.
                  */
-                return valintalaskentaResource.valintaryhmaLaskenta(a.getLaskentaStartParams().getUuid(), laskeDTOs);
+                return valintalaskentaResource.valintaryhmaLaskenta(laskentaStartParams.getUuid(), laskeDTOs);
               });
           return laskenta;
         }, seurantaDao, splittaus);
@@ -154,16 +152,18 @@ public class LaskentaActorFactory {
   }
 
   private LaskentaActor createValintakoelaskentaActor(
-      LaskentaActorParams actorParams,
+      LaskentaStartParams laskentaStartParams,
+      Collection<HakukohdeJaOrganisaatio> hakukohteet,
       Date nyt) {
     return new LaskentaActorForSingleHakukohde(
-        actorParams,
+        laskentaStartParams,
+        hakukohteet,
         hakukohdeJaOrganisaatio -> {
           String hakukohdeOid = hakukohdeJaOrganisaatio.getHakukohdeOid();
 
           CompletableFuture<String> laskenta = fetchResourcesForOneLaskenta(
               hakukohdeOid,
-              actorParams.getLaskentaStartParams(),
+              laskentaStartParams,
               false,
               false,
               nyt).thenApply(laskeDTO -> {
@@ -174,22 +174,24 @@ public class LaskentaActorFactory {
   }
 
   private LaskentaActor createValintalaskentaActor(
-      LaskentaActorParams actorParams) {
-    final String uuid = actorParams.getUuid();
+      LaskentaStartParams laskentaStartParams,
+      Collection<HakukohdeJaOrganisaatio> hakukohteet) {
+    final String uuid = laskentaStartParams.getUuid();
     final Date nyt = new Date();
     LOG.info(
         String.format(
             "Jos laskennassa %s on jonoja, joita ei lasketa %s jälkeen, ei haeta niille tietoja Koskesta.",
-            actorParams.getUuid(), nyt));
+            laskentaStartParams.getUuid(), nyt));
     return new LaskentaActorForSingleHakukohde(
-        actorParams,
+        laskentaStartParams,
+        hakukohteet,
         hakukohdeJaOrganisaatio -> {
           String hakukohdeOid = hakukohdeJaOrganisaatio.getHakukohdeOid();
           LOG.info("(Uuid={}) Haetaan laskennan resursseja hakukohteelle {}", uuid, hakukohdeOid);
 
           CompletableFuture<String> laskenta = fetchResourcesForOneLaskenta(
               hakukohdeOid,
-              actorParams.getLaskentaStartParams(),
+              laskentaStartParams,
               false,
               true,
               nyt).thenApply(laskeDTO -> valintalaskentaResource.valintalaskenta(laskeDTO));
@@ -198,11 +200,13 @@ public class LaskentaActorFactory {
   }
 
   private LaskentaActor createValintalaskentaJaValintakoelaskentaActor(
-      LaskentaActorParams actorParams,
+      LaskentaStartParams laskentaStartParams,
+      Collection<HakukohdeJaOrganisaatio> hakukohteet,
       Date nyt) {
-    final String uuid = actorParams.getUuid();
+    final String uuid = laskentaStartParams.getUuid();
     return new LaskentaActorForSingleHakukohde(
-        actorParams,
+        laskentaStartParams,
+        hakukohteet,
         hakukohdeJaOrganisaatio -> {
           String hakukohdeOid = hakukohdeJaOrganisaatio.getHakukohdeOid();
           LOG.info(
@@ -212,7 +216,7 @@ public class LaskentaActorFactory {
 
           CompletableFuture<String> laskenta = fetchResourcesForOneLaskenta(
               hakukohdeOid,
-              actorParams.getLaskentaStartParams(),
+              laskentaStartParams,
               false,
               true,
               nyt).thenApply(laskeDTO -> valintalaskentaResource.laskeKaikki(laskeDTO));
@@ -221,52 +225,53 @@ public class LaskentaActorFactory {
   }
 
   public LaskentaActor createLaskentaActor(
-      LaskentaActorParams actorParams) {
+      LaskentaStartParams laskentaStartParams,
+      Collection<HakukohdeJaOrganisaatio> hakukohteet) {
     final Date nyt = new Date();
     LOG.info(
         String.format(
             "Jos laskennassa %s on jonoja, joita ei lasketa %s jälkeen, ei haeta niille tietoja Koskesta.",
-            actorParams.getUuid(), nyt));
+            laskentaStartParams.getUuid(), nyt));
 
-    if (LaskentaTyyppi.VALINTARYHMALASKENTA.equals(actorParams.getLaskentaTyyppi())) {
+    if (LaskentaTyyppi.VALINTARYHMALASKENTA.equals(laskentaStartParams.getTyyppi())) {
       LOG.info("Muodostetaan VALINTARYHMALASKENTA");
-      auditLogLaskentaStart(actorParams, "VALINTARYHMALASKENTA");
-      return createValintaryhmaActor(actorParams, nyt);
+      auditLogLaskentaStart(laskentaStartParams, hakukohteet, "VALINTARYHMALASKENTA");
+      return createValintaryhmaActor(laskentaStartParams, hakukohteet, nyt);
     }
-    if (LaskentaTyyppi.VALINTAKOELASKENTA.equals(actorParams.getLaskentaTyyppi())) {
+    if (LaskentaTyyppi.VALINTAKOELASKENTA.equals(laskentaStartParams.getTyyppi())) {
       LOG.info("Muodostetaan VALINTAKOELASKENTA");
-      auditLogLaskentaStart(actorParams, "VALINTAKOELASKENTA");
-      return createValintakoelaskentaActor(actorParams, nyt);
+      auditLogLaskentaStart(laskentaStartParams, hakukohteet, "VALINTAKOELASKENTA");
+      return createValintakoelaskentaActor(laskentaStartParams, hakukohteet, nyt);
     }
-    if (LaskentaTyyppi.VALINTALASKENTA.equals(actorParams.getLaskentaTyyppi())) {
+    if (LaskentaTyyppi.VALINTALASKENTA.equals(laskentaStartParams.getTyyppi())) {
       LOG.info("Muodostetaan VALINTALASKENTA");
-      auditLogLaskentaStart(actorParams,"VALINTALASKENTA");
-      return createValintalaskentaActor(actorParams);
+      auditLogLaskentaStart(laskentaStartParams, hakukohteet,"VALINTALASKENTA");
+      return createValintalaskentaActor(laskentaStartParams, hakukohteet);
     }
     LOG.info(
         "Muodostetaan KAIKKI VAIHEET LASKENTA koska valinnanvaihe oli {} ja valintakoelaskenta ehto {}",
-        actorParams.getValinnanvaihe(),
-        actorParams.isValintakoelaskenta());
-    auditLogLaskentaStart(actorParams, "KAIKKI VAIHEET LASKENTA");
-    return createValintalaskentaJaValintakoelaskentaActor(actorParams, nyt);
+        laskentaStartParams.getValinnanvaihe(),
+        laskentaStartParams.getValintakoelaskenta());
+    auditLogLaskentaStart(laskentaStartParams, hakukohteet, "KAIKKI VAIHEET LASKENTA");
+    return createValintalaskentaJaValintakoelaskentaActor(laskentaStartParams, hakukohteet, nyt);
   }
 
-  private void auditLogLaskentaStart(LaskentaActorParams actorParams, String tyyppi) {
+  private void auditLogLaskentaStart(LaskentaStartParams laskentaStartParams, Collection<HakukohdeJaOrganisaatio> hakukohteet, String tyyppi) {
     Map<String, String> additionalAuditInfo = new HashMap<>();
     additionalAuditInfo.put("tyyppi", tyyppi);
-    additionalAuditInfo.put("uuid", actorParams.getLaskentaStartParams().getUuid());
+    additionalAuditInfo.put("uuid", laskentaStartParams.getUuid());
     additionalAuditInfo.put(
         "hakukohteet",
-        actorParams.getHakukohdeOids().stream()
+        hakukohteet.stream()
             .map(HakukohdeJaOrganisaatio::getHakukohdeOid)
             .collect(Collectors.toList())
             .toString());
     AuditLog.log(
         KoosteAudit.AUDIT,
-        actorParams.getLaskentaStartParams().getAuditSession().asAuditUser(),
+        laskentaStartParams.getAuditSession().asAuditUser(),
         ValintaperusteetOperation.LASKENTATOTEUTUS_LUONTI,
         ValintaResource.LASKENTATOTEUTUS,
-        actorParams.getHakuOid(),
+        laskentaStartParams.getHakuOid(),
         Changes.EMPTY,
         additionalAuditInfo);
   }
