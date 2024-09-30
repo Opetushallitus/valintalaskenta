@@ -56,8 +56,7 @@ public class ValintalaskentaLaskentaConfiguration {
         valisijoitteluKasittelija,
         valiSijoitteluResource,
         erillisSijoitteluResource,
-        valintatapajonoResource,
-        parallelismFromConfig);
+        valintatapajonoResource);
   }
 
   @Bean
