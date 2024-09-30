@@ -61,10 +61,6 @@ public class LaskentaStartParams {
     return osittainenLaskenta;
   }
 
-  public boolean isValintaryhmaLaskenta() {
-    return valintaryhmalaskenta;
-  }
-
   public boolean isErillishaku() {
     return erillishaku;
   }

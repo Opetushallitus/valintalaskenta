@@ -110,12 +110,8 @@ public class ValintalaskentaService {
         return;
       }
     }
-    try {
-      seurantaDao.merkkaaTila(uuid, LaskentaTila.PERUUTETTU,
-          Optional.of(ilmoitus("Peruutettu käyttäjän toimesta")));
-    } finally {
-      this.fetchLaskenta(uuid).ifPresent(Laskenta::lopeta);
-    }
+    seurantaDao.merkkaaTila(uuid, LaskentaTila.PERUUTETTU, HakukohdeTila.KESKEYTETTY,
+        Optional.of(ilmoitus("Peruutettu käyttäjän toimesta")));
   }
 
   private Optional<Laskenta> haeAjossaOlevaLaskentaHaulle(final String hakuOid) {
@@ -150,11 +146,6 @@ public class ValintalaskentaService {
         public boolean isOsittainenLaskenta() {
           throw new UnsupportedOperationException();
         }
-
-        @Override
-        public void lopeta() {
-          throw new UnsupportedOperationException();
-        }
       };
       return l;
     }).toList();
@@ -179,11 +170,6 @@ public class ValintalaskentaService {
 
       @Override
       public boolean isOsittainenLaskenta() {
-        throw new UnsupportedOperationException();
-      }
-
-      @Override
-      public void lopeta() {
         throw new UnsupportedOperationException();
       }
     });
