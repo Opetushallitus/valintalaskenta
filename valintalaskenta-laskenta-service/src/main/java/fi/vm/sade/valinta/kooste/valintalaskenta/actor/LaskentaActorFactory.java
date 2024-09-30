@@ -31,13 +31,11 @@ import fi.vm.sade.valinta.sharedutils.AuditLog;
 import fi.vm.sade.valinta.sharedutils.ValintaResource;
 import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.Laskentakutsu;
 import fi.vm.sade.valintalaskenta.domain.dto.SuoritustiedotDTO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -111,7 +109,7 @@ public class LaskentaActorFactory {
         new LaskentaActorParams(
             a.getLaskentaStartParams(),
             Collections.singletonList(new HakukohdeJaOrganisaatio()));
-    return laskentaHakukohteittainActor(
+    return new LaskentaActorForSingleHakukohde(
         fakeOnlyOneHakukohdeParams,
         hakukohdeJaOrganisaatio -> {
           String uuid = a.getUuid();
@@ -143,11 +141,10 @@ public class LaskentaActorFactory {
                  * enää mene verkon yli ei (käsittääkseni) ole enää mitää syytä palastella joten palatta takaisin
                  * yhteen kutsuun.
                  */
-                Laskentakutsu laskentakutsu = Laskentakutsu.valintaRyhmaLaskentaKutsu(laskeDTOs);
-                return valintalaskentaResource.laskeJaSijoittele(laskentakutsu);
+                return valintalaskentaResource.valintaryhmaLaskenta(a.getLaskentaStartParams().getUuid(), laskeDTOs);
               });
           return laskenta;
-        });
+        }, seurantaDao, splittaus);
   }
 
   @ManagedOperation
@@ -159,7 +156,7 @@ public class LaskentaActorFactory {
   private LaskentaActor createValintakoelaskentaActor(
       LaskentaActorParams actorParams,
       Date nyt) {
-    return laskentaHakukohteittainActor(
+    return new LaskentaActorForSingleHakukohde(
         actorParams,
         hakukohdeJaOrganisaatio -> {
           String hakukohdeOid = hakukohdeJaOrganisaatio.getHakukohdeOid();
@@ -170,11 +167,10 @@ public class LaskentaActorFactory {
               false,
               false,
               nyt).thenApply(laskeDTO -> {
-                Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDTO);
-                return valintalaskentaResource.valintakokeet(laskentakutsu);
+                return valintalaskentaResource.valintakoeLaskenta(laskeDTO);
           });
           return laskenta;
-        });
+        }, seurantaDao, splittaus);
   }
 
   private LaskentaActor createValintalaskentaActor(
@@ -185,7 +181,7 @@ public class LaskentaActorFactory {
         String.format(
             "Jos laskennassa %s on jonoja, joita ei lasketa %s jälkeen, ei haeta niille tietoja Koskesta.",
             actorParams.getUuid(), nyt));
-    return laskentaHakukohteittainActor(
+    return new LaskentaActorForSingleHakukohde(
         actorParams,
         hakukohdeJaOrganisaatio -> {
           String hakukohdeOid = hakukohdeJaOrganisaatio.getHakukohdeOid();
@@ -196,19 +192,16 @@ public class LaskentaActorFactory {
               actorParams.getLaskentaStartParams(),
               false,
               true,
-              nyt).thenApply(laskeDTO -> {
-                Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDTO);
-                return valintalaskentaResource.laske(laskentakutsu);
-              });
+              nyt).thenApply(laskeDTO -> valintalaskentaResource.valintalaskenta(laskeDTO));
           return laskenta;
-        });
+        }, seurantaDao, splittaus);
   }
 
   private LaskentaActor createValintalaskentaJaValintakoelaskentaActor(
       LaskentaActorParams actorParams,
       Date nyt) {
     final String uuid = actorParams.getUuid();
-    return laskentaHakukohteittainActor(
+    return new LaskentaActorForSingleHakukohde(
         actorParams,
         hakukohdeJaOrganisaatio -> {
           String hakukohdeOid = hakukohdeJaOrganisaatio.getHakukohdeOid();
@@ -222,12 +215,9 @@ public class LaskentaActorFactory {
               actorParams.getLaskentaStartParams(),
               false,
               true,
-              nyt).thenApply(laskeDTO -> {
-                Laskentakutsu laskentakutsu = new Laskentakutsu(laskeDTO);
-                return valintalaskentaResource.laskeKaikki(laskentakutsu);
-          });
+              nyt).thenApply(laskeDTO -> valintalaskentaResource.laskeKaikki(laskeDTO));
           return laskenta;
-        });
+        }, seurantaDao, splittaus);
   }
 
   public LaskentaActor createLaskentaActor(
@@ -279,13 +269,6 @@ public class LaskentaActorFactory {
         actorParams.getHakuOid(),
         Changes.EMPTY,
         additionalAuditInfo);
-  }
-
-  private LaskentaActor laskentaHakukohteittainActor(
-      LaskentaActorParams actorParams,
-      Function<? super HakukohdeJaOrganisaatio, ? extends CompletableFuture<?>> r) {
-    return new LaskentaActorForSingleHakukohde(
-        actorParams, r, seurantaDao, splittaus);
   }
 
   private CompletableFuture<LaskeDTO> getLaskeDtoFuture(
