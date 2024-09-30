@@ -1,17 +1,10 @@
 package fi.vm.sade.valinta.kooste.valintalaskenta.service;
 
 import fi.vm.sade.service.valintaperusteet.dto.HakukohdeViiteDTO;
-import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.OhjausparametritAsyncResource;
-import fi.vm.sade.valinta.kooste.external.resource.tarjonta.Haku;
-import fi.vm.sade.valinta.kooste.external.resource.tarjonta.TarjontaAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.valintaperusteet.ValintaperusteetAsyncResource;
-import fi.vm.sade.valinta.kooste.AuditSession;
-import fi.vm.sade.valinta.kooste.valintalaskenta.actor.LaskentaActorParams;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.HakukohdeJaOrganisaatio;
-import fi.vm.sade.valinta.kooste.valintalaskenta.dto.LaskentaStartParams;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Maski;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
-import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -22,37 +15,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LaskentaParameterService {
-  private static final Logger LOG = LoggerFactory.getLogger(LaskentaParameterService.class);
+public class HakukohdeService {
+  private static final Logger LOG = LoggerFactory.getLogger(HakukohdeService.class);
 
   private final ValintaperusteetAsyncResource valintaperusteetAsyncResource;
-  private final TarjontaAsyncResource tarjontaAsyncResource;
 
   @Autowired
-  public LaskentaParameterService(
-      ValintaperusteetAsyncResource valintaperusteetAsyncResource,
-      TarjontaAsyncResource tarjontaAsyncResource) {
+  public HakukohdeService(
+      ValintaperusteetAsyncResource valintaperusteetAsyncResource) {
     this.valintaperusteetAsyncResource = valintaperusteetAsyncResource;
-    this.tarjontaAsyncResource = tarjontaAsyncResource;
   }
 
-  public LaskentaActorParams fetchLaskentaParams(final LaskentaDto laskenta) {
+  public Collection<HakukohdeJaOrganisaatio> fetchHakukohteet(final LaskentaDto laskenta) {
     String hakuOid = laskenta.getHakuOid();
     if (StringUtils.isBlank(hakuOid)) {
       LOG.error("Yritettiin hakea hakukohteita ilman hakuOidia!");
       throw new RuntimeException("Yritettiin hakea hakukohteita ilman hakuOidia!");
     }
 
-    CompletableFuture<Haku> haku = tarjontaAsyncResource.haeHaku(hakuOid);
     CompletableFuture<List<HakukohdeViiteDTO>> hakukohteet = valintaperusteetAsyncResource.haunHakukohteet(hakuOid);
-    CompletableFuture.allOf(haku, hakukohteet).join();
-
-    try {
-      Collection<HakukohdeJaOrganisaatio> hakukohdeOids = maskHakukohteet(hakuOid, hakukohteet.get(), laskenta);
-      return laskentaActorParams(hakuOid, laskenta, hakukohdeOids);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    return maskHakukohteet(hakuOid, hakukohteet.join(), laskenta);
   }
 
   private static Collection<HakukohdeJaOrganisaatio> maskHakukohteet(
@@ -66,34 +48,6 @@ public class LaskentaParameterService {
     final Maski maski = createMaskiFromLaskenta(laskenta);
 
     return maski.maskaa(haunHakukohdeOidit);
-  }
-
-  private static AuditSession koosteAuditSession(LaskentaDto laskenta) {
-    final String userAgent = "-";
-    final String inetAddress = "127.0.0.1";
-    AuditSession auditSession =
-        new AuditSession(laskenta.getUserOID(), Collections.emptyList(), userAgent, inetAddress);
-    auditSession.setSessionId(laskenta.getUuid());
-    auditSession.setPersonOid(laskenta.getUserOID());
-    return auditSession;
-  }
-
-  private static LaskentaActorParams laskentaActorParams(
-      String hakuOid,
-      LaskentaDto laskenta,
-      Collection<HakukohdeJaOrganisaatio> haunHakukohdeOidit) {
-    return new LaskentaActorParams(
-        new LaskentaStartParams(
-            koosteAuditSession(laskenta),
-            laskenta.getUuid(),
-            hakuOid,
-            laskenta.isErillishaku(),
-            true,
-            LaskentaTyyppi.VALINTARYHMA.equals(laskenta.getTyyppi()),
-            laskenta.getValinnanvaihe(),
-            laskenta.getValintakoelaskenta(),
-            laskenta.getTyyppi()),
-        haunHakukohdeOidit);
   }
 
   private static List<HakukohdeJaOrganisaatio> publishedNonNulltoHakukohdeJaOrganisaatio(
