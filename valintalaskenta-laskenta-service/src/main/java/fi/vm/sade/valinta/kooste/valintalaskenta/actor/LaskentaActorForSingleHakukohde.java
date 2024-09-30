@@ -240,11 +240,6 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
     }
   }
 
-  public void postStop() {
-    LOG.info("PostStop ajettu");
-    lopeta();
-  }
-
   private String uuid() {
     return actorParams.getUuid();
   }
