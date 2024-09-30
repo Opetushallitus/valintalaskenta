@@ -9,7 +9,6 @@ import fi.vm.sade.sijoittelu.tulos.dto.HakukohdeDTO;
 import fi.vm.sade.sijoittelu.tulos.dto.ValisijoitteluDTO;
 import fi.vm.sade.valintalaskenta.domain.HakukohteenLaskennanTila;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.Laskentakutsu;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
@@ -31,7 +30,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
-import org.springframework.web.bind.annotation.*;
 
 @Component
 public class ValintalaskentaResourceImpl {
@@ -57,9 +55,9 @@ public class ValintalaskentaResourceImpl {
     this.valintatapajonoResource = valintatapajonoResource;
   }
 
-  public String laske(final Laskentakutsu laskentakutsu) {
+  public String valintalaskenta(LaskeDTO laskeDTO) {
     try {
-      timeRunnable.apply(laskentakutsu.getUuid(), () -> toteutaLaskenta(laskentakutsu));
+      timeRunnable.apply(laskeDTO.getUuid(), () -> toteutaValintalaskenta(laskeDTO));
       return HakukohteenLaskennanTila.UUSI;
     } catch (Exception e) {
       LOG.error("Virhe laskennan suorituksessa, ", e);
@@ -67,9 +65,9 @@ public class ValintalaskentaResourceImpl {
     }
   }
 
-  public String valintakokeet(final Laskentakutsu laskentakutsu) {
+  public String valintakoeLaskenta(LaskeDTO laskeDTO) {
     try {
-      timeRunnable.apply(laskentakutsu.getUuid(), () -> toteutaValintakoeLaskenta(laskentakutsu));
+      timeRunnable.apply(laskeDTO.getUuid(), () -> toteutaValintakoeLaskenta(laskeDTO));
       return HakukohteenLaskennanTila.UUSI;
     } catch (Exception e) {
       LOG.error("Virhe laskennan suorituksessa, ", e);
@@ -77,9 +75,9 @@ public class ValintalaskentaResourceImpl {
     }
   }
 
-  public String laskeKaikki(final Laskentakutsu laskentakutsu) {
+  public String laskeKaikki(LaskeDTO laskeDTO) {
     try {
-      timeRunnable.apply(laskentakutsu.getUuid(), () -> toteutaLaskeKaikki(laskentakutsu));
+      timeRunnable.apply(laskeDTO.getUuid(), () -> toteutaLaskeKaikki(laskeDTO));
       return HakukohteenLaskennanTila.UUSI;
     } catch (Exception e) {
       LOG.error("Virhe laskennan suorituksessa, ", e);
@@ -87,15 +85,14 @@ public class ValintalaskentaResourceImpl {
     }
   }
 
-  public String laskeJaSijoittele(@RequestBody final Laskentakutsu laskentakutsu) {
-    List<LaskeDTO> lista = laskentakutsu.getLaskeDTOs();
-    if (lista == null || lista.isEmpty()) {
+  public String valintaryhmaLaskenta(String uuid, List<LaskeDTO> laskeDTOs) {
+    if (laskeDTOs == null || laskeDTOs.isEmpty()) {
       LOG.error(
           "Laskejasijoittele-rajapinta sai syötteeksi tyhjän listan, joten laskentaa ei voida toteuttaa. lopetetaan.");
       return HakukohteenLaskennanTila.VIRHE;
     }
     try {
-      timeRunnable.apply(laskentakutsu.getUuid(), () -> toteutaLaskeJaSijoittele(laskentakutsu));
+      timeRunnable.apply(uuid, () -> toteutaValintaryhmaLaskenta(uuid, laskeDTOs));
       return HakukohteenLaskennanTila.UUSI;
     } catch (Exception e) {
       LOG.error("Virhe laskennan suorituksessa, ", e);
@@ -194,13 +191,11 @@ public class ValintalaskentaResourceImpl {
             == valintaperusteetDTO.getValinnanVaihe().getValinnanVaiheJarjestysluku();
   }
 
-  private void toteutaLaskenta(Laskentakutsu laskentakutsu) {
-    LaskeDTO laskeDTO = laskentakutsu.getLaskeDTO();
-
+  private void toteutaValintalaskenta(LaskeDTO laskeDTO) {
     StopWatch stopWatch =
         new StopWatch(
             "Toteutetaan laskenta laskentakutsulle "
-                + laskentakutsu.getUuid()
+                + laskeDTO.getUuid()
                 + " hakukohteessa "
                 + laskeDTO.getHakukohdeOid());
     LOG.info(
@@ -274,10 +269,9 @@ public class ValintalaskentaResourceImpl {
     }
   }
 
-  private void toteutaValintakoeLaskenta(Laskentakutsu laskentakutsu) {
+  private void toteutaValintakoeLaskenta(LaskeDTO laskeDTO) {
     StopWatch stopWatch =
-        new StopWatch("Toteutetaan valintakoelaskenta laskentakutsulle " + laskentakutsu.getUuid());
-    LaskeDTO laskeDTO = laskentakutsu.getLaskeDTO();
+        new StopWatch("Toteutetaan valintakoelaskenta laskentakutsulle " + laskeDTO.getUuid());
 
     try {
       stopWatch.start(
@@ -319,9 +313,7 @@ public class ValintalaskentaResourceImpl {
     }
   }
 
-  public void toteutaLaskeKaikki(Laskentakutsu laskentakutsu) {
-    LaskeDTO laskeDTO = laskentakutsu.getLaskeDTO();
-
+  public void toteutaLaskeKaikki(LaskeDTO laskeDTO) {
     StopWatch stopWatch =
         new StopWatch(
             "Suoritetaan valintakoelaskenta "
@@ -488,18 +480,17 @@ public class ValintalaskentaResourceImpl {
     }
   }
 
-  private void toteutaLaskeJaSijoittele(Laskentakutsu laskentakutsu) {
-    List<LaskeDTO> lista = laskentakutsu.getLaskeDTOs();
+  private void toteutaValintaryhmaLaskenta(String uuid, List<LaskeDTO> laskeDTOs) {
     StopWatch stopWatch =
-        new StopWatch("Suoritetaan valintaryhmälaskenta uuid:lla " + lista.get(0).getUuid());
-    LOG.info(String.format("Aloitetaan valintaryhmälaskenta uuid:lla %s", lista.get(0).getUuid()));
+        new StopWatch("Suoritetaan valintaryhmälaskenta uuid:lla " + laskeDTOs.get(0).getUuid());
+    LOG.info(String.format("Aloitetaan valintaryhmälaskenta uuid:lla %s", laskeDTOs.get(0).getUuid()));
     try {
       ValisijoitteluKasittelija.ValisijoiteltavatJonot valisijoiteltavatJonot =
-          valisijoitteluKasittelija.valisijoiteltavatJonot(lista, stopWatch);
+          valisijoitteluKasittelija.valisijoiteltavatJonot(laskeDTOs, stopWatch);
       if (valisijoiteltavatJonot.valinnanvaiheet.isEmpty()) {
         stopWatch.start(
-            "Suoritetaan valintalaskenta ilman sijoittelujonoja " + lista.size() + " hakemukselle");
-        lista.forEach(
+            "Suoritetaan valintalaskenta ilman sijoittelujonoja " + laskeDTOs.size() + " hakemukselle");
+        laskeDTOs.forEach(
             laskeDTO ->
                 valintalaskentaService.laskeKaikki(
                     laskeDTO.getHakemus(),
@@ -512,7 +503,7 @@ public class ValintalaskentaResourceImpl {
       } else {
         stopWatch.start("Muodostetaan lista vaiheittain laskettavista hakukohteista");
         Map<Integer, List<LaskeDTO>> laskettavatHakukohteetVaiheittain = new TreeMap<>();
-        lista.forEach(
+        laskeDTOs.forEach(
             laskeDTO ->
                 laskeDTO
                     .getValintaperuste()
@@ -670,7 +661,7 @@ public class ValintalaskentaResourceImpl {
 
       stopWatch.start(
           "Siivotaan poistuneisiin valinnanvaiheisiin liittyneet valintakoeosallistumiset");
-      valintalaskentaService.siivoaValintakoeOsallistumisetPuuttuviltaValinnanvaiheilta(lista);
+      valintalaskentaService.siivoaValintakoeOsallistumisetPuuttuviltaValinnanvaiheilta(laskeDTOs);
       stopWatch.stop();
 
       LOG.info(stopWatch.prettyPrint());

@@ -5,11 +5,14 @@ import static fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto.ilmoitu
 import static fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto.virheilmoitus;
 
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.HakukohdeJaOrganisaatio;
+import fi.vm.sade.valinta.kooste.valintalaskenta.dto.LaskentaStartParams;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.HakukohdeTila;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTila;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
 import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.Arrays;
@@ -29,7 +32,8 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
   private final AtomicInteger successTotal = new AtomicInteger(0);
   private final AtomicInteger retryTotal = new AtomicInteger(0);
   private final AtomicInteger failedTotal = new AtomicInteger(0);
-  private final LaskentaActorParams actorParams;
+  private final LaskentaStartParams startParams;
+  private final Collection<HakukohdeJaOrganisaatio> hakukohteet;
   private final Function<? super HakukohdeJaOrganisaatio, ? extends CompletableFuture<?>>
       hakukohteenLaskenta;
   private final SeurantaDao seurantaDao;
@@ -41,16 +45,18 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
   private Optional<IlmoitusDto> valintaryhmalaskennanTulos;
 
   public LaskentaActorForSingleHakukohde(
-      LaskentaActorParams actorParams,
+      LaskentaStartParams startParams,
+      Collection<HakukohdeJaOrganisaatio> hakukohteet,
       Function<? super HakukohdeJaOrganisaatio, ? extends CompletableFuture<?>> hakukohteenLaskenta,
       SeurantaDao seurantaDao,
       int splittaus) {
-    this.actorParams = actorParams;
+    this.startParams = startParams;
+    this.hakukohteet = hakukohteet;
     this.hakukohteenLaskenta = hakukohteenLaskenta;
     this.seurantaDao = seurantaDao;
     this.splittaus = splittaus;
-    hakukohdeQueue = new ConcurrentLinkedQueue<>(actorParams.getHakukohdeOids());
-    this.isValintaryhmalaskenta = actorParams.getLaskentaStartParams().isValintaryhmalaskenta();
+    hakukohdeQueue = new ConcurrentLinkedQueue<>(hakukohteet);
+    this.isValintaryhmalaskenta = LaskentaTyyppi.VALINTARYHMA.equals(startParams.getTyyppi());
     this.valintaryhmalaskennanTulos = Optional.empty();
   }
 
@@ -58,10 +64,10 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
     LOG.info(
         "(Uuid={}) Laskenta-actor käynnistetty haulle {}, hakukohteita yhteensä {}, splittaus {} ",
         uuid(),
-        getHakuOid(),
+        this.startParams.getHakuOid(),
         totalKohteet(),
         splittaus);
-    final boolean onkoTarveSplitata = actorParams.getHakukohdeOids().size() > 20;
+    final boolean onkoTarveSplitata = hakukohteet.size() > 20;
     IntStream.range(0, onkoTarveSplitata ? splittaus : 1)
         .forEach(
             i -> {
@@ -240,25 +246,12 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
     }
   }
 
-  public void postStop() {
-    LOG.info("PostStop ajettu");
-    lopeta();
-  }
-
   private String uuid() {
-    return actorParams.getUuid();
+    return startParams.getUuid();
   }
 
   private int totalKohteet() {
-    return actorParams.getHakukohdeOids().size();
-  }
-
-  public String getHakuOid() {
-    return actorParams.getHakuOid();
-  }
-
-  public boolean isValmis() {
-    return false;
+    return hakukohteet.size();
   }
 
   public enum State {

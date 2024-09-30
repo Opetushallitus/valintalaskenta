@@ -8,6 +8,4 @@ public interface Laskenta {
   String getHakuOid();
 
   boolean isOsittainenLaskenta(); // eli maskilla aloitettu osajoukko koko laskennasta
-
-  void lopeta();
 }
