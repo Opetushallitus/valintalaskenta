@@ -5,10 +5,7 @@ import static fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto.ilmoitu
 import static fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto.virheilmoitus;
 
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.HakukohdeJaOrganisaatio;
-import fi.vm.sade.valinta.kooste.valintalaskenta.dto.LaskentaStartParams;
-import fi.vm.sade.valintalaskenta.domain.dto.seuranta.HakukohdeTila;
-import fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto;
-import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTila;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
 import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 
@@ -32,7 +29,7 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
   private final AtomicInteger successTotal = new AtomicInteger(0);
   private final AtomicInteger retryTotal = new AtomicInteger(0);
   private final AtomicInteger failedTotal = new AtomicInteger(0);
-  private final LaskentaStartParams startParams;
+  private final LaskentaDto laskenta;
   private final Collection<HakukohdeJaOrganisaatio> hakukohteet;
   private final Function<? super HakukohdeJaOrganisaatio, ? extends CompletableFuture<?>>
       hakukohteenLaskenta;
@@ -45,18 +42,18 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
   private Optional<IlmoitusDto> valintaryhmalaskennanTulos;
 
   public LaskentaActorForSingleHakukohde(
-      LaskentaStartParams startParams,
+      LaskentaDto laskenta,
       Collection<HakukohdeJaOrganisaatio> hakukohteet,
       Function<? super HakukohdeJaOrganisaatio, ? extends CompletableFuture<?>> hakukohteenLaskenta,
       SeurantaDao seurantaDao,
       int splittaus) {
-    this.startParams = startParams;
+    this.laskenta = laskenta;
     this.hakukohteet = hakukohteet;
     this.hakukohteenLaskenta = hakukohteenLaskenta;
     this.seurantaDao = seurantaDao;
     this.splittaus = splittaus;
     hakukohdeQueue = new ConcurrentLinkedQueue<>(hakukohteet);
-    this.isValintaryhmalaskenta = LaskentaTyyppi.VALINTARYHMA.equals(startParams.getTyyppi());
+    this.isValintaryhmalaskenta = LaskentaTyyppi.VALINTARYHMA.equals(laskenta.getTyyppi());
     this.valintaryhmalaskennanTulos = Optional.empty();
   }
 
@@ -64,7 +61,7 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
     LOG.info(
         "(Uuid={}) Laskenta-actor käynnistetty haulle {}, hakukohteita yhteensä {}, splittaus {} ",
         uuid(),
-        this.startParams.getHakuOid(),
+        this.laskenta.getHakuOid(),
         totalKohteet(),
         splittaus);
     final boolean onkoTarveSplitata = hakukohteet.size() > 20;
@@ -247,7 +244,7 @@ class LaskentaActorForSingleHakukohde implements LaskentaActor {
   }
 
   private String uuid() {
-    return startParams.getUuid();
+    return this.laskenta.getUuid();
   }
 
   private int totalKohteet() {
