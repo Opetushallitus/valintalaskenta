@@ -9,7 +9,6 @@ public class LaskentaStartParams {
   private static final String NIMI_FORMAT = "Laskenta hakuOid(%s) uuid(%s) hakukohteita(%d)";
   private final String uuid;
   private final String hakuOid;
-  private final boolean osittainenLaskenta;
   private final Integer valinnanvaihe;
   private final boolean erillishaku;
   private final Boolean valintakoelaskenta;
@@ -22,7 +21,6 @@ public class LaskentaStartParams {
       String uuid,
       String hakuOid,
       boolean erillishaku,
-      boolean osittainenLaskenta,
       boolean valintaryhmalaskenta,
       Integer valinnanvaihe,
       Boolean valintakoelaskenta,
@@ -30,7 +28,6 @@ public class LaskentaStartParams {
     this.auditSession = auditSession;
     this.uuid = uuid;
     this.hakuOid = hakuOid;
-    this.osittainenLaskenta = osittainenLaskenta;
     this.valintaryhmalaskenta = valintaryhmalaskenta;
     this.valinnanvaihe = valinnanvaihe;
     this.valintakoelaskenta = valintakoelaskenta;
@@ -55,10 +52,6 @@ public class LaskentaStartParams {
 
   public Boolean getValintakoelaskenta() {
     return valintakoelaskenta;
-  }
-
-  public boolean isOsittainenLaskenta() {
-    return osittainenLaskenta;
   }
 
   public boolean isErillishaku() {
