@@ -52,7 +52,7 @@ public class ValintalaskentaService {
       String nimi,
       LaskentaTyyppi laskentatyyppi,
       Boolean isValintakoelaskenta,
-      Integer valinnanvaihe,
+      Optional<Integer> valinnanvaihe,
       String hakuOid,
       Optional<Maski> maski,
       boolean isErillishaku,
@@ -95,7 +95,7 @@ public class ValintalaskentaService {
       return new TunnisteDto(uuid, false);
     }
 
-    LaskentaDto laskentaDto = seurantaDao.resetoiEiValmiitHakukohteet(uuid, true);
+    LaskentaDto laskentaDto = seurantaDao.resetoiLaskenta(uuid, true);
     if (laskentaDto == null) {
       LOG.error("Laskennan {} tila resetoitiin mutta ei saatu yhteenvetoa resetoinnista!", uuid);
     }
@@ -110,8 +110,7 @@ public class ValintalaskentaService {
         return;
       }
     }
-    seurantaDao.merkkaaTila(uuid, LaskentaTila.PERUUTETTU, HakukohdeTila.KESKEYTETTY,
-        Optional.of(ilmoitus("Peruutettu käyttäjän toimesta")));
+    seurantaDao.peruutaLaskenta(uuid, Optional.of(ilmoitus("Peruutettu käyttäjän toimesta")));
   }
 
   private Optional<Laskenta> haeAjossaOlevaLaskentaHaulle(final String hakuOid) {

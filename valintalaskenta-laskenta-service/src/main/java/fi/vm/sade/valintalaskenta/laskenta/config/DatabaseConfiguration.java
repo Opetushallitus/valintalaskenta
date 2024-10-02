@@ -28,7 +28,9 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @Configuration
 @EnableJdbcRepositories(
@@ -88,8 +90,13 @@ class DatabaseConfiguration extends AbstractJdbcConfiguration {
   }
 
   @Bean
-  TransactionManager transactionManager(DataSource dataSource) {
+  DataSourceTransactionManager transactionManager(DataSource dataSource) {
     return new DataSourceTransactionManager(dataSource);
+  }
+
+  @Bean
+  TransactionTemplate transactionTemplate(DataSourceTransactionManager transactionManager) {
+    return new TransactionTemplate(transactionManager);
   }
 
   @Override
