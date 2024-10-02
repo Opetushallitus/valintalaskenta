@@ -411,7 +411,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
     }
     this.jdbcTemplate.update(
         "UPDATE seuranta_laskenta_hakukohteet SET tila=? WHERE laskenta_uuid=?::uuid AND hakukohdeoid=?",
-        HakukohdeTila.VALMIS.toString(),
+        tila.toString(),
         uuid,
         hakukohdeOid);
     this.lisaaIlmoitus(uuid, hakukohdeOid, ilmoitus);
@@ -428,7 +428,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
     }
     this.jdbcTemplate.update(
         "UPDATE seuranta_laskenta_hakukohteet SET tila=? WHERE laskenta_uuid=?::uuid AND hakukohdeoid=?",
-        HakukohdeTila.VALMIS.toString(),
+        tila.toString(),
         uuid,
         hakukohdeOid);
     return this.getLaskennat(Collections.singleton(UUID.fromString(uuid))).stream()
