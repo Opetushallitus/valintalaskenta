@@ -57,4 +57,9 @@ public class KoosteTestProfileConfiguration {
   public RestCasClient getValintaperusteetCasClient() {
     return REST_CAS_CLIENT;
   }
+
+  @Bean(name = "KoostepalveluCasClient")
+  public RestCasClient getKoostepalveluCasClient() {
+    return REST_CAS_CLIENT;
+  }
 }
