@@ -1,10 +1,13 @@
 package fi.vm.sade.valintalaskenta.laskenta.dao;
 
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface SeurantaDao {
 
@@ -64,4 +67,13 @@ public interface SeurantaDao {
   Optional<LaskentaDto> otaSeuraavaLaskentaTyonAlle();
 
   Collection<LaskentaDto> haeKaynnissaOlevatLaskennat();
+
+  int haeKaynnissaOlevienHakukohteidenMaara();
+
+  Optional<ImmutablePair<UUID, Collection<String>>> otaSeuraavatHakukohteetTyonAlle();
+
+  void merkkaaHakukohteetValmiiksi(UUID uuid, Collection<String> hakukohdeOids);
+
+  void merkkaaHakukohteetEpaonnistuneeksi(UUID uuid, Collection<String> hakukohdeOids, String message);
+
 }
