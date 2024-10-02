@@ -39,6 +39,8 @@ import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -46,14 +48,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Service;
 
 @Service
-@ManagedResource(
-    objectName = "OPH:name=LaskentaActorFactory",
-    description = "LaskentaActorFactory mbean")
 public class LaskentaActorFactory {
   private static final Logger LOG = LoggerFactory.getLogger(LaskentaActorFactory.class);
 
@@ -70,8 +68,8 @@ public class LaskentaActorFactory {
   private final HakemuksetConverterUtil hakemuksetConverterUtil;
   private final OhjausparametritAsyncResource ohjausparametritAsyncResource;
   private final HakukohdeService hakukohdeService;
+  private final ExecutorService executor = Executors.newWorkStealingPool();
 
-  private volatile int splittaus;
 
   @Autowired
   public LaskentaActorFactory(
@@ -89,7 +87,6 @@ public class LaskentaActorFactory {
       OppijanumerorekisteriAsyncResource oppijanumerorekisteriAsyncResource,
       OhjausparametritAsyncResource ohjausparametritAsyncResource,
       HakukohdeService hakukohdeService) {
-    this.splittaus = splittaus;
     this.valintalaskentaResource = valintalaskentaResource;
     this.applicationAsyncResource = applicationAsyncResource;
     this.ataruAsyncResource = ataruAsyncResource;
@@ -105,146 +102,61 @@ public class LaskentaActorFactory {
     this.hakukohdeService = hakukohdeService;
   }
 
-  private LaskentaActor createValintaryhmaActor(LaskentaDto laskenta) {
-    final Date nyt = new Date();
-    AuditSession auditSession = koosteAuditSession(laskenta);
-    Collection<HakukohdeJaOrganisaatio> hakukohteet = fetchHakukohteet(laskenta);
+  public CompletableFuture<String> suoritaLaskentaHakukohteille(LaskentaDto laskenta, Collection<String> hakukohdeOids) {
+    if (laskenta.getTyyppi().equals(fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi.VALINTARYHMA)) {
+      String hakukohteidenNimi =
+          String.format("Valintaryhmälaskenta %s hakukohteella", hakukohdeOids.size());
+      LOG.info("(Uuid={}) {}", laskenta.getUuid(), hakukohteidenNimi);
 
-    LOG.info("Muodostetaan VALINTARYHMALASKENTA");
-    auditLogLaskentaStart(auditSession, laskenta.getUuid(), laskenta.getHakuOid(), hakukohteet, "VALINTARYHMALASKENTA");
+      return CompletableFuture.supplyAsync(() ->
+              hakukohdeOids.stream().map(hakukohdeOid -> fetchResourcesForOneLaskenta(
+                  hakukohdeOid, koosteAuditSession(laskenta), laskenta, true, true, new Date())
+                  .join()).toList())
+          .thenApplyAsync(laskeDTOs -> {
+            /*
+             * Tiksussa b15df0500 Merge remote-tracking branch
+             * 'origin/VTKU-181__valintaryhmalaskennan_kutsu_pienempiin_paloihin' tämän kutsun siirto
+             * valintalaskentakoostepalvelusta valintalaskentaan oli palasteltu moneen kutsuun. Kun kutsu ei
+             * enää mene verkon yli ei (käsittääkseni) ole enää mitää syytä palastella joten palatta takaisin
+             * yhteen kutsuun.
+             */
+            return valintalaskentaResource.valintaryhmaLaskenta(laskenta.getUuid(), laskeDTOs);
+          }, this.executor);
+    }
+    if (Boolean.TRUE.equals(laskenta.getValintakoelaskenta())) {
+      LOG.info("Muodostetaan VALINTAKOELASKENTA");
+      return fetchResourcesForOneLaskenta(
+          hakukohdeOids.iterator().next(),
+          koosteAuditSession(laskenta),
+          laskenta,
+          false,
+          false,
+          new Date()).thenApplyAsync(laskeDTO -> valintalaskentaResource.valintakoeLaskenta(laskeDTO), this.executor);
+    } else {
+      if (laskenta.getValinnanvaihe() == null) {
+        LOG.info(
+            "(Uuid={}) Haetaan laskennan + valintakoelaskennan resursseja hakukohteelle {}",
+            laskenta.getUuid(),
+            hakukohdeOids.iterator().next());
 
-    return new LaskentaActorForSingleHakukohde(
-        laskenta,
-        Collections.singletonList(new HakukohdeJaOrganisaatio()),
-        hakukohdeJaOrganisaatio -> {
-          String uuid = laskenta.getUuid();
-          Collection<String> hakukohdeOids =
-              hakukohteet.stream()
-                  .map(HakukohdeJaOrganisaatio::getHakukohdeOid)
-                  .collect(Collectors.toList());
-          String hakukohteidenNimi =
-              String.format("Valintaryhmälaskenta %s hakukohteella", hakukohdeOids.size());
-          LOG.info("(Uuid={}) {}", uuid, hakukohteidenNimi);
-
-          CompletableFuture<String> tila = CompletableFuture.supplyAsync(() ->
-            hakukohdeOids.stream().map(hakukohdeOid -> fetchResourcesForOneLaskenta(
-                hakukohdeOid, auditSession, laskenta, true, true, nyt)
-                .join()).toList())
-              .thenApply(laskeDTOs -> {
-                if (laskeDTOs.size() != hakukohdeOids.size()) {
-                  throw new RuntimeException(
-                      "Hakukohteita oli "
-                          + hakukohdeOids.size()
-                          + " mutta haettuja laskeDTOita oli "
-                          + laskeDTOs.size()
-                          + "!");
-                }
-                /*
-                 * Tiksussa b15df0500 Merge remote-tracking branch
-                 * 'origin/VTKU-181__valintaryhmalaskennan_kutsu_pienempiin_paloihin' tämän kutsun siirto
-                 * valintalaskentakoostepalvelusta valintalaskentaan oli palasteltu moneen kutsuun. Kun kutsu ei
-                 * enää mene verkon yli ei (käsittääkseni) ole enää mitää syytä palastella joten palatta takaisin
-                 * yhteen kutsuun.
-                 */
-                return valintalaskentaResource.valintaryhmaLaskenta(laskenta.getUuid(), laskeDTOs);
-              });
-          return tila;
-        }, seurantaDao, splittaus);
-  }
-
-  @ManagedOperation
-  public void setLaskentaSplitCount(int splitCount) {
-    this.splittaus = splitCount;
-    LOG.info("Laskenta split count asetettu arvoon {}", splitCount);
-  }
-
-  private LaskentaActor createValintakoelaskentaActor(LaskentaDto laskenta) {
-    final Date nyt = new Date();
-    AuditSession auditSession = koosteAuditSession(laskenta);
-    Collection<HakukohdeJaOrganisaatio> hakukohteet = fetchHakukohteet(laskenta);
-
-    LOG.info("Muodostetaan VALINTAKOELASKENTA");
-    auditLogLaskentaStart(auditSession, laskenta.getUuid(), laskenta.getHakuOid(), hakukohteet, "VALINTAKOELASKENTA");
-
-    return new LaskentaActorForSingleHakukohde(
-        laskenta,
-        hakukohteet,
-        hakukohdeJaOrganisaatio -> {
-          String hakukohdeOid = hakukohdeJaOrganisaatio.getHakukohdeOid();
-
-          CompletableFuture<String> tila = fetchResourcesForOneLaskenta(
-              hakukohdeOid,
-              auditSession,
-              laskenta,
-              false,
-              false,
-              nyt).thenApply(laskeDTO -> valintalaskentaResource.valintakoeLaskenta(laskeDTO));
-          return tila;
-        }, seurantaDao, splittaus);
-  }
-
-  private LaskentaActor createValintalaskentaActor(LaskentaDto laskenta) {
-    AuditSession auditSession = koosteAuditSession(laskenta);
-    Collection<HakukohdeJaOrganisaatio> hakukohteet = fetchHakukohteet(laskenta);
-
-    LOG.info("Muodostetaan VALINTALASKENTA");
-    auditLogLaskentaStart(auditSession, laskenta.getUuid(), laskenta.getHakuOid(), hakukohteet,"VALINTALASKENTA");
-
-    final String uuid = laskenta.getUuid();
-    final Date nyt = new Date();
-    LOG.info(
-        String.format(
-            "Jos laskennassa %s on jonoja, joita ei lasketa %s jälkeen, ei haeta niille tietoja Koskesta.",
-            laskenta.getUuid(), nyt));
-    return new LaskentaActorForSingleHakukohde(
-        laskenta,
-        hakukohteet,
-        hakukohdeJaOrganisaatio -> {
-          String hakukohdeOid = hakukohdeJaOrganisaatio.getHakukohdeOid();
-          LOG.info("(Uuid={}) Haetaan laskennan resursseja hakukohteelle {}", uuid, hakukohdeOid);
-
-          CompletableFuture<String> tila = fetchResourcesForOneLaskenta(
-              hakukohdeOid,
-              auditSession,
-              laskenta,
-              false,
-              true,
-              nyt).thenApply(laskeDTO -> valintalaskentaResource.valintalaskenta(laskeDTO));
-          return tila;
-        }, seurantaDao, splittaus);
-  }
-
-  private LaskentaActor createValintalaskentaJaValintakoelaskentaActor(LaskentaDto laskenta) {
-    final Date nyt = new Date();
-    AuditSession auditSession = koosteAuditSession(laskenta);
-    Collection<HakukohdeJaOrganisaatio> hakukohteet = fetchHakukohteet(laskenta);
-
-    LOG.info(
-        "Muodostetaan KAIKKI VAIHEET LASKENTA koska valinnanvaihe oli {} ja valintakoelaskenta ehto {}",
-        laskenta.getValinnanvaihe(),
-        laskenta.getValintakoelaskenta());
-    auditLogLaskentaStart(auditSession, laskenta.getUuid(), laskenta.getHakuOid(), hakukohteet, "KAIKKI VAIHEET LASKENTA");
-
-    final String uuid = laskenta.getUuid();
-    return new LaskentaActorForSingleHakukohde(
-        laskenta,
-        hakukohteet,
-        hakukohdeJaOrganisaatio -> {
-          String hakukohdeOid = hakukohdeJaOrganisaatio.getHakukohdeOid();
-          LOG.info(
-              "(Uuid={}) Haetaan laskennan + valintakoelaskennan resursseja hakukohteelle {}",
-              uuid,
-              hakukohdeOid);
-
-          CompletableFuture<String> tila = fetchResourcesForOneLaskenta(
-              hakukohdeOid,
-              auditSession,
-              laskenta,
-              false,
-              true,
-              nyt).thenApply(laskeDTO -> valintalaskentaResource.laskeKaikki(laskeDTO));
-          return tila;
-        }, seurantaDao, splittaus);
+        return fetchResourcesForOneLaskenta(
+            hakukohdeOids.iterator().next(),
+            koosteAuditSession(laskenta),
+            laskenta,
+            false,
+            true,
+            new Date()).thenApplyAsync(laskeDTO -> valintalaskentaResource.laskeKaikki(laskeDTO), this.executor);
+      } else {
+        LOG.info("(Uuid={}) Haetaan laskennan resursseja hakukohteelle {}", laskenta.getUuid(), hakukohdeOids.iterator().next());
+        return fetchResourcesForOneLaskenta(
+            hakukohdeOids.iterator().next(),
+            koosteAuditSession(laskenta),
+            laskenta,
+            false,
+            true,
+            new Date()).thenApplyAsync(laskeDTO -> valintalaskentaResource.valintalaskenta(laskeDTO), this.executor);
+      }
+    }
   }
 
   private static AuditSession koosteAuditSession(LaskentaDto laskenta) {
@@ -255,40 +167,6 @@ public class LaskentaActorFactory {
     auditSession.setSessionId(laskenta.getUuid());
     auditSession.setPersonOid(laskenta.getUserOID());
     return auditSession;
-  }
-
-  private Collection<HakukohdeJaOrganisaatio> fetchHakukohteet(LaskentaDto laskenta) {
-    Collection<HakukohdeJaOrganisaatio> hakukohteet;
-    try {
-      hakukohteet = hakukohdeService.fetchHakukohteet(laskenta);
-    } catch (Throwable t) {
-      throw new RuntimeException("Taustatietojen haku epäonnistui laskennalle " + laskenta.getUuid(), t);
-    }
-
-    if(hakukohteet.isEmpty()) {
-      throw new RuntimeException("Haulla "
-          + laskenta.getUuid()
-          + " ei saatu hakukohteita! Onko valinnat synkronoitu tarjonnan kanssa?");
-    }
-    return hakukohteet;
-  }
-
-  public LaskentaActor createLaskentaActor(LaskentaDto laskenta) {
-    LOG.info(
-        String.format(
-            "Jos laskennassa %s on jonoja, joita ei lasketa %s jälkeen, ei haeta niille tietoja Koskesta.",
-            laskenta.getUuid(), new Date()));
-
-    if (LaskentaTyyppi.VALINTARYHMALASKENTA.equals(laskenta.getTyyppi())) {
-      return createValintaryhmaActor(laskenta);
-    }
-    if (LaskentaTyyppi.VALINTAKOELASKENTA.equals(laskenta.getTyyppi())) {
-      return createValintakoelaskentaActor(laskenta);
-    }
-    if (LaskentaTyyppi.VALINTALASKENTA.equals(laskenta.getTyyppi())) {
-      return createValintalaskentaActor(laskenta);
-    }
-    return createValintalaskentaJaValintakoelaskentaActor(laskenta);
   }
 
   private void auditLogLaskentaStart(AuditSession auditSession, String uuid, String hakuOid, Collection<HakukohdeJaOrganisaatio> hakukohteet, String tyyppi) {

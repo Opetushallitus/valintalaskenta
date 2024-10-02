@@ -70,7 +70,7 @@ public class ValintalaskentaResource {
   public DeferredResult<ResponseEntity<Vastaus>> valintalaskentaKokoHaulle(
       @PathVariable("hakuOid") String hakuOid,
       @RequestParam(value = "erillishaku", required = false) Boolean erillishaku,
-      @RequestParam(value = "valinnanvaihe", required = false) Integer valinnanvaihe,
+      @RequestParam(value = "valinnanvaihe", required = false) Optional<Integer> valinnanvaihe,
       @RequestParam(value = "valintakoelaskenta", required = false) Boolean valintakoelaskenta,
       @RequestParam(value = "haunnimi", required = false) String haunnimi,
       @RequestParam(value = "nimi", required = false) String nimi) {
@@ -127,7 +127,7 @@ public class ValintalaskentaResource {
   public DeferredResult<ResponseEntity<Vastaus>> valintalaskentaHaulle(
       @PathVariable("hakuOid") String hakuOid,
       @RequestParam(value = "erillishaku", required = false) Boolean erillishaku,
-      @RequestParam(value = "valinnanvaihe", required = false) Integer valinnanvaihe,
+      @RequestParam(value = "valinnanvaihe", required = false) Optional<Integer> valinnanvaihe,
       @RequestParam(value = "valintakoelaskenta", required = false) Boolean valintakoelaskenta,
       @RequestParam(value = "haunnimi", required = false) String haunnimi,
       @RequestParam(value = "nimi", required = false) String nimi,
@@ -189,6 +189,7 @@ public class ValintalaskentaResource {
       } else {
         authorityCheckService.checkAuthorizationForLaskenta(laskenta.get(), valintalaskentaAllowedRoles);
         valintalaskentaService.kaynnistaLaskentaUudelleen(uuid);
+        // TODO: palauta vastaus!
       }
     } catch (AccessDeniedException e) {
       result.setErrorResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage()));
