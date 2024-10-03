@@ -67,6 +67,7 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
     String uuid = aloitaUusiLaskenta(Optional.of(hakukohde));
     YhteenvetoDto y = seurantaDao.merkkaaTila(uuid, hakukohde, HakukohdeTila.KESKEYTETTY);
     assertOikeaLaskentaEiOleNull(uuid, y);
+    assertEquals(1, y.getHakukohteitaKeskeytetty());
   }
 
   @Test
@@ -142,6 +143,7 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
             HakukohdeTila.KESKEYTETTY,
             new IlmoitusDto(IlmoitusTyyppi.ILMOITUS, "Jee"));
     assertOikeaLaskentaEiOleNull(uuid, y);
+    assertEquals(1, y.getHakukohteitaKeskeytetty());
   }
 
   @Test
