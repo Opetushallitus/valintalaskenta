@@ -54,22 +54,4 @@ public interface TulosValintakoeOsallistuminenRepository
       ) hakemus""")
   List<String> findHakemusOidsByTimeRange(
       @Param("start") LocalDateTime start, @Param("end") LocalDateTime endDatetime);
-
-  @Query(
-      """
-      select h_oid from (
-        select hakemus_oid h_oid from valintakoe_osallistuminen where created_at < :end
-              union
-        select vo.hakemus_oid h_oid from valintakoe_osallistuminen vo
-          join hakutoive h on h.valintakoe_osallistuminen = vo.id where h.created_at < :end
-              union
-        select vo.hakemus_oid h_oid from valintakoe_osallistuminen vo
-          join hakutoive h on h.valintakoe_osallistuminen =  vo.id
-          join valintakoe_valinnanvaihe vvv on vvv.hakutoive = h.id where vvv.last_modified < :end
-              union
-        select vo.hakemus_oid h_oid from valintakoe_osallistuminen vo
-          join hakutoive h on h.valintakoe_osallistuminen =  vo.id
-          join valintakoe_valinnanvaihe vvv on vvv.hakutoive = h.id
-          join valintakoe vk on vk.valintakoe_valinnanvaihe = vvv.id where vk.last_modified < :end) hakemus""")
-  List<String> findHakemusOidsByEndTime(@Param("end") LocalDateTime endDatetime);
 }
