@@ -10,7 +10,7 @@
 
     <groupId>fi.vm.sade.valintaperusteet</groupId>
     <artifactId>valintalaskenta</artifactId>
-    <version>6.0.1-SNAPSHOT</version>
+    <version>6.1.0-SNAPSHOT</version>
 
     <name>Valintalaskenta</name>
     <packaging>pom</packaging>
@@ -20,6 +20,7 @@
         <module>valintalaskenta-tulos-service</module>
         <module>valintalaskenta-laskenta-api</module>
         <module>valintalaskenta-laskenta-service</module>
+        <module>ovara-valintalaskenta</module>
     </modules>
 
     <properties>

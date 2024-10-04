@@ -1,0 +1,119 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  flyway:
+    enabled: true
+
+valintalaskenta-laskenta-service:
+  postgresql:
+    url: jdbc:postgresql://localhost:5555/valintalaskenta
+    user: app
+    password: app
+    maxactive: 10
+    maxwait: 3000
+    leakdetectionthresholdmillis: 1800000
+    driver: org.postgresql.Driver
+  organisaatio-service:
+    url:
+
+springdoc:
+  show-actuator: false
+  paths-to-match: /resources/**
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+management:
+  endpoints:
+    enabled-by-default: false
+  endpoint:
+    health:
+      enabled: true
+  metrics:
+    mongo:
+      command:
+        enabled: false
+      connectionpool:
+        enabled: false
+
+server:
+  servlet:
+    context-path: /valintalaskenta-laskenta-service
+  port: 8080
+  tomcat:
+    threads:
+      max: 20
+
+valintalaskenta:
+  uses-ssl-proxy: false
+  enable-siirtotiedosto-service: true
+
+cas-service:
+  service: http://localhost:${server.port}/valintalaskenta-laskenta-service
+  send-renew: false
+  key: valintalaskenta-laskenta-service
+
+logging:
+  level:
+    root: info
+    org.springframework: warn
+    org.springframework.security: warn
+    org.springframework.boot.autoconfigure.security.AuthenticationManagerConfiguration: warn
+    fi.vm.sade.auditlog.Audit: info
+    fi.vm.sade.java_utils.security.OpintopolkuCasAuthenticationFilter: warn
+    org.apache.http.client.protocol.ResponseProcessCookies: error
+    org.springframework.web: info
+    org.hibernate: info
+    com.github.dockerjava: info
+
+host:
+  cas: virkailija.testiopintopolku.fi
+  virkailija: localhost:8080
+  host-virkailija: virkailija.testiopintopolku.fi
+  host-alb: https://virkailija.testiopintopolku.fi
+
+web:
+  url:
+    cas: https://${host.cas}/cas
+
+cas:
+  url: https://${host.cas}/cas
+  login: https://${host.cas}/cas/login
+  service:
+    valintaperusteet-service: ""
+    sijoittelu-service: ""
+    seuranta-service: ""
+
+valintalaskentakoostepalvelu:
+  app:
+    username:
+      to:
+        sijoittelu: username
+    password:
+      to:
+        sijoittelu: password
+  seuranta:
+    rest:
+      url: ""
+  sijoittelu:
+    rest:
+      url: ""
+  valintaperusteet:
+    ilb:
+      url: ""
+
+root:
+  organisaatio:
+    oid: ""
+
+aws:
+  region: eu-west-1
+  bucket:
+    name: ""
+    oldversionname: ""
+  siirtotiedosto:
+    bucket-name: testi-siirtotiedostot
+    bucket-target-role-arn: arn:aws:iam::xxxxxxxxxxxx:role/opintopolku-s3-cross-account-role
+    max-hakukohde-count-in-file: 10000
+    max-hakemus-count-in-file: 20000
