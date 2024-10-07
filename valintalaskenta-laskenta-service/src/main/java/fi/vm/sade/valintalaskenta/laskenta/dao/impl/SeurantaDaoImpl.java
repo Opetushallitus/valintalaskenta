@@ -609,7 +609,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
         // jos tehdään valintaryhnälaskentaa palautetaan kaikki hakukohteet
         Collection<String> hakukohdeOids = this.jdbcTemplate.query(
             "UPDATE seuranta_laskenta_hakukohteet SET tila=? WHERE laskenta_uuid=? RETURNING hakukohdeoid",
-            (rs, rownum) -> rs.getString("hakukohdeoid"), HakukohdeTila.KESKEN, uuid);
+            (rs, rownum) -> rs.getString("hakukohdeoid"), HakukohdeTila.KESKEN.toString(), uuid);
         return new ImmutablePair<>(uuid, hakukohdeOids);
       }
 
