@@ -24,11 +24,15 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession;
+import org.springframework.session.web.http.CookieSerializer;
+import org.springframework.session.web.http.DefaultCookieSerializer;
 
 @Profile({"default", "dev"})
 @Configuration
 @EnableMethodSecurity(securedEnabled = true)
 @EnableWebSecurity
+@EnableJdbcHttpSession
 public class SecurityConfiguration {
   private static final Logger LOG = LoggerFactory.getLogger(SecurityConfiguration.class);
   private CasProperties casProperties;
@@ -151,5 +155,16 @@ public class SecurityConfiguration {
     return http.getSharedObject(AuthenticationManagerBuilder.class)
         .authenticationProvider(casAuthenticationProvider)
         .build();
+  }
+
+  @Bean
+  public CookieSerializer cookieSerializer() {
+    DefaultCookieSerializer serializer = new DefaultCookieSerializer();
+    serializer.setUseSecureCookie(true);
+    serializer.setCookieName("JSESSIONID");
+    serializer.setCookiePath("/valintalaskenta-laskenta-service");
+    // tämä jotta yliheitto toimii, ks. https://github.com/spring-projects/spring-session/issues/1201
+    serializer.setUseBase64Encoding(false);
+    return serializer;
   }
 }
