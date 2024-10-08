@@ -1,11 +1,13 @@
 package fi.vm.sade.valinta.kooste.valintalaskenta.actor;
 
+import fi.vm.sade.auditlog.ApplicationType;
+import fi.vm.sade.auditlog.Audit;
 import fi.vm.sade.auditlog.Changes;
 import fi.vm.sade.valinta.kooste.AuditSession;
-import fi.vm.sade.valinta.kooste.KoosteAudit;
 import fi.vm.sade.valinta.kooste.external.resource.koostepalvelu.KoostepalveluAsyncResource;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.HakukohdeJaOrganisaatio;
 import fi.vm.sade.valinta.sharedutils.AuditLog;
+import fi.vm.sade.valinta.sharedutils.AuditLogger;
 import fi.vm.sade.valinta.sharedutils.ValintaResource;
 import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
@@ -23,6 +25,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class LaskentaActorFactory {
   private static final Logger LOG = LoggerFactory.getLogger(LaskentaActorFactory.class);
+
+  public static final Audit AUDIT =
+      new Audit(new AuditLogger(), "valintalaskentakoostepalvelu", ApplicationType.VIRKAILIJA);
 
   private final ValintalaskentaResourceImpl valintalaskentaResource;
   private final KoostepalveluAsyncResource koostepalveluAsyncResource;
@@ -108,7 +113,7 @@ public class LaskentaActorFactory {
             .collect(Collectors.toList())
             .toString());
     AuditLog.log(
-        KoosteAudit.AUDIT,
+        AUDIT,
         auditSession.asAuditUser(),
         ValintaperusteetOperation.LASKENTATOTEUTUS_LUONTI,
         ValintaResource.LASKENTATOTEUTUS,

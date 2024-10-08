@@ -23,7 +23,7 @@ public class HttpClient {
 
   private static final Logger LOG = LoggerFactory.getLogger(HttpClient.class);
 
-  private static final String CALLER_ID = "1.2.246.562.10.00000000001.valintalaskentakoostepalvelu";
+  private static final String CALLER_ID = "1.2.246.562.10.00000000001.valintalaskenta";
   private static final String CSRF_VALUE = "CSRF";
 
   private final java.net.http.HttpClient client;
@@ -101,33 +101,6 @@ public class HttpClient {
         response -> this.parseJson(response, outputType));
   }
 
-  public <I, O> CompletableFuture<O> postJson(
-      String url, Duration timeout, I body, Type inputType, Type outputType) {
-    return postJson(url, timeout, body, inputType, outputType, Function.identity());
-  }
-
-  public <I, O> CompletableFuture<O> putJson(
-      String url,
-      Duration timeout,
-      I body,
-      Type inputType,
-      Type outputType,
-      Function<HttpRequest.Builder, HttpRequest.Builder> requestCustomisation) {
-    HttpRequest request =
-        requestCustomisation
-            .apply(
-                buildWithCallerIdAndCsrfHeaders(HttpRequest.newBuilder(URI.create(url)))
-                    .header("Accept", "application/json")
-                    .header("Content-Type", "application/json")
-                    .PUT(
-                        HttpRequest.BodyPublishers.ofString(
-                            this.gson.toJson(body, inputType), StandardCharsets.UTF_8))
-                    .timeout(timeout))
-            .build();
-    return this.makeRequest(request, null)
-        .thenApply(response -> this.parseJson(response, outputType));
-  }
-
   public CompletableFuture<HttpResponse<InputStream>> putResponse(
       String url,
       Duration timeout,
@@ -144,11 +117,6 @@ public class HttpClient {
                     .timeout(timeout))
             .build();
     return this.makeRequest(request, null);
-  }
-
-  public CompletableFuture<HttpResponse<InputStream>> putResponse(
-      String url, Duration timeout, byte[] body, String contentType) {
-    return putResponse(url, timeout, body, contentType, Function.identity());
   }
 
   public CompletableFuture<String> delete(String url, Duration timeout) {
@@ -277,15 +245,5 @@ public class HttpClient {
 
   private static boolean isSuccess(HttpResponse<InputStream> response) {
     return response.statusCode() < 300;
-  }
-
-  private static boolean isRedirectToCas(HttpResponse<?> response) {
-    return response.statusCode() == 302
-        && response.headers().allValues("Location").stream()
-            .anyMatch(location -> location.contains("/cas/login"));
-  }
-
-  private static boolean isUnauthenticated(HttpResponse<?> response) {
-    return response.statusCode() == 401;
   }
 }

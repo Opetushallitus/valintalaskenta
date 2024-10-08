@@ -61,9 +61,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Bean
   public CasAuthenticationProvider casAuthenticationProvider() {
-    final String host =
-        environment.getProperty(
-            "host.host-alb", environment.getRequiredProperty("host.host-virkailija"));
     CasAuthenticationProvider casAuthenticationProvider = new CasAuthenticationProvider();
     casAuthenticationProvider.setAuthenticationUserDetailsService(new OphUserDetailsServiceImpl());
     casAuthenticationProvider.setServiceProperties(serviceProperties());

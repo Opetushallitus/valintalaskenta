@@ -44,39 +44,6 @@ public class RestCasClient {
 
   protected Gson gson;
 
-  public <T> CompletableFuture<T> post(
-      final String url,
-      final TypeToken<T> typeToken,
-      final Object body,
-      final Map<String, String> headers,
-      final int requestTimeout) {
-    return this.post(url, body, headers, requestTimeout)
-        .thenApply(response -> this.gson.fromJson(response.getResponseBody(), typeToken.getType()));
-  }
-
-  public <T> CompletableFuture<T> postPlaintext(
-      final String url,
-      final TypeToken<T> typeToken,
-      final Object body,
-      final Map<String, String> headers,
-      final int requestTimeout) {
-    return this.postPlaintext(url, body, headers, requestTimeout)
-        .thenApply(response -> this.gson.fromJson(response.getResponseBody(), typeToken.getType()));
-  }
-
-  public CompletableFuture<Response> post(
-      final String url, final Object body, final Map<String, String> headers, final int timeout) {
-    return this.executeAndThrowOnError(
-        withHeaders(request(url, "POST", timeout).setBody(this.gson.toJson(body)), headers)
-            .build());
-  }
-
-  public CompletableFuture<Response> postPlaintext(
-      final String url, final Object body, final Map<String, String> headers, final int timeout) {
-    return this.executeAndThrowOnError(
-        withHeaders(request(url, "POST", timeout).setBody(body.toString()), headers).build());
-  }
-
   public <T> CompletableFuture<T> get(
       final String url,
       final TypeToken<T> typeToken,
