@@ -128,8 +128,4 @@ public class ExcelExportUtil {
     }
     return bytesOut.toByteArray();
   }
-
-  public static InputStream exportGridAsXls(Object[][] grid) {
-    return new ByteArrayInputStream(exportGridAsXlsBytes(grid)); // bytesOut.newInputStream();
-  }
 }

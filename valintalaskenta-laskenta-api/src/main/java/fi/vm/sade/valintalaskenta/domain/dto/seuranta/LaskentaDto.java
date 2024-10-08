@@ -80,50 +80,6 @@ public class LaskentaDto {
     return ilmoitus;
   }
 
-  public YhteenvetoDto asYhteenveto() {
-    int valmiit = 0;
-    int keskeytetty = 0;
-    if (hakukohteet == null) {
-      return new YhteenvetoDto(
-          uuid,
-          userOID,
-          haunnimi,
-          nimi,
-          hakuOid,
-          luotu,
-          tila,
-          0,
-          valmiit,
-          keskeytetty,
-          null,
-          tyyppi,
-          valinnanvaihe,
-          valintakoelaskenta);
-    }
-    for (HakukohdeDto h : hakukohteet) {
-      if (HakukohdeTila.KESKEYTETTY.equals(h.getTila())) {
-        ++keskeytetty;
-      } else if (HakukohdeTila.VALMIS.equals(h.getTila())) {
-        ++valmiit;
-      }
-    }
-    return new YhteenvetoDto(
-        uuid,
-        userOID,
-        haunnimi,
-        nimi,
-        hakuOid,
-        luotu,
-        tila,
-        hakukohteet.size(),
-        valmiit,
-        keskeytetty,
-        jonosija,
-        tyyppi,
-        valinnanvaihe,
-        valintakoelaskenta);
-  }
-
   public String getUserOID() {
     return userOID;
   }
