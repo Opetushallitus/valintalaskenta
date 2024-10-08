@@ -271,20 +271,6 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
     assertEquals(newestUuid, seurantaDao.otaSeuraavaLaskentaTyonAlle().get());
   }
 
-  @Test
-  public void testaaHaeYhteenvedotAlkamattomilleUUIDeille() {
-    String uuid1 = luoUusiLaskenta(Optional.of(randomHakukohde()));
-    String uuid2 = luoUusiLaskenta(Optional.of(randomHakukohde()));
-    Collection<YhteenvetoDto> yhteenvetoDtos =
-        seurantaDao.haeYhteenvedotAlkamattomille(Arrays.asList(uuid1, uuid2));
-    Assertions.assertEquals(2, yhteenvetoDtos.size());
-    Map<String, YhteenvetoDto> uuidToYhteenveto =
-        yhteenvetoDtos.stream().collect(Collectors.toMap(y -> y.getUuid(), y -> y));
-    Integer jonosija1 = uuidToYhteenveto.get(uuid1).getJonosija();
-    Integer jonosija2 = uuidToYhteenveto.get(uuid2).getJonosija();
-    Assertions.assertTrue(jonosija1 < jonosija2);
-  }
-
   private String luoUusiLaskenta(Optional<String> hakukohdeOid) {
     Collection<HakukohdeDto> hakukohdeOids =
         Arrays.asList(

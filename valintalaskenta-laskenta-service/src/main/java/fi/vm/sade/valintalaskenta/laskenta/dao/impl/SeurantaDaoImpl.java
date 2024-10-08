@@ -217,25 +217,6 @@ public class SeurantaDaoImpl implements SeurantaDao {
         .orElse(null);
   }
 
-  public Collection<YhteenvetoDto> haeYhteenvedotAlkamattomille(Collection<String> uuids) {
-    SqlParameterSource parameters =
-        new MapSqlParameterSource(
-            Map.of(
-                "uuids",
-                    uuids.stream().map(uuid -> UUID.fromString(uuid)).collect(Collectors.toList()),
-                "tila", LaskentaTila.ALOITTAMATTA.toString()));
-    Collection<UUID> aloittamattaUUIDS =
-        new NamedParameterJdbcTemplate(this.jdbcTemplate)
-            .query(
-                "SELECT uuid FROM seuranta_laskennat WHERE uuid IN (:uuids) AND tila=:tila",
-                parameters,
-                uuidRowMapper);
-
-    return this.getLaskennat(aloittamattaUUIDS).stream()
-        .map(laskenta -> laskentaAsYhteenvetoDto(laskenta, jonosijaProvider()))
-        .collect(Collectors.toList());
-  }
-
   private YhteenvetoDto laskentaAsYhteenvetoDto(
       Laskenta laskenta, BiFunction<Date, LaskentaTila, Integer> jonosijaSupplier) {
     if (laskenta == null) {

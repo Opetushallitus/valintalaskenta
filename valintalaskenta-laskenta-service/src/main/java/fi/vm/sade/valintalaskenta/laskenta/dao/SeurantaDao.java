@@ -20,9 +20,6 @@ public interface SeurantaDao {
   /** Yhteenveto laskennan kulusta */
   YhteenvetoDto haeYhteenveto(String uuid);
 
-  /** Yhteenveto laskennan kulusta */
-  Collection<YhteenvetoDto> haeYhteenvedotAlkamattomille(Collection<String> uuids);
-
   /** Yhteenvedot laskennan kulusta */
   Collection<YhteenvetoDto> haeYhteenvedotHaulle(String hakuOid);
 
