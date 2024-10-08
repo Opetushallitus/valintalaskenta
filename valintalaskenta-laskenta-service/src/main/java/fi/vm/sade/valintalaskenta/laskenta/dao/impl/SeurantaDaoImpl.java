@@ -22,6 +22,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @Component
 @Transactional
@@ -29,11 +30,12 @@ public class SeurantaDaoImpl implements SeurantaDao {
   private static final Logger LOG = LoggerFactory.getLogger(SeurantaDaoImpl.class);
 
   private final JdbcTemplate jdbcTemplate;
+  private final TransactionTemplate transactionTemplate;
 
   @Autowired
-  public SeurantaDaoImpl(JdbcTemplate jdbcTemplate) {
+  public SeurantaDaoImpl(JdbcTemplate jdbcTemplate, TransactionTemplate transactionTemplate) {
     this.jdbcTemplate = jdbcTemplate;
-    resetoiMeneillaanOlevatLaskennat();
+    this.transactionTemplate = transactionTemplate;
   }
 
   private RowMapper<Laskenta> getLaskentaRowMapper(Collection<UUID> laskentaUuids) {
@@ -340,14 +342,6 @@ public class SeurantaDaoImpl implements SeurantaDao {
     Optional<Laskenta> laskenta =
         this.getLaskennat(Collections.singleton(UUID.fromString(uuid))).stream().findFirst();
     return laskenta.map(l -> laskentaAsYhteenvetoDto(l, jonosijaProvider())).orElse(null);
-  }
-
-  @Override
-  public void resetoiMeneillaanOlevatLaskennat() {
-    this.jdbcTemplate.update(
-        "UPDATE seuranta_laskennat SET tila=? WHERE tila=?",
-        LaskentaTila.PERUUTETTU.toString(),
-        LaskentaTila.MENEILLAAN.toString());
   }
 
   private BiFunction<Date, LaskentaTila, Integer> jonosijaProvider() {

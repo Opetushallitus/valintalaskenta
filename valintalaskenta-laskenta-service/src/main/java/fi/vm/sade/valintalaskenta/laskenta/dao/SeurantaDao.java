@@ -62,8 +62,6 @@ public interface SeurantaDao {
 
   LaskentaDto resetoiEiValmiitHakukohteet(String uuid, boolean nollaaIlmoitukset);
 
-  void resetoiMeneillaanOlevatLaskennat();
-
   Optional<LaskentaDto> otaSeuraavaLaskentaTyonAlle();
 
   Collection<LaskentaDto> haeKaynnissaOlevatLaskennat();

@@ -34,22 +34,6 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
   }
 
   @Test
-  public void testaaMeneillaanOlevienResetointi() {
-    final String hakukohde = randomHakukohde();
-
-    final String uuid = aloitaUusiLaskenta(Optional.of(hakukohde));
-
-    final String hakukohde2 = randomHakukohde();
-    final String uuid2 = aloitaUusiLaskenta(Optional.of(hakukohde2));
-
-    Assertions.assertTrue(LaskentaTila.MENEILLAAN.equals(seurantaDao.haeLaskenta(uuid).get().getTila()));
-    Assertions.assertTrue(LaskentaTila.MENEILLAAN.equals(seurantaDao.haeLaskenta(uuid2).get().getTila()));
-    seurantaDao.resetoiMeneillaanOlevatLaskennat();
-    Assertions.assertTrue(LaskentaTila.PERUUTETTU.equals(seurantaDao.haeLaskenta(uuid).get().getTila()));
-    Assertions.assertTrue(LaskentaTila.PERUUTETTU.equals(seurantaDao.haeLaskenta(uuid2).get().getTila()));
-  }
-
-  @Test
   public void testaaMerkkaaLaskennanTilaJaHakukohteidenTilaKerrallaValmistuneelleLaskennalle() {
     String uuid = aloitaUusiLaskenta(Optional.of(randomHakukohde()));
     YhteenvetoDto y =
