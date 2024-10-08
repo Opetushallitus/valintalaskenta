@@ -3,7 +3,6 @@ package fi.vm.sade.valinta.kooste.valintalaskenta.resource;
 import static java.util.Arrays.asList;
 
 import fi.vm.sade.service.valintaperusteet.dto.HakukohdeViiteDTO;
-import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
 import fi.vm.sade.valinta.kooste.AuthorizationUtil;
 import fi.vm.sade.valinta.kooste.external.resource.valintaperusteet.ValintaperusteetAsyncResource;
 import fi.vm.sade.valinta.kooste.security.AuthorityCheckService;
@@ -51,8 +50,6 @@ public class ValintalaskentaResource {
   @Autowired private ValintalaskentaService valintalaskentaService;
   @Autowired private AuthorityCheckService authorityCheckService;
   @Autowired private ValintaperusteetAsyncResource valintaperusteetAsyncResource;
-  @Autowired
-  private LaskentaService laskentaService;
 
   /**
    * Luo seurantaan suoritettavan valintalaskennan koko haulle.
