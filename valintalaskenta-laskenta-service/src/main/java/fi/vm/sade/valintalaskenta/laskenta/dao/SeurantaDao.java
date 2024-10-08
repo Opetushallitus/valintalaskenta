@@ -74,6 +74,6 @@ public interface SeurantaDao {
 
   void merkkaaHakukohteetValmiiksi(UUID uuid, Collection<String> hakukohdeOids);
 
-  void merkkaaHakukohteetEpaonnistuneeksi(UUID uuid, Collection<String> hakukohdeOids, String message);
+  void merkkaaHakukohteetEpaonnistuneeksi(UUID uuid, Collection<String> hakukohdeOids, int maxYritykset, String message);
 
 }

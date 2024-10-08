@@ -572,64 +572,51 @@ public class SeurantaDaoImpl implements SeurantaDao {
 
   @Override
   public Optional<ImmutablePair<UUID, Collection<String>>> otaSeuraavatHakukohteetTyonAlle() {
+    // haetaan aloitettava hakukohde
     Optional<ImmutablePair<UUID, String>> hakukohde =
         this.jdbcTemplate
             .query(
-                "WITH hakukohde AS" +
-                    " (SELECT laskenta_uuid, hakukohdeoid " +
-                    "  FROM seuranta_laskennat " +
-                    "  JOIN seuranta_laskenta_hakukohteet ON uuid=laskenta_uuid " +
-                    "  WHERE seuranta_laskenta_hakukohteet.tila=? " +
-                    "  AND seuranta_laskennat.tila<>?" +
-                    "  ORDER BY luotu ASC, hakukohdeoid ASC " +
-                    "  LIMIT 1" +
-                    "  FOR UPDATE SKIP LOCKED) " +
-                    "UPDATE seuranta_laskenta_hakukohteet SET tila = ? " +
-                    "FROM hakukohde AS hk " +
-                    "WHERE seuranta_laskenta_hakukohteet.laskenta_uuid = hk.laskenta_uuid " +
-                    "AND seuranta_laskenta_hakukohteet.hakukohdeoid=hk.hakukohdeoid " +
-                    "RETURNING hk.laskenta_uuid, hk.hakukohdeoid",
+                "SELECT laskenta_uuid, hakukohdeoid " +
+                    "FROM seuranta_laskennat " +
+                    "JOIN seuranta_laskenta_hakukohteet ON uuid=laskenta_uuid " +
+                    "WHERE seuranta_laskenta_hakukohteet.tila=? " +
+                    "AND seuranta_laskennat.tila<>? " +
+                    "ORDER BY luotu ASC, hakukohdeoid ASC " +
+                    "LIMIT 1 " +
+                    "FOR UPDATE SKIP LOCKED",
                 (rs, rowNum) -> new ImmutablePair<>(UUID.fromString(rs.getString("laskenta_uuid")), rs.getString("hakukohdeoid")),
                 HakukohdeTila.TEKEMATTA.toString(),
-                LaskentaTila.PERUUTETTU.toString(),
-                HakukohdeTila.KESKEN.toString())
+                LaskentaTila.PERUUTETTU.toString())
             .stream()
             .findFirst();
 
     return hakukohde.map(hk -> {
+      // jos hakukohde löytyy
       UUID uuid = hk.getLeft();
+      Laskenta laskenta = this.getLaskennat(Collections.singleton(uuid)).iterator().next();
       String hakukohdeOid = hk.getRight();
 
-      // merkitään laskenta aloitetuksi
+      // merkataan laskenta aloitetuksi
       this.jdbcTemplate.update("UPDATE seuranta_laskennat SET tila=?, aloitettu=?::timestamptz WHERE uuid=? AND tila=?",
           LaskentaTila.MENEILLAAN.toString(), Instant.now().toString(),uuid, LaskentaTila.ALOITTAMATTA.toString());
 
-      Laskenta laskenta = this.getLaskennat(Collections.singleton(uuid)).iterator().next();
       if(laskenta.getTyyppi()==LaskentaTyyppi.VALINTARYHMA) {
-        // jos tehdään valintaryhnälaskentaa palautetaan kaikki hakukohteet
+        // jos hakukohde osa valintaryhmälaskentaa, aloitetaan kaikki hakukohteet samalla
         Collection<String> hakukohdeOids = this.jdbcTemplate.query(
-            "UPDATE seuranta_laskenta_hakukohteet SET tila=? WHERE laskenta_uuid=? RETURNING hakukohdeoid",
+            "UPDATE seuranta_laskenta_hakukohteet SET tila=?, yritykset=yritykset+1 WHERE laskenta_uuid=? RETURNING hakukohdeoid",
             (rs, rownum) -> rs.getString("hakukohdeoid"), HakukohdeTila.KESKEN.toString(), uuid);
         return new ImmutablePair<>(uuid, hakukohdeOids);
-      }
+      } else {
+        // muuten aloitetaan vain kyseinen hakukohde
+        this.jdbcTemplate.update("UPDATE seuranta_laskenta_hakukohteet SET tila=?, yritykset=yritykset+1 WHERE laskenta_uuid=? AND hakukohdeoid=?",
+            HakukohdeTila.KESKEN.toString(), uuid, hakukohdeOid);
 
-      return new ImmutablePair<>(uuid, Collections.singleton(hakukohdeOid));
+        return new ImmutablePair<>(uuid, Collections.singleton(hakukohdeOid));
+      }
     });
   }
 
-  private void merkkaaHakukohdeKasitellyksi(UUID uuid, Collection<String> hakukohdeOids, HakukohdeTila tila) {
-    // merkitään hakukohde käsitellyksi haluttuun tilaan
-    NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-    MapSqlParameterSource parameters = new MapSqlParameterSource();
-    parameters.addValue("tila", tila.toString());
-    parameters.addValue("uuid", uuid);
-    parameters.addValue("hakukohdeOids", hakukohdeOids);
-    namedParameterJdbcTemplate.update(
-        "UPDATE seuranta_laskenta_hakukohteet " +
-            "SET tila=:tila " +
-            "WHERE laskenta_uuid=:uuid AND hakukohdeoid IN (:hakukohdeOids)",
-        parameters);
-
+  private void merkkaaLaskentaKasitellyksi(UUID uuid) {
     // merkitään laskenta valmiiksi jos kaikki hakukohteet joko laskettuja tai epäonnistuineita
     this.jdbcTemplate.update(
         "UPDATE seuranta_laskennat " +
@@ -644,14 +631,50 @@ public class SeurantaDaoImpl implements SeurantaDao {
 
   @Override
   public void merkkaaHakukohteetValmiiksi(UUID uuid, Collection<String> hakukohdeOids) {
-    this.merkkaaHakukohdeKasitellyksi(uuid, hakukohdeOids, HakukohdeTila.VALMIS);
+    NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+    MapSqlParameterSource parameters = new MapSqlParameterSource();
+    parameters.addValue("uuid", uuid);
+    parameters.addValue("hakukohdeOids", hakukohdeOids);
+
+    // merkitään valmiiksi lasketut hakukohteet
+    namedParameterJdbcTemplate.update(
+        "UPDATE seuranta_laskenta_hakukohteet " +
+            "SET tila='" + HakukohdeTila.VALMIS + "' " +
+            "WHERE laskenta_uuid=:uuid " +
+            "AND hakukohdeoid IN (:hakukohdeOids) ",
+        parameters);
+
+    this.merkkaaLaskentaKasitellyksi(uuid);
   }
 
   @Override
-  public void merkkaaHakukohteetEpaonnistuneeksi(UUID uuid, Collection<String> hakukohdeOids, String message) {
-    // TODO: retryt
-    this.merkkaaHakukohdeKasitellyksi(uuid, hakukohdeOids, HakukohdeTila.KESKEYTETTY);
+  public void merkkaaHakukohteetEpaonnistuneeksi(UUID uuid, Collection<String> hakukohdeOids, int maxYritykset, String message) {
+    NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+    MapSqlParameterSource parameters = new MapSqlParameterSource();
+    parameters.addValue("uuid", uuid);
+    parameters.addValue("hakukohdeOids", hakukohdeOids);
+    parameters.addValue("maxYritykset", maxYritykset);
+
+    // merkitään keskeytetyiksi hakukohteet joita on jo yritetty uudestaan
+    namedParameterJdbcTemplate.update(
+        "UPDATE seuranta_laskenta_hakukohteet " +
+            "SET tila='" + HakukohdeTila.KESKEYTETTY + "' " +
+            "WHERE laskenta_uuid=:uuid " +
+            "AND hakukohdeoid IN (:hakukohdeOids) " +
+            "AND yritykset>=:maxYritykset",
+        parameters);
+
+    // merkitään tekemättömiksi hakukohteet joita ei ole yritetty uudestaan
+    namedParameterJdbcTemplate.update(
+        "UPDATE seuranta_laskenta_hakukohteet " +
+            "SET tila='" + HakukohdeTila.TEKEMATTA + "' " +
+            "WHERE laskenta_uuid=:uuid " +
+            "AND hakukohdeoid IN (:hakukohdeOids) " +
+            "AND yritykset<:maxYritykset",
+        parameters);
+
     this.lisaaIlmoitus(uuid.toString(), hakukohdeOids.size()==1 ? hakukohdeOids.iterator().next() : null, IlmoitusDto.virheilmoitus(message));
+    this.merkkaaLaskentaKasitellyksi(uuid);
   }
 
   private static class Laskenta {

@@ -65,7 +65,7 @@ public class LaskentaSupervisorImpl {
           .exceptionallyAsync(t -> {
             String msg = "Laskennan %s hakukohteen %s laskenta päättyi virheeseen";
             LOG.error(msg, t);
-            this.transactionTemplate.executeWithoutResult(ts -> this.seurantaDao.merkkaaHakukohteetEpaonnistuneeksi(uuid, hakukohdeOids, msg));
+            this.transactionTemplate.executeWithoutResult(ts -> this.seurantaDao.merkkaaHakukohteetEpaonnistuneeksi(uuid, hakukohdeOids, 1, msg));
             return null;
           });
       }
