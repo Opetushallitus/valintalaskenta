@@ -23,7 +23,7 @@ public class OrganisaatioAsyncResourceImpl implements OrganisaatioAsyncResource 
   }
 
   @Override
-  public CompletableFuture<String> parentoids(String organisaatioId) throws Exception {
+  public CompletableFuture<String> parentoids(String organisaatioId) {
     return this.client
         .getResponse(
             this.urlConfiguration.url("valintalaskentakoostepalvelu.organisaatioService.rest.url")
