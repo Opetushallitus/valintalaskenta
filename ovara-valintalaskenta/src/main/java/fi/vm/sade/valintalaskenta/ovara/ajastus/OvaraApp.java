@@ -7,9 +7,22 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication(scanBasePackages = {})
+@SpringBootApplication(
+    scanBasePackages = {
+      "fi.vm.sade.valintalaskenta.ovara.ajastus",
+      "fi.vm.sade.valintalaskenta.tulos.dao",
+      "fi.vm.sade.valintalaskenta.tulos.dao.impl",
+      "fi.vm.sade.valintalaskenta.tulos.dao.repository",
+      "fi.vm.sade.valintalaskenta.tulos.service.impl"
+    })
 public class OvaraApp implements CommandLineRunner {
   private static final Logger logger = LoggerFactory.getLogger(OvaraApp.class.getName());
+
+  final SiirtotiedostoAjastusService siirtotiedostoAjastusService;
+
+  public OvaraApp(SiirtotiedostoAjastusService siirtotiedostoAjastusService) {
+    this.siirtotiedostoAjastusService = siirtotiedostoAjastusService;
+  }
 
   public static void main(String[] args) {
     logger.info("Hello, ovara world!");
@@ -28,7 +41,7 @@ public class OvaraApp implements CommandLineRunner {
   @Override
   public void run(String... args) throws Exception {
     logger.info("Running!");
-    // siirtotiedostoAjastusService.createNextSiirtotiedosto();
+    siirtotiedostoAjastusService.createNextSiirtotiedosto();
     logger.info("Done running!");
   }
 }

@@ -26,6 +26,6 @@ ovara-valintalaskenta/src/main/resources/ovara-application.yml kanssa yhteensopi
 Käynnistetään ajamalla OvaraApp-luokka. Tämän voi tehdä joko IDEstä (katso alta tarvittavat konffi- ja profiiliparametrit kuntoon)
 tai ajamalla projektin juuresta suoraan ovara-valintalaskennan spring boot-jaria suoraan esimerkiksi näin:
 ``mvn clean install``
-``java -Dspring.config.additional-location=ovara-valintalaskenta/src/main/resources/ovara-application.yml -Dspring.profiles.active=ovara -jar ovara-valintalaskenta/target/ovara-valintaperusteet.jar``
+``java -Dspring.config.additional-location=ovara-valintalaskenta/src/main/resources/ovara-application.yml -Dspring.profiles.active=ovara -jar ovara-valintalaskenta/target/ovara-valintalaskenta.jar``
 
  
