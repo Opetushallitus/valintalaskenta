@@ -27,6 +27,8 @@ public class LaskentaSupervisorImpl {
   private final int maxYhtaaikaisetHaut;
   private final int maxYhtaaikaisetHakukohteet;
 
+  private final String noodiId;
+
   @Autowired
   public LaskentaSupervisorImpl(
       TransactionTemplate transactionTemplate,
@@ -38,6 +40,19 @@ public class LaskentaSupervisorImpl {
     this.seurantaDao = seurantaDao;
     this.maxYhtaaikaisetHaut = maxWorkers;
     this.maxYhtaaikaisetHakukohteet = maxWorkers;
+    this.noodiId = UUID.randomUUID().toString();
+  }
+
+  @Scheduled(initialDelay = 15, fixedDelay = 15, timeUnit = TimeUnit.SECONDS)
+  public void merkkaaNoodiLiveksi() {
+    LOG.debug("Merkataan noodi " + this.noodiId + " liveksi");
+    this.seurantaDao.merkkaaNoodiLiveksi(this.noodiId);
+  }
+
+  @Scheduled(initialDelay = 15, fixedDelay = 15, timeUnit = TimeUnit.SECONDS)
+  public void resetoiKuolleidenNoodienLaskennat() {
+    LOG.debug("Resetoidaan kuolleiden noodien laskennat");
+    this.seurantaDao.resetoiKuolleidenNoodienLaskennat(60);
   }
 
   @Scheduled(initialDelay = 15, fixedDelay = 5, timeUnit = TimeUnit.SECONDS)
@@ -49,7 +64,7 @@ public class LaskentaSupervisorImpl {
           return;
         }
         Optional<ImmutablePair<UUID, Collection<String>>> hakukohteet = this.transactionTemplate.execute(ts ->
-          this.seurantaDao.otaSeuraavatHakukohteetTyonAlle());
+          this.seurantaDao.otaSeuraavatHakukohteetTyonAlle(this.noodiId));
 
         if(!hakukohteet.isPresent()) {
           LOG.info("Ei käynnistettäviä hakukohteita");

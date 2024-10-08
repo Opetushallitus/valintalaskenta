@@ -571,7 +571,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
   }
 
   @Override
-  public Optional<ImmutablePair<UUID, Collection<String>>> otaSeuraavatHakukohteetTyonAlle() {
+  public Optional<ImmutablePair<UUID, Collection<String>>> otaSeuraavatHakukohteetTyonAlle(String noodiId) {
     // haetaan aloitettava hakukohde
     Optional<ImmutablePair<UUID, String>> hakukohde =
         this.jdbcTemplate
@@ -603,13 +603,13 @@ public class SeurantaDaoImpl implements SeurantaDao {
       if(laskenta.getTyyppi()==LaskentaTyyppi.VALINTARYHMA) {
         // jos hakukohde osa valintaryhmälaskentaa, aloitetaan kaikki hakukohteet samalla
         Collection<String> hakukohdeOids = this.jdbcTemplate.query(
-            "UPDATE seuranta_laskenta_hakukohteet SET tila=?, yritykset=yritykset+1 WHERE laskenta_uuid=? RETURNING hakukohdeoid",
-            (rs, rownum) -> rs.getString("hakukohdeoid"), HakukohdeTila.KESKEN.toString(), uuid);
+            "UPDATE seuranta_laskenta_hakukohteet SET tila=?, yritykset=yritykset+1, noodi_id WHERE laskenta_uuid=? RETURNING hakukohdeoid",
+            (rs, rownum) -> rs.getString("hakukohdeoid"), HakukohdeTila.KESKEN.toString(), noodiId, uuid);
         return new ImmutablePair<>(uuid, hakukohdeOids);
       } else {
         // muuten aloitetaan vain kyseinen hakukohde
-        this.jdbcTemplate.update("UPDATE seuranta_laskenta_hakukohteet SET tila=?, yritykset=yritykset+1 WHERE laskenta_uuid=? AND hakukohdeoid=?",
-            HakukohdeTila.KESKEN.toString(), uuid, hakukohdeOid);
+        this.jdbcTemplate.update("UPDATE seuranta_laskenta_hakukohteet SET tila=?, yritykset=yritykset+1, noodi_id=? WHERE laskenta_uuid=? AND hakukohdeoid=?",
+            HakukohdeTila.KESKEN.toString(), noodiId, uuid, hakukohdeOid);
 
         return new ImmutablePair<>(uuid, Collections.singleton(hakukohdeOid));
       }
@@ -675,6 +675,22 @@ public class SeurantaDaoImpl implements SeurantaDao {
 
     this.lisaaIlmoitus(uuid.toString(), hakukohdeOids.size()==1 ? hakukohdeOids.iterator().next() : null, IlmoitusDto.virheilmoitus(message));
     this.merkkaaLaskentaKasitellyksi(uuid);
+  }
+
+  @Override
+  public void merkkaaNoodiLiveksi(String noodiId) {
+    this.jdbcTemplate.update("INSERT INTO noodit (noodi_id, alive) VALUES(?, now()) ON CONFLICT (noodi_id) DO UPDATE SET alive=now()", noodiId);
+  }
+
+  @Override
+  public void resetoiKuolleidenNoodienLaskennat(int viive) {
+    this.jdbcTemplate.update(
+        "UPDATE seuranta_laskenta_hakukohteet " +
+            "SET tila=?, yritykset=0, noodi_id=null " +
+            "FROM noodit " +
+            "WHERE seuranta_laskenta_hakukohteet.noodi_id=noodit.noodi_id " +
+            "AND noodit.alive<?::timestamptz",
+        HakukohdeTila.TEKEMATTA.toString(), Instant.now().minusSeconds(viive).toString());
   }
 
   private static class Laskenta {

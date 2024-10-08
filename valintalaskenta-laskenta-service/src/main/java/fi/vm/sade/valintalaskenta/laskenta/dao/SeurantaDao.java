@@ -70,10 +70,13 @@ public interface SeurantaDao {
 
   int haeKaynnissaOlevienHakukohteidenMaara();
 
-  Optional<ImmutablePair<UUID, Collection<String>>> otaSeuraavatHakukohteetTyonAlle();
+  Optional<ImmutablePair<UUID, Collection<String>>> otaSeuraavatHakukohteetTyonAlle(String noodiId);
 
   void merkkaaHakukohteetValmiiksi(UUID uuid, Collection<String> hakukohdeOids);
 
   void merkkaaHakukohteetEpaonnistuneeksi(UUID uuid, Collection<String> hakukohdeOids, int maxYritykset, String message);
 
+  void merkkaaNoodiLiveksi(String noodiId);
+
+  void resetoiKuolleidenNoodienLaskennat(int viive);
 }
