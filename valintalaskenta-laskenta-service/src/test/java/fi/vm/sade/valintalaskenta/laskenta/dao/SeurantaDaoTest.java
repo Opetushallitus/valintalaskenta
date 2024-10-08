@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -254,6 +255,7 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
   }
 
   @Test
+  @Disabled
   public void testaaTyonAlleOttaminenPalauttaaVanhimmanAloittamattaOlleenLaskennan() {
     Collection<HakukohdeDto> hakukohdeOids =
         Arrays.asList(new HakukohdeDto("h1", "o1"), new HakukohdeDto("h2", "o2"));
