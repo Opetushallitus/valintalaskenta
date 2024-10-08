@@ -11,15 +11,10 @@ import fi.vm.sade.tarjonta.service.resources.v1.dto.*;
 import fi.vm.sade.tarjonta.service.resources.v1.dto.koulutus.KoulutusV1RDTO;
 import fi.vm.sade.valinta.kooste.external.resource.HttpClient;
 import fi.vm.sade.valinta.kooste.external.resource.UrlConfiguration;
-import fi.vm.sade.valinta.kooste.external.resource.tarjonta.KoutaHakukohde;
-import fi.vm.sade.valinta.kooste.external.resource.tarjonta.dto.HakukohderyhmaHakukohde;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.dto.KoutaHakukohdeDTO;
-import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.OhjausparametritAsyncResource;
-import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.dto.ParametritDTO;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.*;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.dto.*;
 import fi.vm.sade.valinta.kooste.external.resource.RestCasClient;
-import fi.vm.sade.valinta.kooste.util.CompletableFutureUtil;
 import fi.vm.sade.valinta.sharedutils.http.DateDeserializer;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -43,8 +38,6 @@ public class TarjontaAsyncResourceImpl implements TarjontaAsyncResource {
   private final RestCasClient koutaClient;
   private final RestCasClient hakukohderyhmapalveluClient;
 
-  // TODO: yritä päästä tästä eroon!!!
-  private final OhjausparametritAsyncResource ohjausparametritAsyncResource;
   private final Integer KOUTA_OID_LENGTH = 35;
 
   private static final Logger LOG = LoggerFactory.getLogger(TarjontaAsyncResourceImpl.class);
@@ -56,13 +49,15 @@ public class TarjontaAsyncResourceImpl implements TarjontaAsyncResource {
   public TarjontaAsyncResourceImpl(
       @Qualifier("TarjontaHttpClient") HttpClient client,
       @Qualifier("KoutaCasClient") RestCasClient koutaClient,
-      @Qualifier("HakukohderyhmapalveluCasClient") RestCasClient hakukohderyhmapalveluClient,
-      @Qualifier("OhjausparametritAsyncResourceImpl")
-          OhjausparametritAsyncResource ohjausparametritAsyncResource) {
+      @Qualifier("HakukohderyhmapalveluCasClient") RestCasClient hakukohderyhmapalveluClient) {
     this.client = client;
     this.koutaClient = koutaClient;
     this.hakukohderyhmapalveluClient = hakukohderyhmapalveluClient;
-    this.ohjausparametritAsyncResource = ohjausparametritAsyncResource;
+  }
+
+  private static <T> CompletableFuture<List<T>> sequence(List<CompletableFuture<T>> fs) {
+    return CompletableFuture.allOf(fs.toArray(CompletableFuture[]::new))
+        .thenApplyAsync(v -> fs.stream().map(CompletableFuture::join).collect(Collectors.toList()));
   }
 
   @Override
@@ -87,7 +82,7 @@ public class TarjontaAsyncResourceImpl implements TarjontaAsyncResource {
                         .collect(Collectors.toSet()));
 
     CompletableFuture<List<List<String>>> fromHakukohderyhmapalvelu =
-        CompletableFutureUtil.sequence(
+        sequence(
             StreamSupport.stream(organizationGroupOids.spliterator(), false)
                 .map(this::hakukohderyhmanHakukohteet)
                 .collect(Collectors.toList()));
@@ -143,7 +138,7 @@ public class TarjontaAsyncResourceImpl implements TarjontaAsyncResource {
                         .map(ResultHakukohde::getOid)
                         .collect(Collectors.toSet()));
     CompletableFuture<List<Set<String>>> koutaF =
-        CompletableFutureUtil.sequence(
+        sequence(
             StreamSupport.stream(organizationOids.spliterator(), false)
                 .map(
                     organizationOid -> {
@@ -185,8 +180,6 @@ public class TarjontaAsyncResourceImpl implements TarjontaAsyncResource {
   @Override
   public CompletableFuture<Haku> haeHaku(String hakuOid) {
     if (KOUTA_OID_LENGTH.equals(hakuOid.length())) {
-      CompletableFuture<ParametritDTO> parametritF =
-          ohjausparametritAsyncResource.haeHaunOhjausparametrit(hakuOid);
       CompletableFuture<KoutaHaku> koutaF =
           this.koutaClient.get(
               urlConfiguration.url("kouta-internal.haku.hakuoid", hakuOid),
@@ -194,80 +187,10 @@ public class TarjontaAsyncResourceImpl implements TarjontaAsyncResource {
               Collections.emptyMap(),
               10 * 1000);
       return koutaF
-          .thenApplyAsync(Haku::new)
-          .thenCombineAsync(
-              parametritF,
-              (haku, parametrit) ->
-                  haku.withSynteettisetHakemukset(parametrit.getSynteettisetHakemukset()));
+          .thenApplyAsync(Haku::new);
     } else {
       return this.getTarjontaHaku(hakuOid).thenApplyAsync(Haku::new);
     }
-  }
-
-  @Override
-  public CompletableFuture<Map<String, List<String>>> hakukohdeRyhmasForHakukohdes(String hakuOid) {
-    if (KOUTA_OID_LENGTH.equals(hakuOid.length())) {
-      CompletableFuture<Set<KoutaHakukohde>> koutaF = this.findKoutaHakukohteetForHaku(hakuOid);
-      return koutaF.thenComposeAsync(this::findHakukohderyhmasForHakukohteet);
-    } else {
-      CompletableFuture<ResultSearch> tarjontaF = this.findTarjontaHakukohteetForHaku(hakuOid);
-      return tarjontaF.thenApplyAsync(TarjontaAsyncResourceImpl::resultSearchToHakukohdeRyhmaMap);
-    }
-  }
-
-  private CompletableFuture<ResultSearch> findTarjontaHakukohteetForHaku(String hakuOid) {
-    Map<String, String> tarjontaParameters = new HashMap<>();
-    tarjontaParameters.put("hakuOid", hakuOid);
-    return this.client.getJson(
-        urlConfiguration.url("tarjonta-service.hakukohde.search", tarjontaParameters),
-        Duration.ofMinutes(5),
-        new TypeToken<ResultSearch>() {}.getType());
-  }
-
-  private CompletableFuture<Set<KoutaHakukohde>> findKoutaHakukohteetForHaku(String hakuOid) {
-    Map<String, String> koutaParameters = new HashMap<>();
-    koutaParameters.put("haku", hakuOid);
-    return this.koutaClient.get(
-        urlConfiguration.url("kouta-internal.hakukohde.search", koutaParameters),
-        new TypeToken<Set<KoutaHakukohde>>() {},
-        Collections.emptyMap(),
-        60 * 1000);
-  }
-
-  private CompletableFuture<Map<String, List<String>>> findHakukohderyhmasForHakukohteet(
-      Set<KoutaHakukohde> hakukohdes) {
-    List<String> hakukohdeOids = hakukohdes.stream().map(hk -> hk.oid).collect(Collectors.toList());
-    Type inputType = new TypeToken<List<String>>() {}.getType();
-    TypeToken outputType = new TypeToken<List<HakukohderyhmaHakukohde>>() {};
-
-    return ((CompletableFuture<List<HakukohderyhmaHakukohde>>)
-            this.hakukohderyhmapalveluClient.post(
-                urlConfiguration.url("hakukohderyhmapalvelu.hakukohderyhma.search-by-hakukohteet"),
-                outputType,
-                hakukohdeOids,
-                Collections.emptyMap(),
-                60 * 1000))
-        .thenApplyAsync(
-            r ->
-                r.stream()
-                    .collect(
-                        Collectors.toMap(
-                            HakukohderyhmaHakukohde::getHakukohdeOid,
-                            HakukohderyhmaHakukohde::getHakukohderyhmat)));
-  }
-
-  public static Map<String, List<String>> resultSearchToHakukohdeRyhmaMap(ResultSearch result) {
-    return result.getResult().getTulokset().stream()
-        .flatMap(t -> t.getTulokset().stream())
-        .collect(
-            Collectors.toMap(
-                ResultHakukohde::getOid,
-                hk ->
-                    hk.getRyhmaliitokset() == null
-                        ? Collections.emptyList()
-                        : hk.getRyhmaliitokset().stream()
-                            .map(ResultRyhmaliitos::getRyhmaOid)
-                            .collect(Collectors.toList())));
   }
 
   public static Gson getGson() {
