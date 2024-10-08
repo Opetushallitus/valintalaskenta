@@ -560,13 +560,19 @@ public class SeurantaDaoImpl implements SeurantaDao {
   }
 
   @Override
-  public int haeKaynnissaOlevienHakukohteidenMaara() {
-    return this.jdbcTemplate.queryForObject("SELECT count(1) FROM seuranta_laskenta_hakukohteet WHERE tila=?", Integer.class, HakukohdeTila.KESKEN.toString());
-  }
-
-  @Override
-  public Optional<ImmutablePair<UUID, Collection<String>>> otaSeuraavatHakukohteetTyonAlle(String noodiId) {
+  public Optional<ImmutablePair<UUID, Collection<String>>> otaSeuraavatHakukohteetTyonAlle(String noodiId, int maxYhtaaikaisetHakukohteet) {
     return this.transactionTemplate.execute(t -> {
+      // haetaan hakukohteiden määrä
+      int noodillaAjossa = this.jdbcTemplate.queryForObject(
+          "SELECT count(1) " +
+              "FROM seuranta_laskenta_hakukohteet " +
+              "WHERE tila=? " +
+              "AND noodi_id=?",
+          Integer.class, HakukohdeTila.KESKEN.toString(), noodiId);
+      if(noodillaAjossa>=maxYhtaaikaisetHakukohteet) {
+        return Optional.empty();
+      }
+
       // haetaan aloitettava hakukohde
       Optional<ImmutablePair<UUID, String>> hakukohde =
           this.jdbcTemplate

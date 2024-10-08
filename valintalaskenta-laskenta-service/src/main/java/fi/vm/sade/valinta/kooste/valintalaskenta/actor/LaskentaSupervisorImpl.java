@@ -52,13 +52,9 @@ public class LaskentaSupervisorImpl {
   @Scheduled(initialDelay = 15, fixedDelay = 5, timeUnit = TimeUnit.SECONDS)
   public void fetchAndStartHakukohde() {
     try {
+      LOG.debug("Käynnistetään hakukohteiden laskennat");
       while(true) {
-        if(this.seurantaDao.haeKaynnissaOlevienHakukohteidenMaara()>=this.maxYhtaaikaisetHakukohteet) {
-          LOG.debug("Maksimäärä hakukohteita käynnissä");
-          return;
-        }
-        Optional<ImmutablePair<UUID, Collection<String>>> hakukohteet = this.seurantaDao.otaSeuraavatHakukohteetTyonAlle(this.noodiId);
-
+        Optional<ImmutablePair<UUID, Collection<String>>> hakukohteet = this.seurantaDao.otaSeuraavatHakukohteetTyonAlle(this.noodiId, this.maxYhtaaikaisetHakukohteet);
         if(!hakukohteet.isPresent()) {
           LOG.debug("Ei käynnistettäviä hakukohteita");
           return;

@@ -66,9 +66,7 @@ public interface SeurantaDao {
 
   Collection<LaskentaDto> haeKaynnissaOlevatLaskennat();
 
-  int haeKaynnissaOlevienHakukohteidenMaara();
-
-  Optional<ImmutablePair<UUID, Collection<String>>> otaSeuraavatHakukohteetTyonAlle(String noodiId);
+  Optional<ImmutablePair<UUID, Collection<String>>> otaSeuraavatHakukohteetTyonAlle(String noodiId, int maxYhtaaikaisetHakukohteet);
 
   void merkkaaHakukohteetValmiiksi(UUID uuid, Collection<String> hakukohdeOids);
 
