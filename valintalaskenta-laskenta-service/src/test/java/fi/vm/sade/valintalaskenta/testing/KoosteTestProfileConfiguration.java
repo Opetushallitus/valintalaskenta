@@ -13,16 +13,6 @@ public class KoosteTestProfileConfiguration {
       new RestCasClient(
           request -> asyncHttpClient.executeRequest(request).toCompletableFuture()) {};
 
-  @Bean(name = "AtaruCasClient")
-  public RestCasClient getAtaruCasClient() {
-    return REST_CAS_CLIENT;
-  }
-
-  @Bean(name = "HakuAppCasClient")
-  public RestCasClient getHakuAppCasClient() {
-    return REST_CAS_CLIENT;
-  }
-
   @Bean(name = "HakukohderyhmapalveluCasClient")
   public RestCasClient getHakukohderyhmapalveluCasClient() {
     return REST_CAS_CLIENT;
@@ -30,21 +20,6 @@ public class KoosteTestProfileConfiguration {
 
   @Bean(name = "KoutaCasClient")
   public RestCasClient getKoutaCasClient() {
-    return REST_CAS_CLIENT;
-  }
-
-  @Bean(name = "OppijanumerorekisteriCasClient")
-  public RestCasClient getOppijanumerorekisteriCasClient() {
-    return REST_CAS_CLIENT;
-  }
-
-  @Bean(name = "ValintapisteServiceCasClient")
-  public RestCasClient getValintapisteServiceCasClient() {
-    return REST_CAS_CLIENT;
-  }
-
-  @Bean(name = "SuoritusrekisteriCasClient")
-  public RestCasClient getSuoritusrekisteriCasClient() {
     return REST_CAS_CLIENT;
   }
 
