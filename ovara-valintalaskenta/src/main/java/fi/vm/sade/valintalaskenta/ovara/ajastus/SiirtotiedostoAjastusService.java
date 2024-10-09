@@ -41,14 +41,18 @@ public class SiirtotiedostoAjastusService {
     try {
       Map<String, String> infoMap = new HashMap<>();
 
-      String osallistumisetResult = siirtotiedostoService.createSiirtotiedostotForValintakoeOsallistumiset(uusi.getWindowStart().toLocalDateTime(), uusi.getWindowEnd().toLocalDateTime());
-      String tuloksetResult = siirtotiedostoService.createSiirtotiedostotForValintalaskennanTulokset(uusi.getWindowStart().toLocalDateTime(), uusi.getWindowEnd().toLocalDateTime());
+      String osallistumisetResult =
+          siirtotiedostoService.createSiirtotiedostotForValintakoeOsallistumiset(
+              uusi.getWindowStart().toLocalDateTime(), uusi.getWindowEnd().toLocalDateTime());
+      String tuloksetResult =
+          siirtotiedostoService.createSiirtotiedostotForValintalaskennanTulokset(
+              uusi.getWindowStart().toLocalDateTime(), uusi.getWindowEnd().toLocalDateTime());
       logger.info("Osallistumiset: {}", osallistumisetResult);
       logger.info("Tulokset: {}", tuloksetResult);
       infoMap.put("Tulokset", tuloksetResult);
       infoMap.put("Osallistumiset", osallistumisetResult);
 
-      //Todo, infon sisältö on nyt vähän ruma.
+      // Todo, infon sisältö on nyt vähän ruma.
       JsonNode jsonNode = mapper.valueToTree(infoMap);
       uusi.setSuccess(true);
       uusi.setInfo(jsonNode.toString());

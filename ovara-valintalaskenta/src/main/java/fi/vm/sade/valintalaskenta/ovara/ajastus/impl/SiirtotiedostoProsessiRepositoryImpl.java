@@ -30,7 +30,9 @@ public class SiirtotiedostoProsessiRepositoryImpl implements SiirtotiedostoProse
                         SELECT execution_uuid, window_start, window_end, run_start, run_end, cast(info as varchar), success, error_message from siirtotiedosto where success order by run_end desc limit 1""";
     List<SiirtotiedostoProsessi> newResult =
         jdbcTemplate.query(sql, new SiirtotiedostoProsessiRowMapper());
-    return newResult.stream().findFirst().get(); //Yksi rivi pitäisi tällä querylla löytyä aina (kts. migraatio)
+    return newResult.stream()
+        .findFirst()
+        .get(); // Yksi rivi pitäisi tällä querylla löytyä aina (kts. migraatio)
   }
 
   @Override
