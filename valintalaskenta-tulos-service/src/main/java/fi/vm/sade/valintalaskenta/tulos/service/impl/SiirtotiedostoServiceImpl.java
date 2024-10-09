@@ -54,7 +54,7 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
   }
 
   @Override
-  public String createSiirtotiedostotForValintakoeOsallistumiset(
+  public JsonObject createSiirtotiedostotForValintakoeOsallistumiset(
       LocalDateTime startDatetime, LocalDateTime endDatatime) {
     String opId = UUID.randomUUID().toString();
     List<String> hakemusOids =
@@ -88,7 +88,7 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
   }
 
   @Override
-  public String createSiirtotiedostotForValintalaskennanTulokset(
+  public JsonObject createSiirtotiedostotForValintalaskennanTulokset(
       LocalDateTime startDatetime, LocalDateTime endDatatime) {
     String opId = UUID.randomUUID().toString();
     List<String> hakukohdeOids =
@@ -118,13 +118,13 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
     return resultJson(siirtotiedostoKeys, hakukohdeOids.size());
   }
 
-  private String resultJson(List<String> siirtotiedostoKeys, int itemCount) {
+  private JsonObject resultJson(List<String> siirtotiedostoKeys, int itemCount) {
     JsonArray keyJson = new JsonArray();
     siirtotiedostoKeys.forEach(key -> keyJson.add(key));
     JsonObject result = new JsonObject();
     result.add("keys", keyJson);
     result.addProperty("total", itemCount);
     result.addProperty("success", true);
-    return result.toString();
+    return result;
   }
 }

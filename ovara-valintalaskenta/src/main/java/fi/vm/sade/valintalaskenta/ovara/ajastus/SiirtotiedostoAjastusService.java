@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.ovara.ajastus;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
 import fi.vm.sade.valintalaskenta.ovara.ajastus.impl.SiirtotiedostoProsessiRepositoryImpl;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.SiirtotiedostoServiceImpl;
 import java.sql.Timestamp;
@@ -41,20 +42,28 @@ public class SiirtotiedostoAjastusService {
     try {
       Map<String, String> infoMap = new HashMap<>();
 
-      String osallistumisetResult =
+      JsonObject osallistumisetResult =
           siirtotiedostoService.createSiirtotiedostotForValintakoeOsallistumiset(
               uusi.getWindowStart().toLocalDateTime(), uusi.getWindowEnd().toLocalDateTime());
-      String tuloksetResult =
+      JsonObject tuloksetResult =
           siirtotiedostoService.createSiirtotiedostotForValintalaskennanTulokset(
               uusi.getWindowStart().toLocalDateTime(), uusi.getWindowEnd().toLocalDateTime());
+      Boolean bothSuccess =
+          osallistumisetResult.get("success").getAsBoolean()
+              && tuloksetResult.get("success").getAsBoolean();
+
       logger.info("Osallistumiset: {}", osallistumisetResult);
       logger.info("Tulokset: {}", tuloksetResult);
-      infoMap.put("Tulokset", tuloksetResult);
-      infoMap.put("Osallistumiset", osallistumisetResult);
 
-      // Todo, infon sisältö on nyt vähän ruma.
+      infoMap.put("Osallistumiset", osallistumisetResult.get("total").toString());
+      infoMap.put("Tulokset", tuloksetResult.get("total").toString());
+
       JsonNode jsonNode = mapper.valueToTree(infoMap);
-      uusi.setSuccess(true);
+      if (bothSuccess) {
+        uusi.setSuccess(true);
+      } else {
+        throw new RuntimeException("Kaikkien siirtotiedostojen muodostaminen ei onnistunut!");
+      }
       uusi.setInfo(jsonNode.toString());
     } catch (Exception e) {
       logger.error(
