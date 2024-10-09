@@ -167,7 +167,7 @@ public class HttpClients {
     String ticketsUrl = UrlConfiguration.getInstance().url("cas.tickets");
     return new RestCasClient(
         new CasConfig.CasConfigBuilder(
-                username, password, ticketsUrl, service, CSRF_VALUE, CALLER_ID, "")
+                username, password, ticketsUrl, service, CSRF_VALUE, CALLER_ID, "/j_spring_cas_security_check")
             .setJsessionName("JSESSIONID")
             .build());
   }
