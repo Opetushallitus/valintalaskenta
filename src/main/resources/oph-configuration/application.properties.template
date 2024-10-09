@@ -1,3 +1,23 @@
+host.virkailija={{host_virkailija}}
+
+valintalaskentakoostepalvelu.koski.username={{valintalaskentakoostepalvelu_koski_username | default("koostepalvelu2koski")}}
+valintalaskentakoostepalvelu.koski.password={{valintalaskentakoostepalvelu_koski_password}}
+
+valintalaskentakoostepalvelu.app.username.to.kouta-internal={{valintalaskentakoostepalvelu_app_username_to_kouta_internal}}
+valintalaskentakoostepalvelu.app.password.to.kouta-internal={{valintalaskentakoostepalvelu_app_password_to_kouta_internal}}
+
+valintalaskentakoostepalvelu.app.username.to.valintatieto={{valintalaskentakoostepalvelu_app_username_to_valintatieto}}
+valintalaskentakoostepalvelu.app.password.to.valintatieto={{valintalaskentakoostepalvelu_app_password_to_valintatieto}}
+
+valintalaskentakoostepalvelu.app.username.to.hakukohderyhmapalvelu={{valintalaskentakoostepalvelu_app_username_to_hakukohderyhmapalvelu}}
+valintalaskentakoostepalvelu.app.password.to.hakukohderyhmapalvelu={{valintalaskentakoostepalvelu_app_password_to_hakukohderyhmapalvelu}}
+
+valintalaskentakoostepalvelu.app.username.to.ataru={{valintalaskentakoostepalvelu_app_username_to_ataru}}
+valintalaskentakoostepalvelu.app.password.to.ataru={{valintalaskentakoostepalvelu_app_password_to_ataru}}
+
+valintalaskentakoostepalvelu.app.username.to.haku={{valintalaskentakoostepalvelu_app_username_to_haku}}
+valintalaskentakoostepalvelu.app.password.to.haku={{valintalaskentakoostepalvelu_app_password_to_haku}}
+
 cas.service.oppijanumerorekisteri-service=https://${host.virkailija}/oppijanumerorekisteri-service/j_spring_cas_security_check
 cas.service.haku-service=https://${host.virkailija}/haku-app/j_spring_cas_security_check
 cas.service.suoritusrekisteri=https://${host.virkailija}/suoritusrekisteri/j_spring_cas_security_check
