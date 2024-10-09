@@ -2,9 +2,8 @@ package fi.vm.sade.valintalaskenta.ovara.ajastus.impl;
 
 import fi.vm.sade.valintalaskenta.ovara.ajastus.SiirtotiedostoProsessi;
 import fi.vm.sade.valintalaskenta.ovara.ajastus.SiirtotiedostoProsessiRepository;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import fi.vm.sade.valintalaskenta.ovara.ajastus.mapper.SiirtotiedostoProsessiRowMapper;
+import java.util.List;
 import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,6 @@ public class SiirtotiedostoProsessiRepositoryImpl implements SiirtotiedostoProse
   private static final Logger logger =
       LoggerFactory.getLogger(SiirtotiedostoProsessiRepositoryImpl.class);
 
-  @PersistenceContext private EntityManager entityManager;
   private final JdbcTemplate jdbcTemplate;
 
   public SiirtotiedostoProsessiRepositoryImpl(JdbcTemplate jdbcTemplate) {
@@ -27,12 +25,12 @@ public class SiirtotiedostoProsessiRepositoryImpl implements SiirtotiedostoProse
 
   @Override
   public SiirtotiedostoProsessi findLatestSuccessful() {
-    String sT =
+    String sql =
         """
                         SELECT execution_uuid, window_start, window_end, run_start, run_end, cast(info as varchar), success, error_message from siirtotiedosto where success order by run_end desc limit 1""";
-    Query query = entityManager.createNativeQuery(sT);
-    Object[] result = (Object[]) query.getSingleResult();
-    return new SiirtotiedostoProsessi(result);
+    List<SiirtotiedostoProsessi> newResult =
+        jdbcTemplate.query(sql, new SiirtotiedostoProsessiRowMapper());
+    return newResult.stream().findFirst().get(); //Yksi rivi pitäisi tällä querylla löytyä aina (kts. migraatio)
   }
 
   @Override

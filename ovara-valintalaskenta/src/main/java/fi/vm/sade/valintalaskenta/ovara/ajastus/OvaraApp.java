@@ -10,10 +10,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication(
     scanBasePackages = {
       "fi.vm.sade.valintalaskenta.ovara.ajastus",
+      "fi.vm.sade.valintalaskenta.tulos",
       "fi.vm.sade.valintalaskenta.tulos.dao",
       "fi.vm.sade.valintalaskenta.tulos.dao.impl",
       "fi.vm.sade.valintalaskenta.tulos.dao.repository",
-      "fi.vm.sade.valintalaskenta.tulos.service.impl"
+      "fi.vm.sade.valintalaskenta.tulos.service.impl",
+      "fi.vm.sade.valintalaskenta.tulos.mapping",
+      "fi.vm.sade.valintalaskenta.tulos.logging"
     })
 public class OvaraApp implements CommandLineRunner {
   private static final Logger logger = LoggerFactory.getLogger(OvaraApp.class.getName());

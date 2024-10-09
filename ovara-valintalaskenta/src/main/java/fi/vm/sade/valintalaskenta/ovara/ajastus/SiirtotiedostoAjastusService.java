@@ -4,14 +4,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.valintalaskenta.ovara.ajastus.impl.SiirtotiedostoProsessiRepositoryImpl;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.SiirtotiedostoServiceImpl;
-import java.time.OffsetDateTime;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
+@Profile("ovara")
 public class SiirtotiedostoAjastusService {
 
   ObjectMapper mapper = new ObjectMapper();
@@ -37,14 +39,16 @@ public class SiirtotiedostoAjastusService {
     siirtotiedostoProsessiRepository.persist(uusi);
 
     try {
-      Map<String, Integer> infoMap = new HashMap<>();
-      int total = 0;
-      logger.info("Todo, actually do it :)");
-      // String resultInfo =
-      //        siirtotiedostoServiceImpl.createSiirtotiedostot(
-      //                uusi.getWindowStart().toLocalDateTime(),
-      // uusi.getWindowEnd().toLocalDateTime());
-      infoMap.put("tulokset", total);
+      Map<String, String> infoMap = new HashMap<>();
+
+      String osallistumisetResult = siirtotiedostoService.createSiirtotiedostotForValintakoeOsallistumiset(uusi.getWindowStart().toLocalDateTime(), uusi.getWindowEnd().toLocalDateTime());
+      String tuloksetResult = siirtotiedostoService.createSiirtotiedostotForValintalaskennanTulokset(uusi.getWindowStart().toLocalDateTime(), uusi.getWindowEnd().toLocalDateTime());
+      logger.info("Osallistumiset: {}", osallistumisetResult);
+      logger.info("Tulokset: {}", tuloksetResult);
+      infoMap.put("Tulokset", tuloksetResult);
+      infoMap.put("Osallistumiset", osallistumisetResult);
+
+      //Todo, infon sisältö on nyt vähän ruma.
       JsonNode jsonNode = mapper.valueToTree(infoMap);
       uusi.setSuccess(true);
       uusi.setInfo(jsonNode.toString());
@@ -57,7 +61,7 @@ public class SiirtotiedostoAjastusService {
       uusi.setErrorMessage(e.getMessage());
       uusi.setInfo(null);
     } finally {
-      uusi.setRunEnd(OffsetDateTime.now());
+      uusi.setRunEnd(new Timestamp(System.currentTimeMillis()));
       siirtotiedostoProsessiRepository.persist(uusi);
     }
     return "DONE";

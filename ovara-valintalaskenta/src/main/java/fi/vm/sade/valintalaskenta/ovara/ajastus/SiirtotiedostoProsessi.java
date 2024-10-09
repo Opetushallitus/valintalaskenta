@@ -2,8 +2,6 @@ package fi.vm.sade.valintalaskenta.ovara.ajastus;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.sql.Timestamp;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -14,16 +12,16 @@ public class SiirtotiedostoProsessi {
   private String executionUuid;
 
   @Column(name = "window_start", nullable = false)
-  private OffsetDateTime windowStart;
+  private Timestamp windowStart;
 
   @Column(name = "window_end", nullable = false)
-  private OffsetDateTime windowEnd;
+  private Timestamp windowEnd;
 
   @Column(name = "run_start", nullable = false)
-  private OffsetDateTime runStart;
+  private Timestamp runStart;
 
   @Column(name = "run_end")
-  private OffsetDateTime runEnd;
+  private Timestamp runEnd;
 
   @Column(name = "info")
   private String info;
@@ -38,10 +36,10 @@ public class SiirtotiedostoProsessi {
 
   public SiirtotiedostoProsessi(
       String executionUuid,
-      OffsetDateTime windowStart,
-      OffsetDateTime windodwEnd,
-      OffsetDateTime runStart,
-      OffsetDateTime runEnd,
+      Timestamp windowStart,
+      Timestamp windodwEnd,
+      Timestamp runStart,
+      Timestamp runEnd,
       String info,
       Boolean success,
       String errorMessage) {
@@ -53,17 +51,6 @@ public class SiirtotiedostoProsessi {
     this.info = info;
     this.success = success;
     this.errorMessage = errorMessage;
-  }
-
-  public SiirtotiedostoProsessi(Object[] result) {
-    this.executionUuid = (String) result[0];
-    this.windowStart = ((Timestamp) result[1]).toInstant().atOffset(ZoneOffset.UTC);
-    this.windowEnd = ((Timestamp) result[2]).toInstant().atOffset(ZoneOffset.UTC);
-    this.runStart = ((Timestamp) result[3]).toInstant().atOffset(ZoneOffset.UTC);
-    this.runEnd = ((Timestamp) result[4]).toInstant().atOffset(ZoneOffset.UTC);
-    this.info = (String) result[5];
-    this.success = (Boolean) result[6];
-    this.errorMessage = (String) result[7];
   }
 
   public SiirtotiedostoProsessi() {}
@@ -92,19 +79,19 @@ public class SiirtotiedostoProsessi {
     this.info = info;
   }
 
-  public OffsetDateTime getWindowEnd() {
+  public Timestamp getWindowEnd() {
     return windowEnd;
   }
 
-  public void setWindowEnd(OffsetDateTime windowEnd) {
+  public void setWindowEnd(Timestamp windowEnd) {
     this.windowEnd = windowEnd;
   }
 
-  public OffsetDateTime getWindowStart() {
+  public Timestamp getWindowStart() {
     return windowStart;
   }
 
-  public void setWindowStart(OffsetDateTime windowStart) {
+  public void setWindowStart(Timestamp windowStart) {
     this.windowStart = windowStart;
   }
 
@@ -116,19 +103,19 @@ public class SiirtotiedostoProsessi {
     this.executionUuid = executionUuid;
   }
 
-  public OffsetDateTime getRunEnd() {
+  public Timestamp getRunEnd() {
     return runEnd;
   }
 
-  public void setRunEnd(OffsetDateTime runEnd) {
+  public void setRunEnd(Timestamp runEnd) {
     this.runEnd = runEnd;
   }
 
-  public OffsetDateTime getRunStart() {
+  public Timestamp getRunStart() {
     return runStart;
   }
 
-  public void setRunStart(OffsetDateTime runStart) {
+  public void setRunStart(Timestamp runStart) {
     this.runStart = runStart;
   }
 
@@ -136,8 +123,8 @@ public class SiirtotiedostoProsessi {
     return new SiirtotiedostoProsessi(
         UUID.randomUUID().toString(),
         this.windowEnd,
-        OffsetDateTime.now(),
-        OffsetDateTime.now(),
+        new Timestamp(System.currentTimeMillis()),
+        new Timestamp(System.currentTimeMillis()),
         null,
         null,
         null,
