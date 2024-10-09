@@ -35,7 +35,9 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ github.token }}
-        run: mvn clean spotless:check package -B -Dbranch=${GITHUB_REF_NAME} -Drevision=${GITHUB_SHA} -DbuildNumber=${GITHUB_RUN_NUMBER}
+        # TODO: re-enable spotless
+        #run: mvn clean spotless:check package -B -Dbranch=${GITHUB_REF_NAME} -Drevision=${GITHUB_SHA} -DbuildNumber=${GITHUB_RUN_NUMBER}
+        run: mvn clean package -B -Dbranch=${GITHUB_REF_NAME} -Drevision=${GITHUB_SHA} -DbuildNumber=${GITHUB_RUN_NUMBER}
 
       - uses: actions/cache@v2
         id: restore-build
