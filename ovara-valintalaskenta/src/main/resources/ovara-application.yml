@@ -16,43 +16,9 @@ valintalaskenta-laskenta-service:
   organisaatio-service:
     url:
 
-springdoc:
-  show-actuator: false
-  paths-to-match: /resources/**
-  api-docs:
-    enabled: true
-  swagger-ui:
-    enabled: true
-
-management:
-  endpoints:
-    enabled-by-default: false
-  endpoint:
-    health:
-      enabled: true
-  metrics:
-    mongo:
-      command:
-        enabled: false
-      connectionpool:
-        enabled: false
-
-server:
-  servlet:
-    context-path: /valintalaskenta-laskenta-service
-  port: 8080
-  tomcat:
-    threads:
-      max: 20
-
 valintalaskenta:
   uses-ssl-proxy: false
   enable-siirtotiedosto-service: true
-
-cas-service:
-  service: http://localhost:${server.port}/valintalaskenta-laskenta-service
-  send-renew: false
-  key: valintalaskenta-laskenta-service
 
 logging:
   level:
@@ -66,42 +32,6 @@ logging:
     org.springframework.web: info
     org.hibernate: info
     com.github.dockerjava: info
-
-host:
-  cas: virkailija.testiopintopolku.fi
-  virkailija: localhost:8080
-  host-virkailija: virkailija.testiopintopolku.fi
-  host-alb: https://virkailija.testiopintopolku.fi
-
-web:
-  url:
-    cas: https://${host.cas}/cas
-
-cas:
-  url: https://${host.cas}/cas
-  login: https://${host.cas}/cas/login
-  service:
-    valintaperusteet-service: ""
-    sijoittelu-service: ""
-    seuranta-service: ""
-
-valintalaskentakoostepalvelu:
-  app:
-    username:
-      to:
-        sijoittelu: username
-    password:
-      to:
-        sijoittelu: password
-  seuranta:
-    rest:
-      url: ""
-  sijoittelu:
-    rest:
-      url: ""
-  valintaperusteet:
-    ilb:
-      url: ""
 
 root:
   organisaatio:
