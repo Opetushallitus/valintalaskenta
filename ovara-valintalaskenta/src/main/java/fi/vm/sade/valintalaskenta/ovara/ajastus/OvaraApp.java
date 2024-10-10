@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication(
     scanBasePackages = {
       "fi.vm.sade.valintalaskenta.ovara.ajastus",
-      "fi.vm.sade.valintalaskenta.tulos",
+      "fi.vm.sade.valintalaskenta.tulos.ovara",
       "fi.vm.sade.valintalaskenta.tulos.dao",
       "fi.vm.sade.valintalaskenta.tulos.dao.impl",
       "fi.vm.sade.valintalaskenta.tulos.dao.repository",
