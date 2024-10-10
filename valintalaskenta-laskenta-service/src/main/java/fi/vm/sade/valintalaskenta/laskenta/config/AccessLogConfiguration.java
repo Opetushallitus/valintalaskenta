@@ -25,6 +25,7 @@ public class AccessLogConfiguration {
                 context -> {
                   LogbackValve logbackValve = new LogbackValve();
                   logbackValve.setFilename("logback-access.xml");
+                  logbackValve.setAsyncSupported(true);
                   context.getPipeline().addValve(logbackValve);
                 });
       }
