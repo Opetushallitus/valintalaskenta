@@ -509,7 +509,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
             "AND NOT EXISTS " +
             "(SELECT 1 FROM seuranta_laskenta_hakukohteet WHERE laskenta_uuid=? AND (tila=? OR tila=?))",
         LaskentaTila.VALMIS.toString(), Instant.now().toString(), uuid, LaskentaTila.MENEILLAAN.toString(), uuid,
-        HakukohdeTila.TEKEMATTA.toString(), HakukohdeTila.KESKEYTETTY.toString());
+        HakukohdeTila.TEKEMATTA.toString(), HakukohdeTila.KESKEN.toString());
   }
 
   @Override
