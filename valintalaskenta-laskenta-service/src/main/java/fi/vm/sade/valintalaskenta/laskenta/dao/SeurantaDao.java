@@ -83,14 +83,6 @@ public interface SeurantaDao {
   LaskentaDto resetoiLaskenta(String uuid, boolean nollaaIlmoitukset);
 
   /**
-   * Palauttaa käynnissäolevat laskennat
-   *
-   * @return
-   */
-  // TODO: onko tämä oikeasti tarpeen, käytetään vain laskennan käynnistyscheckissä ja käyttämättömässä? endpointissa
-  Collection<LaskentaDto> haeKaynnissaOlevatLaskennat();
-
-  /**
    * Merkitsee lasketut hakukohteet valmiiksi. Mikäli laskennan kaikki hakukohteet on laskettu onnistuneesti merkitään
    * laskenta valmiiksi. Mikäli osan hakukohteista on epäonnistunut siirretään laskenta virhetilaan.
    *
