@@ -15,7 +15,7 @@ public class UrlConfiguration extends OphProperties {
     addOptionalFiles(
         Paths.get(
                 System.getProperties().getProperty("user.home"),
-                "/oph-configuration/common.properties")
+                "/oph-configuration/application.properties")
             .toString());
   }
 

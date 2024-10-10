@@ -1,3 +1,5 @@
+host.virkailija={{host_virkailija}}
+
 valintalaskentakoostepalvelu.koski.username={{valintalaskentakoostepalvelu_koski_username | default("koostepalvelu2koski")}}
 valintalaskentakoostepalvelu.koski.password={{valintalaskentakoostepalvelu_koski_password}}
 
