@@ -201,23 +201,6 @@ public class ValintalaskentaResource {
   }
 
   /**
-   * Palauttaa käynnissäolevien laskentojen tilan
-   *
-   * @return
-   */
-  @GetMapping(value = "/status", produces = MediaType.APPLICATION_JSON_VALUE)
-  @Operation(
-      summary = "Valintalaskennan tila",
-      responses = {
-        @ApiResponse(
-            responseCode = "OK",
-            content = @Content(schema = @Schema(implementation = Laskenta.class)))
-      })
-  public List<Laskenta> status() {
-    return luoLaskentaService.runningLaskentas();
-  }
-
-  /**
    * Palauttaa yksittäisen laskennan tilan
    *
    * @param uuid  laskennan tunniste
