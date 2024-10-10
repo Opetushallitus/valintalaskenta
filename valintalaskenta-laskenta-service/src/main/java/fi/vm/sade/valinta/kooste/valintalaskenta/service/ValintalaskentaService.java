@@ -143,7 +143,7 @@ public class ValintalaskentaService {
 
         @Override
         public boolean isOsittainenLaskenta() {
-          throw new UnsupportedOperationException();
+          return true;
         }
       };
       return l;
