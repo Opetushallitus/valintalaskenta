@@ -39,6 +39,8 @@ import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -69,6 +71,8 @@ public class LaskentaActorFactory {
   private final HakemuksetConverterUtil hakemuksetConverterUtil;
   private final OhjausparametritAsyncResource ohjausparametritAsyncResource;
   private final HakukohdeService hakukohdeService;
+  private final ExecutorService executor = Executors.newWorkStealingPool();
+
 
   @Autowired
   public LaskentaActorFactory(
@@ -111,7 +115,7 @@ public class LaskentaActorFactory {
               hakukohdeOids.stream().map(hakukohdeOid -> fetchResourcesForOneLaskenta(
                   hakukohdeOid, koosteAuditSession(laskenta), laskenta, true, true, new Date())
                   .join()).toList())
-          .thenApply(laskeDTOs -> {
+          .thenApplyAsync(laskeDTOs -> {
             /*
              * Tiksussa b15df0500 Merge remote-tracking branch
              * 'origin/VTKU-181__valintaryhmalaskennan_kutsu_pienempiin_paloihin' tämän kutsun siirto
@@ -120,7 +124,7 @@ public class LaskentaActorFactory {
              * yhteen kutsuun.
              */
             return valintalaskentaResource.valintaryhmaLaskenta(laskenta.getUuid(), laskeDTOs);
-          });
+          }, this.executor);
     }
     if (Boolean.TRUE.equals(laskenta.getValintakoelaskenta())) {
       LOG.info("Muodostetaan VALINTAKOELASKENTA");
@@ -130,7 +134,7 @@ public class LaskentaActorFactory {
           laskenta,
           false,
           false,
-          new Date()).thenApply(laskeDTO -> valintalaskentaResource.valintakoeLaskenta(laskeDTO));
+          new Date()).thenApplyAsync(laskeDTO -> valintalaskentaResource.valintakoeLaskenta(laskeDTO), this.executor);
     } else {
       if (laskenta.getValinnanvaihe() == null) {
         LOG.info(
@@ -144,7 +148,7 @@ public class LaskentaActorFactory {
             laskenta,
             false,
             true,
-            new Date()).thenApply(laskeDTO -> valintalaskentaResource.laskeKaikki(laskeDTO));
+            new Date()).thenApplyAsync(laskeDTO -> valintalaskentaResource.laskeKaikki(laskeDTO), this.executor);
       } else {
         LOG.info("(Uuid={}) Haetaan laskennan resursseja hakukohteelle {}", laskenta.getUuid(), hakukohdeOids.iterator().next());
         return fetchResourcesForOneLaskenta(
@@ -153,7 +157,7 @@ public class LaskentaActorFactory {
             laskenta,
             false,
             true,
-            new Date()).thenApply(laskeDTO -> valintalaskentaResource.valintalaskenta(laskeDTO));
+            new Date()).thenApplyAsync(laskeDTO -> valintalaskentaResource.valintalaskenta(laskeDTO), this.executor);
       }
     }
   }
