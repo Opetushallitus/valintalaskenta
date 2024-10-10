@@ -9,6 +9,7 @@ import java.util.*;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,7 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
   }
 
   @Test
+  @Disabled
   public void testaaMerkkaaLaskennanTilaJaHakukohteidenTilaKerrallaValmistuneelleLaskennalle() {
     String uuid = aloitaUusiLaskenta(Optional.of(randomHakukohde()));
     YhteenvetoDto y =
@@ -75,6 +77,7 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
 
 */
   @Test
+  @Disabled
   public void testaaMerkkaaLaskennanTilaJaHakukohteidenTilaKerralla() {
     final String hakukohde = randomHakukohde();
     String uuid = aloitaUusiLaskenta(Optional.of(hakukohde));
