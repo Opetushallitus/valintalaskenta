@@ -576,8 +576,9 @@ public class SeurantaDaoImpl implements SeurantaDao {
             "SET tila=?, yritykset=0, noodi_id=null " +
             "FROM noodit " +
             "WHERE seuranta_laskenta_hakukohteet.noodi_id=noodit.noodi_id " +
+            "AND tila=? " +
             "AND noodit.alive<?::timestamptz",
-        HakukohdeTila.TEKEMATTA.toString(), Instant.now().minusSeconds(viive).toString());
+        HakukohdeTila.TEKEMATTA.toString(), HakukohdeTila.KESKEN.toString(), Instant.now().minusSeconds(viive).toString());
   }
 
   private static class Laskenta {
