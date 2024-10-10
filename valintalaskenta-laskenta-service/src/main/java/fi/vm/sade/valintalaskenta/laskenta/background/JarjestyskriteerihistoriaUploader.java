@@ -7,6 +7,8 @@ import fi.vm.sade.valintalaskenta.tulos.dao.util.JarjestyskriteeriKooderi;
 import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.flywaydb.core.internal.util.ExceptionUtils;
 import org.slf4j.Logger;
@@ -28,6 +30,8 @@ public class JarjestyskriteerihistoriaUploader {
 
   private final String oldVersionBucketName;
 
+  private final Executor executor;
+
   public JarjestyskriteerihistoriaUploader(
       Dokumenttipalvelu dokumenttipalvelu,
       JarjestyskriteerihistoriaDAO historiaDAO,
@@ -35,9 +39,14 @@ public class JarjestyskriteerihistoriaUploader {
     this.dokumenttipalvelu = dokumenttipalvelu;
     this.historiaDAO = historiaDAO;
     this.oldVersionBucketName = oldBucketName;
+    this.executor = Executors.newWorkStealingPool();
   }
 
   @Scheduled(initialDelay = 15, fixedDelay = 10, timeUnit = TimeUnit.SECONDS)
+  public void runJarjestysKriteeriHistoriaUploader() {
+    this.executor.execute(() -> this.moveJarjestyskriteeriHistoriaFromDatabaseToS3());
+  }
+
   public void moveJarjestyskriteeriHistoriaFromDatabaseToS3() {
     List<Jarjestyskriteerihistoria> historyIds = historiaDAO.fetchOldest();
     if (historyIds.isEmpty()) {
