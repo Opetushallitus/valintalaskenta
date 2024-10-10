@@ -57,17 +57,6 @@ public class LuoLaskentaService {
       Optional<Maski> maski,
       boolean isErillishaku,
       List<HakukohdeViiteDTO> hakukohdeViitteet) {
-    Optional<String> uuidForExistingNonMaskedLaskenta =
-        uuidForExistingNonMaskedLaskenta(maski, hakuOid);
-
-    if (uuidForExistingNonMaskedLaskenta.isPresent()) {
-      String uuid = uuidForExistingNonMaskedLaskenta.get();
-      LOG.warn(
-          "Laskenta on jo kaynnissa haulle {} joten palautetaan seurantatunnus({}) ajossa olevaan hakuun",
-          uuid,
-          uuid);
-      return new TunnisteDto(uuid, false);
-    }
 
     LOG.info("Aloitetaan laskenta haulle {}", hakuOid);
     Collection<HakukohdeJaOrganisaatio> haunHakukohteetOids =
@@ -113,41 +102,8 @@ public class LuoLaskentaService {
     seurantaDao.peruutaLaskenta(uuid, Optional.of(ilmoitus("Peruutettu käyttäjän toimesta")));
   }
 
-  private Optional<Laskenta> haeAjossaOlevaLaskentaHaulle(final String hakuOid) {
-    return this.runningLaskentas().stream()
-        .filter(l -> hakuOid.equals(l.getHakuOid()) && !l.isOsittainenLaskenta())
-        .findFirst();
-  }
-
   public Optional<LaskentaDto> haeLaskenta(String uuid) {
     return Optional.ofNullable(seurantaDao.haeLaskenta(uuid).get());
-  }
-
-  public List<Laskenta> runningLaskentas() {
-    return seurantaDao.haeKaynnissaOlevatLaskennat().stream().map(laskenta -> {
-      Laskenta l = new Laskenta() {
-        @Override
-        public boolean isValmis() {
-          return laskenta.getTila()==LaskentaTila.VALMIS;
-        }
-
-        @Override
-        public String getUuid() {
-          return laskenta.getUuid();
-        }
-
-        @Override
-        public String getHakuOid() {
-          return laskenta.getHakuOid();
-        }
-
-        @Override
-        public boolean isOsittainenLaskenta() {
-          throw new UnsupportedOperationException();
-        }
-      };
-      return l;
-    }).toList();
   }
 
   public Optional<Laskenta> fetchLaskenta(String uuid) {
@@ -165,11 +121,6 @@ public class LuoLaskentaService {
       @Override
       public String getHakuOid() {
         return laskenta.getHakuOid();
-      }
-
-      @Override
-      public boolean isOsittainenLaskenta() {
-        throw new UnsupportedOperationException();
       }
     });
   }
@@ -245,13 +196,5 @@ public class LuoLaskentaService {
         .filter(hk -> hk.getOrganisaatioOid() != null)
         .map(hk -> new HakukohdeDto(hk.getHakukohdeOid(), hk.getOrganisaatioOid()))
         .collect(Collectors.toList());
-  }
-
-  private Optional<String> uuidForExistingNonMaskedLaskenta(Optional<Maski> maski, String hakuOid) {
-    final Optional<Laskenta> ajossaOlevaLaskentaHaulle =
-        !maski.isPresent() || !maski.get().isMask()
-            ? haeAjossaOlevaLaskentaHaulle(hakuOid)
-            : Optional.empty();
-    return ajossaOlevaLaskentaHaulle.map(Laskenta::getUuid);
   }
 }
