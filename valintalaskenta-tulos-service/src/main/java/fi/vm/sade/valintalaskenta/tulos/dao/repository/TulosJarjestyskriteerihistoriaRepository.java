@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 public interface TulosJarjestyskriteerihistoriaRepository
     extends CrudRepository<Jarjestyskriteerihistoria, Long> {
 
-  @Query("select * from Jarjestyskriteerihistoria ORDER BY id ASC LIMIT 1000")
+  @Query("SELECT * FROM Jarjestyskriteerihistoria ORDER BY id ASC LIMIT 100 FOR UPDATE SKIP LOCKED")
   List<Jarjestyskriteerihistoria> fetchOldest();
 
   @Query(
