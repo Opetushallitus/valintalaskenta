@@ -416,18 +416,6 @@ public class SeurantaDaoImpl implements SeurantaDao {
   }
 
   @Override
-  public Collection<LaskentaDto> haeKaynnissaOlevatLaskennat() {
-    return this.transactionTemplate.execute(t -> {
-      Collection<UUID> uuids =
-          this.jdbcTemplate.query(
-              "SELECT uuid FROM seuranta_laskennat WHERE tila=?",
-              uuidRowMapper,
-              LaskentaTila.MENEILLAAN.toString());
-      return this.getLaskennat(uuids).stream().map(l -> l.asDto(jonosijaProvider(), false)).toList();
-    });
-  }
-
-  @Override
   public Optional<ImmutablePair<UUID, Collection<String>>> otaSeuraavatHakukohteetTyonAlle(String noodiId, int maxYhtaaikaisetHakukohteet) {
     return this.transactionTemplate.execute(t -> {
       // haetaan hakukohteiden määrä
