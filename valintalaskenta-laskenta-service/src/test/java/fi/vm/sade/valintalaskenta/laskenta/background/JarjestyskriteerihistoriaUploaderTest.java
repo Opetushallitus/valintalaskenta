@@ -12,6 +12,9 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.transaction.TransactionException;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionOperations;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
 public class JarjestyskriteerihistoriaUploaderTest {
@@ -21,7 +24,12 @@ public class JarjestyskriteerihistoriaUploaderTest {
   private final JarjestyskriteerihistoriaDAO dao = Mockito.mock(JarjestyskriteerihistoriaDAO.class);
 
   private final JarjestyskriteerihistoriaUploader uploader =
-      new JarjestyskriteerihistoriaUploader(dokumenttipalvelu, dao, "old");
+      new JarjestyskriteerihistoriaUploader(dokumenttipalvelu, dao, new TransactionOperations() {
+        @Override
+        public <T> T execute(TransactionCallback<T> action) throws TransactionException {
+          return action.doInTransaction(null);
+        }
+      }, "old");
 
   @BeforeEach
   public void init() {
