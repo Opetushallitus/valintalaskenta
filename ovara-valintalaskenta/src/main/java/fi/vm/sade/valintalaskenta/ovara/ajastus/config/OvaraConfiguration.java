@@ -11,7 +11,8 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 @EnableJdbcRepositories(
     basePackages = {
       "fi.vm.sade.valintalaskenta.tulos.dao.repository",
-      "fi.vm.sade.valintalaskenta.laskenta.dao.repository"
+      "fi.vm.sade.valintalaskenta.laskenta.dao.repository",
+      "fi.vm.sade.valintalaskenta.ovara.ajastus.repository"
     })
 public class OvaraConfiguration {
 

@@ -1,51 +1,52 @@
 package fi.vm.sade.valintalaskenta.ovara.ajastus;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.sql.Timestamp;
 import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Id;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceCreator;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
+@Table("siirtotiedosto")
 public class SiirtotiedostoProsessi {
   @Id
-  @Column(name = "execution_uuid")
-  private String executionUuid;
+  @Column("execution_uuid")
+  private UUID executionUuid;
 
-  @Column(name = "window_start", nullable = false)
+  @Column("window_start")
   private Timestamp windowStart;
 
-  @Column(name = "window_end", nullable = false)
+  @Column("window_end")
   private Timestamp windowEnd;
 
-  @Column(name = "run_start", nullable = false)
+  @Column("run_start")
   private Timestamp runStart;
 
-  @Column(name = "run_end")
+  @Column("run_end")
   private Timestamp runEnd;
 
-  @Column(name = "info")
-  private String info;
+  @Column("info")
+  private SiirtotiedostoInfo info;
 
-  @Column(name = "success")
+  @Column("success")
   private Boolean success;
 
-  @Column(name = "error_message")
+  @Column("error_message")
   private String errorMessage;
 
-  ObjectMapper mapper = new ObjectMapper();
-
+  @PersistenceCreator
   public SiirtotiedostoProsessi(
-      String executionUuid,
+      UUID executionUuid,
       Timestamp windowStart,
-      Timestamp windodwEnd,
+      Timestamp windowEnd,
       Timestamp runStart,
       Timestamp runEnd,
-      String info,
+      SiirtotiedostoInfo info,
       Boolean success,
       String errorMessage) {
     this.executionUuid = executionUuid;
     this.windowStart = windowStart;
-    this.windowEnd = windodwEnd;
+    this.windowEnd = windowEnd;
     this.runStart = runStart;
     this.runEnd = runEnd;
     this.info = info;
@@ -71,11 +72,11 @@ public class SiirtotiedostoProsessi {
     this.success = success;
   }
 
-  public String getInfo() {
+  public SiirtotiedostoInfo getInfo() {
     return info;
   }
 
-  public void setInfo(String info) {
+  public void setInfo(SiirtotiedostoInfo info) {
     this.info = info;
   }
 
@@ -95,11 +96,11 @@ public class SiirtotiedostoProsessi {
     this.windowStart = windowStart;
   }
 
-  public String getExecutionUuid() {
+  public UUID getExecutionUuid() {
     return executionUuid;
   }
 
-  public void setExecutionUuid(String executionUuid) {
+  public void setExecutionUuid(UUID executionUuid) {
     this.executionUuid = executionUuid;
   }
 
@@ -120,15 +121,17 @@ public class SiirtotiedostoProsessi {
   }
 
   public SiirtotiedostoProsessi createNewProcessBasedOnThis() {
-    return new SiirtotiedostoProsessi(
-        UUID.randomUUID().toString(),
-        this.windowEnd,
-        new Timestamp(System.currentTimeMillis()),
-        new Timestamp(System.currentTimeMillis()),
-        null,
-        null,
-        null,
-        "");
+    SiirtotiedostoProsessi uusi =
+        new SiirtotiedostoProsessi(
+            null,
+            this.windowEnd,
+            new Timestamp(System.currentTimeMillis()),
+            new Timestamp(System.currentTimeMillis()),
+            null,
+            null,
+            null,
+            "");
+    return uusi;
   }
 
   @Override
