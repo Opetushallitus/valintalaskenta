@@ -14,4 +14,9 @@ public class SiirtotiedostoInfo {
     this.tuloksia = tuloksia;
     this.osallistumisia = osallistumisia;
   }
+
+  @Override
+  public String toString() {
+    return String.format("Tuloksia %s, osallistumisia %s", tuloksia, osallistumisia);
+  }
 }

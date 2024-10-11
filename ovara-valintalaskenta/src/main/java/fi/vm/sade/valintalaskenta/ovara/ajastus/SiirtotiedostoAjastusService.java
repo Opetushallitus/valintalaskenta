@@ -70,6 +70,7 @@ public class SiirtotiedostoAjastusService {
       uusi.setInfo(null);
     } finally {
       uusi.setRunEnd(new Timestamp(System.currentTimeMillis()));
+      logger.info("Persistoidaan prosessi {}", uusi);
       siirtotiedostoProsessiRepository.save(uusi);
     }
   }
