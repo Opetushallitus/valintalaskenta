@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Cache local Maven repository
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -22,7 +22,7 @@ jobs:
             ${{ runner.os }}-maven-  
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -37,7 +37,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: mvn clean spotless:check package -B -Dbranch=${GITHUB_REF_NAME} -Drevision=${GITHUB_SHA} -DbuildNumber=${GITHUB_RUN_NUMBER}
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         id: restore-build
         with:
           path: |
@@ -46,6 +46,7 @@ jobs:
             valintalaskenta-laskenta-api/target
             valintalaskenta-laskenta-service/target
             valintalaskenta-tulos-service/target
+            ovara-valintalaskenta/target
           key: ${{ github.sha }}
 
   deploy-container:
@@ -53,9 +54,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         id: restore-build
         with:
           path: |
@@ -64,6 +65,7 @@ jobs:
             valintalaskenta-laskenta-api/target
             valintalaskenta-laskenta-service/target
             valintalaskenta-tulos-service/target
+            ovara-valintalaskenta/target
           key: ${{ github.sha }}
 
       - name: Build and deploy Docker container
@@ -74,9 +76,20 @@ jobs:
         run: |
           git clone https://github.com/Opetushallitus/ci-tools.git
           source ci-tools/common/setup-tools.sh
+          
           export ARTIFACT_NAME="valintalaskenta"
-          mv valintalaskenta-laskenta-service/target/valintalaskenta-laskenta-service.jar $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}.jar
+          mv valintalaskenta-laskenta-service/target/valintalaskenta-laskenta-service-exec.jar $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}.jar
           cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
+          export BASE_IMAGE="baseimage-fatjar-openjdk17:master"
+          ./ci-tools/common/pull-image.sh
+          ./ci-tools/github-build/build-fatjar.sh $ARTIFACT_NAME
+          ./ci-tools/github-build/upload-image.sh $ARTIFACT_NAME
+
+          ./ci-tools/common/clean-docker-build-dir.sh
+
+          export ARTIFACT_NAME="ovara-valintalaskenta"
+          mv ovara-valintalaskenta/target/ovara-valintalaskenta.jar $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}.jar
+          cp -vr ovara-valintalaskenta/src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
           export BASE_IMAGE="baseimage-fatjar-openjdk17:master"
           ./ci-tools/common/pull-image.sh
           ./ci-tools/github-build/build-fatjar.sh $ARTIFACT_NAME
@@ -87,9 +100,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         id: restore-build
         with:
           path: |
@@ -98,10 +111,11 @@ jobs:
             valintalaskenta-laskenta-api/target
             valintalaskenta-laskenta-service/target
             valintalaskenta-tulos-service/target
+            ovara-valintalaskenta/target
           key: ${{ github.sha }}
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
