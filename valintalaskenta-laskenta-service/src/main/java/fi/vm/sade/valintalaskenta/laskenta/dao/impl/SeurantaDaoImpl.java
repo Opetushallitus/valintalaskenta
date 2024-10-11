@@ -254,34 +254,6 @@ public class SeurantaDaoImpl implements SeurantaDao {
         .orElse(null);
   }
 
-  private YhteenvetoDto merkkaaTila(
-      String uuid, LaskentaTila tila, Optional<IlmoitusDto> ilmoitusDtoOptional) {
-    return this.transactionTemplate.execute(t -> {
-      this.jdbcTemplate.update(
-          "UPDATE seuranta_laskennat SET tila=? WHERE uuid=?::uuid AND tila=?",
-          tila.toString(),
-          uuid,
-          LaskentaTila.MENEILLAAN.toString());
-
-      // päivitä ilmoitus
-      if (ilmoitusDtoOptional.isPresent()) {
-        this.paivitaIlmoitus(uuid, ilmoitusDtoOptional.get());
-      }
-
-      // päivitetään tieto koska laskenta on lopetettu
-      if (tila != LaskentaTila.MENEILLAAN) {
-        this.jdbcTemplate.update(
-            "UPDATE seuranta_laskennat SET lopetettu=?::timestamptz WHERE uuid=?::uuid",
-            Instant.now().toString(),
-            uuid);
-      }
-
-      Optional<Laskenta> laskenta =
-          this.getLaskennat(Collections.singleton(UUID.fromString(uuid))).stream().findFirst();
-      return laskenta.map(l -> laskentaAsYhteenvetoDto(l, jonosijaProvider())).orElse(null);
-    });
-  }
-
   private BiFunction<Date, LaskentaTila, Integer> jonosijaProvider() {
     return (luotu, tila) -> {
       if (LaskentaTila.ALOITTAMATTA.equals(tila)) {
@@ -305,13 +277,28 @@ public class SeurantaDaoImpl implements SeurantaDao {
           this.getLaskennat(Collections.singleton(UUID.fromString(uuid))).stream()
               .findFirst()
               .orElseThrow(() -> new RuntimeException("Laskenta with uuid: " + uuid + " not found"));
+      if(l.getTila()==LaskentaTila.VALMIS || l.getTila()==LaskentaTila.PERUUTETTU) {
+        throw new RuntimeException("Yritettiin peruuttaa laskenta " + l.getUuid() + " vaikka laskenta on tilassa " + l.getTila());
+      }
 
       this.jdbcTemplate.update(
           "UPDATE seuranta_laskenta_hakukohteet SET tila=? WHERE laskenta_uuid=?::uuid",
           HakukohdeTila.KESKEYTETTY.toString(),
           uuid);
 
-      return this.merkkaaTila(uuid, LaskentaTila.PERUUTETTU, ilmoitusDtoOptional);
+      // päivitetään tieto koska laskenta on lopetettu
+      this.jdbcTemplate.update(
+          "UPDATE seuranta_laskennat SET tila=?, lopetettu=?::timestamptz WHERE uuid=?::uuid",
+          LaskentaTila.PERUUTETTU.toString(),
+          Instant.now().toString(),
+          uuid);
+
+      // päivitä ilmoitus
+      if (ilmoitusDtoOptional.isPresent()) {
+        this.paivitaIlmoitus(uuid, ilmoitusDtoOptional.get());
+      }
+
+      return this.haeYhteenveto(uuid);
     });
   }
 
@@ -512,9 +499,41 @@ public class SeurantaDaoImpl implements SeurantaDao {
         HakukohdeTila.TEKEMATTA.toString(), HakukohdeTila.KESKEN.toString());
   }
 
+  private Map<String, HakukohdeTila> haeHakukohteidenTilat(Collection<String> hakukohdeOids) {
+    NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+    MapSqlParameterSource parameters = new MapSqlParameterSource();
+    parameters.addValue("hakukohdeOids", hakukohdeOids);
+
+    // varmistetaan että hakukohteet työn alla
+    return namedParameterJdbcTemplate.query(
+        "SELECT hakukohdeoid, tila " +
+            "FROM seuranta_laskenta_hakukohteet " +
+            "WHERE hakukohdeoid IN (:hakukohdeOids)",
+        parameters, (rs, rowNum) -> new ImmutablePair(rs.getString("hakukohdeoid"), rs.getString("tila")))
+        .stream().collect(Collectors.toMap(v -> v.getLeft().toString(), v -> HakukohdeTila.valueOf(v.getRight().toString())));
+  }
+
   @Override
   public void merkkaaHakukohteetValmiiksi(UUID uuid, Collection<String> hakukohdeOids) {
     this.transactionTemplate.executeWithoutResult(t -> {
+      Map<String, HakukohdeTila> tilat = this.haeHakukohteidenTilat(hakukohdeOids);
+      Collection<String> eiOlemassa = hakukohdeOids.stream().filter(oid -> !tilat.containsKey(oid)).toList();
+      Collection<String> eiTyonAlla = tilat.entrySet().stream()
+          .filter(e -> e.getValue()!=HakukohdeTila.KESKEN).map(e -> e.getKey()).toList();
+
+      if(!eiOlemassa.isEmpty() || !eiTyonAlla.isEmpty()) {
+        StringBuilder msg = new StringBuilder();
+        if(!eiOlemassa.isEmpty()) {
+          msg.append("Yritettiin merkita seuraavia hakukohteita valmiiksi vaikka niitä ei ole olemassa: "
+              + eiOlemassa.stream().collect(Collectors.joining(",")));
+        }
+        if(!eiTyonAlla.isEmpty()) {
+          msg.append("Yritettiin merkita seuraavia hakukohteita valmiiksi vaikka ne eivät ole työn alla: "
+              + eiTyonAlla.stream().collect(Collectors.joining(",")));
+        }
+        throw new RuntimeException(msg.toString());
+      }
+
       NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
       MapSqlParameterSource parameters = new MapSqlParameterSource();
       parameters.addValue("uuid", uuid);
@@ -535,6 +554,24 @@ public class SeurantaDaoImpl implements SeurantaDao {
   @Override
   public void merkkaaHakukohteetEpaonnistuneeksi(UUID uuid, Collection<String> hakukohdeOids, int maxYritykset, String message) {
     this.transactionTemplate.executeWithoutResult(t -> {
+      Map<String, HakukohdeTila> tilat = this.haeHakukohteidenTilat(hakukohdeOids);
+      Collection<String> eiOlemassa = hakukohdeOids.stream().filter(oid -> !tilat.containsKey(oid)).toList();
+      Collection<String> eiTyonAlla = tilat.entrySet().stream()
+          .filter(e -> e.getValue()!=HakukohdeTila.KESKEN).map(e -> e.getKey()).toList();
+
+      if(!eiOlemassa.isEmpty() || !eiTyonAlla.isEmpty()) {
+        StringBuilder msg = new StringBuilder();
+        if(!eiOlemassa.isEmpty()) {
+          msg.append("Yritettiin merkita seuraavia hakukohteita epäonnistuneiksi vaikka niitä ei ole olemassa: "
+              + eiOlemassa.stream().collect(Collectors.joining(",")));
+        }
+        if(!eiTyonAlla.isEmpty()) {
+          msg.append("Yritettiin merkita seuraavia hakukohteita epäonnistuneiksi vaikka ne eivät ole työn alla: "
+              + eiTyonAlla.stream().collect(Collectors.joining(",")));
+        }
+        throw new RuntimeException(msg.toString());
+      }
+
       NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
       MapSqlParameterSource parameters = new MapSqlParameterSource();
       parameters.addValue("uuid", uuid);

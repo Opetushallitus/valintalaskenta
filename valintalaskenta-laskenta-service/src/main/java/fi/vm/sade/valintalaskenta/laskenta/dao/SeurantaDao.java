@@ -51,6 +51,17 @@ public interface SeurantaDao {
   Optional<LaskentaDto> haeLaskenta(String uuid);
 
   /**
+   * Ottaa seuraavan hakukohteen työn alle. Jos kyseessä on valintaryhmälaskenta, kaikki hakukohteet otetaan työn
+   * alle samalla kertaa.
+   *
+   * @param noodiId                     noodi joka on käynnistämässä hakukohteen laskentaa
+   * @param maxYhtaaikaisetHakukohteet  maksimimäärä hakukohteita joka voi olla käynnissä yhdellä noodilla yhtäaikaa
+   *
+   * @return                            käynnistetty hakukohde (hakukohteet)
+   */
+  Optional<ImmutablePair<UUID, Collection<String>>> otaSeuraavatHakukohteetTyonAlle(String noodiId, int maxYhtaaikaisetHakukohteet);
+
+  /**
    * Peruuttaa luodun laskennan, ts. merkitsee laskennan tilan peruutetuksi ja hakukohteiden laskennan tilan
    * keskeytetyksi
    *
@@ -78,17 +89,6 @@ public interface SeurantaDao {
    */
   // TODO: onko tämä oikeasti tarpeen, käytetään vain laskennan käynnistyscheckissä ja käyttämättömässä? endpointissa
   Collection<LaskentaDto> haeKaynnissaOlevatLaskennat();
-
-  /**
-   * Ottaa seuraavan hakukohteen työn alle. Jos kyseessä on valintaryhmälaskenta, kaikki hakukohteet otetaan työn
-   * alle samalla kertaa.
-   *
-   * @param noodiId                     noodi joka on käynnistämässä hakukohteen laskentaa
-   * @param maxYhtaaikaisetHakukohteet  maksimimäärä hakukohteita joka voi olla käynnissä yhdellä noodilla yhtäaikaa
-   *
-   * @return                            käynnistetty hakukohde (hakukohteet)
-   */
-  Optional<ImmutablePair<UUID, Collection<String>>> otaSeuraavatHakukohteetTyonAlle(String noodiId, int maxYhtaaikaisetHakukohteet);
 
   /**
    * Merkitsee lasketut hakukohteet valmiiksi. Mikäli laskennan kaikki hakukohteet on laskettu onnistuneesti merkitään
