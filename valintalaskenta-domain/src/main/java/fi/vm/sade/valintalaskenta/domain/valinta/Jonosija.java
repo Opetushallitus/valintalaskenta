@@ -33,8 +33,7 @@ public class Jonosija {
   @Column("funktio_tulokset")
   private FunktioTulosContainer funktioTulokset;
 
-  @ReadOnlyProperty
-  private Date lastModified;
+  @ReadOnlyProperty private Date lastModified;
 
   public Jonosija() {
     syotetytArvot = new SyotettyArvoContainer();
