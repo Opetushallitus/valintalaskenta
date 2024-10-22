@@ -22,6 +22,21 @@ public class HttpClients {
   }
 
   @Profile({"default", "dev"})
+  @Bean(name = "KoostepalveluCasClient")
+  @Autowired
+  public RestCasClient getKoostepalveluCasClient(
+      @Value("${cas.service.koostepalvelu}") String service,
+      @Value("${valintalaskentakoostepalvelu.app.username.to.ataru}") String username,
+      @Value("${valintalaskentakoostepalvelu.app.password.to.ataru}") String password) {
+    String ticketsUrl = UrlConfiguration.getInstance().url("cas.tickets");
+    return new RestCasClient(
+        new CasConfig.CasConfigBuilder(
+            username, password, ticketsUrl, service, CSRF_VALUE, CALLER_ID, "")
+            .setJsessionName("JSESSIONID")
+            .build());
+  }
+
+  @Profile({"default", "dev"})
   @Bean(name = "AtaruCasClient")
   public RestCasClient getAtaruCasClient(
       @Value("${cas.service.ataru}") String service,
