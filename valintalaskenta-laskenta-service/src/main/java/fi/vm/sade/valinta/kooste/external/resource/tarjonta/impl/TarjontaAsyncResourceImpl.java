@@ -12,8 +12,6 @@ import fi.vm.sade.tarjonta.service.resources.v1.dto.koulutus.KoulutusV1RDTO;
 import fi.vm.sade.valinta.kooste.external.resource.HttpClient;
 import fi.vm.sade.valinta.kooste.external.resource.UrlConfiguration;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.dto.KoutaHakukohdeDTO;
-import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.OhjausparametritAsyncResource;
-import fi.vm.sade.valinta.kooste.external.resource.ohjausparametrit.dto.ParametritDTO;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.*;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.dto.*;
 import fi.vm.sade.valinta.kooste.external.resource.RestCasClient;
@@ -41,8 +39,6 @@ public class TarjontaAsyncResourceImpl implements TarjontaAsyncResource {
   private final RestCasClient koutaClient;
   private final RestCasClient hakukohderyhmapalveluClient;
 
-  // TODO: yritä päästä tästä eroon!!!
-  private final OhjausparametritAsyncResource ohjausparametritAsyncResource;
   private final Integer KOUTA_OID_LENGTH = 35;
 
   private static final Logger LOG = LoggerFactory.getLogger(TarjontaAsyncResourceImpl.class);
@@ -54,13 +50,10 @@ public class TarjontaAsyncResourceImpl implements TarjontaAsyncResource {
   public TarjontaAsyncResourceImpl(
       @Qualifier("TarjontaHttpClient") HttpClient client,
       @Qualifier("KoutaCasClient") RestCasClient koutaClient,
-      @Qualifier("HakukohderyhmapalveluCasClient") RestCasClient hakukohderyhmapalveluClient,
-      @Qualifier("OhjausparametritAsyncResourceImpl")
-          OhjausparametritAsyncResource ohjausparametritAsyncResource) {
+      @Qualifier("HakukohderyhmapalveluCasClient") RestCasClient hakukohderyhmapalveluClient) {
     this.client = client;
     this.koutaClient = koutaClient;
     this.hakukohderyhmapalveluClient = hakukohderyhmapalveluClient;
-    this.ohjausparametritAsyncResource = ohjausparametritAsyncResource;
   }
 
   @Override
@@ -183,8 +176,6 @@ public class TarjontaAsyncResourceImpl implements TarjontaAsyncResource {
   @Override
   public CompletableFuture<Haku> haeHaku(String hakuOid) {
     if (KOUTA_OID_LENGTH.equals(hakuOid.length())) {
-      CompletableFuture<ParametritDTO> parametritF =
-          ohjausparametritAsyncResource.haeHaunOhjausparametrit(hakuOid);
       CompletableFuture<KoutaHaku> koutaF =
           this.koutaClient.get(
               urlConfiguration.url("kouta-internal.haku.hakuoid", hakuOid),
@@ -192,11 +183,7 @@ public class TarjontaAsyncResourceImpl implements TarjontaAsyncResource {
               Collections.emptyMap(),
               10 * 1000);
       return koutaF
-          .thenApplyAsync(Haku::new)
-          .thenCombineAsync(
-              parametritF,
-              (haku, parametrit) ->
-                  haku.withSynteettisetHakemukset(parametrit.getSynteettisetHakemukset()));
+          .thenApplyAsync(Haku::new);
     } else {
       return this.getTarjontaHaku(hakuOid).thenApplyAsync(Haku::new);
     }
