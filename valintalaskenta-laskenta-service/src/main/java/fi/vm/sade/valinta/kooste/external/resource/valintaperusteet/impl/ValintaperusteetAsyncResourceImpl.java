@@ -28,36 +28,6 @@ public class ValintaperusteetAsyncResourceImpl implements ValintaperusteetAsyncR
     this.urlConfiguration = UrlConfiguration.getInstance();
   }
 
-  public CompletableFuture<List<ValintaperusteetHakijaryhmaDTO>> haeHakijaryhmat(
-      String hakukohdeOid) {
-    return httpClient.get(
-        this.urlConfiguration.url(
-            "valintaperusteet-service.valintalaskentakoostepalvelu.valintaperusteet.hakijaryhma",
-            hakukohdeOid),
-        new TypeToken<List<ValintaperusteetHakijaryhmaDTO>>() {},
-        Collections.emptyMap(),
-        60 * 60 * 1000);
-  }
-
-  public CompletableFuture<List<ValintaperusteetDTO>> haeValintaperusteet(
-      String hakukohdeOid, Integer valinnanVaiheJarjestysluku) {
-    List<Object> parameters = new LinkedList<>();
-    parameters.add(hakukohdeOid);
-    if (valinnanVaiheJarjestysluku != null) {
-      Map<String, String> vaiheParameter = new HashMap<>();
-      vaiheParameter.put("vaihe", valinnanVaiheJarjestysluku.toString());
-      parameters.add(vaiheParameter);
-    }
-
-    String url =
-        this.urlConfiguration.url(
-            "valintaperusteet-service.valintalaskentakoostepalvelu.valintaperusteet",
-            parameters.toArray());
-
-    return httpClient.get(
-        url, new TypeToken<List<ValintaperusteetDTO>>() {}, Collections.emptyMap(), 60 * 60 * 1000);
-  }
-
   public CompletableFuture<List<HakukohdeViiteDTO>> haunHakukohteet(String hakuOid) {
     return this.httpClient.get(
         this.urlConfiguration.url("valintaperusteet-service.valintalaskentakoostepalvelu.hakukohde.haku", hakuOid),
