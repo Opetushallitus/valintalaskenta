@@ -4,7 +4,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 public interface TarjontaAsyncResource {
-  CompletableFuture<Haku> haeHaku(String hakuOid);
+  CompletableFuture<Set<String>> haeTarjoajaOids(String hakuOid);
 
   CompletableFuture<Set<String>> hakukohdeSearchByOrganizationGroupOids(
       Iterable<String> organizationGroupOids);
