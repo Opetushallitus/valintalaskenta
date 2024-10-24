@@ -178,7 +178,7 @@ public class TarjontaAsyncResourceImpl implements TarjontaAsyncResource {
   }
 
   @Override
-  public CompletableFuture<Haku> haeHaku(String hakuOid) {
+  public CompletableFuture<Set<String>> haeTarjoajaOids(String hakuOid) {
     if (KOUTA_OID_LENGTH.equals(hakuOid.length())) {
       CompletableFuture<KoutaHaku> koutaF =
           this.koutaClient.get(
@@ -186,10 +186,9 @@ public class TarjontaAsyncResourceImpl implements TarjontaAsyncResource {
               new TypeToken<KoutaHaku>() {},
               Collections.emptyMap(),
               10 * 1000);
-      return koutaF
-          .thenApplyAsync(Haku::new);
+      return koutaF.thenApplyAsync(h -> Set.of(h.organisaatioOid));
     } else {
-      return this.getTarjontaHaku(hakuOid).thenApplyAsync(Haku::new);
+      return this.getTarjontaHaku(hakuOid).thenApplyAsync(h -> Set.of(h.getTarjoajaOids()));
     }
   }
 
