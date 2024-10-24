@@ -356,6 +356,31 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
   }
 
   @Test
+  public void testLaskeSamaHakukohdeMonesti() {
+    LaskentaDto laskentaDto;
+    Optional<ImmutablePair<UUID, Collection<String>>> tyonAlla;
+    Collection<String> hakukohteet;
+
+    // lasketaan hakukohde kertaalleen
+    laskentaDto = this.luoLaskenta("laskenta", List.of("123"));
+    tyonAlla = this.seurantaDao.otaSeuraavatHakukohteetTyonAlle("noodi1", 1);
+    hakukohteet = tyonAlla.get().right;
+    this.seurantaDao.merkkaaHakukohteetValmiiksi(UUID.fromString(laskentaDto.getUuid()), hakukohteet);
+
+    // luodaan uudestaan
+    laskentaDto = this.luoLaskenta("laskenta", List.of("123"));
+
+    // laskenta käynnistyy
+    tyonAlla = this.seurantaDao.otaSeuraavatHakukohteetTyonAlle("noodi1", 1);
+    hakukohteet = tyonAlla.get().right;
+    Assertions.assertEquals(LaskentaTila.MENEILLAAN, this.seurantaDao.haeYhteenveto(laskentaDto.getUuid()).getTila());
+
+    // ja valmistuu
+    this.seurantaDao.merkkaaHakukohteetValmiiksi(UUID.fromString(laskentaDto.getUuid()), hakukohteet);
+    Assertions.assertEquals(LaskentaTila.VALMIS, this.seurantaDao.haeYhteenveto(laskentaDto.getUuid()).getTila());
+  }
+
+  @Test
   public void testValintaRyhmalaskentaPerusFlow() {
     LaskentaDto laskentaDto = this.luoLaskenta("laskenta", List.of("123", "234", "345"), LaskentaTyyppi.VALINTARYHMA);
 

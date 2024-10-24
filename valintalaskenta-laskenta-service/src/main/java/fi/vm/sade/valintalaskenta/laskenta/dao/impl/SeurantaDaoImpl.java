@@ -499,16 +499,17 @@ public class SeurantaDaoImpl implements SeurantaDao {
         HakukohdeTila.TEKEMATTA.toString(), HakukohdeTila.KESKEN.toString());
   }
 
-  private Map<String, HakukohdeTila> haeHakukohteidenTilat(Collection<String> hakukohdeOids) {
+  private Map<String, HakukohdeTila> haeHakukohteidenTilat(UUID uuid, Collection<String> hakukohdeOids) {
     NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
     MapSqlParameterSource parameters = new MapSqlParameterSource();
+    parameters.addValue("uuid", uuid);
     parameters.addValue("hakukohdeOids", hakukohdeOids);
 
     // varmistetaan että hakukohteet työn alla
     return namedParameterJdbcTemplate.query(
         "SELECT hakukohdeoid, tila " +
             "FROM seuranta_laskenta_hakukohteet " +
-            "WHERE hakukohdeoid IN (:hakukohdeOids)",
+            "WHERE laskenta_uuid=:uuid AND hakukohdeoid IN (:hakukohdeOids)",
         parameters, (rs, rowNum) -> new ImmutablePair(rs.getString("hakukohdeoid"), rs.getString("tila")))
         .stream().collect(Collectors.toMap(v -> v.getLeft().toString(), v -> HakukohdeTila.valueOf(v.getRight().toString())));
   }
@@ -516,7 +517,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
   @Override
   public void merkkaaHakukohteetValmiiksi(UUID uuid, Collection<String> hakukohdeOids) {
     this.transactionTemplate.executeWithoutResult(t -> {
-      Map<String, HakukohdeTila> tilat = this.haeHakukohteidenTilat(hakukohdeOids);
+      Map<String, HakukohdeTila> tilat = this.haeHakukohteidenTilat(uuid, hakukohdeOids);
       Collection<String> eiOlemassa = hakukohdeOids.stream().filter(oid -> !tilat.containsKey(oid)).toList();
       Collection<String> eiTyonAlla = tilat.entrySet().stream()
           .filter(e -> e.getValue()!=HakukohdeTila.KESKEN).map(e -> e.getKey()).toList();
@@ -554,7 +555,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
   @Override
   public void merkkaaHakukohteetEpaonnistuneeksi(UUID uuid, Collection<String> hakukohdeOids, int maxYritykset, String message) {
     this.transactionTemplate.executeWithoutResult(t -> {
-      Map<String, HakukohdeTila> tilat = this.haeHakukohteidenTilat(hakukohdeOids);
+      Map<String, HakukohdeTila> tilat = this.haeHakukohteidenTilat(uuid, hakukohdeOids);
       Collection<String> eiOlemassa = hakukohdeOids.stream().filter(oid -> !tilat.containsKey(oid)).toList();
       Collection<String> eiTyonAlla = tilat.entrySet().stream()
           .filter(e -> e.getValue()!=HakukohdeTila.KESKEN).map(e -> e.getKey()).toList();
