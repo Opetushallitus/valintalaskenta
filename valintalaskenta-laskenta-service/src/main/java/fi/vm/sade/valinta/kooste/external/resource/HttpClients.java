@@ -37,36 +37,6 @@ public class HttpClients {
             .build());
   }
 
-  @Profile({"default", "dev"})
-  @Bean(name = "AtaruCasClient")
-  @Autowired
-  public RestCasClient getAtaruCasClient(
-      @Value("${cas.service.ataru}") String service,
-      @Value("${valintalaskentakoostepalvelu.app.username.to.ataru}") String username,
-      @Value("${valintalaskentakoostepalvelu.app.password.to.ataru}") String password) {
-    String ticketsUrl = UrlConfiguration.getInstance().url("cas.tickets");
-    return new RestCasClient(
-        new CasConfig.CasConfigBuilder(
-                username, password, ticketsUrl, service, CSRF_VALUE, CALLER_ID, "")
-            .setJsessionName("ring-session")
-            .build());
-  }
-
-  @Profile({"default", "dev"})
-  @Bean(name = "HakuAppCasClient")
-  @Autowired
-  public RestCasClient getHakuAppCasClient(
-      @Value("${cas.service.haku-service}") String service,
-      @Value("${valintalaskentakoostepalvelu.app.username.to.haku}") String username,
-      @Value("${valintalaskentakoostepalvelu.app.password.to.haku}") String password) {
-    String ticketsUrl = UrlConfiguration.getInstance().url("cas.tickets");
-    return new RestCasClient(
-        new CasConfig.CasConfigBuilder(
-                username, password, ticketsUrl, service, CSRF_VALUE, CALLER_ID, "")
-            .setJsessionName("JSESSIONID")
-            .build());
-  }
-
   @Bean(name = "TarjontaHttpClient")
   @Autowired
   public HttpClient getTarjontaHttpClient(CookieManager cookieManager) {
@@ -106,70 +76,11 @@ public class HttpClients {
             .build());
   }
 
-  @Bean(name = "OhjausparametritHttpClient")
-  @Autowired
-  public HttpClient getOhjausparametritHttpClient(CookieManager cookieManager) {
-    return new HttpClient(
-        defaultHttpClientBuilder(cookieManager).build(), DateDeserializer.gsonBuilder().create());
-  }
-
   @Bean(name = "OrganisaatioHttpClient")
   @Autowired
   public HttpClient getOrganisaatioHttpClient(CookieManager cookieManager) {
     return new HttpClient(
         defaultHttpClientBuilder(cookieManager).build(), DateDeserializer.gsonBuilder().create());
-  }
-
-  @Bean(name = "KoodistoHttpClient")
-  @Autowired
-  public HttpClient getKoodistoHttpClient(CookieManager cookieManager) {
-    return new HttpClient(
-        defaultHttpClientBuilder(cookieManager).build(), DateDeserializer.gsonBuilder().create());
-  }
-
-  @Profile({"default", "dev"})
-  @Bean(name = "OppijanumerorekisteriCasClient")
-  @Autowired
-  public RestCasClient getOppijanumerorekisteriCasClient(
-      @Value("${cas.service.oppijanumerorekisteri-service}") String service,
-      @Value("${valintalaskentakoostepalvelu.app.username.to.haku}") String username,
-      @Value("${valintalaskentakoostepalvelu.app.password.to.haku}") String password) {
-    String ticketsUrl = UrlConfiguration.getInstance().url("cas.tickets");
-    return new RestCasClient(
-        new CasConfig.CasConfigBuilder(
-                username, password, ticketsUrl, service, CSRF_VALUE, CALLER_ID, "")
-            .setJsessionName("JSESSIONID")
-            .build());
-  }
-
-  @Profile({"default", "dev"})
-  @Bean(name = "ValintapisteServiceCasClient")
-  @Autowired
-  public RestCasClient getValintapisteServiceCasClient(
-      @Value("${cas.service.valintapiste-service}") String service,
-      @Value("${valintalaskentakoostepalvelu.app.username.to.valintatieto}") String username,
-      @Value("${valintalaskentakoostepalvelu.app.password.to.valintatieto}") String password) {
-    String ticketsUrl = UrlConfiguration.getInstance().url("cas.tickets");
-    return new RestCasClient(
-        new CasConfig.CasConfigBuilder(
-                username, password, ticketsUrl, service, CSRF_VALUE, CALLER_ID, "")
-            .setJsessionName("ring-session")
-            .build());
-  }
-
-  @Profile({"default", "dev"})
-  @Bean(name = "SuoritusrekisteriCasClient")
-  @Autowired
-  public RestCasClient getSuoritusrekisteriCasClient(
-      @Value("${cas.service.suoritusrekisteri}") String service,
-      @Value("${valintalaskentakoostepalvelu.app.username.to.valintatieto}") String username,
-      @Value("${valintalaskentakoostepalvelu.app.password.to.valintatieto}") String password) {
-    String ticketsUrl = UrlConfiguration.getInstance().url("cas.tickets");
-    return new RestCasClient(
-        new CasConfig.CasConfigBuilder(
-                username, password, ticketsUrl, service, CSRF_VALUE, CALLER_ID, "")
-            .setJsessionName("JSESSIONID")
-            .build());
   }
 
   @Profile({"default", "dev"})
@@ -193,12 +104,5 @@ public class HttpClients {
         .version(java.net.http.HttpClient.Version.HTTP_1_1)
         .connectTimeout(Duration.ofSeconds(10))
         .cookieHandler(cookieManager);
-  }
-
-  @Bean(name = "KoskiHttpClient")
-  @Autowired
-  public HttpClient getKoskiHttpClient(CookieManager cookieManager) {
-    return new HttpClient(
-        defaultHttpClientBuilder(cookieManager).build(), DateDeserializer.gsonBuilder().create());
   }
 }
