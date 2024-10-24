@@ -4,7 +4,6 @@ import static fi.vm.sade.valinta.kooste.util.SecurityUtil.*;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
 import fi.vm.sade.valinta.kooste.external.resource.organisaatio.OrganisaatioAsyncResource;
-import fi.vm.sade.valinta.kooste.external.resource.tarjonta.Haku;
 import fi.vm.sade.valinta.kooste.external.resource.tarjonta.TarjontaAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.valintaperusteet.ValintaperusteetAsyncResource;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
@@ -71,13 +70,13 @@ public class AuthorityCheckService {
       return; // on OPH-käyttäjä, ei tarvitse käydä läpi organisaatioita
     }
 
-    Haku haku;
+    Set<String> tarjoajaOids;
     try {
-      haku = tarjontaAsyncResource.haeHaku(hakuOid).get(2, MINUTES);
+      tarjoajaOids = tarjontaAsyncResource.haeTarjoajaOids(hakuOid).get(2, MINUTES);
     } catch(Exception e) {
       throw new RuntimeException(e);
     }
-    boolean isAuthorized = isAuthorizedForAnyParentOid(haku.tarjoajaOids, userRoles, requiredRoles);
+    boolean isAuthorized = isAuthorizedForAnyParentOid(tarjoajaOids, userRoles, requiredRoles);
 
     if (!isAuthorized) {
       String msg = String.format("Käyttäjällä ei oikeutta haun %s tarjoajaan tai sen yläorganisaatioihin.", hakuOid);

@@ -4,7 +4,6 @@ import java.util.List;
 
 public class ResultHakukohde {
   private String oid;
-  private List<ResultRyhmaliitos> ryhmaliitokset;
 
   public ResultHakukohde(String oid) {
     this.oid = oid;
@@ -12,13 +11,5 @@ public class ResultHakukohde {
 
   public String getOid() {
     return oid;
-  }
-
-  public List<ResultRyhmaliitos> getRyhmaliitokset() {
-    return ryhmaliitokset;
-  }
-
-  public void setRyhmaliitokset(List<ResultRyhmaliitos> ryhmaliitokset) {
-    this.ryhmaliitokset = ryhmaliitokset;
   }
 }
