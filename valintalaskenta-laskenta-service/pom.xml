@@ -50,48 +50,14 @@
             <artifactId>dokumenttipalvelu</artifactId>
         </dependency>
 
-        <!-- Tulleet valintalaskentakoostepalvelusta, TODO: varmista että tarvitaan!!! -->
+        <!-- Valintalaskennan käynnistys -->
         <dependency>
             <groupId>fi.vm.sade.tarjonta</groupId>
             <artifactId>tarjonta-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.vm.sade.organisaatio</groupId>
-            <artifactId>organisaatio-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fi.vm.sade.sijoittelu</groupId>
-            <artifactId>sijoittelu-algoritmi-domain</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <!-- versio päivitetty > 2.13 jotta ei ristissä valintalaskennan kanssa -->
-            <artifactId>akka-slf4j_2.13</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fi.vm.sade.koodisto</groupId>
-            <artifactId>koodisto-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.codepoetics</groupId>
-            <artifactId>protonpack</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-        </dependency>
-        <dependency>
             <groupId>fi.vm.sade.java-utils</groupId>
             <artifactId>java-poi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>2.10.6</version>
         </dependency>
 
         <!-- SADE -->
