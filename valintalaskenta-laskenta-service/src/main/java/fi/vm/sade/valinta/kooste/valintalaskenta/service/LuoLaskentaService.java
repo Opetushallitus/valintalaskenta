@@ -21,12 +21,12 @@ import org.springframework.stereotype.Service;
 import static fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto.ilmoitus;
 
 @Service
-public class ValintalaskentaService {
-  private static final Logger LOG = LoggerFactory.getLogger(ValintalaskentaService.class);
+public class LuoLaskentaService {
+  private static final Logger LOG = LoggerFactory.getLogger(LuoLaskentaService.class);
 
   @Autowired private SeurantaDao seurantaDao;
 
-  public ValintalaskentaService() {}
+  public LuoLaskentaService() {}
 
   /**
    * Käynnistää uuden laskennan
