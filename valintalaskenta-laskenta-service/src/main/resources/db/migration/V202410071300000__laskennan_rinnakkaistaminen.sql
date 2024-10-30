@@ -5,3 +5,10 @@ CREATE TABLE IF NOT EXISTS noodit (
                                       noodi_id  TEXT PRIMARY KEY,
                                       alive     TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS parametrit (
+                                      nimi  TEXT PRIMARY KEY,
+                                      arvo  TEXT NOT NULL
+);
+
+INSERT INTO parametrit (nimi, arvo) VALUES ('maxYhtaaikaisetHakukohteet', '8');
