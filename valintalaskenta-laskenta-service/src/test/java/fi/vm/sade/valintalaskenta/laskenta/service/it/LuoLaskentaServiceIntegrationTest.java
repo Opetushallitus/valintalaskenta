@@ -36,7 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
-public class ValintalaskentaServiceIntegrationTest extends AbstractIntegrationTest {
+public class LuoLaskentaServiceIntegrationTest extends AbstractIntegrationTest {
 
   @Autowired private ApplicationContext applicationContext;
 

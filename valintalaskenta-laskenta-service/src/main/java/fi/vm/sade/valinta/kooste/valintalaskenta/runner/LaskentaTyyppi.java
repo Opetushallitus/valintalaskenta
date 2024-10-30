@@ -1,4 +1,4 @@
-package fi.vm.sade.valinta.kooste.valintalaskenta.actor;
+package fi.vm.sade.valinta.kooste.valintalaskenta.runner;
 
 /**
  * Laskentatyyppi määrittää minkä tyyppistä laskentaa ollaan tekemässä.
