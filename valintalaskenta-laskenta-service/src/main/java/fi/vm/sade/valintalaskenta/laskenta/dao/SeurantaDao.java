@@ -146,4 +146,11 @@ public interface SeurantaDao {
    */
   void siivoa(Date viimeinenSailottavaPaivamaara);
 
+  /**
+   * Lukee parametrin tietokannasta
+   *
+   * @param nimi  parametrin nimi
+   * @return      parametrin arvo
+   */
+  String lueParametri(String nimi);
 }

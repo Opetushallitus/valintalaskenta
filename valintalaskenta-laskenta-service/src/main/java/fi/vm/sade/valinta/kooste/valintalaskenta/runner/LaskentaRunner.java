@@ -25,8 +25,6 @@ public class LaskentaRunner {
   private final SuoritaLaskentaService suoritaLaskentaService;
   private final SeurantaDao seurantaDao;
 
-  private final int maxYhtaaikaisetHakukohteet;
-
   private final String noodiId;
 
   private final Executor executor;
@@ -34,13 +32,11 @@ public class LaskentaRunner {
   @Autowired
   public LaskentaRunner(
       SuoritaLaskentaService suoritaLaskentaService,
-      SeurantaDao seurantaDao,
-      @Value("${valintalaskentakoostepalvelu.maxWorkerCount:8}") int maxWorkers) { // TODO: tämä pitää laittaa kantaan
+      SeurantaDao seurantaDao) {
     this.suoritaLaskentaService = suoritaLaskentaService;
     this.seurantaDao = seurantaDao;
-    this.maxYhtaaikaisetHakukohteet = maxWorkers;
     this.noodiId = UUID.randomUUID().toString();
-    this.executor = Executors.newWorkStealingPool(8);
+    this.executor = Executors.newWorkStealingPool(64);
   }
 
   @Scheduled(initialDelay = 15, fixedDelay = 15, timeUnit = TimeUnit.SECONDS)
@@ -60,8 +56,10 @@ public class LaskentaRunner {
     this.executor.execute(() -> {
       try {
         LOG.debug("Käynnistetään hakukohteiden laskennat");
+        int maxYhtaaikaisetHakukohteet = Integer.parseInt(this.seurantaDao.lueParametri("maxYhtaaikaisetHakukohteet"));
+
         while(true) {
-          Optional<ImmutablePair<UUID, Collection<String>>> hakukohteet = this.seurantaDao.otaSeuraavatHakukohteetTyonAlle(this.noodiId, this.maxYhtaaikaisetHakukohteet);
+          Optional<ImmutablePair<UUID, Collection<String>>> hakukohteet = this.seurantaDao.otaSeuraavatHakukohteetTyonAlle(this.noodiId, maxYhtaaikaisetHakukohteet);
           if(!hakukohteet.isPresent()) {
             LOG.debug("Ei käynnistettäviä hakukohteita");
             return;
