@@ -185,8 +185,9 @@ public class ValintalaskentaResource {
         result.setErrorResult(ResponseEntity.status(HttpStatus.GONE).body("Laskentaa" + uuid + " ei löytynyt"));
       } else {
         authorityCheckService.checkAuthorizationForLaskenta(laskenta.get(), valintalaskentaAllowedRoles);
-        luoLaskentaService.kaynnistaLaskentaUudelleen(uuid);
-        // TODO: palauta vastaus!
+        TunnisteDto tunnisteDto = luoLaskentaService.kaynnistaLaskentaUudelleen(uuid);
+        result.setResult(ResponseEntity.status(HttpStatus.OK)
+            .body(Vastaus.laskennanSeuraus(tunnisteDto.getUuid(), tunnisteDto.getLuotiinkoUusiLaskenta())));
       }
     } catch (AccessDeniedException e) {
       result.setErrorResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage()));
