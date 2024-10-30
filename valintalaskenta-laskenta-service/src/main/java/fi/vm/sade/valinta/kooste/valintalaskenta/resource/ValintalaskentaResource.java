@@ -8,7 +8,7 @@ import fi.vm.sade.valinta.kooste.external.resource.valintaperusteet.Valintaperus
 import fi.vm.sade.valinta.kooste.security.AuthorityCheckService;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Laskenta;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Maski;
-import fi.vm.sade.valinta.kooste.valintalaskenta.service.ValintalaskentaService;
+import fi.vm.sade.valinta.kooste.valintalaskenta.service.LuoLaskentaService;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.TunnisteDto;
@@ -47,7 +47,7 @@ public class ValintalaskentaResource {
           "ROLE_APP_VALINTOJENTOTEUTTAMINENKK_CRUD",
           "ROLE_APP_VALINTOJENTOTEUTTAMINENKK_READ_UPDATE");
 
-  @Autowired private ValintalaskentaService valintalaskentaService;
+  @Autowired private LuoLaskentaService luoLaskentaService;
   @Autowired private AuthorityCheckService authorityCheckService;
   @Autowired private ValintaperusteetAsyncResource valintaperusteetAsyncResource;
 
@@ -77,7 +77,7 @@ public class ValintalaskentaResource {
       authorityCheckService.checkAuthorizationForHaku(hakuOid, valintalaskentaAllowedRoles);
 
       List<HakukohdeViiteDTO> hakukohdeViitteet = valintaperusteetAsyncResource.haunHakukohteet(hakuOid).get();
-      TunnisteDto tunniste = valintalaskentaService.kaynnistaLaskentaHaulle(
+      TunnisteDto tunniste = luoLaskentaService.kaynnistaLaskentaHaulle(
           AuthorizationUtil.getCurrentUser(),
           haunnimi,
           nimi,
@@ -143,7 +143,7 @@ public class ValintalaskentaResource {
             hakukohdeViitteet.stream().map(hk -> hk.getOid()).toList(), valintalaskentaAllowedRoles);
       }
 
-      TunnisteDto tunniste = valintalaskentaService.kaynnistaLaskentaHaulle(
+      TunnisteDto tunniste = luoLaskentaService.kaynnistaLaskentaHaulle(
           AuthorizationUtil.getCurrentUser(),
           haunnimi,
           nimi,
@@ -180,12 +180,12 @@ public class ValintalaskentaResource {
     DeferredResult<ResponseEntity<Vastaus>> result = new DeferredResult<>(1 * 60 * 1000l);
 
     try {
-      Optional<LaskentaDto> laskenta = valintalaskentaService.haeLaskenta(uuid);
+      Optional<LaskentaDto> laskenta = luoLaskentaService.haeLaskenta(uuid);
       if(laskenta.isEmpty()) {
         result.setErrorResult(ResponseEntity.status(HttpStatus.GONE).body("Laskentaa" + uuid + " ei löytynyt"));
       } else {
         authorityCheckService.checkAuthorizationForLaskenta(laskenta.get(), valintalaskentaAllowedRoles);
-        valintalaskentaService.kaynnistaLaskentaUudelleen(uuid);
+        luoLaskentaService.kaynnistaLaskentaUudelleen(uuid);
         // TODO: palauta vastaus!
       }
     } catch (AccessDeniedException e) {
@@ -213,7 +213,7 @@ public class ValintalaskentaResource {
             content = @Content(schema = @Schema(implementation = Laskenta.class)))
       })
   public List<Laskenta> status() {
-    return valintalaskentaService.runningLaskentas();
+    return luoLaskentaService.runningLaskentas();
   }
 
   /**
@@ -233,13 +233,13 @@ public class ValintalaskentaResource {
       })
   public ResponseEntity<? extends Object> status(@PathVariable("uuid") String uuid) {
     try {
-      Optional<LaskentaDto> laskenta = valintalaskentaService.haeLaskenta(uuid);
+      Optional<LaskentaDto> laskenta = luoLaskentaService.haeLaskenta(uuid);
       if(laskenta.isEmpty()) {
         return ResponseEntity.status(HttpStatus.GONE).body("Laskentaa" + uuid + " ei löytynyt");
       }
 
       authorityCheckService.checkAuthorizationForLaskenta(laskenta.get(), valintalaskentaAllowedRoles);
-      return valintalaskentaService
+      return luoLaskentaService
           .fetchLaskenta(uuid)
           .map(l -> ResponseEntity.status(HttpStatus.OK).body((Object)l))
           .orElse(ResponseEntity.status(HttpStatus.GONE).body("Valintalaskenta ei ole muistissa!"));
@@ -270,7 +270,7 @@ public class ValintalaskentaResource {
     result.onTimeout(() -> result.setErrorResult(StatusExcelUtil.createTimeoutErrorXls(uuid)));
 
     try {
-      Optional<LaskentaDto> laskenta = valintalaskentaService.haeLaskenta(uuid);
+      Optional<LaskentaDto> laskenta = luoLaskentaService.haeLaskenta(uuid);
       if(laskenta.isEmpty()) {
         result.setErrorResult(ResponseEntity.status(HttpStatus.GONE).body("Laskentaa" + uuid + " ei löytynyt"));
       } else {
@@ -300,12 +300,12 @@ public class ValintalaskentaResource {
 
     DeferredResult<ResponseEntity<LaskentaDto>> result = new DeferredResult<>(60 * 1000L);
     try {
-      Optional<LaskentaDto> laskenta = valintalaskentaService.haeLaskenta(uuid);
+      Optional<LaskentaDto> laskenta = luoLaskentaService.haeLaskenta(uuid);
       if(laskenta.isEmpty()) {
         result.setErrorResult(ResponseEntity.status(HttpStatus.GONE).body("Laskentaa" + uuid + " ei löytynyt"));
       } else {
         authorityCheckService.checkAuthorizationForLaskenta(laskenta.get(), valintalaskentaAllowedRoles);
-        result.setResult(ResponseEntity.of(valintalaskentaService.haeLaskenta(uuid)));
+        result.setResult(ResponseEntity.of(luoLaskentaService.haeLaskenta(uuid)));
       }
     } catch (AccessDeniedException e) {
       result.setErrorResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage()));
@@ -331,12 +331,12 @@ public class ValintalaskentaResource {
       @RequestParam(value = "lopetaVainJonossaOlevaLaskenta", required = false)
           Boolean lopetaVainJonossaOlevaLaskenta) {
     try {
-      Optional<LaskentaDto> laskenta = valintalaskentaService.haeLaskenta(uuid);
+      Optional<LaskentaDto> laskenta = luoLaskentaService.haeLaskenta(uuid);
       if(laskenta.isEmpty()) {
         return ResponseEntity.status(HttpStatus.GONE).body("Laskentaa" + uuid + " ei löytynyt");
       }
       authorityCheckService.checkAuthorizationForLaskenta(laskenta.get(), valintalaskentaAllowedRoles);
-      valintalaskentaService.peruutaLaskenta(uuid, lopetaVainJonossaOlevaLaskenta);
+      luoLaskentaService.peruutaLaskenta(uuid, lopetaVainJonossaOlevaLaskenta);
       return ResponseEntity.status(HttpStatus.OK).build();
     } catch (AccessDeniedException e) {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
