@@ -1,4 +1,4 @@
-package fi.vm.sade.valinta.kooste.valintalaskenta.actor;
+package fi.vm.sade.valinta.kooste.valintalaskenta.service;
 
 import fi.vm.sade.auditlog.ApplicationType;
 import fi.vm.sade.auditlog.Audit;
@@ -23,8 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LaskentaActorFactory {
-  private static final Logger LOG = LoggerFactory.getLogger(LaskentaActorFactory.class);
+public class SuoritaLaskentaService {
+  private static final Logger LOG = LoggerFactory.getLogger(SuoritaLaskentaService.class);
 
   public static final Audit AUDIT =
       new Audit(new AuditLogger(), "valintalaskentakoostepalvelu", ApplicationType.VIRKAILIJA);
@@ -34,7 +34,7 @@ public class LaskentaActorFactory {
   private final ExecutorService executor = Executors.newWorkStealingPool();
 
   @Autowired
-  public LaskentaActorFactory(
+  public SuoritaLaskentaService(
       ValintalaskentaResourceImpl valintalaskentaResource,
       KoostepalveluAsyncResource koostepalveluAsyncResource) {
     this.valintalaskentaResource = valintalaskentaResource;
