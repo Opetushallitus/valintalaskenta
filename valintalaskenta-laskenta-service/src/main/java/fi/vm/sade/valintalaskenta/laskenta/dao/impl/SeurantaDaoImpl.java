@@ -843,4 +843,9 @@ public class SeurantaDaoImpl implements SeurantaDao {
       return userOID;
     }
   }
+
+  @Override
+  public String lueParametri(String nimi) {
+    return this.jdbcTemplate.queryForObject("SELECT arvo FROM parametrit WHERE nimi=?", String.class, nimi);
+  }
 }
