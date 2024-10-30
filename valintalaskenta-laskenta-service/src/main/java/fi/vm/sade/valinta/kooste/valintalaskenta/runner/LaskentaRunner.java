@@ -1,30 +1,28 @@
-package fi.vm.sade.valinta.kooste.valintalaskenta.actor;
+package fi.vm.sade.valinta.kooste.valintalaskenta.runner;
 
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import fi.vm.sade.valinta.kooste.valintalaskenta.service.SuoritaLaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.task.TaskSchedulerBuilder;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LaskentaSupervisorImpl {
-  private static final Logger LOG = LoggerFactory.getLogger(LaskentaSupervisorImpl.class);
+public class LaskentaRunner {
+  private static final Logger LOG = LoggerFactory.getLogger(LaskentaRunner.class);
 
-  private final LaskentaActorFactory laskentaActorFactory;
+  private final SuoritaLaskentaService suoritaLaskentaService;
   private final SeurantaDao seurantaDao;
 
   private final int maxYhtaaikaisetHakukohteet;
@@ -34,11 +32,11 @@ public class LaskentaSupervisorImpl {
   private final Executor executor;
 
   @Autowired
-  public LaskentaSupervisorImpl(
-      LaskentaActorFactory laskentaActorFactory,
+  public LaskentaRunner(
+      SuoritaLaskentaService suoritaLaskentaService,
       SeurantaDao seurantaDao,
       @Value("${valintalaskentakoostepalvelu.maxWorkerCount:8}") int maxWorkers) { // TODO: tämä pitää laittaa kantaan
-    this.laskentaActorFactory = laskentaActorFactory;
+    this.suoritaLaskentaService = suoritaLaskentaService;
     this.seurantaDao = seurantaDao;
     this.maxYhtaaikaisetHakukohteet = maxWorkers;
     this.noodiId = UUID.randomUUID().toString();
@@ -72,7 +70,7 @@ public class LaskentaSupervisorImpl {
           Collection<String> hakukohdeOids = hakukohteet.get().getRight();
           LOG.info("Käynnistetään laskennan {} hakukohteiden {} laskenta", uuid, hakukohdeOids.stream().collect(Collectors.joining(", ")));
 
-          laskentaActorFactory.suoritaLaskentaHakukohteille(this.seurantaDao.haeLaskenta(uuid.toString()).get(), hakukohdeOids)
+          suoritaLaskentaService.suoritaLaskentaHakukohteille(this.seurantaDao.haeLaskenta(uuid.toString()).get(), hakukohdeOids)
               .thenRunAsync(() -> this.seurantaDao.merkkaaHakukohteetValmiiksi(uuid, hakukohdeOids))
               .exceptionallyAsync(t -> {
                 String msg = "Laskennan %s hakukohteen %s laskenta päättyi virheeseen";
