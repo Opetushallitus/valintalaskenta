@@ -27,8 +27,8 @@ public class HttpClients {
   @Autowired
   public RestCasClient getKoostepalveluCasClient(
       @Value("${cas.service.koostepalvelu}") String service,
-      @Value("${valintalaskentakoostepalvelu.app.username.to.ataru}") String username,
-      @Value("${valintalaskentakoostepalvelu.app.password.to.ataru}") String password) {
+      @Value("${valintalaskentakoostepalvelu.app.username.to.valintatieto}") String username,
+      @Value("${valintalaskentakoostepalvelu.app.password.to.valintatieto}") String password) {
     String ticketsUrl = UrlConfiguration.getInstance().url("cas.tickets");
     return new RestCasClient(
         new CasConfig.CasConfigBuilder(
