@@ -12,24 +12,9 @@ valintalaskentakoostepalvelu.app.password.to.valintatieto={{valintalaskentakoost
 valintalaskentakoostepalvelu.app.username.to.hakukohderyhmapalvelu={{valintalaskentakoostepalvelu_app_username_to_hakukohderyhmapalvelu}}
 valintalaskentakoostepalvelu.app.password.to.hakukohderyhmapalvelu={{valintalaskentakoostepalvelu_app_password_to_hakukohderyhmapalvelu}}
 
-valintalaskentakoostepalvelu.app.username.to.ataru={{valintalaskentakoostepalvelu_app_username_to_ataru}}
-valintalaskentakoostepalvelu.app.password.to.ataru={{valintalaskentakoostepalvelu_app_password_to_ataru}}
-
 valintalaskentakoostepalvelu.app.username.to.haku={{valintalaskentakoostepalvelu_app_username_to_haku}}
 valintalaskentakoostepalvelu.app.password.to.haku={{valintalaskentakoostepalvelu_app_password_to_haku}}
 
-cas.service.oppijanumerorekisteri-service=https://${host.virkailija}/oppijanumerorekisteri-service/j_spring_cas_security_check
 cas.service.haku-service=https://${host.virkailija}/haku-app/j_spring_cas_security_check
-cas.service.suoritusrekisteri=https://${host.virkailija}/suoritusrekisteri/j_spring_cas_security_check
-cas.service.ataru=https://${host.virkailija}/lomake-editori/auth/cas
-cas.service.valintapiste-service=https://${host.virkailija}/valintapiste-service/auth/cas
 cas.service.valintaperusteet-service=https://${host.virkailija}/valintaperusteet-service
-
-valintalaskentakoostepalvelu.valintaperusteet-service.baseurl=https://${host.virkailija}
-
-valintalaskentakoostepalvelu.laskenta.funktionimet.joille.haetaan.tiedot.koskesta=HAEAMMATILLINENYTOARVOSANA,HAEAMMATILLINENYTOARVIOINTIASTEIKKO,ITEROIAMMATILLISETTUTKINNOT,ITEROIAMMATILLISETOSAT,ITEROIAMMATILLISETYTOOSAALUEET,HAEAMMATILLISENOSANLAAJUUS,HAEAMMATILLISENOSANARVOSANA,HAEAMMATILLISENYTOOSAALUEENLAAJUUS,HAEAMMATILLISENYTOOSAALUEENARVOSANA,HAEAMMATILLISENTUTKINNONKESKIARVO,HAEAMMATILLISENTUTKINNONSUORITUSTAPA
-valintalaskentakoostepalvelu.laskenta.opiskeluoikeustyypit.joille.haetaan.tiedot.koskesta={{valintalaskentakoostepalvelu_laskenta_opiskeluoikeustyypit_joille_haetaan_tiedot_koskesta | default("ammatillinenkoulutus") }}
-
-valintalaskentakoostepalvelu.koski.max.query.workers=5
-valintalaskentakoostepalvelu.koski.massaluovutus.max.polls=14
-valintalaskentakoostepalvelu.laskenta.kosken.historiapyyntojen.rinnakkaisuus=9
+cas.service.koostepalvelu=https://${host.virkailija}/valintalaskentakoostepalvelu/j_spring_cas_security_check
