@@ -29,7 +29,7 @@
         <dokumenttipalvelu.version>6.12-SNAPSHOT</dokumenttipalvelu.version>
 
         <httpcomponents.version>4.5.14</httpcomponents.version>
-        <modelmapper.version>3.1.1</modelmapper.version>
+        <modelmapper.version>3.2.1</modelmapper.version>
         <spring.boot.version>2.7.18</spring.boot.version>
         <spring.version>5.3.29</spring.version>
         <spring.security.version>5.7.12</spring.security.version>
@@ -514,13 +514,19 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>5.5.0</version>
+                <version>5.14.2</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.objenesis</groupId>
                 <artifactId>objenesis</artifactId>
-                <version>3.1</version>
+                <version>3.4</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy</artifactId>
+                <version>1.15.7</version>
             </dependency>
             <dependency>
                 <groupId>org.hamcrest</groupId>
@@ -657,8 +663,8 @@
                 <version>3.11.0</version>
                 <inherited>true</inherited>
                 <configuration>
-                    <source>17</source>
-                    <target>17</target>
+                    <source>21</source>
+                    <target>21</target>
                     <debug>false</debug>
                 </configuration>
             </plugin>
