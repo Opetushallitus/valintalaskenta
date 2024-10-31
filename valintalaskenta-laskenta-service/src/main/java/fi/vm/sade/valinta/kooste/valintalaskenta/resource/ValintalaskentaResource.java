@@ -271,37 +271,6 @@ public class ValintalaskentaResource {
     return result;
   }
 
-  // TODO: tarkista käytetäänkö tätä enää
-  @GetMapping(value = "/status/{uuid}/yhteenveto", produces = "application/json")
-  @Operation(
-      summary = "Valintalaskennan tilan yhteenveto",
-      responses = {
-        @ApiResponse(
-            responseCode = "OK",
-            content = @Content(schema = @Schema(implementation = LaskentaDto.class)))
-      })
-  public DeferredResult<ResponseEntity<LaskentaDto>> statusYhteenveto(
-      @PathVariable("uuid") final String uuid) {
-
-    DeferredResult<ResponseEntity<LaskentaDto>> result = new DeferredResult<>(60 * 1000L);
-    try {
-      Optional<LaskentaDto> laskenta = luoLaskentaService.haeLaskenta(uuid);
-      if(laskenta.isEmpty()) {
-        result.setErrorResult(ResponseEntity.status(HttpStatus.GONE).body("Laskentaa" + uuid + " ei löytynyt"));
-      } else {
-        authorityCheckService.checkAuthorizationForLaskenta(laskenta.get(), valintalaskentaAllowedRoles);
-        result.setResult(ResponseEntity.of(luoLaskentaService.haeLaskenta(uuid)));
-      }
-    } catch (AccessDeniedException e) {
-      result.setErrorResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage()));
-    } catch (Throwable e) {
-      String message = "Virhe laskennan " + uuid + " hakemisessa";
-      LOG.error(message, e);
-      result.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message));
-    }
-    return result;
-  }
-
   /**
    * Peruuttaa luodun laskennan
    *
