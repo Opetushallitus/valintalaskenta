@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.18</version>
+        <version>3.3.5</version>
     </parent>
 
     <groupId>fi.vm.sade.valintaperusteet</groupId>
@@ -30,7 +30,7 @@
 
         <httpcomponents.version>4.5.14</httpcomponents.version>
         <modelmapper.version>3.2.1</modelmapper.version>
-        <spring.security.version>5.7.12</spring.security.version>
+        <spring.security.version>6.3.4</spring.security.version>
         <jackson.version>2.15.0</jackson.version>
         <legacy-jackson.version>1.9.13</legacy-jackson.version>
         <jasig.cas.version>3.6.4</jasig.cas.version>
@@ -58,6 +58,10 @@
                     <exclusion>
                         <groupId>javax.ws.rs</groupId>
                         <artifactId>javax.ws.rs-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-reload4j</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -116,6 +120,11 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>javax.ws.rs</groupId>
+                <artifactId>javax.ws.rs-api</artifactId>
+                <version>2.1.1</version>
+            </dependency>
+            <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>31.1-jre</version>
@@ -156,38 +165,9 @@
                 <version>1.15</version>
             </dependency>
             <dependency>
-                <groupId>net.sf.ehcache</groupId>
-                <artifactId>ehcache-core</artifactId>
-                <version>2.6.11</version>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.jasig.cas.client</groupId>
                 <artifactId>cas-client-core</artifactId>
                 <version>${jasig.cas.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jasig.cas.client</groupId>
-                <artifactId>cas-client-support-distributed-ehcache</artifactId>
-                <version>${jasig.cas.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>ehcache</artifactId>
-                        <groupId>net.sf.ehcache</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.bind</groupId>
-                        <artifactId>jaxb-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.glassfish.jaxb</groupId>
-                        <artifactId>txw2</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.sun.istack</groupId>
-                        <artifactId>istack-commons-runtime</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
@@ -197,7 +177,7 @@
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
                 <artifactId>opintopolku-cas-servlet-filter</artifactId>
-                <version>0.2.0-SNAPSHOT</version>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
@@ -212,7 +192,7 @@
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
                 <artifactId>opintopolku-user-details-service</artifactId>
-                <version>0.5.0-SNAPSHOT</version>
+                <version>0.5.1-SNAPSHOT</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.apache.httpcomponents</groupId>
@@ -244,11 +224,6 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>2.11.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-reload4j</artifactId>
-                <version>2.0.7</version>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade.valintaperusteet</groupId>
@@ -331,14 +306,9 @@
                 <version>2.2.6</version>
             </dependency>
             <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-access</artifactId>
-                <version>1.2.12</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>1.2.12</version>
+                <groupId>ch.qos.logback.access</groupId>
+                <artifactId>tomcat</artifactId>
+                <version>2.0.3</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
