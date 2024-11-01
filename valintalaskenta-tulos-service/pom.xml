@@ -12,8 +12,8 @@
 
     <dependencies>
         <dependency>
-             <groupId>javax.servlet</groupId>
-             <artifactId>javax.servlet-api</artifactId>
+             <groupId>jakarta.servlet</groupId>
+             <artifactId>jakarta.servlet-api</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
@@ -89,8 +89,8 @@
             <artifactId>spring-boot-starter-data-jdbc</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -154,10 +154,6 @@
         <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
         </dependency>-->
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache-core</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.kubek2k.mockito.spring</groupId>
             <artifactId>springockito</artifactId>
