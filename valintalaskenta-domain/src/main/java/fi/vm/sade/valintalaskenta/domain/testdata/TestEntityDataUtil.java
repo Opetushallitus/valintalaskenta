@@ -8,7 +8,7 @@ import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import java.math.BigDecimal;
 import java.util.*;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 public class TestEntityDataUtil {
 
