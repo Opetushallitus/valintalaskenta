@@ -42,7 +42,7 @@ public class JarjestyskriteerihistoriaUploader {
     this.executor = Executors.newWorkStealingPool();
   }
 
-  @Scheduled(initialDelay = 15, fixedDelay = 10, timeUnit = TimeUnit.SECONDS)
+  //@Scheduled(initialDelay = 15, fixedDelay = 10, timeUnit = TimeUnit.SECONDS)
   public void runJarjestysKriteeriHistoriaUploader() {
     this.executor.execute(() -> this.moveJarjestyskriteeriHistoriaFromDatabaseToS3());
   }
