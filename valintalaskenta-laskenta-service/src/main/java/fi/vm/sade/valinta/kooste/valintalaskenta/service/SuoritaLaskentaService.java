@@ -12,6 +12,9 @@ import fi.vm.sade.valinta.sharedutils.ValintaResource;
 import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
+
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -70,17 +73,27 @@ public class SuoritaLaskentaService {
           false,
           false).thenApplyAsync(laskeDTO -> valintalaskentaResource.valintakoeLaskenta(laskeDTO), this.executor);
     } else {
-      if (laskenta.getValinnanvaihe() == null) {
+      if (laskenta.getValinnanvaihe() == null || laskenta.getValinnanvaihe() == -1) {
         LOG.info(
             "(Uuid={}) Haetaan laskennan + valintakoelaskennan resursseja hakukohteelle {}",
             laskenta.getUuid(),
             hakukohdeOids.iterator().next());
 
+        Instant lahtotiedotStart = Instant.now();
         return this.koostepalveluAsyncResource.haeLahtotiedot(
             laskenta,
             hakukohdeOids.iterator().next(),
             false,
-            true).thenApplyAsync(laskeDTO -> valintalaskentaResource.laskeKaikki(laskeDTO), this.executor);
+            true).thenApplyAsync(laskeDTO -> {
+          Duration lahtotiedotDuration = Duration.between(lahtotiedotStart, Instant.now());
+          Instant laskeStart = Instant.now();
+          String result = valintalaskentaResource.laskeKaikki(laskeDTO);
+          Duration laskeDuration = Duration.between(laskeStart, Instant.now());
+
+          LOG.info("Kesto: Hakukohde: {}, lähtotiedot: {} ms, laskenta: {} ms", hakukohdeOids.iterator().next(), lahtotiedotDuration.toMillis(), laskeDuration.toMillis());
+
+          return result;
+        }, this.executor);
       } else {
         LOG.info("(Uuid={}) Haetaan laskennan resursseja hakukohteelle {}", laskenta.getUuid(), hakukohdeOids.iterator().next());
         return this.koostepalveluAsyncResource.haeLahtotiedot(
