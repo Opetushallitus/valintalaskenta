@@ -47,4 +47,23 @@ public class ValintaperusteetAsyncResourceImpl implements ValintaperusteetAsyncR
         .get(url, Map.of("Accept", "text/plain"), 10 * 60 * 1000)
         .thenApply(response -> response.getResponseBody());
   }
+
+  public CompletableFuture<List<ValintaperusteetDTO>> haeValintaperusteet(
+      String hakukohdeOid, Integer valinnanVaiheJarjestysluku) {
+    List<Object> parameters = new LinkedList<>();
+    parameters.add(hakukohdeOid);
+    if (valinnanVaiheJarjestysluku != null && valinnanVaiheJarjestysluku != -1) {
+      Map<String, String> vaiheParameter = new HashMap<>();
+      vaiheParameter.put("vaihe", valinnanVaiheJarjestysluku.toString());
+      parameters.add(vaiheParameter);
+    }
+
+    String url =
+        this.urlConfiguration.url(
+            "valintaperusteet-service.valintalaskentakoostepalvelu.valintaperusteet",
+            parameters.toArray());
+
+    return httpClient.get(
+        url, new TypeToken<List<ValintaperusteetDTO>>() {}, Collections.emptyMap(), 60 * 60 * 1000);
+  }
 }
