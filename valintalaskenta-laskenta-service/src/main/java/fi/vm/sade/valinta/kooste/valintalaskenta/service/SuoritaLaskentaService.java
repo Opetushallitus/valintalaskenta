@@ -3,8 +3,11 @@ package fi.vm.sade.valinta.kooste.valintalaskenta.service;
 import fi.vm.sade.auditlog.ApplicationType;
 import fi.vm.sade.auditlog.Audit;
 import fi.vm.sade.auditlog.Changes;
+import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
+import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoJarjestyskriteereillaDTO;
 import fi.vm.sade.valinta.kooste.AuditSession;
 import fi.vm.sade.valinta.kooste.external.resource.koostepalvelu.KoostepalveluAsyncResource;
+import fi.vm.sade.valinta.kooste.external.resource.valintaperusteet.ValintaperusteetAsyncResource;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.HakukohdeJaOrganisaatio;
 import fi.vm.sade.valinta.sharedutils.AuditLog;
 import fi.vm.sade.valinta.sharedutils.AuditLogger;
@@ -34,14 +37,28 @@ public class SuoritaLaskentaService {
 
   private final ValintalaskentaResourceImpl valintalaskentaResource;
   private final KoostepalveluAsyncResource koostepalveluAsyncResource;
+  private final ValintaperusteetAsyncResource valintaperusteetAsyncResource;
   private final ExecutorService executor = Executors.newWorkStealingPool();
 
   @Autowired
   public SuoritaLaskentaService(
       ValintalaskentaResourceImpl valintalaskentaResource,
-      KoostepalveluAsyncResource koostepalveluAsyncResource) {
+      KoostepalveluAsyncResource koostepalveluAsyncResource,
+      ValintaperusteetAsyncResource valintaperusteetAsyncResource) {
     this.valintalaskentaResource = valintalaskentaResource;
     this.koostepalveluAsyncResource = koostepalveluAsyncResource;
+    this.valintaperusteetAsyncResource = valintaperusteetAsyncResource;
+  }
+
+  private boolean isValintalaskentaKaytossa(LaskentaDto laskenta, Collection<String> hakukohdeOids) {
+    List<ValintaperusteetDTO> valintaperusteet = valintaperusteetAsyncResource.haeValintaperusteet(hakukohdeOids.iterator().next(), laskenta.getValinnanvaihe()).join();
+    boolean jokinValintatapajonoKayttaaValintalaskentaa =
+        valintaperusteet.stream()
+            .map(ValintaperusteetDTO::getValinnanVaihe)
+            .flatMap(v -> v.getValintatapajono().stream())
+            .anyMatch(ValintatapajonoJarjestyskriteereillaDTO::getKaytetaanValintalaskentaa);
+
+    return jokinValintatapajonoKayttaaValintalaskentaa;
   }
 
   public CompletableFuture<String> suoritaLaskentaHakukohteille(LaskentaDto laskenta, Collection<String> hakukohdeOids) {
@@ -65,6 +82,11 @@ public class SuoritaLaskentaService {
             return valintalaskentaResource.valintaryhmaLaskenta(laskenta.getUuid(), laskeDTOs);
           }, this.executor);
     }
+
+    if(!this.isValintalaskentaKaytossa(laskenta, hakukohdeOids)) {
+      return CompletableFuture.completedFuture(laskenta.getUuid());
+    }
+
     if (Boolean.TRUE.equals(laskenta.getValintakoelaskenta())) {
       LOG.info("Muodostetaan VALINTAKOELASKENTA");
       return this.koostepalveluAsyncResource.haeLahtotiedot(
