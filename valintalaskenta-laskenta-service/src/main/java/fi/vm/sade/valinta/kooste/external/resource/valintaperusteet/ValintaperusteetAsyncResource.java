@@ -9,4 +9,7 @@ public interface ValintaperusteetAsyncResource {
   CompletableFuture<List<HakukohdeViiteDTO>> haunHakukohteet(String hakuOid);
 
   CompletableFuture<String> haeValintaryhmaVastuuorganisaatio(String valintaryhmaOid);
+
+  CompletableFuture<List<ValintaperusteetDTO>> haeValintaperusteet(
+      String hakukohdeOid, Integer valinnanVaiheJarjestysluku);
 }
