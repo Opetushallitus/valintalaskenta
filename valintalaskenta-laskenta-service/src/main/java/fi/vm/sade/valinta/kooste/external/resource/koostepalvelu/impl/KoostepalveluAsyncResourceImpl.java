@@ -37,9 +37,11 @@ public class KoostepalveluAsyncResourceImpl implements KoostepalveluAsyncResourc
       boolean withHakijaRyhmat) {
     Map<String, String> parameters = new HashMap<>();
     parameters.put("uuid", laskenta.getUuid());
-    parameters.put("valintakoelaskenta", laskenta.getValintakoelaskenta() + "");
     parameters.put("retryHakemuksetAndOppijat", retryHakemuksetAndOppijat + "");
     parameters.put("withHakijaRyhmat", withHakijaRyhmat + "");
+    if(laskenta.getValintakoelaskenta()!=null) {
+      parameters.put("valintakoelaskenta", laskenta.getValintakoelaskenta() + "");
+    }
     if(laskenta.getValinnanvaihe()!=null) {
       parameters.put("valinnanvaihe", laskenta.getValinnanvaihe() + "");
     }
