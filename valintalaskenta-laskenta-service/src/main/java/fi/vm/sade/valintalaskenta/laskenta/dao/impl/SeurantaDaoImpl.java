@@ -374,8 +374,8 @@ public class SeurantaDaoImpl implements SeurantaDao {
 
       for (HakukohdeDto hakukohdeDto : hakukohdeOids) {
         this.jdbcTemplate.update(
-            "INSERT INTO seuranta_laskenta_hakukohteet (laskenta_uuid, hakukohdeoid, organisaatiooid, tila) "
-                + "VALUES (?, ?, ?, ?)",
+            "INSERT INTO seuranta_laskenta_hakukohteet (laskenta_uuid, hakukohdeoid, organisaatiooid, tila, luotu) "
+                + "VALUES (?, ?, ?, ?, now())",
             l.getUuid(),
             hakukohdeDto.getHakukohdeOid(),
             hakukohdeDto.getOrganisaatioOid(),
@@ -438,7 +438,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
                       "JOIN seuranta_laskenta_hakukohteet ON uuid=laskenta_uuid " +
                       "WHERE seuranta_laskenta_hakukohteet.tila=? " +
                       "AND seuranta_laskennat.tila<>? " +
-                      "ORDER BY luotu ASC, hakukohdeoid ASC " +
+                      "ORDER BY seuranta_laskennat.luotu ASC, hakukohdeoid ASC " +
                       "LIMIT 1 " +
                       "FOR UPDATE",
                   (rs, rowNum) -> new ImmutablePair<>(UUID.fromString(rs.getString("laskenta_uuid")), rs.getString("hakukohdeoid")),
@@ -460,12 +460,12 @@ public class SeurantaDaoImpl implements SeurantaDao {
         if(laskenta.getTyyppi()==LaskentaTyyppi.VALINTARYHMA) {
           // jos hakukohde osa valintaryhmälaskentaa, aloitetaan kaikki hakukohteet samalla
           Collection<String> hakukohdeOids = this.jdbcTemplate.query(
-              "UPDATE seuranta_laskenta_hakukohteet SET tila=?, yritykset=yritykset+1, noodi_id=? WHERE laskenta_uuid=? RETURNING hakukohdeoid",
+              "UPDATE seuranta_laskenta_hakukohteet SET tila=?, yritykset=yritykset+1, noodi_id=?, aloitettu=now() WHERE laskenta_uuid=? RETURNING hakukohdeoid",
               (rs, rownum) -> rs.getString("hakukohdeoid"), HakukohdeTila.KESKEN.toString(), noodiId, uuid);
           return new ImmutablePair<>(uuid, hakukohdeOids);
         } else {
           // muuten aloitetaan vain kyseinen hakukohde
-          this.jdbcTemplate.update("UPDATE seuranta_laskenta_hakukohteet SET tila=?, yritykset=yritykset+1, noodi_id=? WHERE laskenta_uuid=? AND hakukohdeoid=?",
+          this.jdbcTemplate.update("UPDATE seuranta_laskenta_hakukohteet SET tila=?, yritykset=yritykset+1, noodi_id=?, aloitettu=now() WHERE laskenta_uuid=? AND hakukohdeoid=?",
               HakukohdeTila.KESKEN.toString(), noodiId, uuid, hakukohdeOid);
 
           return new ImmutablePair<>(uuid, Collections.singleton(hakukohdeOid));
@@ -545,7 +545,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
       // merkitään valmiiksi lasketut hakukohteet
       namedParameterJdbcTemplate.update(
           "UPDATE seuranta_laskenta_hakukohteet " +
-              "SET tila='" + HakukohdeTila.VALMIS + "' " +
+              "SET tila='" + HakukohdeTila.VALMIS + "', lopetettu=now() " +
               "WHERE laskenta_uuid=:uuid " +
               "AND hakukohdeoid IN (:hakukohdeOids) ",
           parameters);
@@ -586,7 +586,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
       // merkitään keskeytetyiksi hakukohteet joita on jo yritetty uudestaan
       namedParameterJdbcTemplate.update(
           "UPDATE seuranta_laskenta_hakukohteet " +
-              "SET tila='" + HakukohdeTila.KESKEYTETTY + "' " +
+              "SET tila='" + HakukohdeTila.KESKEYTETTY + "', lopetettu=now() " +
               "WHERE laskenta_uuid=:uuid " +
               "AND hakukohdeoid IN (:hakukohdeOids) " +
               "AND yritykset>=:maxYritykset",
