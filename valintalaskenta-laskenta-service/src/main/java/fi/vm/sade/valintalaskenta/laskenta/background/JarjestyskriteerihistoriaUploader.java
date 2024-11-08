@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.support.TransactionOperations;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
 @Component
@@ -32,25 +33,31 @@ public class JarjestyskriteerihistoriaUploader {
 
   private final Executor executor;
 
+  private final TransactionOperations transactionOperations;
+
   private boolean isMoving = false;
 
   public JarjestyskriteerihistoriaUploader(
       Dokumenttipalvelu dokumenttipalvelu,
       JarjestyskriteerihistoriaDAO historiaDAO,
+      TransactionOperations transactionOperations,
       @Value("${aws.bucket.oldversionname}") final String oldBucketName) {
     this.dokumenttipalvelu = dokumenttipalvelu;
     this.historiaDAO = historiaDAO;
     this.oldVersionBucketName = oldBucketName;
+    this.transactionOperations = transactionOperations;
     this.executor = Executors.newSingleThreadExecutor();
   }
 
-  @Scheduled(initialDelay = 15, fixedDelay = 10, timeUnit = TimeUnit.SECONDS)
+  @Scheduled(initialDelay = 1500, fixedDelay = 10000, timeUnit = TimeUnit.MILLISECONDS)
   public void runJarjestysKriteeriHistoriaUploader() {
     if(this.isMoving) return;
     this.isMoving = true;
     this.executor.execute(() -> {
       try {
-        this.moveJarjestyskriteeriHistoriaFromDatabaseToS3();
+        this.transactionOperations.executeWithoutResult(ts -> {
+          this.moveJarjestyskriteeriHistoriaFromDatabaseToS3();
+        });
       } finally {
         this.isMoving = false;
       }
