@@ -32,6 +32,8 @@ public class JarjestyskriteerihistoriaUploader {
 
   private final Executor executor;
 
+  private boolean isMoving = false;
+
   public JarjestyskriteerihistoriaUploader(
       Dokumenttipalvelu dokumenttipalvelu,
       JarjestyskriteerihistoriaDAO historiaDAO,
@@ -39,12 +41,20 @@ public class JarjestyskriteerihistoriaUploader {
     this.dokumenttipalvelu = dokumenttipalvelu;
     this.historiaDAO = historiaDAO;
     this.oldVersionBucketName = oldBucketName;
-    this.executor = Executors.newWorkStealingPool();
+    this.executor = Executors.newSingleThreadExecutor();
   }
 
-  //@Scheduled(initialDelay = 15, fixedDelay = 10, timeUnit = TimeUnit.SECONDS)
+  @Scheduled(initialDelay = 15, fixedDelay = 10, timeUnit = TimeUnit.SECONDS)
   public void runJarjestysKriteeriHistoriaUploader() {
-    this.executor.execute(() -> this.moveJarjestyskriteeriHistoriaFromDatabaseToS3());
+    if(this.isMoving) return;
+    this.isMoving = true;
+    this.executor.execute(() -> {
+      try {
+        this.moveJarjestyskriteeriHistoriaFromDatabaseToS3();
+      } finally {
+        this.isMoving = false;
+      }
+    });
   }
 
   public void moveJarjestyskriteeriHistoriaFromDatabaseToS3() {
