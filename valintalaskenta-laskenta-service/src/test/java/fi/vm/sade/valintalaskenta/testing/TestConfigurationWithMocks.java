@@ -57,8 +57,7 @@ class TestConfigurationWithMocks {
         valisijoitteluKasittelija,
         valiSijoitteluResource,
         erillisSijoitteluResource,
-        valintatapajonoResource,
-        parallelismFromConfig);
+        valintatapajonoResource);
   }
 
   @Bean

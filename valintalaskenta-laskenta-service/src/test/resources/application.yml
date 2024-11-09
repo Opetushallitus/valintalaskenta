@@ -50,14 +50,15 @@ root:
     oid: 123.21.23.424
 
 host:
-  host-cas: localhost
-  host-virkailija: localhost
+  virkailija: ""
 
 web:
   url:
     cas: ""
 
 cas:
+  url: https://${host.cas}/cas
+  login: https://${host.cas}/cas/login
   service:
     valintaperusteet-service: ""
     sijoittelu-service: ""
@@ -80,6 +81,9 @@ valintalaskentakoostepalvelu:
   seuranta:
     rest:
       url: ""
+  koski:
+    username: ""
+    password: ""
 
 aws:
   region: eu-west-1
@@ -96,6 +100,5 @@ cas-service:
   service: http://localhost:${server.port}/valintalaskenta-laskenta-service
   send-renew: false
   key: valintalaskenta-laskenta-service
-
 
 

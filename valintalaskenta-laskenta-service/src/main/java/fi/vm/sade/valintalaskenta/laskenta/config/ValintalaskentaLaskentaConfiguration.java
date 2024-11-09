@@ -14,6 +14,7 @@ import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaService;
 import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaServiceImpl;
 import fi.vm.sade.sijoittelu.tulos.dto.HakukohdeDTO;
 import fi.vm.sade.valinta.dokumenttipalvelu.Dokumenttipalvelu;
+import fi.vm.sade.valinta.kooste.external.resource.UrlConfiguration;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource;
@@ -35,7 +36,11 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ComponentScan(
-    basePackages = {"fi.vm.sade.valintalaskenta.laskenta", "fi.vm.sade.valintalaskenta.tulos"})
+    basePackages = {
+      "fi.vm.sade.valintalaskenta.laskenta",
+      "fi.vm.sade.valintalaskenta.tulos",
+      "fi.vm.sade.valinta.kooste"
+    })
 public class ValintalaskentaLaskentaConfiguration {
   @Bean("valintalaskentaResourceImpl")
   @Autowired
@@ -51,8 +56,7 @@ public class ValintalaskentaLaskentaConfiguration {
         valisijoitteluKasittelija,
         valiSijoitteluResource,
         erillisSijoitteluResource,
-        valintatapajonoResource,
-        parallelismFromConfig);
+        valintatapajonoResource);
   }
 
   @Bean
@@ -206,5 +210,10 @@ public class ValintalaskentaLaskentaConfiguration {
       @Value("${aws.region}") final String region,
       @Value("${aws.bucket.name}") final String bucketName) {
     return new Dokumenttipalvelu(region, bucketName);
+  }
+
+  @Bean
+  public UrlConfiguration getUrlConfiguration() {
+    return UrlConfiguration.getInstance();
   }
 }

@@ -6,7 +6,7 @@ import fi.vm.sade.auditlog.Operation;
 import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valinta.sharedutils.ValintaResource;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface LaskentaAuditLog {
   User getUser(HttpServletRequest request);

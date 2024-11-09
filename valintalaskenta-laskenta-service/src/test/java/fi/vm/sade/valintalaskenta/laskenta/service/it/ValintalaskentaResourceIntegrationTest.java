@@ -19,8 +19,6 @@ import fi.vm.sade.sijoittelu.tulos.dto.ValisijoitteluDTO;
 import fi.vm.sade.valintalaskenta.domain.HakukohteenLaskennanTila;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.Laskentakutsu;
-import fi.vm.sade.valintalaskenta.domain.dto.SuoritustiedotDTO;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Hakutoive;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.OsallistuminenTulos;
@@ -92,8 +90,7 @@ public class ValintalaskentaResourceIntegrationTest extends AbstractMocklessInte
             valisijoitteluKasittelija,
             mockValisijoitteluResource,
             erillisSijoitteluResource,
-            mockValintatapajonoResource,
-            -1);
+            mockValintatapajonoResource);
   }
 
   @Test
@@ -102,9 +99,7 @@ public class ValintalaskentaResourceIntegrationTest extends AbstractMocklessInte
           throws JsonSyntaxException, IOException {
     LaskeDTO laskeDtoYhdenKoekutsunKanssa =
         readJson("laskeDTOYhdenKoekutsuVaiheenKanssa.json", new TypeToken<LaskeDTO>() {});
-    Laskentakutsu laskentakutsu =
-        new Laskentakutsu(laskeDtoYhdenKoekutsunKanssa, new SuoritustiedotDTO());
-    valintalaskentaResource.toteutaLaskeKaikki(laskentakutsu);
+    valintalaskentaResource.toteutaLaskeKaikki(laskeDtoYhdenKoekutsunKanssa);
 
     ValintakoeOsallistuminen osallistuminen =
         valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(
@@ -131,10 +126,8 @@ public class ValintalaskentaResourceIntegrationTest extends AbstractMocklessInte
           throws JsonSyntaxException, IOException {
     LaskeDTO laskeDtoUseammanKoekutsunKanssa =
         readJson("laskeDTOUseammanKoekutsuVaiheenKanssa.json", new TypeToken<>() {});
-    Laskentakutsu laskentakutsu =
-        new Laskentakutsu(laskeDtoUseammanKoekutsunKanssa, new SuoritustiedotDTO());
 
-    valintalaskentaResource.toteutaLaskeKaikki(laskentakutsu);
+    valintalaskentaResource.toteutaLaskeKaikki(laskeDtoUseammanKoekutsunKanssa);
 
     ValintakoeOsallistuminen osallistuminen =
         valintakoeOsallistuminenDAO.readByHakuOidAndHakemusOid(
@@ -265,8 +258,7 @@ public class ValintalaskentaResourceIntegrationTest extends AbstractMocklessInte
     String returnValue;
     do {
       returnValue =
-          valintalaskentaResource.laskeJaSijoittele(
-              new Laskentakutsu(Arrays.asList(laskeDto1, laskeDto2), new SuoritustiedotDTO()));
+          valintalaskentaResource.valintaryhmaLaskenta("uuid1", Arrays.asList(laskeDto1, laskeDto2));
       Thread.sleep(50);
     } while (!(returnValue.equals(HakukohteenLaskennanTila.VALMIS)
         || returnValue.equals(HakukohteenLaskennanTila.VIRHE)));

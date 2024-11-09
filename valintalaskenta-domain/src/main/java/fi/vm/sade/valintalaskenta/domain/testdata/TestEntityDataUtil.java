@@ -8,7 +8,6 @@ import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import java.math.BigDecimal;
 import java.util.*;
-import javax.validation.constraints.NotNull;
 
 public class TestEntityDataUtil {
 
@@ -155,7 +154,6 @@ public class TestEntityDataUtil {
     return luoValintakoeOsallistuminen(hakuOid, hakijaOid, hakemusOid, new HashSet<>());
   }
 
-  @NotNull
   public static Jonosija luoHylattyJonosijaValisijoittelussa(String hakemusOid, String hakijaOid) {
     Jonosija sija =
         luoJonosijaEntity(
@@ -172,7 +170,6 @@ public class TestEntityDataUtil {
     return sija;
   }
 
-  @NotNull
   public static Jonosija luoHylattyJonosija(String hakemusOid, String hakijaOid) {
     Jonosija sija =
         luoJonosijaEntity(
