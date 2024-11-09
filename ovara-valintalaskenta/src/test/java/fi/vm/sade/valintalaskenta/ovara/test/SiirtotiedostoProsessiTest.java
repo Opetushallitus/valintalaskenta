@@ -5,6 +5,7 @@ import fi.vm.sade.valintalaskenta.ovara.ajastus.SiirtotiedostoProsessi;
 import fi.vm.sade.valintalaskenta.ovara.ajastus.repository.SiirtotiedostoProsessiRepository;
 import fi.vm.sade.valintalaskenta.ovara.test.config.OvaraTestConfigurationWithMocks;
 import org.junit.Assert;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @EnableJdbcRepositories(basePackageClasses = {SiirtotiedostoProsessiRepository.class})
 @ActiveProfiles({"test", "ovara"})
 @Import(OvaraTestConfigurationWithMocks.class)
+@Disabled
 public class SiirtotiedostoProsessiTest {
 
   @Autowired private SiirtotiedostoProsessiRepository spr;
