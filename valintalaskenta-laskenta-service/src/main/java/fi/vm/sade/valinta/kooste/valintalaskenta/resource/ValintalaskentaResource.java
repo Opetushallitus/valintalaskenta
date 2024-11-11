@@ -3,12 +3,15 @@ package fi.vm.sade.valinta.kooste.valintalaskenta.resource;
 import static java.util.Arrays.asList;
 
 import fi.vm.sade.service.valintaperusteet.dto.HakukohdeViiteDTO;
+import fi.vm.sade.valinta.kooste.audit.AuditSession;
 import fi.vm.sade.valinta.kooste.AuthorizationUtil;
 import fi.vm.sade.valinta.kooste.external.resource.valintaperusteet.ValintaperusteetAsyncResource;
 import fi.vm.sade.valinta.kooste.security.AuthorityCheckService;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Laskenta;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Maski;
+import fi.vm.sade.valinta.kooste.audit.AuditLogUtil;
 import fi.vm.sade.valinta.kooste.valintalaskenta.service.LuoLaskentaService;
+import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.TunnisteDto;
@@ -17,8 +20,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +58,15 @@ public class ValintalaskentaResource {
   @Autowired private AuthorityCheckService authorityCheckService;
   @Autowired private ValintaperusteetAsyncResource valintaperusteetAsyncResource;
 
+  private static AuditSession laskentaAuditSession(String userOid, HttpServletRequest request) {
+
+    AuditSession auditSession =
+        new AuditSession(userOid, Collections.emptyList(), request.getHeader("user-agent"),
+            Optional.ofNullable(request.getHeader("x-forwarded-for")).map(s -> s.split(",")[0]).orElse(request.getRemoteAddr()));
+    auditSession.setPersonOid(userOid);
+    return auditSession;
+  }
+
   /**
    * Luo seurantaan suoritettavan valintalaskennan koko haulle.
    *
@@ -70,7 +86,8 @@ public class ValintalaskentaResource {
       @RequestParam(value = "valinnanvaihe", required = false) Optional<Integer> valinnanvaihe,
       @RequestParam(value = "valintakoelaskenta", required = false) Boolean valintakoelaskenta,
       @RequestParam(value = "haunnimi", required = false) String haunnimi,
-      @RequestParam(value = "nimi", required = false) String nimi) {
+      @RequestParam(value = "nimi", required = false) String nimi,
+      HttpServletRequest request) {
 
     DeferredResult<ResponseEntity<Vastaus>> result = new DeferredResult<>(1 * 60 * 1000l);
     try {
@@ -91,6 +108,10 @@ public class ValintalaskentaResource {
 
       result.setResult(ResponseEntity.status(HttpStatus.OK)
           .body(Vastaus.laskennanSeuraus(tunniste.getUuid(), tunniste.getLuotiinkoUusiLaskenta())));
+
+      AuditLogUtil.auditLogLaskenta(laskentaAuditSession(AuthorizationUtil.getCurrentUser(), request),
+          ValintaperusteetOperation.LASKENTATOTEUTUS_LUONTI, tunniste.getUuid(), hakuOid,
+          hakukohdeViitteet.stream().map(hk -> hk.getOid()).toList(), Optional.empty());
     } catch(AccessDeniedException e) {
       result.setErrorResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage()));
     } catch (Throwable e) {
@@ -131,7 +152,8 @@ public class ValintalaskentaResource {
       @RequestParam(value = "valintaryhma", required = false) String valintaryhmaOid,
       @PathVariable("tyyppi") LaskentaTyyppi laskentatyyppi,
       @PathVariable("whitelist") boolean whitelist,
-      @RequestBody List<String> stringMaski) {
+      @RequestBody List<String> stringMaski,
+      HttpServletRequest request) {
     DeferredResult<ResponseEntity<Vastaus>> result = new DeferredResult<>(1 * 60 * 1000l);
 
     try {
@@ -156,6 +178,10 @@ public class ValintalaskentaResource {
           hakukohdeViitteet);
       result.setResult(ResponseEntity.status(HttpStatus.OK)
           .body(Vastaus.laskennanSeuraus(tunniste.getUuid(), tunniste.getLuotiinkoUusiLaskenta())));
+
+      AuditLogUtil.auditLogLaskenta(laskentaAuditSession(AuthorizationUtil.getCurrentUser(), request),
+          ValintaperusteetOperation.LASKENTATOTEUTUS_LUONTI, tunniste.getUuid(), hakuOid,
+          hakukohdeViitteet.stream().map(hk -> hk.getOid()).toList(), Optional.empty());
     } catch (AccessDeniedException e) {
       result.setErrorResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage()));
     } catch (Throwable e) {
@@ -176,7 +202,8 @@ public class ValintalaskentaResource {
    */
   @PostMapping(value = "/uudelleenyrita/{uuid:.+}", produces = MediaType.APPLICATION_JSON_VALUE)
   public DeferredResult<ResponseEntity<Vastaus>> uudelleenajoLaskennalle(
-      @PathVariable("uuid") String uuid) {
+      @PathVariable("uuid") String uuid,
+      HttpServletRequest request) {
     DeferredResult<ResponseEntity<Vastaus>> result = new DeferredResult<>(1 * 60 * 1000l);
 
     try {
@@ -186,6 +213,11 @@ public class ValintalaskentaResource {
       } else {
         authorityCheckService.checkAuthorizationForLaskenta(laskenta.get(), valintalaskentaAllowedRoles);
         TunnisteDto tunnisteDto = luoLaskentaService.kaynnistaLaskentaUudelleen(uuid);
+
+        AuditLogUtil.auditLogLaskenta(laskentaAuditSession(AuthorizationUtil.getCurrentUser(), request),
+            ValintaperusteetOperation.LASKENTATOTEUTUS_UUDELLEENLUONTI, laskenta.get().getUuid(), laskenta.get().getHakuOid(),
+            laskenta.get().getHakukohteet().stream().map(hk -> hk.getHakukohdeOid()).toList(), Optional.empty());
+
         result.setResult(ResponseEntity.status(HttpStatus.OK)
             .body(Vastaus.laskennanSeuraus(tunnisteDto.getUuid(), tunnisteDto.getLuotiinkoUusiLaskenta())));
       }
@@ -283,7 +315,8 @@ public class ValintalaskentaResource {
   public ResponseEntity<String> lopetaLaskenta(
       @PathVariable("uuid") String uuid,
       @RequestParam(value = "lopetaVainJonossaOlevaLaskenta", required = false)
-          Boolean lopetaVainJonossaOlevaLaskenta) {
+          Boolean lopetaVainJonossaOlevaLaskenta,
+      HttpServletRequest request) {
     try {
       Optional<LaskentaDto> laskenta = luoLaskentaService.haeLaskenta(uuid);
       if(laskenta.isEmpty()) {
@@ -291,6 +324,11 @@ public class ValintalaskentaResource {
       }
       authorityCheckService.checkAuthorizationForLaskenta(laskenta.get(), valintalaskentaAllowedRoles);
       luoLaskentaService.peruutaLaskenta(uuid, lopetaVainJonossaOlevaLaskenta);
+
+      AuditLogUtil.auditLogLaskenta(laskentaAuditSession(AuthorizationUtil.getCurrentUser(), request),
+          ValintaperusteetOperation.LASKENTATOTEUTUS_PERUUTUS, laskenta.get().getUuid(), laskenta.get().getHakuOid(),
+          laskenta.get().getHakukohteet().stream().map(hk -> hk.getHakukohdeOid()).toList(), Optional.empty());
+
       return ResponseEntity.status(HttpStatus.OK).build();
     } catch (AccessDeniedException e) {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());

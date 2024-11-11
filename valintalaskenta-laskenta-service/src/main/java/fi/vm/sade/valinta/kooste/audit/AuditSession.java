@@ -1,4 +1,4 @@
-package fi.vm.sade.valinta.kooste;
+package fi.vm.sade.valinta.kooste.audit;
 
 import fi.vm.sade.auditlog.User;
 import java.net.InetAddress;
