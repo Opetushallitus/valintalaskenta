@@ -6,10 +6,7 @@ import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Laskenta;
 import fi.vm.sade.valinta.kooste.valintalaskenta.dto.Maski;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
@@ -75,6 +72,7 @@ public class LuoLaskentaService {
         valinnanvaihe,
         isValintakoelaskenta,
         hakukohdeDtos);
+
     return tunniste;
   }
 
@@ -88,6 +86,7 @@ public class LuoLaskentaService {
     if (laskentaDto == null) {
       LOG.error("Laskennan {} tila resetoitiin mutta ei saatu yhteenvetoa resetoinnista!", uuid);
     }
+
     return new TunnisteDto(laskentaDto.getUuid(), laskentaDto.getLuotiinkoUusiLaskenta());
   }
 
@@ -99,7 +98,7 @@ public class LuoLaskentaService {
         return;
       }
     }
-    seurantaDao.peruutaLaskenta(uuid, Optional.of(ilmoitus("Peruutettu käyttäjän toimesta")));
+    YhteenvetoDto yhteenvetoDto = seurantaDao.peruutaLaskenta(uuid, Optional.of(ilmoitus("Peruutettu käyttäjän toimesta")));
   }
 
   public Optional<LaskentaDto> haeLaskenta(String uuid) {

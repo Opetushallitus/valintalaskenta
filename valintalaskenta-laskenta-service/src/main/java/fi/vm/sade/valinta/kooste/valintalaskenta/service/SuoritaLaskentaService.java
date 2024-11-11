@@ -1,17 +1,11 @@
 package fi.vm.sade.valinta.kooste.valintalaskenta.service;
 
-import fi.vm.sade.auditlog.ApplicationType;
-import fi.vm.sade.auditlog.Audit;
-import fi.vm.sade.auditlog.Changes;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoJarjestyskriteereillaDTO;
-import fi.vm.sade.valinta.kooste.AuditSession;
+import fi.vm.sade.valinta.kooste.audit.AuditSession;
 import fi.vm.sade.valinta.kooste.external.resource.koostepalvelu.KoostepalveluAsyncResource;
 import fi.vm.sade.valinta.kooste.external.resource.valintaperusteet.ValintaperusteetAsyncResource;
-import fi.vm.sade.valinta.kooste.valintalaskenta.dto.HakukohdeJaOrganisaatio;
-import fi.vm.sade.valinta.sharedutils.AuditLog;
-import fi.vm.sade.valinta.sharedutils.AuditLogger;
-import fi.vm.sade.valinta.sharedutils.ValintaResource;
+import fi.vm.sade.valinta.kooste.audit.AuditLogUtil;
 import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
@@ -22,7 +16,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +24,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class SuoritaLaskentaService {
   private static final Logger LOG = LoggerFactory.getLogger(SuoritaLaskentaService.class);
-
-  public static final Audit AUDIT =
-      new Audit(new AuditLogger(), "valintalaskentakoostepalvelu", ApplicationType.VIRKAILIJA);
 
   private final ValintalaskentaResourceImpl valintalaskentaResource;
   private final KoostepalveluAsyncResource koostepalveluAsyncResource;
@@ -50,6 +40,15 @@ public class SuoritaLaskentaService {
     this.valintaperusteetAsyncResource = valintaperusteetAsyncResource;
   }
 
+  private static AuditSession laskentaAuditSession(LaskentaDto laskenta) {
+    final String userAgent = "-";
+    final String inetAddress = "127.0.0.1";
+    AuditSession auditSession =
+        new AuditSession(laskenta.getUserOID(), Collections.emptyList(), userAgent, inetAddress);
+    auditSession.setPersonOid(laskenta.getUserOID());
+    return auditSession;
+  }
+
   private boolean isValintalaskentaKaytossa(LaskentaDto laskenta, Collection<String> hakukohdeOids) {
     List<ValintaperusteetDTO> valintaperusteet = valintaperusteetAsyncResource.haeValintaperusteet(hakukohdeOids.iterator().next(), laskenta.getValinnanvaihe()).join();
     boolean jokinValintatapajonoKayttaaValintalaskentaa =
@@ -62,10 +61,14 @@ public class SuoritaLaskentaService {
   }
 
   public CompletableFuture<String> suoritaLaskentaHakukohteille(LaskentaDto laskenta, Collection<String> hakukohdeOids) {
+    AuditSession auditSession = laskentaAuditSession(laskenta);
+
     if (laskenta.getTyyppi().equals(fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi.VALINTARYHMA)) {
       String hakukohteidenNimi =
           String.format("Valintaryhmälaskenta %s hakukohteella", hakukohdeOids.size());
-      LOG.info("(Uuid={}) {}", laskenta.getUuid(), hakukohteidenNimi);
+      LOG.info("Muodostetaan VALINTARYHMALASKENTA (Uuid={}) {}", laskenta.getUuid(), hakukohteidenNimi);
+      AuditLogUtil.auditLogLaskenta(auditSession, ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS, laskenta.getUuid(),
+          laskenta.getHakuOid(), hakukohdeOids, Optional.of("VALINTARYHMALASKENTA"));
 
       return CompletableFuture.supplyAsync(() ->
               hakukohdeOids.stream().map(hakukohdeOid -> this.koostepalveluAsyncResource.haeLahtotiedot(
@@ -83,28 +86,34 @@ public class SuoritaLaskentaService {
           }, this.executor);
     }
 
+    if(hakukohdeOids.size()!=1) {
+      throw new RuntimeException("Hakukohteita on " + hakukohdeOids.size() + ". Muissa kuin valintaryhmälaskennassa hakukohteita täytyy olla tasan yksi!");
+    }
     if(!this.isValintalaskentaKaytossa(laskenta, hakukohdeOids)) {
       return CompletableFuture.completedFuture(laskenta.getUuid());
     }
 
     if (Boolean.TRUE.equals(laskenta.getValintakoelaskenta())) {
-      LOG.info("Muodostetaan VALINTAKOELASKENTA");
+      String hakukohdeOid = hakukohdeOids.iterator().next();
+      LOG.info("Muodostetaan VALINTAKOELASKENTA (Uuid={}) {}", laskenta.getUuid(), hakukohdeOid);
+      AuditLogUtil.auditLogLaskenta(auditSession, ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS, laskenta.getUuid(),
+          laskenta.getHakuOid(), hakukohdeOids, Optional.of("VALINTAKOELASKENTA"));
       return this.koostepalveluAsyncResource.haeLahtotiedot(
           laskenta,
-          hakukohdeOids.iterator().next(),
+          hakukohdeOid,
           false,
           false).thenApplyAsync(laskeDTO -> valintalaskentaResource.valintakoeLaskenta(laskeDTO), this.executor);
     } else {
       if (laskenta.getValinnanvaihe() == null || laskenta.getValinnanvaihe() == -1) {
-        LOG.info(
-            "(Uuid={}) Haetaan laskennan + valintakoelaskennan resursseja hakukohteelle {}",
-            laskenta.getUuid(),
-            hakukohdeOids.iterator().next());
+        String hakukohdeOid = hakukohdeOids.iterator().next();
+        LOG.info("Muodostetaan KAIKKI VAIHEET LASKENTA (Uuid={}) {}", laskenta.getUuid(), hakukohdeOid);
+        AuditLogUtil.auditLogLaskenta(auditSession, ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS, laskenta.getUuid(),
+            laskenta.getHakuOid(), hakukohdeOids, Optional.of("KAIKKI VAIHEET LASKENTA"));
 
         Instant lahtotiedotStart = Instant.now();
         return this.koostepalveluAsyncResource.haeLahtotiedot(
             laskenta,
-            hakukohdeOids.iterator().next(),
+            hakukohdeOid,
             false,
             true).thenApplyAsync(laskeDTO -> {
           Duration lahtotiedotDuration = Duration.between(lahtotiedotStart, Instant.now());
@@ -117,43 +126,16 @@ public class SuoritaLaskentaService {
           return result;
         }, this.executor);
       } else {
-        LOG.info("(Uuid={}) Haetaan laskennan resursseja hakukohteelle {}", laskenta.getUuid(), hakukohdeOids.iterator().next());
+        String hakukohdeOid = hakukohdeOids.iterator().next();
+        LOG.info("Muodostetaan VALINTALASKENTA (Uuid={}) {}", laskenta.getUuid(), hakukohdeOid);
+        AuditLogUtil.auditLogLaskenta(auditSession, ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS, laskenta.getUuid(),
+            laskenta.getHakuOid(), hakukohdeOids, Optional.of("VALINTALASKENTA"));
         return this.koostepalveluAsyncResource.haeLahtotiedot(
             laskenta,
-            hakukohdeOids.iterator().next(),
+            hakukohdeOid,
             false,
             true).thenApplyAsync(laskeDTO -> valintalaskentaResource.valintalaskenta(laskeDTO), this.executor);
       }
     }
-  }
-
-  private static AuditSession koosteAuditSession(LaskentaDto laskenta) {
-    final String userAgent = "-";
-    final String inetAddress = "127.0.0.1";
-    AuditSession auditSession =
-        new AuditSession(laskenta.getUserOID(), Collections.emptyList(), userAgent, inetAddress);
-    auditSession.setSessionId(laskenta.getUuid());
-    auditSession.setPersonOid(laskenta.getUserOID());
-    return auditSession;
-  }
-
-  private void auditLogLaskentaStart(AuditSession auditSession, String uuid, String hakuOid, Collection<HakukohdeJaOrganisaatio> hakukohteet, String tyyppi) {
-    Map<String, String> additionalAuditInfo = new HashMap<>();
-    additionalAuditInfo.put("tyyppi", tyyppi);
-    additionalAuditInfo.put("uuid", uuid);
-    additionalAuditInfo.put(
-        "hakukohteet",
-        hakukohteet.stream()
-            .map(HakukohdeJaOrganisaatio::getHakukohdeOid)
-            .collect(Collectors.toList())
-            .toString());
-    AuditLog.log(
-        AUDIT,
-        auditSession.asAuditUser(),
-        ValintaperusteetOperation.LASKENTATOTEUTUS_LUONTI,
-        ValintaResource.LASKENTATOTEUTUS,
-        hakuOid,
-        Changes.EMPTY,
-        additionalAuditInfo);
   }
 }
