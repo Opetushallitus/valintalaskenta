@@ -82,9 +82,9 @@ public class ValintalaskentaResource {
   @PostMapping(value = "/haku/{hakuOid}/tyyppi/HAKU", produces = MediaType.APPLICATION_JSON_VALUE)
   public DeferredResult<ResponseEntity<Vastaus>> valintalaskentaKokoHaulle(
       @PathVariable("hakuOid") String hakuOid,
-      @RequestParam(value = "erillishaku", required = false) Boolean erillishaku,
+      @RequestParam(value = "erillishaku", required = false) boolean erillishaku,
       @RequestParam(value = "valinnanvaihe", required = false) Optional<Integer> valinnanvaihe,
-      @RequestParam(value = "valintakoelaskenta", required = false) Boolean valintakoelaskenta,
+      @RequestParam(value = "valintakoelaskenta", required = false) boolean valintakoelaskenta,
       @RequestParam(value = "haunnimi", required = false) String haunnimi,
       @RequestParam(value = "nimi", required = false) String nimi,
       HttpServletRequest request) {
@@ -103,7 +103,7 @@ public class ValintalaskentaResource {
           valinnanvaihe.flatMap(vaihe -> vaihe==-1 ? Optional.empty() : Optional.of(vaihe)),
           hakuOid,
           Optional.empty(),
-          Boolean.TRUE.equals(erillishaku),
+          erillishaku,
           hakukohdeViitteet);
 
       result.setResult(ResponseEntity.status(HttpStatus.OK)
@@ -144,9 +144,9 @@ public class ValintalaskentaResource {
       produces = MediaType.APPLICATION_JSON_VALUE)
   public DeferredResult<ResponseEntity<Vastaus>> valintalaskentaHaulle(
       @PathVariable("hakuOid") String hakuOid,
-      @RequestParam(value = "erillishaku", required = false) Boolean erillishaku,
+      @RequestParam(value = "erillishaku", required = false) boolean erillishaku,
       @RequestParam(value = "valinnanvaihe", required = false) Optional<Integer> valinnanvaihe,
-      @RequestParam(value = "valintakoelaskenta", required = false) Boolean valintakoelaskenta,
+      @RequestParam(value = "valintakoelaskenta", required = false) boolean valintakoelaskenta,
       @RequestParam(value = "haunnimi", required = false) String haunnimi,
       @RequestParam(value = "nimi", required = false) String nimi,
       @RequestParam(value = "valintaryhma", required = false) String valintaryhmaOid,
@@ -174,7 +174,7 @@ public class ValintalaskentaResource {
           valinnanvaihe.flatMap(vaihe -> vaihe==-1 ? Optional.empty() : Optional.of(vaihe)),
           hakuOid,
           Optional.of(whitelist ? Maski.whitelist(stringMaski) : Maski.blacklist(stringMaski)),
-          Boolean.TRUE.equals(erillishaku),
+          erillishaku,
           hakukohdeViitteet);
       result.setResult(ResponseEntity.status(HttpStatus.OK)
           .body(Vastaus.laskennanSeuraus(tunniste.getUuid(), tunniste.getLuotiinkoUusiLaskenta())));

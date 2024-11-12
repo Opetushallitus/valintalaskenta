@@ -93,7 +93,7 @@ public class SuoritaLaskentaService {
       return CompletableFuture.completedFuture(laskenta.getUuid());
     }
 
-    if (Boolean.TRUE.equals(laskenta.getValintakoelaskenta())) {
+    if (laskenta.getValintakoelaskenta()) {
       String hakukohdeOid = hakukohdeOids.iterator().next();
       LOG.info("Muodostetaan VALINTAKOELASKENTA (Uuid={}) {}", laskenta.getUuid(), hakukohdeOid);
       AuditLogUtil.auditLogLaskenta(auditSession, ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS, laskenta.getUuid(),
