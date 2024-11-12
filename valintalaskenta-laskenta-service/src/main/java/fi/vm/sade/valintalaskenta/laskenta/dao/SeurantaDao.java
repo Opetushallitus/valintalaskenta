@@ -38,9 +38,9 @@ public interface SeurantaDao {
       String nimi,
       String hakuOid,
       LaskentaTyyppi tyyppi,
-      Boolean erillishaku,
+      boolean erillishaku,
       Optional<Integer> valinnanvaihe,
-      Boolean valintakoelaskenta,
+      boolean valintakoelaskenta,
       Collection<HakukohdeDto> hakukohdeOids);
 
   /**

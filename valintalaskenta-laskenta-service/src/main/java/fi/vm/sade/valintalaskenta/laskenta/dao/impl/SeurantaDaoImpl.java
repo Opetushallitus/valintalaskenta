@@ -106,7 +106,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
           LaskentaTyyppi.valueOf(rs.getString("tyyppi")),
           rs.getBoolean("erillishaku"),
           Optional.ofNullable(rs.getObject("valinnanvaihe", Integer.class)),
-          rs.getObject("valintakoelaskenta", Boolean.class),
+          rs.getBoolean("valintakoelaskenta"),
           LaskentaTila.valueOf(rs.getString("tila")),
           hakukohteet.getOrDefault(uuid, Collections.emptyList()),
           ilmoitukset
@@ -191,7 +191,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
     final int hakukohteitaValmiina = laskenta.getHakukohteitaValmiina();
     final LaskentaTyyppi tyyppi = laskenta.getTyyppi();
     final Optional<Integer> valinnanvaihe = laskenta.getValinnanvaihe();
-    final Boolean valintakoelaskenta = laskenta.getValintakoelaskenta();
+    final boolean valintakoelaskenta = laskenta.getValintakoelaskenta();
     long luotuTimestamp;
     if (luotu == null) {
       luotuTimestamp = new Date().getTime();
@@ -209,7 +209,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
         hakukohteitaYhteensa,
         hakukohteitaValmiina,
         hakukohteitaKeskeytetty,
-        jonosijaSupplier.apply(luotu, tila),
+        Optional.ofNullable(jonosijaSupplier.apply(luotu, tila)),
         tyyppi,
         valinnanvaihe,
         valintakoelaskenta);
@@ -325,9 +325,9 @@ public class SeurantaDaoImpl implements SeurantaDao {
       String nimi,
       String hakuOid,
       LaskentaTyyppi tyyppi,
-      Boolean erillishaku,
+      boolean erillishaku,
       Optional<Integer> valinnanvaihe,
-      Boolean valintakoelaskenta,
+      boolean valintakoelaskenta,
       Collection<HakukohdeDto> hakukohdeOids) {
     if (hakukohdeOids == null || hakukohdeOids.isEmpty()) {
       throw new RuntimeException(
@@ -636,8 +636,8 @@ public class SeurantaDaoImpl implements SeurantaDao {
     private final Collection<HakukohdeDto> hakukohteet;
     private final IlmoitusDto ilmoitus;
     private final Optional<Integer> valinnanvaihe;
-    private final Boolean valintakoelaskenta;
-    private final Boolean erillishaku;
+    private final boolean valintakoelaskenta;
+    private final boolean erillishaku;
     private final String userOID;
     private final String identityHash;
 
@@ -649,9 +649,9 @@ public class SeurantaDaoImpl implements SeurantaDao {
         String hakuOid,
         Date luotu,
         LaskentaTyyppi tyyppi,
-        Boolean erillishaku,
+        boolean erillishaku,
         Optional<Integer> valinnanvaihe,
-        Boolean valintakoelaskenta,
+        boolean valintakoelaskenta,
         LaskentaTila laskentaTila,
         Collection<HakukohdeDto> hakukohdeOids,
         IlmoitusDto ilmoitus) {
@@ -697,7 +697,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
           .putLong(DELIMETER + 4L)
           .putBoolean(Boolean.TRUE.equals(valintakoelaskenta))
           .putLong(DELIMETER + 5L)
-          .putBoolean(Boolean.TRUE.equals(erillishaku))
+          .putBoolean(erillishaku)
           .putLong(DELIMETER + 6L)
           .putObject(
               this.hakukohteet,
@@ -745,7 +745,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
       return tyyppi;
     }
 
-    public Boolean getErillishaku() {
+    public boolean getErillishaku() {
       return erillishaku;
     }
 
@@ -798,7 +798,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
       return valinnanvaihe;
     }
 
-    public Boolean getValintakoelaskenta() {
+    public boolean getValintakoelaskenta() {
       return valintakoelaskenta;
     }
 
@@ -819,7 +819,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
             erillishaku,
             valinnanvaihe,
             valintakoelaskenta,
-            jonosijaProvider.apply(luotu, getTila()),
+            Optional.ofNullable(jonosijaProvider.apply(luotu, getTila())),
             luotiinkoUusiLaskenta);
       } catch (Exception e) {
         LOG.error("LaskentaDto:n muodostus Laskentaentiteetista epaonnistui!", e);

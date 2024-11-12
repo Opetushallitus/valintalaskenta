@@ -13,10 +13,10 @@ public class YhteenvetoDto {
   private final int hakukohteitaYhteensa;
   private final int hakukohteitaValmiina;
   private final int hakukohteitaKeskeytetty;
-  private final Integer jonosija; // sija laskennan jonossa tai null jos ei jonossa
+  private final Optional<Integer> jonosija; // sija laskennan jonossa tai empty jos ei jonossa
   private final LaskentaTyyppi tyyppi;
   private final Optional<Integer> valinnanvaihe;
-  private final Boolean valintakoelaskenta;
+  private final boolean valintakoelaskenta;
 
   public YhteenvetoDto(
       String uuid,
@@ -29,10 +29,10 @@ public class YhteenvetoDto {
       int hakukohteitaYhteensa,
       int hakukohteitaValmiina,
       int hakukohteitaKeskeytetty,
-      Integer jonosija,
+      Optional<Integer> jonosija,
       LaskentaTyyppi tyyppi,
       Optional<Integer> valinnanvaihe,
-      Boolean valintakoelaskenta) {
+      boolean valintakoelaskenta) {
     this.userOID = userOID;
     this.haunnimi = haunnimi;
     this.nimi = nimi;
@@ -61,7 +61,7 @@ public class YhteenvetoDto {
     return userOID;
   }
 
-  public Integer getJonosija() {
+  public Optional<Integer> getJonosija() {
     return jonosija;
   }
 
@@ -101,7 +101,7 @@ public class YhteenvetoDto {
     return valinnanvaihe;
   }
 
-  public Boolean getValintakoelaskenta() {
+  public boolean getValintakoelaskenta() {
     return valintakoelaskenta;
   }
 }
