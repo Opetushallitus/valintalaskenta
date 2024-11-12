@@ -104,7 +104,7 @@ public class SuoritaLaskentaService {
           false,
           false).thenApplyAsync(laskeDTO -> valintalaskentaResource.valintakoeLaskenta(laskeDTO), this.executor);
     } else {
-      if (laskenta.getValinnanvaihe() == null || laskenta.getValinnanvaihe() == -1) {
+      if (!laskenta.getValinnanvaihe().isPresent()) {
         String hakukohdeOid = hakukohdeOids.iterator().next();
         LOG.info("Muodostetaan KAIKKI VAIHEET LASKENTA (Uuid={}) {}", laskenta.getUuid(), hakukohdeOid);
         AuditLogUtil.auditLogLaskenta(auditSession, ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS, laskenta.getUuid(),
