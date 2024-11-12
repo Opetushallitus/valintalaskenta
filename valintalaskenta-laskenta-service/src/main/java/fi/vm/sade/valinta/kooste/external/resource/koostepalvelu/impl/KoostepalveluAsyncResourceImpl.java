@@ -42,8 +42,8 @@ public class KoostepalveluAsyncResourceImpl implements KoostepalveluAsyncResourc
     if(laskenta.getValintakoelaskenta()!=null) {
       parameters.put("valintakoelaskenta", laskenta.getValintakoelaskenta() + "");
     }
-    if(laskenta.getValinnanvaihe()!=null) {
-      parameters.put("valinnanvaihe", laskenta.getValinnanvaihe() + "");
+    if(laskenta.getValinnanvaihe().isPresent()) {
+      parameters.put("valinnanvaihe", laskenta.getValinnanvaihe().get().toString());
     }
     if(laskenta.getErillishaku()!=null) {
       parameters.put("erillishaku", laskenta.getErillishaku() + "");
