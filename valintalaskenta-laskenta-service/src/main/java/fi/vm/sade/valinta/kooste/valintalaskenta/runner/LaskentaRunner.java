@@ -51,6 +51,13 @@ public class LaskentaRunner {
     this.seurantaDao.resetoiKuolleidenNoodienLaskennat(60);
   }
 
+  private static Throwable getUnderlyingCause(Throwable t) {
+    if(t.getCause() != null) {
+      return getUnderlyingCause(t.getCause());
+    }
+    return t;
+  }
+
   @Scheduled(initialDelay = 15, fixedDelay = 5, timeUnit = TimeUnit.SECONDS)
   public void fetchAndStartHakukohde() {
     this.executor.execute(() -> {
@@ -71,9 +78,8 @@ public class LaskentaRunner {
           suoritaLaskentaService.suoritaLaskentaHakukohteille(this.seurantaDao.haeLaskenta(uuid.toString()).get(), hakukohdeOids)
               .thenRunAsync(() -> this.seurantaDao.merkkaaHakukohteetValmiiksi(uuid, hakukohdeOids))
               .exceptionallyAsync(t -> {
-                String msg = "Laskennan %s hakukohteen %s laskenta päättyi virheeseen";
-                LOG.error(msg, t);
-                this.seurantaDao.merkkaaHakukohteetEpaonnistuneeksi(uuid, hakukohdeOids, 2, msg);
+                LOG.error(String.format("Laskennan %s hakukohteiden %s laskenta päättyi virheeseen", uuid, hakukohdeOids.stream().collect(Collectors.joining(", "))), t);
+                this.seurantaDao.merkkaaHakukohteetEpaonnistuneeksi(uuid, hakukohdeOids, 2, getUnderlyingCause(t).getMessage());
                 return null;
               });
         }
