@@ -77,8 +77,8 @@ public class LuoLaskentaService {
   }
 
   public TunnisteDto kaynnistaLaskentaUudelleen(final String uuid) {
-    Optional<Laskenta> laskenta = this.fetchLaskenta(uuid);
-    if(laskenta.isPresent() && !laskenta.get().isValmis()) {
+    Optional<LaskentaDto> laskenta = this.haeLaskenta(uuid);
+    if(laskenta.isPresent() && laskenta.get().getTila()!=LaskentaTila.VALMIS) {
       return new TunnisteDto(uuid, false);
     }
 
@@ -91,18 +91,24 @@ public class LuoLaskentaService {
   }
 
   public void peruutaLaskenta(String uuid, Boolean lopetaVainJonossaOlevaLaskenta) {
+    Optional<LaskentaDto> laskenta = this.haeLaskenta(uuid);
+    if(!laskenta.isPresent()) {
+      LOG.warn("Yritettiin peruuttaa olematonta laskentaa: " + uuid);
+      return;
+    }
+
     if (Boolean.TRUE.equals(lopetaVainJonossaOlevaLaskenta)) {
-      boolean onkoLaskentaVielaJonossa = this.fetchLaskenta(uuid) == null;
+      boolean onkoLaskentaVielaJonossa = laskenta.get().getTila()==LaskentaTila.ALOITTAMATTA;
       if (!onkoLaskentaVielaJonossa) {
-        // Laskentaa suoritetaan jo joten ei pysayteta
+        LOG.warn("Yritettiin peruuttaa laskentaa: " + uuid + " joka on tilassa " + laskenta.get().getTila());
         return;
       }
     }
-    YhteenvetoDto yhteenvetoDto = seurantaDao.peruutaLaskenta(uuid, Optional.of(ilmoitus("Peruutettu käyttäjän toimesta")));
+    seurantaDao.peruutaLaskenta(uuid, Optional.of(ilmoitus("Peruutettu käyttäjän toimesta")));
   }
 
   public Optional<LaskentaDto> haeLaskenta(String uuid) {
-    return Optional.ofNullable(seurantaDao.haeLaskenta(uuid).get());
+    return seurantaDao.haeLaskenta(uuid);
   }
 
   public Optional<Laskenta> fetchLaskenta(String uuid) {
