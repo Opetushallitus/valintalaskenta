@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain.dto.seuranta;
 
 import java.util.List;
+import java.util.Optional;
 
 public class LaskentaDto {
   private final String uuid;
@@ -14,7 +15,7 @@ public class LaskentaDto {
   private final LaskentaTyyppi tyyppi;
   private final List<HakukohdeDto> hakukohteet;
   private final IlmoitusDto ilmoitus;
-  private final Integer valinnanvaihe;
+  private final Optional<Integer> valinnanvaihe;
   private final Boolean valintakoelaskenta;
   private final Integer jonosija;
   private final boolean luotiinkoUusiLaskenta;
@@ -31,7 +32,7 @@ public class LaskentaDto {
       IlmoitusDto ilmoitus,
       List<HakukohdeDto> hakukohteet,
       Boolean erillishaku,
-      Integer valinnanvaihe,
+      Optional<Integer> valinnanvaihe,
       Boolean valintakoelaskenta,
       Integer jonosija,
       boolean luotiinkoUusiLaskenta) {
@@ -84,7 +85,7 @@ public class LaskentaDto {
     return userOID;
   }
 
-  public Integer getValinnanvaihe() {
+  public Optional<Integer> getValinnanvaihe() {
     return valinnanvaihe;
   }
 

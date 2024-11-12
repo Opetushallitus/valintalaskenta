@@ -1,5 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain.dto.seuranta;
 
+import java.util.Optional;
+
 public class YhteenvetoDto {
   private final String uuid;
   private final String hakuOid;
@@ -13,7 +15,7 @@ public class YhteenvetoDto {
   private final int hakukohteitaKeskeytetty;
   private final Integer jonosija; // sija laskennan jonossa tai null jos ei jonossa
   private final LaskentaTyyppi tyyppi;
-  private final Integer valinnanvaihe;
+  private final Optional<Integer> valinnanvaihe;
   private final Boolean valintakoelaskenta;
 
   public YhteenvetoDto(
@@ -29,7 +31,7 @@ public class YhteenvetoDto {
       int hakukohteitaKeskeytetty,
       Integer jonosija,
       LaskentaTyyppi tyyppi,
-      Integer valinnanvaihe,
+      Optional<Integer> valinnanvaihe,
       Boolean valintakoelaskenta) {
     this.userOID = userOID;
     this.haunnimi = haunnimi;
@@ -95,7 +97,7 @@ public class YhteenvetoDto {
     return tyyppi;
   }
 
-  public Integer getValinnanvaihe() {
+  public Optional<Integer> getValinnanvaihe() {
     return valinnanvaihe;
   }
 
