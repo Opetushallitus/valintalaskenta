@@ -58,7 +58,7 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
     Assertions.assertEquals(false, laskentaDto.getErillishaku());
     Assertions.assertEquals(Optional.empty(), laskentaDto.getValinnanvaihe());
     Assertions.assertEquals(false, laskentaDto.getValintakoelaskenta());
-    Assertions.assertEquals(1, laskentaDto.getJonosija());
+    Assertions.assertEquals(Optional.of(1), laskentaDto.getJonosija());
     Assertions.assertEquals(true, laskentaDto.getLuotiinkoUusiLaskenta());
   }
 

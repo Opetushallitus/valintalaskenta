@@ -48,7 +48,7 @@ public class LuoLaskentaService {
       String haunNimi,
       String nimi,
       LaskentaTyyppi laskentatyyppi,
-      Boolean isValintakoelaskenta,
+      boolean isValintakoelaskenta,
       Optional<Integer> valinnanvaihe,
       String hakuOid,
       Optional<Maski> maski,
