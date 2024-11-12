@@ -10,14 +10,14 @@ public class LaskentaDto {
   private final String haunnimi;
   private final String nimi;
   private final long luotu;
-  private final Boolean erillishaku;
+  private final boolean erillishaku;
   private final LaskentaTila tila;
   private final LaskentaTyyppi tyyppi;
   private final List<HakukohdeDto> hakukohteet;
   private final IlmoitusDto ilmoitus;
   private final Optional<Integer> valinnanvaihe;
-  private final Boolean valintakoelaskenta;
-  private final Integer jonosija;
+  private final boolean valintakoelaskenta;
+  private final Optional<Integer> jonosija;
   private final boolean luotiinkoUusiLaskenta;
 
   public LaskentaDto(
@@ -31,10 +31,10 @@ public class LaskentaDto {
       LaskentaTyyppi tyyppi,
       IlmoitusDto ilmoitus,
       List<HakukohdeDto> hakukohteet,
-      Boolean erillishaku,
+      boolean erillishaku,
       Optional<Integer> valinnanvaihe,
-      Boolean valintakoelaskenta,
-      Integer jonosija,
+      boolean valintakoelaskenta,
+      Optional<Integer> jonosija,
       boolean luotiinkoUusiLaskenta) {
     this.haunnimi = haunnimi;
     this.nimi = nimi;
@@ -61,11 +61,11 @@ public class LaskentaDto {
     return luotiinkoUusiLaskenta;
   }
 
-  public Integer getJonosija() {
+  public Optional<Integer> getJonosija() {
     return jonosija;
   }
 
-  public Boolean getErillishaku() {
+  public boolean getErillishaku() {
     return erillishaku;
   }
 
@@ -89,7 +89,7 @@ public class LaskentaDto {
     return valinnanvaihe;
   }
 
-  public Boolean getValintakoelaskenta() {
+  public boolean getValintakoelaskenta() {
     return valintakoelaskenta;
   }
 
@@ -117,7 +117,7 @@ public class LaskentaDto {
     return tyyppi;
   }
 
-  public Boolean isErillishaku() {
+  public boolean isErillishaku() {
     return erillishaku;
   }
 }
