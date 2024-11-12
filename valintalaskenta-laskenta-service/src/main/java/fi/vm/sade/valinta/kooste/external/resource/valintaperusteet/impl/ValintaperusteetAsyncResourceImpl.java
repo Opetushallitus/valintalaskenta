@@ -28,6 +28,7 @@ public class ValintaperusteetAsyncResourceImpl implements ValintaperusteetAsyncR
     this.urlConfiguration = UrlConfiguration.getInstance();
   }
 
+  @Override
   public CompletableFuture<List<HakukohdeViiteDTO>> haunHakukohteet(String hakuOid) {
     return this.httpClient.get(
         this.urlConfiguration.url("valintaperusteet-service.valintalaskentakoostepalvelu.hakukohde.haku", hakuOid),
@@ -48,13 +49,14 @@ public class ValintaperusteetAsyncResourceImpl implements ValintaperusteetAsyncR
         .thenApply(response -> response.getResponseBody());
   }
 
+  @Override
   public CompletableFuture<List<ValintaperusteetDTO>> haeValintaperusteet(
-      String hakukohdeOid, Integer valinnanVaiheJarjestysluku) {
+      String hakukohdeOid, Optional<Integer> valinnanVaiheJarjestysluku) {
     List<Object> parameters = new LinkedList<>();
     parameters.add(hakukohdeOid);
-    if (valinnanVaiheJarjestysluku != null && valinnanVaiheJarjestysluku != -1) {
+    if (valinnanVaiheJarjestysluku.isPresent()) {
       Map<String, String> vaiheParameter = new HashMap<>();
-      vaiheParameter.put("vaihe", valinnanVaiheJarjestysluku.toString());
+      vaiheParameter.put("vaihe", valinnanVaiheJarjestysluku.get().toString());
       parameters.add(vaiheParameter);
     }
 
