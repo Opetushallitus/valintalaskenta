@@ -133,6 +133,47 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
   }
 
   @Test
+  public void testMerkkaaOsittainlaskettuJaKeskeytettyHakukohdeValmiiksi() {
+    // luodaan laskenta useammalla hakukohteella
+    LaskentaDto laskentaDto = this.luoLaskenta("laskenta", List.of("123", "234", "345"));
+    Optional<YhteenvetoDto> yhteenvetoDto = this.seurantaDao.haeYhteenveto(laskentaDto.getUuid());
+    Assertions.assertEquals(0, yhteenvetoDto.get().getHakukohteitaValmiina());
+
+    // otetaan hakukohde työn alle ja merkataan se valmiiksi
+    this.seurantaDao.otaSeuraavatHakukohteetTyonAlle("noodi1", 10);
+    this.seurantaDao.merkkaaHakukohteetValmiiksi(UUID.fromString(laskentaDto.getUuid()), Collections.singleton("123"));
+
+    // peruutetaan laskenta
+    this.seurantaDao.peruutaLaskenta(laskentaDto.getUuid(), Optional.empty());
+
+    // merkataan hakukohteet valmiiksi, tämä ei vaikuta mitään koska laskenta keskeytetty
+    this.seurantaDao.merkkaaHakukohteetValmiiksi(UUID.fromString(laskentaDto.getUuid()), List.of("123", "234", "345"));
+
+    // yhteenvedossa näkyy että hakukohteet keskeytetty
+    yhteenvetoDto = this.seurantaDao.haeYhteenveto(laskentaDto.getUuid());
+    Assertions.assertEquals(3, yhteenvetoDto.get().getHakukohteitaKeskeytetty());
+  }
+
+  @Test
+  public void testMerkkaaKeskeytettyHakukohdeValmiiksi() {
+    // luodaan laskenta useammalla hakukohteella
+    LaskentaDto laskentaDto = this.luoLaskenta("laskenta", List.of("123", "234", "345"));
+    Optional<YhteenvetoDto> yhteenvetoDto = this.seurantaDao.haeYhteenveto(laskentaDto.getUuid());
+    Assertions.assertEquals(0, yhteenvetoDto.get().getHakukohteitaValmiina());
+
+    // peruutetaan laskenta
+    this.seurantaDao.peruutaLaskenta(laskentaDto.getUuid(), Optional.empty());
+
+    // merkataan hakukohde valmiiksi, tämä ei vaikuta mitään koska laskenta keskeytetty
+    this.seurantaDao.merkkaaHakukohteetValmiiksi(UUID.fromString(laskentaDto.getUuid()), Collections.singleton("123"));
+
+    // yhteenvedossa näkyy että yksi hakukohde valmis
+    yhteenvetoDto = this.seurantaDao.haeYhteenveto(laskentaDto.getUuid());
+    Assertions.assertEquals(3, yhteenvetoDto.get().getHakukohteitaKeskeytetty());
+  }
+
+
+  @Test
   public void testOlemantontaHakukohdettaEiVoiMerkataValmiiksi() {
     LaskentaDto laskentaDto = this.luoLaskenta("laskenta", List.of("123", "234", "345"));
     try {
@@ -159,18 +200,6 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
       // hakukohde on jo valmis => virhe
       this.seurantaDao.merkkaaHakukohteetValmiiksi(UUID.fromString(laskentaDto.getUuid()), Collections.singleton("123"));
       Assertions.fail("Valmis hakukohde merkitty valmiiksi");
-    } catch (Exception e) {}
-  }
-
-  @Test
-  public void testEpaonnistunuttaHakukohdettaEiVoiMerkataValmiiksi() {
-    LaskentaDto laskentaDto = this.luoLaskenta("laskenta", List.of("123", "234", "345"));
-    this.seurantaDao.otaSeuraavatHakukohteetTyonAlle("noodi1", 10);
-    this.seurantaDao.merkkaaHakukohteetEpaonnistuneeksi(UUID.fromString(laskentaDto.getUuid()), Collections.singleton("123"), 1, "Kolossaalinen moka");
-    try {
-      // hakukohde on jo epäonnistunut => virhe
-      this.seurantaDao.merkkaaHakukohteetValmiiksi(UUID.fromString(laskentaDto.getUuid()), Collections.singleton("123"));
-      Assertions.fail("Epäonnistunut hakukohde merkitty valmiiksi");
     } catch (Exception e) {}
   }
 
