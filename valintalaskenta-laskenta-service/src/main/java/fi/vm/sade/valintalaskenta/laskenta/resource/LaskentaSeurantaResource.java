@@ -41,6 +41,20 @@ public class LaskentaSeurantaResource {
                 Instant.now().minusSeconds(60 * 60 * 24)));
   }
 
+  @GetMapping(value = "/laskenta/{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Palauttaa laskennan oid:n perusteella")
+  ResponseEntity<LaskentaDto> laskenta(@PathVariable("uuid") String uuid) {
+    try {
+      Optional<LaskentaDto> laskenta = seurantaDao.haeLaskenta(uuid);
+      if(!laskenta.isPresent()) {
+        return ResponseEntity.status(HttpStatus.GONE).build();
+      }
+      return ResponseEntity.status(HttpStatus.OK).body(laskenta.get());
+    } catch (Exception e) {
+      throw e;
+    }
+  }
+
   @GetMapping(value = "/lataa/{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
   @Operation(summary = "Palauttaa laskennan tiedostona uuid:n perusteella")
   ResponseEntity<LaskentaDto> lataa(@PathVariable("uuid") String uuid) {
