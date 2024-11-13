@@ -67,10 +67,8 @@ public interface SeurantaDao {
    *
    * @param uuid      keskeytettävän laskennan tunniste
    * @param ilmoitus  laskennan keskeyttämisen syy
-   *
-   * @return          laskennan yhteenveto
    */
-  YhteenvetoDto peruutaLaskenta(String uuid, Optional<IlmoitusDto> ilmoitus);
+  void peruutaLaskenta(String uuid, Optional<IlmoitusDto> ilmoitus);
 
   /**
    * Resetoi laskennan, ts. siirtää laskennan tilaan ALOITTAMATTA, ja keskeytyneet hakukohteet tilaan TEKEMATTA
@@ -122,7 +120,7 @@ public interface SeurantaDao {
    *
    * @param uuid laskennan tunniste
    */
-  YhteenvetoDto haeYhteenveto(String uuid);
+  Optional<YhteenvetoDto> haeYhteenveto(String uuid);
 
   /**
    * Yhteenvedot kaikista laskennoista. Käytetään valintalaskennan hallinnta -näkymässä.
