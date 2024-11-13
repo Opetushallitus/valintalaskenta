@@ -45,6 +45,9 @@ public class LaskentaSeurantaResource {
   @Operation(summary = "Palauttaa laskennan tiedostona uuid:n perusteella")
   ResponseEntity<LaskentaDto> lataa(@PathVariable("uuid") String uuid) {
     Optional<LaskentaDto> laskenta = seurantaDao.haeLaskenta(uuid);
+    if(!laskenta.isPresent()) {
+      return ResponseEntity.status(HttpStatus.GONE).build();
+    }
     return ResponseEntity.status(HttpStatus.OK)
         .header(
             "Content-Disposition", "attachment; filename=laskenta_" + laskenta.get().getUuid() + ".json")
@@ -54,6 +57,10 @@ public class LaskentaSeurantaResource {
   @GetMapping(value = "/yhteenveto/{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
   @Operation(summary = "Palauttaa laskennan yhteenvedon uuid:n perusteella")
   ResponseEntity<YhteenvetoDto> yhteenveto(@PathVariable("uuid") String uuid) {
-    return ResponseEntity.status(HttpStatus.OK).body(seurantaDao.haeYhteenveto(uuid));
+    Optional<YhteenvetoDto> yhteenveto = seurantaDao.haeYhteenveto(uuid);
+    if(!yhteenveto.isPresent()) {
+      return ResponseEntity.status(HttpStatus.GONE).build();
+    }
+    return ResponseEntity.status(HttpStatus.OK).body(yhteenveto.get());
   }
 }
