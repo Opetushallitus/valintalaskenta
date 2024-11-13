@@ -62,7 +62,6 @@ cas:
   service:
     valintaperusteet-service: ""
     sijoittelu-service: ""
-    seuranta-service: ""
 
 valintalaskentakoostepalvelu:
   app:
