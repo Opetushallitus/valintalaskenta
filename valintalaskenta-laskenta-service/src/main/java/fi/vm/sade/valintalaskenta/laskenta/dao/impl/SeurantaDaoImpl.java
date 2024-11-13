@@ -517,27 +517,33 @@ public class SeurantaDaoImpl implements SeurantaDao {
       this.lukitseHakukohteet(uuid);
 
       Map<String, HakukohdeTila> tilat = this.haeHakukohteidenTilat(uuid, hakukohdeOids);
-      Collection<String> eiOlemassa = hakukohdeOids.stream().filter(oid -> !tilat.containsKey(oid)).toList();
-      Collection<String> eiTyonAlla = tilat.entrySet().stream()
-          .filter(e -> e.getValue()!=HakukohdeTila.KESKEN).map(e -> e.getKey()).toList();
 
-      if(!eiOlemassa.isEmpty() || !eiTyonAlla.isEmpty()) {
+      Collection<String> eiOlemassa = hakukohdeOids.stream().filter(oid -> !tilat.containsKey(oid)).toList();
+      Collection<String> eiTyonAllaTaiKeskeytetty = tilat.entrySet().stream()
+          .filter(e -> e.getValue()!=HakukohdeTila.KESKEN && e.getValue()!=HakukohdeTila.KESKEYTETTY).map(e -> e.getKey()).toList();
+
+      if(!eiOlemassa.isEmpty() || !eiTyonAllaTaiKeskeytetty.isEmpty()) {
         StringBuilder msg = new StringBuilder();
         if(!eiOlemassa.isEmpty()) {
           msg.append("Yritettiin merkita seuraavia hakukohteita valmiiksi vaikka niitä ei ole olemassa: "
               + eiOlemassa.stream().collect(Collectors.joining(",")));
         }
-        if(!eiTyonAlla.isEmpty()) {
+        if(!eiTyonAllaTaiKeskeytetty.isEmpty()) {
           msg.append("Yritettiin merkita seuraavia hakukohteita valmiiksi vaikka ne eivät ole työn alla: "
-              + eiTyonAlla.stream().collect(Collectors.joining(",")));
+              + eiTyonAllaTaiKeskeytetty.stream().collect(Collectors.joining(",")));
         }
         throw new RuntimeException(msg.toString());
+      }
+
+      Collection<String> eiKeskeytetty = hakukohdeOids.stream().filter(oid -> tilat.get(oid)!=HakukohdeTila.KESKEYTETTY).toList();
+      if(eiKeskeytetty.isEmpty()) {
+        return;
       }
 
       NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
       MapSqlParameterSource parameters = new MapSqlParameterSource();
       parameters.addValue("uuid", uuid);
-      parameters.addValue("hakukohdeOids", hakukohdeOids);
+      parameters.addValue("hakukohdeOids", eiKeskeytetty);
 
       // merkitään valmiiksi lasketut hakukohteet
       namedParameterJdbcTemplate.update(
