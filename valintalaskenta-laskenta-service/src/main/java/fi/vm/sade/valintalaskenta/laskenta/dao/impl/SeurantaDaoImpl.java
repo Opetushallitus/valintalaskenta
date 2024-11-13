@@ -169,11 +169,10 @@ public class SeurantaDaoImpl implements SeurantaDao {
   }
 
   @Override
-  public YhteenvetoDto haeYhteenveto(String uuid) {
+  public Optional<YhteenvetoDto> haeYhteenveto(String uuid) {
     return this.transactionTemplate.execute(t -> this.getLaskennat(Collections.singleton(UUID.fromString(uuid))).stream()
         .map(laskenta -> laskentaAsYhteenvetoDto(laskenta, jonosijaProvider()))
-        .findFirst()
-        .orElse(null));
+        .findFirst());
   }
 
   private YhteenvetoDto laskentaAsYhteenvetoDto(
@@ -269,10 +268,10 @@ public class SeurantaDaoImpl implements SeurantaDao {
   }
 
   @Override
-  public YhteenvetoDto peruutaLaskenta(
+  public void peruutaLaskenta(
       String uuid,
       Optional<IlmoitusDto> ilmoitusDtoOptional) {
-    return this.transactionTemplate.execute(t -> {
+    this.transactionTemplate.executeWithoutResult(t -> {
       Laskenta l =
           this.getLaskennat(Collections.singleton(UUID.fromString(uuid))).stream()
               .findFirst()
@@ -297,8 +296,6 @@ public class SeurantaDaoImpl implements SeurantaDao {
       if (ilmoitusDtoOptional.isPresent()) {
         this.paivitaIlmoitus(uuid, ilmoitusDtoOptional.get());
       }
-
-      return this.haeYhteenveto(uuid);
     });
   }
 
