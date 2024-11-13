@@ -120,8 +120,8 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
   public void testMerkkaaHakukohdeValmiiksi() {
     // luodaan laskenta useammalla hakukohteella
     LaskentaDto laskentaDto = this.luoLaskenta("laskenta", List.of("123", "234", "345"));
-    YhteenvetoDto yhteenvetoDto = this.seurantaDao.haeYhteenveto(laskentaDto.getUuid());
-    Assertions.assertEquals(0, yhteenvetoDto.getHakukohteitaValmiina());
+    Optional<YhteenvetoDto> yhteenvetoDto = this.seurantaDao.haeYhteenveto(laskentaDto.getUuid());
+    Assertions.assertEquals(0, yhteenvetoDto.get().getHakukohteitaValmiina());
 
     // otetaan hakukohde työn alle ja merkataan se valmiiksi
     this.seurantaDao.otaSeuraavatHakukohteetTyonAlle("noodi1", 10);
@@ -129,7 +129,7 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
 
     // yhteenvedossa näkyy että yksi hakukohde valmis
     yhteenvetoDto = this.seurantaDao.haeYhteenveto(laskentaDto.getUuid());
-    Assertions.assertEquals(1, yhteenvetoDto.getHakukohteitaValmiina());
+    Assertions.assertEquals(1, yhteenvetoDto.get().getHakukohteitaValmiina());
   }
 
   @Test
@@ -178,8 +178,8 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
   public void testMerkkaaHakukohdeEpaonnistuneeksi() {
     // luodaan laskenta useammalla hakukohteella
     LaskentaDto laskentaDto = this.luoLaskenta("laskenta", List.of("123", "234", "345"));
-    YhteenvetoDto yhteenvetoDto = this.seurantaDao.haeYhteenveto(laskentaDto.getUuid());
-    Assertions.assertEquals(0, yhteenvetoDto.getHakukohteitaValmiina());
+    Optional<YhteenvetoDto> yhteenvetoDto = this.seurantaDao.haeYhteenveto(laskentaDto.getUuid());
+    Assertions.assertEquals(0, yhteenvetoDto.get().getHakukohteitaValmiina());
 
     // otetaan hakukohde työn alle ja merkataan epäonnistuneeksi
     this.seurantaDao.otaSeuraavatHakukohteetTyonAlle("noodi1", 10);
@@ -187,7 +187,7 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
 
     // yhteenvedossa näkyy että yksi hakukohde epäonnistunut
     yhteenvetoDto = this.seurantaDao.haeYhteenveto(laskentaDto.getUuid());
-    Assertions.assertEquals(1, yhteenvetoDto.getHakukohteitaKeskeytetty());
+    Assertions.assertEquals(1, yhteenvetoDto.get().getHakukohteitaKeskeytetty());
   }
 
   @Test
@@ -243,7 +243,7 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
     this.seurantaDao.merkkaaHakukohteetValmiiksi(UUID.fromString(laskentaDto.getUuid()), List.of("123", "234"));
 
     // laskenta edelleen kesken
-    Assertions.assertEquals(LaskentaTila.MENEILLAAN, this.seurantaDao.haeYhteenveto(laskentaDto.getUuid()).getTila());
+    Assertions.assertEquals(LaskentaTila.MENEILLAAN, this.seurantaDao.haeYhteenveto(laskentaDto.getUuid()).get().getTila());
   }
 
   @Test
@@ -259,7 +259,7 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
     this.seurantaDao.merkkaaHakukohteetEpaonnistuneeksi(UUID.fromString(laskentaDto.getUuid()), List.of("345"), 1, "Kolossaalinen epäonnistuminen");
 
     // laskent on valmis
-    Assertions.assertEquals(LaskentaTila.VALMIS, this.seurantaDao.haeYhteenveto(laskentaDto.getUuid()).getTila());
+    Assertions.assertEquals(LaskentaTila.VALMIS, this.seurantaDao.haeYhteenveto(laskentaDto.getUuid()).get().getTila());
   }
 
   @Test
@@ -373,11 +373,11 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
     // laskenta käynnistyy
     tyonAlla = this.seurantaDao.otaSeuraavatHakukohteetTyonAlle("noodi1", 1);
     hakukohteet = tyonAlla.get().right;
-    Assertions.assertEquals(LaskentaTila.MENEILLAAN, this.seurantaDao.haeYhteenveto(laskentaDto.getUuid()).getTila());
+    Assertions.assertEquals(LaskentaTila.MENEILLAAN, this.seurantaDao.haeYhteenveto(laskentaDto.getUuid()).get().getTila());
 
     // ja valmistuu
     this.seurantaDao.merkkaaHakukohteetValmiiksi(UUID.fromString(laskentaDto.getUuid()), hakukohteet);
-    Assertions.assertEquals(LaskentaTila.VALMIS, this.seurantaDao.haeYhteenveto(laskentaDto.getUuid()).getTila());
+    Assertions.assertEquals(LaskentaTila.VALMIS, this.seurantaDao.haeYhteenveto(laskentaDto.getUuid()).get().getTila());
   }
 
   @Test
@@ -391,13 +391,13 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
     Assertions.assertEquals(3, hakukohteet.size());
 
     // laskenta on työn alla
-    Assertions.assertEquals(LaskentaTila.MENEILLAAN, this.seurantaDao.haeYhteenveto(laskentaDto.getUuid()).getTila());
+    Assertions.assertEquals(LaskentaTila.MENEILLAAN, this.seurantaDao.haeYhteenveto(laskentaDto.getUuid()).get().getTila());
 
     // merkataan hakukohteet valmiiksi
     this.seurantaDao.merkkaaHakukohteetValmiiksi(UUID.fromString(laskentaDto.getUuid()), hakukohteet);
 
     // laskenta on valmis
-    Assertions.assertEquals(LaskentaTila.VALMIS, this.seurantaDao.haeYhteenveto(laskentaDto.getUuid()).getTila());
+    Assertions.assertEquals(LaskentaTila.VALMIS, this.seurantaDao.haeYhteenveto(laskentaDto.getUuid()).get().getTila());
   }
 
   @Test
@@ -453,7 +453,7 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
 
     // kaikki laskennat valmiita
     expectedHakukohteet.parallelStream().forEach(hk -> {
-      Assertions.assertEquals(LaskentaTila.VALMIS, this.seurantaDao.haeYhteenveto(hk.getLeft().toString()).getTila());
+      Assertions.assertEquals(LaskentaTila.VALMIS, this.seurantaDao.haeYhteenveto(hk.getLeft().toString()).get().getTila());
     });
   }
 }
