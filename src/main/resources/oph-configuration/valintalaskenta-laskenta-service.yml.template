@@ -22,6 +22,7 @@ cas:
     sijoittelu-service: https://${host.virkailija}/sijoittelu-service
     valintaperusteet-service: https://${host.virkailija}/valintaperusteet-service
     seuranta-service: https://${host.virkailija}/seuranta-service
+    koostepalvelu: https://${host.virkailija}/valintalaskentakoostepalvelu/j_spring_cas_security_check
   callback:
     valintalaskenta-service: http://{{ cluster_valinta_host | default("${server.name}") }}:{{ cluster_valinta_port | default("8309") }}/valintalaskenta-laskenta-service
   url: https://${host.cas}/cas
@@ -63,9 +64,17 @@ valintalaskentakoostepalvelu:
     username:
       to:
         sijoittelu: {{valintalaskentakoostepalvelu_app_username_to_sijoittelu}}
+        kouta-internal: {{valintalaskentakoostepalvelu_app_username_to_kouta_internal}}
+        valintatieto: {{valintalaskentakoostepalvelu_app_username_to_valintatieto}}
+        hakukohderyhmapalvelu: {{valintalaskentakoostepalvelu_app_username_to_hakukohderyhmapalvelu}}
+        haku: {{valintalaskentakoostepalvelu_app_username_to_haku}}
     password:
       to:
         sijoittelu: {{valintalaskentakoostepalvelu_app_password_to_sijoittelu}}
+        kouta-internal: {{valintalaskentakoostepalvelu_app_password_to_kouta_internal}}
+        valintatieto: {{valintalaskentakoostepalvelu_app_password_to_valintatieto}}
+        hakukohderyhmapalvelu: {{valintalaskentakoostepalvelu_app_password_to_hakukohderyhmapalvelu}}
+        haku: {{valintalaskentakoostepalvelu_app_password_to_haku}}
 
 valintalaskenta-laskenta-service:
   postgresql:
