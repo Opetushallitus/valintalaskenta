@@ -11,7 +11,7 @@ public class UrlConfiguration extends OphProperties {
   private static volatile UrlConfiguration instance;
 
   protected UrlConfiguration() {
-    addFiles("/valintalaskentakoostepalvelu-oph.properties");
+    addFiles("/application.properties");
     addOptionalFiles(
         Paths.get(
                 System.getProperties().getProperty("user.home"),
