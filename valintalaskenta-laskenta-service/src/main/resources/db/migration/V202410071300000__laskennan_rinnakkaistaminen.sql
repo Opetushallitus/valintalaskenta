@@ -1,3 +1,7 @@
+-- tämä on jälkitöitä seurannan siirrosta
+UPDATE seuranta_laskennat SET valintakoelaskenta=false WHERE valintakoelaskenta IS NULL;
+ALTER TABLE seuranta_laskennat ALTER COLUMN valintakoelaskenta SET NOT NULL;
+
 ALTER TABLE seuranta_laskenta_hakukohteet ADD COLUMN IF NOT EXISTS yritykset INTEGER DEFAULT 0;
 ALTER TABLE seuranta_laskenta_hakukohteet ADD COLUMN IF NOT EXISTS noodi_id TEXT;
 ALTER TABLE seuranta_laskenta_hakukohteet ADD COLUMN IF NOT EXISTS luotu TIMESTAMP;
