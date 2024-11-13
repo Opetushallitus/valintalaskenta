@@ -21,7 +21,6 @@ cas:
   service:
     sijoittelu-service: https://${host.virkailija}/sijoittelu-service
     valintaperusteet-service: https://${host.virkailija}/valintaperusteet-service
-    seuranta-service: https://${host.virkailija}/seuranta-service
     koostepalvelu: https://${host.virkailija}/valintalaskentakoostepalvelu/j_spring_cas_security_check
   callback:
     valintalaskenta-service: http://{{ cluster_valinta_host | default("${server.name}") }}:{{ cluster_valinta_port | default("8309") }}/valintalaskenta-laskenta-service
@@ -53,9 +52,6 @@ valintalaskentakoostepalvelu:
   sijoittelu:
     rest:
       url: https://${host.virkailija}/sijoittelu-service/resources
-  seuranta:
-    rest:
-      url: https://${host.virkailija}/seuranta-service/resources
   valintaperusteet:
     ilb:
       host: {{host_ilb}}
