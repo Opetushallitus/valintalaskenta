@@ -1,17 +1,16 @@
 package fi.vm.sade.valintalaskenta.tulos.resource.external.impl;
 
+import static fi.vm.sade.valintalaskenta.tulos.RestClientUtil.get;
+
 import com.google.gson.reflect.TypeToken;
 import fi.vm.sade.javautils.nio.cas.CasClient;
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.valintalaskenta.tulos.resource.external.ValintaperusteetResource;
+import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Map;
-
-import static fi.vm.sade.valintalaskenta.tulos.RestClientUtil.get;
 
 @Component
 public class ValintaperusteetResourceImpl implements ValintaperusteetResource {
@@ -24,10 +23,12 @@ public class ValintaperusteetResourceImpl implements ValintaperusteetResource {
 
   public ValintaperusteetResourceImpl(
       @Qualifier("valintaperusteetCasClient") final CasClient casClient,
-      @Value("${valintalaskentakoostepalvelu.valintaperusteet.ilb.url}") final String valintaperusteetBaseUrl,
-      @Value("${valintalaskenta-laskenta-service.global.http.connectionTimeoutMillis:59999}") final int clientConnectionTimeout,
-      @Value("${valintalaskenta-laskenta-service.global.http.receiveTimeoutMillis:1799999}") final int clientReceiveTimeout
-  ) {
+      @Value("${valintalaskentakoostepalvelu.valintaperusteet.ilb.url}")
+          final String valintaperusteetBaseUrl,
+      @Value("${valintalaskenta-laskenta-service.global.http.connectionTimeoutMillis:59999}")
+          final int clientConnectionTimeout,
+      @Value("${valintalaskenta-laskenta-service.global.http.receiveTimeoutMillis:1799999}")
+          final int clientReceiveTimeout) {
     this.casClient = casClient;
     this.valintaperusteetBaseUrl = valintaperusteetBaseUrl;
     this.clientConnectionTimeout = clientConnectionTimeout;

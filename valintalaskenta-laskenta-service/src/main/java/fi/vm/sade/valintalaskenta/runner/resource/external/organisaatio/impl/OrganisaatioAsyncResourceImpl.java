@@ -1,12 +1,11 @@
 package fi.vm.sade.valintalaskenta.runner.resource.external.organisaatio.impl;
 
+import fi.vm.sade.valintalaskenta.runner.resource.external.HttpClient;
+import fi.vm.sade.valintalaskenta.runner.resource.external.UrlConfiguration;
 import fi.vm.sade.valintalaskenta.runner.resource.external.organisaatio.OrganisaatioAsyncResource;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
-
-import fi.vm.sade.valintalaskenta.runner.resource.external.HttpClient;
-import fi.vm.sade.valintalaskenta.runner.resource.external.UrlConfiguration;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

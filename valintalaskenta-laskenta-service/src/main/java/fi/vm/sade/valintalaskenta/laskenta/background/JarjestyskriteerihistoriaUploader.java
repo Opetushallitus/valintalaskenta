@@ -51,17 +51,19 @@ public class JarjestyskriteerihistoriaUploader {
 
   @Scheduled(initialDelay = 1500, fixedDelay = 10000, timeUnit = TimeUnit.MILLISECONDS)
   public void runJarjestysKriteeriHistoriaUploader() {
-    if(this.isMoving) return;
+    if (this.isMoving) return;
     this.isMoving = true;
-    this.executor.execute(() -> {
-      try {
-        this.transactionOperations.executeWithoutResult(ts -> {
-          this.moveJarjestyskriteeriHistoriaFromDatabaseToS3();
+    this.executor.execute(
+        () -> {
+          try {
+            this.transactionOperations.executeWithoutResult(
+                ts -> {
+                  this.moveJarjestyskriteeriHistoriaFromDatabaseToS3();
+                });
+          } finally {
+            this.isMoving = false;
+          }
         });
-      } finally {
-        this.isMoving = false;
-      }
-    });
   }
 
   public void moveJarjestyskriteeriHistoriaFromDatabaseToS3() {

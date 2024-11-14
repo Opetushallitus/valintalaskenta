@@ -15,9 +15,9 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValintatap
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogMock;
 import fi.vm.sade.valintalaskenta.tulos.resource.external.ValintaperusteetResource;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
-import java.util.Collections;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

@@ -258,7 +258,8 @@ public class ValintalaskentaResourceIntegrationTest extends AbstractMocklessInte
     String returnValue;
     do {
       returnValue =
-          valintalaskentaResource.valintaryhmaLaskenta("uuid1", Arrays.asList(laskeDto1, laskeDto2));
+          valintalaskentaResource.valintaryhmaLaskenta(
+              "uuid1", Arrays.asList(laskeDto1, laskeDto2));
       Thread.sleep(50);
     } while (!(returnValue.equals(HakukohteenLaskennanTila.VALMIS)
         || returnValue.equals(HakukohteenLaskennanTila.VIRHE)));
