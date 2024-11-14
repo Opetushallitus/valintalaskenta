@@ -1,6 +1,6 @@
 package fi.vm.sade.valintalaskenta.testing;
 
-import fi.vm.sade.valintalaskenta.laskenta.App;
+import fi.vm.sade.valintalaskenta.App;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.*;
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosHarkinnanvarainenHyvaksyminenRepository;
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosJarjestyskriteerihistoriaRepository;

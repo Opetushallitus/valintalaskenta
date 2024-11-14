@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta;
 
+import fi.vm.sade.valintalaskenta.App;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Profile;
 
