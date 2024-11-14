@@ -9,7 +9,6 @@ import fi.vm.sade.valintalaskenta.audit.AuditSession;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.TunnisteDto;
-import fi.vm.sade.valintalaskenta.runner.dto.Laskenta;
 import fi.vm.sade.valintalaskenta.runner.dto.Maski;
 import fi.vm.sade.valintalaskenta.runner.resource.external.valintaperusteet.ValintaperusteetAsyncResource;
 import fi.vm.sade.valintalaskenta.runner.security.AuthorityCheckService;
@@ -260,41 +259,6 @@ public class ValintalaskentaResource {
     }
 
     return result;
-  }
-
-  /**
-   * Palauttaa yksittäisen laskennan tilan
-   *
-   * @param uuid laskennan tunniste
-   * @return laskennan tila
-   */
-  @GetMapping(value = "/status/{uuid:.+}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @Operation(
-      summary = "Valintalaskennan tila",
-      responses = {
-        @ApiResponse(
-            responseCode = "OK",
-            content = @Content(schema = @Schema(implementation = Laskenta.class)))
-      })
-  public ResponseEntity<? extends Object> status(@PathVariable("uuid") String uuid) {
-    try {
-      Optional<LaskentaDto> laskenta = luoLaskentaService.haeLaskenta(uuid);
-      if (laskenta.isEmpty()) {
-        return ResponseEntity.status(HttpStatus.GONE).body("Laskentaa" + uuid + " ei löytynyt");
-      }
-
-      authorityCheckService.checkAuthorizationForLaskenta(
-          laskenta.get(), valintalaskentaAllowedRoles);
-      return luoLaskentaService
-          .fetchLaskenta(uuid)
-          .map(l -> ResponseEntity.status(HttpStatus.OK).body((Object) l))
-          .orElse(ResponseEntity.status(HttpStatus.GONE).body("Valintalaskenta ei ole muistissa!"));
-    } catch (AccessDeniedException e) {
-      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-    } catch (Throwable e) {
-      LOG.error("Virhe laskennan " + uuid + " hakemisessa", e);
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-    }
   }
 
   /**
