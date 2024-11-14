@@ -2,12 +2,11 @@ package fi.vm.sade.valintalaskenta.runner.resource.external.valintaperusteet.imp
 
 import com.google.gson.reflect.TypeToken;
 import fi.vm.sade.service.valintaperusteet.dto.*;
+import fi.vm.sade.valintalaskenta.runner.resource.external.RestCasClient;
 import fi.vm.sade.valintalaskenta.runner.resource.external.UrlConfiguration;
 import fi.vm.sade.valintalaskenta.runner.resource.external.valintaperusteet.ValintaperusteetAsyncResource;
-import fi.vm.sade.valintalaskenta.runner.resource.external.RestCasClient;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,8 @@ public class ValintaperusteetAsyncResourceImpl implements ValintaperusteetAsyncR
   @Override
   public CompletableFuture<List<HakukohdeViiteDTO>> haunHakukohteet(String hakuOid) {
     return this.httpClient.get(
-        this.urlConfiguration.url("valintaperusteet-service.valintalaskentakoostepalvelu.hakukohde.haku", hakuOid),
+        this.urlConfiguration.url(
+            "valintaperusteet-service.valintalaskentakoostepalvelu.hakukohde.haku", hakuOid),
         new TypeToken<List<HakukohdeViiteDTO>>() {},
         Collections.emptyMap(),
         10 * 60 * 1000);

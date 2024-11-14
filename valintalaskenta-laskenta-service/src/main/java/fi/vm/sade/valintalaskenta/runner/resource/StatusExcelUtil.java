@@ -2,20 +2,18 @@ package fi.vm.sade.valintalaskenta.runner.resource;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
 import fi.vm.sade.valintalaskenta.runner.util.excel.ExcelExportUtil;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class StatusExcelUtil {
-  private static final Logger LOG =
-      LoggerFactory.getLogger(StatusExcelUtil.class);
+  private static final Logger LOG = LoggerFactory.getLogger(StatusExcelUtil.class);
 
   public static ResponseEntity<byte[]> createTimeoutErrorXls(final String uuid) {
     final List<Object[]> grid = Lists.newArrayList();
@@ -33,11 +31,12 @@ public class StatusExcelUtil {
 
   public static ResponseEntity<byte[]> getStatusXls(LaskentaDto laskenta) {
     try {
-        byte[] bytes = laskentaDtoAsExcel(laskenta);
-        return excelResponse("yhteenveto.xls", bytes);
-    } catch(Throwable e) {
+      byte[] bytes = laskentaDtoAsExcel(laskenta);
+      return excelResponse("yhteenveto.xls", bytes);
+    } catch (Throwable e) {
       LOG.error(
-          "Excelin muodostuksessa(kohteelle /laskenta/" + laskenta.getUuid() + ") tapahtui virhe", e);
+          "Excelin muodostuksessa(kohteelle /laskenta/" + laskenta.getUuid() + ") tapahtui virhe",
+          e);
       return luoVirheExcelVastaus("yhteenveto_virhe.xls", "Virhe Excelin muodostuksessa!", e);
     }
   }
@@ -64,7 +63,8 @@ public class StatusExcelUtil {
         .body(bytes);
   }
 
-  private static byte[] getExcelSheetAndGridBytes(final String sheetName, final List<Object[]> grid) {
+  private static byte[] getExcelSheetAndGridBytes(
+      final String sheetName, final List<Object[]> grid) {
     final Map<String, Object[][]> sheetAndGrid = Maps.newHashMap();
     sheetAndGrid.put(sheetName, grid.toArray(new Object[][] {}));
 

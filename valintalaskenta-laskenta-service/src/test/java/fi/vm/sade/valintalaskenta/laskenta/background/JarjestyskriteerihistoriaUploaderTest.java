@@ -24,12 +24,16 @@ public class JarjestyskriteerihistoriaUploaderTest {
   private final JarjestyskriteerihistoriaDAO dao = Mockito.mock(JarjestyskriteerihistoriaDAO.class);
 
   private final JarjestyskriteerihistoriaUploader uploader =
-      new JarjestyskriteerihistoriaUploader(dokumenttipalvelu, dao, new TransactionOperations() {
-        @Override
-        public <T> T execute(TransactionCallback<T> action) throws TransactionException {
-          return action.doInTransaction(null);
-        }
-      }, "old");
+      new JarjestyskriteerihistoriaUploader(
+          dokumenttipalvelu,
+          dao,
+          new TransactionOperations() {
+            @Override
+            public <T> T execute(TransactionCallback<T> action) throws TransactionException {
+              return action.doInTransaction(null);
+            }
+          },
+          "old");
 
   @BeforeEach
   public void init() {

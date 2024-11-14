@@ -3,29 +3,27 @@ package fi.vm.sade.valintalaskenta.runner.resource;
 import static java.util.Arrays.asList;
 
 import fi.vm.sade.service.valintaperusteet.dto.HakukohdeViiteDTO;
-import fi.vm.sade.valintalaskenta.audit.AuditSession;
-import fi.vm.sade.valintalaskenta.runner.util.AuthorizationUtil;
-import fi.vm.sade.valintalaskenta.runner.resource.external.valintaperusteet.ValintaperusteetAsyncResource;
-import fi.vm.sade.valintalaskenta.runner.security.AuthorityCheckService;
-import fi.vm.sade.valintalaskenta.runner.dto.Laskenta;
-import fi.vm.sade.valintalaskenta.runner.dto.Maski;
-import fi.vm.sade.valintalaskenta.audit.AuditLogUtil;
-import fi.vm.sade.valintalaskenta.runner.service.LuoLaskentaService;
 import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
+import fi.vm.sade.valintalaskenta.audit.AuditLogUtil;
+import fi.vm.sade.valintalaskenta.audit.AuditSession;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.TunnisteDto;
+import fi.vm.sade.valintalaskenta.runner.dto.Laskenta;
+import fi.vm.sade.valintalaskenta.runner.dto.Maski;
+import fi.vm.sade.valintalaskenta.runner.resource.external.valintaperusteet.ValintaperusteetAsyncResource;
+import fi.vm.sade.valintalaskenta.runner.security.AuthorityCheckService;
+import fi.vm.sade.valintalaskenta.runner.service.LuoLaskentaService;
+import fi.vm.sade.valintalaskenta.runner.util.AuthorizationUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,8 +59,13 @@ public class ValintalaskentaResource {
   private static AuditSession laskentaAuditSession(String userOid, HttpServletRequest request) {
 
     AuditSession auditSession =
-        new AuditSession(userOid, Collections.emptyList(), request.getHeader("user-agent"),
-            Optional.ofNullable(request.getHeader("x-forwarded-for")).map(s -> s.split(",")[0]).orElse(request.getRemoteAddr()));
+        new AuditSession(
+            userOid,
+            Collections.emptyList(),
+            request.getHeader("user-agent"),
+            Optional.ofNullable(request.getHeader("x-forwarded-for"))
+                .map(s -> s.split(",")[0])
+                .orElse(request.getRemoteAddr()));
     auditSession.setPersonOid(userOid);
     return auditSession;
   }
@@ -70,14 +73,13 @@ public class ValintalaskentaResource {
   /**
    * Luo seurantaan suoritettavan valintalaskennan koko haulle.
    *
-   * @param hakuOid             haun tunniste
-   * @param erillishaku         onko kyseessä erillishaku (haku jonka päätteeksi suoritetaan sijoittelu)
-   * @param valinnanvaihe       mikä valinnanvaihe lasketaan (null => lasketaan kaikki)
-   * @param valintakoelaskenta  onko kyseessä valintakoelaskenta
-   * @param haunnimi            haun nimi
-   * @param nimi                laskennan nimi
-   *
-   * @return                    luodun laskennan tiedot
+   * @param hakuOid haun tunniste
+   * @param erillishaku onko kyseessä erillishaku (haku jonka päätteeksi suoritetaan sijoittelu)
+   * @param valinnanvaihe mikä valinnanvaihe lasketaan (null => lasketaan kaikki)
+   * @param valintakoelaskenta onko kyseessä valintakoelaskenta
+   * @param haunnimi haun nimi
+   * @param nimi laskennan nimi
+   * @return luodun laskennan tiedot
    */
   @PostMapping(value = "/haku/{hakuOid}/tyyppi/HAKU", produces = MediaType.APPLICATION_JSON_VALUE)
   public DeferredResult<ResponseEntity<Vastaus>> valintalaskentaKokoHaulle(
@@ -93,26 +95,35 @@ public class ValintalaskentaResource {
     try {
       authorityCheckService.checkAuthorizationForHaku(hakuOid, valintalaskentaAllowedRoles);
 
-      List<HakukohdeViiteDTO> hakukohdeViitteet = valintaperusteetAsyncResource.haunHakukohteet(hakuOid).get();
-      TunnisteDto tunniste = luoLaskentaService.kaynnistaLaskentaHaulle(
-          AuthorizationUtil.getCurrentUser(),
-          haunnimi,
-          nimi,
-          LaskentaTyyppi.HAKU,
-          valintakoelaskenta,
-          valinnanvaihe.flatMap(vaihe -> vaihe==-1 ? Optional.empty() : Optional.of(vaihe)),
+      List<HakukohdeViiteDTO> hakukohdeViitteet =
+          valintaperusteetAsyncResource.haunHakukohteet(hakuOid).get();
+      TunnisteDto tunniste =
+          luoLaskentaService.kaynnistaLaskentaHaulle(
+              AuthorizationUtil.getCurrentUser(),
+              haunnimi,
+              nimi,
+              LaskentaTyyppi.HAKU,
+              valintakoelaskenta,
+              valinnanvaihe.flatMap(vaihe -> vaihe == -1 ? Optional.empty() : Optional.of(vaihe)),
+              hakuOid,
+              Optional.empty(),
+              erillishaku,
+              hakukohdeViitteet);
+
+      result.setResult(
+          ResponseEntity.status(HttpStatus.OK)
+              .body(
+                  Vastaus.laskennanSeuraus(
+                      tunniste.getUuid(), tunniste.getLuotiinkoUusiLaskenta())));
+
+      AuditLogUtil.auditLogLaskenta(
+          laskentaAuditSession(AuthorizationUtil.getCurrentUser(), request),
+          ValintaperusteetOperation.LASKENTATOTEUTUS_LUONTI,
+          tunniste.getUuid(),
           hakuOid,
-          Optional.empty(),
-          erillishaku,
-          hakukohdeViitteet);
-
-      result.setResult(ResponseEntity.status(HttpStatus.OK)
-          .body(Vastaus.laskennanSeuraus(tunniste.getUuid(), tunniste.getLuotiinkoUusiLaskenta())));
-
-      AuditLogUtil.auditLogLaskenta(laskentaAuditSession(AuthorizationUtil.getCurrentUser(), request),
-          ValintaperusteetOperation.LASKENTATOTEUTUS_LUONTI, tunniste.getUuid(), hakuOid,
-          hakukohdeViitteet.stream().map(hk -> hk.getOid()).toList(), Optional.empty());
-    } catch(AccessDeniedException e) {
+          hakukohdeViitteet.stream().map(hk -> hk.getOid()).toList(),
+          Optional.empty());
+    } catch (AccessDeniedException e) {
       result.setErrorResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage()));
     } catch (Throwable e) {
       String message = "Laskennan luonnissa haulle " + hakuOid + " tapahtui virhe";
@@ -125,18 +136,18 @@ public class ValintalaskentaResource {
   /**
    * Luo seurantaan suoritettavan valintalaskennan osalle haun hakukohteista.
    *
-   * @param hakuOid             haun tunniste
-   * @param erillishaku         onko kyseessä erillishaku (haku jonka päätteeksi suoritetaan sijoittelu)
-   * @param valinnanvaihe       mikä valinnanvaihe lasketaan (null => lasketaan kaikki)
-   * @param valintakoelaskenta  onko kyseessä valintakoelaskenta
-   * @param haunnimi            haun nimi
-   * @param nimi                laskennan nimi
-   * @param valintaryhmaOid     valintaryhmän tunniste (käytetään toistaiseksi vain autorisoinnissa)
-   * @param laskentatyyppi      laskennan tyyppi ()
-   * @param whitelist           onko laskettavat hakukohteet kaikista hakukohteista määritelty white- vai blacklistinä
-   * @param stringMaski         maski joka sisältää write- tai blacklistin
-   *
-   * @return                    luodun laskennan tiedot
+   * @param hakuOid haun tunniste
+   * @param erillishaku onko kyseessä erillishaku (haku jonka päätteeksi suoritetaan sijoittelu)
+   * @param valinnanvaihe mikä valinnanvaihe lasketaan (null => lasketaan kaikki)
+   * @param valintakoelaskenta onko kyseessä valintakoelaskenta
+   * @param haunnimi haun nimi
+   * @param nimi laskennan nimi
+   * @param valintaryhmaOid valintaryhmän tunniste (käytetään toistaiseksi vain autorisoinnissa)
+   * @param laskentatyyppi laskennan tyyppi ()
+   * @param whitelist onko laskettavat hakukohteet kaikista hakukohteista määritelty white- vai
+   *     blacklistinä
+   * @param stringMaski maski joka sisältää write- tai blacklistin
+   * @return luodun laskennan tiedot
    */
   @PostMapping(
       value = "/haku/{hakuOid}/tyyppi/{tyyppi}/whitelist/{whitelist:.+}",
@@ -157,31 +168,42 @@ public class ValintalaskentaResource {
     DeferredResult<ResponseEntity<Vastaus>> result = new DeferredResult<>(1 * 60 * 1000l);
 
     try {
-      List<HakukohdeViiteDTO> hakukohdeViitteet = valintaperusteetAsyncResource.haunHakukohteet(hakuOid).get();
+      List<HakukohdeViiteDTO> hakukohdeViitteet =
+          valintaperusteetAsyncResource.haunHakukohteet(hakuOid).get();
       if (LaskentaTyyppi.VALINTARYHMA.equals(laskentatyyppi)) {
-        authorityCheckService.checkAuthorizationForValintaryhma(valintaryhmaOid, valintalaskentaAllowedRoles);
+        authorityCheckService.checkAuthorizationForValintaryhma(
+            valintaryhmaOid, valintalaskentaAllowedRoles);
       } else {
         authorityCheckService.checkAuthorizationForHakukohteet(
-            hakukohdeViitteet.stream().map(hk -> hk.getOid()).toList(), valintalaskentaAllowedRoles);
+            hakukohdeViitteet.stream().map(hk -> hk.getOid()).toList(),
+            valintalaskentaAllowedRoles);
       }
 
-      TunnisteDto tunniste = luoLaskentaService.kaynnistaLaskentaHaulle(
-          AuthorizationUtil.getCurrentUser(),
-          haunnimi,
-          nimi,
-          laskentatyyppi,
-          valintakoelaskenta,
-          valinnanvaihe.flatMap(vaihe -> vaihe==-1 ? Optional.empty() : Optional.of(vaihe)),
-          hakuOid,
-          Optional.of(whitelist ? Maski.whitelist(stringMaski) : Maski.blacklist(stringMaski)),
-          erillishaku,
-          hakukohdeViitteet);
-      result.setResult(ResponseEntity.status(HttpStatus.OK)
-          .body(Vastaus.laskennanSeuraus(tunniste.getUuid(), tunniste.getLuotiinkoUusiLaskenta())));
+      TunnisteDto tunniste =
+          luoLaskentaService.kaynnistaLaskentaHaulle(
+              AuthorizationUtil.getCurrentUser(),
+              haunnimi,
+              nimi,
+              laskentatyyppi,
+              valintakoelaskenta,
+              valinnanvaihe.flatMap(vaihe -> vaihe == -1 ? Optional.empty() : Optional.of(vaihe)),
+              hakuOid,
+              Optional.of(whitelist ? Maski.whitelist(stringMaski) : Maski.blacklist(stringMaski)),
+              erillishaku,
+              hakukohdeViitteet);
+      result.setResult(
+          ResponseEntity.status(HttpStatus.OK)
+              .body(
+                  Vastaus.laskennanSeuraus(
+                      tunniste.getUuid(), tunniste.getLuotiinkoUusiLaskenta())));
 
-      AuditLogUtil.auditLogLaskenta(laskentaAuditSession(AuthorizationUtil.getCurrentUser(), request),
-          ValintaperusteetOperation.LASKENTATOTEUTUS_LUONTI, tunniste.getUuid(), hakuOid,
-          hakukohdeViitteet.stream().map(hk -> hk.getOid()).toList(), Optional.empty());
+      AuditLogUtil.auditLogLaskenta(
+          laskentaAuditSession(AuthorizationUtil.getCurrentUser(), request),
+          ValintaperusteetOperation.LASKENTATOTEUTUS_LUONTI,
+          tunniste.getUuid(),
+          hakuOid,
+          hakukohdeViitteet.stream().map(hk -> hk.getOid()).toList(),
+          Optional.empty());
     } catch (AccessDeniedException e) {
       result.setErrorResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage()));
     } catch (Throwable e) {
@@ -196,35 +218,43 @@ public class ValintalaskentaResource {
   /**
    * Käynnistää olemassaolevan laskennan uudelleen
    *
-   * @param uuid  laskennan tunniste
-   *
-   * @return      uudelleenkäynnistety laskennan tiedot
+   * @param uuid laskennan tunniste
+   * @return uudelleenkäynnistety laskennan tiedot
    */
   @PostMapping(value = "/uudelleenyrita/{uuid:.+}", produces = MediaType.APPLICATION_JSON_VALUE)
   public DeferredResult<ResponseEntity<Vastaus>> uudelleenajoLaskennalle(
-      @PathVariable("uuid") String uuid,
-      HttpServletRequest request) {
+      @PathVariable("uuid") String uuid, HttpServletRequest request) {
     DeferredResult<ResponseEntity<Vastaus>> result = new DeferredResult<>(1 * 60 * 1000l);
 
     try {
       Optional<LaskentaDto> laskenta = luoLaskentaService.haeLaskenta(uuid);
-      if(laskenta.isEmpty()) {
-        result.setErrorResult(ResponseEntity.status(HttpStatus.GONE).body("Laskentaa" + uuid + " ei löytynyt"));
+      if (laskenta.isEmpty()) {
+        result.setErrorResult(
+            ResponseEntity.status(HttpStatus.GONE).body("Laskentaa" + uuid + " ei löytynyt"));
       } else {
-        authorityCheckService.checkAuthorizationForLaskenta(laskenta.get(), valintalaskentaAllowedRoles);
+        authorityCheckService.checkAuthorizationForLaskenta(
+            laskenta.get(), valintalaskentaAllowedRoles);
         TunnisteDto tunnisteDto = luoLaskentaService.kaynnistaLaskentaUudelleen(uuid);
 
-        AuditLogUtil.auditLogLaskenta(laskentaAuditSession(AuthorizationUtil.getCurrentUser(), request),
-            ValintaperusteetOperation.LASKENTATOTEUTUS_UUDELLEENLUONTI, laskenta.get().getUuid(), laskenta.get().getHakuOid(),
-            laskenta.get().getHakukohteet().stream().map(hk -> hk.getHakukohdeOid()).toList(), Optional.empty());
+        AuditLogUtil.auditLogLaskenta(
+            laskentaAuditSession(AuthorizationUtil.getCurrentUser(), request),
+            ValintaperusteetOperation.LASKENTATOTEUTUS_UUDELLEENLUONTI,
+            laskenta.get().getUuid(),
+            laskenta.get().getHakuOid(),
+            laskenta.get().getHakukohteet().stream().map(hk -> hk.getHakukohdeOid()).toList(),
+            Optional.empty());
 
-        result.setResult(ResponseEntity.status(HttpStatus.OK)
-            .body(Vastaus.laskennanSeuraus(tunnisteDto.getUuid(), tunnisteDto.getLuotiinkoUusiLaskenta())));
+        result.setResult(
+            ResponseEntity.status(HttpStatus.OK)
+                .body(
+                    Vastaus.laskennanSeuraus(
+                        tunnisteDto.getUuid(), tunnisteDto.getLuotiinkoUusiLaskenta())));
       }
     } catch (AccessDeniedException e) {
       result.setErrorResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage()));
     } catch (Throwable e) {
-      String message = "Laskennan uudelleenkäynnistämisessä laskennalle " + uuid + " tapahtui virhe";
+      String message =
+          "Laskennan uudelleenkäynnistämisessä laskennalle " + uuid + " tapahtui virhe";
       LOG.error(message, e);
       result.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message));
     }
@@ -235,9 +265,8 @@ public class ValintalaskentaResource {
   /**
    * Palauttaa yksittäisen laskennan tilan
    *
-   * @param uuid  laskennan tunniste
-   *
-   * @return      laskennan tila
+   * @param uuid laskennan tunniste
+   * @return laskennan tila
    */
   @GetMapping(value = "/status/{uuid:.+}", produces = MediaType.APPLICATION_JSON_VALUE)
   @Operation(
@@ -250,14 +279,15 @@ public class ValintalaskentaResource {
   public ResponseEntity<? extends Object> status(@PathVariable("uuid") String uuid) {
     try {
       Optional<LaskentaDto> laskenta = luoLaskentaService.haeLaskenta(uuid);
-      if(laskenta.isEmpty()) {
+      if (laskenta.isEmpty()) {
         return ResponseEntity.status(HttpStatus.GONE).body("Laskentaa" + uuid + " ei löytynyt");
       }
 
-      authorityCheckService.checkAuthorizationForLaskenta(laskenta.get(), valintalaskentaAllowedRoles);
+      authorityCheckService.checkAuthorizationForLaskenta(
+          laskenta.get(), valintalaskentaAllowedRoles);
       return luoLaskentaService
           .fetchLaskenta(uuid)
-          .map(l -> ResponseEntity.status(HttpStatus.OK).body((Object)l))
+          .map(l -> ResponseEntity.status(HttpStatus.OK).body((Object) l))
           .orElse(ResponseEntity.status(HttpStatus.GONE).body("Valintalaskenta ei ole muistissa!"));
     } catch (AccessDeniedException e) {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
@@ -270,8 +300,8 @@ public class ValintalaskentaResource {
   /**
    * Palauttaa yksittäisen valintalaskennan tilan Excel-tiedostona
    *
-   * @param uuid  valintalaskennan tunniste
-   * @return      statusexcel
+   * @param uuid valintalaskennan tunniste
+   * @return statusexcel
    */
   @GetMapping(value = "/status/{uuid}/xls", produces = "application/vnd.ms-excel")
   @Operation(
@@ -287,10 +317,12 @@ public class ValintalaskentaResource {
 
     try {
       Optional<LaskentaDto> laskenta = luoLaskentaService.haeLaskenta(uuid);
-      if(laskenta.isEmpty()) {
-        result.setErrorResult(ResponseEntity.status(HttpStatus.GONE).body("Laskentaa" + uuid + " ei löytynyt"));
+      if (laskenta.isEmpty()) {
+        result.setErrorResult(
+            ResponseEntity.status(HttpStatus.GONE).body("Laskentaa" + uuid + " ei löytynyt"));
       } else {
-        authorityCheckService.checkAuthorizationForLaskenta(laskenta.get(), valintalaskentaAllowedRoles);
+        authorityCheckService.checkAuthorizationForLaskenta(
+            laskenta.get(), valintalaskentaAllowedRoles);
         result.setResult(StatusExcelUtil.getStatusXls(laskenta.get()));
       }
     } catch (AccessDeniedException e) {
@@ -317,10 +349,12 @@ public class ValintalaskentaResource {
     DeferredResult<ResponseEntity<LaskentaDto>> result = new DeferredResult<>(60 * 1000L);
     try {
       Optional<LaskentaDto> laskenta = luoLaskentaService.haeLaskenta(uuid);
-      if(laskenta.isEmpty()) {
-        result.setErrorResult(ResponseEntity.status(HttpStatus.GONE).body("Laskentaa" + uuid + " ei löytynyt"));
+      if (laskenta.isEmpty()) {
+        result.setErrorResult(
+            ResponseEntity.status(HttpStatus.GONE).body("Laskentaa" + uuid + " ei löytynyt"));
       } else {
-        authorityCheckService.checkAuthorizationForLaskenta(laskenta.get(), valintalaskentaAllowedRoles);
+        authorityCheckService.checkAuthorizationForLaskenta(
+            laskenta.get(), valintalaskentaAllowedRoles);
         result.setResult(ResponseEntity.of(luoLaskentaService.haeLaskenta(uuid)));
       }
     } catch (AccessDeniedException e) {
@@ -336,10 +370,10 @@ public class ValintalaskentaResource {
   /**
    * Peruuttaa luodun laskennan
    *
-   * @param uuid                            laskennan tunniste
-   * @param lopetaVainJonossaOlevaLaskenta  peruutetaan laskenta vain jos sitä ei vielä ole käynnistetty
-   *
-   * @return                                tyhjä
+   * @param uuid laskennan tunniste
+   * @param lopetaVainJonossaOlevaLaskenta peruutetaan laskenta vain jos sitä ei vielä ole
+   *     käynnistetty
+   * @return tyhjä
    */
   @DeleteMapping(value = "/haku/{uuid:.+}")
   public ResponseEntity<String> lopetaLaskenta(
@@ -349,15 +383,20 @@ public class ValintalaskentaResource {
       HttpServletRequest request) {
     try {
       Optional<LaskentaDto> laskenta = luoLaskentaService.haeLaskenta(uuid);
-      if(laskenta.isEmpty()) {
+      if (laskenta.isEmpty()) {
         return ResponseEntity.status(HttpStatus.GONE).body("Laskentaa" + uuid + " ei löytynyt");
       }
-      authorityCheckService.checkAuthorizationForLaskenta(laskenta.get(), valintalaskentaAllowedRoles);
+      authorityCheckService.checkAuthorizationForLaskenta(
+          laskenta.get(), valintalaskentaAllowedRoles);
       luoLaskentaService.peruutaLaskenta(uuid, lopetaVainJonossaOlevaLaskenta);
 
-      AuditLogUtil.auditLogLaskenta(laskentaAuditSession(AuthorizationUtil.getCurrentUser(), request),
-          ValintaperusteetOperation.LASKENTATOTEUTUS_PERUUTUS, laskenta.get().getUuid(), laskenta.get().getHakuOid(),
-          laskenta.get().getHakukohteet().stream().map(hk -> hk.getHakukohdeOid()).toList(), Optional.empty());
+      AuditLogUtil.auditLogLaskenta(
+          laskentaAuditSession(AuthorizationUtil.getCurrentUser(), request),
+          ValintaperusteetOperation.LASKENTATOTEUTUS_PERUUTUS,
+          laskenta.get().getUuid(),
+          laskenta.get().getHakuOid(),
+          laskenta.get().getHakukohteet().stream().map(hk -> hk.getHakukohdeOid()).toList(),
+          Optional.empty());
 
       return ResponseEntity.status(HttpStatus.OK).build();
     } catch (AccessDeniedException e) {
