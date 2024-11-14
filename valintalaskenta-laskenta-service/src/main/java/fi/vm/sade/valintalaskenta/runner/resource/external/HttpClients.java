@@ -3,8 +3,8 @@ package fi.vm.sade.valintalaskenta.runner.resource.external;
 import static fi.vm.sade.valinta.sharedutils.http.HttpResource.CSRF_VALUE;
 
 import fi.vm.sade.javautils.nio.cas.CasConfig;
-import fi.vm.sade.valintalaskenta.runner.resource.external.tarjonta.impl.TarjontaAsyncResourceImpl;
 import fi.vm.sade.valinta.sharedutils.http.DateDeserializer;
+import fi.vm.sade.valintalaskenta.runner.resource.external.tarjonta.impl.TarjontaAsyncResourceImpl;
 import java.net.CookieManager;
 import java.time.Duration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class HttpClients {
     String ticketsUrl = UrlConfiguration.getInstance().url("cas.tickets");
     return new RestCasClient(
         new CasConfig.CasConfigBuilder(
-            username, password, ticketsUrl, service, CSRF_VALUE, CALLER_ID, "")
+                username, password, ticketsUrl, service, CSRF_VALUE, CALLER_ID, "")
             .setJsessionName("JSESSIONID")
             .build());
   }
@@ -93,7 +93,13 @@ public class HttpClients {
     String ticketsUrl = UrlConfiguration.getInstance().url("cas.tickets");
     return new RestCasClient(
         new CasConfig.CasConfigBuilder(
-                username, password, ticketsUrl, service, CSRF_VALUE, CALLER_ID, "/j_spring_cas_security_check")
+                username,
+                password,
+                ticketsUrl,
+                service,
+                CSRF_VALUE,
+                CALLER_ID,
+                "/j_spring_cas_security_check")
             .setJsessionName("JSESSIONID")
             .build());
   }

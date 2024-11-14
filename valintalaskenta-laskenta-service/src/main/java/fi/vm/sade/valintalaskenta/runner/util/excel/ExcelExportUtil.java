@@ -3,7 +3,6 @@ package fi.vm.sade.valintalaskenta.runner.util.excel;
 import static org.apache.poi.ss.usermodel.HorizontalAlignment.CENTER;
 
 import fi.vm.sade.javautils.poi.OphCellStyles.OphXssfCellStyles;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;

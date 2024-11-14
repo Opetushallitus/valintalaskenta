@@ -2,16 +2,15 @@ package fi.vm.sade.valintalaskenta.runner.security;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
 
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
 import fi.vm.sade.valintalaskenta.runner.resource.external.organisaatio.OrganisaatioAsyncResource;
 import fi.vm.sade.valintalaskenta.runner.resource.external.tarjonta.TarjontaAsyncResource;
 import fi.vm.sade.valintalaskenta.runner.resource.external.valintaperusteet.ValintaperusteetAsyncResource;
-import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
-import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
+import fi.vm.sade.valintalaskenta.runner.util.SecurityUtil;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-
-import fi.vm.sade.valintalaskenta.runner.util.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +27,13 @@ public class AuthorityCheckService {
   @Autowired private ValintaperusteetAsyncResource valintaperusteetAsyncResource;
 
   private HakukohdeOIDAuthorityCheck getAuthorityCheckForRoles(Collection<String> roles) {
-    final Collection<String> authorities = SecurityUtil.getAuthoritiesFromAuthenticationStartingWith(roles);
-    final Set<String> organizationOids = SecurityUtil.parseOrganizationOidsFromSecurityRoles(authorities);
+    final Collection<String> authorities =
+        SecurityUtil.getAuthoritiesFromAuthenticationStartingWith(roles);
+    final Set<String> organizationOids =
+        SecurityUtil.parseOrganizationOidsFromSecurityRoles(authorities);
 
-    boolean isRootAuthority = organizationOids.stream().anyMatch(oid -> SecurityUtil.isRootOrganizationOID(oid));
+    boolean isRootAuthority =
+        organizationOids.stream().anyMatch(oid -> SecurityUtil.isRootOrganizationOID(oid));
     if (isRootAuthority) {
       return (oid) -> true;
     } else {
@@ -52,10 +54,11 @@ public class AuthorityCheckService {
               .map(tarjontaAsyncResource::hakukohdeSearchByOrganizationGroupOids)
               .orElse(CompletableFuture.completedFuture(Collections.emptySet()));
 
-      CompletableFuture<HakukohdeOIDAuthorityCheck> authCheck = searchByOrganizationOids.thenComposeAsync(
-          byOrgs ->
-              searchByOrganizationGroupOids.thenApplyAsync(
-                  byGroups -> (oid) -> byOrgs.contains(oid) || byGroups.contains(oid)));
+      CompletableFuture<HakukohdeOIDAuthorityCheck> authCheck =
+          searchByOrganizationOids.thenComposeAsync(
+              byOrgs ->
+                  searchByOrganizationGroupOids.thenApplyAsync(
+                      byGroups -> (oid) -> byOrgs.contains(oid) || byGroups.contains(oid)));
       try {
         return authCheck.get();
       } catch (Exception e) {
@@ -74,13 +77,15 @@ public class AuthorityCheckService {
     Set<String> tarjoajaOids;
     try {
       tarjoajaOids = tarjontaAsyncResource.haeTarjoajaOids(hakuOid).get(2, MINUTES);
-    } catch(Exception e) {
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
     boolean isAuthorized = isAuthorizedForAnyParentOid(tarjoajaOids, userRoles, requiredRoles);
 
     if (!isAuthorized) {
-      String msg = String.format("Käyttäjällä ei oikeutta haun %s tarjoajaan tai sen yläorganisaatioihin.", hakuOid);
+      String msg =
+          String.format(
+              "Käyttäjällä ei oikeutta haun %s tarjoajaan tai sen yläorganisaatioihin.", hakuOid);
       LOG.error(msg);
       throw new AccessDeniedException(msg);
     }
@@ -96,10 +101,12 @@ public class AuthorityCheckService {
     }
 
     HakukohdeOIDAuthorityCheck authCheck = getAuthorityCheckForRoles(requiredRoles);
-    Collection<String> notAuthorizedHakukohteet = hakukohdeOids.stream().filter(hk -> !authCheck.test(hk)).toList();
-    if (notAuthorizedHakukohteet.size()>0) {
+    Collection<String> notAuthorizedHakukohteet =
+        hakukohdeOids.stream().filter(hk -> !authCheck.test(hk)).toList();
+    if (notAuthorizedHakukohteet.size() > 0) {
       String msg =
-          String.format("Käyttäjällä ei oikeutta seuraaviin hakukohteisiin: %s",
+          String.format(
+              "Käyttäjällä ei oikeutta seuraaviin hakukohteisiin: %s",
               notAuthorizedHakukohteet.stream().collect(Collectors.joining(",")));
       LOG.error(msg);
       throw new AccessDeniedException(msg);
@@ -146,18 +153,22 @@ public class AuthorityCheckService {
       return;
     }
 
-    boolean isAuthorized = valintaperusteetAsyncResource.haeValintaryhmaVastuuorganisaatio(valintaryhmaOid)
-        .thenApply(vastuuorganisaatioOid -> {
-          if (vastuuorganisaatioOid == null) {
-            LOG.error(
-                "Valintaryhmän {} vastuuorganisaatio on null; vain OPH:lla oikeus valintaryhmään.",
-                valintaryhmaOid);
-            return false;
-          } else {
-            return isAuthorizedForAnyParentOid(
-                Collections.singleton(vastuuorganisaatioOid), userRoles, requiredRoles);
-          }
-    }).join();
+    boolean isAuthorized =
+        valintaperusteetAsyncResource
+            .haeValintaryhmaVastuuorganisaatio(valintaryhmaOid)
+            .thenApply(
+                vastuuorganisaatioOid -> {
+                  if (vastuuorganisaatioOid == null) {
+                    LOG.error(
+                        "Valintaryhmän {} vastuuorganisaatio on null; vain OPH:lla oikeus valintaryhmään.",
+                        valintaryhmaOid);
+                    return false;
+                  } else {
+                    return isAuthorizedForAnyParentOid(
+                        Collections.singleton(vastuuorganisaatioOid), userRoles, requiredRoles);
+                  }
+                })
+            .join();
 
     if (!isAuthorized) {
       String msg =
@@ -169,13 +180,15 @@ public class AuthorityCheckService {
     }
   }
 
-  public void checkAuthorizationForLaskenta(LaskentaDto laskentaDto, Collection<String> requiredRoles) {
+  public void checkAuthorizationForLaskenta(
+      LaskentaDto laskentaDto, Collection<String> requiredRoles) {
     if (LaskentaTyyppi.HAKU.equals(laskentaDto.getTyyppi())) {
       this.checkAuthorizationForHaku(laskentaDto.getHakuOid(), requiredRoles);
     } else {
-      final List<String> hakukohdeOids = laskentaDto.getHakukohteet().stream()
-          .map(hk -> hk.getHakukohdeOid())
-          .collect(Collectors.toList());
+      final List<String> hakukohdeOids =
+          laskentaDto.getHakukohteet().stream()
+              .map(hk -> hk.getHakukohdeOid())
+              .collect(Collectors.toList());
       this.checkAuthorizationForHakukohteet(hakukohdeOids, requiredRoles);
     }
   }

@@ -483,13 +483,16 @@ public class ValintalaskentaResourceImpl {
   private void toteutaValintaryhmaLaskenta(String uuid, List<LaskeDTO> laskeDTOs) {
     StopWatch stopWatch =
         new StopWatch("Suoritetaan valintaryhmälaskenta uuid:lla " + laskeDTOs.get(0).getUuid());
-    LOG.info(String.format("Aloitetaan valintaryhmälaskenta uuid:lla %s", laskeDTOs.get(0).getUuid()));
+    LOG.info(
+        String.format("Aloitetaan valintaryhmälaskenta uuid:lla %s", laskeDTOs.get(0).getUuid()));
     try {
       ValisijoitteluKasittelija.ValisijoiteltavatJonot valisijoiteltavatJonot =
           valisijoitteluKasittelija.valisijoiteltavatJonot(laskeDTOs, stopWatch);
       if (valisijoiteltavatJonot.valinnanvaiheet.isEmpty()) {
         stopWatch.start(
-            "Suoritetaan valintalaskenta ilman sijoittelujonoja " + laskeDTOs.size() + " hakemukselle");
+            "Suoritetaan valintalaskenta ilman sijoittelujonoja "
+                + laskeDTOs.size()
+                + " hakemukselle");
         laskeDTOs.forEach(
             laskeDTO ->
                 valintalaskentaService.laskeKaikki(
@@ -697,8 +700,7 @@ public class ValintalaskentaResourceImpl {
           long end = System.currentTimeMillis();
           LOG.error(
               String.format(
-                  "(Uuid=%s) (Kesto %ss) Odottamaton virhe.",
-                  uuid, millisToString(end - start)),
+                  "(Uuid=%s) (Kesto %ss) Odottamaton virhe.", uuid, millisToString(end - start)),
               t);
           throw t;
         } finally {
