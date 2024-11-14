@@ -163,7 +163,8 @@ public class SecurityConfiguration {
     serializer.setUseSecureCookie(true);
     serializer.setCookieName("JSESSIONID");
     serializer.setCookiePath("/valintalaskenta-laskenta-service");
-    // tämä jotta yliheitto toimii, ks. https://github.com/spring-projects/spring-session/issues/1201
+    // tämä jotta yliheitto toimii, ks.
+    // https://github.com/spring-projects/spring-session/issues/1201
     serializer.setUseBase64Encoding(false);
     return serializer;
   }
