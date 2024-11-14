@@ -3,9 +3,9 @@ package fi.vm.sade.valintalaskenta.config;
 import fi.vm.sade.java_utils.security.OpintopolkuCasAuthenticationFilter;
 import fi.vm.sade.javautils.kayttooikeusclient.OphUserDetailsServiceImpl;
 import fi.vm.sade.valintalaskenta.config.properties.CasProperties;
+import org.apereo.cas.client.session.SingleSignOutFilter;
 import org.apereo.cas.client.validation.Cas20ProxyTicketValidator;
 import org.apereo.cas.client.validation.TicketValidator;
-import org.apereo.cas.client.session.SingleSignOutFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +81,9 @@ public class SecurityConfiguration {
   //
 
   @Bean
-  public CasAuthenticationFilter casAuthenticationFilter(ServiceProperties serviceProperties, AuthenticationManager authenticationManager) throws Exception {
+  public CasAuthenticationFilter casAuthenticationFilter(
+      ServiceProperties serviceProperties, AuthenticationManager authenticationManager)
+      throws Exception {
     OpintopolkuCasAuthenticationFilter casAuthenticationFilter =
         new OpintopolkuCasAuthenticationFilter(serviceProperties);
     casAuthenticationFilter.setAuthenticationManager(authenticationManager);
@@ -107,7 +109,8 @@ public class SecurityConfiguration {
   //
 
   @Bean
-  public CasAuthenticationEntryPoint casAuthenticationEntryPoint(ServiceProperties serviceProperties) {
+  public CasAuthenticationEntryPoint casAuthenticationEntryPoint(
+      ServiceProperties serviceProperties) {
     CasAuthenticationEntryPoint casAuthenticationEntryPoint = new CasAuthenticationEntryPoint();
     casAuthenticationEntryPoint.setLoginUrl(environment.getRequiredProperty("cas.login"));
     casAuthenticationEntryPoint.setServiceProperties(serviceProperties);
@@ -116,36 +119,43 @@ public class SecurityConfiguration {
   }
 
   @Bean
-  public SecurityFilterChain configureFilterChain(HttpSecurity http,
-                                                  CasAuthenticationFilter casAuthenticationFilter,
-                                                  SingleSignOutFilter singleSignOutFilter,
-                                                  CasAuthenticationEntryPoint casAuthenticationEntryPoint) throws Exception {
-      return http
-          .headers(h -> h.disable())
-          .csrf(c -> c.disable())
-          .authorizeHttpRequests(requests -> requests.requestMatchers(HttpMethod.GET,
-                  "/buildversion.txt",
-                  "/actuator/health",
-                  "/v3/api-docs",
-                  "/v3/api-docs/**",
-                  "/swagger",
-                  "/swagger/**",
-                  "/swagger-ui/**",
-                  "/swagger-ui.html",
-                  "/webjars/swagger-ui/**"
-              )
-              .permitAll()
-              .anyRequest()
-              .fullyAuthenticated())
-          .exceptionHandling(e -> e.authenticationEntryPoint(casAuthenticationEntryPoint))
-          .addFilter(casAuthenticationFilter)
-          .addFilterBefore(singleSignOutFilter, CasAuthenticationFilter.class)
-          .build();
+  public SecurityFilterChain configureFilterChain(
+      HttpSecurity http,
+      CasAuthenticationFilter casAuthenticationFilter,
+      SingleSignOutFilter singleSignOutFilter,
+      CasAuthenticationEntryPoint casAuthenticationEntryPoint)
+      throws Exception {
+    return http.headers(h -> h.disable())
+        .csrf(c -> c.disable())
+        .authorizeHttpRequests(
+            requests ->
+                requests
+                    .requestMatchers(
+                        HttpMethod.GET,
+                        "/buildversion.txt",
+                        "/actuator/health",
+                        "/v3/api-docs",
+                        "/v3/api-docs/**",
+                        "/swagger",
+                        "/swagger/**",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html",
+                        "/webjars/swagger-ui/**")
+                    .permitAll()
+                    .anyRequest()
+                    .fullyAuthenticated())
+        .exceptionHandling(e -> e.authenticationEntryPoint(casAuthenticationEntryPoint))
+        .addFilter(casAuthenticationFilter)
+        .addFilterBefore(singleSignOutFilter, CasAuthenticationFilter.class)
+        .build();
   }
 
   @Bean
-  protected AuthenticationManager configure(HttpSecurity http, CasAuthenticationProvider casAuthenticationProvider) throws Exception {
-    return http.getSharedObject(AuthenticationManagerBuilder.class).authenticationProvider(casAuthenticationProvider).build();
+  protected AuthenticationManager configure(
+      HttpSecurity http, CasAuthenticationProvider casAuthenticationProvider) throws Exception {
+    return http.getSharedObject(AuthenticationManagerBuilder.class)
+        .authenticationProvider(casAuthenticationProvider)
+        .build();
   }
 
   @Bean
@@ -154,7 +164,8 @@ public class SecurityConfiguration {
     serializer.setUseSecureCookie(true);
     serializer.setCookieName("JSESSIONID");
     serializer.setCookiePath("/valintalaskenta-laskenta-service");
-    // tämä jotta yliheitto toimii, ks. https://github.com/spring-projects/spring-session/issues/1201
+    // tämä jotta yliheitto toimii, ks.
+    // https://github.com/spring-projects/spring-session/issues/1201
     serializer.setUseBase64Encoding(false);
     return serializer;
   }
