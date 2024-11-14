@@ -6,7 +6,6 @@ import fi.vm.sade.service.valintaperusteet.dto.HakukohdeViiteDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 import fi.vm.sade.valintalaskenta.runner.dto.HakukohdeJaOrganisaatio;
-import fi.vm.sade.valintalaskenta.runner.dto.Laskenta;
 import fi.vm.sade.valintalaskenta.runner.dto.Maski;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -111,29 +110,6 @@ public class LuoLaskentaService {
 
   public Optional<LaskentaDto> haeLaskenta(String uuid) {
     return seurantaDao.haeLaskenta(uuid);
-  }
-
-  public Optional<Laskenta> fetchLaskenta(String uuid) {
-    return seurantaDao
-        .haeLaskenta(uuid)
-        .map(
-            laskenta ->
-                new Laskenta() {
-                  @Override
-                  public boolean isValmis() {
-                    return laskenta.getTila() == LaskentaTila.VALMIS;
-                  }
-
-                  @Override
-                  public String getUuid() {
-                    return laskenta.getUuid();
-                  }
-
-                  @Override
-                  public String getHakuOid() {
-                    return laskenta.getHakuOid();
-                  }
-                });
   }
 
   private static Collection<HakukohdeJaOrganisaatio> kasitteleHakukohdeViitteet(
