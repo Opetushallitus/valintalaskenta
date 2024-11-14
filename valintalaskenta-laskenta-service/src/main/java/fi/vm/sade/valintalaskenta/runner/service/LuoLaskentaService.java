@@ -1,21 +1,19 @@
 package fi.vm.sade.valintalaskenta.runner.service;
 
+import static fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto.ilmoitus;
+
 import fi.vm.sade.service.valintaperusteet.dto.HakukohdeViiteDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
+import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 import fi.vm.sade.valintalaskenta.runner.dto.HakukohdeJaOrganisaatio;
 import fi.vm.sade.valintalaskenta.runner.dto.Laskenta;
 import fi.vm.sade.valintalaskenta.runner.dto.Maski;
-import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
-
 import java.util.*;
 import java.util.stream.Collectors;
-
-import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import static fi.vm.sade.valintalaskenta.domain.dto.seuranta.IlmoitusDto.ilmoitus;
 
 @Service
 public class LuoLaskentaService {
@@ -28,20 +26,20 @@ public class LuoLaskentaService {
   /**
    * Käynnistää uuden laskennan
    *
-   * @param userOID               haun käynnistäneen käyttäjän tunniste, ei vaikuta laskentaan mutta näytetään
-   *                              valintalaskennan hallinnassa
-   * @param haunNimi              haun nimi, ei vaikuta laskentaan mutta näytetään valintalaskennan hallinnassa
-   * @param nimi                  laskennan nimi, ei vaikuta laskentaan mutta näytetään valintalaskennan hallinnassa
-   * @param laskentatyyppi        määrittää laskennan tyypin (haku, hakukohde, valintaryhmä)
-   * @param isValintakoelaskenta  valintakoelaskentaa käytetään selvittämään ketkä hakijat tulevat kutsutuksi
-   *                              valintakokeeseen
-   * @param valinnanvaihe         määrittää että laskennassa lasketaan vain tietty valinnan vaihe
-   * @param hakuOid               laskettavan haun tunniste
-   * @param maski                 maskitoiminnin avulla laskenta voidaan rajoittaa tiettyihin hakukohteisiin joko
-   *                              white- tai blacklistillä
-   * @param isErillishaku         erillishakutoiminnolla haun päätteeksi suoritetaan sijoittelu kunkin hakukohteen
-   *                              sisällä, ts. ei kaikkien haun hakukohteiden yli
-   * @param hakukohdeViitteet     laskettavat hakukohteet
+   * @param userOID haun käynnistäneen käyttäjän tunniste, ei vaikuta laskentaan mutta näytetään
+   *     valintalaskennan hallinnassa
+   * @param haunNimi haun nimi, ei vaikuta laskentaan mutta näytetään valintalaskennan hallinnassa
+   * @param nimi laskennan nimi, ei vaikuta laskentaan mutta näytetään valintalaskennan hallinnassa
+   * @param laskentatyyppi määrittää laskennan tyypin (haku, hakukohde, valintaryhmä)
+   * @param isValintakoelaskenta valintakoelaskentaa käytetään selvittämään ketkä hakijat tulevat
+   *     kutsutuksi valintakokeeseen
+   * @param valinnanvaihe määrittää että laskennassa lasketaan vain tietty valinnan vaihe
+   * @param hakuOid laskettavan haun tunniste
+   * @param maski maskitoiminnin avulla laskenta voidaan rajoittaa tiettyihin hakukohteisiin joko
+   *     white- tai blacklistillä
+   * @param isErillishaku erillishakutoiminnolla haun päätteeksi suoritetaan sijoittelu kunkin
+   *     hakukohteen sisällä, ts. ei kaikkien haun hakukohteiden yli
+   * @param hakukohdeViitteet laskettavat hakukohteet
    */
   public TunnisteDto kaynnistaLaskentaHaulle(
       String userOID,
@@ -57,28 +55,28 @@ public class LuoLaskentaService {
 
     LOG.info("Aloitetaan laskenta haulle {}", hakuOid);
     Collection<HakukohdeJaOrganisaatio> haunHakukohteetOids =
-        kasitteleHakukohdeViitteet(
-            hakukohdeViitteet, hakuOid, maski);
+        kasitteleHakukohdeViitteet(hakukohdeViitteet, hakuOid, maski);
 
     final List<HakukohdeDto> hakukohdeDtos = toHakukohdeDto(haunHakukohteetOids);
     validateHakukohdeDtos(haunHakukohteetOids, hakukohdeDtos);
-    TunnisteDto tunniste = seurantaDao.luoLaskenta(
-        userOID,
-        haunNimi,
-        nimi,
-        hakuOid,
-        laskentatyyppi,
-        isErillishaku,
-        valinnanvaihe,
-        isValintakoelaskenta,
-        hakukohdeDtos);
+    TunnisteDto tunniste =
+        seurantaDao.luoLaskenta(
+            userOID,
+            haunNimi,
+            nimi,
+            hakuOid,
+            laskentatyyppi,
+            isErillishaku,
+            valinnanvaihe,
+            isValintakoelaskenta,
+            hakukohdeDtos);
 
     return tunniste;
   }
 
   public TunnisteDto kaynnistaLaskentaUudelleen(final String uuid) {
     Optional<LaskentaDto> laskenta = this.haeLaskenta(uuid);
-    if(laskenta.isPresent() && laskenta.get().getTila()!=LaskentaTila.VALMIS) {
+    if (laskenta.isPresent() && laskenta.get().getTila() != LaskentaTila.VALMIS) {
       return new TunnisteDto(uuid, false);
     }
 
@@ -92,15 +90,19 @@ public class LuoLaskentaService {
 
   public void peruutaLaskenta(String uuid, Boolean lopetaVainJonossaOlevaLaskenta) {
     Optional<LaskentaDto> laskenta = this.haeLaskenta(uuid);
-    if(!laskenta.isPresent()) {
+    if (!laskenta.isPresent()) {
       LOG.warn("Yritettiin peruuttaa olematonta laskentaa: " + uuid);
       return;
     }
 
     if (Boolean.TRUE.equals(lopetaVainJonossaOlevaLaskenta)) {
-      boolean onkoLaskentaVielaJonossa = laskenta.get().getTila()==LaskentaTila.ALOITTAMATTA;
+      boolean onkoLaskentaVielaJonossa = laskenta.get().getTila() == LaskentaTila.ALOITTAMATTA;
       if (!onkoLaskentaVielaJonossa) {
-        LOG.warn("Yritettiin peruuttaa laskentaa: " + uuid + " joka on tilassa " + laskenta.get().getTila());
+        LOG.warn(
+            "Yritettiin peruuttaa laskentaa: "
+                + uuid
+                + " joka on tilassa "
+                + laskenta.get().getTila());
         return;
       }
     }
@@ -112,22 +114,26 @@ public class LuoLaskentaService {
   }
 
   public Optional<Laskenta> fetchLaskenta(String uuid) {
-    return seurantaDao.haeLaskenta(uuid).map(laskenta -> new Laskenta() {
-      @Override
-      public boolean isValmis() {
-        return laskenta.getTila()==LaskentaTila.VALMIS;
-      }
+    return seurantaDao
+        .haeLaskenta(uuid)
+        .map(
+            laskenta ->
+                new Laskenta() {
+                  @Override
+                  public boolean isValmis() {
+                    return laskenta.getTila() == LaskentaTila.VALMIS;
+                  }
 
-      @Override
-      public String getUuid() {
-        return laskenta.getUuid();
-      }
+                  @Override
+                  public String getUuid() {
+                    return laskenta.getUuid();
+                  }
 
-      @Override
-      public String getHakuOid() {
-        return laskenta.getHakuOid();
-      }
-    });
+                  @Override
+                  public String getHakuOid() {
+                    return laskenta.getHakuOid();
+                  }
+                });
   }
 
   private static Collection<HakukohdeJaOrganisaatio> kasitteleHakukohdeViitteet(
@@ -163,8 +169,7 @@ public class LuoLaskentaService {
   }
 
   private static void validateHakukohdeDtos(
-      Collection<HakukohdeJaOrganisaatio> hakukohdeData,
-      List<HakukohdeDto> hakukohdeDtos) {
+      Collection<HakukohdeJaOrganisaatio> hakukohdeData, List<HakukohdeDto> hakukohdeDtos) {
     if (hakukohdeDtos == null) {
       throw new NullPointerException(
           "Laskentaa ei luoda tyhjalle (null) hakukohdedto referenssille!");

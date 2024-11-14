@@ -1,12 +1,12 @@
 package fi.vm.sade.valintalaskenta.runner.util;
 
+import jakarta.ws.rs.ForbiddenException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import jakarta.ws.rs.ForbiddenException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

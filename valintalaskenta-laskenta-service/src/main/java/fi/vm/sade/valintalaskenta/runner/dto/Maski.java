@@ -1,7 +1,6 @@
 package fi.vm.sade.valintalaskenta.runner.dto;
 
 import com.google.common.collect.Sets;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;

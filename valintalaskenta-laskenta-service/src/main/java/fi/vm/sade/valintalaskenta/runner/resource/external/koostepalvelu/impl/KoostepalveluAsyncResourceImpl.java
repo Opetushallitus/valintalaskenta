@@ -1,24 +1,22 @@
 package fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.impl;
 
 import com.google.gson.reflect.TypeToken;
-import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.KoostepalveluAsyncResource;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
 import fi.vm.sade.valintalaskenta.runner.resource.external.RestCasClient;
 import fi.vm.sade.valintalaskenta.runner.resource.external.UrlConfiguration;
+import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.KoostepalveluAsyncResource;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-
 @Service
 public class KoostepalveluAsyncResourceImpl implements KoostepalveluAsyncResource {
-  private static final Logger LOG =
-      LoggerFactory.getLogger(KoostepalveluAsyncResourceImpl.class);
+  private static final Logger LOG = LoggerFactory.getLogger(KoostepalveluAsyncResourceImpl.class);
   private final RestCasClient httpClient;
 
   private final UrlConfiguration urlConfiguration;
@@ -41,13 +39,15 @@ public class KoostepalveluAsyncResourceImpl implements KoostepalveluAsyncResourc
     parameters.put("erillishaku", laskenta.getErillishaku() + "");
     parameters.put("retryHakemuksetAndOppijat", retryHakemuksetAndOppijat + "");
     parameters.put("withHakijaRyhmat", withHakijaRyhmat + "");
-    if(laskenta.getValinnanvaihe().isPresent()) {
+    if (laskenta.getValinnanvaihe().isPresent()) {
       parameters.put("valinnanvaihe", laskenta.getValinnanvaihe().get().toString());
     }
     return httpClient.get(
         this.urlConfiguration.url(
             "valintalaskentakoostepalvelu.lahtotiedot.baseurl",
-            laskenta.getHakuOid(), hakukohdeOid, parameters),
+            laskenta.getHakuOid(),
+            hakukohdeOid,
+            parameters),
         new TypeToken<LaskeDTO>() {},
         Collections.emptyMap(),
         60 * 60 * 1000);
