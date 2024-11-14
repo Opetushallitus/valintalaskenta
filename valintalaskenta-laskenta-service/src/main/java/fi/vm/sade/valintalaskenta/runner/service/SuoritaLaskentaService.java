@@ -2,14 +2,13 @@ package fi.vm.sade.valintalaskenta.runner.service;
 
 import fi.vm.sade.service.valintaperusteet.dto.ValintaperusteetDTO;
 import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoJarjestyskriteereillaDTO;
-import fi.vm.sade.valintalaskenta.audit.AuditSession;
-import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.KoostepalveluAsyncResource;
-import fi.vm.sade.valintalaskenta.runner.resource.external.valintaperusteet.ValintaperusteetAsyncResource;
-import fi.vm.sade.valintalaskenta.audit.AuditLogUtil;
 import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
+import fi.vm.sade.valintalaskenta.audit.AuditLogUtil;
+import fi.vm.sade.valintalaskenta.audit.AuditSession;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
-
+import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.KoostepalveluAsyncResource;
+import fi.vm.sade.valintalaskenta.runner.resource.external.valintaperusteet.ValintaperusteetAsyncResource;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -49,8 +48,12 @@ public class SuoritaLaskentaService {
     return auditSession;
   }
 
-  private boolean isValintalaskentaKaytossa(LaskentaDto laskenta, Collection<String> hakukohdeOids) {
-    List<ValintaperusteetDTO> valintaperusteet = valintaperusteetAsyncResource.haeValintaperusteet(hakukohdeOids.iterator().next(), laskenta.getValinnanvaihe()).join();
+  private boolean isValintalaskentaKaytossa(
+      LaskentaDto laskenta, Collection<String> hakukohdeOids) {
+    List<ValintaperusteetDTO> valintaperusteet =
+        valintaperusteetAsyncResource
+            .haeValintaperusteet(hakukohdeOids.iterator().next(), laskenta.getValinnanvaihe())
+            .join();
     boolean jokinValintatapajonoKayttaaValintalaskentaa =
         valintaperusteet.stream()
             .map(ValintaperusteetDTO::getValinnanVaihe)
@@ -60,81 +63,118 @@ public class SuoritaLaskentaService {
     return jokinValintatapajonoKayttaaValintalaskentaa;
   }
 
-  public CompletableFuture<String> suoritaLaskentaHakukohteille(LaskentaDto laskenta, Collection<String> hakukohdeOids) {
+  public CompletableFuture<String> suoritaLaskentaHakukohteille(
+      LaskentaDto laskenta, Collection<String> hakukohdeOids) {
     AuditSession auditSession = laskentaAuditSession(laskenta);
 
-    if (laskenta.getTyyppi().equals(fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi.VALINTARYHMA)) {
+    if (laskenta
+        .getTyyppi()
+        .equals(fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi.VALINTARYHMA)) {
       String hakukohteidenNimi =
           String.format("Valintaryhmälaskenta %s hakukohteella", hakukohdeOids.size());
-      LOG.info("Muodostetaan VALINTARYHMALASKENTA (Uuid={}) {}", laskenta.getUuid(), hakukohteidenNimi);
-      AuditLogUtil.auditLogLaskenta(auditSession, ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS, laskenta.getUuid(),
-          laskenta.getHakuOid(), hakukohdeOids, Optional.of("VALINTARYHMALASKENTA"));
+      LOG.info(
+          "Muodostetaan VALINTARYHMALASKENTA (Uuid={}) {}", laskenta.getUuid(), hakukohteidenNimi);
+      AuditLogUtil.auditLogLaskenta(
+          auditSession,
+          ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS,
+          laskenta.getUuid(),
+          laskenta.getHakuOid(),
+          hakukohdeOids,
+          Optional.of("VALINTARYHMALASKENTA"));
 
-      return CompletableFuture.supplyAsync(() ->
-              hakukohdeOids.stream().map(hakukohdeOid -> this.koostepalveluAsyncResource.haeLahtotiedot(
-                      laskenta, hakukohdeOid, true, true)
-                  .join()).toList())
-          .thenApplyAsync(laskeDTOs -> {
-            /*
-             * Tiksussa b15df0500 Merge remote-tracking branch
-             * 'origin/VTKU-181__valintaryhmalaskennan_kutsu_pienempiin_paloihin' tämän kutsun siirto
-             * valintalaskentakoostepalvelusta valintalaskentaan oli palasteltu moneen kutsuun. Kun kutsu ei
-             * enää mene verkon yli ei (käsittääkseni) ole enää mitää syytä palastella joten palatta takaisin
-             * yhteen kutsuun.
-             */
-            return valintalaskentaResource.valintaryhmaLaskenta(laskenta.getUuid(), laskeDTOs);
-          }, this.executor);
+      return CompletableFuture.supplyAsync(
+              () ->
+                  hakukohdeOids.stream()
+                      .map(
+                          hakukohdeOid ->
+                              this.koostepalveluAsyncResource
+                                  .haeLahtotiedot(laskenta, hakukohdeOid, true, true)
+                                  .join())
+                      .toList())
+          .thenApplyAsync(
+              laskeDTOs -> {
+                /*
+                 * Tiksussa b15df0500 Merge remote-tracking branch
+                 * 'origin/VTKU-181__valintaryhmalaskennan_kutsu_pienempiin_paloihin' tämän kutsun siirto
+                 * valintalaskentakoostepalvelusta valintalaskentaan oli palasteltu moneen kutsuun. Kun kutsu ei
+                 * enää mene verkon yli ei (käsittääkseni) ole enää mitää syytä palastella joten palatta takaisin
+                 * yhteen kutsuun.
+                 */
+                return valintalaskentaResource.valintaryhmaLaskenta(laskenta.getUuid(), laskeDTOs);
+              },
+              this.executor);
     }
 
-    if(hakukohdeOids.size()!=1) {
-      throw new RuntimeException("Hakukohteita on " + hakukohdeOids.size() + ". Muissa kuin valintaryhmälaskennassa hakukohteita täytyy olla tasan yksi!");
+    if (hakukohdeOids.size() != 1) {
+      throw new RuntimeException(
+          "Hakukohteita on "
+              + hakukohdeOids.size()
+              + ". Muissa kuin valintaryhmälaskennassa hakukohteita täytyy olla tasan yksi!");
     }
-    if(!this.isValintalaskentaKaytossa(laskenta, hakukohdeOids)) {
+    if (!this.isValintalaskentaKaytossa(laskenta, hakukohdeOids)) {
       return CompletableFuture.completedFuture(laskenta.getUuid());
     }
 
     if (laskenta.getValintakoelaskenta()) {
       String hakukohdeOid = hakukohdeOids.iterator().next();
       LOG.info("Muodostetaan VALINTAKOELASKENTA (Uuid={}) {}", laskenta.getUuid(), hakukohdeOid);
-      AuditLogUtil.auditLogLaskenta(auditSession, ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS, laskenta.getUuid(),
-          laskenta.getHakuOid(), hakukohdeOids, Optional.of("VALINTAKOELASKENTA"));
-      return this.koostepalveluAsyncResource.haeLahtotiedot(
-          laskenta,
-          hakukohdeOid,
-          false,
-          false).thenApplyAsync(laskeDTO -> valintalaskentaResource.valintakoeLaskenta(laskeDTO), this.executor);
+      AuditLogUtil.auditLogLaskenta(
+          auditSession,
+          ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS,
+          laskenta.getUuid(),
+          laskenta.getHakuOid(),
+          hakukohdeOids,
+          Optional.of("VALINTAKOELASKENTA"));
+      return this.koostepalveluAsyncResource
+          .haeLahtotiedot(laskenta, hakukohdeOid, false, false)
+          .thenApplyAsync(
+              laskeDTO -> valintalaskentaResource.valintakoeLaskenta(laskeDTO), this.executor);
     } else {
       if (!laskenta.getValinnanvaihe().isPresent()) {
         String hakukohdeOid = hakukohdeOids.iterator().next();
-        LOG.info("Muodostetaan KAIKKI VAIHEET LASKENTA (Uuid={}) {}", laskenta.getUuid(), hakukohdeOid);
-        AuditLogUtil.auditLogLaskenta(auditSession, ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS, laskenta.getUuid(),
-            laskenta.getHakuOid(), hakukohdeOids, Optional.of("KAIKKI VAIHEET LASKENTA"));
+        LOG.info(
+            "Muodostetaan KAIKKI VAIHEET LASKENTA (Uuid={}) {}", laskenta.getUuid(), hakukohdeOid);
+        AuditLogUtil.auditLogLaskenta(
+            auditSession,
+            ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS,
+            laskenta.getUuid(),
+            laskenta.getHakuOid(),
+            hakukohdeOids,
+            Optional.of("KAIKKI VAIHEET LASKENTA"));
 
         Instant lahtotiedotStart = Instant.now();
-        return this.koostepalveluAsyncResource.haeLahtotiedot(
-            laskenta,
-            hakukohdeOid,
-            false,
-            true).thenApplyAsync(laskeDTO -> {
-          Duration lahtotiedotDuration = Duration.between(lahtotiedotStart, Instant.now());
-          Instant laskeStart = Instant.now();
-          String result = valintalaskentaResource.laskeKaikki(laskeDTO);
-          Duration laskeDuration = Duration.between(laskeStart, Instant.now());
+        return this.koostepalveluAsyncResource
+            .haeLahtotiedot(laskenta, hakukohdeOid, false, true)
+            .thenApplyAsync(
+                laskeDTO -> {
+                  Duration lahtotiedotDuration = Duration.between(lahtotiedotStart, Instant.now());
+                  Instant laskeStart = Instant.now();
+                  String result = valintalaskentaResource.laskeKaikki(laskeDTO);
+                  Duration laskeDuration = Duration.between(laskeStart, Instant.now());
 
-          LOG.info("Kesto: Hakukohde: {}, lähtotiedot: {} ms, laskenta: {} ms", hakukohdeOids.iterator().next(), lahtotiedotDuration.toMillis(), laskeDuration.toMillis());
+                  LOG.info(
+                      "Kesto: Hakukohde: {}, lähtotiedot: {} ms, laskenta: {} ms",
+                      hakukohdeOids.iterator().next(),
+                      lahtotiedotDuration.toMillis(),
+                      laskeDuration.toMillis());
 
-          return result;
-        }, this.executor);
+                  return result;
+                },
+                this.executor);
       } else {
         String hakukohdeOid = hakukohdeOids.iterator().next();
         LOG.info("Muodostetaan VALINTALASKENTA (Uuid={}) {}", laskenta.getUuid(), hakukohdeOid);
-        AuditLogUtil.auditLogLaskenta(auditSession, ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS, laskenta.getUuid(),
-            laskenta.getHakuOid(), hakukohdeOids, Optional.of("VALINTALASKENTA"));
-        return this.koostepalveluAsyncResource.haeLahtotiedot(
-            laskenta,
-            hakukohdeOid,
-            false,
-            true).thenApplyAsync(laskeDTO -> valintalaskentaResource.valintalaskenta(laskeDTO), this.executor);
+        AuditLogUtil.auditLogLaskenta(
+            auditSession,
+            ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS,
+            laskenta.getUuid(),
+            laskenta.getHakuOid(),
+            hakukohdeOids,
+            Optional.of("VALINTALASKENTA"));
+        return this.koostepalveluAsyncResource
+            .haeLahtotiedot(laskenta, hakukohdeOid, false, true)
+            .thenApplyAsync(
+                laskeDTO -> valintalaskentaResource.valintalaskenta(laskeDTO), this.executor);
       }
     }
   }

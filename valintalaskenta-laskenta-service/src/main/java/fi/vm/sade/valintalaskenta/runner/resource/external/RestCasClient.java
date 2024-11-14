@@ -110,7 +110,10 @@ public class RestCasClient {
                     response,
                     String.format(
                         "Error calling url %s with method %s, response code %s, message: %s",
-                        request.getUrl(), request.getMethod(), response.getStatusCode(), response.getResponseBody()));
+                        request.getUrl(),
+                        request.getMethod(),
+                        response.getStatusCode(),
+                        response.getResponseBody()));
               }
             });
   }

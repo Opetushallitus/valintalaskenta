@@ -28,8 +28,6 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 @Configuration
