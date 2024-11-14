@@ -1,6 +1,6 @@
 package fi.vm.sade.valintalaskenta.testing;
 
-import fi.vm.sade.valinta.kooste.external.resource.RestCasClient;
+import fi.vm.sade.valintalaskenta.runner.resource.external.RestCasClient;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.Dsl;
 import org.springframework.context.annotation.Bean;
