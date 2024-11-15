@@ -18,7 +18,13 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.services.cloudwatch.CloudWatchClient;
+import software.amazon.awssdk.services.cloudwatch.model.Dimension;
+import software.amazon.awssdk.services.cloudwatch.model.MetricDatum;
+import software.amazon.awssdk.services.cloudwatch.model.PutMetricDataRequest;
+import software.amazon.awssdk.services.cloudwatch.model.StandardUnit;
 
 @Service
 public class SuoritaLaskentaService {
@@ -28,15 +34,22 @@ public class SuoritaLaskentaService {
   private final KoostepalveluAsyncResource koostepalveluAsyncResource;
   private final ValintaperusteetAsyncResource valintaperusteetAsyncResource;
   private final ExecutorService executor = Executors.newWorkStealingPool();
+  private final CloudWatchClient cloudWatchClient;
+
+  private final String environmentName;
 
   @Autowired
   public SuoritaLaskentaService(
       ValintalaskentaResourceImpl valintalaskentaResource,
       KoostepalveluAsyncResource koostepalveluAsyncResource,
-      ValintaperusteetAsyncResource valintaperusteetAsyncResource) {
+      ValintaperusteetAsyncResource valintaperusteetAsyncResource,
+      CloudWatchClient cloudWatchClient,
+      @Value("${environment.name}") String environmentName) {
     this.valintalaskentaResource = valintalaskentaResource;
     this.koostepalveluAsyncResource = koostepalveluAsyncResource;
     this.valintaperusteetAsyncResource = valintaperusteetAsyncResource;
+    this.cloudWatchClient = cloudWatchClient;
+    this.environmentName = environmentName;
   }
 
   private static AuditSession laskentaAuditSession(LaskentaDto laskenta) {
@@ -61,6 +74,50 @@ public class SuoritaLaskentaService {
             .anyMatch(ValintatapajonoJarjestyskriteereillaDTO::getKaytetaanValintalaskentaa);
 
     return jokinValintatapajonoKayttaaValintalaskentaa;
+  }
+
+  private void tallennaJaLokitaMetriikat(
+      String hakukohdeOid, Duration lahtotiedotDuration, Duration laskentaDuration) {
+    MetricDatum lahtotiedot =
+        MetricDatum.builder()
+            .metricName("kesto")
+            .value((double) lahtotiedotDuration.toMillis())
+            .storageResolution(60)
+            .dimensions(List.of(Dimension.builder().name("vaihe").value("lahtotiedot").build()))
+            .timestamp(Instant.now())
+            .unit(StandardUnit.MILLISECONDS)
+            .build();
+
+    MetricDatum laskenta =
+        MetricDatum.builder()
+            .metricName("kesto")
+            .value((double) laskentaDuration.toMillis())
+            .storageResolution(60)
+            .dimensions(List.of(Dimension.builder().name("vaihe").value("laskenta").build()))
+            .timestamp(Instant.now())
+            .unit(StandardUnit.MILLISECONDS)
+            .build();
+
+    MetricDatum valmiit =
+        MetricDatum.builder()
+            .metricName("valmiit")
+            .value((double) 1)
+            .storageResolution(60)
+            .timestamp(Instant.now())
+            .unit(StandardUnit.COUNT)
+            .build();
+
+    this.cloudWatchClient.putMetricData(
+        PutMetricDataRequest.builder()
+            .namespace(this.environmentName + "-valintalaskenta")
+            .metricData(List.of(lahtotiedot, laskenta, valmiit))
+            .build());
+
+    LOG.info(
+        "Kesto: Hakukohde: {}, lähtotiedot: {} ms, laskenta: {} ms",
+        hakukohdeOid,
+        lahtotiedotDuration.toMillis(),
+        laskentaDuration.toMillis());
   }
 
   public CompletableFuture<String> suoritaLaskentaHakukohteille(
@@ -114,6 +171,7 @@ public class SuoritaLaskentaService {
     if (!this.isValintalaskentaKaytossa(laskenta, hakukohdeOids)) {
       return CompletableFuture.completedFuture(laskenta.getUuid());
     }
+    Instant lahtotiedotStart = Instant.now();
 
     if (laskenta.getValintakoelaskenta()) {
       String hakukohdeOid = hakukohdeOids.iterator().next();
@@ -128,7 +186,16 @@ public class SuoritaLaskentaService {
       return this.koostepalveluAsyncResource
           .haeLahtotiedot(laskenta, hakukohdeOid, false, false)
           .thenApplyAsync(
-              laskeDTO -> valintalaskentaResource.valintakoeLaskenta(laskeDTO), this.executor);
+              laskeDTO -> {
+                Instant laskeStart = Instant.now();
+                String result = valintalaskentaResource.valintakoeLaskenta(laskeDTO);
+                this.tallennaJaLokitaMetriikat(
+                    hakukohdeOid,
+                    Duration.between(lahtotiedotStart, laskeStart),
+                    Duration.between(laskeStart, Instant.now()));
+                return result;
+              },
+              this.executor);
     } else {
       if (!laskenta.getValinnanvaihe().isPresent()) {
         String hakukohdeOid = hakukohdeOids.iterator().next();
@@ -142,22 +209,16 @@ public class SuoritaLaskentaService {
             hakukohdeOids,
             Optional.of("KAIKKI VAIHEET LASKENTA"));
 
-        Instant lahtotiedotStart = Instant.now();
         return this.koostepalveluAsyncResource
             .haeLahtotiedot(laskenta, hakukohdeOid, false, true)
             .thenApplyAsync(
                 laskeDTO -> {
-                  Duration lahtotiedotDuration = Duration.between(lahtotiedotStart, Instant.now());
                   Instant laskeStart = Instant.now();
                   String result = valintalaskentaResource.laskeKaikki(laskeDTO);
-                  Duration laskeDuration = Duration.between(laskeStart, Instant.now());
-
-                  LOG.info(
-                      "Kesto: Hakukohde: {}, lähtotiedot: {} ms, laskenta: {} ms",
-                      hakukohdeOids.iterator().next(),
-                      lahtotiedotDuration.toMillis(),
-                      laskeDuration.toMillis());
-
+                  this.tallennaJaLokitaMetriikat(
+                      hakukohdeOid,
+                      Duration.between(lahtotiedotStart, laskeStart),
+                      Duration.between(laskeStart, Instant.now()));
                   return result;
                 },
                 this.executor);
@@ -174,7 +235,16 @@ public class SuoritaLaskentaService {
         return this.koostepalveluAsyncResource
             .haeLahtotiedot(laskenta, hakukohdeOid, false, true)
             .thenApplyAsync(
-                laskeDTO -> valintalaskentaResource.valintalaskenta(laskeDTO), this.executor);
+                laskeDTO -> {
+                  Instant laskeStart = Instant.now();
+                  String result = valintalaskentaResource.valintalaskenta(laskeDTO);
+                  this.tallennaJaLokitaMetriikat(
+                      hakukohdeOid,
+                      Duration.between(lahtotiedotStart, laskeStart),
+                      Duration.between(laskeStart, Instant.now()));
+                  return result;
+                },
+                this.executor);
       }
     }
   }
