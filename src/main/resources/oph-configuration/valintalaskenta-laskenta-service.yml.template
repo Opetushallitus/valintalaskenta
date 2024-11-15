@@ -5,6 +5,9 @@
 # joka asettaa tomcatin ympäristökohtaiset arvot.
 #
 
+environment:
+  name: {{ataru_environment_name}}
+
 host:
   alb: {{host_alb}}
   cas: {{host_cas}}
