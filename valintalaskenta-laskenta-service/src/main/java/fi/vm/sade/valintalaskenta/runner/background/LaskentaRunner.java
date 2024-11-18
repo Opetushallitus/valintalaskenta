@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+/** Luokka joka sisältää laskentojen ajotoiminnallisuuden. */
 @Service
 public class LaskentaRunner {
   private static final Logger LOG = LoggerFactory.getLogger(LaskentaRunner.class);
@@ -35,25 +36,31 @@ public class LaskentaRunner {
     this.executor = Executors.newWorkStealingPool(64);
   }
 
+  /**
+   * Merkataan noodi kantaan säännöllisesti liveksi (päivitetään timestamp jolloin noodi ollu
+   * elossa), jolloin kuolleiden noodien hakukohteiden resetointitoiminnallisuus ei resetoi tämän
+   * noodin hakukohteita.
+   */
   @Scheduled(initialDelay = 15, fixedDelay = 15, timeUnit = TimeUnit.SECONDS)
   public void merkkaaNoodiLiveksi() {
     LOG.debug("Merkataan noodi " + this.noodiId + " liveksi");
     this.seurantaDao.merkkaaNoodiLiveksi(this.noodiId);
   }
 
+  /**
+   * Merkataan mahdollisten kuolleiden noodien (eivät ole merkanneet itseään liveksi minuuttiin)
+   * hakukohteet suorittamattomiksi
+   */
   @Scheduled(initialDelay = 15, fixedDelay = 15, timeUnit = TimeUnit.SECONDS)
   public void resetoiKuolleidenNoodienLaskennat() {
     LOG.debug("Resetoidaan kuolleiden noodien laskennat");
     this.seurantaDao.resetoiKuolleidenNoodienLaskennat(60);
   }
 
-  private static Throwable getUnderlyingCause(Throwable t) {
-    if (t.getCause() != null) {
-      return getUnderlyingCause(t.getCause());
-    }
-    return t;
-  }
-
+  /**
+   * Aloitetaan lasketaan uusia hakukohteita jos mahdollista (tarjolla pitää olla laskemattomia
+   * hakukohteita ja tällä noodilla pitää olla tilaa).
+   */
   @Scheduled(initialDelay = 15, fixedDelay = 5, timeUnit = TimeUnit.SECONDS)
   public void fetchAndStartHakukohde() {
     this.executor.execute(
@@ -99,5 +106,12 @@ public class LaskentaRunner {
             LOG.error("Virhe hakukohteen laskennan käynnistämisessä", t);
           }
         });
+  }
+
+  private static Throwable getUnderlyingCause(Throwable t) {
+    if (t.getCause() != null) {
+      return getUnderlyingCause(t.getCause());
+    }
+    return t;
   }
 }
