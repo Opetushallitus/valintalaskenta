@@ -1,6 +1,5 @@
 package fi.vm.sade.valintalaskenta.runner.util;
 
-import jakarta.ws.rs.ForbiddenException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
