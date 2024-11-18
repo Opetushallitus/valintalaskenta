@@ -18,7 +18,6 @@ import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
-import fi.vm.sade.valintalaskenta.laskenta.resource.filter.CorsResponseFilter;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
 import fi.vm.sade.valintalaskenta.runner.resource.external.UrlConfiguration;
@@ -167,11 +166,6 @@ public class ValintalaskentaLaskentaConfiguration {
               clientReceiveTimeout);
       return result;
     };
-  }
-
-  @Bean
-  public CorsResponseFilter corsResponseFilter() {
-    return new CorsResponseFilter();
   }
 
   @Bean
