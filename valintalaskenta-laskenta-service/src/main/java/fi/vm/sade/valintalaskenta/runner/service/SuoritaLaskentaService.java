@@ -5,6 +5,7 @@ import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoJarjestyskriteerei
 import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.audit.AuditLogUtil;
 import fi.vm.sade.valintalaskenta.audit.AuditSession;
+import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.KoostepalveluAsyncResource;
@@ -15,6 +16,8 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +40,15 @@ public class SuoritaLaskentaService {
   private final CloudWatchClient cloudWatchClient;
 
   private final String environmentName;
+
+  private static final String LAHTOTIEDOT = "lahtotiedot";
+  private static final String LASKENTA = "laskenta";
+
+  private enum LaskentaTulos {
+    VALMIS,
+    OHITETTU,
+    VIRHE
+  }
 
   @Autowired
   public SuoritaLaskentaService(
@@ -77,89 +89,65 @@ public class SuoritaLaskentaService {
   }
 
   private void tallennaJaLokitaMetriikat(
-      String hakukohdeOid, Duration lahtotiedotDuration, Duration laskentaDuration) {
-    MetricDatum lahtotiedot =
-        MetricDatum.builder()
-            .metricName("kesto")
-            .value((double) lahtotiedotDuration.toMillis())
-            .storageResolution(60)
-            .dimensions(List.of(Dimension.builder().name("vaihe").value("lahtotiedot").build()))
-            .timestamp(Instant.now())
-            .unit(StandardUnit.MILLISECONDS)
-            .build();
+      Collection<String> hakukohdeOids,
+      Map<String, Duration> durations,
+      LaskentaTulos laskentaTulos) {
+    Collection<MetricDatum> datums = new ArrayList<>();
+    datums.addAll(
+        durations.entrySet().stream()
+            .map(
+                e ->
+                    MetricDatum.builder()
+                        .metricName("kesto")
+                        .value((double) e.getValue().toMillis())
+                        .storageResolution(60)
+                        .dimensions(
+                            List.of(Dimension.builder().name("vaihe").value(e.getKey()).build()))
+                        .timestamp(Instant.now())
+                        .unit(StandardUnit.MILLISECONDS)
+                        .build())
+            .collect(Collectors.toList()));
 
-    MetricDatum laskenta =
+    datums.add(
         MetricDatum.builder()
-            .metricName("kesto")
-            .value((double) laskentaDuration.toMillis())
-            .storageResolution(60)
-            .dimensions(List.of(Dimension.builder().name("vaihe").value("laskenta").build()))
-            .timestamp(Instant.now())
-            .unit(StandardUnit.MILLISECONDS)
-            .build();
-
-    MetricDatum valmiit =
-        MetricDatum.builder()
-            .metricName("valmiit")
-            .value((double) 1)
+            .metricName(
+                switch (laskentaTulos) {
+                  case VALMIS -> "valmiit";
+                  case OHITETTU -> "ohitetut";
+                  case VIRHE -> "virheet";
+                })
+            .value((double) hakukohdeOids.size())
             .storageResolution(60)
             .timestamp(Instant.now())
             .unit(StandardUnit.COUNT)
-            .build();
+            .build());
 
     this.cloudWatchClient.putMetricData(
         PutMetricDataRequest.builder()
             .namespace(this.environmentName + "-valintalaskenta")
-            .metricData(List.of(lahtotiedot, laskenta, valmiit))
+            .metricData(datums)
             .build());
 
     LOG.info(
-        "Kesto: Hakukohde: {}, lähtotiedot: {} ms, laskenta: {} ms",
-        hakukohdeOid,
-        lahtotiedotDuration.toMillis(),
-        laskentaDuration.toMillis());
+        "Kesto: Hakukohteet: {}, {}",
+        hakukohdeOids.stream().collect(Collectors.joining(",")),
+        durations.entrySet().stream()
+            .map(e -> e.getKey() + ": " + e.getValue().toMillis() + "ms")
+            .collect(Collectors.joining(",")));
   }
 
   public CompletableFuture<String> suoritaLaskentaHakukohteille(
       LaskentaDto laskenta, Collection<String> hakukohdeOids) {
-    AuditSession auditSession = laskentaAuditSession(laskenta);
-
     if (laskenta
         .getTyyppi()
         .equals(fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi.VALINTARYHMA)) {
-      String hakukohteidenNimi =
-          String.format("Valintaryhmälaskenta %s hakukohteella", hakukohdeOids.size());
-      LOG.info(
-          "Muodostetaan VALINTARYHMALASKENTA (Uuid={}) {}", laskenta.getUuid(), hakukohteidenNimi);
-      AuditLogUtil.auditLogLaskenta(
-          auditSession,
-          ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS,
-          laskenta.getUuid(),
-          laskenta.getHakuOid(),
-          hakukohdeOids,
-          Optional.of("VALINTARYHMALASKENTA"));
-
-      return CompletableFuture.supplyAsync(
-              () ->
-                  hakukohdeOids.stream()
-                      .map(
-                          hakukohdeOid ->
-                              this.koostepalveluAsyncResource
-                                  .haeLahtotiedot(laskenta, hakukohdeOid, true, true)
-                                  .join())
-                      .toList())
-          .thenApplyAsync(
-              laskeDTOs -> {
-                /*
-                 * Tiksussa b15df0500 Merge remote-tracking branch
-                 * 'origin/VTKU-181__valintaryhmalaskennan_kutsu_pienempiin_paloihin' tämän kutsun siirto
-                 * valintalaskentakoostepalvelusta valintalaskentaan oli palasteltu moneen kutsuun. Kun kutsu ei
-                 * enää mene verkon yli ei (käsittääkseni) ole enää mitää syytä palastella joten palatta takaisin
-                 * yhteen kutsuun.
-                 */
-                return valintalaskentaResource.valintaryhmaLaskenta(laskenta.getUuid(), laskeDTOs);
-              },
-              this.executor);
+      return this.suoritaValintaryhmaLaskenta(laskenta, hakukohdeOids)
+          .exceptionallyAsync(
+              e -> {
+                this.tallennaJaLokitaMetriikat(
+                    hakukohdeOids, Collections.emptyMap(), LaskentaTulos.VIRHE);
+                throw new RuntimeException(e);
+              });
     }
 
     if (hakukohdeOids.size() != 1) {
@@ -168,83 +156,123 @@ public class SuoritaLaskentaService {
               + hakukohdeOids.size()
               + ". Muissa kuin valintaryhmälaskennassa hakukohteita täytyy olla tasan yksi!");
     }
+
     if (!this.isValintalaskentaKaytossa(laskenta, hakukohdeOids)) {
+      this.tallennaJaLokitaMetriikat(hakukohdeOids, Collections.emptyMap(), LaskentaTulos.OHITETTU);
       return CompletableFuture.completedFuture(laskenta.getUuid());
     }
-    Instant lahtotiedotStart = Instant.now();
+
+    return this.suoritaLaskentaHakukohteelle(laskenta, hakukohdeOids.iterator().next())
+        .exceptionallyAsync(
+            e -> {
+              this.tallennaJaLokitaMetriikat(
+                  hakukohdeOids, Collections.emptyMap(), LaskentaTulos.VIRHE);
+              throw new RuntimeException(e);
+            });
+  }
+
+  private CompletableFuture<String> suoritaValintaryhmaLaskenta(
+      LaskentaDto laskenta, Collection<String> hakukohdeOids) {
+    String hakukohteidenNimi =
+        String.format("Valintaryhmälaskenta %s hakukohteella", hakukohdeOids.size());
+    LOG.info(
+        "Muodostetaan VALINTARYHMALASKENTA (Uuid={}) {}", laskenta.getUuid(), hakukohteidenNimi);
+    AuditLogUtil.auditLogLaskenta(
+        laskentaAuditSession(laskenta),
+        ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS,
+        laskenta.getUuid(),
+        laskenta.getHakuOid(),
+        hakukohdeOids,
+        Optional.of("VALINTARYHMALASKENTA"));
+
+    return CompletableFuture.supplyAsync(
+            () ->
+                hakukohdeOids.stream()
+                    .map(
+                        hakukohdeOid ->
+                            this.koostepalveluAsyncResource
+                                .haeLahtotiedot(laskenta, hakukohdeOid, true, true)
+                                .join())
+                    .toList())
+        .thenApplyAsync(
+            laskeDTOs -> {
+              /*
+               * Tiksussa b15df0500 Merge remote-tracking branch
+               * 'origin/VTKU-181__valintaryhmalaskennan_kutsu_pienempiin_paloihin' tämän kutsun siirto
+               * valintalaskentakoostepalvelusta valintalaskentaan oli palasteltu moneen kutsuun. Kun kutsu ei
+               * enää mene verkon yli ei (käsittääkseni) ole enää mitää syytä palastella joten palatta takaisin
+               * yhteen kutsuun.
+               */
+              String result =
+                  valintalaskentaResource.valintaryhmaLaskenta(laskenta.getUuid(), laskeDTOs);
+              this.tallennaJaLokitaMetriikat(
+                  hakukohdeOids, Collections.emptyMap(), LaskentaTulos.VALMIS);
+              return result;
+            },
+            this.executor);
+  }
+
+  private interface HaeTiedotJaLaske {
+
+    CompletableFuture<String> suorita(
+        String tyyppi,
+        boolean retryHakemuksetJaOppijat,
+        boolean withHakijaRyhmat,
+        Function<LaskeDTO, String> laske);
+  }
+
+  private CompletableFuture<String> suoritaLaskentaHakukohteelle(
+      LaskentaDto laskenta, String hakukohdeOid) {
+
+    HaeTiedotJaLaske haeTiedotJaLaske =
+        (tyyppi, retryHakemuksetJaOppijat, withHakijaRymat, laske) -> {
+          LOG.info("Muodostetaan {} (Uuid={}) {}", tyyppi, laskenta.getUuid(), hakukohdeOid);
+          AuditLogUtil.auditLogLaskenta(
+              laskentaAuditSession(laskenta),
+              ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS,
+              laskenta.getUuid(),
+              laskenta.getHakuOid(),
+              Collections.singleton(hakukohdeOid),
+              Optional.of(tyyppi));
+          Instant lahtotiedotStart = Instant.now();
+          return this.koostepalveluAsyncResource
+              .haeLahtotiedot(laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRymat)
+              .thenApplyAsync(
+                  laskeDTO -> {
+                    Instant laskeStart = Instant.now();
+                    String result = laske.apply(laskeDTO);
+                    this.tallennaJaLokitaMetriikat(
+                        Collections.singleton(hakukohdeOid),
+                        Map.of(
+                            LAHTOTIEDOT,
+                            Duration.between(lahtotiedotStart, laskeStart),
+                            LASKENTA,
+                            Duration.between(laskeStart, Instant.now())),
+                        LaskentaTulos.VALMIS);
+                    return result;
+                  },
+                  this.executor);
+        };
 
     if (laskenta.getValintakoelaskenta()) {
-      String hakukohdeOid = hakukohdeOids.iterator().next();
-      LOG.info("Muodostetaan VALINTAKOELASKENTA (Uuid={}) {}", laskenta.getUuid(), hakukohdeOid);
-      AuditLogUtil.auditLogLaskenta(
-          auditSession,
-          ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS,
-          laskenta.getUuid(),
-          laskenta.getHakuOid(),
-          hakukohdeOids,
-          Optional.of("VALINTAKOELASKENTA"));
-      return this.koostepalveluAsyncResource
-          .haeLahtotiedot(laskenta, hakukohdeOid, false, false)
-          .thenApplyAsync(
-              laskeDTO -> {
-                Instant laskeStart = Instant.now();
-                String result = valintalaskentaResource.valintakoeLaskenta(laskeDTO);
-                this.tallennaJaLokitaMetriikat(
-                    hakukohdeOid,
-                    Duration.between(lahtotiedotStart, laskeStart),
-                    Duration.between(laskeStart, Instant.now()));
-                return result;
-              },
-              this.executor);
+      return haeTiedotJaLaske.suorita(
+          "VALINTAKOELASKENTA",
+          false,
+          false,
+          laskeDTO -> valintalaskentaResource.valintakoeLaskenta(laskeDTO));
     } else {
       if (!laskenta.getValinnanvaihe().isPresent()) {
-        String hakukohdeOid = hakukohdeOids.iterator().next();
-        LOG.info(
-            "Muodostetaan KAIKKI VAIHEET LASKENTA (Uuid={}) {}", laskenta.getUuid(), hakukohdeOid);
-        AuditLogUtil.auditLogLaskenta(
-            auditSession,
-            ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS,
-            laskenta.getUuid(),
-            laskenta.getHakuOid(),
-            hakukohdeOids,
-            Optional.of("KAIKKI VAIHEET LASKENTA"));
-
-        return this.koostepalveluAsyncResource
-            .haeLahtotiedot(laskenta, hakukohdeOid, false, true)
-            .thenApplyAsync(
-                laskeDTO -> {
-                  Instant laskeStart = Instant.now();
-                  String result = valintalaskentaResource.laskeKaikki(laskeDTO);
-                  this.tallennaJaLokitaMetriikat(
-                      hakukohdeOid,
-                      Duration.between(lahtotiedotStart, laskeStart),
-                      Duration.between(laskeStart, Instant.now()));
-                  return result;
-                },
-                this.executor);
+        return haeTiedotJaLaske.suorita(
+            "KAIKKI VAIHEET LASKENTA",
+            false,
+            true,
+            laskeDTO -> valintalaskentaResource.laskeKaikki(laskeDTO));
       } else {
-        String hakukohdeOid = hakukohdeOids.iterator().next();
-        LOG.info("Muodostetaan VALINTALASKENTA (Uuid={}) {}", laskenta.getUuid(), hakukohdeOid);
-        AuditLogUtil.auditLogLaskenta(
-            auditSession,
-            ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS,
-            laskenta.getUuid(),
-            laskenta.getHakuOid(),
-            hakukohdeOids,
-            Optional.of("VALINTALASKENTA"));
-        return this.koostepalveluAsyncResource
-            .haeLahtotiedot(laskenta, hakukohdeOid, false, true)
-            .thenApplyAsync(
-                laskeDTO -> {
-                  Instant laskeStart = Instant.now();
-                  String result = valintalaskentaResource.valintalaskenta(laskeDTO);
-                  this.tallennaJaLokitaMetriikat(
-                      hakukohdeOid,
-                      Duration.between(lahtotiedotStart, laskeStart),
-                      Duration.between(laskeStart, Instant.now()));
-                  return result;
-                },
-                this.executor);
+        return haeTiedotJaLaske.suorita(
+            "VALINTALASKENTA",
+            false,
+            true,
+            laskeDTO -> valintalaskentaResource.valintalaskenta(laskeDTO));
       }
     }
   }
