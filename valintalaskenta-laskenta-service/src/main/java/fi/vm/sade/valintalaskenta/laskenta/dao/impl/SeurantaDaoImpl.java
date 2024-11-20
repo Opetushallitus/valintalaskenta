@@ -289,9 +289,11 @@ public class SeurantaDaoImpl implements SeurantaDao {
           }
 
           this.jdbcTemplate.update(
-              "UPDATE seuranta_laskenta_hakukohteet SET tila=? WHERE laskenta_uuid=?::uuid",
+              "UPDATE seuranta_laskenta_hakukohteet SET tila=? WHERE laskenta_uuid=?::uuid AND (tila=? OR tila=?)",
               HakukohdeTila.KESKEYTETTY.toString(),
-              uuid);
+              uuid,
+              HakukohdeTila.TEKEMATTA.toString(),
+              HakukohdeTila.KESKEN.toString());
 
           // päivitetään tieto koska laskenta on lopetettu
           this.jdbcTemplate.update(
@@ -586,7 +588,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
             }
             if (!eiTyonAllaTaiKeskeytetty.isEmpty()) {
               msg.append(
-                  "Yritettiin merkita seuraavia hakukohteita valmiiksi vaikka ne eivät ole työn alla: "
+                  "Yritettiin merkita seuraavia hakukohteita valmiiksi vaikka ne eivät ole työn alla tai keskeytetty: "
                       + eiTyonAllaTaiKeskeytetty.stream().collect(Collectors.joining(",")));
             }
             throw new RuntimeException(msg.toString());
