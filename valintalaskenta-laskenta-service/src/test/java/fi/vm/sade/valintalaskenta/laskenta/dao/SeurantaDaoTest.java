@@ -196,13 +196,15 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
     // peruutetaan laskenta
     this.seurantaDao.peruutaLaskenta(laskentaDto.getUuid(), Optional.empty());
 
-    // merkataan hakukohteet valmiiksi, tämä ei vaikuta mitään koska laskenta keskeytetty
+    // merkataan aloittamattomat hakukohteet valmiiksi, tämä ei vaikuta mitään koska laskenta
+    // keskeytetty
     this.seurantaDao.merkkaaHakukohteetValmiiksi(
-        UUID.fromString(laskentaDto.getUuid()), List.of("123", "234", "345"));
+        UUID.fromString(laskentaDto.getUuid()), List.of("234", "345"));
 
-    // yhteenvedossa näkyy että hakukohteet keskeytetty
+    // yhteenvedossa näkyy että aloittamattomat hakukohteet keskeytetty ja valmiit valmiita
     yhteenvetoDto = this.seurantaDao.haeYhteenveto(laskentaDto.getUuid());
-    Assertions.assertEquals(3, yhteenvetoDto.get().getHakukohteitaKeskeytetty());
+    Assertions.assertEquals(1, yhteenvetoDto.get().getHakukohteitaValmiina());
+    Assertions.assertEquals(2, yhteenvetoDto.get().getHakukohteitaKeskeytetty());
   }
 
   @Test
