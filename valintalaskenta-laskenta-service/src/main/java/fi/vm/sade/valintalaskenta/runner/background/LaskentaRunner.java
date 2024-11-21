@@ -6,13 +6,13 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -29,11 +29,14 @@ public class LaskentaRunner {
   private final Executor executor;
 
   @Autowired
-  public LaskentaRunner(SuoritaLaskentaService suoritaLaskentaService, SeurantaDao seurantaDao) {
+  public LaskentaRunner(
+      SuoritaLaskentaService suoritaLaskentaService,
+      SeurantaDao seurantaDao,
+      @Qualifier("ValintalaskentaExecutor") Executor executor) {
     this.suoritaLaskentaService = suoritaLaskentaService;
     this.seurantaDao = seurantaDao;
     this.noodiId = UUID.randomUUID().toString();
-    this.executor = Executors.newWorkStealingPool(64);
+    this.executor = executor;
   }
 
   /**
