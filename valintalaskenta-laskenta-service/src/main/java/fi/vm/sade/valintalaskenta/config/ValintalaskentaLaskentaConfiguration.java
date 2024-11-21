@@ -25,6 +25,8 @@ import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogImpl;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
@@ -188,5 +190,10 @@ public class ValintalaskentaLaskentaConfiguration {
   @Bean
   public UrlConfiguration getUrlConfiguration() {
     return UrlConfiguration.getInstance();
+  }
+
+  @Bean(name = "ValintalaskentaExecutor")
+  public Executor getValintalaskentaExecutor() {
+    return Executors.newWorkStealingPool(256);
   }
 }

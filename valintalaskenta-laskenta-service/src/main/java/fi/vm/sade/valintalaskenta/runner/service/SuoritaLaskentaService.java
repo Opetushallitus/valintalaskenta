@@ -14,13 +14,13 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.Executor;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.cloudwatch.CloudWatchClient;
@@ -36,7 +36,7 @@ public class SuoritaLaskentaService {
   private final ValintalaskentaResourceImpl valintalaskentaResource;
   private final KoostepalveluAsyncResource koostepalveluAsyncResource;
   private final ValintaperusteetAsyncResource valintaperusteetAsyncResource;
-  private final ExecutorService executor = Executors.newWorkStealingPool();
+  private final Executor executor;
   private final CloudWatchClient cloudWatchClient;
 
   private final String environmentName;
@@ -56,12 +56,14 @@ public class SuoritaLaskentaService {
       KoostepalveluAsyncResource koostepalveluAsyncResource,
       ValintaperusteetAsyncResource valintaperusteetAsyncResource,
       CloudWatchClient cloudWatchClient,
-      @Value("${environment.name}") String environmentName) {
+      @Value("${environment.name}") String environmentName,
+      @Qualifier("ValintalaskentaExecutor") Executor executor) {
     this.valintalaskentaResource = valintalaskentaResource;
     this.koostepalveluAsyncResource = koostepalveluAsyncResource;
     this.valintaperusteetAsyncResource = valintaperusteetAsyncResource;
     this.cloudWatchClient = cloudWatchClient;
     this.environmentName = environmentName;
+    this.executor = executor;
   }
 
   private static AuditSession laskentaAuditSession(LaskentaDto laskenta) {
