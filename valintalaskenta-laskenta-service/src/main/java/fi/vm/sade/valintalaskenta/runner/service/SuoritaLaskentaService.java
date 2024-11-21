@@ -242,6 +242,15 @@ public class SuoritaLaskentaService {
               .thenApplyAsync(
                   laskeDTO -> {
                     Instant laskeStart = Instant.now();
+
+                    LOG.info(
+                        "Haettiin lähtötiedot hakukohteelle "
+                            + hakukohdeOid
+                            + ", start: "
+                            + lahtotiedotStart
+                            + ", end: "
+                            + laskeStart);
+
                     String result = laske.apply(laskeDTO);
                     this.tallennaJaLokitaMetriikat(
                         Collections.singleton(hakukohdeOid),
