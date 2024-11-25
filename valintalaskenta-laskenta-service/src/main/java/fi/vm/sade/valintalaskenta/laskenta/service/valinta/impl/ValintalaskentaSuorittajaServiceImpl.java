@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuorittajaService {
@@ -71,6 +72,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
   }
 
   @Override
+  @Transactional
   public void suoritaLaskenta(
       List<HakemusDTO> kaikkiHakemukset,
       List<ValintaperusteetDTO> valintaperusteet,
