@@ -74,6 +74,7 @@ class DatabaseConfiguration extends AbstractJdbcConfiguration {
     config.setIdleTimeout(TimeUnit.MINUTES.toMillis(Long.parseLong(idleTimeout)));
     config.setMinimumIdle(Integer.parseInt(minIdle));
     config.setRegisterMbeans(false);
+    config.setExceptionOverrideClassName("software.amazon.jdbc.util.HikariCPSQLException");
     final Properties dsProperties = new Properties();
     dsProperties.setProperty("url", url);
     dsProperties.setProperty("user", user);
