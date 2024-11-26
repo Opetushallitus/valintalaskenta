@@ -194,6 +194,6 @@ public class ValintalaskentaLaskentaConfiguration {
 
   @Bean(name = "ValintalaskentaExecutor")
   public Executor getValintalaskentaExecutor() {
-    return Executors.newWorkStealingPool(256);
+    return Executors.newWorkStealingPool(32);
   }
 }
