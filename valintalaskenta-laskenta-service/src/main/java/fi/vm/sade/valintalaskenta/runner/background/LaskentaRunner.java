@@ -2,6 +2,7 @@ package fi.vm.sade.valintalaskenta.runner.background;
 
 import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 import fi.vm.sade.valintalaskenta.runner.service.SuoritaLaskentaService;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
@@ -44,21 +45,20 @@ public class LaskentaRunner {
    * Merkataan noodi kantaan säännöllisesti liveksi (päivitetään timestamp jolloin noodi ollu
    * elossa), jolloin kuolleiden noodien hakukohteiden resetointitoiminnallisuus ei resetoi tämän
    * noodin hakukohteita.
-   */
-  @Scheduled(initialDelay = 15, fixedDelay = 15, timeUnit = TimeUnit.SECONDS)
-  public void merkkaaNoodiLiveksi() {
-    LOG.debug("Merkataan noodi " + this.noodiId + " liveksi");
-    this.seurantaDao.merkkaaNoodiLiveksi(this.noodiId);
-  }
-
-  /**
-   * Merkataan mahdollisten kuolleiden noodien (eivät ole merkanneet itseään liveksi minuuttiin)
-   * hakukohteet suorittamattomiksi
+   *
+   * <p>Lisäksi merkataan mahdollisten kuolleiden noodien (eivät ole merkanneet itseään liveksi
+   * minuuttiin) hakukohteet suorittamattomiksi
    */
   @Scheduled(initialDelay = 15, fixedDelay = 15, timeUnit = TimeUnit.SECONDS)
   public void resetoiKuolleidenNoodienLaskennat() {
-    LOG.debug("Resetoidaan kuolleiden noodien laskennat");
-    this.seurantaDao.resetoiKuolleidenNoodienLaskennat(60);
+    this.executor.execute(
+        () -> {
+          LOG.debug("Merkataan noodi " + this.noodiId + " liveksi");
+          this.seurantaDao.merkkaaNoodiLiveksi(this.noodiId);
+
+          LOG.debug("Resetoidaan kuolleiden noodien laskennat");
+          this.seurantaDao.resetoiKuolleidenNoodienLaskennat(60);
+        });
   }
 
   /**
@@ -71,6 +71,7 @@ public class LaskentaRunner {
   }
 
   public CompletableFuture<Void> fetchAndStartHakukohteet() {
+    Collection<CompletableFuture<String>> laskennat = new ArrayList<>();
     try {
       LOG.debug("Käynnistetään hakukohteiden laskennat");
       int maxYhtaaikaisetHakukohteet =
@@ -82,7 +83,7 @@ public class LaskentaRunner {
                 this.noodiId, maxYhtaaikaisetHakukohteet);
         if (!hakukohteet.isPresent()) {
           LOG.debug("Ei käynnistettäviä hakukohteita");
-          return CompletableFuture.completedFuture(null);
+          break;
         }
         UUID uuid = hakukohteet.get().getLeft();
         Collection<String> hakukohdeOids = hakukohteet.get().getRight();
@@ -91,31 +92,36 @@ public class LaskentaRunner {
             uuid,
             hakukohdeOids.stream().collect(Collectors.joining(", ")));
 
-        return CompletableFuture.supplyAsync(
-                () ->
-                    suoritaLaskentaService.suoritaLaskentaHakukohteille(
-                        this.seurantaDao.haeLaskenta(uuid.toString()).get(), hakukohdeOids),
-                this.executor)
-            .thenRunAsync(
-                () -> this.seurantaDao.merkkaaHakukohteetValmiiksi(uuid, hakukohdeOids),
-                this.executor)
-            .exceptionallyAsync(
-                t -> {
-                  LOG.error(
-                      String.format(
-                          "Laskennan %s hakukohteiden %s laskenta päättyi virheeseen",
-                          uuid, hakukohdeOids.stream().collect(Collectors.joining(", "))),
-                      t);
-                  this.seurantaDao.merkkaaHakukohteetEpaonnistuneeksi(
-                      uuid, hakukohdeOids, 2, getUnderlyingCause(t).getMessage());
-                  return null;
-                },
-                this.executor);
+        laskennat.add(
+            CompletableFuture.supplyAsync(
+                    () ->
+                        suoritaLaskentaService.suoritaLaskentaHakukohteille(
+                            this.seurantaDao.haeLaskenta(uuid.toString()).get(), hakukohdeOids),
+                    this.executor)
+                .thenComposeAsync(f -> f)
+                .thenApplyAsync(
+                    tunniste -> {
+                      this.seurantaDao.merkkaaHakukohteetValmiiksi(uuid, hakukohdeOids);
+                      return tunniste;
+                    },
+                    this.executor)
+                .exceptionallyAsync(
+                    t -> {
+                      LOG.error(
+                          String.format(
+                              "Laskennan %s hakukohteiden %s laskenta päättyi virheeseen",
+                              uuid, hakukohdeOids.stream().collect(Collectors.joining(", "))),
+                          t);
+                      this.seurantaDao.merkkaaHakukohteetEpaonnistuneeksi(
+                          uuid, hakukohdeOids, 2, getUnderlyingCause(t).getMessage());
+                      return null;
+                    },
+                    this.executor));
       }
     } catch (Throwable t) {
       LOG.error("Virhe hakukohteen laskennan käynnistämisessä", t);
     }
-    return CompletableFuture.completedFuture(null);
+    return CompletableFuture.allOf(laskennat.toArray(new CompletableFuture[0]));
   }
 
   private static Throwable getUnderlyingCause(Throwable t) {
