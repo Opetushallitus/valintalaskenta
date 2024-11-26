@@ -9,12 +9,10 @@ import java.util.List;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import org.flywaydb.core.internal.util.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionOperations;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
@@ -49,7 +47,7 @@ public class JarjestyskriteerihistoriaUploader {
     this.executor = Executors.newSingleThreadExecutor();
   }
 
-  @Scheduled(initialDelay = 1500, fixedDelay = 10000, timeUnit = TimeUnit.MILLISECONDS)
+  // @Scheduled(initialDelay = 1500, fixedDelay = 10000, timeUnit = TimeUnit.MILLISECONDS)
   public void runJarjestysKriteeriHistoriaUploader() {
     if (this.isMoving) return;
     this.isMoving = true;
