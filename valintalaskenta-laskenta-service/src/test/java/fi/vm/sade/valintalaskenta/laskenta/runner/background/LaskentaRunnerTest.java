@@ -128,6 +128,8 @@ public class LaskentaRunnerTest {
               return CompletableFuture.completedFuture(seuraavaUUID.toString());
             },
             new TestSeurantaDAO() {
+              boolean started = false;
+
               @Override
               public String lueParametri(String nimi) {
                 return rinnakkaisetHakukohteet + "";
@@ -136,6 +138,8 @@ public class LaskentaRunnerTest {
               @Override
               public Optional<ImmutablePair<UUID, Collection<String>>>
                   otaSeuraavatHakukohteetTyonAlle(String noodiId, int maxYhtaaikaisetHakukohteet) {
+                if (started) return Optional.empty();
+                started = true;
                 Assertions.assertEquals(rinnakkaisetHakukohteet, maxYhtaaikaisetHakukohteet);
                 return Optional.of(new ImmutablePair<>(seuraavaUUID, seuraavatHakukohteet));
               }
@@ -175,6 +179,8 @@ public class LaskentaRunnerTest {
               throw new RuntimeException("eeppinen katastrofi");
             },
             new TestSeurantaDAO() {
+              boolean started = false;
+
               @Override
               public String lueParametri(String nimi) {
                 return rinnakkaisetHakukohteet + "";
@@ -184,6 +190,8 @@ public class LaskentaRunnerTest {
               public Optional<ImmutablePair<UUID, Collection<String>>>
                   otaSeuraavatHakukohteetTyonAlle(String noodiId, int maxYhtaaikaisetHakukohteet) {
                 Assertions.assertEquals(rinnakkaisetHakukohteet, maxYhtaaikaisetHakukohteet);
+                if (started) return Optional.empty();
+                started = true;
                 return Optional.of(new ImmutablePair<>(seuraavaUUID, seuraavatHakukohteet));
               }
 
