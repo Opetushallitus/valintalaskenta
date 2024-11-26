@@ -16,12 +16,12 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.cloudwatch.CloudWatchClient;
@@ -57,14 +57,13 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
       KoostepalveluAsyncResource koostepalveluAsyncResource,
       ValintaperusteetAsyncResource valintaperusteetAsyncResource,
       CloudWatchClient cloudWatchClient,
-      @Value("${environment.name}") String environmentName,
-      @Qualifier("ValintalaskentaExecutor") Executor executor) {
+      @Value("${environment.name}") String environmentName) {
     this.valintalaskentaResource = valintalaskentaResource;
     this.koostepalveluAsyncResource = koostepalveluAsyncResource;
     this.valintaperusteetAsyncResource = valintaperusteetAsyncResource;
     this.cloudWatchClient = cloudWatchClient;
     this.environmentName = environmentName;
-    this.executor = executor;
+    this.executor = Executors.newWorkStealingPool(32);
   }
 
   private static AuditSession laskentaAuditSession(LaskentaDto laskenta) {
