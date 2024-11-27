@@ -77,10 +77,15 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
 
   private boolean isValintalaskentaKaytossa(
       LaskentaDto laskenta, Collection<String> hakukohdeOids) {
-    List<ValintaperusteetDTO> valintaperusteet =
-        valintaperusteetAsyncResource
-            .haeValintaperusteet(hakukohdeOids.iterator().next(), laskenta.getValinnanvaihe())
-            .join();
+
+    List<ValintaperusteetDTO> valintaperusteet;
+    synchronized (this) {
+      valintaperusteet =
+          valintaperusteetAsyncResource
+              .haeValintaperusteet(hakukohdeOids.iterator().next(), laskenta.getValinnanvaihe())
+              .join();
+    }
+
     boolean jokinValintatapajonoKayttaaValintalaskentaa =
         valintaperusteet.stream()
             .map(ValintaperusteetDTO::getValinnanVaihe)
