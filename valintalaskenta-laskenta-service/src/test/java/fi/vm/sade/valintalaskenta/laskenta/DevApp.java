@@ -52,7 +52,7 @@ public class DevApp {
     System.setProperty("valintalaskenta-laskenta-service.postgresql.user", "user");
     System.setProperty("valintalaskenta-laskenta-service.postgresql.password", "password");
     System.setProperty("valintalaskenta-laskenta-service.postgresql.password", "password");
-    System.setProperty("valintalaskenta-laskenta-service.postgresql.maxactive", "30");
+    System.setProperty("valintalaskenta-laskenta-service.postgresql.maxactive", "150");
 
     System.setProperty(
         "host.virkailija", String.format("virkailija.%sopintopolku.fi", ENVIRONMENT));
