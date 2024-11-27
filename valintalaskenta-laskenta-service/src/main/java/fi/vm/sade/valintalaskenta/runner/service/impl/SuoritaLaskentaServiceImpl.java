@@ -147,6 +147,10 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
       return this.suoritaValintaryhmaLaskenta(laskenta, hakukohdeOids)
           .exceptionallyAsync(
               e -> {
+                LOG.error(
+                    "Virhe valintaryhmälaskennan suorittamisessa hakukohteille "
+                        + hakukohdeOids.stream().collect(Collectors.joining(",")),
+                    e);
                 this.tallennaJaLokitaMetriikat(
                     hakukohdeOids, Collections.emptyMap(), LaskentaTulos.VIRHE);
                 throw new RuntimeException(e);
@@ -161,6 +165,9 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
     }
 
     if (!this.isValintalaskentaKaytossa(laskenta, hakukohdeOids)) {
+      LOG.info(
+          "Valintalaskenta ei käytössä hakukohteille "
+              + hakukohdeOids.stream().collect(Collectors.joining(",")));
       this.tallennaJaLokitaMetriikat(hakukohdeOids, Collections.emptyMap(), LaskentaTulos.OHITETTU);
       return CompletableFuture.completedFuture(laskenta.getUuid());
     }
@@ -168,6 +175,10 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
     return this.suoritaLaskentaHakukohteelle(laskenta, hakukohdeOids.iterator().next())
         .exceptionallyAsync(
             e -> {
+              LOG.error(
+                  "Virhe valintalaskennan suorittamisessa hakukohteille "
+                      + hakukohdeOids.stream().collect(Collectors.joining(",")),
+                  e);
               this.tallennaJaLokitaMetriikat(
                   hakukohdeOids, Collections.emptyMap(), LaskentaTulos.VIRHE);
               throw new RuntimeException(e);
