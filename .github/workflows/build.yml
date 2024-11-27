@@ -21,10 +21,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-  
 
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v2
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
 
       - uses: szenius/set-timezone@v1.0
@@ -77,7 +77,7 @@ jobs:
           export ARTIFACT_NAME="valintalaskenta"
           mv valintalaskenta-laskenta-service/target/valintalaskenta-laskenta-service.jar $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}.jar
           cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
-          export BASE_IMAGE="baseimage-fatjar-openjdk17:master"
+          export BASE_IMAGE="baseimage-fatjar-openjdk21:master"
           ./ci-tools/common/pull-image.sh
           ./ci-tools/github-build/build-fatjar.sh $ARTIFACT_NAME
           ./ci-tools/github-build/upload-image.sh $ARTIFACT_NAME
@@ -100,10 +100,10 @@ jobs:
             valintalaskenta-tulos-service/target
           key: ${{ github.sha }}
 
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v2
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
 
       - name: Deploy jar library
