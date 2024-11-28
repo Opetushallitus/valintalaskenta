@@ -303,6 +303,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
       dto.setSyotetytArvot(convertSyotettyArvo(jonosija.getSyotetytArvot()));
       dto.setFunktioTulokset(convertFunktioTulos(jonosija.getFunktioTulokset().funktioTulokset));
       dto.setHylattyValisijoittelussa(jonosija.isHylattyValisijoittelussa());
+      dto.setLastModified(jonosija.getLastModified());
       list.add(dto);
     }
     return list;
