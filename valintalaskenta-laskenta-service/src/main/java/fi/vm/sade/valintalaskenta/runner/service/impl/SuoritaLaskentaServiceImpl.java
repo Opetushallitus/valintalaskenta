@@ -14,9 +14,6 @@ import fi.vm.sade.valintalaskenta.runner.service.SuoritaLaskentaService;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -37,7 +34,6 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
   private final ValintalaskentaResourceImpl valintalaskentaResource;
   private final KoostepalveluAsyncResource koostepalveluAsyncResource;
   private final ValintaperusteetAsyncResource valintaperusteetAsyncResource;
-  private final Executor executor;
   private final CloudWatchClient cloudWatchClient;
 
   private final String environmentName;
@@ -63,7 +59,6 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
     this.valintaperusteetAsyncResource = valintaperusteetAsyncResource;
     this.cloudWatchClient = cloudWatchClient;
     this.environmentName = environmentName;
-    this.executor = Executors.newWorkStealingPool(32);
   }
 
   private static AuditSession laskentaAuditSession(LaskentaDto laskenta) {
@@ -144,22 +139,20 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
   }
 
   @Override
-  public CompletableFuture<String> suoritaLaskentaHakukohteille(
-      LaskentaDto laskenta, Collection<String> hakukohdeOids) {
+  public void suoritaLaskentaHakukohteille(LaskentaDto laskenta, Collection<String> hakukohdeOids) {
     if (laskenta
         .getTyyppi()
         .equals(fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi.VALINTARYHMA)) {
-      return this.suoritaValintaryhmaLaskenta(laskenta, hakukohdeOids)
-          .exceptionallyAsync(
-              e -> {
-                LOG.error(
-                    "Virhe valintaryhmälaskennan suorittamisessa hakukohteille "
-                        + hakukohdeOids.stream().collect(Collectors.joining(",")),
-                    e);
-                this.tallennaJaLokitaMetriikat(
-                    hakukohdeOids, Collections.emptyMap(), LaskentaTulos.VIRHE);
-                throw new RuntimeException(e);
-              });
+      try {
+        this.suoritaValintaryhmaLaskenta(laskenta, hakukohdeOids);
+      } catch (Exception e) {
+        LOG.error(
+            "Virhe valintaryhmälaskennan suorittamisessa hakukohteille "
+                + hakukohdeOids.stream().collect(Collectors.joining(",")),
+            e);
+        this.tallennaJaLokitaMetriikat(hakukohdeOids, Collections.emptyMap(), LaskentaTulos.VIRHE);
+        throw new RuntimeException(e);
+      }
     }
 
     if (hakukohdeOids.size() != 1) {
@@ -174,24 +167,22 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
           "Valintalaskenta ei käytössä hakukohteille "
               + hakukohdeOids.stream().collect(Collectors.joining(",")));
       this.tallennaJaLokitaMetriikat(hakukohdeOids, Collections.emptyMap(), LaskentaTulos.OHITETTU);
-      return CompletableFuture.completedFuture(laskenta.getUuid());
+      return;
     }
 
-    return this.suoritaLaskentaHakukohteelle(laskenta, hakukohdeOids.iterator().next())
-        .exceptionallyAsync(
-            e -> {
-              LOG.error(
-                  "Virhe valintalaskennan suorittamisessa hakukohteille "
-                      + hakukohdeOids.stream().collect(Collectors.joining(",")),
-                  e);
-              this.tallennaJaLokitaMetriikat(
-                  hakukohdeOids, Collections.emptyMap(), LaskentaTulos.VIRHE);
-              throw new RuntimeException(e);
-            });
+    try {
+      this.suoritaLaskentaHakukohteelle(laskenta, hakukohdeOids.iterator().next());
+    } catch (Exception e) {
+      LOG.error(
+          "Virhe valintalaskennan suorittamisessa hakukohteille "
+              + hakukohdeOids.stream().collect(Collectors.joining(",")),
+          e);
+      this.tallennaJaLokitaMetriikat(hakukohdeOids, Collections.emptyMap(), LaskentaTulos.VIRHE);
+      throw new RuntimeException(e);
+    }
   }
 
-  private CompletableFuture<String> suoritaValintaryhmaLaskenta(
-      LaskentaDto laskenta, Collection<String> hakukohdeOids) {
+  private void suoritaValintaryhmaLaskenta(LaskentaDto laskenta, Collection<String> hakukohdeOids) {
     String hakukohteidenNimi =
         String.format("Valintaryhmälaskenta %s hakukohteella", hakukohdeOids.size());
     LOG.info(
@@ -204,97 +195,75 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
         hakukohdeOids,
         Optional.of("VALINTARYHMALASKENTA"));
 
-    return CompletableFuture.supplyAsync(
-            () ->
-                hakukohdeOids.stream()
-                    .map(
-                        hakukohdeOid ->
-                            this.koostepalveluAsyncResource
-                                .haeLahtotiedot(laskenta, hakukohdeOid, true, true)
-                                .join())
-                    .toList())
-        .thenApplyAsync(
-            laskeDTOs -> {
-              String result =
-                  valintalaskentaResource.valintaryhmaLaskenta(laskenta.getUuid(), laskeDTOs);
-              this.tallennaJaLokitaMetriikat(
-                  hakukohdeOids, Collections.emptyMap(), LaskentaTulos.VALMIS);
-              return result;
-            },
-            this.executor);
+    List<LaskeDTO> lahtotiedot =
+        hakukohdeOids.stream()
+            .map(
+                hakukohdeOid ->
+                    this.koostepalveluAsyncResource
+                        .haeLahtotiedot(laskenta, hakukohdeOid, true, true)
+                        .join())
+            .toList();
+    valintalaskentaResource.valintaryhmaLaskenta(laskenta.getUuid(), lahtotiedot);
+    this.tallennaJaLokitaMetriikat(hakukohdeOids, Collections.emptyMap(), LaskentaTulos.VALMIS);
   }
 
-  private interface HaeTiedotJaLaske {
+  private void suoritaLaskentaHakukohteelle(LaskentaDto laskenta, String hakukohdeOid) {
 
-    CompletableFuture<String> suorita(
-        String tyyppi,
-        boolean retryHakemuksetJaOppijat,
-        boolean withHakijaRyhmat,
-        Function<LaskeDTO, String> laske);
-  }
-
-  private CompletableFuture<String> suoritaLaskentaHakukohteelle(
-      LaskentaDto laskenta, String hakukohdeOid) {
-
-    HaeTiedotJaLaske haeTiedotJaLaske =
-        (tyyppi, retryHakemuksetJaOppijat, withHakijaRymat, laske) -> {
-          LOG.info("Muodostetaan {} (Uuid={}) {}", tyyppi, laskenta.getUuid(), hakukohdeOid);
-          AuditLogUtil.auditLogLaskenta(
-              laskentaAuditSession(laskenta),
-              ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS,
-              laskenta.getUuid(),
-              laskenta.getHakuOid(),
-              Collections.singleton(hakukohdeOid),
-              Optional.of(tyyppi));
-          Instant lahtotiedotStart = Instant.now();
-          return this.koostepalveluAsyncResource
-              .haeLahtotiedot(laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRymat)
-              .thenApplyAsync(
-                  laskeDTO -> {
-                    Instant laskeStart = Instant.now();
-
-                    LOG.info(
-                        "Haettiin lähtötiedot hakukohteelle "
-                            + hakukohdeOid
-                            + ", start: "
-                            + lahtotiedotStart
-                            + ", end: "
-                            + laskeStart);
-
-                    String result = laske.apply(laskeDTO);
-                    this.tallennaJaLokitaMetriikat(
-                        Collections.singleton(hakukohdeOid),
-                        Map.of(
-                            LAHTOTIEDOT,
-                            Duration.between(lahtotiedotStart, laskeStart),
-                            LASKENTA,
-                            Duration.between(laskeStart, Instant.now())),
-                        LaskentaTulos.VALMIS);
-                    return result;
-                  },
-                  this.executor);
-        };
-
+    String tyyppi;
+    boolean retryHakemuksetJaOppijat;
+    boolean withHakijaRyhmat;
+    Function<LaskeDTO, String> laske;
     if (laskenta.getValintakoelaskenta()) {
-      return haeTiedotJaLaske.suorita(
-          "VALINTAKOELASKENTA",
-          false,
-          false,
-          laskeDTO -> valintalaskentaResource.valintakoeLaskenta(laskeDTO));
+      tyyppi = "VALINTAKOELASKENTA";
+      retryHakemuksetJaOppijat = false;
+      withHakijaRyhmat = false;
+      laske = laskeDTO -> valintalaskentaResource.valintakoeLaskenta(laskeDTO);
     } else {
       if (!laskenta.getValinnanvaihe().isPresent()) {
-        return haeTiedotJaLaske.suorita(
-            "KAIKKI VAIHEET LASKENTA",
-            false,
-            true,
-            laskeDTO -> valintalaskentaResource.laskeKaikki(laskeDTO));
+        tyyppi = "KAIKKI VAIHEET LASKENTA";
+        retryHakemuksetJaOppijat = false;
+        withHakijaRyhmat = true;
+        laske = laskeDTO -> valintalaskentaResource.laskeKaikki(laskeDTO);
       } else {
-        return haeTiedotJaLaske.suorita(
-            "VALINTALASKENTA",
-            false,
-            true,
-            laskeDTO -> valintalaskentaResource.valintalaskenta(laskeDTO));
+        tyyppi = "VALINTALASKENTA";
+        retryHakemuksetJaOppijat = false;
+        withHakijaRyhmat = true;
+        laske = laskeDTO -> valintalaskentaResource.valintalaskenta(laskeDTO);
       }
     }
+
+    LOG.info("Muodostetaan {} (Uuid={}) {}", tyyppi, laskenta.getUuid(), hakukohdeOid);
+    AuditLogUtil.auditLogLaskenta(
+        laskentaAuditSession(laskenta),
+        ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS,
+        laskenta.getUuid(),
+        laskenta.getHakuOid(),
+        Collections.singleton(hakukohdeOid),
+        Optional.of(tyyppi));
+    Instant lahtotiedotStart = Instant.now();
+    LaskeDTO lahtotiedot =
+        this.koostepalveluAsyncResource
+            .haeLahtotiedot(laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat)
+            .join();
+
+    Instant laskeStart = Instant.now();
+
+    LOG.info(
+        "Haettiin lähtötiedot hakukohteelle "
+            + hakukohdeOid
+            + ", start: "
+            + lahtotiedotStart
+            + ", end: "
+            + laskeStart);
+
+    laske.apply(lahtotiedot);
+    this.tallennaJaLokitaMetriikat(
+        Collections.singleton(hakukohdeOid),
+        Map.of(
+            LAHTOTIEDOT,
+            Duration.between(lahtotiedotStart, laskeStart),
+            LASKENTA,
+            Duration.between(laskeStart, Instant.now())),
+        LaskentaTulos.VALMIS);
   }
 }

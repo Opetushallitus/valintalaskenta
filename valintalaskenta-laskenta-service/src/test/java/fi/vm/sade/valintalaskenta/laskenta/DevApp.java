@@ -20,7 +20,7 @@ public class DevApp {
 
   private static final Logger LOG = LoggerFactory.getLogger(DevApp.class);
 
-  private static final String ENVIRONMENT = "untuva";
+  private static final String ENVIRONMENT = "testi";
 
   private static final int localstackPort = TestSocketUtils.findAvailableTcpPort();
 
