@@ -7,11 +7,12 @@ import com.github.dockerjava.api.model.HostConfig;
 import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
 import fi.vm.sade.valintalaskenta.App;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Profile;
-import org.springframework.test.util.TestSocketUtils;
+import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.localstack.LocalStackContainer;
 import org.testcontainers.utility.DockerImageName;
 
@@ -22,7 +23,7 @@ public class DevApp {
 
   private static final String ENVIRONMENT = "testi";
 
-  private static final int localstackPort = TestSocketUtils.findAvailableTcpPort();
+  public static final int LOCALSTACKPORT = 54566;
 
   private static final LocalStackContainer localStackContainer =
       new LocalStackContainer(new DockerImageName("localstack/localstack:2.2.0"))
@@ -35,12 +36,20 @@ public class DevApp {
                       new HostConfig()
                           .withPortBindings(
                               new PortBinding(
-                                  Ports.Binding.bindPort(localstackPort), new ExposedPort(4566)))));
+                                  Ports.Binding.bindPort(LOCALSTACKPORT), new ExposedPort(4566)))));
 
-  public static void main(String[] args) {
+  private static final PostgreSQLContainer<?> postgres =
+      new PostgreSQLContainer<>("postgres:15").withCommand("postgres -c max_connections=250");
+
+  private static void startContainers() {
     localStackContainer.start();
 
-    System.setProperty("localstackPort", localstackPort + "");
+    postgres.setPortBindings(List.of("55432:5432"));
+    postgres.start();
+  }
+
+  public static void startApplication(String[] args) {
+    System.setProperty("localstackPort", LOCALSTACKPORT + "");
     System.setProperty("aws.accessKeyId", "localstack");
     System.setProperty("aws.secretAccessKey", "localstack");
 
@@ -48,11 +57,12 @@ public class DevApp {
 
     System.setProperty(
         "valintalaskenta-laskenta-service.postgresql.url",
-        "jdbc:tc:postgresql:15.4:///test_database");
-    System.setProperty("valintalaskenta-laskenta-service.postgresql.user", "user");
-    System.setProperty("valintalaskenta-laskenta-service.postgresql.password", "password");
-    System.setProperty("valintalaskenta-laskenta-service.postgresql.password", "password");
-    System.setProperty("valintalaskenta-laskenta-service.postgresql.maxactive", "150");
+        "jdbc:postgresql://localhost:55432/test");
+    System.setProperty("valintalaskenta-laskenta-service.postgresql.user", "test");
+    System.setProperty("valintalaskenta-laskenta-service.postgresql.password", "test");
+    System.setProperty("valintalaskenta-laskenta-service.postgresql.maxactive", "200");
+    System.setProperty(
+        "valintalaskenta-laskenta-service.postgresql.driver", "org.postgresql.Driver");
 
     System.setProperty(
         "host.virkailija", String.format("virkailija.%sopintopolku.fi", ENVIRONMENT));
@@ -70,5 +80,10 @@ public class DevApp {
     System.setProperty("server.servlet.context-path", App.CONTEXT_PATH);
 
     SpringApplication.run(App.class, args);
+  }
+
+  public static void main(String[] args) {
+    startContainers();
+    startApplication(args);
   }
 }
