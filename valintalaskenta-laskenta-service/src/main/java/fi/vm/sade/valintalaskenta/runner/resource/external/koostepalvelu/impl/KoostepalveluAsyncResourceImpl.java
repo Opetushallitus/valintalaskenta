@@ -50,6 +50,6 @@ public class KoostepalveluAsyncResourceImpl implements KoostepalveluAsyncResourc
             parameters),
         new TypeToken<LaskeDTO>() {},
         Collections.emptyMap(),
-        60 * 60 * 1000);
+        60 * 10 * 1000);
   }
 }
