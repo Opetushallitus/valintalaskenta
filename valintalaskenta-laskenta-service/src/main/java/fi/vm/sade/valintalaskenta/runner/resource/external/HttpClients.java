@@ -34,6 +34,7 @@ public class HttpClients {
         new CasConfig.CasConfigBuilder(
                 username, password, ticketsUrl, service, CSRF_VALUE, CALLER_ID, "")
             .setJsessionName("JSESSIONID")
+            .setNumberOfRetries(0)
             .build());
   }
 
