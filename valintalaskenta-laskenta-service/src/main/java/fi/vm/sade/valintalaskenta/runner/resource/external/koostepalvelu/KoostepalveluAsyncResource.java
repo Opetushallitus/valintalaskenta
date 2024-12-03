@@ -11,4 +11,6 @@ public interface KoostepalveluAsyncResource {
       String hakukohdeOid,
       boolean retryHakemuksetAndOppijat,
       boolean withHakijaRyhmat);
+
+  CompletableFuture<Integer> haeJononpituus();
 }

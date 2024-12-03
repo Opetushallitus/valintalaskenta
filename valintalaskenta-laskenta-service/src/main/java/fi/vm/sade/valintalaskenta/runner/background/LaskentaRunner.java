@@ -25,15 +25,20 @@ public class LaskentaRunner {
 
   private final SuoritaLaskentaService suoritaLaskentaService;
   private final SeurantaDao seurantaDao;
+  private final BackPressureMeter backPressureMeter;
 
   private final String noodiId;
 
   private final Executor executor;
 
   @Autowired
-  public LaskentaRunner(SuoritaLaskentaService suoritaLaskentaService, SeurantaDao seurantaDao) {
+  public LaskentaRunner(
+      SuoritaLaskentaService suoritaLaskentaService,
+      SeurantaDao seurantaDao,
+      BackPressureMeter backPressureMeter) {
     this.suoritaLaskentaService = suoritaLaskentaService;
     this.seurantaDao = seurantaDao;
+    this.backPressureMeter = backPressureMeter;
     this.noodiId = UUID.randomUUID().toString();
     this.executor = Executors.newWorkStealingPool(32);
   }
@@ -75,6 +80,14 @@ public class LaskentaRunner {
           Integer.parseInt(this.seurantaDao.lueParametri("maxYhtaaikaisetHakukohteet"));
 
       while (true) {
+        Thread.sleep(500);
+        int jononpituus = this.backPressureMeter.getJononpituus();
+        LOG.info("Koostepalvelun jonon pituus " + jononpituus);
+        if (jononpituus > 5) {
+          LOG.info("Koostepalvelun jonon pituus " + jononpituus + ", odotetaan");
+          return CompletableFuture.completedFuture(null);
+        }
+
         Optional<ImmutablePair<UUID, Collection<String>>> hakukohteet =
             this.seurantaDao.otaSeuraavatHakukohteetTyonAlle(
                 this.noodiId, maxYhtaaikaisetHakukohteet);

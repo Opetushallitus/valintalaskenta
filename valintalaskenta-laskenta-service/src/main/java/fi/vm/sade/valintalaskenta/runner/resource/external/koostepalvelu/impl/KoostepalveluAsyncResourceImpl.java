@@ -28,6 +28,14 @@ public class KoostepalveluAsyncResourceImpl implements KoostepalveluAsyncResourc
     this.urlConfiguration = UrlConfiguration.getInstance();
   }
 
+  public CompletableFuture<Integer> haeJononpituus() {
+    return httpClient.get(
+        this.urlConfiguration.url("valintalaskentakoostepalvelu.lahtotiedot.jononpituus"),
+        new TypeToken<Integer>() {},
+        Collections.emptyMap(),
+        5 * 1000);
+  }
+
   public CompletableFuture<LaskeDTO> haeLahtotiedot(
       LaskentaDto laskenta,
       String hakukohdeOid,

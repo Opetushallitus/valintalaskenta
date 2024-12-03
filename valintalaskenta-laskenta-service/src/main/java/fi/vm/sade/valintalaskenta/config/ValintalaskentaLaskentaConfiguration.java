@@ -20,7 +20,9 @@ import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResou
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
+import fi.vm.sade.valintalaskenta.runner.background.BackPressureMeter;
 import fi.vm.sade.valintalaskenta.runner.resource.external.UrlConfiguration;
+import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.KoostepalveluAsyncResource;
 import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogImpl;
 import java.util.List;
@@ -190,5 +192,10 @@ public class ValintalaskentaLaskentaConfiguration {
   @Bean
   public UrlConfiguration getUrlConfiguration() {
     return UrlConfiguration.getInstance();
+  }
+
+  @Bean
+  BackPressureMeter getBackPressureMeter(KoostepalveluAsyncResource koostepalveluAsyncResource) {
+    return () -> koostepalveluAsyncResource.haeJononpituus().join();
   }
 }

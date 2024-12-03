@@ -155,7 +155,8 @@ public class LaskentaRunnerTest {
                 Assertions.assertEquals(seuraavaUUID, uuid);
                 valmiitHakukohteet.addAll(hakukohdeOids);
               }
-            });
+            },
+            () -> 0);
 
     // ajetaan laskenta yhdelle satsille hakukohteita
     laskentaRunner.fetchAndStartHakukohteet().join();
@@ -206,7 +207,8 @@ public class LaskentaRunnerTest {
                 Assertions.assertEquals(seuraavaUUID, uuid);
                 epaonnistuneetHakukohteet.addAll(hakukohdeOids);
               }
-            });
+            },
+            () -> 0);
 
     // ajetaan laskenta yhdelle satsille hakukohteita
     laskentaRunner.fetchAndStartHakukohteet().join();
