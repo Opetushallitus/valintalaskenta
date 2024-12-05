@@ -2,7 +2,7 @@ package fi.vm.sade.valintalaskenta.runner.util.excel;
 
 import static org.apache.poi.ss.usermodel.HorizontalAlignment.CENTER;
 
-import fi.vm.sade.javautils.poi.OphCellStyles.OphXssfCellStyles;
+import fi.vm.sade.javautils.poi.OphCellStyles;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
@@ -11,10 +11,7 @@ import java.util.Map.Entry;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,10 +24,10 @@ public class ExcelExportUtil {
   public static byte[] exportGridSheetsAsXlsBytes(Map<String, Object[][]> grids) {
     assert (grids != null);
     XSSFWorkbook wb = new XSSFWorkbook();
-    OphXssfCellStyles alignCenterStyles = new OphXssfCellStyles(wb);
+    OphCellStyles alignCenterStyles = new OphCellStyles(wb);
     alignCenterStyles.visit(alignCenterStyle -> alignCenterStyle.setAlignment(CENTER));
-    OphXssfCellStyles highlights = new OphXssfCellStyles(wb);
-    OphXssfCellStyles spanhighlights = new OphXssfCellStyles(wb);
+    OphCellStyles highlights = new OphCellStyles(wb);
+    OphCellStyles spanhighlights = new OphCellStyles(wb);
     spanhighlights.visit(spanhighlight -> spanhighlight.setAlignment(CENTER));
     for (Entry<String, Object[][]> sheetAndGrid : grids.entrySet()) {
       XSSFSheet sheet = wb.createSheet(sheetAndGrid.getKey());
@@ -50,9 +47,9 @@ public class ExcelExportUtil {
   private static void exportGridToSheet(
       Object[][] grid,
       XSSFSheet sheet,
-      OphXssfCellStyles spanStyles,
-      OphXssfCellStyles highlightSpanStyles,
-      OphXssfCellStyles highlightStyles) {
+      OphCellStyles spanStyles,
+      OphCellStyles highlightSpanStyles,
+      OphCellStyles highlightStyles) {
     int numberOfcolumns = 0;
     // Create rows!
     short rowIndex = 0;
@@ -109,10 +106,10 @@ public class ExcelExportUtil {
   private static byte[] exportGridAsXlsBytes(Object[][] grid) {
     assert (grid != null);
     XSSFWorkbook wb = new XSSFWorkbook();
-    OphXssfCellStyles alignCenterStyles = new OphXssfCellStyles(wb);
+    OphCellStyles alignCenterStyles = new OphCellStyles(wb);
     alignCenterStyles.visit(alignCenterStyle -> alignCenterStyle.setAlignment(CENTER));
-    OphXssfCellStyles highlights = new OphXssfCellStyles(wb);
-    OphXssfCellStyles spanhighlights = new OphXssfCellStyles(wb);
+    OphCellStyles highlights = new OphCellStyles(wb);
+    OphCellStyles spanhighlights = new OphCellStyles(wb);
     spanhighlights.visit(spanhighlight -> spanhighlight.setAlignment(CENTER));
     XSSFSheet sheet = wb.createSheet(DATE_FORMAT.format(new Date()));
     exportGridToSheet(grid, sheet, alignCenterStyles, spanhighlights, highlights);
