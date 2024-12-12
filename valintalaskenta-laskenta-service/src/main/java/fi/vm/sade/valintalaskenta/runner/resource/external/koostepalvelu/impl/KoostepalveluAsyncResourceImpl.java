@@ -42,6 +42,7 @@ public class KoostepalveluAsyncResourceImpl implements KoostepalveluAsyncResourc
     if (laskenta.getValinnanvaihe().isPresent()) {
       parameters.put("valinnanvaihe", laskenta.getValinnanvaihe().get().toString());
     }
+
     return httpClient.get(
         this.urlConfiguration.url(
             "valintalaskentakoostepalvelu.lahtotiedot.baseurl",
@@ -50,6 +51,6 @@ public class KoostepalveluAsyncResourceImpl implements KoostepalveluAsyncResourc
             parameters),
         new TypeToken<LaskeDTO>() {},
         Collections.emptyMap(),
-        20 * 10 * 1000);
+        20 * 60 * 1000);
   }
 }
