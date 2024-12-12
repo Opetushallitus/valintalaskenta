@@ -5,7 +5,6 @@ import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 import fi.vm.sade.valintalaskenta.runner.background.LaskentaRunner;
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -115,7 +114,7 @@ public class LaskentaRunnerTest {
   }
 
   @Test
-  public void testOnnistunutLaskenta() {
+  public void testOnnistunutLaskenta() throws Exception {
     UUID seuraavaUUID = UUID.randomUUID();
     Collection<String> seuraavatHakukohteet = List.of("hakukohdeOid1", "hakukohdeOid2");
     Collection<String> valmiitHakukohteet = new ArrayList<>();
@@ -124,8 +123,7 @@ public class LaskentaRunnerTest {
     LaskentaRunner laskentaRunner =
         new LaskentaRunner(
             (laskenta, hakukohdeOids) -> {
-              // laskenta onnistuu, palalutetaan uuid
-              return CompletableFuture.completedFuture(seuraavaUUID.toString());
+              // laskenta onnistuu, palataan
             },
             new TestSeurantaDAO() {
               boolean started = false;
@@ -158,14 +156,17 @@ public class LaskentaRunnerTest {
             });
 
     // ajetaan laskenta yhdelle satsille hakukohteita
-    laskentaRunner.fetchAndStartHakukohteet().join();
+    laskentaRunner.fetchAndStartHakukohteet();
+
+    // odotetaan että laskenta "valmistuu"
+    Thread.sleep(200);
 
     // hakukohteet merkitty valmiiksi
     Assertions.assertEquals(seuraavatHakukohteet, valmiitHakukohteet);
   }
 
   @Test
-  public void testEpaonnistunutLaskenta() {
+  public void testEpaonnistunutLaskenta() throws Exception {
     UUID seuraavaUUID = UUID.randomUUID();
     Collection<String> seuraavatHakukohteet = List.of("hakukohdeOid1", "hakukohdeOid2");
     Collection<String> epaonnistuneetHakukohteet = new ArrayList<>();
@@ -209,7 +210,10 @@ public class LaskentaRunnerTest {
             });
 
     // ajetaan laskenta yhdelle satsille hakukohteita
-    laskentaRunner.fetchAndStartHakukohteet().join();
+    laskentaRunner.fetchAndStartHakukohteet();
+
+    // odotetaan että laskenta "epäonnistuu"
+    Thread.sleep(200);
 
     // hakukohteet merkitty epäonnistuneiksi
     Assertions.assertEquals(seuraavatHakukohteet, epaonnistuneetHakukohteet);

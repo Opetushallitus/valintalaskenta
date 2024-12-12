@@ -2,11 +2,9 @@ package fi.vm.sade.valintalaskenta.runner.background;
 
 import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 import fi.vm.sade.valintalaskenta.runner.service.SuoritaLaskentaService;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -35,7 +33,7 @@ public class LaskentaRunner {
     this.suoritaLaskentaService = suoritaLaskentaService;
     this.seurantaDao = seurantaDao;
     this.noodiId = UUID.randomUUID().toString();
-    this.executor = Executors.newWorkStealingPool(32);
+    this.executor = Executors.newWorkStealingPool(256);
   }
 
   /**
@@ -67,43 +65,37 @@ public class LaskentaRunner {
     this.executor.execute(() -> this.fetchAndStartHakukohteet());
   }
 
-  public CompletableFuture<Void> fetchAndStartHakukohteet() {
-    Collection<CompletableFuture<String>> laskennat = new ArrayList<>();
-    try {
-      LOG.debug("Käynnistetään hakukohteiden laskennat");
-      int maxYhtaaikaisetHakukohteet =
-          Integer.parseInt(this.seurantaDao.lueParametri("maxYhtaaikaisetHakukohteet"));
+  public void fetchAndStartHakukohteet() {
+    this.executor.execute(
+        () -> {
+          try {
+            LOG.debug("Käynnistetään hakukohteiden laskennat");
+            int maxYhtaaikaisetHakukohteet =
+                Integer.parseInt(this.seurantaDao.lueParametri("maxYhtaaikaisetHakukohteet"));
 
-      while (true) {
-        Optional<ImmutablePair<UUID, Collection<String>>> hakukohteet =
-            this.seurantaDao.otaSeuraavatHakukohteetTyonAlle(
-                this.noodiId, maxYhtaaikaisetHakukohteet);
-        if (!hakukohteet.isPresent()) {
-          LOG.debug("Ei käynnistettäviä hakukohteita");
-          break;
-        }
-        UUID uuid = hakukohteet.get().getLeft();
-        Collection<String> hakukohdeOids = hakukohteet.get().getRight();
-        LOG.info(
-            "Käynnistetään laskennan {} hakukohteiden {} laskenta",
-            uuid,
-            hakukohdeOids.stream().collect(Collectors.joining(", ")));
+            while (true) {
+              Optional<ImmutablePair<UUID, Collection<String>>> hakukohteet =
+                  this.seurantaDao.otaSeuraavatHakukohteetTyonAlle(
+                      this.noodiId, maxYhtaaikaisetHakukohteet);
+              if (!hakukohteet.isPresent()) {
+                LOG.debug("Ei käynnistettäviä hakukohteita");
+                break;
+              }
 
-        laskennat.add(
-            CompletableFuture.supplyAsync(
-                    () ->
-                        suoritaLaskentaService.suoritaLaskentaHakukohteille(
-                            this.seurantaDao.haeLaskenta(uuid.toString()).get(), hakukohdeOids),
-                    this.executor)
-                .thenComposeAsync(f -> f)
-                .thenApplyAsync(
-                    tunniste -> {
+              this.executor.execute(
+                  () -> {
+                    UUID uuid = hakukohteet.get().getLeft();
+                    Collection<String> hakukohdeOids = hakukohteet.get().getRight();
+                    LOG.info(
+                        "Käynnistetään laskennan {} hakukohteiden {} laskenta",
+                        uuid,
+                        hakukohdeOids.stream().collect(Collectors.joining(", ")));
+
+                    try {
+                      suoritaLaskentaService.suoritaLaskentaHakukohteille(
+                          this.seurantaDao.haeLaskenta(uuid.toString()).get(), hakukohdeOids);
                       this.seurantaDao.merkkaaHakukohteetValmiiksi(uuid, hakukohdeOids);
-                      return tunniste;
-                    },
-                    this.executor)
-                .exceptionallyAsync(
-                    t -> {
+                    } catch (Throwable t) {
                       LOG.error(
                           String.format(
                               "Laskennan %s hakukohteiden %s laskenta päättyi virheeseen",
@@ -111,14 +103,13 @@ public class LaskentaRunner {
                           t);
                       this.seurantaDao.merkkaaHakukohteetEpaonnistuneeksi(
                           uuid, hakukohdeOids, 2, getUnderlyingCause(t).getMessage());
-                      return null;
-                    },
-                    this.executor));
-      }
-    } catch (Throwable t) {
-      LOG.error("Virhe hakukohteen laskennan käynnistämisessä", t);
-    }
-    return CompletableFuture.allOf(laskennat.toArray(new CompletableFuture[0]));
+                    }
+                  });
+            }
+          } catch (Throwable t) {
+            LOG.error("Virhe hakukohteen laskennan käynnistämisessä", t);
+          }
+        });
   }
 
   private static Throwable getUnderlyingCause(Throwable t) {
