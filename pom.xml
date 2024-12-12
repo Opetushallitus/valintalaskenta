@@ -34,8 +34,8 @@
         <legacy-jackson.version>1.9.13</legacy-jackson.version>
         <jasig.cas.version>3.6.4</jasig.cas.version>
 
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -567,9 +567,11 @@
                 <version>3.11.0</version>
                 <inherited>true</inherited>
                 <configuration>
+                    <release>21</release>
                     <source>21</source>
                     <target>21</target>
                     <debug>false</debug>
+                    <enablePreview>true</enablePreview>
                 </configuration>
             </plugin>
         </plugins>
