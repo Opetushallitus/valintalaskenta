@@ -111,7 +111,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
       executor
           .submit(
               () -> {
-                hakemukset.parallelStream()
+                hakemukset.stream()
                     .forEach(
                         hakemus ->
                             valintakoelaskentaSuorittajaService.laske(
@@ -184,7 +184,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
   public void applyValisijoittelu(
       Map<String, List<String>> valisijoiteltavatJonot,
       Map<String, fi.vm.sade.sijoittelu.tulos.dto.HakemusDTO> hakemusHashMap) {
-    valisijoiteltavatJonot.keySet().parallelStream()
+    valisijoiteltavatJonot.keySet().stream()
         .forEach(
             hakukohdeOid -> {
               List<Valinnanvaihe> vaiheet = tulosValinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid);
@@ -284,7 +284,7 @@ public class ValintalaskentaServiceImpl implements ValintalaskentaService {
 
   @Override
   public void applyErillissijoittelu(Map<String, List<String>> jonot, Long ajo) {
-    jonot.keySet().parallelStream()
+    jonot.keySet().stream()
         .forEach(
             hakukohdeOid -> {
               List<Valinnanvaihe> vaiheet = tulosValinnanvaiheDAO.readByHakukohdeOid(hakukohdeOid);

@@ -329,7 +329,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
       boolean korkeakouluhaku) {
     if (!hakijaryhmat.isEmpty()) {
       List<Hakijaryhma> vanhatHakijaryhmat = hakijaryhmaDAO.haeHakijaryhmat(hakukohdeOid);
-      hakijaryhmat.parallelStream()
+      hakijaryhmat.stream()
           .forEach(
               h -> {
                 if (!hakemuksetHakukohteittain.containsKey(hakukohdeOid)) {
