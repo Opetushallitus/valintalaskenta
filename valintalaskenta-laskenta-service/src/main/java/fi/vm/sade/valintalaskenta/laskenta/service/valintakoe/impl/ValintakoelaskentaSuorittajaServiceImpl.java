@@ -254,7 +254,7 @@ public class ValintakoelaskentaSuorittajaServiceImpl
         hakemukset.size(),
         saastettavienValinnanvaiheidenOidit,
         hakukohdeOid);
-    hakemukset.parallelStream()
+    hakemukset.stream()
         .forEach(
             hakemus -> {
               ValintakoeOsallistuminen tallennettuOsallistuminen =
