@@ -128,13 +128,13 @@ public class ValintalaskentaResourceImpl {
     Map<String, HakemusDTO> hakemusHashMap = new ConcurrentHashMap<>();
 
     // Muodostetaan Map hakemuksittain sijoittelun tuloksista
-    sijoitellut.parallelStream()
+    sijoitellut.stream()
         .forEach(
             hakukohde ->
-                hakukohde.getValintatapajonot().parallelStream()
+                hakukohde.getValintatapajonot().stream()
                     .forEach(
                         valintatapajono ->
-                            valintatapajono.getHakemukset().parallelStream()
+                            valintatapajono.getHakemukset().stream()
                                 .forEach(
                                     hakemus ->
                                         hakemusHashMap.put(
