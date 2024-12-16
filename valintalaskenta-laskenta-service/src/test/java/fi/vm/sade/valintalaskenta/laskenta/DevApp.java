@@ -67,7 +67,8 @@ public class DevApp {
     System.setProperty(
         "host.virkailija", String.format("virkailija.%sopintopolku.fi", ENVIRONMENT));
     System.setProperty("host.cas", String.format("virkailija.%sopintopolku.fi", ENVIRONMENT));
-    System.setProperty("host.alb", "http://localhost:8888");
+    System.setProperty(
+        "host.alb", String.format("https://virkailija.%sopintopolku.fi", ENVIRONMENT));
     System.setProperty(
         "host.host-virkailija", String.format("virkailija.%sopintopolku.fi", ENVIRONMENT));
     System.setProperty("host.host-alb", "http://localhost:8888");
