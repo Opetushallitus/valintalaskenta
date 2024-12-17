@@ -7,5 +7,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface SuoritaLaskentaService {
 
-  void suoritaLaskentaHakukohteille(LaskentaDto laskenta, Collection<String> hakukohdeOids);
+  void suoritaLaskentaHakukohteille(
+      LaskentaDto laskenta, Collection<String> hakukohdeOids, int valintaryhmaRinnakkaisuus);
 }
