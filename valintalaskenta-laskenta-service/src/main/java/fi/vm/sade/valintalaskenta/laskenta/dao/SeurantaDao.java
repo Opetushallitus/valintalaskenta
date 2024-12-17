@@ -118,6 +118,8 @@ public interface SeurantaDao {
    */
   void resetoiKuolleidenNoodienLaskennat(int viive);
 
+  int liveNoodienMaara(int viive);
+
   /**
    * Hakee yhteenvedon laskennan kulusta
    *

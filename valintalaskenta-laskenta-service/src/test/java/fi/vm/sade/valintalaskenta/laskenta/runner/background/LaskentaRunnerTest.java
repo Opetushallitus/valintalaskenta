@@ -69,6 +69,11 @@ public class LaskentaRunnerTest {
     }
 
     @Override
+    public int liveNoodienMaara(int viive) {
+      return 1;
+    }
+
+    @Override
     public Optional<YhteenvetoDto> haeYhteenveto(String uuid) {
       throw new UnsupportedOperationException();
     }
@@ -122,7 +127,7 @@ public class LaskentaRunnerTest {
 
     LaskentaRunner laskentaRunner =
         new LaskentaRunner(
-            (laskenta, hakukohdeOids) -> {
+            (laskenta, hakukohdeOids, valintaryhmaRinnakkaisuus) -> {
               // laskenta onnistuu, palataan
             },
             new TestSeurantaDAO() {
@@ -174,7 +179,7 @@ public class LaskentaRunnerTest {
 
     LaskentaRunner laskentaRunner =
         new LaskentaRunner(
-            (laskenta, hakukohdeOids) -> {
+            (laskenta, hakukohdeOids, valintaryhmaRinnakkaisuus) -> {
               // laskenta epäonnistuu virheeseen
               throw new RuntimeException("eeppinen katastrofi");
             },
