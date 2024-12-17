@@ -438,7 +438,19 @@ public class SeurantaDaoImpl implements SeurantaDao {
                   Integer.class,
                   HakukohdeTila.KESKEN.toString(),
                   noodiId);
-          if (noodillaAjossa >= maxYhtaaikaisetHakukohteet) {
+
+          int liveNoodeja =
+              this.jdbcTemplate.queryForObject(
+                  "SELECT count(*) FROM ("
+                      + "SELECT 1 "
+                      + "FROM noodit "
+                      + "WHERE alive>?::timestamptz "
+                      + "GROUP BY noodi_id"
+                      + ") AS noodit",
+                  Integer.class,
+                  Instant.now().minusSeconds(60).toString());
+
+          if (noodillaAjossa >= maxYhtaaikaisetHakukohteet / Math.max(1, liveNoodeja)) {
             return Optional.empty();
           }
 
