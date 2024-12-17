@@ -14,6 +14,7 @@ import fi.vm.sade.valintalaskenta.runner.service.SuoritaLaskentaService;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -139,12 +140,13 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
   }
 
   @Override
-  public void suoritaLaskentaHakukohteille(LaskentaDto laskenta, Collection<String> hakukohdeOids) {
+  public void suoritaLaskentaHakukohteille(
+      LaskentaDto laskenta, Collection<String> hakukohdeOids, int valintaryhmaRinnakkaisuus) {
     if (laskenta
         .getTyyppi()
         .equals(fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi.VALINTARYHMA)) {
       try {
-        this.suoritaValintaryhmaLaskenta(laskenta, hakukohdeOids);
+        this.suoritaValintaryhmaLaskenta(laskenta, hakukohdeOids, valintaryhmaRinnakkaisuus);
       } catch (Exception e) {
         LOG.error(
             "Virhe valintaryhmälaskennan suorittamisessa hakukohteille "
@@ -182,7 +184,8 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
     }
   }
 
-  private void suoritaValintaryhmaLaskenta(LaskentaDto laskenta, Collection<String> hakukohdeOids) {
+  private void suoritaValintaryhmaLaskenta(
+      LaskentaDto laskenta, Collection<String> hakukohdeOids, int rinnakkaisuus) {
     String hakukohteidenNimi =
         String.format("Valintaryhmälaskenta %s hakukohteella", hakukohdeOids.size());
     LOG.info(
@@ -195,14 +198,18 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
         hakukohdeOids,
         Optional.of("VALINTARYHMALASKENTA"));
 
+    ForkJoinPool pool = new ForkJoinPool(rinnakkaisuus);
     List<LaskeDTO> lahtotiedot =
-        hakukohdeOids.stream()
-            .map(
-                hakukohdeOid ->
-                    this.koostepalveluAsyncResource
-                        .haeLahtotiedot(laskenta, hakukohdeOid, true, true)
-                        .join())
-            .toList();
+        pool.submit(
+                () ->
+                    hakukohdeOids.parallelStream()
+                        .map(
+                            hakukohdeOid ->
+                                this.koostepalveluAsyncResource
+                                    .haeLahtotiedot(laskenta, hakukohdeOid, true, true)
+                                    .join())
+                        .toList())
+            .join();
     valintalaskentaResource.valintaryhmaLaskenta(laskenta.getUuid(), lahtotiedot);
     this.tallennaJaLokitaMetriikat(hakukohdeOids, Collections.emptyMap(), LaskentaTulos.VALMIS);
   }
