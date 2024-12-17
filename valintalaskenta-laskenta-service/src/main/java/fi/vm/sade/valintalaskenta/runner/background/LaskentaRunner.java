@@ -72,11 +72,12 @@ public class LaskentaRunner {
             LOG.debug("Käynnistetään hakukohteiden laskennat");
             int maxYhtaaikaisetHakukohteet =
                 Integer.parseInt(this.seurantaDao.lueParametri("maxYhtaaikaisetHakukohteet"));
+            int liveNoodienMaara = this.seurantaDao.liveNoodienMaara(60);
+            int rinnakkaisuus = maxYhtaaikaisetHakukohteet / Math.max(1, liveNoodienMaara);
 
             while (true) {
               Optional<ImmutablePair<UUID, Collection<String>>> hakukohteet =
-                  this.seurantaDao.otaSeuraavatHakukohteetTyonAlle(
-                      this.noodiId, maxYhtaaikaisetHakukohteet);
+                  this.seurantaDao.otaSeuraavatHakukohteetTyonAlle(this.noodiId, rinnakkaisuus);
               if (!hakukohteet.isPresent()) {
                 LOG.debug("Ei käynnistettäviä hakukohteita");
                 break;
@@ -93,7 +94,9 @@ public class LaskentaRunner {
 
                     try {
                       suoritaLaskentaService.suoritaLaskentaHakukohteille(
-                          this.seurantaDao.haeLaskenta(uuid.toString()).get(), hakukohdeOids);
+                          this.seurantaDao.haeLaskenta(uuid.toString()).get(),
+                          hakukohdeOids,
+                          rinnakkaisuus);
                       this.seurantaDao.merkkaaHakukohteetValmiiksi(uuid, hakukohdeOids);
                     } catch (Throwable t) {
                       LOG.error(
