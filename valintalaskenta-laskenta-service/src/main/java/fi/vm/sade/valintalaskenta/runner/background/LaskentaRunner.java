@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.runner.background;
 
 import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
+import fi.vm.sade.valintalaskenta.runner.service.EcsTaskManager;
 import fi.vm.sade.valintalaskenta.runner.service.SuoritaLaskentaService;
 import java.util.Collection;
 import java.util.Optional;
@@ -25,14 +26,16 @@ public class LaskentaRunner {
   private final SeurantaDao seurantaDao;
 
   private final String noodiId;
-
   private final Executor executor;
 
   @Autowired
-  public LaskentaRunner(SuoritaLaskentaService suoritaLaskentaService, SeurantaDao seurantaDao) {
+  public LaskentaRunner(
+      SuoritaLaskentaService suoritaLaskentaService,
+      SeurantaDao seurantaDao,
+      EcsTaskManager ecsTaskManager) {
     this.suoritaLaskentaService = suoritaLaskentaService;
     this.seurantaDao = seurantaDao;
-    this.noodiId = UUID.randomUUID().toString();
+    this.noodiId = ecsTaskManager.getTaskArn();
     this.executor = Executors.newWorkStealingPool(256);
   }
 

@@ -7,9 +7,12 @@ import fi.vm.sade.valintalaskenta.audit.AuditLogUtil;
 import fi.vm.sade.valintalaskenta.audit.AuditSession;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTila;
+import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.KoostepalveluAsyncResource;
 import fi.vm.sade.valintalaskenta.runner.resource.external.valintaperusteet.ValintaperusteetAsyncResource;
+import fi.vm.sade.valintalaskenta.runner.service.EcsTaskManager;
 import fi.vm.sade.valintalaskenta.runner.service.SuoritaLaskentaService;
 import java.time.Duration;
 import java.time.Instant;
@@ -36,6 +39,8 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
   private final KoostepalveluAsyncResource koostepalveluAsyncResource;
   private final ValintaperusteetAsyncResource valintaperusteetAsyncResource;
   private final CloudWatchClient cloudWatchClient;
+  private final EcsTaskManager ecsTaskManager;
+  private final SeurantaDao seurantaDao;
 
   private final String environmentName;
 
@@ -54,11 +59,15 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
       KoostepalveluAsyncResource koostepalveluAsyncResource,
       ValintaperusteetAsyncResource valintaperusteetAsyncResource,
       CloudWatchClient cloudWatchClient,
+      EcsTaskManager ecsTaskManager,
+      SeurantaDao seurantaDao,
       @Value("${environment.name}") String environmentName) {
     this.valintalaskentaResource = valintalaskentaResource;
     this.koostepalveluAsyncResource = koostepalveluAsyncResource;
     this.valintaperusteetAsyncResource = valintaperusteetAsyncResource;
     this.cloudWatchClient = cloudWatchClient;
+    this.ecsTaskManager = ecsTaskManager;
+    this.seurantaDao = seurantaDao;
     this.environmentName = environmentName;
   }
 
@@ -186,32 +195,50 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
 
   private void suoritaValintaryhmaLaskenta(
       LaskentaDto laskenta, Collection<String> hakukohdeOids, int rinnakkaisuus) {
-    String hakukohteidenNimi =
-        String.format("Valintaryhmälaskenta %s hakukohteella", hakukohdeOids.size());
-    LOG.info(
-        "Muodostetaan VALINTARYHMALASKENTA (Uuid={}) {}", laskenta.getUuid(), hakukohteidenNimi);
-    AuditLogUtil.auditLogLaskenta(
-        laskentaAuditSession(laskenta),
-        ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS,
-        laskenta.getUuid(),
-        laskenta.getHakuOid(),
-        hakukohdeOids,
-        Optional.of("VALINTARYHMALASKENTA"));
+    this.ecsTaskManager.withTaskProtection(
+        () -> {
+          String hakukohteidenNimi =
+              String.format("Valintaryhmälaskenta %s hakukohteella", hakukohdeOids.size());
+          LOG.info(
+              "Muodostetaan VALINTARYHMALASKENTA (Uuid={}) {}",
+              laskenta.getUuid(),
+              hakukohteidenNimi);
+          AuditLogUtil.auditLogLaskenta(
+              laskentaAuditSession(laskenta),
+              ValintaperusteetOperation.LASKENTATOTEUTUS_KAYNNISTYS,
+              laskenta.getUuid(),
+              laskenta.getHakuOid(),
+              hakukohdeOids,
+              Optional.of("VALINTARYHMALASKENTA"));
 
-    ForkJoinPool pool = new ForkJoinPool(rinnakkaisuus);
-    List<LaskeDTO> lahtotiedot =
-        pool.submit(
-                () ->
-                    hakukohdeOids.parallelStream()
-                        .map(
-                            hakukohdeOid ->
-                                this.koostepalveluAsyncResource
-                                    .haeLahtotiedot(laskenta, hakukohdeOid, true, true)
-                                    .join())
-                        .toList())
-            .join();
-    valintalaskentaResource.valintaryhmaLaskenta(laskenta.getUuid(), lahtotiedot);
-    this.tallennaJaLokitaMetriikat(hakukohdeOids, Collections.emptyMap(), LaskentaTulos.VALMIS);
+          ForkJoinPool pool = new ForkJoinPool(rinnakkaisuus);
+          List<LaskeDTO> lahtotiedot =
+              pool.submit(
+                      () ->
+                          hakukohdeOids.parallelStream()
+                              .map(
+                                  hakukohdeOid -> {
+                                    synchronized (SuoritaLaskentaServiceImpl.this) {
+                                      if (LaskentaTila.MENEILLAAN
+                                          != this.seurantaDao
+                                              .haeLaskenta(laskenta.getUuid())
+                                              .get()
+                                              .getTila()) {
+                                        throw new RuntimeException(
+                                            "Laskenta ei ole enää käynnissä!");
+                                      }
+                                    }
+
+                                    return this.koostepalveluAsyncResource
+                                        .haeLahtotiedot(laskenta, hakukohdeOid, true, true)
+                                        .join();
+                                  })
+                              .toList())
+                  .join();
+          valintalaskentaResource.valintaryhmaLaskenta(laskenta.getUuid(), lahtotiedot);
+          this.tallennaJaLokitaMetriikat(
+              hakukohdeOids, Collections.emptyMap(), LaskentaTulos.VALMIS);
+        });
   }
 
   private void suoritaLaskentaHakukohteelle(LaskentaDto laskenta, String hakukohdeOid) {
