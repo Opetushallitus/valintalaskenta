@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.laskenta.runner.background;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.*;
 import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 import fi.vm.sade.valintalaskenta.runner.background.LaskentaRunner;
+import fi.vm.sade.valintalaskenta.runner.service.EcsTaskManager;
 import java.time.Instant;
 import java.util.*;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -158,6 +159,17 @@ public class LaskentaRunnerTest {
                 Assertions.assertEquals(seuraavaUUID, uuid);
                 valmiitHakukohteet.addAll(hakukohdeOids);
               }
+            },
+            new EcsTaskManager() {
+              @Override
+              public void withTaskProtection(Runnable runnable) {
+                throw new UnsupportedOperationException();
+              }
+
+              @Override
+              public String getTaskArn() {
+                return "TASK ID";
+              }
             });
 
     // ajetaan laskenta yhdelle satsille hakukohteita
@@ -211,6 +223,17 @@ public class LaskentaRunnerTest {
                   UUID uuid, Collection<String> hakukohdeOids, int maxYritykset, String message) {
                 Assertions.assertEquals(seuraavaUUID, uuid);
                 epaonnistuneetHakukohteet.addAll(hakukohdeOids);
+              }
+            },
+            new EcsTaskManager() {
+              @Override
+              public void withTaskProtection(Runnable runnable) {
+                throw new UnsupportedOperationException();
+              }
+
+              @Override
+              public String getTaskArn() {
+                return "TASK ID";
               }
             });
 
