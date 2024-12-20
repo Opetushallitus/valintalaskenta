@@ -365,7 +365,7 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
   }
 
   @Test
-  public void testKunKaikkiHakukohteetLaskettuHakuValmis() {
+  public void testKunYksikinHakukohdeLaskettuOnnistuneestiJaKaikkiProsessoituHakuValmis() {
     // luodaan laskenta useammalla hakukohteella
     LaskentaDto laskentaDto = this.luoLaskenta("laskenta", List.of("123", "234", "345"));
 
@@ -374,13 +374,32 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
     this.seurantaDao.otaSeuraavatHakukohteetTyonAlle("noodi1", 10);
     this.seurantaDao.otaSeuraavatHakukohteetTyonAlle("noodi1", 10);
     this.seurantaDao.merkkaaHakukohteetValmiiksi(
-        UUID.fromString(laskentaDto.getUuid()), List.of("123", "234"));
-    this.seurantaDao.merkkaaHakukohteetEpaonnistuneeksi(
-        UUID.fromString(laskentaDto.getUuid()), List.of("345"), 1, "Kolossaalinen epäonnistuminen");
+        UUID.fromString(laskentaDto.getUuid()), List.of("123", "234", "345"));
 
     // laskent on valmis
     Assertions.assertEquals(
         LaskentaTila.VALMIS, this.seurantaDao.haeYhteenveto(laskentaDto.getUuid()).get().getTila());
+  }
+
+  @Test
+  public void testKunKaikkiHakukohteetKeskeytettyHakuKeskeytetty() {
+    // luodaan laskenta useammalla hakukohteella
+    LaskentaDto laskentaDto = this.luoLaskenta("laskenta", List.of("123", "234", "345"));
+
+    // merkataan kaikki hakukohteet valmiiksi
+    this.seurantaDao.otaSeuraavatHakukohteetTyonAlle("noodi1", 10);
+    this.seurantaDao.otaSeuraavatHakukohteetTyonAlle("noodi1", 10);
+    this.seurantaDao.otaSeuraavatHakukohteetTyonAlle("noodi1", 10);
+    this.seurantaDao.merkkaaHakukohteetEpaonnistuneeksi(
+        UUID.fromString(laskentaDto.getUuid()),
+        List.of("123", "234", "345"),
+        1,
+        "Kolossaalinen epäonnistuminen");
+
+    // laskent on valmis
+    Assertions.assertEquals(
+        LaskentaTila.PERUUTETTU,
+        this.seurantaDao.haeYhteenveto(laskentaDto.getUuid()).get().getTila());
   }
 
   @Test
@@ -600,7 +619,7 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
     expectedHakukohteet.stream()
         .forEach(hk -> this.seurantaDao.otaSeuraavatHakukohteetTyonAlle("noodi", 1000));
 
-    // merkitään rinnakkaisesti valmiiksi tai epäonnistuneeksi
+    // merkitään rinnakkaisesti valmiiksi
     Executor executor = Executors.newFixedThreadPool(100);
     CompletableFuture<?>[] futures =
         expectedHakukohteet.stream()
@@ -610,13 +629,7 @@ public class SeurantaDaoTest extends AbstractIntegrationTest {
                         () -> {
                           UUID uuid = hk.getLeft();
                           String hakukohdeOid = hk.getRight();
-                          if (Math.random() > 0.5d) {
-                            this.seurantaDao.merkkaaHakukohteetValmiiksi(
-                                uuid, List.of(hakukohdeOid));
-                          } else {
-                            this.seurantaDao.merkkaaHakukohteetEpaonnistuneeksi(
-                                uuid, List.of(hakukohdeOid), 1, "");
-                          }
+                          this.seurantaDao.merkkaaHakukohteetValmiiksi(uuid, List.of(hakukohdeOid));
                           return hakukohdeOid;
                         },
                         executor))
