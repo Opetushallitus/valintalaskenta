@@ -505,15 +505,24 @@ public class SeurantaDaoImpl implements SeurantaDao {
   }
 
   private void merkkaaLaskentaKasitellyksi(UUID uuid) {
-    // merkitään laskenta valmiiksi jos kaikki hakukohteet joko laskettuja tai epäonnistuineita
+    // merkitään laskenta käsitellyksi jos:
+    // - vähintaan yksi hakukohde laskettu, ja kaikki hakukohteet laskettuja tai keskeytettyjä =>
+    // valmis
+    // - kaikki hakukohteet keskeytettyjä => peruutettu
     this.jdbcTemplate.update(
         "UPDATE seuranta_laskennat "
-            + "SET tila=?, lopetettu=?::timestamptz "
+            + "SET tila=CASE "
+            + "WHEN (EXISTS (SELECT 1 FROM seuranta_laskenta_hakukohteet WHERE laskenta_uuid=? AND tila=?)) THEN ? "
+            + "ELSE ? "
+            + "END, lopetettu=?::timestamptz "
             + "WHERE uuid=? "
             + "AND tila=? "
             + "AND NOT EXISTS "
             + "(SELECT 1 FROM seuranta_laskenta_hakukohteet WHERE laskenta_uuid=? AND (tila=? OR tila=?))",
+        uuid,
+        HakukohdeTila.VALMIS.toString(),
         LaskentaTila.VALMIS.toString(),
+        LaskentaTila.PERUUTETTU.toString(),
         Instant.now().toString(),
         uuid,
         LaskentaTila.MENEILLAAN.toString(),
@@ -670,6 +679,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
               uuid.toString(),
               hakukohdeOids.size() == 1 ? hakukohdeOids.iterator().next() : null,
               IlmoitusDto.virheilmoitus(message));
+
           this.merkkaaLaskentaKasitellyksi(uuid);
         });
   }
