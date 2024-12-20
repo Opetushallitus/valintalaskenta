@@ -57,7 +57,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
     Map<ImmutablePair<UUID, String>, List<IlmoitusDto>> ilmoitukset =
         new NamedParameterJdbcTemplate(this.jdbcTemplate)
                 .query(
-                    "SELECT * FROM seuranta_hakukohde_ilmoitukset WHERE laskenta_uuid IN (:uuids)",
+                    "SELECT * FROM seuranta_hakukohde_ilmoitukset WHERE laskenta_uuid IN (:uuids) ORDER BY luotu DESC",
                     parameters,
                     ilmoitusRowmapper)
                 .stream()
@@ -304,7 +304,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
 
           // päivitä ilmoitus
           if (ilmoitusDtoOptional.isPresent()) {
-            this.paivitaIlmoitus(uuid, ilmoitusDtoOptional.get());
+            this.lisaaIlmoitus(uuid, null, ilmoitusDtoOptional.get());
           }
         });
   }
@@ -404,23 +404,6 @@ public class SeurantaDaoImpl implements SeurantaDao {
             LaskentaTila.ALOITTAMATTA.toString(),
             LaskentaTila.MENEILLAAN.toString());
     return uuids.isEmpty() ? Optional.empty() : this.getLaskennat(uuids).stream().findFirst();
-  }
-
-  private void paivitaIlmoitus(String uuid, IlmoitusDto ilmoitus) {
-    this.jdbcTemplate.update(
-        "INSERT INTO seuranta_hakukohde_ilmoitukset (laskenta_uuid, hakukohdeoid, ilmoitustyyppi, otsikko, luotu, data) "
-            + "VALUES (?::uuid, null, ?, ?, ?::timestamptz, ?) "
-            + "ON CONFLICT (laskenta_uuid) WHERE hakukohdeoid IS null "
-            + "DO UPDATE SET ilmoitustyyppi=?, otsikko=?, luotu=?::timestamptz, data=?",
-        uuid,
-        ilmoitus.getTyyppi().toString(),
-        ilmoitus.getOtsikko(),
-        Instant.ofEpochMilli(ilmoitus.getPaivamaara()).toString(),
-        ilmoitus.getData() == null ? null : ilmoitus.getData().toArray(new String[] {}),
-        ilmoitus.getTyyppi().toString(),
-        ilmoitus.getOtsikko(),
-        Instant.ofEpochMilli(ilmoitus.getPaivamaara()).toString(),
-        ilmoitus.getData() == null ? null : ilmoitus.getData().toArray(new String[] {}));
   }
 
   @Override
