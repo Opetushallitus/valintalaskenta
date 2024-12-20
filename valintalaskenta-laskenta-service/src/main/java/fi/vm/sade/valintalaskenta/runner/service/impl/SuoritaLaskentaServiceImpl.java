@@ -7,8 +7,6 @@ import fi.vm.sade.valintalaskenta.audit.AuditLogUtil;
 import fi.vm.sade.valintalaskenta.audit.AuditSession;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
-import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTila;
-import fi.vm.sade.valintalaskenta.laskenta.dao.SeurantaDao;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.KoostepalveluAsyncResource;
 import fi.vm.sade.valintalaskenta.runner.resource.external.valintaperusteet.ValintaperusteetAsyncResource;
@@ -18,6 +16,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -40,7 +39,6 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
   private final ValintaperusteetAsyncResource valintaperusteetAsyncResource;
   private final CloudWatchClient cloudWatchClient;
   private final EcsTaskManager ecsTaskManager;
-  private final SeurantaDao seurantaDao;
 
   private final String environmentName;
 
@@ -60,14 +58,12 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
       ValintaperusteetAsyncResource valintaperusteetAsyncResource,
       CloudWatchClient cloudWatchClient,
       EcsTaskManager ecsTaskManager,
-      SeurantaDao seurantaDao,
       @Value("${environment.name}") String environmentName) {
     this.valintalaskentaResource = valintalaskentaResource;
     this.koostepalveluAsyncResource = koostepalveluAsyncResource;
     this.valintaperusteetAsyncResource = valintaperusteetAsyncResource;
     this.cloudWatchClient = cloudWatchClient;
     this.ecsTaskManager = ecsTaskManager;
-    this.seurantaDao = seurantaDao;
     this.environmentName = environmentName;
   }
 
@@ -156,6 +152,7 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
         .equals(fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi.VALINTARYHMA)) {
       try {
         this.suoritaValintaryhmaLaskenta(laskenta, hakukohdeOids, valintaryhmaRinnakkaisuus);
+        return;
       } catch (Exception e) {
         LOG.error(
             "Virhe valintaryhmälaskennan suorittamisessa hakukohteille "
@@ -211,6 +208,7 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
               hakukohdeOids,
               Optional.of("VALINTARYHMALASKENTA"));
 
+          AtomicReference<Boolean> stopped = new AtomicReference<>(false);
           ForkJoinPool pool = new ForkJoinPool(rinnakkaisuus);
           List<LaskeDTO> lahtotiedot =
               pool.submit(
@@ -218,20 +216,18 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
                           hakukohdeOids.parallelStream()
                               .map(
                                   hakukohdeOid -> {
-                                    synchronized (SuoritaLaskentaServiceImpl.this) {
-                                      if (LaskentaTila.MENEILLAAN
-                                          != this.seurantaDao
-                                              .haeLaskenta(laskenta.getUuid())
-                                              .get()
-                                              .getTila()) {
-                                        throw new RuntimeException(
-                                            "Laskenta ei ole enää käynnissä!");
-                                      }
+                                    if (stopped.get()) {
+                                      throw new RuntimeException("Laskenta ei ole enää käynnissä!");
                                     }
 
-                                    return this.koostepalveluAsyncResource
-                                        .haeLahtotiedot(laskenta, hakukohdeOid, true, true)
-                                        .join();
+                                    try {
+                                      return this.koostepalveluAsyncResource
+                                          .haeLahtotiedot(laskenta, hakukohdeOid, true, true)
+                                          .join();
+                                    } catch (Exception e) {
+                                      stopped.set(true);
+                                      throw e;
+                                    }
                                   })
                               .toList())
                   .join();
