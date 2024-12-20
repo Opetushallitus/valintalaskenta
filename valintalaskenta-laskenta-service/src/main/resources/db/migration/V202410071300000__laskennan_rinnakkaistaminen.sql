@@ -19,3 +19,5 @@ CREATE TABLE IF NOT EXISTS parametrit (
 );
 
 INSERT INTO parametrit (nimi, arvo) VALUES ('maxYhtaaikaisetHakukohteet', '8') ON CONFLICT DO NOTHING;
+
+DROP INDEX seuranta_hakukohde_ilmoitukset_uuid_unique;

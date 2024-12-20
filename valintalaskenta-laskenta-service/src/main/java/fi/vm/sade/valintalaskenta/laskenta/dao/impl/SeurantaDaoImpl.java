@@ -57,7 +57,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
     Map<ImmutablePair<UUID, String>, List<IlmoitusDto>> ilmoitukset =
         new NamedParameterJdbcTemplate(this.jdbcTemplate)
                 .query(
-                    "SELECT * FROM seuranta_hakukohde_ilmoitukset WHERE laskenta_uuid IN (:uuids)",
+                    "SELECT * FROM seuranta_hakukohde_ilmoitukset WHERE laskenta_uuid IN (:uuids) ORDER BY luotu DESC",
                     parameters,
                     ilmoitusRowmapper)
                 .stream()
