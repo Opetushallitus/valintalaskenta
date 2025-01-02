@@ -7,16 +7,12 @@ import fi.vm.sade.valintalaskenta.runner.resource.external.RestCasClient;
 import fi.vm.sade.valintalaskenta.runner.resource.external.UrlConfiguration;
 import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.KoostepalveluAsyncResource;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
 public class KoostepalveluAsyncResourceImpl implements KoostepalveluAsyncResource {
-  private static final Logger LOG = LoggerFactory.getLogger(KoostepalveluAsyncResourceImpl.class);
   private final RestCasClient httpClient;
 
   private final UrlConfiguration urlConfiguration;
@@ -28,7 +24,7 @@ public class KoostepalveluAsyncResourceImpl implements KoostepalveluAsyncResourc
     this.urlConfiguration = UrlConfiguration.getInstance();
   }
 
-  public CompletableFuture<LaskeDTO> haeLahtotiedot(
+  public LaskeDTO haeLahtotiedot(
       LaskentaDto laskenta,
       String hakukohdeOid,
       boolean retryHakemuksetAndOppijat,
@@ -43,14 +39,20 @@ public class KoostepalveluAsyncResourceImpl implements KoostepalveluAsyncResourc
       parameters.put("valinnanvaihe", laskenta.getValinnanvaihe().get().toString());
     }
 
-    return httpClient.get(
-        this.urlConfiguration.url(
-            "valintalaskentakoostepalvelu.lahtotiedot.baseurl",
-            laskenta.getHakuOid(),
-            hakukohdeOid,
-            parameters),
-        new TypeToken<LaskeDTO>() {},
-        Collections.emptyMap(),
-        20 * 60 * 1000);
+    try {
+      return httpClient
+          .get(
+              this.urlConfiguration.url(
+                  "valintalaskentakoostepalvelu.lahtotiedot.baseurl",
+                  laskenta.getHakuOid(),
+                  hakukohdeOid,
+                  parameters),
+              new TypeToken<LaskeDTO>() {},
+              Collections.emptyMap(),
+              20 * 60 * 1000)
+          .get();
+    } catch (Exception e) {
+      throw new LahtotiedotException(e);
+    }
   }
 }
