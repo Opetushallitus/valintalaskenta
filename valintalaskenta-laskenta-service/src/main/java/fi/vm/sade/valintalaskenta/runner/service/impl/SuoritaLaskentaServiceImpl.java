@@ -180,13 +180,13 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
 
     try {
       this.suoritaLaskentaHakukohteelle(laskenta, hakukohdeOids.iterator().next());
-    } catch (Exception e) {
+    } catch (RuntimeException e) {
       LOG.error(
           "Virhe valintalaskennan suorittamisessa hakukohteille "
               + hakukohdeOids.stream().collect(Collectors.joining(",")),
           e);
       this.tallennaJaLokitaMetriikat(hakukohdeOids, Collections.emptyMap(), LaskentaTulos.VIRHE);
-      throw new RuntimeException(e);
+      throw e;
     }
   }
 
@@ -221,9 +221,8 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
                                     }
 
                                     try {
-                                      return this.koostepalveluAsyncResource
-                                          .haeLahtotiedot(laskenta, hakukohdeOid, true, true)
-                                          .join();
+                                      return this.koostepalveluAsyncResource.haeLahtotiedot(
+                                          laskenta, hakukohdeOid, true, true);
                                     } catch (Exception e) {
                                       stopped.set(true);
                                       throw e;
@@ -272,9 +271,8 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
         Optional.of(tyyppi));
     Instant lahtotiedotStart = Instant.now();
     LaskeDTO lahtotiedot =
-        this.koostepalveluAsyncResource
-            .haeLahtotiedot(laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat)
-            .join();
+        this.koostepalveluAsyncResource.haeLahtotiedot(
+            laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat);
 
     Instant laskeStart = Instant.now();
 
