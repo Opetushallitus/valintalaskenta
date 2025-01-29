@@ -6,9 +6,9 @@ import static fi.vm.sade.valintalaskenta.domain.valinta.Jarjestyskriteeritulokse
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.*;
-import javax.validation.constraints.NotNull;
 
 public class TestEntityDataUtil {
 
