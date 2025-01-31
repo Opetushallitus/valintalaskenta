@@ -32,7 +32,6 @@
         <modelmapper.version>3.2.1</modelmapper.version>
         <spring.security.version>6.4.2</spring.security.version>
         <jackson.version>2.18.2</jackson.version>
-        <jasig.cas.version>3.6.4</jasig.cas.version>
 
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
@@ -53,6 +52,10 @@
                     <exclusion>
                         <groupId>org.slf4j</groupId>
                         <artifactId>slf4j-reload4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -106,11 +109,6 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>31.1-jre</version>
-            </dependency>
-            <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-ui</artifactId>
                 <version>1.8.0</version>
@@ -151,11 +149,6 @@
                 <version>1.18.0</version>
             </dependency>
             <dependency>
-                <groupId>org.jasig.cas.client</groupId>
-                <artifactId>cas-client-core</artifactId>
-                <version>${jasig.cas.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
                 <artifactId>opintopolku-spring-security</artifactId>
                 <version>0.6.0-SNAPSHOT</version>
@@ -164,11 +157,12 @@
                 <groupId>fi.vm.sade.java-utils</groupId>
                 <artifactId>opintopolku-cas-servlet-filter</artifactId>
                 <version>1.0.1-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>fi.vm.sade.java-utils</groupId>
-                <artifactId>java-cache</artifactId>
-                <version>0.1.0-SNAPSHOT</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
@@ -201,11 +195,6 @@
                 <artifactId>valintalaskenta-laskenta-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>jakarta.validation</groupId>
-                <artifactId>jakarta.validation-api</artifactId>
-                <version>3.1.0</version>
-            </dependency>
 
             <dependency>
                 <groupId>org.scala-lang</groupId>
@@ -213,11 +202,6 @@
                 <version>2.13.16</version>
             </dependency>
 
-            <dependency>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging</artifactId>
-                <version>1.2</version>
-            </dependency>
             <dependency>
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
@@ -261,17 +245,7 @@
                 <artifactId>spring-security-cas</artifactId>
                 <version>${spring.security.version}</version>
             </dependency>
-            <dependency>
-                <groupId>cglib</groupId>
-                <artifactId>cglib-nodep</artifactId>
-                <version>3.3.0</version>
-            </dependency>
 
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-validator</artifactId>
-                <version>6.2.5.Final</version>
-            </dependency>
             <dependency>
                 <groupId>ch.qos.logback.access</groupId>
                 <artifactId>tomcat</artifactId>
@@ -311,31 +285,6 @@
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-guava</artifactId>
                 <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.ws.xmlschema</groupId>
-                <artifactId>xmlschema-core</artifactId>
-                <version>2.3.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.codehaus.woodstox</groupId>
-                <artifactId>stax2-api</artifactId>
-                <version>4.2.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.neethi</groupId>
-                <artifactId>neethi</artifactId>
-                <version>3.2.0</version>
-            </dependency>
-            <dependency>
-                <groupId>wsdl4j</groupId>
-                <artifactId>wsdl4j</artifactId>
-                <version>1.6.3</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jvnet.staxex</groupId>
-                <artifactId>stax-ex</artifactId>
-                <version>2.1.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>

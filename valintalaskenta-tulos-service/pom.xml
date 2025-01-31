@@ -16,11 +16,6 @@
              <artifactId>jakarta.servlet-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
-        </dependency>
-        <dependency>
             <groupId>fi.vm.sade</groupId>
             <artifactId>auditlogger</artifactId>
         </dependency>
@@ -100,11 +95,6 @@
             <version>${modelmapper.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-
         <!-- spring security -->
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -134,10 +124,6 @@
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.java-utils</groupId>
-            <artifactId>java-cache</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fi.vm.sade.java-utils</groupId>
             <artifactId>opintopolku-cas-servlet-filter</artifactId>
         </dependency>
         <dependency>
@@ -145,11 +131,6 @@
             <artifactId>java-cas</artifactId>
         </dependency>
 
-
-        <!--<dependency>
-        <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-        </dependency>-->
         <dependency>
             <groupId>org.kubek2k.mockito.spring</groupId>
             <artifactId>springockito</artifactId>
