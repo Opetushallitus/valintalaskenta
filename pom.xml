@@ -25,8 +25,8 @@
 
     <properties>
         <valinta-sharedutils.version>6.0-SNAPSHOT</valinta-sharedutils.version>
-        <sijoittelu.version>7.6.0-SNAPSHOT</sijoittelu.version>
-        <dokumenttipalvelu.version>6.12-SNAPSHOT</dokumenttipalvelu.version>
+        <sijoittelu.version>10.0.0-SNAPSHOT</sijoittelu.version>
+        <dokumenttipalvelu.version>6.13-SNAPSHOT</dokumenttipalvelu.version>
 
         <httpcomponents.version>4.5.14</httpcomponents.version>
         <modelmapper.version>3.2.1</modelmapper.version>
@@ -110,28 +110,18 @@
             </dependency>
             <dependency>
                 <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-ui</artifactId>
-                <version>1.8.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-webmvc-core</artifactId>
-                <version>1.8.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-security</artifactId>
-                <version>1.8.0</version>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>2.6.0</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
-                <version>2.12.0</version>
+                <version>2.12.1</version>
             </dependency>
             <dependency>
                 <groupId>com.google.errorprone</groupId>
                 <artifactId>error_prone_annotations</artifactId>
-                <version>2.27.0</version>
+                <version>2.36.0</version>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade</groupId>
@@ -195,13 +185,11 @@
                 <artifactId>valintalaskenta-laskenta-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.scala-lang</groupId>
                 <artifactId>scala-library</artifactId>
                 <version>2.13.16</version>
             </dependency>
-
             <dependency>
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
@@ -292,19 +280,9 @@
                 <version>10.1.34</version>
             </dependency>
             <dependency>
-                <groupId>fi.vm.sade.java-utils</groupId>
-                <artifactId>java-properties</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.webjars</groupId>
-                <artifactId>swagger-ui</artifactId>
-                <version>5.17.14</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-servlet-api</artifactId>
-                <version>10.1.33</version>
+                <version>10.1.34</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
@@ -362,17 +340,17 @@
             <dependency>
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
-                <version>3.27.0-GA</version>
+                <version>3.29.2-GA</version>
             </dependency>
             <dependency>
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>
-                <version>0.9.12</version>
+                <version>0.10.2</version>
             </dependency>
             <dependency>
                 <groupId>io.circe</groupId>
                 <artifactId>circe-core_2.13</artifactId>
-                <version>0.14.0-M1</version>
+                <version>0.14.9</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.findbugs</groupId>
@@ -382,7 +360,7 @@
             <dependency>
                 <groupId>org.typelevel</groupId>
                 <artifactId>cats-core_2.13</artifactId>
-                <version>2.1.1</version>
+                <version>2.12.0</version>
             </dependency>
             <dependency>
                 <groupId>org.typelevel</groupId>
