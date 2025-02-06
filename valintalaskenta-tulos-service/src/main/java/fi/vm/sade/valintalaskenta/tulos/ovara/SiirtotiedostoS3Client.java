@@ -2,7 +2,6 @@ package fi.vm.sade.valintalaskenta.tulos.ovara;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonWriter;
 import fi.vm.sade.valinta.dokumenttipalvelu.SiirtotiedostoPalvelu;
 import fi.vm.sade.valinta.dokumenttipalvelu.dto.ObjectMetadata;
 import java.io.*;
@@ -37,23 +36,14 @@ public class SiirtotiedostoS3Client {
 
   public String createSiirtotiedostoForTulosdata(
       List<?> data, String dataType, String opId, int opSubId) {
-    try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-      try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream)) {
-        JsonWriter jsonWriter = new JsonWriter(outputStreamWriter);
-        jsonWriter.beginArray();
-        for (Object dto : data) {
-          gson.toJson(gson.toJsonTree(dto), jsonWriter);
-        }
-        jsonWriter.endArray();
-        jsonWriter.close();
-
-        try (ByteArrayInputStream inputStream =
-            new ByteArrayInputStream(outputStream.toByteArray())) {
-          return doCreateSiirtotiedosto(inputStream, dataType, opId, opSubId);
-        }
-      }
-    } catch (IOException ioe) {
-      throw new RuntimeException("JSONin muodostaminen epäonnistui;", ioe);
+    try {
+      String dataAsJson = gson.toJsonTree(data).toString();
+      logger.info("Some data: {}", dataAsJson.substring(0, Math.min(1000, dataAsJson.length())));
+      return doCreateSiirtotiedosto(
+          new ByteArrayInputStream(dataAsJson.getBytes()), dataType, opId, opSubId);
+    } catch (Exception e) {
+      logger.error("Virhe tallennettaessa siirtotiedostoa:", e);
+      throw e;
     }
   }
 
