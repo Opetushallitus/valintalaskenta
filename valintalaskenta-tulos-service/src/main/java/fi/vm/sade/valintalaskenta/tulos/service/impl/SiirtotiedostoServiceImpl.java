@@ -95,11 +95,15 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
         tulosValinnanvaiheDAO.readNewOrModifiedHakukohdeOids(startDatetime, endDatatime);
     List<List<String>> partitions =
         Lists.partition(hakukohdeOids, siirtotiedostoS3Client.getMaxHakukohdeCountInFile());
+    LOGGER.info(
+        "Muuttuneita valintalaskennan tuloksia {} hakukohteessa. Käsitellään ne {} palasessa.",
+        hakukohdeOids.size(),
+        partitions.size());
     List<String> siirtotiedostoKeys = new ArrayList<>();
     for (List<String> hakekohdeOidChunk : partitions) {
       List<List<ValintatietoValinnanvaiheSiirtotiedostoDTO>> tulokset = new ArrayList<>();
       for (String hakukohdeOid : hakekohdeOidChunk) {
-
+        LOGGER.info("Haetaan valinnanvaiheet hakukohteelle {}.", hakukohdeOid);
         tulokset.add(
             valintalaskentaTulosService.haeValinnanvaiheetHakukohteelleForSiirtotiedosto(
                 hakukohdeOid));
