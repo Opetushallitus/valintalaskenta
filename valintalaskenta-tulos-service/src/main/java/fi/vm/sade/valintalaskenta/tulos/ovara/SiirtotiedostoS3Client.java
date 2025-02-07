@@ -43,24 +43,19 @@ public class SiirtotiedostoS3Client {
           opSubId,
           dataType,
           data.size());
-      return doCreateSiirtotiedosto(
-          new ByteArrayInputStream(gson.toJson(data).getBytes()), dataType, opId, opSubId);
+      ObjectMetadata result =
+          siirtotiedostoPalvelu.saveSiirtotiedosto(
+              "valintalaskenta",
+              dataType,
+              "",
+              opId,
+              opSubId,
+              new ByteArrayInputStream(gson.toJson(data).getBytes()),
+              2);
+      return result.key;
     } catch (Exception e) {
       logger.error("Virhe tallennettaessa siirtotiedostoa:", e);
       throw e;
-    }
-  }
-
-  private String doCreateSiirtotiedosto(
-      InputStream inputStream, String dataType, String opId, int opSubId) {
-    try {
-      ObjectMetadata result =
-          siirtotiedostoPalvelu.saveSiirtotiedosto(
-              "valintalaskenta", dataType, "", opId, opSubId, inputStream, 2);
-      return result.key;
-    } catch (Exception e) {
-      logger.error("Siirtotiedoston luonti epäonnistui; ", e);
-      throw new RuntimeException(e);
     }
   }
 
