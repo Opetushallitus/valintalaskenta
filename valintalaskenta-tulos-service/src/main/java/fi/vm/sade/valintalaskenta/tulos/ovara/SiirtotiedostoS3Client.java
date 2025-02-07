@@ -44,10 +44,7 @@ public class SiirtotiedostoS3Client {
           dataType,
           data.size());
       return doCreateSiirtotiedosto(
-          new ByteArrayInputStream(gson.toJsonTree(data).toString().getBytes()),
-          dataType,
-          opId,
-          opSubId);
+          new ByteArrayInputStream(gson.toJson(data).getBytes()), dataType, opId, opSubId);
     } catch (Exception e) {
       logger.error("Virhe tallennettaessa siirtotiedostoa:", e);
       throw e;
