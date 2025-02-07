@@ -116,7 +116,7 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
               siirtotiedostoKeys.size() + 1));
     }
     LOGGER.info(
-        "Kirjoitettiin yhteensä {} valintalaskennan tulosta {} siirtotiedostoon.",
+        "Kirjoitettiin yhteensä {} hakukohteen valintalaskennan tulokset {} siirtotiedostoon.",
         hakukohdeOids.size(),
         siirtotiedostoKeys.size());
     return resultJson(siirtotiedostoKeys, hakukohdeOids.size());
