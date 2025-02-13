@@ -84,7 +84,7 @@
             <dependency>
                 <groupId>fi.vm.sade.valintaperusteet</groupId>
                 <artifactId>valintaperusteet-laskenta</artifactId>
-                <version>7.0-BRANCH-SNAPSHOT</version>
+                <version>7.1-BRANCH-SNAPSHOT</version>
                 <exclusions>
                     <!-- tämä sekoittaa spring data jdbc:n käynnistymisen -->
                     <exclusion>
