@@ -18,7 +18,7 @@ hakemusten hakutoiveiden tulosten laskennan, mitä sijoittelu taas hyödyntää 
 
 ## Vaatimukset
 
-Java 17
+Java 21
 Maven
 docker
 
