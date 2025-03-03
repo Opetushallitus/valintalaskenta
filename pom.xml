@@ -98,7 +98,7 @@
             <dependency>
                 <groupId>fi.vm.sade.valintaperusteet</groupId>
                 <artifactId>valintaperusteet-laskenta</artifactId>
-                <version>6.1-SNAPSHOT</version>
+                <version>7.2-BRANCH-SNAPSHOT</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.jboss.spec.javax.transaction</groupId>
