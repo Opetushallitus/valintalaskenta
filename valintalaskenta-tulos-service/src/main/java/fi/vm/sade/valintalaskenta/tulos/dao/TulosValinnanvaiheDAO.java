@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.dao;
 
+import fi.vm.sade.valintalaskenta.domain.valinta.HakukohdeLaskentaTehty;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluValintatapajono;
@@ -31,4 +32,6 @@ public interface TulosValinnanvaiheDAO {
 
   List<String> readNewOrModifiedHakukohdeOids(
       LocalDateTime startDatetime, LocalDateTime endDatatime);
+
+  List<HakukohdeLaskentaTehty> haeLasketutHakukohteetHaulle(String hakuOid);
 }
