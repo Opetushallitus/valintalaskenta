@@ -8,6 +8,7 @@ import fi.vm.sade.valintalaskenta.domain.testdata.TestEntityDataUtil;
 import fi.vm.sade.valintalaskenta.domain.valinta.HakukohdeLaskentaTehty;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -39,29 +40,54 @@ public class TulosValinnanvaiheDaoTest extends AbstractIntegrationTest {
   @Test
   public void testHakeeViimeisimmätHaunHakukohteetLaskentaTehtyTiedoilla()
       throws InterruptedException {
-    Valinnanvaihe vv1 = luoValinnanVaiheAIkaLeimalla("vaihe1", 1);
-    Valinnanvaihe vv2 = luoValinnanVaiheAIkaLeimalla("vaihe2", 2);
-    Valinnanvaihe vv3 = luoValinnanVaiheAIkaLeimalla("vaihe3", 3);
+    Valinnanvaihe vv1 = luoValinnanVaiheAikaLeimalla("hk1", "vaihe1", 1);
+    Valinnanvaihe vv2 = luoValinnanVaiheAikaLeimalla("hk1", "vaihe2", 2);
+    Valinnanvaihe vv3 = luoValinnanVaiheAikaLeimalla("hk1", "vaihe3", 3);
     valinnanvaiheRepository.saveAll(List.of(vv1, vv2, vv3));
     // varmistetaan ajan kulu jotta testi on deterministinen
     Thread.sleep(1L);
     Date timeNow = new Date();
-    valinnanvaiheRepository.save(luoValinnanVaiheAIkaLeimalla("vaihe4", 4));
+    valinnanvaiheRepository.save(luoValinnanVaiheAikaLeimalla("hk1","vaihe4", 4));
     List<HakukohdeLaskentaTehty> tehdytLaskennat =
         tulosValinnanvaiheDAO.haeLasketutHakukohteetHaulle("haku1");
     assertEquals(1, tehdytLaskennat.size());
-    Date modified = tehdytLaskennat.get(0).lastModified;
-    assertTrue(timeNow.before(modified) || timeNow.equals(modified));
+    assertTimeEqualsOrBefore(tehdytLaskennat.get(0), timeNow);
   }
 
-  private Valinnanvaihe luoValinnanVaiheAIkaLeimalla(String vaiheOid, int jarjestysnro) {
+  @Test
+  public void testHakeeViimeisimmätHaunHakukohteetLaskentaTehtyTiedoillaUseallaHakukohteella()
+          throws InterruptedException {
+    Valinnanvaihe vv1 = luoValinnanVaiheAikaLeimalla("hk1", "vaihe1", 1);
+    Valinnanvaihe vv2 = luoValinnanVaiheAikaLeimalla("hk1", "vaihe2", 2);
+    Valinnanvaihe vv3 = luoValinnanVaiheAikaLeimalla("hk2", "vaihe1hk2", 1);
+    valinnanvaiheRepository.saveAll(List.of(vv1, vv2, vv3));
+    // varmistetaan ajan kulu jotta testi on deterministinen
+    Thread.sleep(1L);
+    Date timeNow = new Date();
+    valinnanvaiheRepository.save(luoValinnanVaiheAikaLeimalla("hk1","vaihe3", 3));
+    valinnanvaiheRepository.save(luoValinnanVaiheAikaLeimalla("hk2","vaihe2hk2", 2));
+    List<HakukohdeLaskentaTehty> tehdytLaskennat =
+            tulosValinnanvaiheDAO.haeLasketutHakukohteetHaulle("haku1");
+    assertEquals(2, tehdytLaskennat.size());
+    assertTimeEqualsOrBefore(tehdytLaskennat.get(0), timeNow);
+    assertTimeEqualsOrBefore(tehdytLaskennat.get(1), timeNow);
+    assertTrue(tehdytLaskennat.stream().map(l -> l.hakukohdeOid).toList().containsAll(List.of("hk1", "hk2")));
+  }
+
+  private void assertTimeEqualsOrBefore(HakukohdeLaskentaTehty ht, Date timeToCompare) {
+    Date modified = ht.lastModified;
+    assertTrue(timeToCompare.before(modified) || timeToCompare.equals(modified));
+  }
+
+  private Valinnanvaihe luoValinnanVaiheAikaLeimalla(String hakukohde, String vaiheOid, int jarjestysnro) {
+    String jonoOid = "jono" + hakukohde + jarjestysnro;
     return TestEntityDataUtil.luoValinnanvaiheEntity(
         "haku1",
-        "hakukohde1",
+            hakukohde,
         jarjestysnro,
         vaiheOid,
         List.of(
             TestEntityDataUtil.luoValintatapaJonoEntity(
-                0, new HashSet<>(), "jono1nimi" + jarjestysnro, 0, null, "jono1" + jarjestysnro)));
+                0, new HashSet<>(), jonoOid, 0, null, jonoOid)));
   }
 }
