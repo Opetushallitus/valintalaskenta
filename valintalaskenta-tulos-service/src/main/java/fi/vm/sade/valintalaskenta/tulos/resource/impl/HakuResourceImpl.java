@@ -4,6 +4,7 @@ import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole
 
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
+import fi.vm.sade.valintalaskenta.domain.valinta.HakukohdeLaskentaTehty;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -46,5 +47,14 @@ public class HakuResourceImpl {
   public List<ValintakoeOsallistuminenDTO> valintakoevirheet(
       @PathVariable("hakuOid") final String hakuOid) {
     return tulosService.haeValintakoevirheetHaulle(hakuOid);
+  }
+
+  @PreAuthorize(READ_UPDATE_CRUD)
+  @GetMapping(
+      value = "/{hakuOid}/lasketut-hakukohteet",
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public List<HakukohdeLaskentaTehty> getLasketutHakukohteet(
+      @PathVariable("hakuOid") final String hakuOid) {
+    return tulosService.haeLasketutHakukohteetHaulle(hakuOid);
   }
 }
