@@ -86,4 +86,9 @@ public class TulosValinnanvaiheDAOImpl implements TulosValinnanvaiheDAO {
         ? repo.findHakukohdeOidsByTimeRange(startDatetime, endDatatime)
         : repo.findHakukohdeOidsByEndTime(endDatatime);
   }
+
+  @Override
+  public List<HakukohdeLaskentaTehty> haeLasketutHakukohteetHaulle(String hakuOid) {
+    return repo.findHakukohdeLaskentaTehtyByHakuOid(hakuOid);
+  }
 }
