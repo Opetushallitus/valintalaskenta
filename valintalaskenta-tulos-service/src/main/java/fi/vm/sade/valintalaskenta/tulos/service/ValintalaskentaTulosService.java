@@ -10,10 +10,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.ValintatietoValinnanvaiheSiirtotiedostoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
-import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvarainenHyvaksyminen;
-import fi.vm.sade.valintalaskenta.domain.valinta.HarkinnanvaraisuusTila;
-import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
-import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
+import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import java.util.List;
 import java.util.Optional;
@@ -89,4 +86,6 @@ public interface ValintalaskentaTulosService {
 
   Optional<Valintatapajono> paivitaValmisSijoiteltavaksi(
       String valintatapajonoOid, boolean valmisSijoiteltavaksi);
+
+  List<HakukohdeLaskentaTehty> haeLasketutHakukohteetHaulle(String hakuOid);
 }

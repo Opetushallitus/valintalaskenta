@@ -790,6 +790,11 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
         valintatapajonoOid, valmisSijoiteltavaksi);
   }
 
+  @Override
+  public List<HakukohdeLaskentaTehty> haeLasketutHakukohteetHaulle(String hakuOid) {
+    return tulosValinnanvaiheDAO.haeLasketutHakukohteetHaulle(hakuOid);
+  }
+
   private void saveMuokattuJonosija(MuokattuJonosija muokattuJonosija, User auditUser) {
     auditLog.log(
         LaskentaAudit.AUDIT,

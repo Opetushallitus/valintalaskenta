@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.tulos.dao.repository;
 
+import fi.vm.sade.valintalaskenta.domain.valinta.HakukohdeLaskentaTehty;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valinnanvaihe;
 import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluValintatapajono;
@@ -36,6 +37,12 @@ public interface TulosValinnanvaiheRepository extends CrudRepository<Valinnanvai
       @Param("valintatapajonoOid") String valintatapajonoOid);
 
   Optional<Valinnanvaihe> findValinnanvaiheByValinnanvaiheOid(String valinnanvaiheOid);
+
+  @Query(
+      "select vv.hakukohde_oid, vv.last_modified from Valinnanvaihe vv where vv.haku_oid = :hakuOid and vv.id in "
+          + "(SELECT ivv.id from Valinnanvaihe ivv where ivv.hakukohde_oid = vv.hakukohde_oid order by ivv.last_modified desc limit 1)")
+  List<HakukohdeLaskentaTehty> findHakukohdeLaskentaTehtyByHakuOid(
+      @Param("hakuOid") String hakuOid);
 
   @Query(
       "select js.id as jonosija_id, js.hakemus_oid, js.hakija_oid, js.syotetyt_arvot, js.jarjestyskriteeritulokset, "
