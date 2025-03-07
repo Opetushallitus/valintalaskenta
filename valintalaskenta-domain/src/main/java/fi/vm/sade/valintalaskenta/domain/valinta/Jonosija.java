@@ -2,7 +2,6 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import java.util.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 
@@ -32,8 +31,6 @@ public class Jonosija {
 
   @Column("funktio_tulokset")
   private FunktioTulosContainer funktioTulokset;
-
-  @ReadOnlyProperty private Date lastModified;
 
   public Jonosija() {
     syotetytArvot = new SyotettyArvoContainer();
@@ -142,13 +139,5 @@ public class Jonosija {
 
   public void setValintatapajono(Valintatapajono valintatapajono) {
     this.valintatapajono = valintatapajono;
-  }
-
-  public Date getLastModified() {
-    return lastModified;
-  }
-
-  public void setLastModified(Date lastModified) {
-    this.lastModified = lastModified;
   }
 }
