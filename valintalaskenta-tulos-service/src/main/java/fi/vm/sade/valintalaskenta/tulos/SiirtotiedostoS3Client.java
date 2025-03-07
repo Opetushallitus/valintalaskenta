@@ -1,4 +1,4 @@
-package fi.vm.sade.valintalaskenta.tulos.ovara;
+package fi.vm.sade.valintalaskenta.tulos;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

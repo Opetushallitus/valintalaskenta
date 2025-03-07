@@ -62,9 +62,7 @@ public class SiirtotiedostoResourceImpl {
     LocalDateTime end =
         parseDateTime(endDatetime, "Loppuaika", ZonedDateTime.now(SIIRTOTIEDOSTO_TIMEZONE));
     String response =
-        siirtotiedostoService
-            .createSiirtotiedostotForValintakoeOsallistumiset(start, end)
-            .toString();
+        siirtotiedostoService.createSiirtotiedostotForValintakoeOsallistumiset(start, end);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
@@ -80,9 +78,7 @@ public class SiirtotiedostoResourceImpl {
     LocalDateTime end =
         parseDateTime(endDatetime, "Loppuaika", ZonedDateTime.now(SIIRTOTIEDOSTO_TIMEZONE));
     String response =
-        siirtotiedostoService
-            .createSiirtotiedostotForValintalaskennanTulokset(start, end)
-            .toString();
+        siirtotiedostoService.createSiirtotiedostotForValintalaskennanTulokset(start, end);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 }

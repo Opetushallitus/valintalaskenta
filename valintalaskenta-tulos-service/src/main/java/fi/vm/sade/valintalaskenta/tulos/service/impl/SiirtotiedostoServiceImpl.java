@@ -6,10 +6,10 @@ import com.google.gson.JsonObject;
 import fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.ValintakoeOsallistuminenSiirtotiedostoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.ValintatietoValinnanvaiheSiirtotiedostoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
+import fi.vm.sade.valintalaskenta.tulos.SiirtotiedostoS3Client;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
-import fi.vm.sade.valintalaskenta.tulos.ovara.SiirtotiedostoS3Client;
 import fi.vm.sade.valintalaskenta.tulos.service.SiirtotiedostoService;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverter;
@@ -54,7 +54,7 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
   }
 
   @Override
-  public JsonObject createSiirtotiedostotForValintakoeOsallistumiset(
+  public String createSiirtotiedostotForValintakoeOsallistumiset(
       LocalDateTime startDatetime, LocalDateTime endDatatime) {
     String opId = UUID.randomUUID().toString();
     List<String> hakemusOids =
@@ -88,7 +88,7 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
   }
 
   @Override
-  public JsonObject createSiirtotiedostotForValintalaskennanTulokset(
+  public String createSiirtotiedostotForValintalaskennanTulokset(
       LocalDateTime startDatetime, LocalDateTime endDatatime) {
     String opId = UUID.randomUUID().toString();
     List<String> hakukohdeOids =
@@ -118,13 +118,13 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
     return resultJson(siirtotiedostoKeys, hakukohdeOids.size());
   }
 
-  private JsonObject resultJson(List<String> siirtotiedostoKeys, int itemCount) {
+  private String resultJson(List<String> siirtotiedostoKeys, int itemCount) {
     JsonArray keyJson = new JsonArray();
     siirtotiedostoKeys.forEach(key -> keyJson.add(key));
     JsonObject result = new JsonObject();
     result.add("keys", keyJson);
     result.addProperty("total", itemCount);
     result.addProperty("success", true);
-    return result;
+    return result.toString();
   }
 }
