@@ -20,7 +20,6 @@
         <module>valintalaskenta-tulos-service</module>
         <module>valintalaskenta-laskenta-api</module>
         <module>valintalaskenta-laskenta-service</module>
-        <module>ovara-valintalaskenta</module>
     </modules>
 
     <properties>

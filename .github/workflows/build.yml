@@ -46,7 +46,6 @@ jobs:
             valintalaskenta-laskenta-api/target
             valintalaskenta-laskenta-service/target
             valintalaskenta-tulos-service/target
-            ovara-valintalaskenta/target
           key: ${{ github.sha }}
 
   deploy-container:
@@ -65,7 +64,6 @@ jobs:
             valintalaskenta-laskenta-api/target
             valintalaskenta-laskenta-service/target
             valintalaskenta-tulos-service/target
-            ovara-valintalaskenta/target
           key: ${{ github.sha }}
 
       - name: Build and deploy Docker container
@@ -81,16 +79,6 @@ jobs:
           mv valintalaskenta-laskenta-service/target/valintalaskenta-laskenta-service-exec.jar $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}.jar
           cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
           export BASE_IMAGE="baseimage-fatjar-openjdk21:master"
-          ./ci-tools/common/pull-image.sh
-          ./ci-tools/github-build/build-fatjar.sh $ARTIFACT_NAME
-          ./ci-tools/github-build/upload-image.sh $ARTIFACT_NAME
-
-          ./ci-tools/common/clean-docker-build-dir.sh
-
-          export ARTIFACT_NAME="ovara-valintalaskenta"
-          mv ovara-valintalaskenta/target/ovara-valintalaskenta.jar $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}.jar
-          cp -vr ovara-valintalaskenta/src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
-          export BASE_IMAGE="baseimage-fatjar-openjdk17:master"
           ./ci-tools/common/pull-image.sh
           ./ci-tools/github-build/build-fatjar.sh $ARTIFACT_NAME
           ./ci-tools/github-build/upload-image.sh $ARTIFACT_NAME
@@ -111,7 +99,6 @@ jobs:
             valintalaskenta-laskenta-api/target
             valintalaskenta-laskenta-service/target
             valintalaskenta-tulos-service/target
-            ovara-valintalaskenta/target
           key: ${{ github.sha }}
 
       - name: Set up JDK 21
