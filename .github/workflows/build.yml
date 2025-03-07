@@ -76,7 +76,7 @@ jobs:
           source ci-tools/common/setup-tools.sh
           
           export ARTIFACT_NAME="valintalaskenta"
-          mv valintalaskenta-laskenta-service/target/valintalaskenta-laskenta-service-exec.jar $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}.jar
+          mv valintalaskenta-laskenta-service/target/valintalaskenta-laskenta-service.jar $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}.jar
           cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
           export BASE_IMAGE="baseimage-fatjar-openjdk21:master"
           ./ci-tools/common/pull-image.sh
