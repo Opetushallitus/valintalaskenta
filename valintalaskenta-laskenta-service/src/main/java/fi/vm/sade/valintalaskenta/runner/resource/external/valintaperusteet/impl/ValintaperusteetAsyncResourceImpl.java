@@ -2,7 +2,7 @@ package fi.vm.sade.valintalaskenta.runner.resource.external.valintaperusteet.imp
 
 import com.google.gson.reflect.TypeToken;
 import fi.vm.sade.service.valintaperusteet.dto.*;
-import fi.vm.sade.valintalaskenta.runner.resource.external.RestCasClient;
+import fi.vm.sade.valintalaskenta.runner.resource.external.RunnerRestCasClient;
 import fi.vm.sade.valintalaskenta.runner.resource.external.UrlConfiguration;
 import fi.vm.sade.valintalaskenta.runner.resource.external.valintaperusteet.ValintaperusteetAsyncResource;
 import java.util.*;
@@ -15,15 +15,18 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ValintaperusteetAsyncResourceImpl implements ValintaperusteetAsyncResource {
+
+  private static final int TIMEOUT_MS = 10 * 60 * 1000;
+
   private static final Logger LOG =
       LoggerFactory.getLogger(ValintaperusteetAsyncResourceImpl.class);
-  private final RestCasClient httpClient;
+  private final RunnerRestCasClient httpClient;
 
   private final UrlConfiguration urlConfiguration;
 
   @Autowired
   public ValintaperusteetAsyncResourceImpl(
-      @Qualifier("ValintaperusteetCasClient") RestCasClient httpClient) {
+      @Qualifier("ValintaperusteetCasClient") RunnerRestCasClient httpClient) {
     this.httpClient = httpClient;
     this.urlConfiguration = UrlConfiguration.getInstance();
   }
@@ -35,7 +38,7 @@ public class ValintaperusteetAsyncResourceImpl implements ValintaperusteetAsyncR
             "valintaperusteet-service.valintalaskentakoostepalvelu.hakukohde.haku", hakuOid),
         new TypeToken<List<HakukohdeViiteDTO>>() {},
         Collections.emptyMap(),
-        10 * 60 * 1000);
+        TIMEOUT_MS);
   }
 
   @Override
@@ -46,7 +49,7 @@ public class ValintaperusteetAsyncResourceImpl implements ValintaperusteetAsyncR
             valintaryhmaOid);
     LOG.info("Calling url {}", url);
     return this.httpClient
-        .get(url, Map.of("Accept", "text/plain"), 10 * 60 * 1000)
+        .get(url, Map.of("Accept", "text/plain"), TIMEOUT_MS)
         .thenApply(response -> response.getResponseBody());
   }
 
@@ -67,6 +70,6 @@ public class ValintaperusteetAsyncResourceImpl implements ValintaperusteetAsyncR
             parameters.toArray());
 
     return httpClient.get(
-        url, new TypeToken<List<ValintaperusteetDTO>>() {}, Collections.emptyMap(), 60 * 60 * 1000);
+        url, new TypeToken<List<ValintaperusteetDTO>>() {}, Collections.emptyMap(), TIMEOUT_MS);
   }
 }
