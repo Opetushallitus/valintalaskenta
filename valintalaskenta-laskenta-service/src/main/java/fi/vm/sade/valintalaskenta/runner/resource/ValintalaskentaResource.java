@@ -73,7 +73,7 @@ public class ValintalaskentaResource {
    * Luo seurantaan suoritettavan valintalaskennan koko haulle.
    *
    * @param hakuOid haun tunniste
-   * @param erillishaku onko kyseessä erillishaku (haku jonka päätteeksi suoritetaan sijoittelu)
+   * @param erillishaku onko kyseessä erillishaku (haku joka ei käytä laskentaa eikä sijoittelua)
    * @param valinnanvaihe mikä valinnanvaihe lasketaan (null => lasketaan kaikki)
    * @param valintakoelaskenta onko kyseessä valintakoelaskenta
    * @param haunnimi haun nimi
@@ -136,7 +136,7 @@ public class ValintalaskentaResource {
    * Luo seurantaan suoritettavan valintalaskennan osalle haun hakukohteista.
    *
    * @param hakuOid haun tunniste
-   * @param erillishaku onko kyseessä erillishaku (haku jonka päätteeksi suoritetaan sijoittelu)
+   * @param erillishaku onko kyseessä erillishaku (haku joka ei käytä laskentaa eikä sijoittelua)
    * @param valinnanvaihe mikä valinnanvaihe lasketaan (null => lasketaan kaikki)
    * @param valintakoelaskenta onko kyseessä valintakoelaskenta
    * @param haunnimi haun nimi

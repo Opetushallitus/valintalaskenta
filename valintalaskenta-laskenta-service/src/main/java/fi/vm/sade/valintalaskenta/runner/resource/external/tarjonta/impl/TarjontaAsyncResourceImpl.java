@@ -10,8 +10,8 @@ import com.google.gson.reflect.TypeToken;
 import fi.vm.sade.tarjonta.service.resources.v1.dto.*;
 import fi.vm.sade.tarjonta.service.resources.v1.dto.koulutus.KoulutusV1RDTO;
 import fi.vm.sade.valinta.sharedutils.http.DateDeserializer;
-import fi.vm.sade.valintalaskenta.runner.resource.external.HttpClient;
-import fi.vm.sade.valintalaskenta.runner.resource.external.RestCasClient;
+import fi.vm.sade.valintalaskenta.runner.resource.external.RunnerHttpClient;
+import fi.vm.sade.valintalaskenta.runner.resource.external.RunnerRestCasClient;
 import fi.vm.sade.valintalaskenta.runner.resource.external.UrlConfiguration;
 import fi.vm.sade.valintalaskenta.runner.resource.external.tarjonta.TarjontaAsyncResource;
 import fi.vm.sade.valintalaskenta.runner.resource.external.tarjonta.dto.KoutaHaku;
@@ -36,9 +36,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class TarjontaAsyncResourceImpl implements TarjontaAsyncResource {
   private final UrlConfiguration urlConfiguration = UrlConfiguration.getInstance();
-  private final HttpClient client;
-  private final RestCasClient koutaClient;
-  private final RestCasClient hakukohderyhmapalveluClient;
+  private final RunnerHttpClient client;
+  private final RunnerRestCasClient koutaClient;
+  private final RunnerRestCasClient hakukohderyhmapalveluClient;
 
   private final Integer KOUTA_OID_LENGTH = 35;
 
@@ -49,9 +49,10 @@ public class TarjontaAsyncResourceImpl implements TarjontaAsyncResource {
 
   @Autowired
   public TarjontaAsyncResourceImpl(
-      @Qualifier("TarjontaHttpClient") HttpClient client,
-      @Qualifier("KoutaCasClient") RestCasClient koutaClient,
-      @Qualifier("HakukohderyhmapalveluCasClient") RestCasClient hakukohderyhmapalveluClient) {
+      @Qualifier("TarjontaHttpClient") RunnerHttpClient client,
+      @Qualifier("KoutaCasClient") RunnerRestCasClient koutaClient,
+      @Qualifier("HakukohderyhmapalveluCasClient")
+          RunnerRestCasClient hakukohderyhmapalveluClient) {
     this.client = client;
     this.koutaClient = koutaClient;
     this.hakukohderyhmapalveluClient = hakukohderyhmapalveluClient;

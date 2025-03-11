@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-public class HttpClients {
+public class RunnerHttpClients {
   public static final String CALLER_ID = "1.2.246.562.10.00000000001.valintalaskentakoostepalvelu";
 
   @Bean
@@ -23,12 +23,12 @@ public class HttpClients {
 
   @Profile({"default", "dev"})
   @Bean(name = "KoostepalveluCasClient")
-  public RestCasClient getKoostepalveluCasClient(
+  public RunnerRestCasClient getKoostepalveluCasClient(
       @Value("${cas.service.koostepalvelu}") String service,
       @Value("${valintalaskentakoostepalvelu.app.username.to.valintatieto}") String username,
       @Value("${valintalaskentakoostepalvelu.app.password.to.valintatieto}") String password) {
     String ticketsUrl = UrlConfiguration.getInstance().url("cas.tickets");
-    return new RestCasClient(
+    return new RunnerRestCasClient(
         new CasConfig.CasConfigBuilder(
                 username, password, ticketsUrl, service, CSRF_VALUE, CALLER_ID, "")
             .setJsessionName("JSESSIONID")
@@ -36,21 +36,21 @@ public class HttpClients {
   }
 
   @Bean(name = "TarjontaHttpClient")
-  public HttpClient getTarjontaHttpClient(CookieManager cookieManager) {
-    return new HttpClient(
+  public RunnerHttpClient getTarjontaHttpClient(CookieManager cookieManager) {
+    return new RunnerHttpClient(
         defaultHttpClientBuilder(cookieManager).build(), TarjontaAsyncResourceImpl.getGson());
   }
 
   @Profile({"default", "dev"})
   @Bean(name = "HakukohderyhmapalveluCasClient")
-  public RestCasClient getHakukohderyhmapalveluCasClient(
+  public RunnerRestCasClient getHakukohderyhmapalveluCasClient(
       @Value("${valintalaskentakoostepalvelu.app.username.to.hakukohderyhmapalvelu}")
           String username,
       @Value("${valintalaskentakoostepalvelu.app.password.to.hakukohderyhmapalvelu}")
           String password) {
     String ticketsUrl = UrlConfiguration.getInstance().url("cas.tickets");
     String service = UrlConfiguration.getInstance().url("hakukohderyhmapalvelu.auth.login");
-    return new RestCasClient(
+    return new RunnerRestCasClient(
         new CasConfig.CasConfigBuilder(
                 username, password, ticketsUrl, service, CSRF_VALUE, CALLER_ID, "")
             .setJsessionName("ring-session")
@@ -59,12 +59,12 @@ public class HttpClients {
 
   @Profile({"default", "dev"})
   @Bean(name = "KoutaCasClient")
-  public RestCasClient getKoutaCasClient(
+  public RunnerRestCasClient getKoutaCasClient(
       @Value("${valintalaskentakoostepalvelu.app.username.to.kouta-internal}") String username,
       @Value("${valintalaskentakoostepalvelu.app.password.to.kouta-internal}") String password) {
     String ticketsUrl = UrlConfiguration.getInstance().url("cas.tickets");
     String service = UrlConfiguration.getInstance().url("kouta-internal.auth.login");
-    return new RestCasClient(
+    return new RunnerRestCasClient(
         new CasConfig.CasConfigBuilder(
                 username, password, ticketsUrl, service, CSRF_VALUE, CALLER_ID, "")
             .setJsessionName("session")
@@ -72,19 +72,19 @@ public class HttpClients {
   }
 
   @Bean(name = "OrganisaatioHttpClient")
-  public HttpClient getOrganisaatioHttpClient(CookieManager cookieManager) {
-    return new HttpClient(
+  public RunnerHttpClient getOrganisaatioHttpClient(CookieManager cookieManager) {
+    return new RunnerHttpClient(
         defaultHttpClientBuilder(cookieManager).build(), DateDeserializer.gsonBuilder().create());
   }
 
   @Profile({"default", "dev"})
   @Bean(name = "ValintaperusteetCasClient")
-  public RestCasClient getValintaperusteetCasClient(
+  public RunnerRestCasClient getValintaperusteetCasClient(
       @Value("${cas.service.valintaperusteet-service}") String service,
       @Value("${valintalaskentakoostepalvelu.app.username.to.valintatieto}") String username,
       @Value("${valintalaskentakoostepalvelu.app.password.to.valintatieto}") String password) {
     String ticketsUrl = UrlConfiguration.getInstance().url("cas.tickets");
-    return new RestCasClient(
+    return new RunnerRestCasClient(
         new CasConfig.CasConfigBuilder(
                 username,
                 password,
