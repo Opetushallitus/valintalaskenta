@@ -1,6 +1,6 @@
 package fi.vm.sade.valintalaskenta.runner.resource.external.organisaatio.impl;
 
-import fi.vm.sade.valintalaskenta.runner.resource.external.HttpClient;
+import fi.vm.sade.valintalaskenta.runner.resource.external.RunnerHttpClient;
 import fi.vm.sade.valintalaskenta.runner.resource.external.UrlConfiguration;
 import fi.vm.sade.valintalaskenta.runner.resource.external.organisaatio.OrganisaatioAsyncResource;
 import java.io.IOException;
@@ -13,11 +13,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class OrganisaatioAsyncResourceImpl implements OrganisaatioAsyncResource {
-  private final HttpClient client;
+  private final RunnerHttpClient client;
   private final UrlConfiguration urlConfiguration;
 
   @Autowired
-  public OrganisaatioAsyncResourceImpl(@Qualifier("OrganisaatioHttpClient") HttpClient client) {
+  public OrganisaatioAsyncResourceImpl(
+      @Qualifier("OrganisaatioHttpClient") RunnerHttpClient client) {
     this.client = client;
     this.urlConfiguration = UrlConfiguration.getInstance();
   }

@@ -19,9 +19,9 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HttpClient {
+public class RunnerHttpClient {
 
-  private static final Logger LOG = LoggerFactory.getLogger(HttpClient.class);
+  private static final Logger LOG = LoggerFactory.getLogger(RunnerHttpClient.class);
 
   private static final String CALLER_ID = "1.2.246.562.10.00000000001.valintalaskenta";
   private static final String CSRF_VALUE = "CSRF";
@@ -29,7 +29,7 @@ public class HttpClient {
   private final java.net.http.HttpClient client;
   private final Gson gson;
 
-  public HttpClient(java.net.http.HttpClient client, Gson gson) {
+  public RunnerHttpClient(java.net.http.HttpClient client, Gson gson) {
     this.client = client;
     this.gson = gson;
   }
