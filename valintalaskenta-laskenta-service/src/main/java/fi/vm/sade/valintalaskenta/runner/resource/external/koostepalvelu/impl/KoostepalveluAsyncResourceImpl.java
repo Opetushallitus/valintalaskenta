@@ -3,7 +3,7 @@ package fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.impl;
 import com.google.gson.reflect.TypeToken;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
-import fi.vm.sade.valintalaskenta.runner.resource.external.RestCasClient;
+import fi.vm.sade.valintalaskenta.runner.resource.external.RunnerRestCasClient;
 import fi.vm.sade.valintalaskenta.runner.resource.external.UrlConfiguration;
 import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.KoostepalveluAsyncResource;
 import java.util.*;
@@ -13,13 +13,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class KoostepalveluAsyncResourceImpl implements KoostepalveluAsyncResource {
-  private final RestCasClient httpClient;
+  private final RunnerRestCasClient httpClient;
 
   private final UrlConfiguration urlConfiguration;
 
   @Autowired
   public KoostepalveluAsyncResourceImpl(
-      @Qualifier("KoostepalveluCasClient") RestCasClient httpClient) {
+      @Qualifier("KoostepalveluCasClient") RunnerRestCasClient httpClient) {
     this.httpClient = httpClient;
     this.urlConfiguration = UrlConfiguration.getInstance();
   }

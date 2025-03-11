@@ -25,7 +25,7 @@ public interface SeurantaDao {
    * @param nimi laskennan nimi (raportointinäkymää varten)
    * @param hakuOid haun tunniste
    * @param tyyppi haun tyyppi
-   * @param erillishaku onko kyseessä erillishaku
+   * @param erillishaku onko kyseessä erillishaku (haku joka ei käytä laskentaa eikä sijoittelua)
    * @param valinnanvaihe laskettava valinnanvaihe (empty tarkoittaa että lasketaan kaikki vaiheet)
    * @param valintakoelaskenta onko kyseessä valintakoelaskenta
    * @param hakukohdeOids laskettavat hakukohteet

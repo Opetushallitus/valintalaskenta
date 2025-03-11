@@ -1,12 +1,13 @@
 package fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.impl;
 
-import fi.vm.sade.valintalaskenta.runner.resource.external.RestCasClient;
+import fi.vm.sade.valintalaskenta.runner.resource.external.RunnerRestCasClient;
 
 public class LahtotiedotException extends RuntimeException {
 
   private static String getMessage(Throwable cause) {
-    if (cause instanceof RestCasClient.RestCasClientException) {
-      RestCasClient.RestCasClientException e = (RestCasClient.RestCasClientException) cause;
+    if (cause instanceof RunnerRestCasClient.RestCasClientException) {
+      RunnerRestCasClient.RestCasClientException e =
+          (RunnerRestCasClient.RestCasClientException) cause;
       if (e.getResponse().hasResponseBody()) {
         return e.getResponse().getResponseBody();
       }
