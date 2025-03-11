@@ -19,18 +19,18 @@ import org.asynchttpclient.Response;
  * Wrapper-luokka CasClietille. Tätä käytetään jotta Spring Boot -migraation yhteydessä testien
  * mock-lähestymistapaa ei jouduttu refaktoroimaan isosti.
  */
-public class RestCasClient {
+public class RunnerRestCasClient {
 
   private static final String CALLER_ID = "1.2.246.562.10.00000000001.valintalaskentakoostepalvelu";
   private static final String CSRF_VALUE = "CSRF";
 
   private Function<Request, CompletableFuture<Response>> executor;
 
-  public RestCasClient(CasConfig casConfig) {
+  public RunnerRestCasClient(CasConfig casConfig) {
     this(casConfig, DateDeserializer.gsonBuilder().create());
   }
 
-  public RestCasClient(CasConfig casConfig, Gson gson) {
+  public RunnerRestCasClient(CasConfig casConfig, Gson gson) {
     CasClient casClient = CasClientBuilder.build(casConfig);
     this.executor =
         request ->
@@ -38,7 +38,7 @@ public class RestCasClient {
     this.gson = gson;
   }
 
-  protected RestCasClient(Function<Request, CompletableFuture<Response>> executor) {
+  protected RunnerRestCasClient(Function<Request, CompletableFuture<Response>> executor) {
     this.executor = executor;
     this.gson = DateDeserializer.gsonBuilder().create();
   }
