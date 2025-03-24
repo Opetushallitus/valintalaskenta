@@ -18,14 +18,12 @@ import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
-import fi.vm.sade.valintalaskenta.laskenta.resource.filter.CorsResponseFilter;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
 import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogImpl;
 import java.util.List;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
@@ -38,7 +36,6 @@ import org.springframework.context.annotation.Configuration;
     basePackages = {"fi.vm.sade.valintalaskenta.laskenta", "fi.vm.sade.valintalaskenta.tulos"})
 public class ValintalaskentaLaskentaConfiguration {
   @Bean("valintalaskentaResourceImpl")
-  @Autowired
   public ValintalaskentaResourceImpl valintalaskentaResourceImpl(
       final ValintalaskentaService valintalaskentaService,
       final ValisijoitteluKasittelija valisijoitteluKasittelija,
@@ -182,11 +179,6 @@ public class ValintalaskentaLaskentaConfiguration {
               clientReceiveTimeout);
       return result;
     };
-  }
-
-  @Bean
-  public CorsResponseFilter corsResponseFilter() {
-    return new CorsResponseFilter();
   }
 
   @Bean
