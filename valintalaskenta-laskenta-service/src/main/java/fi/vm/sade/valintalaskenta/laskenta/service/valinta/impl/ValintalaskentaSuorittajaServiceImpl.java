@@ -657,9 +657,11 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
     List<Valintatapajono> saastettavat = new ArrayList<>();
     List<Valintatapajono> poistettavat = new ArrayList<>();
     for (Valintatapajono jono : valinnanvaihe.getValintatapajonot()) {
+      jono.setLastModified(new Date());
       if (!jononTulostaEiSaaLaskeaUudestaan(jono, valinnanvaiheValintaperusteissa)
           && (jono.getKaytetaanValintalaskentaa() == null || jono.getKaytetaanValintalaskentaa())) {
         for (Jonosija jonosija : jono.getJonosijat()) {
+          jonosija.setLastModified(new Date());
           for (Jarjestyskriteeritulos tulos :
               jonosija.getJarjestyskriteeritulokset().jarjestyskriteeritulokset) {
             jarjestyskriteerihistoriaDAO.createVersionWithUpdate(tulos.getHistoria());
