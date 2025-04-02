@@ -117,6 +117,11 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
       }
       final Valinnanvaihe viimeisinVaihe =
           getViimeisinValinnanVaihe(hakukohdeOid, jarjestysnumero, hakuOid, edellinenVaihe);
+      LOG.info(
+          "(Uuid={}) Viimeisin valinnanvaihe: id {}",
+          uuid,
+          viimeisinVaihe != null ? viimeisinVaihe.getId() : "null");
+
       Valinnanvaihe valinnanvaihe =
           haeTaiLuoValinnanvaihe(valinnanvaiheOid, hakuOid, hakukohdeOid, jarjestysnumero, vaihe);
       valinnanvaihe.setHakukohdeOid(hakukohdeOid);
@@ -125,15 +130,19 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
       valinnanvaihe.setValinnanVaiheOid(valinnanvaiheOid);
       valinnanvaihe.setTarjoajaOid(vp.getTarjoajaOid());
       valinnanvaihe.setNimi(vp.getValinnanVaihe().getNimi());
+      LOG.info("(Uuid={}) Hae tai luo valinnanvaihe: valinnanvaiheOid {}", uuid, valinnanvaiheOid);
 
       heitaPoikkeusJosValintatapajonoJaaIlmanTuloksia(uuid, vaihe, valinnanvaihe);
 
       boolean edellinenValinnanvaiheOnOlemassa =
           valintakoeOsallistuminenDAO.onkoEdeltavaValinnanvaiheOlemassa(
               hakuOid, hakukohdeOid, jarjestysnumero);
+      LOG.info(
+          "(Uuid={}) Edellinen valinnanvaihe olemassa: {}", uuid, edellinenValinnanvaiheOnOlemassa);
 
       searchForPassives("PRE", valinnanvaihe, hakemukset);
 
+      LOG.info("(Uuid={}) Laske valintatapajonot", uuid);
       laskeValintatapajonot(
           hakukohdeOid,
           uuid,
@@ -149,6 +158,7 @@ public class ValintalaskentaSuorittajaServiceImpl implements ValintalaskentaSuor
           korkeakouluhaku);
 
       searchForPassives("POST ", valinnanvaihe, hakemukset);
+      LOG.info("(Uuid={}) Tallenna valinnanvaihe: valinnanvaiheOid {}", uuid, valinnanvaiheOid);
       valinnanvaiheDAO.saveOrUpdate(valinnanvaihe);
     }
 
