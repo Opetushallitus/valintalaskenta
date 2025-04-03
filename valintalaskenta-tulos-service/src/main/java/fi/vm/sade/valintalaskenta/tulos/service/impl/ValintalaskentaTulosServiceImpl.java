@@ -283,9 +283,7 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     }
     if (jonosijaMuokattu) {
       jonosijaDTO.setMuokattu(true);
-      if (safeCheckDateIsAfter(muokattuJonosija.getLastModified(), jonosijaDTO.getLastModified())) {
-        jonosijaDTO.setLastModified(muokattuJonosija.getLastModified());
-      }
+      jonosijaDTO.setLastModified(muokattuJonosija.getLastModified());
     }
   }
 
@@ -333,6 +331,15 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     List<ValintatietoValinnanvaiheDTO> valintatietoValinnanVaihes =
         valintatulosConverter.convertValinnanvaiheList(valinnanVaihes);
     applyMuokatutJonosijatToValinnanvaihe(hakukohdeoid, valintatietoValinnanVaihes);
+    for (ValintatietoValinnanvaiheDTO vv : valintatietoValinnanVaihes) {
+      for (ValintatietoValintatapajonoDTO vtj : vv.getValintatapajonot()) {
+        for (JonosijaDTO jonosija : vtj.getJonosijat()) {
+          if (jonosija.getLastModified() == null) {
+            jonosija.setLastModified(vtj.getLastModified());
+          }
+        }
+      }
+    }
     return valintatulosConverter.convertValinnanvaiheListForSiirtotiedosto(
         valintatietoValinnanVaihes);
   }
