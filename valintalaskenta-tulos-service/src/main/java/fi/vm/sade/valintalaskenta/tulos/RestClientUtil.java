@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.reflect.TypeToken;
 import fi.vm.sade.javautils.nio.cas.CasClient;
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +29,8 @@ public class RestClientUtil {
             .setUrl(url)
             .setMethod(method)
             .addHeader("Accept", "application/json")
-            .setRequestTimeout(120000)
-            .setReadTimeout(120000);
+            .setRequestTimeout(Duration.ofMillis(120000))
+            .setReadTimeout(Duration.ofMillis(120000));
     if (queryParams != null) {
       requestBuilder.setQueryParams(queryParams);
     }
@@ -56,8 +57,8 @@ public class RestClientUtil {
         execute(
             casClient,
             request(url, "GET", queryParams)
-                .setRequestTimeout(requestTimeout != null ? requestTimeout : 0)
-                .setReadTimeout(readTimeout != null ? readTimeout : 0)
+                .setRequestTimeout(Duration.ofMillis(requestTimeout != null ? requestTimeout : 0))
+                .setReadTimeout(Duration.ofMillis(readTimeout != null ? readTimeout : 0))
                 .build());
     if (response.getStatusCode() == 200) {
       return GSON.fromJson(response.getResponseBody(), typeToken.getType());
@@ -80,8 +81,8 @@ public class RestClientUtil {
             request(url, "POST", null)
                 .setBody(GSON.toJson(body))
                 .addHeader("Content-Type", "application/json")
-                .setRequestTimeout(requestTimeout != null ? requestTimeout : 0)
-                .setReadTimeout(readTimeout != null ? readTimeout : 0)
+                .setRequestTimeout(Duration.ofMillis(requestTimeout != null ? requestTimeout : 0))
+                .setReadTimeout(Duration.ofMillis(readTimeout != null ? readTimeout : 0))
                 .build());
     if (response.getStatusCode() == 200) {
       return GSON.fromJson(response.getResponseBody(), typeToken.getType());
