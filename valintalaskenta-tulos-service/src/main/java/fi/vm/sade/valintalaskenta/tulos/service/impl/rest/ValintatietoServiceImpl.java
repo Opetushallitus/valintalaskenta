@@ -109,7 +109,7 @@ public class ValintatietoServiceImpl implements ValintatietoService {
           valintaperusteet) {
     try {
       List<HakukohdeDTO> kohteet = new ArrayList<>();
-      jonot.keySet().parallelStream()
+      jonot.keySet().stream()
           .forEach(
               oid -> {
                 Optional<HakukohdeDTO> kohde =
