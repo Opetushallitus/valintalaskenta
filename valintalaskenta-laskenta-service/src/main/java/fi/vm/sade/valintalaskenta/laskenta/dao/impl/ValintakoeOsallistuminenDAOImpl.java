@@ -4,6 +4,7 @@ import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintakoeOsallistuminenDAO;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.ValintakoeOsallistuminenRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminenDAO {
@@ -20,6 +21,7 @@ public class ValintakoeOsallistuminenDAOImpl implements ValintakoeOsallistuminen
   }
 
   @Override
+  @Transactional
   public void createOrUpdate(ValintakoeOsallistuminen v) {
     repo.save(v);
   }

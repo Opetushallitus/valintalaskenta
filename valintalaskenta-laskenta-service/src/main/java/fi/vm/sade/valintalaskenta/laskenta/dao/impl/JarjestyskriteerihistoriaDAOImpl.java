@@ -6,6 +6,7 @@ import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosJarjestyskriteerihis
 import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class JarjestyskriteerihistoriaDAOImpl implements JarjestyskriteerihistoriaDAO {
@@ -18,6 +19,7 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
   }
 
   @Override
+  @Transactional
   public void create(Jarjestyskriteerihistoria jarjestyskriteerihistoria) {
     if (jarjestyskriteerihistoria.getTunniste() == null) {
       jarjestyskriteerihistoria.setTunniste(UUID.randomUUID());
@@ -26,6 +28,7 @@ public class JarjestyskriteerihistoriaDAOImpl implements Jarjestyskriteerihistor
   }
 
   @Override
+  @Transactional
   public void createVersionWithUpdate(UUID tunniste) {
     Jarjestyskriteerihistoria historia = new Jarjestyskriteerihistoria();
     historia.setTunniste(tunniste);
