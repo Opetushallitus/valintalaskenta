@@ -58,7 +58,7 @@ public class ValintaperusteetAsyncResourceImpl implements ValintaperusteetAsyncR
       String hakukohdeOid, Optional<Integer> valinnanVaiheJarjestysluku) {
     List<Object> parameters = new LinkedList<>();
     parameters.add(hakukohdeOid);
-    if (valinnanVaiheJarjestysluku.isPresent()) {
+    if (valinnanVaiheJarjestysluku.isPresent() && valinnanVaiheJarjestysluku.get() != -1) {
       Map<String, String> vaiheParameter = new HashMap<>();
       vaiheParameter.put("vaihe", valinnanVaiheJarjestysluku.get().toString());
       parameters.add(vaiheParameter);
