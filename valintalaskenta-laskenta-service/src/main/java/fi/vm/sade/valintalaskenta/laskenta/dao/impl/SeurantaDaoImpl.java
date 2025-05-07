@@ -437,7 +437,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
                           + "AND seuranta_laskennat.tila<>? "
                           + "ORDER BY seuranta_laskennat.luotu ASC, hakukohdeoid ASC "
                           + "LIMIT 1 "
-                          + "FOR UPDATE",
+                          + "FOR UPDATE OF seuranta_laskennat, seuranta_laskenta_hakukohteet",
                       (rs, rowNum) ->
                           new ImmutablePair<>(
                               UUID.fromString(rs.getString("laskenta_uuid")),
@@ -488,18 +488,14 @@ public class SeurantaDaoImpl implements SeurantaDao {
         });
   }
 
-  private void lukitseHakukohteet(UUID uuid) {
-    // Lukitaan hakukohteet (aina samassa järjestyksessa ettei tule deadlockeja). Jos tätä ei tehdä
-    // voi käydä niin että
-    // jos useampaa hakukohdetta merkitään käsitellyksi yhtä aikaa, kaikki näkevät toisensa olevan
-    // vielä kesken ja
-    // laskentaa ei merkitä valmiiksi vaikka hakukohteita ei enää olisi laskematta.
+  private void lukitseLaskenta(UUID uuid) {
+    // Lukitaan laskenta. Jos tätä ei tehdä voi käydä niin että jos useampaa hakukohdetta merkitään
+    // käsitellyksi tms.
+    // yhtä aikaa, kaikki näkevät toisensa olevan vielä kesken ja laskentaa ei merkitä valmiiksi
+    // vaikka hakukohteita
+    // ei enää olisi laskematta.
     this.jdbcTemplate.query(
-        "SELECT hakukohdeoid "
-            + "FROM seuranta_laskenta_hakukohteet "
-            + "WHERE laskenta_uuid=? "
-            + "ORDER BY hakukohdeoid "
-            + "FOR UPDATE",
+        "SELECT 1 " + "FROM seuranta_laskennat " + "WHERE uuid=? " + "FOR UPDATE",
         (rs, rowNum) -> null,
         uuid);
   }
@@ -557,7 +553,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
   public void merkkaaHakukohteetValmiiksi(UUID uuid, Collection<String> hakukohdeOids) {
     this.transactionTemplate.executeWithoutResult(
         t -> {
-          this.lukitseHakukohteet(uuid);
+          this.lukitseLaskenta(uuid);
 
           Map<String, HakukohdeTila> tilat = this.haeHakukohteidenTilat(uuid, hakukohdeOids);
 
@@ -620,7 +616,7 @@ public class SeurantaDaoImpl implements SeurantaDao {
       UUID uuid, Collection<String> hakukohdeOids, int maxYritykset, String message) {
     this.transactionTemplate.executeWithoutResult(
         t -> {
-          this.lukitseHakukohteet(uuid);
+          this.lukitseLaskenta(uuid);
 
           Map<String, HakukohdeTila> tilat = this.haeHakukohteidenTilat(uuid, hakukohdeOids);
           Collection<String> eiOlemassa =
