@@ -1,6 +1,6 @@
 package fi.vm.sade.valintalaskenta.testing;
 
-import fi.vm.sade.valintalaskenta.laskenta.App;
+import fi.vm.sade.valintalaskenta.App;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.*;
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosHarkinnanvarainenHyvaksyminenRepository;
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosJarjestyskriteerihistoriaRepository;
@@ -17,7 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     classes = {App.class},
     args = {"--add-opens=java.base/java.lang=ALL-UNNAMED"})
-@Import(TestConfigurationWithMocks.class)
+@Import({TestConfigurationWithMocks.class, KoosteTestProfileConfiguration.class})
 @ActiveProfiles("test")
 public abstract class AbstractIntegrationTest {
 
