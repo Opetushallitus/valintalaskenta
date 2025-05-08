@@ -256,8 +256,8 @@
 
             <dependency>
                 <groupId>ch.qos.logback.access</groupId>
-                <artifactId>tomcat</artifactId>
-                <version>2.0.3</version>
+                <artifactId>logback-access-tomcat</artifactId>
+                <version>2.0.6</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
