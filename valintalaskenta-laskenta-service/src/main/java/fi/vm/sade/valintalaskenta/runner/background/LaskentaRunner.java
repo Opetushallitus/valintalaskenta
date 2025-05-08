@@ -14,11 +14,13 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /** Luokka joka sisältää laskentojen ajotoiminnallisuuden. */
 @Service
+@Profile("!test")
 public class LaskentaRunner {
   private static final Logger LOG = LoggerFactory.getLogger(LaskentaRunner.class);
 

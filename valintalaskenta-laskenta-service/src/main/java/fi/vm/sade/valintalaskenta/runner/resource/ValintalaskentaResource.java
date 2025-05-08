@@ -103,7 +103,7 @@ public class ValintalaskentaResource {
               nimi,
               LaskentaTyyppi.HAKU,
               valintakoelaskenta,
-              valinnanvaihe.flatMap(vaihe -> vaihe == -1 ? Optional.empty() : Optional.of(vaihe)),
+              valinnanvaihe,
               hakuOid,
               Optional.empty(),
               erillishaku,
