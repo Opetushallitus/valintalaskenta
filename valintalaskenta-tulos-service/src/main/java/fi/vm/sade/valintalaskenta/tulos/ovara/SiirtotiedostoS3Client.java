@@ -29,7 +29,7 @@ public class SiirtotiedostoS3Client {
       @Value("${aws.region}") final String awsRegion,
       @Value("${aws.siirtotiedosto.bucket-name}") final String s3Bucket,
       @Value("${aws.siirtotiedosto.bucket-target-role-arn}") final String s3TargetRoleArn,
-      @Value("${aws.siirtotiedosto.max-valinnanvihe-count-in-file}")
+      @Value("${aws.siirtotiedosto.max-valinnanvaihe-count-in-file}")
           final int maxValinnanvaiheCountInFile,
       @Value("${aws.siirtotiedosto.max-hakemus-count-in-file}") final int maxHakemusCountInFile) {
     this.siirtotiedostoPalvelu = new SiirtotiedostoPalvelu(awsRegion, s3Bucket, s3TargetRoleArn);
