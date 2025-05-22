@@ -28,6 +28,11 @@ public class TulosValinnanvaiheDAOImpl implements TulosValinnanvaiheDAO {
   }
 
   @Override
+  public List<Valinnanvaihe> readByValinnanvaiheOids(List<String> valinnanvaiheOids) {
+    return repo.findDistinctValinnanvaihesByValinnanvaiheOids(valinnanvaiheOids);
+  }
+
+  @Override
   public List<Valinnanvaihe> readByHakuOid(String hakuoid) {
     return repo.findDistinctValinnanvaihesByHakuOidAsList(hakuoid);
   }
@@ -80,10 +85,10 @@ public class TulosValinnanvaiheDAOImpl implements TulosValinnanvaiheDAO {
   }
 
   @Override
-  public List<String> readNewOrModifiedHakukohdeOids(
+  public List<String> readNewOrModifiedValinnanvaiheOids(
       LocalDateTime startDatetime, LocalDateTime endDatatime) {
     return startDatetime != null
-        ? repo.findHakukohdeOidsByTimeRange(startDatetime, endDatatime)
-        : repo.findHakukohdeOidsByEndTime(endDatatime);
+        ? repo.findValinnanvaiheOidsByTimeRange(startDatetime, endDatatime)
+        : repo.findValinnanvaiheOidsByEndTime(endDatatime);
   }
 }

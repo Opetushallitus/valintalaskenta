@@ -188,6 +188,23 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     applyMuokatutJonosijat(hakukohdeoid, b, a, c);
   }
 
+  private void applyMuokatutJonosijatToValinnanvaihe(
+      List<ValintatietoValinnanvaiheDTO> valinnanvaiheet) {
+    valinnanvaiheet.forEach(
+        valinnanvaihe -> {
+          String hakukohdeOid = valinnanvaihe.getHakukohdeOid();
+          List<MuokattuJonosija> muokatutJonosjat =
+              muokattuJonosijaDAO.readByhakukohdeOid(hakukohdeOid);
+          List<HarkinnanvarainenHyvaksyminen> harkinnanvaraisetHyvaksymiset =
+              harkinnanvarainenHyvaksyminenDAO.haeHarkinnanvarainenHyvaksyminen(hakukohdeOid);
+          applyMuokatutJonosijat(
+              hakukohdeOid,
+              List.of(valinnanvaihe),
+              muokatutJonosjat,
+              harkinnanvaraisetHyvaksymiset);
+        });
+  }
+
   private void applyMuokatutJonosijatToHakukohde(String hakuOid, List<HakukohdeDTO> b) {
     LOGGER.info("Haetaan muokatut jonosijat {}!", hakuOid);
     List<MuokattuJonosija> a = muokattuJonosijaDAO.readByHakuOid(hakuOid);
@@ -327,12 +344,13 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
   }
 
   @Override
-  public List<ValintatietoValinnanvaiheSiirtotiedostoDTO>
-      haeValinnanvaiheetHakukohteelleForSiirtotiedosto(String hakukohdeoid) {
-    List<Valinnanvaihe> valinnanVaihes = tulosValinnanvaiheDAO.readByHakukohdeOid(hakukohdeoid);
+  public List<ValintatietoValinnanvaiheSiirtotiedostoDTO> haeValinnanvaiheetForSiirtotiedosto(
+      List<String> valinnanvaiheOids) {
+    List<Valinnanvaihe> valinnanVaihes =
+        tulosValinnanvaiheDAO.readByValinnanvaiheOids(valinnanvaiheOids);
     List<ValintatietoValinnanvaiheDTO> valintatietoValinnanVaihes =
         valintatulosConverter.convertValinnanvaiheList(valinnanVaihes);
-    applyMuokatutJonosijatToValinnanvaihe(hakukohdeoid, valintatietoValinnanVaihes);
+    applyMuokatutJonosijatToValinnanvaihe(valintatietoValinnanVaihes);
     return valintatulosConverter.convertValinnanvaiheListForSiirtotiedosto(
         valintatietoValinnanVaihes);
   }
