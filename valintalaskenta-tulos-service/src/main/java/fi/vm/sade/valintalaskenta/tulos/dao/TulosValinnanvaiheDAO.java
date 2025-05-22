@@ -11,6 +11,8 @@ import java.util.stream.Stream;
 public interface TulosValinnanvaiheDAO {
   List<Valinnanvaihe> readByHakukohdeOid(String hakukohdeoid);
 
+  List<Valinnanvaihe> readByValinnanvaiheOids(List<String> valinnanvaiheOids);
+
   List<Valinnanvaihe> readByHakuOid(String hakuoid);
 
   Stream<Valinnanvaihe> readByHakuOidStreaming(String hakuoid);
@@ -29,6 +31,6 @@ public interface TulosValinnanvaiheDAO {
 
   List<SijoitteluJonosija> haeJarjestyskriteerituloksetJonosijoillaHaulle(String hakuOid);
 
-  List<String> readNewOrModifiedHakukohdeOids(
+  List<String> readNewOrModifiedValinnanvaiheOids(
       LocalDateTime startDatetime, LocalDateTime endDatatime);
 }

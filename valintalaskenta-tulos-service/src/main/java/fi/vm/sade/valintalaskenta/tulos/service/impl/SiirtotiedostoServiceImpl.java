@@ -91,19 +91,15 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
   public JsonObject createSiirtotiedostotForValintalaskennanTulokset(
       LocalDateTime startDatetime, LocalDateTime endDatatime) {
     String opId = UUID.randomUUID().toString();
-    List<String> hakukohdeOids =
-        tulosValinnanvaiheDAO.readNewOrModifiedHakukohdeOids(startDatetime, endDatatime);
+    List<String> valinnanvaiheOids =
+        tulosValinnanvaiheDAO.readNewOrModifiedValinnanvaiheOids(startDatetime, endDatatime);
     List<List<String>> partitions =
-        Lists.partition(hakukohdeOids, siirtotiedostoS3Client.getMaxHakukohdeCountInFile());
+        Lists.partition(valinnanvaiheOids, siirtotiedostoS3Client.getMaxValinnanvaiheCountInFile());
     List<String> siirtotiedostoKeys = new ArrayList<>();
-    for (List<String> hakekohdeOidChunk : partitions) {
+    for (List<String> valinnanvaiheOidChunk : partitions) {
       List<List<ValintatietoValinnanvaiheSiirtotiedostoDTO>> tulokset = new ArrayList<>();
-      for (String hakukohdeOid : hakekohdeOidChunk) {
-
-        tulokset.add(
-            valintalaskentaTulosService.haeValinnanvaiheetHakukohteelleForSiirtotiedosto(
-                hakukohdeOid));
-      }
+      tulokset.add(
+          valintalaskentaTulosService.haeValinnanvaiheetForSiirtotiedosto(valinnanvaiheOidChunk));
       siirtotiedostoKeys.add(
           siirtotiedostoS3Client.createSiirtotiedostoForTulosdata(
               tulokset.stream().flatMap(List::stream).collect(Collectors.toList()),
@@ -113,9 +109,9 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
     }
     LOGGER.info(
         "Kirjoitettiin yhteensä {} valintalaskennan tulosta {} siirtotiedostoon.",
-        hakukohdeOids.size(),
+        valinnanvaiheOids.size(),
         siirtotiedostoKeys.size());
-    return resultJson(siirtotiedostoKeys, hakukohdeOids.size());
+    return resultJson(siirtotiedostoKeys, valinnanvaiheOids.size());
   }
 
   private JsonObject resultJson(List<String> siirtotiedostoKeys, int itemCount) {

@@ -16,7 +16,8 @@ public class ValintatietoValinnanvaiheDTO extends ValinnanvaiheDTO {
       String nimi,
       Date createdAt,
       List<ValintatietoValintatapajonoDTO> valintatapajonot,
-      List<ValintakoeDTO> valintakokeet) {
+      List<ValintakoeDTO> valintakokeet,
+      String hakukohdeOid) {
     super(
         jarjestysnumero,
         valinnanvaiheoid,
@@ -26,9 +27,12 @@ public class ValintatietoValinnanvaiheDTO extends ValinnanvaiheDTO {
         valintatapajonot,
         valintakokeet);
     this.valinnanvaihe = jarjestysnumero;
+    this.hakukohdeOid = hakukohdeOid;
   }
 
   private int valinnanvaihe;
+
+  private String hakukohdeOid;
 
   @Schema(hidden = true, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   private Date lastModified;
@@ -47,5 +51,13 @@ public class ValintatietoValinnanvaiheDTO extends ValinnanvaiheDTO {
 
   public Date getLastModified() {
     return lastModified;
+  }
+
+  public String getHakukohdeOid() {
+    return hakukohdeOid;
+  }
+
+  public void setHakukohdeOid(String hakukohdeOid) {
+    this.hakukohdeOid = hakukohdeOid;
   }
 }
