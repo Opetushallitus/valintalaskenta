@@ -26,8 +26,8 @@ public interface ValintalaskentaTulosService {
 
   List<ValintatietoValinnanvaiheDTO> haeValinnanvaiheetHakukohteelle(String hakukohdeoid);
 
-  List<ValintatietoValinnanvaiheSiirtotiedostoDTO> haeValinnanvaiheetHakukohteelleForSiirtotiedosto(
-      String hakukohdeoid);
+  List<ValintatietoValinnanvaiheSiirtotiedostoDTO> haeValinnanvaiheetForSiirtotiedosto(
+      List<String> valinnanvaiheOids);
 
   Optional<HakukohdeDTO> haeValinnanvaiheetHakukohteelleJaJonolle(
       String hakukohdeoid, List<String> valintatapajonot);

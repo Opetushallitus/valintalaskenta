@@ -17,10 +17,11 @@ import org.springframework.stereotype.Component;
 public class SiirtotiedostoS3Client {
   private static final Logger logger =
       LoggerFactory.getLogger(SiirtotiedostoS3Client.class.getName());
-  private static final Gson gson = new GsonBuilder().create();
+  private static final Gson gson =
+      new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
 
   private final SiirtotiedostoPalvelu siirtotiedostoPalvelu;
-  private final int maxHakukohdeCountInFile;
+  private final int maxValinnanvaiheCountInFile;
   private final int maxHakemusCountInFile;
 
   @Autowired
@@ -28,10 +29,11 @@ public class SiirtotiedostoS3Client {
       @Value("${aws.region}") final String awsRegion,
       @Value("${aws.siirtotiedosto.bucket-name}") final String s3Bucket,
       @Value("${aws.siirtotiedosto.bucket-target-role-arn}") final String s3TargetRoleArn,
-      @Value("${aws.siirtotiedosto.max-hakukohde-count-in-file}") final int maxHakukohdeCountInFile,
+      @Value("${aws.siirtotiedosto.max-valinnanvaihe-count-in-file}")
+          final int maxValinnanvaiheCountInFile,
       @Value("${aws.siirtotiedosto.max-hakemus-count-in-file}") final int maxHakemusCountInFile) {
     this.siirtotiedostoPalvelu = new SiirtotiedostoPalvelu(awsRegion, s3Bucket, s3TargetRoleArn);
-    this.maxHakukohdeCountInFile = maxHakukohdeCountInFile;
+    this.maxValinnanvaiheCountInFile = maxValinnanvaiheCountInFile;
     this.maxHakemusCountInFile = maxHakemusCountInFile;
   }
 
@@ -70,8 +72,8 @@ public class SiirtotiedostoS3Client {
     }
   }
 
-  public int getMaxHakukohdeCountInFile() {
-    return this.maxHakukohdeCountInFile;
+  public int getMaxValinnanvaiheCountInFile() {
+    return this.maxValinnanvaiheCountInFile;
   }
 
   public int getMaxHakemusCountInFile() {
