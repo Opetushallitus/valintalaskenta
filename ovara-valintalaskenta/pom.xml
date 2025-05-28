@@ -6,12 +6,12 @@
 
     <groupId>fi.vm.sade.valintaperusteet</groupId>
     <artifactId>ovara-valintalaskenta</artifactId>
-    <version>7.0.0-SNAPSHOT</version>
+    <version>7.1.0-SNAPSHOT</version>
 
     <parent>
         <groupId>fi.vm.sade.valintaperusteet</groupId>
         <artifactId>valintalaskenta</artifactId>
-        <version>7.0.0-SNAPSHOT</version>
+        <version>7.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -19,17 +19,17 @@
         <dependency>
             <groupId>fi.vm.sade.valintaperusteet</groupId>
             <artifactId>valintalaskenta-tulos-service</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
+            <version>7.1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.valintaperusteet</groupId>
             <artifactId>valintalaskenta-laskenta-service</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
+            <version>7.1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.valintaperusteet</groupId>
             <artifactId>valintalaskenta-domain</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
+            <version>7.1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
