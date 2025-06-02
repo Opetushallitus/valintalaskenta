@@ -22,7 +22,7 @@ public interface TulosValinnanvaiheRepository extends CrudRepository<Valinnanvai
 
   @Query(
       value =
-          "select distinct vv.* from Valinnanvaihe vv join Valintatapajono vtpjono on vtpjono.valinnanvaihe = vv.id join Jonosija js on js.valintatapajono = vtpjono.id where vv.oid in (:valinnanvaiheOids)")
+          "select distinct vv.* from Valinnanvaihe vv join Valintatapajono vtpjono on vtpjono.valinnanvaihe = vv.id join Jonosija js on js.valintatapajono = vtpjono.id where vv.valinnanvaihe_oid in (:valinnanvaiheOids)")
   List<Valinnanvaihe> findDistinctValinnanvaihesByValinnanvaiheOids(
       @Param("valinnanvaiheOids") List<String> valinnanvaiheOids);
 
