@@ -10,6 +10,7 @@ public class ValintatietoValinnanvaiheSiirtotiedostoDTO {
   private String hakuOid;
   private String nimi;
   private Date createdAt;
+  private String hakukohdeOid;
 
   private List<ValintatietoValintatapajonoSiirtotiedostoDTO> valintatapajonot = new ArrayList<>();
 
@@ -70,5 +71,13 @@ public class ValintatietoValinnanvaiheSiirtotiedostoDTO {
 
   public void setLastModified(String lastModified) {
     this.lastModified = lastModified;
+  }
+
+  public String getHakukohdeOid() {
+    return hakukohdeOid;
+  }
+
+  public void setHakukohdeOid(String hakukohdeOid) {
+    this.hakukohdeOid = hakukohdeOid;
   }
 }

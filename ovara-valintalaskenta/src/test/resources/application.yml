@@ -89,7 +89,7 @@ aws:
   siirtotiedosto:
     bucket-name: testi-siirtotiedostot
     bucket-target-role-arn: arn:aws:iam::xxxxxxxxxxxx:role/opintopolku-s3-cross-account-role
-    max-hakukohde-count-in-file: 10000
+    max-valinnanvaihe-count-in-file: 10000
     max-hakemus-count-in-file: 20000
 
 cas-service:

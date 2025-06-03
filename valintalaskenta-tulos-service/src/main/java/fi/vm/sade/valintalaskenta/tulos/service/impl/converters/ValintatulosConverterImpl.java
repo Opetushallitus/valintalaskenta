@@ -225,6 +225,7 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
     dto.setValintatapajonot(convertValintatapajono(valinnanvaihe.getValintatapajonot()));
     dto.setNimi(valinnanvaihe.getNimi());
     dto.setLastModified(valinnanvaihe.getLastModified());
+    dto.setHakukohdeOid(valinnanvaihe.getHakukohdeOid());
     return dto;
   }
 
