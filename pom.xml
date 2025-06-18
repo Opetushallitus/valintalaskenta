@@ -30,7 +30,7 @@
 
         <httpcomponents.version>4.5.14</httpcomponents.version>
         <modelmapper.version>3.2.1</modelmapper.version>
-        <spring.security.version>6.4.2</spring.security.version>
+        <spring.security.version>6.5.1</spring.security.version>
         <jackson.version>2.18.2</jackson.version>
 
         <maven.compiler.source>21</maven.compiler.source>
@@ -471,7 +471,7 @@
                                 <requireJavaVersion>
                                     <version>1.8</version>
                                 </requireJavaVersion>
-                                <dependencyConvergence />
+                                <dependencyConvergence/>
                             </rules>
                         </configuration>
                     </execution>
