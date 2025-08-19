@@ -85,7 +85,7 @@ public class ValintatapajonoResourceImpl {
   @PreAuthorize(UPDATE_CRUD)
   @Operation(summary = "Muokkaa jonosijan jarjestyskriteerejä")
   @PostMapping(
-      value = "/{valintatapajonoOid}/jonosija/jarjestyskriteerit",
+      value = "/{valintatapajonoOid}/{hakemusOid}/jonosija/jarjestyskriteerit",
       produces = MediaType.APPLICATION_JSON_VALUE,
       consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<MuokattuJonosijaDTO> muutaJonosijanKriteerit(
