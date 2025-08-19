@@ -5,14 +5,7 @@ import fi.vm.sade.auditlog.Changes;
 import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valinta.sharedutils.ValintaResource;
 import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
-import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.JarjestyskriteeritulosDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.JonoDto;
-import fi.vm.sade.valintalaskenta.domain.dto.JonosijaDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.ValintatietoValinnanvaiheSiirtotiedostoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.HakutoiveDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
@@ -35,6 +28,7 @@ import fi.vm.sade.valintalaskenta.tulos.service.AuthorizationUtil;
 import fi.vm.sade.valintalaskenta.tulos.service.ValintalaskentaTulosService;
 import fi.vm.sade.valintalaskenta.tulos.service.exception.EiOikeuttaPoistaaValintatapajonoaSijoittelustaException;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.converters.ValintatulosConverter;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -50,6 +44,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosService {
@@ -729,43 +724,27 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
       Integer jarjestyskriteeriPrioriteetti,
       MuokattuJonosijaArvoDTO jonosija,
       User auditUser) {
-    Valinnanvaihe valinnanvaihe =
-        tulosValinnanvaiheDAO.findByValintatapajonoOid(valintatapajonoOid);
-    MuokattuJonosija muokattuJonosija =
-        muokattuJonosijaDAO.readByValintatapajonoOid(valintatapajonoOid, hakemusOid);
-    if (muokattuJonosija == null) {
-      muokattuJonosija = new MuokattuJonosija();
-    }
-    muokattuJonosija.setHakemusOid(hakemusOid);
-    muokattuJonosija.setValintatapajonoOid(valintatapajonoOid);
-    muokattuJonosija.setHakuOid(valinnanvaihe.getHakuOid());
-    muokattuJonosija.setHakukohdeOid(valinnanvaihe.getHakukohdeOid());
+    MuokattuJonosija muokattuJonosija = haeTaiTeeMuokattuJonosija(valintatapajonoOid, hakemusOid);
 
-    Jarjestyskriteeritulos jarjestyskriteeritulos = null;
+    Jarjestyskriteeritulos jarjestyskriteeritulos =
+        muokattuJonosija.getJarjestyskriteerit().stream()
+            .filter(t -> t.getPrioriteetti() == jarjestyskriteeriPrioriteetti)
+            .findFirst()
+            .orElse(null);
+    ;
 
-    for (Jarjestyskriteeritulos tulos : muokattuJonosija.getJarjestyskriteerit()) {
-      if (tulos.getPrioriteetti() == jarjestyskriteeriPrioriteetti) {
-        jarjestyskriteeritulos = tulos;
-      }
-    }
     if (jarjestyskriteeritulos == null) {
       jarjestyskriteeritulos = new Jarjestyskriteeritulos();
-      jarjestyskriteeritulos.setPrioriteetti(jarjestyskriteeriPrioriteetti);
       muokattuJonosija.getJarjestyskriteerit().add(jarjestyskriteeritulos);
     }
 
-    Map<String, String> muokattuKasin = new HashMap<>();
-    if (jonosija.getSelite() != null && !jonosija.getSelite().isEmpty()) {
-      muokattuKasin.put("FI", jonosija.getSelite());
-    } else {
-      muokattuKasin.put("FI", "Muokattu käsin");
-    }
+    setMuokatutValuesToJarjestysKriteeri(
+        jarjestyskriteeritulos,
+        jarjestyskriteeriPrioriteetti,
+        jonosija.getArvo(),
+        jonosija.getSelite(),
+        jonosija.getTila());
 
-    jarjestyskriteeritulos.setKuvaus(muokattuKasin);
-    jarjestyskriteeritulos.setArvo(jonosija.getArvo());
-    jarjestyskriteeritulos.setTila(jonosija.getTila());
-
-    muokattuJonosija.setMuokkaaja(AuthorizationUtil.getCurrentUser());
     muokattuJonosija.setSelite(jonosija.getSelite());
     muokattuJonosija.setMuutos(
         "jarjestyskriteeriPrioriteetti: "
@@ -779,25 +758,68 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
     return muokattuJonosija;
   }
 
+  @Transactional
+  @Override
+  public MuokattuJonosija muutaJarjestyskriteerit(
+      String valintatapajonoOid,
+      String hakemusOid,
+      List<MuokattuJonosijaArvoPrioriteettiDTO> arvot,
+      User auditUser) {
+    MuokattuJonosija muokattuJonosija = haeTaiTeeMuokattuJonosija(valintatapajonoOid, hakemusOid);
+
+    for (MuokattuJonosijaArvoPrioriteettiDTO arvo : arvot) {
+      Jarjestyskriteeritulos jarjestyskriteeritulos =
+          muokattuJonosija.getJarjestyskriteerit().stream()
+              .filter(t -> t.getPrioriteetti() == arvo.getJarjestyskriteriPrioriteetti())
+              .findFirst()
+              .orElse(null);
+      if (jarjestyskriteeritulos == null) {
+        jarjestyskriteeritulos = new Jarjestyskriteeritulos();
+        muokattuJonosija.getJarjestyskriteerit().add(jarjestyskriteeritulos);
+      }
+      setMuokatutValuesToJarjestysKriteeri(
+          jarjestyskriteeritulos,
+          arvo.getJarjestyskriteriPrioriteetti(),
+          arvo.getArvo(),
+          arvo.getSelite(),
+          arvo.getTila());
+    }
+
+    muokattuJonosija.setSelite(arvot.get(0).getSelite());
+    List<String> muutos =
+        arvot.stream()
+            .map(
+                a ->
+                    "jarjestyskriteeriPrioriteetti: "
+                        + a.getJarjestyskriteriPrioriteetti()
+                        + " arvo: "
+                        + a.getArvo()
+                        + " tila: "
+                        + a.getTila().name())
+            .toList();
+    muokattuJonosija.setMuutos(String.join(", \n", muutos));
+    saveMuokattuJonosija(muokattuJonosija, auditUser);
+    return muokattuJonosija;
+  }
+
   @Override
   public MuokattuJonosija poistaMuokattuJonosija(
       String valintatapajonoOid,
       String hakemusOid,
       Integer jarjestyskriteeriPrioriteetti,
       User auditUser) {
-    MuokattuJonosija muokattuJonosija;
-    muokattuJonosija = muokattuJonosijaDAO.readByValintatapajonoOid(valintatapajonoOid, hakemusOid);
+    MuokattuJonosija muokattuJonosija =
+        muokattuJonosijaDAO.readByValintatapajonoOid(valintatapajonoOid, hakemusOid);
     if (muokattuJonosija == null) {
       return null;
-    } else {
-      Set<Jarjestyskriteeritulos> saastettavat =
-          muokattuJonosija.getJarjestyskriteerit().stream()
-              .filter(j -> j.getPrioriteetti() != jarjestyskriteeriPrioriteetti)
-              .collect(Collectors.toSet());
-      muokattuJonosija.setJarjestyskriteerit(saastettavat);
-      saveMuokattuJonosija(muokattuJonosija, auditUser);
-      return muokattuJonosija;
     }
+    Set<Jarjestyskriteeritulos> saastettavat =
+        muokattuJonosija.getJarjestyskriteerit().stream()
+            .filter(j -> j.getPrioriteetti() != jarjestyskriteeriPrioriteetti)
+            .collect(Collectors.toSet());
+    muokattuJonosija.setJarjestyskriteerit(saastettavat);
+    saveMuokattuJonosija(muokattuJonosija, auditUser);
+    return muokattuJonosija;
   }
 
   @Override
@@ -811,6 +833,41 @@ public class ValintalaskentaTulosServiceImpl implements ValintalaskentaTulosServ
   @Override
   public List<HakukohdeLaskentaTehty> haeLasketutHakukohteetHaulle(String hakuOid) {
     return tulosValinnanvaiheDAO.haeLasketutHakukohteetHaulle(hakuOid);
+  }
+
+  private void setMuokatutValuesToJarjestysKriteeri(
+      Jarjestyskriteeritulos jarjestyskriteeritulos,
+      Integer jarjestyskriteeriPrioriteetti,
+      BigDecimal arvo,
+      String selite,
+      JarjestyskriteerituloksenTila tila) {
+    Map<String, String> muokattuKasin = new HashMap<>();
+    if (selite != null && !selite.isEmpty()) {
+      muokattuKasin.put("FI", selite);
+    } else {
+      muokattuKasin.put("FI", "Muokattu käsin");
+    }
+
+    jarjestyskriteeritulos.setPrioriteetti(jarjestyskriteeriPrioriteetti);
+    jarjestyskriteeritulos.setKuvaus(muokattuKasin);
+    jarjestyskriteeritulos.setArvo(arvo);
+    jarjestyskriteeritulos.setTila(tila);
+  }
+
+  private MuokattuJonosija haeTaiTeeMuokattuJonosija(String valintatapajonoOid, String hakemusOid) {
+    Valinnanvaihe valinnanvaihe =
+        tulosValinnanvaiheDAO.findByValintatapajonoOid(valintatapajonoOid);
+    MuokattuJonosija muokattuJonosija =
+        muokattuJonosijaDAO.readByValintatapajonoOid(valintatapajonoOid, hakemusOid);
+    if (muokattuJonosija == null) {
+      muokattuJonosija = new MuokattuJonosija();
+    }
+    muokattuJonosija.setHakemusOid(hakemusOid);
+    muokattuJonosija.setValintatapajonoOid(valintatapajonoOid);
+    muokattuJonosija.setHakuOid(valinnanvaihe.getHakuOid());
+    muokattuJonosija.setHakukohdeOid(valinnanvaihe.getHakukohdeOid());
+    muokattuJonosija.setMuokkaaja(AuthorizationUtil.getCurrentUser());
+    return muokattuJonosija;
   }
 
   private void saveMuokattuJonosija(MuokattuJonosija muokattuJonosija, User auditUser) {

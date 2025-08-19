@@ -1,5 +1,6 @@
 package fi.vm.sade.valintalaskenta.laskenta.testdata;
 
+import fi.vm.sade.auditlog.User;
 import fi.vm.sade.service.valintaperusteet.dto.*;
 import fi.vm.sade.service.valintaperusteet.dto.model.Funktionimi;
 import fi.vm.sade.service.valintaperusteet.dto.model.Koekutsu;
@@ -9,10 +10,16 @@ import fi.vm.sade.valintalaskenta.domain.dto.AvainArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.Tasasijasaanto;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintakoe.impl.util.HakukohdeValintakoeData;
+import java.net.InetAddress;
 import java.util.*;
+import org.mockito.Mockito;
 
 /** User: wuoti Date: 6.5.2013 Time: 12.57 */
 public abstract class TestDataUtil {
+
+  public static final User TEST_AUDIT_USER =
+      new User(Mockito.mock(InetAddress.class), "mock-session", "mock-user-agent");
+
   public static HakemusDTO luoHakemus(String hakuOid, String hakemusOid, String hakijaOid) {
     HakemusDTO hakemus = new HakemusDTO();
     hakemus.setHakemusoid(hakemusOid);

@@ -10,6 +10,7 @@ import fi.vm.sade.valinta.sharedutils.ValintaResource;
 import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.domain.dto.JonoDto;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoPrioriteettiDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaDTO;
 import fi.vm.sade.valintalaskenta.domain.valinta.MuokattuJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.Valintatapajono;
@@ -82,7 +83,32 @@ public class ValintatapajonoResourceImpl {
   }
 
   @PreAuthorize(UPDATE_CRUD)
-  @Operation(summary = "Muokkaa jonosijaa")
+  @Operation(summary = "Muokkaa jonosijan jarjestyskriteerejä")
+  @PostMapping(
+      value = "/{valintatapajonoOid}/jonosija/jarjestyskriteerit",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<MuokattuJonosijaDTO> muutaJonosijanKriteerit(
+      @Parameter(name = "valintatapajonoOid", required = true) @PathVariable("valintatapajonoOid")
+          final String valintatapajonoOid,
+      @Parameter(name = "hakemusOid", required = true) @PathVariable("hakemusOid")
+          final String hakemusOid,
+      @RequestBody final List<MuokattuJonosijaArvoPrioriteettiDTO> arvot,
+      final HttpServletRequest request) {
+    User user = auditLog.getUser(request);
+
+    MuokattuJonosija muokattuJonosija =
+        tulosService.muutaJarjestyskriteerit(valintatapajonoOid, hakemusOid, arvot, user);
+    if (muokattuJonosija != null) {
+      MuokattuJonosijaDTO map = modelMapper.map(muokattuJonosija, MuokattuJonosijaDTO.class);
+      return ResponseEntity.accepted().body(map);
+    } else {
+      return ResponseEntity.notFound().build();
+    }
+  }
+
+  @PreAuthorize(UPDATE_CRUD)
+  @Operation(summary = "Poista jonosijan muokkaus")
   @DeleteMapping(
       value = "/{valintatapajonoOid}/{hakemusOid}/{jarjestyskriteeriPrioriteetti}/jonosija",
       produces = MediaType.APPLICATION_JSON_VALUE)
