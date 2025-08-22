@@ -65,7 +65,7 @@ public class LaskentaRunner {
    * Aloitetaan lasketaan uusia hakukohteita jos mahdollista (tarjolla pitää olla laskemattomia
    * hakukohteita ja tällä noodilla pitää olla tilaa).
    */
-  @Scheduled(initialDelay = 15, fixedDelay = 5, timeUnit = TimeUnit.SECONDS)
+  @Scheduled(initialDelay = 60, fixedDelay = 5, timeUnit = TimeUnit.SECONDS)
   public void runFetchAndStartHakukohteet() {
     this.executor.execute(() -> this.fetchAndStartHakukohteet());
   }
