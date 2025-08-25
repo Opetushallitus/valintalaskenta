@@ -9,16 +9,21 @@ import fi.vm.sade.valintalaskenta.domain.testdata.TestEntityDataUtil;
 import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.Osallistuminen;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.ValintakoeOsallistuminen;
+import fi.vm.sade.valintalaskenta.laskenta.testdata.TestDataUtil;
 import fi.vm.sade.valintalaskenta.testing.AbstractMocklessIntegrationTest;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegrationTest {
 
+  public static final String VALINTATAPAJONO_OID = "jono1";
+  public static final String HAKEMUS_OID = "1.2.246.562.11.00001128774";
   @Autowired private ValintalaskentaTulosService valintalaskentaTulosService;
 
   @Autowired private ApplicationContext applicationContext;
@@ -313,13 +318,170 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
             });
   }
 
+  @Test
+  public void testMuokkaaJonosijanJarjestyskriteeria() {
+    try (MockedStatic<AuthorizationUtil> util = Mockito.mockStatic(AuthorizationUtil.class)) {
+      util.when(AuthorizationUtil::getCurrentUser).thenReturn("Ruhtinas Nukettaja");
+      luoValintatapajonojaTasasijoilla();
+      MuokattuJonosijaArvoDTO arvo = new MuokattuJonosijaArvoDTO();
+      arvo.setTila(JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA);
+      arvo.setArvo(BigDecimal.valueOf(78.0));
+      arvo.setSelite("Tälle vähän lisää pisteitä");
+      MuokattuJonosija jonosija =
+          valintalaskentaTulosService.muutaJarjestyskriteeri(
+              VALINTATAPAJONO_OID, HAKEMUS_OID, 0, arvo, TestDataUtil.TEST_AUDIT_USER);
+      Jarjestyskriteeritulos tulos =
+          jonosija.getJarjestyskriteerit().stream()
+              .filter(k -> k.getPrioriteetti() == 0)
+              .findFirst()
+              .orElseThrow();
+      assertJarjestyskriteeriTulos(
+          tulos,
+          JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA,
+          BigDecimal.valueOf(78.0),
+          "Tälle vähän lisää pisteitä");
+    }
+    ;
+  }
+
+  @Test
+  public void testMuokkaaJonosijanJarjestyskriteereja() {
+    try (MockedStatic<AuthorizationUtil> util = Mockito.mockStatic(AuthorizationUtil.class)) {
+      util.when(AuthorizationUtil::getCurrentUser).thenReturn("Ruhtinas Nukettaja");
+      luoValintatapajonojaTasasijoilla();
+      MuokattuJonosijaArvoPrioriteettiDTO arvo1 =
+          luoMuokattuJonosijaArvoPrioriteettiDTO(
+              JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, 76, "Tälle vähän lisää pisteitä", 0);
+      MuokattuJonosijaArvoPrioriteettiDTO arvo2 =
+          luoMuokattuJonosijaArvoPrioriteettiDTO(
+              JarjestyskriteerituloksenTila.HYLATTY, 0, "Tälle 0 pistettä!", 1);
+      MuokattuJonosija jonosija =
+          valintalaskentaTulosService.muutaJarjestyskriteerit(
+              VALINTATAPAJONO_OID,
+              HAKEMUS_OID,
+              List.of(arvo1, arvo2),
+              TestDataUtil.TEST_AUDIT_USER);
+      Jarjestyskriteeritulos tulos =
+          jonosija.getJarjestyskriteerit().stream()
+              .filter(k -> k.getPrioriteetti() == 0)
+              .findFirst()
+              .orElseThrow();
+      assertJarjestyskriteeriTulos(
+          tulos,
+          JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA,
+          BigDecimal.valueOf(76),
+          "Tälle vähän lisää pisteitä");
+      Jarjestyskriteeritulos tulos2 =
+          jonosija.getJarjestyskriteerit().stream()
+              .filter(k -> k.getPrioriteetti() == 1)
+              .findFirst()
+              .orElseThrow();
+      assertJarjestyskriteeriTulos(
+          tulos2,
+          JarjestyskriteerituloksenTila.HYLATTY,
+          BigDecimal.valueOf(0),
+          "Tälle 0 pistettä!");
+    }
+  }
+
+  @Test
+  public void testMuokkaaOlemassaOlevanMuokatunJonosijanJarjestyskriteereja() {
+    try (MockedStatic<AuthorizationUtil> util = Mockito.mockStatic(AuthorizationUtil.class)) {
+      util.when(AuthorizationUtil::getCurrentUser).thenReturn("Ruhtinas Nukettaja");
+      luoValintatapajonojaTasasijoilla();
+      MuokattuJonosijaArvoPrioriteettiDTO arvo1 =
+          luoMuokattuJonosijaArvoPrioriteettiDTO(
+              JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA, 56, "Tää on riittävä", 0);
+      MuokattuJonosijaArvoPrioriteettiDTO arvo2 =
+          luoMuokattuJonosijaArvoPrioriteettiDTO(
+              JarjestyskriteerituloksenTila.MAARITTELEMATON, -10, "Mitäs tälle piti antaa?", 1);
+      MuokattuJonosija jonosija =
+          valintalaskentaTulosService.muutaJarjestyskriteerit(
+              VALINTATAPAJONO_OID,
+              HAKEMUS_OID,
+              List.of(arvo1, arvo2),
+              TestDataUtil.TEST_AUDIT_USER);
+      assertEquals(2, jonosija.getJarjestyskriteerit().size());
+      Jarjestyskriteeritulos tulos =
+          jonosija.getJarjestyskriteerit().stream()
+              .filter(k -> k.getPrioriteetti() == 0)
+              .findFirst()
+              .orElseThrow();
+      assertJarjestyskriteeriTulos(
+          tulos,
+          JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA,
+          BigDecimal.valueOf(56),
+          "Tää on riittävä");
+      Jarjestyskriteeritulos tulos2 =
+          jonosija.getJarjestyskriteerit().stream()
+              .filter(k -> k.getPrioriteetti() == 1)
+              .findFirst()
+              .orElseThrow();
+      assertJarjestyskriteeriTulos(
+          tulos2,
+          JarjestyskriteerituloksenTila.MAARITTELEMATON,
+          BigDecimal.valueOf(-10),
+          "Mitäs tälle piti antaa?");
+      MuokattuJonosijaArvoPrioriteettiDTO arvo3 =
+          luoMuokattuJonosijaArvoPrioriteettiDTO(
+              JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI,
+              10,
+              "Tätä vois harkita",
+              1);
+      MuokattuJonosija jonosijaMuokattu =
+          valintalaskentaTulosService.muutaJarjestyskriteerit(
+              VALINTATAPAJONO_OID, HAKEMUS_OID, List.of(arvo3), TestDataUtil.TEST_AUDIT_USER);
+      assertEquals(2, jonosijaMuokattu.getJarjestyskriteerit().size());
+      Jarjestyskriteeritulos uusiTulos =
+          jonosijaMuokattu.getJarjestyskriteerit().stream()
+              .filter(k -> k.getPrioriteetti() == 0)
+              .findFirst()
+              .orElseThrow();
+      assertJarjestyskriteeriTulos(
+          uusiTulos,
+          JarjestyskriteerituloksenTila.HYVAKSYTTAVISSA,
+          BigDecimal.valueOf(56),
+          "Tää on riittävä");
+      Jarjestyskriteeritulos uusiTulos2 =
+          jonosijaMuokattu.getJarjestyskriteerit().stream()
+              .filter(k -> k.getPrioriteetti() == 1)
+              .findFirst()
+              .orElseThrow();
+      assertJarjestyskriteeriTulos(
+          uusiTulos2,
+          JarjestyskriteerituloksenTila.HYVAKSYTTY_HARKINNANVARAISESTI,
+          BigDecimal.valueOf(10),
+          "Tätä vois harkita");
+    }
+  }
+
+  private MuokattuJonosijaArvoPrioriteettiDTO luoMuokattuJonosijaArvoPrioriteettiDTO(
+      JarjestyskriteerituloksenTila tila, Integer arvo, String selite, Integer prioriteetti) {
+    MuokattuJonosijaArvoPrioriteettiDTO dto = new MuokattuJonosijaArvoPrioriteettiDTO();
+    dto.setTila(tila);
+    dto.setArvo(BigDecimal.valueOf(arvo));
+    dto.setSelite(selite);
+    dto.setJarjestyskriteeriPrioriteetti(prioriteetti);
+    return dto;
+  }
+
+  private static void assertJarjestyskriteeriTulos(
+      Jarjestyskriteeritulos tulos,
+      JarjestyskriteerituloksenTila expectedTila,
+      BigDecimal expectedArvo,
+      String expectedKuvaus) {
+    assertEquals(expectedTila, tulos.getTila());
+    assertEquals(expectedArvo, tulos.getArvo());
+    assertEquals(expectedKuvaus, tulos.getKuvausFI());
+  }
+
   private void luoValintatapajonojaTasasijoilla() {
     Valintatapajono vtpj =
         TestEntityDataUtil.luoValintatapaJonoEntity(
             144,
             Set.of(
                 TestEntityDataUtil.luoJonosijaEntity(
-                    "1.2.246.562.11.00001128774",
+                    HAKEMUS_OID,
                     6,
                     false,
                     Arrays.asList(
@@ -396,7 +558,7 @@ public class ValintalaskentaTulosServiceTest extends AbstractMocklessIntegration
             "Varsinaisen valinnanvaiheen valintatapajono",
             0,
             Tasasijasaanto.YLITAYTTO,
-            "jono1");
+            VALINTATAPAJONO_OID);
     vtpj.setSiirretaanSijoitteluun(true);
     vtpj.setPoissaOlevaTaytto(true);
     Valinnanvaihe vv =

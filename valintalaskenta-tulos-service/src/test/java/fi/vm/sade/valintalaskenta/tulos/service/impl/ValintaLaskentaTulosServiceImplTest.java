@@ -70,7 +70,7 @@ public class ValintaLaskentaTulosServiceImplTest {
   }
 
   @Test
-  public void talleenOlemassaOlevanValinnanvaiheenValintatapajonolla() {
+  public void tallentaaOlemassaOlevanValinnanvaiheenValintatapajonolla() {
     when(dao.haeValinnanvaihe(any())).thenReturn(new Valinnanvaihe());
     ArgumentCaptor<Valinnanvaihe> vaiheCaptor = ArgumentCaptor.forClass(Valinnanvaihe.class);
     service.lisaaTuloksia(luoValinnanvaihe(), "hakukohde-1", null);

@@ -1,12 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.service;
 
 import fi.vm.sade.auditlog.User;
-import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.HakijaryhmaDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.JonoDto;
-import fi.vm.sade.valintalaskenta.domain.dto.MuokattuJonosijaArvoDTO;
-import fi.vm.sade.valintalaskenta.domain.dto.ValinnanvaiheDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.*;
 import fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.ValintatietoValinnanvaiheSiirtotiedostoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintatieto.ValintatietoValinnanvaiheDTO;
@@ -46,6 +41,12 @@ public interface ValintalaskentaTulosService {
       String hakemusOid,
       Integer jarjestyskriteeriPrioriteetti,
       MuokattuJonosijaArvoDTO arvo,
+      User auditUser);
+
+  MuokattuJonosija muutaJarjestyskriteerit(
+      String valintatapajonoOid,
+      String hakemusOid,
+      List<MuokattuJonosijaArvoPrioriteettiDTO> arvot,
       User auditUser);
 
   MuokattuJonosija poistaMuokattuJonosija(
