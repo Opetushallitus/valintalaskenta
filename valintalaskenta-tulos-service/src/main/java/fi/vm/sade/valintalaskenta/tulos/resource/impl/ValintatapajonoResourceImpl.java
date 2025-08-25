@@ -53,6 +53,11 @@ public class ValintatapajonoResourceImpl {
     this.auditLog = auditLog;
   }
 
+  /**
+   * @Deprecated vanha valintalaskenta-ui käyttää tätä, uusien pyyntöjen tulisi käyttää
+   * /jarjestyskriteerit-rajapintaa
+   */
+  @Deprecated
   @PreAuthorize(UPDATE_CRUD)
   @Operation(summary = "Muokkaa jonosijaa")
   @PostMapping(
