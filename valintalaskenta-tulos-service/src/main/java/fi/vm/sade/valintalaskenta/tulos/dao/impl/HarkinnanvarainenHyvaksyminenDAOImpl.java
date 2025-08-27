@@ -5,6 +5,7 @@ import fi.vm.sade.valintalaskenta.tulos.dao.HarkinnanvarainenHyvaksyminenDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosHarkinnanvarainenHyvaksyminenRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class HarkinnanvarainenHyvaksyminenDAOImpl implements HarkinnanvarainenHyvaksyminenDAO {
@@ -24,6 +25,7 @@ public class HarkinnanvarainenHyvaksyminenDAOImpl implements HarkinnanvarainenHy
   }
 
   @Override
+  @Transactional
   public void tallennaHarkinnanvarainenHyvaksyminen(
       HarkinnanvarainenHyvaksyminen harkinnanvarainenHyvaksyminen) {
     repo.save(harkinnanvarainenHyvaksyminen);

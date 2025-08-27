@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TulosValintatapajonoDAOImpl implements TulosValintatapajonoDAO {
@@ -20,6 +21,7 @@ public class TulosValintatapajonoDAOImpl implements TulosValintatapajonoDAO {
   }
 
   @Override
+  @Transactional
   public Optional<Valintatapajono> paivitaValmisSijoiteltavaksi(
       String valintatapajonoOid, boolean valmisSijoiteltavaksi) {
     return tulosValintatapajonoRepository.paivitaValmisSijoiteltavaksi(
