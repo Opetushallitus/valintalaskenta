@@ -477,6 +477,7 @@ public class ValintalaskentaResourceImpl {
       }
 
       LOG.info(stopWatch.prettyPrint());
+      throw e;
     }
   }
 
