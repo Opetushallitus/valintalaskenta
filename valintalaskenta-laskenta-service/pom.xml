@@ -170,7 +170,7 @@
         </dependency>
 
         <dependency>
-            <groupId>fi.vm.sade.java-utils</groupId>
+            <groupId>opiskelijavalinnat-utils.java-utils</groupId>
             <artifactId>java-cas</artifactId>
         </dependency>
 
