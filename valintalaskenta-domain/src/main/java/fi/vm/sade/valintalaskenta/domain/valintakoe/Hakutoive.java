@@ -18,7 +18,6 @@ public class Hakutoive {
   @Transient
   @Column("valintakoe_osallistuminen")
   private ValintakoeOsallistuminen valintakoeOsallistuminen;
-  
 
   public Hakutoive() {}
 
