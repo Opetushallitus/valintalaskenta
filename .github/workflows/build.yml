@@ -121,7 +121,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Deploy jar library
-        if: github.ref == 'refs/heads/master'
+        #if: github.ref == 'refs/heads/master'
         shell: bash
         env:
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
