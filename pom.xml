@@ -5,12 +5,12 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.4</version>
+        <version>3.4.9</version>
     </parent>
 
     <groupId>fi.vm.sade.valintaperusteet</groupId>
     <artifactId>valintalaskenta</artifactId>
-    <version>7.1.0-SNAPSHOT</version>
+    <version>7.1.1-SNAPSHOT</version>
 
     <name>Valintalaskenta</name>
     <packaging>pom</packaging>
@@ -30,7 +30,7 @@
 
         <httpcomponents.version>4.5.14</httpcomponents.version>
         <modelmapper.version>3.2.1</modelmapper.version>
-        <spring.security.version>6.4.2</spring.security.version>
+        <spring.security.version>6.4.6</spring.security.version>
         <jackson.version>2.18.2</jackson.version>
 
         <maven.compiler.source>21</maven.compiler.source>
@@ -73,7 +73,7 @@
             <dependency>
                 <groupId>fi.vm.sade.valintaperusteet</groupId>
                 <artifactId>valintaperusteet-api</artifactId>
-                <version>7.0-SNAPSHOT</version>
+                <version>7.1.1-SNAPSHOT</version>
                 <exclusions>
                     <exclusion>
                         <groupId>jakarta.servlet</groupId>
@@ -88,7 +88,7 @@
             <dependency>
                 <groupId>fi.vm.sade.valintaperusteet</groupId>
                 <artifactId>valintaperusteet-laskenta</artifactId>
-                <version>7.2-BRANCH-SNAPSHOT</version>
+                <version>7.2.1-MERGE-SNAPSHOT</version>
                 <exclusions>
                     <!-- tämä sekoittaa spring data jdbc:n käynnistymisen -->
                     <exclusion>

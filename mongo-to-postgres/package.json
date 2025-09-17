@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "knex": "^2.3.0",
-    "mongoose": "^8.0.3",
+    "mongoose": "^8.9.7",
     "pg": "^8.8.0",
     "uuid": "^9.0.1"
   }
