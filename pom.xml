@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.9</version>
+        <version>3.4.10</version>
     </parent>
 
     <groupId>fi.vm.sade.valintaperusteet</groupId>
@@ -30,7 +30,7 @@
 
         <httpcomponents.version>4.5.14</httpcomponents.version>
         <modelmapper.version>3.2.1</modelmapper.version>
-        <spring.security.version>6.4.6</spring.security.version>
+        <spring.security.version>6.4.10</spring.security.version>
         <jackson.version>2.18.2</jackson.version>
 
         <maven.compiler.source>21</maven.compiler.source>
@@ -160,6 +160,11 @@
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
                 <version>1.18.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>1.27.1</version>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
