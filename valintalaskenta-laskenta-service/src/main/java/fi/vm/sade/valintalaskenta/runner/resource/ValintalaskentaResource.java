@@ -167,8 +167,24 @@ public class ValintalaskentaResource {
     DeferredResult<ResponseEntity<Vastaus>> result = new DeferredResult<>(1 * 60 * 1000l);
 
     try {
-      List<HakukohdeViiteDTO> hakukohdeViitteet =
+      List<HakukohdeViiteDTO> haunHakukohdeViitteet =
           valintaperusteetAsyncResource.haunHakukohteet(hakuOid).get();
+      List<HakukohdeViiteDTO> hakukohdeViitteet = haunHakukohdeViitteet;
+
+      if (stringMaski != null && !stringMaski.isEmpty()) {
+        if (whitelist) {
+          hakukohdeViitteet =
+              haunHakukohdeViitteet.stream()
+                  .filter(hk -> stringMaski.contains(hk.getOid()))
+                  .toList();
+        } else {
+          hakukohdeViitteet =
+              haunHakukohdeViitteet.stream()
+                  .filter(hk -> !stringMaski.contains(hk.getOid()))
+                  .toList();
+        }
+      }
+
       if (LaskentaTyyppi.VALINTARYHMA.equals(laskentatyyppi)) {
         authorityCheckService.checkAuthorizationForValintaryhma(
             valintaryhmaOid, valintalaskentaAllowedRoles);
