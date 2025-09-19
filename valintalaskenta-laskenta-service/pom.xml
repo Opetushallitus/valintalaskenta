@@ -4,7 +4,7 @@
     <parent>
         <groupId>fi.vm.sade.valintaperusteet</groupId>
         <artifactId>valintalaskenta</artifactId>
-        <version>7.1.0-SNAPSHOT</version>
+        <version>7.1.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>valintalaskenta-laskenta-service</artifactId>
@@ -185,7 +185,7 @@
         </dependency>
         <dependency>
             <groupId>ch.qos.logback.access</groupId>
-            <artifactId>tomcat</artifactId>
+            <artifactId>logback-access-tomcat</artifactId>
         </dependency>
         <dependency>
             <groupId>com.googlecode.lambdaj</groupId>
