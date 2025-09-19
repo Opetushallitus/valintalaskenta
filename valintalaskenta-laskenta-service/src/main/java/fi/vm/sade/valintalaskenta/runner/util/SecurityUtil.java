@@ -105,6 +105,21 @@ public class SecurityUtil {
     return authentication.getAuthorities();
   }
 
+  public static String getUsername() {
+    SecurityContext context = SecurityContextHolder.getContext();
+    if (context == null) {
+      String msg = "No SecurityContext found";
+      throw new AccessDeniedException(msg);
+    }
+
+    Authentication authentication = context.getAuthentication();
+    if (authentication == null) {
+      String msg = "No Authentication found in SecurityContext";
+      throw new AccessDeniedException(msg);
+    }
+    return authentication.getName();
+  }
+
   public static boolean containsOphRole(Collection<? extends GrantedAuthority> userRoles) {
     for (GrantedAuthority auth : userRoles) {
       Optional<String> optionalOID = parseOrganizationOidFromSecurityRole(auth.getAuthority());
