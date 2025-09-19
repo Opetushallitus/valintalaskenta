@@ -94,6 +94,7 @@ public class AuthorityCheckService {
   public void checkAuthorizationForHakukohteet(
       Collection<String> hakukohdeOids, Collection<String> requiredRoles) {
     Collection<? extends GrantedAuthority> userRoles = SecurityUtil.getRoles();
+    String username = SecurityUtil.getUsername();
 
     if (SecurityUtil.containsOphRole(userRoles)) {
       // on OPH-käyttäjä, ei tarvitse käydä läpi organisaatioita
@@ -103,11 +104,16 @@ public class AuthorityCheckService {
     HakukohdeOIDAuthorityCheck authCheck = getAuthorityCheckForRoles(requiredRoles);
     Collection<String> notAuthorizedHakukohteet =
         hakukohdeOids.stream().filter(hk -> !authCheck.test(hk)).toList();
-    if (notAuthorizedHakukohteet.size() > 0) {
+    if (!notAuthorizedHakukohteet.isEmpty()) {
       String msg =
           String.format(
-              "Käyttäjällä ei oikeutta seuraaviin hakukohteisiin: %s",
-              notAuthorizedHakukohteet.stream().collect(Collectors.joining(",")));
+              "Vaadittavat oikeudet: %s. Käyttäjän oikeudet: %s. Käyttäjällä %s ei oikeutta seuraaviin hakukohteisiin: %s",
+              String.join(", ", requiredRoles),
+              userRoles.stream()
+                  .map(GrantedAuthority::getAuthority)
+                  .collect(Collectors.joining(", ")),
+              username,
+              String.join(", ", notAuthorizedHakukohteet));
       LOG.error(msg);
       throw new AccessDeniedException(msg);
     }
