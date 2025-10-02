@@ -1,4 +1,6 @@
 spring:
+  jpa:
+    show-sql: true # ASDF
   main:
     allow-bean-definition-overriding: true
   flyway:
@@ -60,6 +62,8 @@ logging:
     org.springframework: warn
     org.springframework.security: warn
     org.springframework.boot.autoconfigure.security.AuthenticationManagerConfiguration: warn
+    org.springframework.jdbc.core.JdbcTemplate: debug # ASDF
+    org.springframework.jdbc.core.StatementCreatorUtils: trace # ASDF
     fi.vm.sade.auditlog.Audit: info
     fi.vm.sade.java_utils.security.OpintopolkuCasAuthenticationFilter: warn
     org.apache.http.client.protocol.ResponseProcessCookies: error

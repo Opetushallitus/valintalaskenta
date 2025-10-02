@@ -27,6 +27,7 @@ import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionManager;
 
@@ -85,6 +86,11 @@ class DatabaseConfiguration extends AbstractJdbcConfiguration {
   @Bean
   NamedParameterJdbcOperations namedParameterJdbcOperations(DataSource dataSource) {
     return new NamedParameterJdbcTemplate(dataSource);
+  }
+
+  @Bean
+  JdbcClient jdbcClient(DataSource dataSource) {
+    return JdbcClient.create(dataSource);
   }
 
   @Bean
