@@ -4,6 +4,7 @@ import fi.vm.sade.valintalaskenta.domain.valintapiste.Valintapiste;
 import fi.vm.sade.valintalaskenta.domain.valintapiste.ValintapisteWithLastModified;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface ValintapisteDAO {
   List<Valintapiste> findValintapisteetForHakemukset(List<String> hakemusOids);
@@ -11,9 +12,9 @@ public interface ValintapisteDAO {
   List<ValintapisteWithLastModified> findValintapisteBulkByTimerange(
       ZonedDateTime start, ZonedDateTime end, int limit, int offset);
 
-  ZonedDateTime lastModifiedForHakemukset(List<String> hakemusOids);
+  Optional<ZonedDateTime> lastModifiedForHakemukset(List<String> hakemusOids);
 
-  ZonedDateTime lastModifiedASDF();
+  Optional<ZonedDateTime> lastModifiedASDF();
 
   List<String> modifiedSinceHakemukset(List<String> hakemusOids, ZonedDateTime unmodifiedSince);
 

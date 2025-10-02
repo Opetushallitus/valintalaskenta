@@ -40,7 +40,7 @@ public class ValintapisteDaoImpl implements ValintapisteDAO {
   @Override
   @Transactional(readOnly = true)
   public List<Valintapiste> findValintapisteetForHakemukset(List<String> hakemusOids) {
-    return repo.findAsdfASDfByHakemusOidIn(hakemusOids);
+    return repo.findByHakemusOidIn(hakemusOids);
   }
 
   RowMapper<ValintapisteWithLastModified> valintapisteWithLastModifiedRowMapper =
@@ -80,21 +80,19 @@ public class ValintapisteDaoImpl implements ValintapisteDAO {
   }
 
   @Override
-  public ZonedDateTime lastModifiedForHakemukset(List<String> hakemusOids) {
+  public Optional<ZonedDateTime> lastModifiedForHakemukset(List<String> hakemusOids) {
     return Optional.ofNullable(repo.findLastModifiedByHakemusOids(hakemusOids))
-        .map(a -> a.toInstant().atZone(UTC))
-        .orElse(null);
+        .map(a -> a.toInstant().atZone(UTC));
   }
 
   @Override
-  public ZonedDateTime lastModifiedASDF() {
-    Timestamp value =
-        (Timestamp)
-            jdbcClient
-                .sql("select max(lower(system_time))::timestamptz from valintapiste")
-                .query()
-                .singleValue();
-    return value.toInstant().atZone(UTC);
+  public Optional<ZonedDateTime> lastModifiedASDF() {
+    Optional<Object> value =
+        jdbcClient
+            .sql("select max(lower(system_time))::timestamptz from valintapiste")
+            .query()
+            .optionalValue();
+    return value.map(t -> ((Timestamp) t).toInstant().atZone(UTC));
   }
 
   @Override
