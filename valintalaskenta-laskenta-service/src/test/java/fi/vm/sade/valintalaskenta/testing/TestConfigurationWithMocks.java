@@ -4,6 +4,7 @@ import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.valinta.dokumenttipalvelu.Dokumenttipalvelu;
 import fi.vm.sade.valintalaskenta.config.SwaggerConfiguration;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
+import fi.vm.sade.valintalaskenta.laskenta.resource.external.AtaruResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
@@ -11,6 +12,7 @@ import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogMock;
+import fi.vm.sade.valintalaskenta.tulos.ovara.SiirtotiedostoS3Client;
 import io.swagger.v3.oas.models.OpenAPI;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,6 +23,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.cas.authentication.CasAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Profile("test")
@@ -28,7 +32,9 @@ import org.springframework.security.web.SecurityFilterChain;
 class TestConfigurationWithMocks {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.headers().disable().csrf().disable().authorizeHttpRequests().anyRequest().permitAll();
+    http.headers(HeadersConfigurer::disable)
+        .csrf(CsrfConfigurer::disable)
+        .authorizeHttpRequests(h -> h.anyRequest().permitAll());
     return http.build();
   }
 
@@ -96,6 +102,12 @@ class TestConfigurationWithMocks {
 
   @Primary
   @Bean
+  public AtaruResource ataruResource() {
+    return Mockito.mock(AtaruResource.class);
+  }
+
+  @Primary
+  @Bean
   public ValisijoitteluKasittelija mockValisijoitteluKasittelija() {
     return Mockito.mock(ValisijoitteluKasittelija.class);
   }
@@ -110,5 +122,11 @@ class TestConfigurationWithMocks {
   @Bean
   public Dokumenttipalvelu dokumenttipalvelu() {
     return Mockito.mock(Dokumenttipalvelu.class);
+  }
+
+  @Primary
+  @Bean
+  public SiirtotiedostoS3Client siirtotiedostoS3Client() {
+    return Mockito.mock(SiirtotiedostoS3Client.class);
   }
 }
