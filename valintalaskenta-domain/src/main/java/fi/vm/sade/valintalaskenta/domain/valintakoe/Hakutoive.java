@@ -19,8 +19,6 @@ public class Hakutoive {
   @Column("valintakoe_osallistuminen")
   private ValintakoeOsallistuminen valintakoeOsallistuminen;
 
-  private Date createdAt;
-
   public Hakutoive() {}
 
   @PersistenceCreator
@@ -63,14 +61,6 @@ public class Hakutoive {
   public void setValintakoeValinnanvaiheet(Set<ValintakoeValinnanvaihe> valintakoeValinnanvaiheet) {
     this.valintakoeValinnanvaiheet.clear();
     this.valintakoeValinnanvaiheet.addAll(valintakoeValinnanvaiheet);
-  }
-
-  public Date getCreatedAt() {
-    return createdAt;
-  }
-
-  public void setCreatedAt(Date createdAt) {
-    this.createdAt = createdAt;
   }
 
   @Override
