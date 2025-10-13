@@ -39,6 +39,12 @@ public class ValintapisteDaoImpl implements ValintapisteDAO {
 
   @Override
   @Transactional(readOnly = true)
+  public List<Valintapiste> findByHakemusId(String hakemusOid) {
+    return repo.findByHakemusOidIn(List.of(hakemusOid));
+  }
+
+  @Override
+  @Transactional(readOnly = true)
   public List<Valintapiste> findValintapisteetForHakemukset(List<String> hakemusOids) {
     return repo.findByHakemusOidIn(hakemusOids);
   }
@@ -96,9 +102,8 @@ public class ValintapisteDaoImpl implements ValintapisteDAO {
   }
 
   @Override
-  public List<String> modifiedSinceHakemukset(
-      List<String> hakemusOids, ZonedDateTime unmodifiedSince) {
-    return repo.findModifiedSince(hakemusOids, unmodifiedSince.format(timeFormatter));
+  public List<String> modifiedSinceHakemukset(List<String> hakemusOids, String unmodifiedSince) {
+    return repo.findModifiedSince(hakemusOids, unmodifiedSince);
   }
 
   @Override

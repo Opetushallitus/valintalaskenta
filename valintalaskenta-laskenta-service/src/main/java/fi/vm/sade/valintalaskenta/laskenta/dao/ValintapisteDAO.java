@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ValintapisteDAO {
+  List<Valintapiste> findByHakemusId(String hakemusOid);
+
   List<Valintapiste> findValintapisteetForHakemukset(List<String> hakemusOids);
 
   List<ValintapisteWithLastModified> findValintapisteBulkByTimerange(
@@ -16,7 +18,7 @@ public interface ValintapisteDAO {
 
   Optional<ZonedDateTime> lastModifiedASDF();
 
-  List<String> modifiedSinceHakemukset(List<String> hakemusOids, ZonedDateTime unmodifiedSince);
+  List<String> modifiedSinceHakemukset(List<String> hakemusOids, String unmodifiedSince);
 
   void upsertValintapiste(Valintapiste valintapiste);
 }

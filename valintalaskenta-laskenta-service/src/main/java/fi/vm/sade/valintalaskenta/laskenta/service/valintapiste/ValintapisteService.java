@@ -10,6 +10,7 @@ import fi.vm.sade.valintalaskenta.domain.valintapiste.ValintapisteWithLastModifi
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintapisteDAO;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,9 +20,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,13 +38,14 @@ public class ValintapisteService {
     this.applicationContext = applicationContext;
   }
 
-  @EventListener(ApplicationReadyEvent.class)
+  // @EventListener(ApplicationReadyEvent.class)
+  @Transactional
   public void asdf() {
-    insertLots(20000, 20000);
+    // insertLots(20000, 20000);
 
     LOG.info("Init ValintapisteService");
 
-    Optional<ZonedDateTime> lastModified = lastModified();
+    Optional<ZonedDateTime> lastModified = valintapisteDAO.lastModifiedASDF();
     LOG.info("Last modified: {}", lastModified);
 
     List<ValintapisteWithLastModified> bulk =
@@ -61,7 +62,7 @@ public class ValintapisteService {
 
     Valintapiste valintapiste =
         new Valintapiste(hakemusOid, "tunniste1", "arvo?", Osallistumistieto.MERKITSEMATTA, "Minä");
-    upsertValintapiste(valintapiste);
+    valintapisteDAO.upsertValintapiste(valintapiste);
 
     bulk =
         findValintapisteBulkByTimerange(
@@ -72,7 +73,7 @@ public class ValintapisteService {
     LOG.info("ValintapisteDaoImpl All pisteet: {}", pisteet);
 
     valintapiste = valintapiste.withArvo("Asetettu Arvo!");
-    upsertValintapiste(valintapiste);
+    valintapisteDAO.upsertValintapiste(valintapiste);
     pisteet = findValintapisteetForHakemukset(List.of(hakemusOid));
     LOG.info("ValintapisteDaoImpl pisteet: {}", pisteet);
 
@@ -84,11 +85,13 @@ public class ValintapisteService {
             ZonedDateTime.parse("2020-01-01T00:00:00Z"), ZonedDateTime.now(), 100, 0);
     LOG.info("ValintapisteDaoImpl bulk: {}", bulk);
 
+    String unmodifiedSince =
+        lastModified.orElseThrow().minus(1, MILLIS).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     List<String> oids =
-        modifiedSinceHakemukset(List.of(hakemusOid), lastModified.orElseThrow().minus(1, MILLIS));
+        valintapisteDAO.modifiedSinceHakemukset(List.of(hakemusOid), unmodifiedSince);
     LOG.info("ValintapisteDaoImpl modified since: {}", oids);
 
-    // SpringApplication.exit(applicationContext);
+    SpringApplication.exit(applicationContext);
   }
 
   @Transactional(readOnly = true)
@@ -110,11 +113,7 @@ public class ValintapisteService {
     }
 
     Map<String, List<Pistetieto>> pisteetByHakemukset =
-        valintapisteDAO.findValintapisteetForHakemukset(hakemusOids).stream()
-            .collect(
-                Collectors.groupingBy(
-                    Valintapiste::hakemusOid,
-                    Collectors.mapping(Valintapiste::toPistetieto, Collectors.toList())));
+        groupByHakemus(valintapisteDAO.findValintapisteetForHakemukset(hakemusOids));
 
     Stream<PistetietoWrapper> missingHakemusOids =
         hakemusOids.stream()
@@ -122,11 +121,7 @@ public class ValintapisteService {
             .map(PistetietoWrapper::new);
 
     List<PistetietoWrapper> pisteet =
-        Stream.concat(
-                pisteetByHakemukset.entrySet().stream()
-                    .map(kv -> new PistetietoWrapper(kv.getKey(), kv.getValue())),
-                missingHakemusOids)
-            .toList();
+        Stream.concat(convertToWrappers(pisteetByHakemukset), missingHakemusOids).toList();
 
     Optional<ZonedDateTime> lastModified = lastModifiedForHakemukset(hakemusOids);
 
@@ -141,26 +136,60 @@ public class ValintapisteService {
 
   @Transactional(readOnly = true)
   public Optional<ZonedDateTime> lastModifiedForHakemukset(List<String> hakemusOids) {
-    // En tiedä miksi tähän lisätään 1 sekunti. Näin tehtiin valintapiste-servicessä.
+    // Tietokannan aikaleima on tarkempi kuin Javan. Lisätään aikaan sekunti, jotta palautetun
+    // leiman uudelleenkäyttö ei aiheuta virheitä kutsujalle.
     return valintapisteDAO
         .lastModifiedForHakemukset(hakemusOids)
         .map(a -> a.withZoneSameInstant(ZoneId.of("Europe/Helsinki")).plusSeconds(1));
   }
 
   @Transactional
-  public void upsertValintapiste(Valintapiste valintapiste) {
-    valintapisteDAO.upsertValintapiste(valintapiste);
+  public List<String> insertValintapisteet(
+      List<PistetietoWrapper> pisteet, boolean savePartially, String ifUnmodifiedSince) {
+    List<String> hakemusOids = pisteet.stream().map(PistetietoWrapper::hakemusOID).toList();
+    List<String> conflictingOids = checkUpdateConflict(hakemusOids, ifUnmodifiedSince);
+    LOG.info("ASDF insertValintapisteet Conflicting Oids {}", conflictingOids);
+
+    if (conflictingOids.isEmpty() || savePartially) {
+      pisteet.stream()
+          .filter(wrapper -> !conflictingOids.contains(wrapper.hakemusOID()))
+          .flatMap(this::createValintapisteet)
+          .forEach(valintapisteDAO::upsertValintapiste);
+    }
+
+    return conflictingOids;
   }
 
-  @Transactional(readOnly = true)
-  public List<String> modifiedSinceHakemukset(
-      List<String> hakemusOids, ZonedDateTime unmodifiedSince) {
+  private Stream<Valintapiste> createValintapisteet(PistetietoWrapper wrapper) {
+    return wrapper.pisteet().stream().map(piste -> createValintapiste(piste, wrapper.hakemusOID()));
+  }
+
+  private Valintapiste createValintapiste(Pistetieto pistetieto, String hakemusOid) {
+    return new Valintapiste(
+        hakemusOid,
+        pistetieto.tunniste(),
+        pistetieto.arvo(),
+        pistetieto.osallistuminen(),
+        pistetieto.tallettaja());
+  }
+
+  private List<String> checkUpdateConflict(List<String> hakemusOids, String unmodifiedSince) {
+    if (unmodifiedSince == null) {
+      return List.of();
+    }
     return valintapisteDAO.modifiedSinceHakemukset(hakemusOids, unmodifiedSince);
   }
 
-  @Transactional(readOnly = true)
-  public Optional<ZonedDateTime> lastModified() {
-    return valintapisteDAO.lastModifiedASDF();
+  public static Map<String, List<Pistetieto>> groupByHakemus(List<Valintapiste> valintapisteet) {
+    return valintapisteet.stream()
+        .collect(
+            Collectors.groupingBy(
+                Valintapiste::hakemusOid,
+                Collectors.mapping(Valintapiste::toPistetieto, Collectors.toList())));
+  }
+
+  public static Stream<PistetietoWrapper> convertToWrappers(Map<String, List<Pistetieto>> pisteet) {
+    return pisteet.entrySet().stream().map(kv -> new PistetietoWrapper(kv.getKey(), kv.getValue()));
   }
 
   private void insertLots(int start, int n) {
@@ -180,7 +209,7 @@ public class ValintapisteService {
                 Osallistumistieto.values()[(i + tunniste) % 4],
                 "Minä");
 
-        upsertValintapiste(valintapiste);
+        valintapisteDAO.upsertValintapiste(valintapiste);
       }
     }
   }

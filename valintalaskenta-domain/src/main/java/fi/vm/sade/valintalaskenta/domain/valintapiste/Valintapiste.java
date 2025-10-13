@@ -11,6 +11,10 @@ public record Valintapiste(
     String arvo,
     Osallistumistieto osallistuminen,
     String tallettaja) {
+  public Valintapiste withHakemusOid(String hakemusOid) {
+    return new Valintapiste(hakemusOid, tunniste, arvo, osallistuminen, tallettaja);
+  }
+
   public Valintapiste withArvo(String arvo) {
     return new Valintapiste(hakemusOid, tunniste, arvo, osallistuminen, tallettaja);
   }
@@ -19,7 +23,7 @@ public record Valintapiste(
     return new Valintapiste(hakemusOid, tunniste, arvo, osallistuminen, tallettaja);
   }
 
-    public Pistetieto toPistetieto() {
+  public Pistetieto toPistetieto() {
     return new Pistetieto(tunniste, arvo, osallistuminen, tallettaja);
   }
 }

@@ -33,6 +33,8 @@ public abstract class AbstractIntegrationTest {
 
   @Autowired protected TulosMuokattuJonosijaRepository tulosMuokattuJonosijaRepository;
 
+  @Autowired protected ValintapisteRepository valintapisteRepository;
+
   @Autowired
   protected TulosHarkinnanvarainenHyvaksyminenRepository
       tulosHarkinnanvarainenHyvaksyminenRepository;
@@ -52,5 +54,6 @@ public abstract class AbstractIntegrationTest {
     hakijaryhmaRepository.deleteAll();
     valintakoeOsallistuminenRepository.deleteAll();
     tulosJarjestyskriteerihistoriaRepository.deleteAll();
+    valintapisteRepository.deleteAll();
   }
 }

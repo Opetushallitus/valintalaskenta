@@ -6,9 +6,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jdbc.repository.query.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.CrudRepository;
 
-public interface ValintapisteRepository extends PagingAndSortingRepository<Valintapiste, UUID> {
+public interface ValintapisteRepository extends CrudRepository<Valintapiste, UUID> {
   List<Valintapiste> findByHakemusOidIn(Collection<String> hakemusOids);
 
   @Query(
