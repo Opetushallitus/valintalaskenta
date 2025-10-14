@@ -6,6 +6,7 @@ import fi.vm.sade.valintalaskenta.laskenta.config.SwaggerConfiguration;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.AtaruResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource;
+import fi.vm.sade.valintalaskenta.laskenta.resource.external.HakuAppResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
@@ -100,6 +101,12 @@ class TestConfigurationWithMocks {
   @Bean
   public AtaruResource ataruResource() {
     return Mockito.mock(AtaruResource.class);
+  }
+
+  @Primary
+  @Bean
+  public HakuAppResource hakuAppResource() {
+    return Mockito.mock(HakuAppResource.class);
   }
 
   @Primary

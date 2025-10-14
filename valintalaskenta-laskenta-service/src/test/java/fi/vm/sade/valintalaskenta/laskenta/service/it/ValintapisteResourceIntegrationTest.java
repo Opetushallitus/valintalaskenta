@@ -13,6 +13,8 @@ import fi.vm.sade.valintalaskenta.domain.valintapiste.Valintapiste;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintapisteDAO;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.AtaruHakemus;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.AtaruResource;
+import fi.vm.sade.valintalaskenta.laskenta.resource.external.HakuAppHakemus;
+import fi.vm.sade.valintalaskenta.laskenta.resource.external.HakuAppResource;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintapiste.ValintapisteService;
 import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
 import java.time.ZonedDateTime;
@@ -39,6 +41,7 @@ import org.springframework.http.MediaType;
 public class ValintapisteResourceIntegrationTest extends AbstractIntegrationTest {
   @Autowired private ValintapisteDAO valintapisteDAO;
   @Autowired private AtaruResource ataruResource;
+  @Autowired private HakuAppResource hakuAppResource;
   @Autowired private ObjectMapper objectMapper;
 
   private final AsyncHttpClient asyncHttpClient = asyncHttpClient();
@@ -61,10 +64,12 @@ public class ValintapisteResourceIntegrationTest extends AbstractIntegrationTest
         String.format("valintapisteet/haku/%s/hakukohde/%s", hakuOid, hakukohdeOid);
 
     private final AtaruHakemus ataruHakemus = new AtaruHakemus(HAKEMUS_OID, OPPIJA_OID);
+    private final HakuAppHakemus hakuAppHakemus =
+        new HakuAppHakemus(HAKEMUS_OID + '2', OPPIJA_OID + '2');
 
     @BeforeEach
     void resetMocks() {
-      Mockito.reset(ataruResource);
+      Mockito.reset(ataruResource, hakuAppResource);
     }
 
     @Test
@@ -82,37 +87,39 @@ public class ValintapisteResourceIntegrationTest extends AbstractIntegrationTest
         throws JsonProcessingException {
       Mockito.when(ataruResource.getAtaruHakemukset(hakuOid, hakukohdeOid))
           .thenReturn(List.of(ataruHakemus));
+      Mockito.when(hakuAppResource.getApplicationsByOids(hakuOid, hakukohdeOid))
+          .thenReturn(List.of(hakuAppHakemus));
 
       Response response = get(uri);
 
       assertThat(response.getStatusCode()).isEqualTo(200);
       List<PistetietoWrapper> body =
           objectMapper.readValue(response.getResponseBody(), new TypeReference<>() {});
-      assertThat(body).hasSize(1);
-      PistetietoWrapper wrapper = body.get(0);
-      assertThat(wrapper.hakemusOID()).isEqualTo(HAKEMUS_OID);
-      assertThat(wrapper.oppijaOID()).isEqualTo(OPPIJA_OID);
-      assertThat(wrapper.pisteet()).isEmpty();
+      assertThat(body)
+          .containsExactlyInAnyOrder(
+              ataruHakemus.toPistetietoWrapper(), hakuAppHakemus.toPistetietoWrapper());
     }
 
     @Test
     public void returnsPistetiedotWhenWeHaveThem() throws JsonProcessingException {
       valintapisteDAO.upsertValintapiste(DEFAULT_PISTE);
       valintapisteDAO.upsertValintapiste(OTHER_PISTE);
+      valintapisteDAO.upsertValintapiste(OTHER_PISTE.withHakemusOid(hakuAppHakemus.hakemusOid()));
       Mockito.when(ataruResource.getAtaruHakemukset(hakuOid, hakukohdeOid))
           .thenReturn(List.of(ataruHakemus));
+      Mockito.when(hakuAppResource.getApplicationsByOids(hakuOid, hakukohdeOid))
+          .thenReturn(List.of(hakuAppHakemus));
 
       Response response = get(uri);
 
       assertThat(response.getStatusCode()).isEqualTo(200);
       List<PistetietoWrapper> body =
           objectMapper.readValue(response.getResponseBody(), new TypeReference<>() {});
-      assertThat(body).hasSize(1);
-      PistetietoWrapper wrapper = body.get(0);
-      assertThat(wrapper.hakemusOID()).isEqualTo(HAKEMUS_OID);
-      assertThat(wrapper.oppijaOID()).isEqualTo(OPPIJA_OID);
-      assertThat(wrapper.pisteet())
-          .containsExactlyInAnyOrder(DEFAULT_PISTE.toPistetieto(), OTHER_PISTE.toPistetieto());
+      assertThat(body)
+          .containsExactlyInAnyOrder(
+              ataruHakemus.toPistetietoWrapper(
+                  DEFAULT_PISTE.toPistetieto(), OTHER_PISTE.toPistetieto()),
+              hakuAppHakemus.toPistetietoWrapper(OTHER_PISTE.toPistetieto()));
     }
   }
 

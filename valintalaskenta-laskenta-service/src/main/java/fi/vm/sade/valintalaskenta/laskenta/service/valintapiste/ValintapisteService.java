@@ -10,6 +10,9 @@ import fi.vm.sade.valintalaskenta.domain.valintapiste.ValintapisteWithLastModifi
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintapisteDAO;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.AtaruHakemus;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.AtaruResource;
+import fi.vm.sade.valintalaskenta.laskenta.resource.external.ExternalHakemus;
+import fi.vm.sade.valintalaskenta.laskenta.resource.external.HakuAppHakemus;
+import fi.vm.sade.valintalaskenta.laskenta.resource.external.HakuAppResource;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -34,13 +37,18 @@ public class ValintapisteService {
 
   private final ValintapisteDAO valintapisteDAO;
   private final AtaruResource ataruResource;
+  private final HakuAppResource hakuappResource;
   private final ApplicationContext applicationContext;
 
   @Autowired
   ValintapisteService(
-      ValintapisteDAO dao, AtaruResource ataruResource, ApplicationContext applicationContext) {
+      ValintapisteDAO dao,
+      AtaruResource ataruResource,
+      HakuAppResource hakuappResource,
+      ApplicationContext applicationContext) {
     this.valintapisteDAO = dao;
     this.ataruResource = ataruResource;
+    this.hakuappResource = hakuappResource;
     this.applicationContext = applicationContext;
   }
 
@@ -152,15 +160,20 @@ public class ValintapisteService {
   @Transactional
   public List<String> insertValintapisteet(
       List<PistetietoWrapper> pisteet, boolean savePartially, String ifUnmodifiedSince) {
+    LOG.info("Halutaan lisätä pistetietoja {} hakemukselle.", pisteet.size());
     List<String> hakemusOids = pisteet.stream().map(PistetietoWrapper::hakemusOID).toList();
     List<String> conflictingOids = checkUpdateConflict(hakemusOids, ifUnmodifiedSince);
-    LOG.info("ASDF insertValintapisteet Conflicting Oids {}", conflictingOids);
 
     if (conflictingOids.isEmpty() || savePartially) {
+      if (!conflictingOids.isEmpty()) {
+        LOG.info("Päivitetään ne pistetiedot, jotka eivät ole konfliktissa.");
+      }
       pisteet.stream()
           .filter(wrapper -> !conflictingOids.contains(wrapper.hakemusOID()))
           .flatMap(this::createValintapisteet)
           .forEach(valintapisteDAO::upsertValintapiste);
+    } else {
+      LOG.warn("Hakemusten pistetietoja päivitetä päivityskonfliktin takia.");
     }
 
     return conflictingOids;
@@ -169,13 +182,21 @@ public class ValintapisteService {
   @Transactional(readOnly = true)
   public Pair<ZonedDateTime, List<PistetietoWrapper>> hakukohteenValintapisteet(
       String hakuOid, String hakukohdeOid) {
-    LOG.info("Get hakemus info from Ataru for haku {} and hakukohde {}", hakuOid, hakukohdeOid);
-    List<AtaruHakemus> hakemukset = ataruResource.getAtaruHakemukset(hakuOid, hakukohdeOid);
-    LOG.info("Got {} entries from Ataru", hakemukset.size());
+
+    LOG.info(
+        "Haetaan hakemusten tiedot Atarusta haulle {} ja hakukohteelle {}", hakuOid, hakukohdeOid);
+    List<AtaruHakemus> ataruHakemukset = ataruResource.getAtaruHakemukset(hakuOid, hakukohdeOid);
+    LOG.info("Atarusta saatiin {} hakemusta", ataruHakemukset.size());
+
+    LOG.info(
+        "Haetaan hakemukset haku-appista haulle {} ja hakukohteelle {}", hakuOid, hakukohdeOid);
+    List<HakuAppHakemus> hakuAppHakemukset =
+        hakuappResource.getApplicationsByOids(hakuOid, hakukohdeOid);
+    LOG.info("Haku-appista saatiin {} hakemusta", hakuAppHakemukset.size());
 
     Map<String, String> hakemusMap =
-        hakemukset.stream()
-            .collect(Collectors.toMap(AtaruHakemus::hakemusOid, AtaruHakemus::henkiloOid));
+        Stream.concat(ataruHakemukset.stream(), hakuAppHakemukset.stream())
+            .collect(Collectors.toMap(ExternalHakemus::hakemusOid, ExternalHakemus::henkiloOid));
     Pair<ZonedDateTime, List<PistetietoWrapper>> response =
         findValintapisteetForHakemukset(hakemusMap.keySet());
     List<PistetietoWrapper> pisteet =
@@ -202,7 +223,14 @@ public class ValintapisteService {
     if (unmodifiedSince == null) {
       return List.of();
     }
-    return valintapisteDAO.modifiedSinceHakemukset(hakemusOids, unmodifiedSince);
+    List<String> conflictingOids =
+        valintapisteDAO.modifiedSinceHakemukset(hakemusOids, unmodifiedSince);
+    if (!conflictingOids.isEmpty()) {
+      LOG.info(
+          "Ainakin osa hakemuksista on päivityskonflitissa: {}",
+          String.join(", ", conflictingOids));
+    }
+    return conflictingOids;
   }
 
   public static Map<String, List<Pistetieto>> groupByHakemus(List<Valintapiste> valintapisteet) {

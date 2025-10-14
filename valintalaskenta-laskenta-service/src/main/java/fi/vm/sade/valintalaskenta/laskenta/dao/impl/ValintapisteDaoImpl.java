@@ -110,6 +110,12 @@ public class ValintapisteDaoImpl implements ValintapisteDAO {
   @Override
   @Transactional
   public void upsertValintapiste(Valintapiste valintapiste) {
+    LOG.info(
+        "Kirjoitetaan kantaan pistetieto hakemukselle {} tunnisteella {}. Arvo: {}, osallistuminen: {}",
+        valintapiste.hakemusOid(),
+        valintapiste.tunniste(),
+        valintapiste.arvo(),
+        valintapiste.osallistuminen());
     jdbcClient
         .sql(
             """

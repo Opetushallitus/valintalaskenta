@@ -18,12 +18,17 @@ import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.AtaruHakemus;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.AtaruResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource;
+import fi.vm.sade.valintalaskenta.laskenta.resource.external.HakuAppHakemus;
+import fi.vm.sade.valintalaskenta.laskenta.resource.external.HakuAppResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
 import fi.vm.sade.valintalaskenta.laskenta.service.ValintalaskentaService;
 import fi.vm.sade.valintalaskenta.laskenta.service.valinta.impl.ValisijoitteluKasittelija;
 import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
 import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLogImpl;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -134,6 +139,25 @@ public class ValintalaskentaLaskentaConfiguration {
             .build());
   }
 
+  @Bean(name = "hakuAppCasClient")
+  public CasClient hakuAppCasClient(
+      @Value("${web.url.cas}") final String casUrl,
+      @Value("${cas.service.haku-app}") final String targetUrl,
+      @Value("${valintalaskentakoostepalvelu.app.username.to.sijoittelu}") final String username,
+      @Value("${valintalaskentakoostepalvelu.app.password.to.sijoittelu}") final String password) {
+    return CasClientBuilder.build(
+        new CasConfig.CasConfigBuilder(
+                username,
+                password,
+                casUrl,
+                targetUrl,
+                CSRF_VALUE,
+                CALLER_ID.value(),
+                "/j_spring_cas_security_check")
+            .setJsessionName("JSESSIONID")
+            .build());
+  }
+
   @Value("${valintalaskenta-laskenta-service.global.http.connectionTimeoutMillis:59999}")
   private Integer clientConnectionTimeout;
 
@@ -168,6 +192,31 @@ public class ValintalaskentaLaskentaConfiguration {
           String.format("%s/valintapiste", ataruBaseUrl),
           typeToken,
           Map.of("hakuOid", List.of(hakuOid), "hakukohdeOid", List.of(hakukohdeOid)),
+          clientConnectionTimeout,
+          clientReceiveTimeout);
+    };
+  }
+
+  @Bean(name = "hakuAppClient")
+  public HakuAppResource hakuAppClient(
+      @Qualifier("hakuAppCasClient") final CasClient hakuAppCasClient,
+      @Value("${valintalaskentakoostepalvelu.haku-app.rest.url}") final String hakuAppBaseUrl) {
+
+    return (hakuOid, hakukohdeOid) -> {
+      Map<String, List<String>> requestBody = new HashMap<>();
+      requestBody.put("states", Arrays.asList("ACTIVE", "INCOMPLETE"));
+      requestBody.put("asIds", Collections.singletonList(hakuOid));
+      requestBody.put("aoOids", Collections.singletonList(hakukohdeOid));
+      requestBody.put("keys", Arrays.asList("oid", "personOid"));
+
+      final TypeToken<List<HakuAppHakemus>> typeToken = new TypeToken<>() {};
+
+      String url = String.format("%s/applications/listfull", hakuAppBaseUrl);
+      return post(
+          hakuAppCasClient,
+          url,
+          typeToken,
+          requestBody,
           clientConnectionTimeout,
           clientReceiveTimeout);
     };

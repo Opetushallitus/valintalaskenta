@@ -63,6 +63,7 @@ cas:
     sijoittelu-service: ""
     seuranta-service: ""
     ataru-service: ""
+    haku-app: ""
 
 valintalaskentakoostepalvelu:
   app:
@@ -82,6 +83,9 @@ valintalaskentakoostepalvelu:
     rest:
       url: ""
   ataru:
+    rest:
+      url: ""
+  haku-app:
     rest:
       url: ""
 
