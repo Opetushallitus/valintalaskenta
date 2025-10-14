@@ -85,9 +85,9 @@ public class ValintapisteResourceIntegrationTest extends AbstractIntegrationTest
     @Test
     public void returnsHakemusAndOppijaOidsWithoutPisteetWhenThereAreNoPisteet()
         throws JsonProcessingException {
-      Mockito.when(ataruResource.getAtaruHakemukset(hakuOid, hakukohdeOid))
+      Mockito.when(ataruResource.getHakemukset(hakuOid, hakukohdeOid))
           .thenReturn(List.of(ataruHakemus));
-      Mockito.when(hakuAppResource.getApplicationsByOids(hakuOid, hakukohdeOid))
+      Mockito.when(hakuAppResource.getHakemukset(hakuOid, hakukohdeOid))
           .thenReturn(List.of(hakuAppHakemus));
 
       Response response = get(uri);
@@ -105,9 +105,9 @@ public class ValintapisteResourceIntegrationTest extends AbstractIntegrationTest
       valintapisteDAO.upsertValintapiste(DEFAULT_PISTE);
       valintapisteDAO.upsertValintapiste(OTHER_PISTE);
       valintapisteDAO.upsertValintapiste(OTHER_PISTE.withHakemusOid(hakuAppHakemus.hakemusOid()));
-      Mockito.when(ataruResource.getAtaruHakemukset(hakuOid, hakukohdeOid))
+      Mockito.when(ataruResource.getHakemukset(hakuOid, hakukohdeOid))
           .thenReturn(List.of(ataruHakemus));
-      Mockito.when(hakuAppResource.getApplicationsByOids(hakuOid, hakukohdeOid))
+      Mockito.when(hakuAppResource.getHakemukset(hakuOid, hakukohdeOid))
           .thenReturn(List.of(hakuAppHakemus));
 
       Response response = get(uri);

@@ -183,16 +183,8 @@ public class ValintapisteService {
   public Pair<ZonedDateTime, List<PistetietoWrapper>> hakukohteenValintapisteet(
       String hakuOid, String hakukohdeOid) {
 
-    LOG.info(
-        "Haetaan hakemusten tiedot Atarusta haulle {} ja hakukohteelle {}", hakuOid, hakukohdeOid);
-    List<AtaruHakemus> ataruHakemukset = ataruResource.getAtaruHakemukset(hakuOid, hakukohdeOid);
-    LOG.info("Atarusta saatiin {} hakemusta", ataruHakemukset.size());
-
-    LOG.info(
-        "Haetaan hakemukset haku-appista haulle {} ja hakukohteelle {}", hakuOid, hakukohdeOid);
-    List<HakuAppHakemus> hakuAppHakemukset =
-        hakuappResource.getApplicationsByOids(hakuOid, hakukohdeOid);
-    LOG.info("Haku-appista saatiin {} hakemusta", hakuAppHakemukset.size());
+    List<AtaruHakemus> ataruHakemukset = ataruResource.getHakemukset(hakuOid, hakukohdeOid);
+    List<HakuAppHakemus> hakuAppHakemukset = hakuappResource.getHakemukset(hakuOid, hakukohdeOid);
 
     Map<String, String> hakemusMap =
         Stream.concat(ataruHakemukset.stream(), hakuAppHakemukset.stream())
