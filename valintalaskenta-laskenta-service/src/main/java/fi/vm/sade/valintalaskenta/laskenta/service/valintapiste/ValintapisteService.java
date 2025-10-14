@@ -8,10 +8,8 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintapiste.PistetietoWrapper;
 import fi.vm.sade.valintalaskenta.domain.valintapiste.Valintapiste;
 import fi.vm.sade.valintalaskenta.domain.valintapiste.ValintapisteWithLastModified;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintapisteDAO;
-import fi.vm.sade.valintalaskenta.laskenta.resource.external.AtaruHakemus;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.AtaruResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ExternalHakemus;
-import fi.vm.sade.valintalaskenta.laskenta.resource.external.HakuAppHakemus;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.HakuAppResource;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -183,11 +181,14 @@ public class ValintapisteService {
   public Pair<ZonedDateTime, List<PistetietoWrapper>> hakukohteenValintapisteet(
       String hakuOid, String hakukohdeOid) {
 
-    List<AtaruHakemus> ataruHakemukset = ataruResource.getHakemukset(hakuOid, hakukohdeOid);
-    List<HakuAppHakemus> hakuAppHakemukset = hakuappResource.getHakemukset(hakuOid, hakukohdeOid);
+    List<? extends ExternalHakemus> hakemukset;
+    hakemukset = ataruResource.getHakemukset(hakuOid, hakukohdeOid);
+    if (hakemukset.isEmpty()) {
+      hakemukset = hakuappResource.getHakemukset(hakuOid, hakukohdeOid);
+    }
 
     Map<String, String> hakemusMap =
-        Stream.concat(ataruHakemukset.stream(), hakuAppHakemukset.stream())
+        hakemukset.stream()
             .collect(Collectors.toMap(ExternalHakemus::hakemusOid, ExternalHakemus::henkiloOid));
     Pair<ZonedDateTime, List<PistetietoWrapper>> response =
         findValintapisteetForHakemukset(hakemusMap.keySet());

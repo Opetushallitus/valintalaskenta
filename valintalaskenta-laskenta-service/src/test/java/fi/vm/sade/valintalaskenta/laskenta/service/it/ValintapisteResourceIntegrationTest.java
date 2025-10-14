@@ -87,6 +87,19 @@ public class ValintapisteResourceIntegrationTest extends AbstractIntegrationTest
         throws JsonProcessingException {
       Mockito.when(ataruResource.getHakemukset(hakuOid, hakukohdeOid))
           .thenReturn(List.of(ataruHakemus));
+
+      Response response = get(uri);
+
+      assertThat(response.getStatusCode()).isEqualTo(200);
+      List<PistetietoWrapper> body =
+          objectMapper.readValue(response.getResponseBody(), new TypeReference<>() {});
+      assertThat(body).containsExactly(ataruHakemus.toPistetietoWrapper());
+      Mockito.verifyNoInteractions(hakuAppResource);
+    }
+
+    @Test
+    public void callsHakuAppWhenAtaruHasNoHakemukset() throws JsonProcessingException {
+      Mockito.when(ataruResource.getHakemukset(hakuOid, hakukohdeOid)).thenReturn(List.of());
       Mockito.when(hakuAppResource.getHakemukset(hakuOid, hakukohdeOid))
           .thenReturn(List.of(hakuAppHakemus));
 
@@ -95,18 +108,32 @@ public class ValintapisteResourceIntegrationTest extends AbstractIntegrationTest
       assertThat(response.getStatusCode()).isEqualTo(200);
       List<PistetietoWrapper> body =
           objectMapper.readValue(response.getResponseBody(), new TypeReference<>() {});
-      assertThat(body)
-          .containsExactlyInAnyOrder(
-              ataruHakemus.toPistetietoWrapper(), hakuAppHakemus.toPistetietoWrapper());
+      assertThat(body).containsExactly(hakuAppHakemus.toPistetietoWrapper());
     }
 
     @Test
     public void returnsPistetiedotWhenWeHaveThem() throws JsonProcessingException {
       valintapisteDAO.upsertValintapiste(DEFAULT_PISTE);
       valintapisteDAO.upsertValintapiste(OTHER_PISTE);
-      valintapisteDAO.upsertValintapiste(OTHER_PISTE.withHakemusOid(hakuAppHakemus.hakemusOid()));
       Mockito.when(ataruResource.getHakemukset(hakuOid, hakukohdeOid))
           .thenReturn(List.of(ataruHakemus));
+
+      Response response = get(uri);
+
+      assertThat(response.getStatusCode()).isEqualTo(200);
+      List<PistetietoWrapper> body =
+          objectMapper.readValue(response.getResponseBody(), new TypeReference<>() {});
+      assertThat(body)
+          .containsExactly(
+              ataruHakemus.toPistetietoWrapper(
+                  DEFAULT_PISTE.toPistetieto(), OTHER_PISTE.toPistetieto()));
+      Mockito.verifyNoInteractions(hakuAppResource);
+    }
+
+    @Test
+    public void returnsPistetiedotWhenWeHaveThemFromHakuApp() throws JsonProcessingException {
+      valintapisteDAO.upsertValintapiste(OTHER_PISTE.withHakemusOid(hakuAppHakemus.hakemusOid()));
+      Mockito.when(ataruResource.getHakemukset(hakuOid, hakukohdeOid)).thenReturn(List.of());
       Mockito.when(hakuAppResource.getHakemukset(hakuOid, hakukohdeOid))
           .thenReturn(List.of(hakuAppHakemus));
 
@@ -116,10 +143,7 @@ public class ValintapisteResourceIntegrationTest extends AbstractIntegrationTest
       List<PistetietoWrapper> body =
           objectMapper.readValue(response.getResponseBody(), new TypeReference<>() {});
       assertThat(body)
-          .containsExactlyInAnyOrder(
-              ataruHakemus.toPistetietoWrapper(
-                  DEFAULT_PISTE.toPistetieto(), OTHER_PISTE.toPistetieto()),
-              hakuAppHakemus.toPistetietoWrapper(OTHER_PISTE.toPistetieto()));
+          .containsExactly(hakuAppHakemus.toPistetietoWrapper(OTHER_PISTE.toPistetieto()));
     }
   }
 
