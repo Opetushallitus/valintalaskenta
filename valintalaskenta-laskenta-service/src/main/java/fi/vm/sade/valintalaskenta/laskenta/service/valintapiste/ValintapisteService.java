@@ -8,9 +8,12 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintapiste.PistetietoWrapper;
 import fi.vm.sade.valintalaskenta.domain.valintapiste.Valintapiste;
 import fi.vm.sade.valintalaskenta.domain.valintapiste.ValintapisteWithLastModified;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintapisteDAO;
+import fi.vm.sade.valintalaskenta.laskenta.resource.external.AtaruHakemus;
+import fi.vm.sade.valintalaskenta.laskenta.resource.external.AtaruResource;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,11 +33,14 @@ public class ValintapisteService {
   private static final Logger LOG = LoggerFactory.getLogger(ValintapisteService.class);
 
   private final ValintapisteDAO valintapisteDAO;
+  private final AtaruResource ataruResource;
   private final ApplicationContext applicationContext;
 
   @Autowired
-  ValintapisteService(ValintapisteDAO dao, ApplicationContext applicationContext) {
+  ValintapisteService(
+      ValintapisteDAO dao, AtaruResource ataruResource, ApplicationContext applicationContext) {
     this.valintapisteDAO = dao;
+    this.ataruResource = ataruResource;
     this.applicationContext = applicationContext;
   }
 
@@ -104,7 +110,7 @@ public class ValintapisteService {
 
   @Transactional(readOnly = true)
   public Pair<ZonedDateTime, List<PistetietoWrapper>> findValintapisteetForHakemukset(
-      List<String> hakemusOids) {
+      Collection<String> hakemusOids) {
     if (hakemusOids.size() > 32767) {
       throw new IllegalArgumentException("Max number of hakemukset is 32767!");
     }
@@ -135,7 +141,7 @@ public class ValintapisteService {
   }
 
   @Transactional(readOnly = true)
-  public Optional<ZonedDateTime> lastModifiedForHakemukset(List<String> hakemusOids) {
+  public Optional<ZonedDateTime> lastModifiedForHakemukset(Collection<String> hakemusOids) {
     // Tietokannan aikaleima on tarkempi kuin Javan. Lisätään aikaan sekunti, jotta palautetun
     // leiman uudelleenkäyttö ei aiheuta virheitä kutsujalle.
     return valintapisteDAO
@@ -158,6 +164,25 @@ public class ValintapisteService {
     }
 
     return conflictingOids;
+  }
+
+  @Transactional(readOnly = true)
+  public Pair<ZonedDateTime, List<PistetietoWrapper>> hakukohteenValintapisteet(
+      String hakuOid, String hakukohdeOid) {
+    LOG.info("Get hakemus info from Ataru for haku {} and hakukohde {}", hakuOid, hakukohdeOid);
+    List<AtaruHakemus> hakemukset = ataruResource.getAtaruHakemukset(hakuOid, hakukohdeOid);
+    LOG.info("Got {} entries from Ataru", hakemukset.size());
+
+    Map<String, String> hakemusMap =
+        hakemukset.stream()
+            .collect(Collectors.toMap(AtaruHakemus::hakemusOid, AtaruHakemus::henkiloOid));
+    Pair<ZonedDateTime, List<PistetietoWrapper>> response =
+        findValintapisteetForHakemukset(hakemusMap.keySet());
+    List<PistetietoWrapper> pisteet =
+        response.getRight().stream()
+            .map(wrapper -> wrapper.withOppijaOID(hakemusMap.get(wrapper.hakemusOID())))
+            .toList();
+    return Pair.of(response.getLeft(), pisteet);
   }
 
   private Stream<Valintapiste> createValintapisteet(PistetietoWrapper wrapper) {

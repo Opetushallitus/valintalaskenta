@@ -17,7 +17,7 @@ public interface ValintapisteRepository extends CrudRepository<Valintapiste, UUI
             from valintapiste \
             where hakemus_oid in (:hakemusOids)
             """)
-  Timestamp findLastModifiedByHakemusOids(List<String> hakemusOids);
+  Timestamp findLastModifiedByHakemusOids(Collection<String> hakemusOids);
 
   @Query(
       """

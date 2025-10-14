@@ -43,6 +43,16 @@ public class ValintapisteResource {
 
   @PreAuthorize(CRUD)
   @GetMapping(
+      value = "/haku/{hakuOid}/hakukohde/{hakukohdeOid}",
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Hakukohteen hakemusten pistetiedot")
+  public ResponseEntity<List<PistetietoWrapper>> findValintapisteetForHakukohde(
+      @PathVariable String hakuOid, @PathVariable String hakukohdeOid) {
+    return withLastModified(valintapisteService.hakukohteenValintapisteet(hakuOid, hakukohdeOid));
+  }
+
+  @PreAuthorize(CRUD)
+  @GetMapping(
       value = "/hakemus/{hakemusOid}/oppija/{oppijaOid}",
       produces = MediaType.APPLICATION_JSON_VALUE)
   @Operation(summary = "Hakemuksen pistetiedot")

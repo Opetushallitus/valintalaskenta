@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -45,7 +46,7 @@ public class ValintapisteDaoImpl implements ValintapisteDAO {
 
   @Override
   @Transactional(readOnly = true)
-  public List<Valintapiste> findValintapisteetForHakemukset(List<String> hakemusOids) {
+  public List<Valintapiste> findValintapisteetForHakemukset(Collection<String> hakemusOids) {
     return repo.findByHakemusOidIn(hakemusOids);
   }
 
@@ -86,7 +87,7 @@ public class ValintapisteDaoImpl implements ValintapisteDAO {
   }
 
   @Override
-  public Optional<ZonedDateTime> lastModifiedForHakemukset(List<String> hakemusOids) {
+  public Optional<ZonedDateTime> lastModifiedForHakemukset(Collection<String> hakemusOids) {
     return Optional.ofNullable(repo.findLastModifiedByHakemusOids(hakemusOids))
         .map(a -> a.toInstant().atZone(UTC));
   }

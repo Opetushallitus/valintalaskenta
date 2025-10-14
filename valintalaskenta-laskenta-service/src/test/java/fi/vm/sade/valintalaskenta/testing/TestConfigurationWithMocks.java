@@ -4,6 +4,7 @@ import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.valinta.dokumenttipalvelu.Dokumenttipalvelu;
 import fi.vm.sade.valintalaskenta.laskenta.config.SwaggerConfiguration;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
+import fi.vm.sade.valintalaskenta.laskenta.resource.external.AtaruResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
@@ -93,6 +94,12 @@ class TestConfigurationWithMocks {
   @Bean
   public ValintaperusteetValintatapajonoResource mockValintaperusteetValintatapajonoResource() {
     return Mockito.mock(ValintaperusteetValintatapajonoResource.class);
+  }
+
+  @Primary
+  @Bean
+  public AtaruResource ataruResource() {
+    return Mockito.mock(AtaruResource.class);
   }
 
   @Primary

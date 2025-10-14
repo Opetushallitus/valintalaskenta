@@ -11,6 +11,8 @@ import fi.vm.sade.valintalaskenta.domain.dto.valintapiste.Osallistumistieto;
 import fi.vm.sade.valintalaskenta.domain.dto.valintapiste.PistetietoWrapper;
 import fi.vm.sade.valintalaskenta.domain.valintapiste.Valintapiste;
 import fi.vm.sade.valintalaskenta.laskenta.dao.ValintapisteDAO;
+import fi.vm.sade.valintalaskenta.laskenta.resource.external.AtaruHakemus;
+import fi.vm.sade.valintalaskenta.laskenta.resource.external.AtaruResource;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintapiste.ValintapisteService;
 import fi.vm.sade.valintalaskenta.testing.AbstractIntegrationTest;
 import java.time.ZonedDateTime;
@@ -24,16 +26,19 @@ import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.Request;
 import org.asynchttpclient.RequestBuilder;
 import org.asynchttpclient.Response;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 public class ValintapisteResourceIntegrationTest extends AbstractIntegrationTest {
   @Autowired private ValintapisteDAO valintapisteDAO;
+  @Autowired private AtaruResource ataruResource;
   @Autowired private ObjectMapper objectMapper;
 
   private final AsyncHttpClient asyncHttpClient = asyncHttpClient();
@@ -46,6 +51,70 @@ public class ValintapisteResourceIntegrationTest extends AbstractIntegrationTest
   private static final Valintapiste OTHER_PISTE =
       new Valintapiste(
           HAKEMUS_OID, "Tunniste2", null, Osallistumistieto.EI_OSALLISTUNUT, "toinen-talletttaja");
+
+  @Nested
+  public class FindValintapisteetForHakukohde {
+    private final String hakuOid = "1.2.246.562.29.00000000000000000001";
+    private final String hakukohdeOid = "1.2.246.562.20.00000000000000000001";
+
+    private final String uri =
+        String.format("valintapisteet/haku/%s/hakukohde/%s", hakuOid, hakukohdeOid);
+
+    private final AtaruHakemus ataruHakemus = new AtaruHakemus(HAKEMUS_OID, OPPIJA_OID);
+
+    @BeforeEach
+    void resetMocks() {
+      Mockito.reset(ataruResource);
+    }
+
+    @Test
+    public void returnsEmptyArrayWhenAtaruHasNoHakemukset() {
+      Response response = get(uri);
+
+      assertThat(response.getStatusCode()).isEqualTo(200);
+      assertThat(response.getResponseBody()).isEqualTo("[]");
+      String lastModified = response.getHeader("Last-Modified");
+      assertThat(lastModified).isNull();
+    }
+
+    @Test
+    public void returnsHakemusAndOppijaOidsWithoutPisteetWhenThereAreNoPisteet()
+        throws JsonProcessingException {
+      Mockito.when(ataruResource.getAtaruHakemukset(hakuOid, hakukohdeOid))
+          .thenReturn(List.of(ataruHakemus));
+
+      Response response = get(uri);
+
+      assertThat(response.getStatusCode()).isEqualTo(200);
+      List<PistetietoWrapper> body =
+          objectMapper.readValue(response.getResponseBody(), new TypeReference<>() {});
+      assertThat(body).hasSize(1);
+      PistetietoWrapper wrapper = body.get(0);
+      assertThat(wrapper.hakemusOID()).isEqualTo(HAKEMUS_OID);
+      assertThat(wrapper.oppijaOID()).isEqualTo(OPPIJA_OID);
+      assertThat(wrapper.pisteet()).isEmpty();
+    }
+
+    @Test
+    public void returnsPistetiedotWhenWeHaveThem() throws JsonProcessingException {
+      valintapisteDAO.upsertValintapiste(DEFAULT_PISTE);
+      valintapisteDAO.upsertValintapiste(OTHER_PISTE);
+      Mockito.when(ataruResource.getAtaruHakemukset(hakuOid, hakukohdeOid))
+          .thenReturn(List.of(ataruHakemus));
+
+      Response response = get(uri);
+
+      assertThat(response.getStatusCode()).isEqualTo(200);
+      List<PistetietoWrapper> body =
+          objectMapper.readValue(response.getResponseBody(), new TypeReference<>() {});
+      assertThat(body).hasSize(1);
+      PistetietoWrapper wrapper = body.get(0);
+      assertThat(wrapper.hakemusOID()).isEqualTo(HAKEMUS_OID);
+      assertThat(wrapper.oppijaOID()).isEqualTo(OPPIJA_OID);
+      assertThat(wrapper.pisteet())
+          .containsExactlyInAnyOrder(DEFAULT_PISTE.toPistetieto(), OTHER_PISTE.toPistetieto());
+    }
+  }
 
   @Nested
   public class FindValintapisteetForHakemus {

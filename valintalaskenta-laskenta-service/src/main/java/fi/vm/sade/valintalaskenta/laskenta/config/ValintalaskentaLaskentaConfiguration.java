@@ -15,6 +15,8 @@ import fi.vm.sade.service.valintaperusteet.laskenta.api.LaskentaServiceImpl;
 import fi.vm.sade.sijoittelu.tulos.dto.HakukohdeDTO;
 import fi.vm.sade.valinta.dokumenttipalvelu.Dokumenttipalvelu;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
+import fi.vm.sade.valintalaskenta.laskenta.resource.external.AtaruHakemus;
+import fi.vm.sade.valintalaskenta.laskenta.resource.external.AtaruResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ErillisSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValiSijoitteluResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ValintaperusteetValintatapajonoResource;
@@ -119,6 +121,19 @@ public class ValintalaskentaLaskentaConfiguration {
             .build());
   }
 
+  @Bean(name = "ataruCasClient")
+  public CasClient ataruServiceCasClient(
+      @Value("${web.url.cas}") final String casUrl,
+      @Value("${cas.service.ataru-service}") final String targetUrl,
+      @Value("${valintalaskentakoostepalvelu.app.username.to.sijoittelu}") final String username,
+      @Value("${valintalaskentakoostepalvelu.app.password.to.sijoittelu}") final String password) {
+    return CasClientBuilder.build(
+        new CasConfig.CasConfigBuilder(
+                username, password, casUrl, targetUrl, CSRF_VALUE, CALLER_ID.value(), "/auth/cas")
+            .setJsessionName("ring-session")
+            .build());
+  }
+
   @Value("${valintalaskenta-laskenta-service.global.http.connectionTimeoutMillis:59999}")
   private Integer clientConnectionTimeout;
 
@@ -137,6 +152,22 @@ public class ValintalaskentaLaskentaConfiguration {
           String.format("%s/valisijoittele/%s", sijoitteluBaseUrl, hakuOid),
           typeToken,
           hakukohteet,
+          clientConnectionTimeout,
+          clientReceiveTimeout);
+    };
+  }
+
+  @Bean(name = "ataruRestClient")
+  public AtaruResource ataruRestClient(
+      @Qualifier("ataruCasClient") final CasClient ataruCasClient,
+      @Value("${valintalaskentakoostepalvelu.ataru.rest.url}") final String ataruBaseUrl) {
+    return (hakuOid, hakukohdeOid) -> {
+      final TypeToken<List<AtaruHakemus>> typeToken = new TypeToken<>() {};
+      return get(
+          ataruCasClient,
+          String.format("%s/valintapiste", ataruBaseUrl),
+          typeToken,
+          Map.of("hakuOid", List.of(hakuOid), "hakukohdeOid", List.of(hakukohdeOid)),
           clientConnectionTimeout,
           clientReceiveTimeout);
     };

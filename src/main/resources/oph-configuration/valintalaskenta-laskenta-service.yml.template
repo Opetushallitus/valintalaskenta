@@ -22,6 +22,7 @@ cas:
     sijoittelu-service: https://${host.virkailija}/sijoittelu-service
     valintaperusteet-service: https://${host.virkailija}/valintaperusteet-service
     seuranta-service: https://${host.virkailija}/seuranta-service
+    ataru-service: https://${host.virkailija}/lomake-editori/auth/cas
   callback:
     valintalaskenta-service: http://{{ cluster_valinta_host | default("${server.name}") }}:{{ cluster_valinta_port | default("8309") }}/valintalaskenta-laskenta-service
   url: https://${host.cas}/cas
@@ -49,6 +50,9 @@ web:
     cas: https://${host.cas}/cas
 
 valintalaskentakoostepalvelu:
+  ataru:
+    rest:
+      url: https://${host.virkailija}/lomake-editori/api/external
   sijoittelu:
     rest:
       url: https://${host.virkailija}/sijoittelu-service/resources
