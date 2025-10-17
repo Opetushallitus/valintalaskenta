@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl.converters;
 
 import fi.vm.sade.valintalaskenta.domain.dto.*;
+import fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.PistetietoWrapperSiirtotiedostoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.ValintakoeOsallistuminenSiirtotiedostoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.ValintatietoValinnanvaiheSiirtotiedostoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.*;
@@ -10,6 +11,7 @@ import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluValintatapajono;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
+import fi.vm.sade.valintalaskenta.domain.valintapiste.ValintapisteWithLastModified;
 import java.util.Collection;
 import java.util.List;
 
@@ -30,6 +32,9 @@ public interface ValintatulosConverter {
   List<ValintakoeOsallistuminenSiirtotiedostoDTO>
       convertValintakoeOsallistuminenListForSiirtotiedosto(
           List<ValintakoeOsallistuminenDTO> valintakoeOsallistuminenList);
+
+  List<PistetietoWrapperSiirtotiedostoDTO> convertPistetiedotForSiirtotiedosto(
+      List<ValintapisteWithLastModified> valintapisteet);
 
   List<ValintakoeOsallistuminenDTO> convertValintakoeOsallistuminen(
       List<ValintakoeOsallistuminen> osallistumiset);

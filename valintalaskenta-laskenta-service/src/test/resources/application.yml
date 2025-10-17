@@ -62,6 +62,8 @@ cas:
     valintaperusteet-service: ""
     sijoittelu-service: ""
     seuranta-service: ""
+    ataru-service: ""
+    haku-app: ""
 
 valintalaskentakoostepalvelu:
   app:
@@ -80,6 +82,12 @@ valintalaskentakoostepalvelu:
   seuranta:
     rest:
       url: ""
+  ataru:
+    rest:
+      url: ""
+  haku-app:
+    rest:
+      url: ""
 
 aws:
   region: eu-west-1
@@ -96,6 +104,3 @@ cas-service:
   service: http://localhost:${server.port}/valintalaskenta-laskenta-service
   send-renew: false
   key: valintalaskenta-laskenta-service
-
-
-

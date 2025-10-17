@@ -4,16 +4,16 @@ import static fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.Siirtotiedost
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.READ_UPDATE_CRUD;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+import fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.SiirtotiedostoResult;
 import fi.vm.sade.valintalaskenta.tulos.service.SiirtotiedostoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,17 +55,17 @@ public class SiirtotiedostoResourceImpl {
   @Operation(
       summary =
           "Luo siirtotiedostot annetulla aikavälillä luoduista / muutetuista valintakoeosallistumisista hakemuksittain")
-  public ResponseEntity<String> valintakoeOsallistumiset(
-      @Parameter(description = "Alkuaika") @RequestParam(required = false) String startDatetime,
-      @Parameter(description = "Loppuaika") @RequestParam(required = false) String endDatetime) {
+  public SiirtotiedostoResult valintakoeOsallistumiset(
+      @Parameter(description = "Alkuaika, oletuksena koko historia") @RequestParam(required = false)
+          String startDatetime,
+      @Parameter(description = "Loppuaika, oletuksena nykyinen ajanhetki")
+          @RequestParam(required = false)
+          String endDatetime) {
     LocalDateTime start = parseDateTime(startDatetime, "Alkuaika", null);
     LocalDateTime end =
         parseDateTime(endDatetime, "Loppuaika", ZonedDateTime.now(SIIRTOTIEDOSTO_TIMEZONE));
-    String response =
-        siirtotiedostoService
-            .createSiirtotiedostotForValintakoeOsallistumiset(start, end)
-            .toString();
-    return new ResponseEntity<>(response, HttpStatus.OK);
+
+    return siirtotiedostoService.createSiirtotiedostotForValintakoeOsallistumiset(start, end);
   }
 
   @PreAuthorize(READ_UPDATE_CRUD)
@@ -73,16 +73,35 @@ public class SiirtotiedostoResourceImpl {
   @Operation(
       summary =
           "Luo siirtotiedostot annetulla aikavälillä luoduista / muutetuista valintalaskennan tuloksista hakukohteittain")
-  public ResponseEntity<String> valintalaskennanTulokset(
-      @Parameter(description = "Alkuaika") @RequestParam(required = false) String startDatetime,
-      @Parameter(description = "Loppuaika") @RequestParam(required = false) String endDatetime) {
+  public SiirtotiedostoResult valintalaskennanTulokset(
+      @Parameter(description = "Alkuaika, oletuksena koko historia") @RequestParam(required = false)
+          String startDatetime,
+      @Parameter(description = "Loppuaika, oletuksena nykyinen ajanhetki")
+          @RequestParam(required = false)
+          String endDatetime) {
     LocalDateTime start = parseDateTime(startDatetime, "Alkuaika", null);
     LocalDateTime end =
         parseDateTime(endDatetime, "Loppuaika", ZonedDateTime.now(SIIRTOTIEDOSTO_TIMEZONE));
-    String response =
-        siirtotiedostoService
-            .createSiirtotiedostotForValintalaskennanTulokset(start, end)
-            .toString();
-    return new ResponseEntity<>(response, HttpStatus.OK);
+
+    return siirtotiedostoService.createSiirtotiedostotForValintalaskennanTulokset(start, end);
+  }
+
+  @PreAuthorize(READ_UPDATE_CRUD)
+  @GetMapping(value = "/valintapisteet", produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(
+      summary =
+          "Luo siirtotiedostot annetulla aikavälillä luoduista / muutetuista valintapisteistä hakemuksittain")
+  public SiirtotiedostoResult valintapisteet(
+      @Parameter(description = "Alkuaika, oletuksena koko historia") @RequestParam(required = false)
+          String startDatetime,
+      @Parameter(description = "Loppuaika, oletuksena nykyinen ajanhetki")
+          @RequestParam(required = false)
+          String endDatetime) {
+    ZonedDateTime epoch = ZonedDateTime.ofInstant(Instant.EPOCH, SIIRTOTIEDOSTO_TIMEZONE);
+    LocalDateTime start = parseDateTime(startDatetime, "Alkuaika", epoch);
+    LocalDateTime end =
+        parseDateTime(endDatetime, "Loppuaika", ZonedDateTime.now(SIIRTOTIEDOSTO_TIMEZONE));
+
+    return siirtotiedostoService.createSiirtotiedostotForValintapisteet(start, end);
   }
 }
