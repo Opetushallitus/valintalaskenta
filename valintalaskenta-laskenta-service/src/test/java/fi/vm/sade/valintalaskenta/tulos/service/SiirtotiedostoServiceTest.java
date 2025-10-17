@@ -47,7 +47,45 @@ public class SiirtotiedostoServiceTest extends AbstractIntegrationTest {
   }
 
   @Nested
+  public class CreateSiirtotiedostotForValintakoeOsallistumiset {
+    @Test
+    public void doesNotCreateAnythingWhenThereAreNoMatchingEntries() {
+      SiirtotiedostoResult result =
+          siirtotiedostoService.createSiirtotiedostotForValintakoeOsallistumiset(
+              EPOCH, LocalDateTime.now());
+
+      assertThat(result).isEqualTo(new SiirtotiedostoResult(List.of(), 0));
+      Mockito.verifyNoInteractions(s3Client);
+    }
+  }
+
+  @Nested
+  public class CreateSiirtotiedostotForValintalaskennanTulokset {
+    @Test
+    public void doesNotCreateAnythingWhenThereAreNoMatchingEntries() {
+      SiirtotiedostoResult result =
+          siirtotiedostoService.createSiirtotiedostotForValintalaskennanTulokset(
+              EPOCH, LocalDateTime.now());
+
+      assertThat(result).isEqualTo(new SiirtotiedostoResult(List.of(), 0));
+      Mockito.verifyNoInteractions(s3Client);
+    }
+  }
+
+  @Nested
   public class CreateSiirtotiedostotForValintapisteet {
+    @Test
+    public void doesNotCreateAnythingWhenThereAreNoMatchingEntries() {
+      when(s3Client.getMaxHakemusCountInFile()).thenReturn(3);
+
+      SiirtotiedostoResult result =
+          siirtotiedostoService.createSiirtotiedostotForValintapisteet(EPOCH, LocalDateTime.now());
+
+      assertThat(result).isEqualTo(new SiirtotiedostoResult(List.of(), 0));
+      Mockito.verify(s3Client).getMaxHakemusCountInFile();
+      Mockito.verifyNoMoreInteractions(s3Client);
+    }
+
     @Test
     public void createsSiirtotiedostotInBatches() {
       when(s3Client.getMaxHakemusCountInFile()).thenReturn(3);

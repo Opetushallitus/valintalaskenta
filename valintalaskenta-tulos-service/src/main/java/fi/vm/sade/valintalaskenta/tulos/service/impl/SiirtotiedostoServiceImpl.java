@@ -65,7 +65,9 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
     List<String> hakemusOids =
         tulosValintakoeOsallistuminenDAO.readNewOrModifiedHakemusOids(startDatetime, endDatatime);
     List<List<String>> partitions =
-        Lists.partition(hakemusOids, siirtotiedostoS3Client.getMaxHakemusCountInFile());
+        hakemusOids.isEmpty()
+            ? List.of()
+            : Lists.partition(hakemusOids, siirtotiedostoS3Client.getMaxHakemusCountInFile());
     List<String> siirtotiedostoKeys = new ArrayList<>();
     for (List<String> hakemusOidChunk : partitions) {
       List<ValintakoeOsallistuminenDTO> osallistumiset = new ArrayList<>();
@@ -99,7 +101,10 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
     List<String> valinnanvaiheOids =
         tulosValinnanvaiheDAO.readNewOrModifiedValinnanvaiheOids(startDatetime, endDatatime);
     List<List<String>> partitions =
-        Lists.partition(valinnanvaiheOids, siirtotiedostoS3Client.getMaxValinnanvaiheCountInFile());
+        valinnanvaiheOids.isEmpty()
+            ? List.of()
+            : Lists.partition(
+                valinnanvaiheOids, siirtotiedostoS3Client.getMaxValinnanvaiheCountInFile());
     List<String> siirtotiedostoKeys = new ArrayList<>();
     for (List<String> valinnanvaiheOidChunk : partitions) {
       List<List<ValintatietoValinnanvaiheSiirtotiedostoDTO>> tulokset = new ArrayList<>();
