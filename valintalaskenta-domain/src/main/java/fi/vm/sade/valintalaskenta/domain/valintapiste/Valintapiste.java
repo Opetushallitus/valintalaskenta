@@ -2,9 +2,7 @@ package fi.vm.sade.valintalaskenta.domain.valintapiste;
 
 import fi.vm.sade.valintalaskenta.domain.dto.valintapiste.Osallistumistieto;
 import fi.vm.sade.valintalaskenta.domain.dto.valintapiste.Pistetieto;
-import jakarta.persistence.IdClass;
 
-@IdClass(ValintapisteId.class)
 public record Valintapiste(
     String hakemusOid,
     String tunniste,

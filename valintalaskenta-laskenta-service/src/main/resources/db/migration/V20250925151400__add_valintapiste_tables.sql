@@ -55,6 +55,7 @@ create trigger update_valintapiste_history
     for each row
     execute procedure update_valintapiste_history();
 
+CREATE INDEX IF NOT EXISTS valintapiste_modified_at_idx ON valintapiste (lower(system_time));
 CREATE INDEX IF NOT EXISTS valintapiste_history_modified_at_idx ON valintapiste_history (upper(system_time));
 
 comment on table valintapiste is 'Hakijan valintakokeiden osallistumis- ja pistetiedot';

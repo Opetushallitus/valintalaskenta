@@ -6,6 +6,7 @@ import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosHarkinnanvarainenHyv
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosJarjestyskriteerihistoriaRepository;
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosMuokattuJonosijaRepository;
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosValintatapajonoRepository;
+import fi.vm.sade.valintalaskenta.tulos.dao.repository.ValintapisteRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -54,6 +55,6 @@ public abstract class AbstractIntegrationTest {
     hakijaryhmaRepository.deleteAll();
     valintakoeOsallistuminenRepository.deleteAll();
     tulosJarjestyskriteerihistoriaRepository.deleteAll();
-    valintapisteRepository.deleteAll();
+    valintapisteRepository.truncateWithHistory();
   }
 }

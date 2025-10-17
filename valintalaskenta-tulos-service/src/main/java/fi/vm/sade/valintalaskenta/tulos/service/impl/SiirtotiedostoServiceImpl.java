@@ -1,13 +1,15 @@
 package fi.vm.sade.valintalaskenta.tulos.service.impl;
 
 import com.google.common.collect.Lists;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.DeletedValintapisteSiirtotiedostoDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.SiirtotiedostoResult;
 import fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.ValintakoeOsallistuminenSiirtotiedostoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.ValintatietoValinnanvaiheSiirtotiedostoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.valintakoe.ValintakoeOsallistuminenDTO;
+import fi.vm.sade.valintalaskenta.domain.valintapiste.ValintapisteWithLastModified;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValinnanvaiheDAO;
 import fi.vm.sade.valintalaskenta.tulos.dao.TulosValintakoeOsallistuminenDAO;
+import fi.vm.sade.valintalaskenta.tulos.dao.ValintapisteDAO;
 import fi.vm.sade.valintalaskenta.tulos.mapping.ValintalaskentaModelMapper;
 import fi.vm.sade.valintalaskenta.tulos.ovara.SiirtotiedostoS3Client;
 import fi.vm.sade.valintalaskenta.tulos.service.SiirtotiedostoService;
@@ -31,6 +33,7 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
 
   private final TulosValintakoeOsallistuminenDAO tulosValintakoeOsallistuminenDAO;
   private final TulosValinnanvaiheDAO tulosValinnanvaiheDAO;
+  private final ValintapisteDAO valintapisteDAO;
   private final ValintalaskentaTulosService valintalaskentaTulosService;
   private final ValintalaskentaModelMapper modelMapper;
   private final ValintatulosConverter valintatulosConverter;
@@ -41,12 +44,14 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
   public SiirtotiedostoServiceImpl(
       final TulosValintakoeOsallistuminenDAO tulosValintakoeOsallistuminenDAO,
       final TulosValinnanvaiheDAO tulosValinnanvaiheDAO,
+      final ValintapisteDAO valintapisteDAO,
       final ValintalaskentaTulosService tulosService,
       final ValintalaskentaModelMapper modelMapper,
       final ValintatulosConverter valintatulosConverter,
       final SiirtotiedostoS3Client siirtotiedostoS3Client) {
     this.tulosValintakoeOsallistuminenDAO = tulosValintakoeOsallistuminenDAO;
     this.tulosValinnanvaiheDAO = tulosValinnanvaiheDAO;
+    this.valintapisteDAO = valintapisteDAO;
     this.valintalaskentaTulosService = tulosService;
     this.modelMapper = modelMapper;
     this.valintatulosConverter = valintatulosConverter;
@@ -54,7 +59,7 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
   }
 
   @Override
-  public JsonObject createSiirtotiedostotForValintakoeOsallistumiset(
+  public SiirtotiedostoResult createSiirtotiedostotForValintakoeOsallistumiset(
       LocalDateTime startDatetime, LocalDateTime endDatatime) {
     String opId = UUID.randomUUID().toString();
     List<String> hakemusOids =
@@ -84,11 +89,11 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
         "Kirjoitettiin yhteensä {} hakemuksen valintakoeosallistumiset {} siirtotiedostoon.",
         hakemusOids.size(),
         siirtotiedostoKeys.size());
-    return resultJson(siirtotiedostoKeys, hakemusOids.size());
+    return new SiirtotiedostoResult(siirtotiedostoKeys, hakemusOids.size());
   }
 
   @Override
-  public JsonObject createSiirtotiedostotForValintalaskennanTulokset(
+  public SiirtotiedostoResult createSiirtotiedostotForValintalaskennanTulokset(
       LocalDateTime startDatetime, LocalDateTime endDatatime) {
     String opId = UUID.randomUUID().toString();
     List<String> valinnanvaiheOids =
@@ -111,16 +116,50 @@ public class SiirtotiedostoServiceImpl implements SiirtotiedostoService {
         "Kirjoitettiin yhteensä {} valintalaskennan tulosta {} siirtotiedostoon.",
         valinnanvaiheOids.size(),
         siirtotiedostoKeys.size());
-    return resultJson(siirtotiedostoKeys, valinnanvaiheOids.size());
+    return new SiirtotiedostoResult(siirtotiedostoKeys, valinnanvaiheOids.size());
   }
 
-  private JsonObject resultJson(List<String> siirtotiedostoKeys, int itemCount) {
-    JsonArray keyJson = new JsonArray();
-    siirtotiedostoKeys.forEach(key -> keyJson.add(key));
-    JsonObject result = new JsonObject();
-    result.add("keys", keyJson);
-    result.addProperty("total", itemCount);
-    result.addProperty("success", true);
-    return result;
+  @Override
+  public SiirtotiedostoResult createSiirtotiedostotForValintapisteet(
+      LocalDateTime start, LocalDateTime end) {
+    int batchSize = siirtotiedostoS3Client.getMaxHakemusCountInFile();
+    String opId = UUID.randomUUID().toString();
+    int offset = 0;
+    List<String> siirtotiedostoKeys = new ArrayList<>();
+    List<ValintapisteWithLastModified> results =
+        valintapisteDAO.findValintapisteBulkByTimerange(start, end, batchSize, offset);
+
+    while (!results.isEmpty()) {
+      LOGGER.info("Luodaan siirtotiedosto valintapisteille, offset {}", offset);
+      LOGGER.info("ASDF keys {}", siirtotiedostoKeys);
+
+      siirtotiedostoKeys.add(
+          siirtotiedostoS3Client.createSiirtotiedostoForTulosdata(
+              valintatulosConverter.convertPistetiedotForSiirtotiedosto(results),
+              "pistetieto",
+              opId,
+              siirtotiedostoKeys.size() + 1));
+
+      offset += results.size();
+      results = valintapisteDAO.findValintapisteBulkByTimerange(start, end, batchSize, offset);
+    }
+
+    List<DeletedValintapisteSiirtotiedostoDTO> deleted =
+        valintapisteDAO.findDeleted(start, end).stream()
+            .map(d -> new DeletedValintapisteSiirtotiedostoDTO(d, true))
+            .toList();
+    if (!deleted.isEmpty()) {
+      LOGGER.info("Luodaan siirtotiedosto poistetuille valintapisteille, offset {}", offset);
+      siirtotiedostoKeys.add(
+          siirtotiedostoS3Client.createSiirtotiedostoForTulosdata(
+              deleted, "pistetieto", opId, siirtotiedostoKeys.size() + 1));
+      offset += deleted.size();
+    }
+
+    LOGGER.info(
+        "Kirjoitettiin yhteensä {} valintapistettä {} siirtotiedostoon.",
+        offset,
+        siirtotiedostoKeys.size());
+    return new SiirtotiedostoResult(siirtotiedostoKeys, offset);
   }
 }

@@ -2,12 +2,20 @@ package fi.vm.sade.valintalaskenta.laskenta.resource;
 
 import static fi.vm.sade.valintalaskenta.tulos.roles.ValintojenToteuttaminenRole.CRUD;
 
+import fi.vm.sade.auditlog.Changes;
+import fi.vm.sade.auditlog.Target;
+import fi.vm.sade.valinta.sharedutils.ValintaResource;
 import fi.vm.sade.valintalaskenta.domain.dto.valintapiste.PistetietoWrapper;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintapiste.ValintapisteService;
+import fi.vm.sade.valintalaskenta.tulos.LaskentaAudit;
+import fi.vm.sade.valintalaskenta.tulos.logging.LaskentaAuditLog;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,10 +43,12 @@ public class ValintapisteResource {
   public static final String IF_UNMODIFIED_SINCE = "If-Unmodified-Since";
 
   private final ValintapisteService valintapisteService;
+  private final LaskentaAuditLog auditLog;
 
   @Autowired
-  public ValintapisteResource(ValintapisteService valintapisteService) {
+  public ValintapisteResource(ValintapisteService valintapisteService, LaskentaAuditLog auditLog) {
     this.valintapisteService = valintapisteService;
+    this.auditLog = auditLog;
   }
 
   @PreAuthorize(CRUD)
@@ -47,7 +57,17 @@ public class ValintapisteResource {
       produces = MediaType.APPLICATION_JSON_VALUE)
   @Operation(summary = "Hakukohteen hakemusten pistetiedot")
   public ResponseEntity<List<PistetietoWrapper>> findValintapisteetForHakukohde(
-      @PathVariable String hakuOid, @PathVariable String hakukohdeOid) {
+      @PathVariable String hakuOid, @PathVariable String hakukohdeOid, HttpServletRequest request) {
+
+    auditLog.log(
+        LaskentaAudit.AUDIT,
+        request,
+        () -> "Hakukohteen hakemusten pistetiedot",
+        ValintaResource.HAKUKOHDE,
+        hakukohdeOid,
+        Changes.EMPTY,
+        Map.of("hakuOid", hakuOid));
+
     return withLastModified(valintapisteService.hakukohteenValintapisteet(hakuOid, hakukohdeOid));
   }
 
@@ -57,7 +77,16 @@ public class ValintapisteResource {
       produces = MediaType.APPLICATION_JSON_VALUE)
   @Operation(summary = "Hakemuksen pistetiedot")
   public ResponseEntity<PistetietoWrapper> findValintapisteetForHakemus(
-      @PathVariable String hakemusOid, @PathVariable String oppijaOid) {
+      @PathVariable String hakemusOid, @PathVariable String oppijaOid, HttpServletRequest request) {
+
+    auditLog.log(
+        LaskentaAudit.AUDIT,
+        request,
+        () -> "Hakemuksen pistetiedot",
+        ValintaResource.HAKEMUS,
+        hakemusOid,
+        Changes.EMPTY);
+
     return withLastModified(
         valintapisteService.findValintapisteetForHakemus(hakemusOid, oppijaOid));
   }
@@ -69,18 +98,43 @@ public class ValintapisteResource {
       consumes = MediaType.APPLICATION_JSON_VALUE)
   @Operation(summary = "Returns pistetiedot for hakemus (max 32767)")
   public ResponseEntity<List<PistetietoWrapper>> findValintapisteetWithHakemusoids(
-      @RequestBody List<String> hakemusOids) {
+      @RequestBody List<String> hakemusOids, HttpServletRequest request) {
+
+    Target target =
+        new Target.Builder()
+            .setField("type", "VALINTAPISTE")
+            .setField("hakemusOids", String.join(",", hakemusOids))
+            .build();
+    auditLog.log(
+        LaskentaAudit.AUDIT, request, () -> "Hakemusten pistetiedot", target, Changes.EMPTY);
     return withLastModified(valintapisteService.findValintapisteetForHakemukset(hakemusOids));
   }
 
   @PreAuthorize(CRUD)
   @PutMapping(value = "/pisteet-with-hakemusoids", consumes = MediaType.APPLICATION_JSON_VALUE)
-  @Operation(summary = "Syötä pistetiedot hakukohteen avaimilla")
+  @Operation(summary = "Syötä pistetiedot hakemusten avaimilla")
   public ResponseEntity<List<String>> updatePistetiedot(
       @RequestBody List<PistetietoWrapper> uudetPistetiedot,
       @RequestParam(name = "save-partially", required = false, defaultValue = "false")
           boolean savePartially,
-      @RequestHeader(value = IF_UNMODIFIED_SINCE, required = false) String ifUnmodifiedSince) {
+      @RequestHeader(value = IF_UNMODIFIED_SINCE, required = false) String ifUnmodifiedSince,
+      HttpServletRequest request) {
+
+    Target target =
+        new Target.Builder()
+            .setField("type", "VALINTAPISTE")
+            .setField(
+                "hakemusOids",
+                uudetPistetiedot.stream()
+                    .map(PistetietoWrapper::hakemusOID)
+                    .collect(Collectors.joining(",")))
+            .build();
+    auditLog.log(
+        LaskentaAudit.AUDIT,
+        request,
+        () -> "Syötä pistetiedot hakemusten avaimilla",
+        target,
+        Changes.EMPTY);
 
     LOG.info("Save-partially: {}, If-Unmodified-Since: {}", savePartially, ifUnmodifiedSince);
     List<String> conflictingOids =

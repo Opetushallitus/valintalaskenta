@@ -1,4 +1,4 @@
-package fi.vm.sade.valintalaskenta.laskenta.dao;
+package fi.vm.sade.valintalaskenta.tulos.dao;
 
 import fi.vm.sade.valintalaskenta.domain.valintapiste.Valintapiste;
 import fi.vm.sade.valintalaskenta.domain.valintapiste.ValintapisteWithLastModified;
@@ -16,11 +16,9 @@ public interface ValintapisteDAO {
   List<ValintapisteWithLastModified> findValintapisteBulkByTimerange(
       LocalDateTime start, LocalDateTime end, int limit, int offset);
 
-  List<String> findDeleted(ZonedDateTime start, ZonedDateTime end);
+  List<String> findDeleted(LocalDateTime start, LocalDateTime end);
 
   Optional<ZonedDateTime> lastModifiedForHakemukset(Collection<String> hakemusOids);
-
-  Optional<ZonedDateTime> lastModifiedASDF();
 
   List<String> modifiedSinceHakemukset(List<String> hakemusOids, String unmodifiedSince);
 

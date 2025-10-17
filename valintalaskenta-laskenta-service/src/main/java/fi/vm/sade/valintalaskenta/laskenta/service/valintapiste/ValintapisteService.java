@@ -1,19 +1,14 @@
 package fi.vm.sade.valintalaskenta.laskenta.service.valintapiste;
 
-import static java.time.temporal.ChronoUnit.MILLIS;
-
-import fi.vm.sade.valintalaskenta.domain.dto.valintapiste.Osallistumistieto;
 import fi.vm.sade.valintalaskenta.domain.dto.valintapiste.Pistetieto;
 import fi.vm.sade.valintalaskenta.domain.dto.valintapiste.PistetietoWrapper;
 import fi.vm.sade.valintalaskenta.domain.valintapiste.Valintapiste;
-import fi.vm.sade.valintalaskenta.domain.valintapiste.ValintapisteWithLastModified;
-import fi.vm.sade.valintalaskenta.laskenta.dao.ValintapisteDAO;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.AtaruResource;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.ExternalHakemus;
 import fi.vm.sade.valintalaskenta.laskenta.resource.external.HakuAppResource;
+import fi.vm.sade.valintalaskenta.tulos.dao.ValintapisteDAO;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +19,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,74 +29,13 @@ public class ValintapisteService {
   private final ValintapisteDAO valintapisteDAO;
   private final AtaruResource ataruResource;
   private final HakuAppResource hakuappResource;
-  private final ApplicationContext applicationContext;
 
   @Autowired
   ValintapisteService(
-      ValintapisteDAO dao,
-      AtaruResource ataruResource,
-      HakuAppResource hakuappResource,
-      ApplicationContext applicationContext) {
+      ValintapisteDAO dao, AtaruResource ataruResource, HakuAppResource hakuappResource) {
     this.valintapisteDAO = dao;
     this.ataruResource = ataruResource;
     this.hakuappResource = hakuappResource;
-    this.applicationContext = applicationContext;
-  }
-
-  // @EventListener(ApplicationReadyEvent.class)
-  @Transactional
-  public void asdf() {
-    // insertLots(20000, 20000);
-
-    LOG.info("Init ValintapisteService");
-
-    Optional<ZonedDateTime> lastModified = valintapisteDAO.lastModifiedASDF();
-    LOG.info("Last modified: {}", lastModified);
-
-    List<ValintapisteWithLastModified> bulk =
-        findValintapisteBulkByTimerange(lastModified.orElseThrow(), ZonedDateTime.now(), 100, 0);
-    LOG.info("ValintapisteDaoImpl bulk: {}", bulk);
-
-    String originalLastPart = bulk.get(0).hakemusOid().split("\\.")[5];
-    LOG.info("originalLastPart: {}", originalLastPart);
-    int number = Integer.parseInt(originalLastPart) + 1;
-    String newLastPart = String.format("%020d", number);
-    LOG.info("newLastPart: {}", newLastPart);
-    String hakemusOid = bulk.get(0).hakemusOid().replace(originalLastPart, newLastPart);
-    LOG.info("hakemusOid: {}", hakemusOid);
-
-    Valintapiste valintapiste =
-        new Valintapiste(hakemusOid, "tunniste1", "arvo?", Osallistumistieto.MERKITSEMATTA, "Minä");
-    valintapisteDAO.upsertValintapiste(valintapiste);
-
-    bulk =
-        findValintapisteBulkByTimerange(
-            lastModified.orElseThrow().minusYears(1), ZonedDateTime.now(), 100, 0);
-    Pair<ZonedDateTime, List<PistetietoWrapper>> pisteet =
-        findValintapisteetForHakemukset(
-            bulk.stream().map(ValintapisteWithLastModified::hakemusOid).toList());
-    LOG.info("ValintapisteDaoImpl All pisteet: {}", pisteet);
-
-    valintapiste = valintapiste.withArvo("Asetettu Arvo!");
-    valintapisteDAO.upsertValintapiste(valintapiste);
-    pisteet = findValintapisteetForHakemukset(List.of(hakemusOid));
-    LOG.info("ValintapisteDaoImpl pisteet: {}", pisteet);
-
-    lastModified = lastModifiedForHakemukset(List.of(hakemusOid));
-    LOG.info("Last modified: {}", lastModified);
-
-    bulk =
-        findValintapisteBulkByTimerange(
-            ZonedDateTime.parse("2020-01-01T00:00:00Z"), ZonedDateTime.now(), 100, 0);
-    LOG.info("ValintapisteDaoImpl bulk: {}", bulk);
-
-    String unmodifiedSince =
-        lastModified.orElseThrow().minus(1, MILLIS).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-    List<String> oids =
-        valintapisteDAO.modifiedSinceHakemukset(List.of(hakemusOid), unmodifiedSince);
-    LOG.info("ValintapisteDaoImpl modified since: {}", oids);
-
-    SpringApplication.exit(applicationContext);
   }
 
   @Transactional(readOnly = true)
@@ -138,12 +70,6 @@ public class ValintapisteService {
     Optional<ZonedDateTime> lastModified = lastModifiedForHakemukset(hakemusOids);
 
     return Pair.of(lastModified.orElse(null), pisteet);
-  }
-
-  @Transactional(readOnly = true)
-  public List<ValintapisteWithLastModified> findValintapisteBulkByTimerange(
-      ZonedDateTime start, ZonedDateTime end, int limit, int offset) {
-    return valintapisteDAO.findValintapisteBulkByTimerange(start, end, limit, offset);
   }
 
   @Transactional(readOnly = true)
@@ -236,27 +162,5 @@ public class ValintapisteService {
 
   public static Stream<PistetietoWrapper> convertToWrappers(Map<String, List<Pistetieto>> pisteet) {
     return pisteet.entrySet().stream().map(kv -> new PistetietoWrapper(kv.getKey(), kv.getValue()));
-  }
-
-  private void insertLots(int start, int n) {
-    for (int i = start; i <= start + n; i++) {
-
-      String hakemusOid = String.format("1.2.246.562.11.%020d", i);
-      if (i % 100 == 0) {
-        LOG.info("Inserting Valintapiste {}", hakemusOid);
-      }
-
-      for (int tunniste = 1; tunniste <= i % 10; ++tunniste) {
-        Valintapiste valintapiste =
-            new Valintapiste(
-                hakemusOid,
-                String.format("tunniste-%02d", tunniste),
-                Integer.toString((i + tunniste) % 99),
-                Osallistumistieto.values()[(i + tunniste) % 4],
-                "Minä");
-
-        valintapisteDAO.upsertValintapiste(valintapiste);
-      }
-    }
   }
 }
