@@ -177,7 +177,6 @@ public class ValintalaskentaModelMapper extends ModelMapper {
                   }
 
                   dto.setIndeksi(arg.getIndeksi());
-                  dto.setId(arg.getId());
                   result.add(dto);
                 }
 
@@ -196,7 +195,6 @@ public class ValintalaskentaModelMapper extends ModelMapper {
                   Funktioargumentti arg = new Funktioargumentti();
                   arg.setFunktiokutsuChild(map(dto.getFunktiokutsu(), Funktiokutsu.class));
                   arg.setIndeksi(dto.getIndeksi());
-                  arg.setId(dto.getId());
                   result.add(arg);
                 }
 
