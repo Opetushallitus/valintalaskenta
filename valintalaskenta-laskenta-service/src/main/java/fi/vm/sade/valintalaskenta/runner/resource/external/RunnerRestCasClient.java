@@ -59,6 +59,23 @@ public class RunnerRestCasClient {
     return this.executeAndThrowOnError(withHeaders(request(url, "GET", timeout), headers).build());
   }
 
+  public <T> CompletableFuture<T> post(
+      final String url,
+      final TypeToken<T> typeToken,
+      final Object body,
+      final Map<String, String> headers,
+      final int timeout) {
+    return this.post(url, body, headers, timeout)
+        .thenApply(response -> this.gson.fromJson(response.getResponseBody(), typeToken.getType()));
+  }
+
+  public CompletableFuture<Response> post(
+      final String url, final Object body, final Map<String, String> headers, final int timeout) {
+    return this.executeAndThrowOnError(
+        withHeaders(request(url, "POST", timeout).setBody(this.gson.toJson(body)), headers)
+            .build());
+  }
+
   public <T> CompletableFuture<T> put(
       final String url,
       final TypeToken<T> typeToken,
