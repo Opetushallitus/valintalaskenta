@@ -6,9 +6,11 @@ import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.audit.AuditLogUtil;
 import fi.vm.sade.valintalaskenta.audit.AuditSession;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.SuorituspalveluValintadataDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.KoostepalveluAsyncResource;
+import fi.vm.sade.valintalaskenta.runner.resource.external.suorituspalvelu.impl.SuorituspalveluAsyncResourceImpl;
 import fi.vm.sade.valintalaskenta.runner.resource.external.valintaperusteet.ValintaperusteetAsyncResource;
 import fi.vm.sade.valintalaskenta.runner.service.EcsTaskManager;
 import fi.vm.sade.valintalaskenta.runner.service.SuoritaLaskentaService;
@@ -37,6 +39,7 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
   private final ValintalaskentaResourceImpl valintalaskentaResource;
   private final KoostepalveluAsyncResource koostepalveluAsyncResource;
   private final ValintaperusteetAsyncResource valintaperusteetAsyncResource;
+  private final SuorituspalveluAsyncResourceImpl suorituspalveluAsyncResource;
   private final CloudWatchClient cloudWatchClient;
   private final EcsTaskManager ecsTaskManager;
 
@@ -56,12 +59,14 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
       ValintalaskentaResourceImpl valintalaskentaResource,
       KoostepalveluAsyncResource koostepalveluAsyncResource,
       ValintaperusteetAsyncResource valintaperusteetAsyncResource,
+      SuorituspalveluAsyncResourceImpl suorituspalveluAsyncResource,
       CloudWatchClient cloudWatchClient,
       EcsTaskManager ecsTaskManager,
       @Value("${environment.name}") String environmentName) {
     this.valintalaskentaResource = valintalaskentaResource;
     this.koostepalveluAsyncResource = koostepalveluAsyncResource;
     this.valintaperusteetAsyncResource = valintaperusteetAsyncResource;
+    this.suorituspalveluAsyncResource = suorituspalveluAsyncResource;
     this.cloudWatchClient = cloudWatchClient;
     this.ecsTaskManager = ecsTaskManager;
     this.environmentName = environmentName;
@@ -274,6 +279,21 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
         this.koostepalveluAsyncResource.haeLahtotiedot(
             laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat);
 
+    SuorituspalveluValintadataDTO supastaHaetut =
+        this.suorituspalveluAsyncResource.haeValintaData(laskenta.getHakuOid(), hakukohdeOid);
+    LOG.info(
+        "Saatiin Suorituspalvelusta tiedot, yhteensä {} hakemusta",
+        supastaHaetut.getValintaHakemukset().size());
+    // Todo, tehdään vertailua, mutta laskenta käynnistetään Supan arvoilla.
+    LaskeDTO laskeDtoSupanTiedoilla =
+        new LaskeDTO(
+            lahtotiedot.getUuid(),
+            lahtotiedot.isKorkeakouluhaku(),
+            lahtotiedot.isErillishaku(),
+            lahtotiedot.getHakukohdeOid(),
+            supastaHaetut.getValintaHakemukset(),
+            lahtotiedot.getValintaperuste(),
+            lahtotiedot.getHakijaryhmat());
     Instant laskeStart = Instant.now();
 
     LOG.info(
@@ -283,8 +303,7 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
             + lahtotiedotStart
             + ", end: "
             + laskeStart);
-
-    laske.apply(lahtotiedot);
+    laske.apply(laskeDtoSupanTiedoilla);
     this.tallennaJaLokitaMetriikat(
         Collections.singleton(hakukohdeOid),
         Map.of(
