@@ -38,7 +38,7 @@ public class RunnerHttpClients {
   @Profile({"default", "dev"})
   @Bean(name = "SuorituspalveluCasClient")
   public RunnerRestCasClient getSuorituspalveluCasClient(
-      @Value("${cas.service.koostepalvelu}") String service,
+      @Value("${cas.service.suorituspalvelu}") String service,
       @Value("${valintalaskentakoostepalvelu.app.username.to.valintatieto}")
           String username, // Todo, lisätään omat konffiarvot Supa-tunnukselle
       @Value("${valintalaskentakoostepalvelu.app.password.to.valintatieto}") String password) {
