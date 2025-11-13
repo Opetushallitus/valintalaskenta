@@ -29,10 +29,10 @@ public class SuorituspalveluAsyncResourceImpl implements SuorituspalveluAsyncRes
 
   @Override
   public SuorituspalveluValintadataDTO haeValintaData(String hakuOid, String hakukohdeOid) {
-    Map<String, String> bodyMap = new HashMap<>();
+    Map<String, Object> bodyMap = new HashMap<>();
     bodyMap.put("hakuOid", hakuOid);
     bodyMap.put("hakukohdeOid", hakukohdeOid);
-    bodyMap.put("hakemuOids", "[]");
+    bodyMap.put("hakemusOids", java.util.Collections.emptyList());
 
     try {
       return httpClient
