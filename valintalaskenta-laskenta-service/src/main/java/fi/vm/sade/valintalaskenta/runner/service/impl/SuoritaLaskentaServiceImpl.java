@@ -5,6 +5,8 @@ import fi.vm.sade.service.valintaperusteet.dto.ValintatapajonoJarjestyskriteerei
 import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.audit.AuditLogUtil;
 import fi.vm.sade.valintalaskenta.audit.AuditSession;
+import fi.vm.sade.valintalaskenta.domain.dto.AvainArvoDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.SuorituspalveluValintadataDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
@@ -241,6 +243,64 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
         });
   }
 
+  public void vertaile(List<HakemusDTO> koostepalvelusta, List<HakemusDTO> suorituspalvelusta) {
+    LOG.info(
+        "Vertaillaan! Koostepalvelusta {} hakemusta, Supasta {} hakemusta. ",
+        koostepalvelusta.size(),
+        suorituspalvelusta.size());
+    koostepalvelusta.forEach(
+        koostepalveluHakemus -> {
+          Optional<HakemusDTO> supaHakemus =
+              suorituspalvelusta.stream()
+                  .filter(
+                      suorituspalveluHakemus ->
+                          suorituspalveluHakemus
+                              .getHakemusoid()
+                              .equals(koostepalveluHakemus.getHakemusoid()))
+                  .findFirst();
+          if (supaHakemus.isPresent()) {
+            LOG.info(
+                "Löytyi vastaava hakemus sekä Koostepalvelusta että Suorituspalvelusta! {}",
+                supaHakemus.get().getHakemusoid());
+            List<AvainArvoDTO> supaArvot = supaHakemus.get().getAvaimet();
+            List<AvainArvoDTO> koosteArvot = koostepalveluHakemus.getAvaimet();
+            koosteArvot.forEach(
+                koosteArvo -> {
+                  Optional<AvainArvoDTO> supaArvo =
+                      supaArvot.stream()
+                          .filter(aa -> aa.getAvain().equals(koosteArvo.getAvain()))
+                          .findFirst();
+                  if (supaArvo.isPresent()) {
+                    if (koosteArvo.getArvo().equals(supaArvo.get().getArvo())) {
+                      LOG.trace(
+                          "Supasta ja Koostepalvelusta löytyi hakemukselle {} sama arvo ({}) avaimelle {}. Jee.",
+                          koostepalveluHakemus.getHakemusoid(),
+                          koosteArvo.getArvo(),
+                          koosteArvo.getAvain());
+                    } else {
+                      LOG.warn(
+                          "Supasta ja Koostepalvelusta löytyi eri arvot hakemuksen {} avaimelle {}. kooste {} , supa {}",
+                          koostepalveluHakemus.getHakemusoid(),
+                          koosteArvo.getAvain(),
+                          koosteArvo.getArvo(),
+                          supaArvo.get().getArvo());
+                    }
+                  } else {
+                    LOG.warn(
+                        "Koostepalvelusta löytyi hakemuksen {} avaimelle {} arvo {}, mutta Supasta ei palautunut vastaavaa!",
+                        koostepalveluHakemus.getHakemusoid(),
+                        koosteArvo.getAvain(),
+                        koosteArvo.getArvo());
+                  }
+                });
+          } else {
+            LOG.info(
+                "Koostepalvelusta palautui hakemus {}, mutta Supasta ei löytynyt vastaavaa.",
+                koostepalveluHakemus.getHakemusoid());
+          }
+        });
+  }
+
   private void suoritaLaskentaHakukohteelle(LaskentaDto laskenta, String hakukohdeOid) {
 
     String tyyppi;
@@ -275,15 +335,17 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
         Collections.singleton(hakukohdeOid),
         Optional.of(tyyppi));
     Instant lahtotiedotStart = Instant.now();
-    LaskeDTO lahtotiedot =
-        this.koostepalveluAsyncResource.haeLahtotiedot(
-            laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat);
-
     SuorituspalveluValintadataDTO supastaHaetut =
         this.suorituspalveluAsyncResource.haeValintaData(laskenta.getHakuOid(), hakukohdeOid);
     LOG.info(
-        "Saatiin Suorituspalvelusta tiedot, yhteensä {} hakemusta",
+        "Saatiin Suorituspalvelusta tiedot, yhteensä {} hakemusta.",
         supastaHaetut.getValintaHakemukset().size());
+    // supastaHaetut.getValintaHakemukset().forEach(h -> LOG.info("Hakemus {}, {}, {}",
+    // h.toString(), h.getHakemusoid(), h.getHakijaOid()));
+    LaskeDTO lahtotiedot =
+        this.koostepalveluAsyncResource.haeLahtotiedot(
+            laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat);
+    vertaile(lahtotiedot.getHakemus(), supastaHaetut.getValintaHakemukset());
     // Todo, tehdään vertailua, mutta laskenta käynnistetään Supan arvoilla.
     LaskeDTO laskeDtoSupanTiedoilla =
         new LaskeDTO(
