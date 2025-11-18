@@ -35,6 +35,21 @@ public class RunnerHttpClients {
             .build());
   }
 
+  @Profile({"default", "dev"})
+  @Bean(name = "SuorituspalveluCasClient")
+  public RunnerRestCasClient getSuorituspalveluCasClient(
+      @Value("${cas.service.suorituspalvelu}") String service,
+      @Value("${valintalaskentakoostepalvelu.app.username.to.valintatieto}")
+          String username, // Todo, lisätään omat konffiarvot Supa-tunnukselle
+      @Value("${valintalaskentakoostepalvelu.app.password.to.valintatieto}") String password) {
+    String ticketsUrl = UrlConfiguration.getInstance().url("cas.tickets");
+    return new RunnerRestCasClient(
+        new CasConfig.CasConfigBuilder(
+                username, password, ticketsUrl, service, CSRF_VALUE, CALLER_ID, "")
+            .setJsessionName("JSESSIONID")
+            .build());
+  }
+
   @Bean(name = "TarjontaHttpClient")
   public RunnerHttpClient getTarjontaHttpClient(CookieManager cookieManager) {
     return new RunnerHttpClient(

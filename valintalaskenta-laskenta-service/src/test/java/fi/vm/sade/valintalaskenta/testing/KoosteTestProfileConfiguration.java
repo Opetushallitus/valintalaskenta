@@ -37,4 +37,9 @@ public class KoosteTestProfileConfiguration {
   public RunnerRestCasClient getKoostepalveluCasClient() {
     return REST_CAS_CLIENT;
   }
+
+  @Bean(name = "SuorituspalveluCasClient")
+  public RunnerRestCasClient getSuorituspalveluCasClient() {
+    return REST_CAS_CLIENT;
+  }
 }
