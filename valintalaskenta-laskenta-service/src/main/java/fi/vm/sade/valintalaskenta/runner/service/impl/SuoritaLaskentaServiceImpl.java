@@ -244,10 +244,18 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
   }
 
   public void vertaile(List<HakemusDTO> koostepalvelusta, List<HakemusDTO> suorituspalvelusta) {
+    // Lisätään tähän listaan avaimia, joiden vertailu ei jostain syystä ole kiinnostavaa.
+    Set<String> keysToIgnore = new HashSet<>(Arrays.asList("LISAKOULUTUS_VAMMAISTEN"));
+
     LOG.info(
-            "Vertaillaan! Koostepalvelusta {} hakemusta, Supasta {} hakemusta. ",
-            koostepalvelusta.size(),
-            suorituspalvelusta.size());
+        "Vertaillaan! Koostepalvelusta {} hakemusta, Supasta {} hakemusta. Ohitetaan {} avainta.",
+        koostepalvelusta.size(),
+        suorituspalvelusta.size(),
+        keysToIgnore.size());
+
+    if (!keysToIgnore.isEmpty()) {
+      LOG.info("Ohitettavat avaimet: {}", String.join(", ", keysToIgnore));
+    }
 
     int totalHakemukset = koostepalvelusta.size();
     int matchingHakemukset = 0;
@@ -255,129 +263,145 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
     int totalSameValues = 0;
     int totalDifferentValues = 0;
     int totalMissingValues = 0;
+    int totalIgnoredValues = 0;
 
     Map<String, Integer> missingKeysCounts = new HashMap<>();
+
     Map<String, Integer> matchingKeysCounts = new HashMap<>();
 
     for (HakemusDTO koostepalveluHakemus : koostepalvelusta) {
-      koostepalveluHakemus.getAvainMetatiedotDTO().forEach(am -> {
-        LOG.info("Hakemus {} avainmetatieto {} - {}", koostepalveluHakemus.getHakemusoid(), am.getAvain(), am.getMetatiedot());
-      });
+      // Todo, lisätään vertailu myös avainmetatiedoille siinä vaiheessa, kun ne on lisätty Supan
+      // päähän.
+      koostepalveluHakemus.getAvainMetatiedotDTO().stream()
+          .filter(am -> !keysToIgnore.contains(am.getAvain()))
+          .forEach(
+              am -> {
+                LOG.info(
+                    "Hakemus {} avainmetatieto {} - {}",
+                    koostepalveluHakemus.getHakemusoid(),
+                    am.getAvain(),
+                    am.getMetatiedot());
+              });
 
       // Counters for this specific hakemus
       int sameValues = 0;
       int differentValues = 0;
       int missingValues = 0;
+      int ignoredValues = 0;
 
       Optional<HakemusDTO> supaHakemus =
-              suorituspalvelusta.stream()
-                      .filter(
-                              suorituspalveluHakemus ->
-                                      suorituspalveluHakemus
-                                              .getHakemusoid()
-                                              .equals(koostepalveluHakemus.getHakemusoid()))
-                      .findFirst();
+          suorituspalvelusta.stream()
+              .filter(
+                  suorituspalveluHakemus ->
+                      suorituspalveluHakemus
+                          .getHakemusoid()
+                          .equals(koostepalveluHakemus.getHakemusoid()))
+              .findFirst();
 
       if (supaHakemus.isPresent()) {
         matchingHakemukset++;
         LOG.info(
-                "Löytyi vastaava hakemus sekä Koostepalvelusta että Suorituspalvelusta! {}",
-                supaHakemus.get().getHakemusoid());
+            "Löytyi vastaava hakemus sekä Koostepalvelusta että Suorituspalvelusta! {}",
+            supaHakemus.get().getHakemusoid());
 
         List<AvainArvoDTO> supaArvot = supaHakemus.get().getAvaimet();
         List<AvainArvoDTO> koosteArvot = koostepalveluHakemus.getAvaimet();
 
         for (AvainArvoDTO koosteArvo : koosteArvot) {
+          if (keysToIgnore.contains(koosteArvo.getAvain())) {
+            ignoredValues++;
+            continue;
+          }
+
           Optional<AvainArvoDTO> supaArvo =
-                  supaArvot.stream()
-                          .filter(aa -> aa.getAvain().equals(koosteArvo.getAvain()))
-                          .findFirst();
+              supaArvot.stream()
+                  .filter(aa -> aa.getAvain().equals(koosteArvo.getAvain()))
+                  .findFirst();
 
           if (supaArvo.isPresent()) {
             if (koosteArvo.getArvo().equals(supaArvo.get().getArvo())) {
               sameValues++;
               matchingKeysCounts.merge(koosteArvo.getAvain(), 1, Integer::sum);
-              LOG.info(
-                      "Supasta ja Koostepalvelusta löytyi hakemukselle {} sama arvo ({}) avaimelle {}. Jee.",
-                      koostepalveluHakemus.getHakemusoid(),
-                      koosteArvo.getArvo(),
-                      koosteArvo.getAvain());
+              LOG.trace(
+                  "Supasta ja Koostepalvelusta löytyi hakemukselle {} sama arvo ({}) avaimelle {}. Jee.",
+                  koostepalveluHakemus.getHakemusoid(),
+                  koosteArvo.getArvo(),
+                  koosteArvo.getAvain());
             } else {
               differentValues++;
               LOG.warn(
-                      "Supasta ja Koostepalvelusta löytyi eri arvot hakemuksen {} avaimelle {}. kooste {} , supa {}",
-                      koostepalveluHakemus.getHakemusoid(),
-                      koosteArvo.getAvain(),
-                      koosteArvo.getArvo(),
-                      supaArvo.get().getArvo());
+                  "Supasta ja Koostepalvelusta löytyi eri arvot hakemuksen {} avaimelle {}. kooste {} , supa {}",
+                  koostepalveluHakemus.getHakemusoid(),
+                  koosteArvo.getAvain(),
+                  koosteArvo.getArvo(),
+                  supaArvo.get().getArvo());
             }
           } else {
             missingValues++;
             missingKeysCounts.merge(koosteArvo.getAvain(), 1, Integer::sum);
             LOG.warn(
-                    "Koostepalvelusta löytyi hakemuksen {} avaimelle {} arvo {}, mutta Supasta ei palautunut vastaavaa!",
-                    koostepalveluHakemus.getHakemusoid(),
-                    koosteArvo.getAvain(),
-                    koosteArvo.getArvo());
+                "Koostepalvelusta löytyi hakemuksen {} avaimelle {} arvo {}, mutta Supasta ei palautunut vastaavaa!",
+                koostepalveluHakemus.getHakemusoid(),
+                koosteArvo.getAvain(),
+                koosteArvo.getArvo());
           }
         }
 
-        // Log statistics for this hakemus
         LOG.info(
-                "Hakemuksen {} vertailu: samoja arvoja: {}, eriäviä arvoja: {}, puuttuvia arvoja: {}, arvoja yhteensä: {}",
-                koostepalveluHakemus.getHakemusoid(),
-                sameValues,
-                differentValues,
-                missingValues,
-                koosteArvot.size());
+            "Hakemuksen {} vertailu: samoja arvoja: {}, eriäviä arvoja: {}, puuttuvia arvoja: {}, ohitettuja arvoja: {}, arvoja yhteensä: {}",
+            koostepalveluHakemus.getHakemusoid(),
+            sameValues,
+            differentValues,
+            missingValues,
+            ignoredValues,
+            koosteArvot.size());
 
-        // Update total counters
         totalSameValues += sameValues;
         totalDifferentValues += differentValues;
         totalMissingValues += missingValues;
+        totalIgnoredValues += ignoredValues;
 
       } else {
         missingHakemukset++;
         LOG.info(
-                "Koostepalvelusta palautui hakemus {}, mutta Supasta ei löytynyt vastaavaa.",
-                koostepalveluHakemus.getHakemusoid());
+            "Koostepalvelusta palautui hakemus {}, mutta Supasta ei löytynyt vastaavaa.",
+            koostepalveluHakemus.getHakemusoid());
       }
     }
 
-    // Log overall statistics
     LOG.info(
-            "Vertailun yhteenveto: yhteensä hakemuksia: {}, vastaavia hakemuksia: {}, puuttuvia hakemuksia: {}",
-            totalHakemukset,
-            matchingHakemukset,
-            missingHakemukset);
+        "Vertailun yhteenveto: yhteensä hakemuksia: {}, vastaavia hakemuksia: {}, puuttuvia hakemuksia: {}",
+        totalHakemukset,
+        matchingHakemukset,
+        missingHakemukset);
 
     LOG.info(
-            "Arvojen vertailun yhteenveto: samoja arvoja: {}, eriäviä arvoja: {}, puuttuvia arvoja: {}",
-            totalSameValues,
-            totalDifferentValues,
-            totalMissingValues);
+        "Arvojen vertailun yhteenveto: samoja arvoja: {}, eriäviä arvoja: {}, puuttuvia arvoja: {}, ohitettuja arvoja: {}",
+        totalSameValues,
+        totalDifferentValues,
+        totalMissingValues,
+        totalIgnoredValues);
 
-    // Log missing keys summary
+    // Puuttuvat avaimet kaikille hakemuksille yhteensä
     if (!missingKeysCounts.isEmpty()) {
       LOG.info("Puuttuvien avainten yhteenveto:");
       missingKeysCounts.entrySet().stream()
-              .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-              .forEach(entry ->
-                      LOG.info("Avain: {}, puuttuu {} hakemuksessa", entry.getKey(), entry.getValue())
-              );
+          .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+          .forEach(
+              entry ->
+                  LOG.info("Avain: {}, puuttuu {} hakemuksessa", entry.getKey(), entry.getValue()));
     }
 
-    // Log matching keys summary
+    // Täsmäävät avaimet kaikille hakemuksille yhteensä
     if (!matchingKeysCounts.isEmpty()) {
       LOG.info("Täsmäävien avainten yhteenveto:");
       matchingKeysCounts.entrySet().stream()
-              .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-              .forEach(entry ->
-                      LOG.info("Avain: {}, täsmää {} hakemuksessa", entry.getKey(), entry.getValue())
-              );
+          .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+          .forEach(
+              entry ->
+                  LOG.info("Avain: {}, täsmää {} hakemuksessa", entry.getKey(), entry.getValue()));
     }
   }
-
 
   private void suoritaLaskentaHakukohteelle(LaskentaDto laskenta, String hakukohdeOid) {
 
@@ -418,8 +442,6 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
     LOG.info(
         "Saatiin Suorituspalvelusta tiedot, yhteensä {} hakemusta.",
         supastaHaetut.getValintaHakemukset().size());
-    // supastaHaetut.getValintaHakemukset().forEach(h -> LOG.info("Hakemus {}, {}, {}",
-    // h.toString(), h.getHakemusoid(), h.getHakijaOid()));
     LaskeDTO lahtotiedot =
         this.koostepalveluAsyncResource.haeLahtotiedot(
             laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat);
