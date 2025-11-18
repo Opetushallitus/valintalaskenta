@@ -245,61 +245,139 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
 
   public void vertaile(List<HakemusDTO> koostepalvelusta, List<HakemusDTO> suorituspalvelusta) {
     LOG.info(
-        "Vertaillaan! Koostepalvelusta {} hakemusta, Supasta {} hakemusta. ",
-        koostepalvelusta.size(),
-        suorituspalvelusta.size());
-    koostepalvelusta.forEach(
-        koostepalveluHakemus -> {
-          Optional<HakemusDTO> supaHakemus =
+            "Vertaillaan! Koostepalvelusta {} hakemusta, Supasta {} hakemusta. ",
+            koostepalvelusta.size(),
+            suorituspalvelusta.size());
+
+    int totalHakemukset = koostepalvelusta.size();
+    int matchingHakemukset = 0;
+    int missingHakemukset = 0;
+    int totalSameValues = 0;
+    int totalDifferentValues = 0;
+    int totalMissingValues = 0;
+
+    Map<String, Integer> missingKeysCounts = new HashMap<>();
+    Map<String, Integer> matchingKeysCounts = new HashMap<>();
+
+    for (HakemusDTO koostepalveluHakemus : koostepalvelusta) {
+      koostepalveluHakemus.getAvainMetatiedotDTO().forEach(am -> {
+        LOG.info("Hakemus {} avainmetatieto {} - {}", koostepalveluHakemus.getHakemusoid(), am.getAvain(), am.getMetatiedot());
+      });
+
+      // Counters for this specific hakemus
+      int sameValues = 0;
+      int differentValues = 0;
+      int missingValues = 0;
+
+      Optional<HakemusDTO> supaHakemus =
               suorituspalvelusta.stream()
-                  .filter(
-                      suorituspalveluHakemus ->
-                          suorituspalveluHakemus
-                              .getHakemusoid()
-                              .equals(koostepalveluHakemus.getHakemusoid()))
-                  .findFirst();
-          if (supaHakemus.isPresent()) {
-            LOG.info(
+                      .filter(
+                              suorituspalveluHakemus ->
+                                      suorituspalveluHakemus
+                                              .getHakemusoid()
+                                              .equals(koostepalveluHakemus.getHakemusoid()))
+                      .findFirst();
+
+      if (supaHakemus.isPresent()) {
+        matchingHakemukset++;
+        LOG.info(
                 "Löytyi vastaava hakemus sekä Koostepalvelusta että Suorituspalvelusta! {}",
                 supaHakemus.get().getHakemusoid());
-            List<AvainArvoDTO> supaArvot = supaHakemus.get().getAvaimet();
-            List<AvainArvoDTO> koosteArvot = koostepalveluHakemus.getAvaimet();
-            koosteArvot.forEach(
-                koosteArvo -> {
-                  Optional<AvainArvoDTO> supaArvo =
-                      supaArvot.stream()
+
+        List<AvainArvoDTO> supaArvot = supaHakemus.get().getAvaimet();
+        List<AvainArvoDTO> koosteArvot = koostepalveluHakemus.getAvaimet();
+
+        for (AvainArvoDTO koosteArvo : koosteArvot) {
+          Optional<AvainArvoDTO> supaArvo =
+                  supaArvot.stream()
                           .filter(aa -> aa.getAvain().equals(koosteArvo.getAvain()))
                           .findFirst();
-                  if (supaArvo.isPresent()) {
-                    if (koosteArvo.getArvo().equals(supaArvo.get().getArvo())) {
-                      LOG.trace(
-                          "Supasta ja Koostepalvelusta löytyi hakemukselle {} sama arvo ({}) avaimelle {}. Jee.",
-                          koostepalveluHakemus.getHakemusoid(),
-                          koosteArvo.getArvo(),
-                          koosteArvo.getAvain());
-                    } else {
-                      LOG.warn(
-                          "Supasta ja Koostepalvelusta löytyi eri arvot hakemuksen {} avaimelle {}. kooste {} , supa {}",
-                          koostepalveluHakemus.getHakemusoid(),
-                          koosteArvo.getAvain(),
-                          koosteArvo.getArvo(),
-                          supaArvo.get().getArvo());
-                    }
-                  } else {
-                    LOG.warn(
-                        "Koostepalvelusta löytyi hakemuksen {} avaimelle {} arvo {}, mutta Supasta ei palautunut vastaavaa!",
-                        koostepalveluHakemus.getHakemusoid(),
-                        koosteArvo.getAvain(),
-                        koosteArvo.getArvo());
-                  }
-                });
+
+          if (supaArvo.isPresent()) {
+            if (koosteArvo.getArvo().equals(supaArvo.get().getArvo())) {
+              sameValues++;
+              matchingKeysCounts.merge(koosteArvo.getAvain(), 1, Integer::sum);
+              LOG.info(
+                      "Supasta ja Koostepalvelusta löytyi hakemukselle {} sama arvo ({}) avaimelle {}. Jee.",
+                      koostepalveluHakemus.getHakemusoid(),
+                      koosteArvo.getArvo(),
+                      koosteArvo.getAvain());
+            } else {
+              differentValues++;
+              LOG.warn(
+                      "Supasta ja Koostepalvelusta löytyi eri arvot hakemuksen {} avaimelle {}. kooste {} , supa {}",
+                      koostepalveluHakemus.getHakemusoid(),
+                      koosteArvo.getAvain(),
+                      koosteArvo.getArvo(),
+                      supaArvo.get().getArvo());
+            }
           } else {
-            LOG.info(
+            missingValues++;
+            missingKeysCounts.merge(koosteArvo.getAvain(), 1, Integer::sum);
+            LOG.warn(
+                    "Koostepalvelusta löytyi hakemuksen {} avaimelle {} arvo {}, mutta Supasta ei palautunut vastaavaa!",
+                    koostepalveluHakemus.getHakemusoid(),
+                    koosteArvo.getAvain(),
+                    koosteArvo.getArvo());
+          }
+        }
+
+        // Log statistics for this hakemus
+        LOG.info(
+                "Hakemuksen {} vertailu: samoja arvoja: {}, eriäviä arvoja: {}, puuttuvia arvoja: {}, arvoja yhteensä: {}",
+                koostepalveluHakemus.getHakemusoid(),
+                sameValues,
+                differentValues,
+                missingValues,
+                koosteArvot.size());
+
+        // Update total counters
+        totalSameValues += sameValues;
+        totalDifferentValues += differentValues;
+        totalMissingValues += missingValues;
+
+      } else {
+        missingHakemukset++;
+        LOG.info(
                 "Koostepalvelusta palautui hakemus {}, mutta Supasta ei löytynyt vastaavaa.",
                 koostepalveluHakemus.getHakemusoid());
-          }
-        });
+      }
+    }
+
+    // Log overall statistics
+    LOG.info(
+            "Vertailun yhteenveto: yhteensä hakemuksia: {}, vastaavia hakemuksia: {}, puuttuvia hakemuksia: {}",
+            totalHakemukset,
+            matchingHakemukset,
+            missingHakemukset);
+
+    LOG.info(
+            "Arvojen vertailun yhteenveto: samoja arvoja: {}, eriäviä arvoja: {}, puuttuvia arvoja: {}",
+            totalSameValues,
+            totalDifferentValues,
+            totalMissingValues);
+
+    // Log missing keys summary
+    if (!missingKeysCounts.isEmpty()) {
+      LOG.info("Puuttuvien avainten yhteenveto:");
+      missingKeysCounts.entrySet().stream()
+              .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+              .forEach(entry ->
+                      LOG.info("Avain: {}, puuttuu {} hakemuksessa", entry.getKey(), entry.getValue())
+              );
+    }
+
+    // Log matching keys summary
+    if (!matchingKeysCounts.isEmpty()) {
+      LOG.info("Täsmäävien avainten yhteenveto:");
+      matchingKeysCounts.entrySet().stream()
+              .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+              .forEach(entry ->
+                      LOG.info("Avain: {}, täsmää {} hakemuksessa", entry.getKey(), entry.getValue())
+              );
+    }
   }
+
 
   private void suoritaLaskentaHakukohteelle(LaskentaDto laskenta, String hakukohdeOid) {
 
