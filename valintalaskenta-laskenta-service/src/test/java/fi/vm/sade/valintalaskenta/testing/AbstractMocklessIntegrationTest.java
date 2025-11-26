@@ -1,6 +1,6 @@
 package fi.vm.sade.valintalaskenta.testing;
 
-import fi.vm.sade.valintalaskenta.laskenta.App;
+import fi.vm.sade.valintalaskenta.App;
 import fi.vm.sade.valintalaskenta.laskenta.dao.repository.*;
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosHarkinnanvarainenHyvaksyminenRepository;
 import fi.vm.sade.valintalaskenta.tulos.dao.repository.TulosMuokattuJonosijaRepository;
@@ -17,7 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
     classes = {App.class},
     args = {"--add-opens=java.base/java.lang=ALL-UNNAMED"})
 @ActiveProfiles("test-mockless")
-@Import(TestConfigurationWithoutMocks.class)
+@Import({TestConfigurationWithoutMocks.class, KoosteTestProfileConfiguration.class})
 public class AbstractMocklessIntegrationTest {
 
   @Autowired protected HakijaryhmaRepository hakijaryhmaRepository;

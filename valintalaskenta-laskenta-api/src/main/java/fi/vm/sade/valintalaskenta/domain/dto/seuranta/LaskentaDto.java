@@ -1,6 +1,7 @@
 package fi.vm.sade.valintalaskenta.domain.dto.seuranta;
 
 import java.util.List;
+import java.util.Optional;
 
 public class LaskentaDto {
   private final String uuid;
@@ -9,14 +10,14 @@ public class LaskentaDto {
   private final String haunnimi;
   private final String nimi;
   private final long luotu;
-  private final Boolean erillishaku;
+  private final boolean erillishaku;
   private final LaskentaTila tila;
   private final LaskentaTyyppi tyyppi;
   private final List<HakukohdeDto> hakukohteet;
   private final IlmoitusDto ilmoitus;
-  private final Integer valinnanvaihe;
-  private final Boolean valintakoelaskenta;
-  private final Integer jonosija;
+  private final Optional<Integer> valinnanvaihe;
+  private final boolean valintakoelaskenta;
+  private final Optional<Integer> jonosija;
   private final boolean luotiinkoUusiLaskenta;
 
   public LaskentaDto(
@@ -30,10 +31,10 @@ public class LaskentaDto {
       LaskentaTyyppi tyyppi,
       IlmoitusDto ilmoitus,
       List<HakukohdeDto> hakukohteet,
-      Boolean erillishaku,
-      Integer valinnanvaihe,
-      Boolean valintakoelaskenta,
-      Integer jonosija,
+      boolean erillishaku,
+      Optional<Integer> valinnanvaihe,
+      boolean valintakoelaskenta,
+      Optional<Integer> jonosija,
       boolean luotiinkoUusiLaskenta) {
     this.haunnimi = haunnimi;
     this.nimi = nimi;
@@ -60,11 +61,11 @@ public class LaskentaDto {
     return luotiinkoUusiLaskenta;
   }
 
-  public Integer getJonosija() {
+  public Optional<Integer> getJonosija() {
     return jonosija;
   }
 
-  public Boolean getErillishaku() {
+  public boolean getErillishaku() {
     return erillishaku;
   }
 
@@ -80,59 +81,15 @@ public class LaskentaDto {
     return ilmoitus;
   }
 
-  public YhteenvetoDto asYhteenveto() {
-    int valmiit = 0;
-    int keskeytetty = 0;
-    if (hakukohteet == null) {
-      return new YhteenvetoDto(
-          uuid,
-          userOID,
-          haunnimi,
-          nimi,
-          hakuOid,
-          luotu,
-          tila,
-          0,
-          valmiit,
-          keskeytetty,
-          null,
-          tyyppi,
-          valinnanvaihe,
-          valintakoelaskenta);
-    }
-    for (HakukohdeDto h : hakukohteet) {
-      if (HakukohdeTila.KESKEYTETTY.equals(h.getTila())) {
-        ++keskeytetty;
-      } else if (HakukohdeTila.VALMIS.equals(h.getTila())) {
-        ++valmiit;
-      }
-    }
-    return new YhteenvetoDto(
-        uuid,
-        userOID,
-        haunnimi,
-        nimi,
-        hakuOid,
-        luotu,
-        tila,
-        hakukohteet.size(),
-        valmiit,
-        keskeytetty,
-        jonosija,
-        tyyppi,
-        valinnanvaihe,
-        valintakoelaskenta);
-  }
-
   public String getUserOID() {
     return userOID;
   }
 
-  public Integer getValinnanvaihe() {
+  public Optional<Integer> getValinnanvaihe() {
     return valinnanvaihe;
   }
 
-  public Boolean getValintakoelaskenta() {
+  public boolean getValintakoelaskenta() {
     return valintakoelaskenta;
   }
 
@@ -160,7 +117,7 @@ public class LaskentaDto {
     return tyyppi;
   }
 
-  public Boolean isErillishaku() {
+  public boolean isErillishaku() {
     return erillishaku;
   }
 }

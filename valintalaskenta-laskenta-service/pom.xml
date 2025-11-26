@@ -50,6 +50,16 @@
             <artifactId>dokumenttipalvelu</artifactId>
         </dependency>
 
+        <!-- Valintalaskennan käynnistys -->
+        <dependency>
+            <groupId>fi.vm.sade.tarjonta</groupId>
+            <artifactId>tarjonta-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fi.vm.sade.java-utils</groupId>
+            <artifactId>java-poi</artifactId>
+        </dependency>
+
         <!-- SADE -->
 
         <!-- REST, Json -->
@@ -69,10 +79,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-        <!--<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-jdbc</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-logging</artifactId>
@@ -81,14 +91,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
         </dependency>
-        <!--<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-        </dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -194,6 +196,15 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>cloudwatch</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>ecs</artifactId>
+        </dependency>
+
         <!-- Tests -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -201,11 +212,14 @@
             <scope>test</scope>
         </dependency>
 
-
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.19.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>localstack</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -270,7 +284,7 @@ buildTtime=${maven.build.timestamp}
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.2.1</version>
                 <configuration>
-                    <mainClass>fi.vm.sade.valintalaskenta.laskenta.App</mainClass>
+                    <mainClass>fi.vm.sade.valintalaskenta.App</mainClass>
                 </configuration>
             </plugin>
             <plugin>
