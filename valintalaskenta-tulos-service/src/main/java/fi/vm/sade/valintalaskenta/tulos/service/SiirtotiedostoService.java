@@ -1,12 +1,15 @@
 package fi.vm.sade.valintalaskenta.tulos.service;
 
-import com.google.gson.JsonObject;
+import fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.SiirtotiedostoResult;
 import java.time.LocalDateTime;
 
 public interface SiirtotiedostoService {
-  JsonObject createSiirtotiedostotForValintakoeOsallistumiset(
+  SiirtotiedostoResult createSiirtotiedostotForValintakoeOsallistumiset(
       LocalDateTime startDatetime, LocalDateTime endDatatime);
 
-  JsonObject createSiirtotiedostotForValintalaskennanTulokset(
+  SiirtotiedostoResult createSiirtotiedostotForValintalaskennanTulokset(
+      LocalDateTime startDatetime, LocalDateTime endDatatime);
+
+  SiirtotiedostoResult createSiirtotiedostotForValintapisteet(
       LocalDateTime startDatetime, LocalDateTime endDatatime);
 }

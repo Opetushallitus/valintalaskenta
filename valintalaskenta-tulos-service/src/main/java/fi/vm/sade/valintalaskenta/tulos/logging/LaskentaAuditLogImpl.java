@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.tulos.logging;
 import fi.vm.sade.auditlog.Audit;
 import fi.vm.sade.auditlog.Changes;
 import fi.vm.sade.auditlog.Operation;
+import fi.vm.sade.auditlog.Target;
 import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valinta.sharedutils.AuditLog;
 import fi.vm.sade.valinta.sharedutils.ValintaResource;
@@ -22,7 +23,7 @@ public class LaskentaAuditLogImpl implements LaskentaAuditLog {
   }
 
   @Override
-  public <T> void log(
+  public void log(
       Audit audit,
       User user,
       Operation operation,
@@ -34,7 +35,7 @@ public class LaskentaAuditLogImpl implements LaskentaAuditLog {
   }
 
   @Override
-  public <T> void log(
+  public void log(
       Audit audit,
       User user,
       Operation operation,
@@ -42,5 +43,10 @@ public class LaskentaAuditLogImpl implements LaskentaAuditLog {
       String targetOid,
       Changes changes) {
     AuditLog.log(audit, user, operation, valintaResource, targetOid, changes);
+  }
+
+  @Override
+  public void log(Audit audit, User user, Operation operation, Target target, Changes changes) {
+    audit.log(user, operation, target, changes);
   }
 }
