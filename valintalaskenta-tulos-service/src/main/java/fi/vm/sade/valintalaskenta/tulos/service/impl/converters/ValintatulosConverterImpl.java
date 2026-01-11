@@ -11,6 +11,7 @@ import fi.vm.sade.valintalaskenta.domain.valinta.*;
 import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluJonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.sijoittelu.SijoitteluValintatapajono;
 import fi.vm.sade.valintalaskenta.domain.valintakoe.*;
+import fi.vm.sade.valintalaskenta.domain.valintapiste.ValintapisteWithLastModified;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -121,6 +122,27 @@ public class ValintatulosConverterImpl implements ValintatulosConverter {
       osallistumiset.add(vkoDto);
     }
     return osallistumiset;
+  }
+
+  public List<PistetietoWrapperSiirtotiedostoDTO> convertPistetiedotForSiirtotiedosto(
+      List<ValintapisteWithLastModified> valintapisteet) {
+    return valintapisteet.stream()
+        .collect(
+            Collectors.groupingBy(
+                ValintapisteWithLastModified::hakemusOid,
+                Collectors.mapping(
+                    p ->
+                        new PistetietoSiirtotiedostoDTO(
+                            p.tunniste(),
+                            p.arvo(),
+                            p.osallistuminen(),
+                            p.tallettaja(),
+                            Date.from(p.lastModified().toInstant())),
+                    Collectors.toList())))
+        .entrySet()
+        .stream()
+        .map(kv -> new PistetietoWrapperSiirtotiedostoDTO(kv.getKey(), kv.getValue()))
+        .toList();
   }
 
   private String formatDate(SimpleDateFormat sdf, Date date) {

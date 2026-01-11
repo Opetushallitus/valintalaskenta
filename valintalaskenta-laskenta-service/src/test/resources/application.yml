@@ -64,6 +64,7 @@ cas:
   service:
     valintaperusteet-service: ""
     sijoittelu-service: ""
+    ataru-service: ""
 
 valintalaskentakoostepalvelu:
   app:
@@ -85,6 +86,9 @@ valintalaskentakoostepalvelu:
   koski:
     username: ""
     password: ""
+  ataru:
+    rest:
+      url: ""
 
 aws:
   region: eu-west-1
@@ -101,5 +105,3 @@ cas-service:
   service: http://localhost:${server.port}/valintalaskenta-laskenta-service
   send-renew: false
   key: valintalaskenta-laskenta-service
-
-

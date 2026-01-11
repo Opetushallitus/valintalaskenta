@@ -104,6 +104,19 @@ public class ValintalaskentaLaskentaConfiguration {
             .build());
   }
 
+  @Bean(name = "ataruCasClient")
+  public CasClient ataruServiceCasClient(
+      @Value("${web.url.cas}") final String casUrl,
+      @Value("${cas.service.ataru-service}") final String targetUrl,
+      @Value("${valintalaskentakoostepalvelu.app.username.to.sijoittelu}") final String username,
+      @Value("${valintalaskentakoostepalvelu.app.password.to.sijoittelu}") final String password) {
+    return CasClientBuilder.build(
+        new CasConfig.CasConfigBuilder(
+                username, password, casUrl, targetUrl, CSRF_VALUE, CALLER_ID.value(), "/auth/cas")
+            .setJsessionName("ring-session")
+            .build());
+  }
+
   @Value("${valintalaskenta-laskenta-service.global.http.connectionTimeoutMillis:59999}")
   private Integer clientConnectionTimeout;
 

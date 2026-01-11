@@ -3,6 +3,7 @@ package fi.vm.sade.valintalaskenta.tulos.logging;
 import fi.vm.sade.auditlog.Audit;
 import fi.vm.sade.auditlog.Changes;
 import fi.vm.sade.auditlog.Operation;
+import fi.vm.sade.auditlog.Target;
 import fi.vm.sade.auditlog.User;
 import fi.vm.sade.valinta.sharedutils.ValintaResource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +21,7 @@ public class LaskentaAuditLogMock implements LaskentaAuditLog {
   }
 
   @Override
-  public <T> void log(
+  public void log(
       Audit audit,
       User user,
       Operation operation,
@@ -39,7 +40,7 @@ public class LaskentaAuditLogMock implements LaskentaAuditLog {
   }
 
   @Override
-  public <T> void log(
+  public void log(
       Audit audit,
       User user,
       Operation operation,
@@ -53,5 +54,10 @@ public class LaskentaAuditLogMock implements LaskentaAuditLog {
         valintaResource,
         targetOid,
         changes);
+  }
+
+  @Override
+  public void log(Audit audit, User user, Operation operation, Target target, Changes changes) {
+    LOG.info("Mock audit log called with {}, {}, {}, {}", user, operation, target, changes);
   }
 }

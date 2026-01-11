@@ -1,7 +1,7 @@
 package fi.vm.sade.valintalaskenta.ovara.ajastus;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonObject;
+import fi.vm.sade.valintalaskenta.domain.dto.siirtotiedosto.SiirtotiedostoResult;
 import fi.vm.sade.valintalaskenta.ovara.ajastus.repository.SiirtotiedostoProsessiRepository;
 import fi.vm.sade.valintalaskenta.tulos.service.impl.SiirtotiedostoServiceImpl;
 import java.sql.Timestamp;
@@ -38,28 +38,30 @@ public class SiirtotiedostoAjastusService {
 
     try {
 
-      JsonObject osallistumisetResult =
+      SiirtotiedostoResult osallistumisetResult =
           siirtotiedostoService.createSiirtotiedostotForValintakoeOsallistumiset(
               uusi.getWindowStart().toLocalDateTime(), uusi.getWindowEnd().toLocalDateTime());
-      JsonObject tuloksetResult =
+      SiirtotiedostoResult tuloksetResult =
           siirtotiedostoService.createSiirtotiedostotForValintalaskennanTulokset(
               uusi.getWindowStart().toLocalDateTime(), uusi.getWindowEnd().toLocalDateTime());
-      Boolean bothSuccess =
-          osallistumisetResult.get("success").getAsBoolean()
-              && tuloksetResult.get("success").getAsBoolean();
+      SiirtotiedostoResult pisteetResult =
+          siirtotiedostoService.createSiirtotiedostotForValintapisteet(
+              uusi.getWindowStart().toLocalDateTime(), uusi.getWindowEnd().toLocalDateTime());
+      boolean allSuccess =
+          osallistumisetResult.success() && tuloksetResult.success() && pisteetResult.success();
 
       logger.info("Osallistumiset: {}", osallistumisetResult);
       logger.info("Tulokset: {}", tuloksetResult);
+      logger.info("Valintapisteet: {}", pisteetResult);
 
-      if (bothSuccess) {
+      if (allSuccess) {
         uusi.setSuccess(true);
       } else {
         throw new RuntimeException("Kaikkien siirtotiedostojen muodostaminen ei onnistunut!");
       }
       uusi.setInfo(
           new SiirtotiedostoInfo(
-              Integer.parseInt(tuloksetResult.get("total").toString()),
-              Integer.parseInt(osallistumisetResult.get("total").toString())));
+              tuloksetResult.total(), osallistumisetResult.total(), pisteetResult.total()));
     } catch (Exception e) {
       logger.error(
           "{} Tapahtui virhe muodostettaessa ajastettua siirtotiedostoa:",
