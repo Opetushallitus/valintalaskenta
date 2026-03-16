@@ -245,17 +245,24 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
 
   public void vertaile(List<HakemusDTO> koostepalvelusta, List<HakemusDTO> suorituspalvelusta) {
     // Lisätään tähän listaan avaimia, joiden vertailu ei jostain syystä ole kiinnostavaa.
-    Set<String> keysToIgnore = new HashSet<>(Arrays.asList("LISAKOULUTUS_VAMMAISTEN"));
+    Set<String> keysToIgnore =
+        new HashSet<>(
+            Arrays.asList(
+                "LISAKOULUTUS_VAMMAISTEN",
+                "LISAKOULUTUS_MAAHANMUUTTO",
+                "LISAKOULUTUS_MAAHANMUUTTO_LUKIO",
+                "LISAKOULUTUS_AMMATTISTARTTI",
+                "LISAKOULUTUS_KYMPPI",
+                "LISAKOULUTUS_TALOUS",
+                "LISAKOULUTUS_VALMA",
+                "LISAKOULUTUS_TALOUS"));
 
     LOG.info(
-        "Vertaillaan! Koostepalvelusta {} hakemusta, Supasta {} hakemusta. Ohitetaan {} avainta.",
+        "Vertaillaan! Koostepalvelusta {} hakemusta, Supasta {} hakemusta. Ohitetaan {} avainta: {}.",
         koostepalvelusta.size(),
         suorituspalvelusta.size(),
-        keysToIgnore.size());
-
-    if (!keysToIgnore.isEmpty()) {
-      LOG.info("Ohitettavat avaimet: {}", String.join(", ", keysToIgnore));
-    }
+        keysToIgnore.size(),
+        String.join(", ", keysToIgnore));
 
     int totalHakemukset = koostepalvelusta.size();
     int matchingHakemukset = 0;
@@ -384,7 +391,8 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
 
     // Puuttuvat avaimet kaikille hakemuksille yhteensä
     if (!missingKeysCounts.isEmpty()) {
-      LOG.info("Puuttuvien avainten yhteenveto:");
+      LOG.info(
+          "Ohitettiin seuraavat avaimet: {}. Alla yhteenveto:", String.join(", ", keysToIgnore));
       missingKeysCounts.entrySet().stream()
           .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
           .forEach(
