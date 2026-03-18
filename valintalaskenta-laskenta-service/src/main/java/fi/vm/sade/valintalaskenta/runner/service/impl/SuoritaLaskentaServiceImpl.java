@@ -7,6 +7,7 @@ import fi.vm.sade.valintalaskenta.audit.AuditLogUtil;
 import fi.vm.sade.valintalaskenta.audit.AuditSession;
 import fi.vm.sade.valintalaskenta.domain.dto.AvainArvoDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.SuorituspalveluValintadataDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
@@ -243,6 +244,130 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
         });
   }
 
+  public void vertaileHarkinnanvaraisuus(
+      List<HakemusDTO> koostepalvelusta, List<HakemusDTO> suorituspalvelusta) {
+    LOG.info(
+        "Vertaillaan harkinnanvaraisuus-tietoja! Koostepalvelusta {} hakemusta, Suorituspalvelusta {} hakemusta.",
+        koostepalvelusta.size(),
+        suorituspalvelusta.size());
+
+    int totalHakemukset = koostepalvelusta.size();
+    int matchingHakemukset = 0;
+    int missingHakemukset = 0;
+    int totalSameHarkinnanvaraisuus = 0;
+    int totalDifferentHarkinnanvaraisuus = 0;
+    int totalMissingHakukohteet = 0;
+
+    Map<String, Integer> hakukohdeetWithDifferentValues = new HashMap<>();
+    Map<String, Integer> hakukohdeetWithSameValues = new HashMap<>();
+
+    for (HakemusDTO koostepalveluHakemus : koostepalvelusta) {
+      Optional<HakemusDTO> supaHakemus =
+          suorituspalvelusta.stream()
+              .filter(
+                  suorituspalveluHakemus ->
+                      suorituspalveluHakemus
+                          .getHakemusoid()
+                          .equals(koostepalveluHakemus.getHakemusoid()))
+              .findFirst();
+
+      if (supaHakemus.isPresent()) {
+        matchingHakemukset++;
+        LOG.info(
+            "Löytyi vastaava hakemus sekä Koostepalvelusta että Suorituspalvelusta! {}",
+            supaHakemus.get().getHakemusoid());
+
+        List<HakukohdeDTO> supaHakukohteet = supaHakemus.get().getHakukohteet();
+        List<HakukohdeDTO> koosteHakukohteet = koostepalveluHakemus.getHakukohteet();
+
+        for (HakukohdeDTO koosteHakukohde : koosteHakukohteet) {
+          Optional<HakukohdeDTO> supaHakukohde =
+              supaHakukohteet.stream()
+                  .filter(h -> h.getOid().equals(koosteHakukohde.getOid()))
+                  .findFirst();
+
+          if (supaHakukohde.isPresent()) {
+            boolean koosteHarkinnanvaraisuus = koosteHakukohde.isHarkinnanvaraisuus();
+            boolean supaHarkinnanvaraisuus = supaHakukohde.get().isHarkinnanvaraisuus();
+
+            if (koosteHarkinnanvaraisuus == supaHarkinnanvaraisuus) {
+              totalSameHarkinnanvaraisuus++;
+              hakukohdeetWithSameValues.merge(koosteHakukohde.getOid(), 1, Integer::sum);
+              LOG.trace(
+                  "Harkinnanvaraisuus täsmää hakemuksen {} hakukohteelle {}: {}",
+                  koostepalveluHakemus.getHakemusoid(),
+                  koosteHakukohde.getOid(),
+                  koosteHarkinnanvaraisuus);
+            } else {
+              totalDifferentHarkinnanvaraisuus++;
+              hakukohdeetWithDifferentValues.merge(koosteHakukohde.getOid(), 1, Integer::sum);
+              LOG.warn(
+                  "Harkinnanvaraisuus eroaa hakemuksen {} hakukohteelle {}. Koostepalvelu: {}, Suorituspalvelu: {}",
+                  koostepalveluHakemus.getHakemusoid(),
+                  koosteHakukohde.getOid(),
+                  koosteHarkinnanvaraisuus,
+                  supaHarkinnanvaraisuus);
+            }
+          } else {
+            totalMissingHakukohteet++;
+            LOG.warn(
+                "Hakukohde {} löytyi Koostepalvelusta hakemukselle {}, mutta ei Suorituspalvelusta!",
+                koosteHakukohde.getOid(),
+                koostepalveluHakemus.getHakemusoid());
+          }
+        }
+
+        LOG.info(
+            "Hakemuksen {} harkinnanvaraisuus-vertailu: täsmäävät: {}, erilaiset: {}, puuttuvat hakukohteet: {}, hakukohteet yhteensä: {}",
+            koostepalveluHakemus.getHakemusoid(),
+            totalSameHarkinnanvaraisuus,
+            totalDifferentHarkinnanvaraisuus,
+            totalMissingHakukohteet,
+            koosteHakukohteet.size());
+
+      } else {
+        missingHakemukset++;
+        LOG.warn(
+            "Hakemus {} löytyi Koostepalvelusta, mutta ei Suorituspalvelusta!",
+            koostepalveluHakemus.getHakemusoid());
+      }
+    }
+
+    LOG.info(
+        "Harkinnanvaraisuus-vertailun yhteenveto: yhteensä hakemuksia: {}, vastaavia hakemuksia: {}, puuttuvia hakemuksia: {}",
+        totalHakemukset,
+        matchingHakemukset,
+        missingHakemukset);
+
+    LOG.info(
+        "Harkinnanvaraisuus-arvojen vertailun yhteenveto: täsmäävät: {}, erilaiset: {}, puuttuvat hakukohteet: {}",
+        totalSameHarkinnanvaraisuus,
+        totalDifferentHarkinnanvaraisuus,
+        totalMissingHakukohteet);
+
+    // Erilaiset harkinnanvaraisuus-arvot kaikille hakemuksille yhteensä
+    if (!hakukohdeetWithDifferentValues.isEmpty()) {
+      LOG.warn("Harkinnanvaraisuus-eroavaisuuksien yhteenveto:");
+      hakukohdeetWithDifferentValues.entrySet().stream()
+          .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+          .forEach(
+              entry ->
+                  LOG.warn(
+                      "Hakukohde: {}, eroaa {} hakemuksessa", entry.getKey(), entry.getValue()));
+    }
+
+    // Täsmäävät harkinnanvaraisuus-arvot kaikille hakemuksille yhteensä
+    if (!hakukohdeetWithSameValues.isEmpty()) {
+      LOG.info("Harkinnanvaraisuus-täsmäävyyksien yhteenveto:");
+      hakukohdeetWithSameValues.entrySet().stream()
+          .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+          .forEach(
+              entry ->
+                  LOG.info(
+                      "Hakukohde: {}, täsmää {} hakemuksessa", entry.getKey(), entry.getValue()));
+    }
+  }
+
   public void vertaile(List<HakemusDTO> koostepalvelusta, List<HakemusDTO> suorituspalvelusta) {
     // Lisätään tähän listaan avaimia, joiden vertailu ei jostain syystä ole kiinnostavaa.
     Set<String> keysToIgnore =
@@ -454,6 +579,7 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
         this.koostepalveluAsyncResource.haeLahtotiedot(
             laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat);
     vertaile(lahtotiedot.getHakemus(), supastaHaetut.getValintaHakemukset());
+    vertaileHarkinnanvaraisuus(lahtotiedot.getHakemus(), supastaHaetut.getValintaHakemukset());
     // Todo, tehdään vertailua, mutta laskenta käynnistetään Supan arvoilla.
     LaskeDTO laskeDtoSupanTiedoilla =
         new LaskeDTO(
