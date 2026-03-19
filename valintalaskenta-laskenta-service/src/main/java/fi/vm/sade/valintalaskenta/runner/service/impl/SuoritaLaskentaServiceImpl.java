@@ -6,6 +6,7 @@ import fi.vm.sade.valinta.sharedutils.ValintaperusteetOperation;
 import fi.vm.sade.valintalaskenta.audit.AuditLogUtil;
 import fi.vm.sade.valintalaskenta.audit.AuditSession;
 import fi.vm.sade.valintalaskenta.domain.dto.AvainArvoDTO;
+import fi.vm.sade.valintalaskenta.domain.dto.AvainMetatiedotDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakemusDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
@@ -368,6 +369,87 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
     }
   }
 
+  public void logAvainMetatiedot(List<HakemusDTO> hakemukset, String lahde) {
+    LOG.info("Lokitetaan avainmetatiedot {} hakemuksesta (lähde {})", hakemukset.size(), lahde);
+
+    int totalHakemukset = hakemukset.size();
+    int hakemusetWithMetatiedot = 0;
+    int totalMetatiedot = 0;
+
+    Map<String, Integer> metatiedotCounts = new HashMap<>();
+
+    for (HakemusDTO hakemus : hakemukset) {
+      List<AvainMetatiedotDTO> avainMetatiedot = hakemus.getAvainMetatiedotDTO();
+
+      if (avainMetatiedot == null || avainMetatiedot.isEmpty()) {
+        LOG.trace("Hakemuksella {} ei ole avainmetatietoja", hakemus.getHakemusoid());
+        continue;
+      }
+
+      hakemusetWithMetatiedot++;
+      LOG.info(
+          "Hakemuksella {} on {} avainmetatietoa", hakemus.getHakemusoid(), avainMetatiedot.size());
+
+      for (AvainMetatiedotDTO metatiedot : avainMetatiedot) {
+        String avain = metatiedot.getAvain();
+        List<Map<String, String>> metatiedotList = metatiedot.getMetatiedot();
+
+        totalMetatiedot++;
+        metatiedotCounts.merge(avain, 1, Integer::sum);
+
+        if (metatiedotList == null || metatiedotList.isEmpty()) {
+          LOG.warn(
+              "Hakemuksella {} avaimella {} ei ole metatietoja", hakemus.getHakemusoid(), avain);
+          continue;
+        }
+
+        LOG.info(
+            "Hakemuksella {} avaimella {} on {} metatietoriviä",
+            hakemus.getHakemusoid(),
+            avain,
+            metatiedotList.size());
+
+        for (int i = 0; i < metatiedotList.size(); i++) {
+          Map<String, String> metatietoMap = metatiedotList.get(i);
+          LOG.info(
+              "Hakemuksella {} avaimella {} metatietoriviä {}: {}",
+              hakemus.getHakemusoid(),
+              avain,
+              i + 1,
+              metatietoMap);
+
+          int finalI = i;
+          metatietoMap.forEach(
+              (key, value) ->
+                  LOG.info(
+                      "Hakemuksella {} avaimella {} metatietoriviä {} avain: {}, arvo: {}",
+                      hakemus.getHakemusoid(),
+                      avain,
+                      finalI + 1,
+                      key,
+                      value));
+        }
+      }
+    }
+
+    LOG.info(
+        "Avainmetatietojen lokituksen yhteenveto: yhteensä hakemuksia: {}, hakemuksia joilla metatietoja: {}, metatietoja yhteensä: {}",
+        totalHakemukset,
+        hakemusetWithMetatiedot,
+        totalMetatiedot);
+
+    // Avainmetatietojen esiintymistiheys
+    if (!metatiedotCounts.isEmpty()) {
+      LOG.info("Avainmetatietojen esiintymistiheys:");
+      metatiedotCounts.entrySet().stream()
+          .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+          .forEach(
+              entry ->
+                  LOG.info(
+                      "Avain: {}, esiintyy {} hakemuksessa", entry.getKey(), entry.getValue()));
+    }
+  }
+
   public void vertaile(List<HakemusDTO> koostepalvelusta, List<HakemusDTO> suorituspalvelusta) {
     // Lisätään tähän listaan avaimia, joiden vertailu ei jostain syystä ole kiinnostavaa.
     Set<String> keysToIgnore =
@@ -580,6 +662,8 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
             laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat);
     vertaile(lahtotiedot.getHakemus(), supastaHaetut.getValintaHakemukset());
     vertaileHarkinnanvaraisuus(lahtotiedot.getHakemus(), supastaHaetut.getValintaHakemukset());
+    logAvainMetatiedot(lahtotiedot.getHakemus(), "Koostepalvelu");
+    logAvainMetatiedot(supastaHaetut.getValintaHakemukset(), "Supasta");
     // Todo, tehdään vertailua, mutta laskenta käynnistetään Supan arvoilla.
     LaskeDTO laskeDtoSupanTiedoilla =
         new LaskeDTO(
