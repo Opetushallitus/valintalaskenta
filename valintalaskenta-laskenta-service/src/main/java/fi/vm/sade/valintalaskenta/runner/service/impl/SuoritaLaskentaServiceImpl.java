@@ -369,6 +369,228 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
     }
   }
 
+  public void vertaileAvainMetatiedot(
+      List<HakemusDTO> koostepalvelusta, List<HakemusDTO> suorituspalvelusta) {
+
+    LOG.info(
+        "Vertaillaan avainmetatietoja! Koostepalvelusta {} hakemusta, Suorituspalvelusta {} hakemusta.",
+        koostepalvelusta.size(),
+        suorituspalvelusta.size());
+
+    int totalHakemukset = koostepalvelusta.size();
+    int matchingHakemukset = 0;
+    int missingHakemukset = 0;
+    int totalSameMetatiedot = 0;
+    int totalDifferentMetatiedot = 0;
+    int totalMissingMetatiedot = 0;
+    int totalIgnoredMetatiedot = 0;
+
+    Map<String, Integer> missingKeysCounts = new HashMap<>();
+    Map<String, Integer> matchingKeysCounts = new HashMap<>();
+    Map<String, Integer> differentKeysCounts = new HashMap<>();
+
+    for (HakemusDTO koostepalveluHakemus : koostepalvelusta) {
+      // Counters for this specific hakemus
+      int sameMetatiedot = 0;
+      int differentMetatiedot = 0;
+      int missingMetatiedot = 0;
+      int ignoredMetatiedot = 0;
+
+      Optional<HakemusDTO> supaHakemus =
+          suorituspalvelusta.stream()
+              .filter(
+                  suorituspalveluHakemus ->
+                      suorituspalveluHakemus
+                          .getHakemusoid()
+                          .equals(koostepalveluHakemus.getHakemusoid()))
+              .findFirst();
+
+      if (supaHakemus.isPresent()) {
+        matchingHakemukset++;
+        LOG.info(
+            "Löytyi vastaava hakemus sekä Koostepalvelusta että Suorituspalvelusta! {}",
+            supaHakemus.get().getHakemusoid());
+
+        List<AvainMetatiedotDTO> supaMetatiedot = supaHakemus.get().getAvainMetatiedotDTO();
+        List<AvainMetatiedotDTO> koosteMetatiedot = koostepalveluHakemus.getAvainMetatiedotDTO();
+
+        for (AvainMetatiedotDTO koosteMetatieto : koosteMetatiedot) {
+          String avain = koosteMetatieto.getAvain();
+
+          Optional<AvainMetatiedotDTO> supaMetatieto =
+              supaMetatiedot.stream().filter(am -> am.getAvain().equals(avain)).findFirst();
+
+          if (supaMetatieto.isPresent()) {
+            if (metatiedotMatch(
+                koosteMetatieto.getMetatiedot(), supaMetatieto.get().getMetatiedot())) {
+              sameMetatiedot++;
+              matchingKeysCounts.merge(avain, 1, Integer::sum);
+              LOG.info(
+                  "Supasta ja Koostepalvelusta löytyi hakemukselle {} samat metatiedot avaimelle {}. Jee.",
+                  koostepalveluHakemus.getHakemusoid(),
+                  avain);
+            } else {
+              differentMetatiedot++;
+              differentKeysCounts.merge(avain, 1, Integer::sum);
+              LOG.warn(
+                  "Supasta ja Koostepalvelusta löytyi eri metatiedot hakemuksen {} avaimelle {}. Kooste: {}, Supa: {}",
+                  koostepalveluHakemus.getHakemusoid(),
+                  avain,
+                  koosteMetatieto.getMetatiedot(),
+                  supaMetatieto.get().getMetatiedot());
+              logMetatiedotDetails(
+                  koostepalveluHakemus.getHakemusoid(),
+                  avain,
+                  koosteMetatieto.getMetatiedot(),
+                  supaMetatieto.get().getMetatiedot());
+            }
+          } else {
+            missingMetatiedot++;
+            missingKeysCounts.merge(avain, 1, Integer::sum);
+            LOG.warn(
+                "Koostepalvelusta löytyi hakemuksen {} avaimelle {} metatietorivä ({} riveä), mutta Suorituspalvelusta ei palautunut vastaavaa!",
+                koostepalveluHakemus.getHakemusoid(),
+                avain,
+                koosteMetatieto.getMetatiedot().size());
+          }
+        }
+
+        LOG.info(
+            "Hakemuksen {} avainmetatietojen vertailu: samoja: {}, eriäviä: {}, puuttuvia: {}, ohitettuja: {}, metatietoja yhteensä: {}",
+            koostepalveluHakemus.getHakemusoid(),
+            sameMetatiedot,
+            differentMetatiedot,
+            missingMetatiedot,
+            ignoredMetatiedot,
+            koosteMetatiedot.size());
+
+        totalSameMetatiedot += sameMetatiedot;
+        totalDifferentMetatiedot += differentMetatiedot;
+        totalMissingMetatiedot += missingMetatiedot;
+        totalIgnoredMetatiedot += ignoredMetatiedot;
+
+      } else {
+        missingHakemukset++;
+        LOG.info(
+            "Koostepalvelusta palautui hakemus {}, mutta Suorituspalvelusta ei löytynyt vastaavaa.",
+            koostepalveluHakemus.getHakemusoid());
+      }
+    }
+
+    LOG.info(
+        "Avainmetatietojen vertailun yhteenveto: yhteensä hakemuksia: {}, vastaavia hakemuksia: {}, puuttuvia hakemuksia: {}",
+        totalHakemukset,
+        matchingHakemukset,
+        missingHakemukset);
+
+    LOG.info(
+        "Metatietojen vertailun yhteenveto: samoja: {}, eriäviä: {}, puuttuvia: {}, ohitettuja: {}",
+        totalSameMetatiedot,
+        totalDifferentMetatiedot,
+        totalMissingMetatiedot,
+        totalIgnoredMetatiedot);
+
+    // Puuttuvat metatiedot kaikille hakemuksille yhteensä
+    if (!missingKeysCounts.isEmpty()) {
+      LOG.warn("Puuttuvia metatietoja yhteenveto:");
+      missingKeysCounts.entrySet().stream()
+          .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+          .forEach(
+              entry ->
+                  LOG.warn("Avain: {}, puuttuu {} hakemuksessa", entry.getKey(), entry.getValue()));
+    }
+
+    // Erilaiset metatiedot kaikille hakemuksille yhteensä
+    if (!differentKeysCounts.isEmpty()) {
+      LOG.warn("Eriäviä metatietoja yhteenveto:");
+      differentKeysCounts.entrySet().stream()
+          .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+          .forEach(
+              entry ->
+                  LOG.warn("Avain: {}, eroaa {} hakemuksessa", entry.getKey(), entry.getValue()));
+    }
+
+    // Täsmäävät metatiedot kaikille hakemuksille yhteensä
+    if (!matchingKeysCounts.isEmpty()) {
+      LOG.info("Täsmäävien metatietojen yhteenveto:");
+      matchingKeysCounts.entrySet().stream()
+          .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+          .forEach(
+              entry ->
+                  LOG.info("Avain: {}, täsmää {} hakemuksessa", entry.getKey(), entry.getValue()));
+    }
+  }
+
+  /**
+   * Compares two lists of metatiedot maps for equality
+   *
+   * @param koosteMetatiedot Metatiedot from koostepalvelu
+   * @param supaMetatiedot Metatiedot from suorituspalvelu
+   * @return true if both lists contain the same data, false otherwise
+   */
+  private boolean metatiedotMatch(
+      List<Map<String, String>> koosteMetatiedot, List<Map<String, String>> supaMetatiedot) {
+    if (koosteMetatiedot == null && supaMetatiedot == null) {
+      return true;
+    }
+    if (koosteMetatiedot == null || supaMetatiedot == null) {
+      return false;
+    }
+    if (koosteMetatiedot.size() != supaMetatiedot.size()) {
+      return false;
+    }
+
+    // Compare each row in the metatiedot
+    for (int i = 0; i < koosteMetatiedot.size(); i++) {
+      Map<String, String> koosteKoe = koosteMetatiedot.get(i);
+      Map<String, String> supaKoe = supaMetatiedot.get(i);
+      LOG.info("Comparing row {}: Kooste {}, Supa {} ", i, koosteKoe, supaKoe);
+      if (!koosteKoe.equals(supaKoe)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * Logs detailed differences between metatiedot from two sources
+   *
+   * @param hakemusOid Hakemus OID for logging
+   * @param avain The key being compared
+   * @param koosteMetatiedot Metatiedot from koostepalvelu
+   * @param supaMetatiedot Metatiedot from suorituspalvelu
+   */
+  private void logMetatiedotDetails(
+      String hakemusOid,
+      String avain,
+      List<Map<String, String>> koosteMetatiedot,
+      List<Map<String, String>> supaMetatiedot) {
+    LOG.debug(
+        "Koostepalvelun metatiedot hakemuksen {} avaimelle {}: {} kpl",
+        hakemusOid,
+        avain,
+        koosteMetatiedot.size());
+    for (int i = 0; i < koosteMetatiedot.size(); i++) {
+      Map<String, String> koosteRow = koosteMetatiedot.get(i);
+      koosteRow.forEach(
+          (k, v) -> {
+            LOG.info("Kooste avain {}: {} = {} ", avain, k, v);
+          });
+      LOG.info("  Rivi {}: {}", i + 1, koosteMetatiedot.get(i));
+    }
+
+    LOG.info("Suorituspalvelun metatiedot avaimelle {}: {} kpl", avain, supaMetatiedot.size());
+    for (int i = 0; i < supaMetatiedot.size(); i++) {
+      Map<String, String> supaRow = supaMetatiedot.get(i);
+      supaRow.forEach(
+          (k, v) -> {
+            LOG.info("Supa avain {}: {} = {} ", avain, k, v);
+          });
+      LOG.info("  Rivi {}: {}", i + 1, supaMetatiedot.get(i));
+    }
+  }
+
   public void logAvainMetatiedot(List<HakemusDTO> hakemukset, String lahde) {
     LOG.info("Lokitetaan avainmetatiedot {} hakemuksesta (lähde {})", hakemukset.size(), lahde);
 
@@ -382,13 +604,16 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
       List<AvainMetatiedotDTO> avainMetatiedot = hakemus.getAvainMetatiedotDTO();
 
       if (avainMetatiedot == null || avainMetatiedot.isEmpty()) {
-        LOG.trace("Hakemuksella {} ei ole avainmetatietoja", hakemus.getHakemusoid());
+        LOG.warn("{} Hakemuksella {} ei ole avainmetatietoja", lahde, hakemus.getHakemusoid());
         continue;
       }
 
       hakemusetWithMetatiedot++;
       LOG.info(
-          "Hakemuksella {} on {} avainmetatietoa", hakemus.getHakemusoid(), avainMetatiedot.size());
+          "{} Hakemuksella {} on {} avainmetatietoa",
+          lahde,
+          hakemus.getHakemusoid(),
+          avainMetatiedot.size());
 
       for (AvainMetatiedotDTO metatiedot : avainMetatiedot) {
         String avain = metatiedot.getAvain();
@@ -399,12 +624,16 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
 
         if (metatiedotList == null || metatiedotList.isEmpty()) {
           LOG.warn(
-              "Hakemuksella {} avaimella {} ei ole metatietoja", hakemus.getHakemusoid(), avain);
+              "{} Hakemuksella {} avaimella {} ei ole metatietoja",
+              lahde,
+              hakemus.getHakemusoid(),
+              avain);
           continue;
         }
 
         LOG.info(
-            "Hakemuksella {} avaimella {} on {} metatietoriviä",
+            "{} Hakemuksella {} avaimella {} on {} metatietoriviä",
+            lahde,
             hakemus.getHakemusoid(),
             avain,
             metatiedotList.size());
@@ -412,7 +641,8 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
         for (int i = 0; i < metatiedotList.size(); i++) {
           Map<String, String> metatietoMap = metatiedotList.get(i);
           LOG.info(
-              "Hakemuksella {} avaimella {} metatietoriviä {}: {}",
+              "{} Hakemuksella {} avaimella {} metatietoriviä {}: {}",
+              lahde,
               hakemus.getHakemusoid(),
               avain,
               i + 1,
@@ -422,7 +652,8 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
           metatietoMap.forEach(
               (key, value) ->
                   LOG.info(
-                      "Hakemuksella {} avaimella {} metatietoriviä {} avain: {}, arvo: {}",
+                      "{} Hakemuksella {} avaimella {} metatietoriviä {} avain: {}, arvo: {}",
+                      lahde,
                       hakemus.getHakemusoid(),
                       avain,
                       finalI + 1,
@@ -662,6 +893,7 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
             laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat);
     vertaile(lahtotiedot.getHakemus(), supastaHaetut.getValintaHakemukset());
     vertaileHarkinnanvaraisuus(lahtotiedot.getHakemus(), supastaHaetut.getValintaHakemukset());
+    vertaileAvainMetatiedot(lahtotiedot.getHakemus(), supastaHaetut.getValintaHakemukset());
     logAvainMetatiedot(lahtotiedot.getHakemus(), "Koostepalvelu");
     logAvainMetatiedot(supastaHaetut.getValintaHakemukset(), "Supasta");
     // Todo, tehdään vertailua, mutta laskenta käynnistetään Supan arvoilla.
