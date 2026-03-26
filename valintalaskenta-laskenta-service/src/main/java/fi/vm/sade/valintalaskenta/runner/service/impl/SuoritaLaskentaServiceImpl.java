@@ -12,7 +12,10 @@ import fi.vm.sade.valintalaskenta.domain.dto.HakukohdeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.LaskeDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.SuorituspalveluValintadataDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
+import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
+import fi.vm.sade.valintalaskenta.domain.dto.valintapiste.PistetietoWrapper;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
+import fi.vm.sade.valintalaskenta.laskenta.service.valintapiste.ValintapisteService;
 import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.KoostepalveluAsyncResource;
 import fi.vm.sade.valintalaskenta.runner.resource.external.suorituspalvelu.impl.SuorituspalveluAsyncResourceImpl;
 import fi.vm.sade.valintalaskenta.runner.resource.external.valintaperusteet.ValintaperusteetAsyncResource;
@@ -25,6 +28,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +48,7 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
   private final KoostepalveluAsyncResource koostepalveluAsyncResource;
   private final ValintaperusteetAsyncResource valintaperusteetAsyncResource;
   private final SuorituspalveluAsyncResourceImpl suorituspalveluAsyncResource;
+  private final ValintapisteService valintapisteService;
   private final CloudWatchClient cloudWatchClient;
   private final EcsTaskManager ecsTaskManager;
 
@@ -64,6 +69,7 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
       KoostepalveluAsyncResource koostepalveluAsyncResource,
       ValintaperusteetAsyncResource valintaperusteetAsyncResource,
       SuorituspalveluAsyncResourceImpl suorituspalveluAsyncResource,
+      ValintapisteService valintapisteService,
       CloudWatchClient cloudWatchClient,
       EcsTaskManager ecsTaskManager,
       @Value("${environment.name}") String environmentName) {
@@ -71,6 +77,7 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
     this.koostepalveluAsyncResource = koostepalveluAsyncResource;
     this.valintaperusteetAsyncResource = valintaperusteetAsyncResource;
     this.suorituspalveluAsyncResource = suorituspalveluAsyncResource;
+    this.valintapisteService = valintapisteService;
     this.cloudWatchClient = cloudWatchClient;
     this.ecsTaskManager = ecsTaskManager;
     this.environmentName = environmentName;
@@ -156,9 +163,7 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
   @Override
   public void suoritaLaskentaHakukohteille(
       LaskentaDto laskenta, Collection<String> hakukohdeOids, int valintaryhmaRinnakkaisuus) {
-    if (laskenta
-        .getTyyppi()
-        .equals(fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi.VALINTARYHMA)) {
+    if (laskenta.getTyyppi().equals(LaskentaTyyppi.VALINTARYHMA)) {
       try {
         this.suoritaValintaryhmaLaskenta(laskenta, hakukohdeOids, valintaryhmaRinnakkaisuus);
         return;
@@ -849,6 +854,57 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
     }
   }
 
+  private List<AvainArvoDTO> pistetietoToAvainArvot(PistetietoWrapper pistetiedot) {
+    final String pistetietoOsallistuminenSuffix = "-OSALLISTUMINEN";
+    return pistetiedot.pisteet().stream()
+        .flatMap(
+            p ->
+                Stream.concat(
+                    Optional.ofNullable(p.arvo()).stream()
+                        .map(a -> new AvainArvoDTO(p.tunniste(), a)),
+                    Stream.of(
+                        new AvainArvoDTO(
+                            p.tunniste() + pistetietoOsallistuminenSuffix,
+                            p.osallistuminen() != null ? p.osallistuminen().toString() : ""))))
+        .collect(Collectors.toList());
+  }
+
+  private void addPistetiedotToHakemus(HakemusDTO hakemus, List<AvainArvoDTO> uudetAvainArvot) {
+    Set<String> olemassaolevatAvaimet =
+        hakemus.getAvaimet().stream().map(AvainArvoDTO::getAvain).collect(Collectors.toSet());
+    for (AvainArvoDTO avainArvo : uudetAvainArvot) {
+      if (olemassaolevatAvaimet.contains(avainArvo.getAvain())) {
+        LOG.error(
+            "Ei voida lisätä pistetietoja, koska hakemukselta {} löytyy jo avain {}.",
+            hakemus.getHakemusoid(),
+            avainArvo.getAvain());
+        throw new RuntimeException(
+            "Hakemukselta " + hakemus.getHakemusoid() + " löytyy jo avain " + avainArvo.getAvain());
+      } else {
+        LOG.info("Lisätään pistetiedot hakemukselle {}: {}", hakemus.getHakemusoid(), avainArvo);
+        hakemus.getAvaimet().add(avainArvo);
+      }
+    }
+  }
+
+  private void combinePistetiedotWithHakemusDTOs(
+      List<HakemusDTO> hakemukset, List<PistetietoWrapper> valintapisteet) {
+    Map<String, PistetietoWrapper> pistetietoMap =
+        valintapisteet.stream()
+            .collect(Collectors.toMap(PistetietoWrapper::hakemusOID, Function.identity()));
+
+    hakemukset.forEach(
+        hakemus -> {
+          PistetietoWrapper hakemuksenPistetieto = pistetietoMap.get(hakemus.getHakemusoid());
+
+          if (hakemuksenPistetieto != null && !hakemuksenPistetieto.pisteet().isEmpty()) {
+            LOG.info("Hakemukselle {} löytyi pistetiedot. Käsitellään!", hakemus.getHakemusoid());
+            List<AvainArvoDTO> pistetietoAvaimet = pistetietoToAvainArvot(hakemuksenPistetieto);
+            addPistetiedotToHakemus(hakemus, pistetietoAvaimet);
+          }
+        });
+  }
+
   private void suoritaLaskentaHakukohteelle(LaskentaDto laskenta, String hakukohdeOid) {
 
     String tyyppi;
@@ -885,6 +941,15 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
     Instant lahtotiedotStart = Instant.now();
     SuorituspalveluValintadataDTO supastaHaetut =
         this.suorituspalveluAsyncResource.haeValintaData(laskenta.getHakuOid(), hakukohdeOid);
+    List<HakemusDTO> hakemusDTOtSupasta = supastaHaetut.getValintaHakemukset();
+    Set<String> supaHakemusOids =
+        hakemusDTOtSupasta.stream().map(HakemusDTO::getHakemusoid).collect(Collectors.toSet());
+    List<PistetietoWrapper> pistetiedot =
+        valintapisteService.findValintapisteetForHakemukset(supaHakemusOids).getRight();
+    combinePistetiedotWithHakemusDTOs(hakemusDTOtSupasta, pistetiedot);
+    // Todo, Supasta tulleisiin HakemusDTOihin pitää vielä lisätä Koostepalvelun kautta toimitettu
+    // Koski-json
+
     LOG.info(
         "Saatiin Suorituspalvelusta tiedot, yhteensä {} hakemusta.",
         supastaHaetut.getValintaHakemukset().size());
@@ -896,14 +961,13 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
     vertaileAvainMetatiedot(lahtotiedot.getHakemus(), supastaHaetut.getValintaHakemukset());
     logAvainMetatiedot(lahtotiedot.getHakemus(), "Koostepalvelu");
     logAvainMetatiedot(supastaHaetut.getValintaHakemukset(), "Supasta");
-    // Todo, tehdään vertailua, mutta laskenta käynnistetään Supan arvoilla.
     LaskeDTO laskeDtoSupanTiedoilla =
         new LaskeDTO(
             lahtotiedot.getUuid(),
             lahtotiedot.isKorkeakouluhaku(),
             lahtotiedot.isErillishaku(),
             lahtotiedot.getHakukohdeOid(),
-            supastaHaetut.getValintaHakemukset(),
+            hakemusDTOtSupasta,
             lahtotiedot.getValintaperuste(),
             lahtotiedot.getHakijaryhmat());
     Instant laskeStart = Instant.now();
