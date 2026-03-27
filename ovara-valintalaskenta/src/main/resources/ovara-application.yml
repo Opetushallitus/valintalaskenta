@@ -15,6 +15,7 @@ valintalaskenta-laskenta-service:
     driver: org.postgresql.Driver
   organisaatio-service:
     url:
+    suoritusrekisteri-haku-oids: 1.2.3
 
 valintalaskenta:
   uses-ssl-proxy: false
