@@ -51,6 +51,13 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
   private final ValintapisteService valintapisteService;
   private final CloudWatchClient cloudWatchClient;
   private final EcsTaskManager ecsTaskManager;
+  // Korkeakoulujen kevään 2025 ensimmäinen yhteishaku 1.2.246.562.29.00000000000000054530
+  // Korkeakoulujen kevään 2025 toinen yhteishaku 1.2.246.562.29.00000000000000054531
+  // Korkeakoulujen kevään 2026 ensimmäinen yhteishaku 1.2.246.562.29.00000000000000072413
+  // Korkeakoulujen yhteishaku syksy 2025 1.2.246.562.29.00000000000000069585
+  // Default
+  // "1.2.246.562.29.00000000000000054530,1.2.246.562.29.00000000000000054531,1.2.246.562.29.00000000000000072413,1.2.246.562.29.00000000000000069585"
+  final Set<String> hautJoilleKaytetaanSuoritusrekisterinTietoja;
 
   private final String environmentName;
 
@@ -72,7 +79,9 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
       ValintapisteService valintapisteService,
       CloudWatchClient cloudWatchClient,
       EcsTaskManager ecsTaskManager,
-      @Value("${environment.name}") String environmentName) {
+      @Value("${environment.name}") String environmentName,
+      @Value("${valintalaskenta-laskenta-service.suoritusrekisteri-haku-oids}")
+          String suoritusrekisteriHakuOids) {
     this.valintalaskentaResource = valintalaskentaResource;
     this.koostepalveluAsyncResource = koostepalveluAsyncResource;
     this.valintaperusteetAsyncResource = valintaperusteetAsyncResource;
@@ -81,6 +90,15 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
     this.cloudWatchClient = cloudWatchClient;
     this.ecsTaskManager = ecsTaskManager;
     this.environmentName = environmentName;
+    if (suoritusrekisteriHakuOids == null || suoritusrekisteriHakuOids.isEmpty()) {
+      this.hautJoilleKaytetaanSuoritusrekisterinTietoja = Collections.emptySet();
+    } else {
+      Set<String> sureOids =
+          Arrays.stream(suoritusrekisteriHakuOids.split(","))
+              .filter(s -> !s.isEmpty())
+              .collect(Collectors.toSet());
+      this.hautJoilleKaytetaanSuoritusrekisterinTietoja = sureOids;
+    }
   }
 
   private static AuditSession laskentaAuditSession(LaskentaDto laskenta) {
@@ -907,6 +925,9 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
 
   private void suoritaLaskentaHakukohteelle(LaskentaDto laskenta, String hakukohdeOid) {
 
+    boolean kaytetaanUudenSuorituspalvelunTietoja =
+        !hautJoilleKaytetaanSuoritusrekisterinTietoja.contains(laskenta.getHakuOid());
+
     String tyyppi;
     boolean retryHakemuksetJaOppijat;
     boolean withHakijaRyhmat;
@@ -939,47 +960,68 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
         Collections.singleton(hakukohdeOid),
         Optional.of(tyyppi));
     Instant lahtotiedotStart = Instant.now();
-    SuorituspalveluValintadataDTO supastaHaetut =
-        this.suorituspalveluAsyncResource.haeValintaData(laskenta.getHakuOid(), hakukohdeOid);
-    List<HakemusDTO> hakemusDTOtSupasta = supastaHaetut.getValintaHakemukset();
-    Set<String> supaHakemusOids =
-        hakemusDTOtSupasta.stream().map(HakemusDTO::getHakemusoid).collect(Collectors.toSet());
-    List<PistetietoWrapper> pistetiedot =
-        valintapisteService.findValintapisteetForHakemukset(supaHakemusOids).getRight();
-    combinePistetiedotWithHakemusDTOs(hakemusDTOtSupasta, pistetiedot);
-    // Todo, Supasta tulleisiin HakemusDTOihin pitää vielä lisätä Koostepalvelun kautta toimitettu
-    // Koski-json
 
-    LOG.info(
-        "Saatiin Suorituspalvelusta tiedot, yhteensä {} hakemusta.",
-        supastaHaetut.getValintaHakemukset().size());
-    LaskeDTO lahtotiedot =
-        this.koostepalveluAsyncResource.haeLahtotiedot(
-            laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat);
-    vertaile(lahtotiedot.getHakemus(), supastaHaetut.getValintaHakemukset());
-    vertaileHarkinnanvaraisuus(lahtotiedot.getHakemus(), supastaHaetut.getValintaHakemukset());
-    vertaileAvainMetatiedot(lahtotiedot.getHakemus(), supastaHaetut.getValintaHakemukset());
-    logAvainMetatiedot(lahtotiedot.getHakemus(), "Koostepalvelu");
-    logAvainMetatiedot(supastaHaetut.getValintaHakemukset(), "Supasta");
-    LaskeDTO laskeDtoSupanTiedoilla =
-        new LaskeDTO(
-            lahtotiedot.getUuid(),
-            lahtotiedot.isKorkeakouluhaku(),
-            lahtotiedot.isErillishaku(),
-            lahtotiedot.getHakukohdeOid(),
-            hakemusDTOtSupasta,
-            lahtotiedot.getValintaperuste(),
-            lahtotiedot.getHakijaryhmat());
+    LaskeDTO kaytettavaLaskeDTO;
+
+    if (kaytetaanUudenSuorituspalvelunTietoja) {
+      LOG.info("Käytetään haulle {} Suorituspalvelun tietoja!", laskenta.getHakuOid());
+      SuorituspalveluValintadataDTO supastaHaetut =
+          this.suorituspalveluAsyncResource.haeValintaData(laskenta.getHakuOid(), hakukohdeOid);
+      List<HakemusDTO> hakemusDTOtSupasta = supastaHaetut.getValintaHakemukset();
+      Set<String> supaHakemusOids =
+          hakemusDTOtSupasta.stream().map(HakemusDTO::getHakemusoid).collect(Collectors.toSet());
+      List<PistetietoWrapper> pistetiedot =
+          valintapisteService.findValintapisteetForHakemukset(supaHakemusOids).getRight();
+      combinePistetiedotWithHakemusDTOs(hakemusDTOtSupasta, pistetiedot);
+      // Todo, Supasta tulleisiin HakemusDTOihin pitää vielä lisätä Koostepalvelun kautta toimitettu
+      // Koski-json
+
+      LOG.info(
+          "Saatiin Suorituspalvelusta tiedot, yhteensä {} hakemusta.",
+          supastaHaetut.getValintaHakemukset().size());
+      LaskeDTO tiedotKoostepalvelusta =
+          this.koostepalveluAsyncResource.haeLahtotiedot(
+              laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat);
+
+      // Vertailulokituksia Koostepalvelun ja Suorituspalvelun välillä, nämä voidaan poistaa
+      // testausvaiheen jälkeen
+      vertaile(tiedotKoostepalvelusta.getHakemus(), supastaHaetut.getValintaHakemukset());
+      vertaileHarkinnanvaraisuus(
+          tiedotKoostepalvelusta.getHakemus(), supastaHaetut.getValintaHakemukset());
+      vertaileAvainMetatiedot(
+          tiedotKoostepalvelusta.getHakemus(), supastaHaetut.getValintaHakemukset());
+      logAvainMetatiedot(tiedotKoostepalvelusta.getHakemus(), "Koostepalvelu");
+      logAvainMetatiedot(supastaHaetut.getValintaHakemukset(), "Supasta");
+
+      // Yhdistetään Supasta tulevat HakemusDTO:t Koostepalvelusta tuleviin lähtötietoihin.
+      kaytettavaLaskeDTO =
+          new LaskeDTO(
+              tiedotKoostepalvelusta.getUuid(),
+              tiedotKoostepalvelusta.isKorkeakouluhaku(),
+              tiedotKoostepalvelusta.isErillishaku(),
+              tiedotKoostepalvelusta.getHakukohdeOid(),
+              hakemusDTOtSupasta,
+              tiedotKoostepalvelusta.getValintaperuste(),
+              tiedotKoostepalvelusta.getHakijaryhmat());
+    } else {
+      LOG.info("Käytetään haulle {} Suoritusrekisterin tietoja!", laskenta.getHakuOid());
+      LaskeDTO tiedotKoostepalvelusta =
+          this.koostepalveluAsyncResource.haeLahtotiedot(
+              laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat);
+      kaytettavaLaskeDTO = tiedotKoostepalvelusta;
+    }
+
     Instant laskeStart = Instant.now();
-
     LOG.info(
         "Haettiin lähtötiedot hakukohteelle "
             + hakukohdeOid
             + ", start: "
             + lahtotiedotStart
             + ", end: "
-            + laskeStart);
-    laske.apply(laskeDtoSupanTiedoilla);
+            + laskeStart
+            + ", kaytetaanSupanTietoja: "
+            + kaytetaanUudenSuorituspalvelunTietoja);
+    laske.apply(kaytettavaLaskeDTO);
     this.tallennaJaLokitaMetriikat(
         Collections.singleton(hakukohdeOid),
         Map.of(
