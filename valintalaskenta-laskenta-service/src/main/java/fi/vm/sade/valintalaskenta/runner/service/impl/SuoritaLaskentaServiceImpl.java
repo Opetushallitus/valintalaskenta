@@ -716,10 +716,22 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
                 "LISAKOULUTUS_KYMPPI",
                 "LISAKOULUTUS_TALOUS",
                 "LISAKOULUTUS_VALMA",
-                "LISAKOULUTUS_TALOUS"));
+                "LISAKOULUTUS_TALOUS",
+                "preference1-discretionary-follow-up",
+                "preference2-discretionary-follow-up",
+                "preference3-discretionary-follow-up",
+                "preference4-discretionary-follow-up",
+                "preference5-discretionary-follow-up",
+                "preference6-discretionary-follow-up",
+                "preference1-discretionary",
+                "preference2-discretionary",
+                "preference3-discretionary",
+                "preference4-discretionary",
+                "preference5-discretionary",
+                "preference6-discretionary"));
 
     LOG.info(
-        "Vertaillaan! Koostepalvelusta {} hakemusta, Supasta {} hakemusta. Ohitetaan {} avainta: {}.",
+        "Vertaillaan avain-arvoja! Koostepalvelusta {} hakemusta, Supasta {} hakemusta. Ohitetaan {} avainta: {}.",
         koostepalvelusta.size(),
         suorituspalvelusta.size(),
         keysToIgnore.size(),
@@ -738,19 +750,6 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
     Map<String, Integer> matchingKeysCounts = new HashMap<>();
 
     for (HakemusDTO koostepalveluHakemus : koostepalvelusta) {
-      // Todo, lisätään vertailu myös avainmetatiedoille siinä vaiheessa, kun ne on lisätty Supan
-      // päähän.
-      koostepalveluHakemus.getAvainMetatiedotDTO().stream()
-          .filter(am -> !keysToIgnore.contains(am.getAvain()))
-          .forEach(
-              am -> {
-                LOG.info(
-                    "Hakemus {} avainmetatieto {} - {}",
-                    koostepalveluHakemus.getHakemusoid(),
-                    am.getAvain(),
-                    am.getMetatiedot());
-              });
-
       // Counters for this specific hakemus
       int sameValues = 0;
       int differentValues = 0;
@@ -899,7 +898,7 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
         throw new RuntimeException(
             "Hakemukselta " + hakemus.getHakemusoid() + " löytyy jo avain " + avainArvo.getAvain());
       } else {
-        LOG.info("Lisätään pistetiedot hakemukselle {}: {}", hakemus.getHakemusoid(), avainArvo);
+        LOG.debug("Lisätään pistetiedot hakemukselle {}: {}", hakemus.getHakemusoid(), avainArvo);
         hakemus.getAvaimet().add(avainArvo);
       }
     }
@@ -916,7 +915,7 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
           PistetietoWrapper hakemuksenPistetieto = pistetietoMap.get(hakemus.getHakemusoid());
 
           if (hakemuksenPistetieto != null && !hakemuksenPistetieto.pisteet().isEmpty()) {
-            LOG.info("Hakemukselle {} löytyi pistetiedot. Käsitellään!", hakemus.getHakemusoid());
+            LOG.debug("Hakemukselle {} löytyi pistetiedot. Käsitellään!", hakemus.getHakemusoid());
             List<AvainArvoDTO> pistetietoAvaimet = pistetietoToAvainArvot(hakemuksenPistetieto);
             addPistetiedotToHakemus(hakemus, pistetietoAvaimet);
           }
@@ -986,12 +985,12 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
       // Vertailulokituksia Koostepalvelun ja Suorituspalvelun välillä, nämä voidaan poistaa
       // testausvaiheen jälkeen
       vertaile(tiedotKoostepalvelusta.getHakemus(), supastaHaetut.getValintaHakemukset());
-      vertaileHarkinnanvaraisuus(
-          tiedotKoostepalvelusta.getHakemus(), supastaHaetut.getValintaHakemukset());
+      // vertaileHarkinnanvaraisuus(
+      //    tiedotKoostepalvelusta.getHakemus(), supastaHaetut.getValintaHakemukset());
       vertaileAvainMetatiedot(
           tiedotKoostepalvelusta.getHakemus(), supastaHaetut.getValintaHakemukset());
-      logAvainMetatiedot(tiedotKoostepalvelusta.getHakemus(), "Koostepalvelu");
-      logAvainMetatiedot(supastaHaetut.getValintaHakemukset(), "Supasta");
+      // logAvainMetatiedot(tiedotKoostepalvelusta.getHakemus(), "Koostepalvelu");
+      // logAvainMetatiedot(supastaHaetut.getValintaHakemukset(), "Supasta");
 
       // Yhdistetään Supasta tulevat HakemusDTO:t Koostepalvelusta tuleviin lähtötietoihin.
       kaytettavaLaskeDTO =
