@@ -35,6 +35,7 @@ public class HakemusDTOToHakemusConverter implements Converter<HakemusDTO, Hakem
         dto.getHakukohteet().stream().collect(Collectors.toMap(getPrioriteetti, getHakutoive));
     Map<String, String> target =
         dto.getAvaimet().stream()
+            .filter(a -> a.getAvain() != null && a.getArvo() != null)
             .collect(
                 Collectors.toMap(
                     AvainArvoDTO::getAvain, AvainArvoDTO::getArvo, (s, a) -> s + ", " + a));
