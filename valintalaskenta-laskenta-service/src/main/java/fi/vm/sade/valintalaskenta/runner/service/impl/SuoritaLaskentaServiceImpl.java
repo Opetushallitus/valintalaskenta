@@ -924,8 +924,12 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
 
   private void suoritaLaskentaHakukohteelle(LaskentaDto laskenta, String hakukohdeOid) {
 
+    // OPHSUPA-325 Väliaikainen ohitus koekutsulaskentojen ajaksi: käytetään Suorituspalvelua vain
+    // 2026 perusopetuksen jälkeisen koulutuksen yhteishaulle.
     boolean kaytetaanUudenSuorituspalvelunTietoja =
-        !hautJoilleKaytetaanSuoritusrekisterinTietoja.contains(laskenta.getHakuOid());
+        laskenta.getHakuOid().equals("1.2.246.562.29.00000000000000075761");
+    // boolean kaytetaanUudenSuorituspalvelunTietoja =
+    //    !hautJoilleKaytetaanSuoritusrekisterinTietoja.contains(laskenta.getHakuOid());
 
     String tyyppi;
     boolean retryHakemuksetJaOppijat;
