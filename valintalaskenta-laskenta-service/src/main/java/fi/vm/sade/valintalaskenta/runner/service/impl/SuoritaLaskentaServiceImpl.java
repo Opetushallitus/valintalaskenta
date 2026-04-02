@@ -567,7 +567,7 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
     for (int i = 0; i < koosteMetatiedot.size(); i++) {
       Map<String, String> koosteKoe = koosteMetatiedot.get(i);
       Map<String, String> supaKoe = supaMetatiedot.get(i);
-      LOG.info("Comparing row {}: Kooste {}, Supa {} ", i, koosteKoe, supaKoe);
+      LOG.debug("Comparing row {}: Kooste {}, Supa {} ", i, koosteKoe, supaKoe);
       if (!koosteKoe.equals(supaKoe)) {
         return false;
       }
