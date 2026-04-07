@@ -904,6 +904,49 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
     }
   }
 
+  private void combineKoskiJsonFromKoostepalvelutoSupaTiedot(
+      List<HakemusDTO> supaTiedot, List<HakemusDTO> koostepalveluTiedot) {
+    LOG.info(
+        "Yhdistetään Koostepalvelun Koskesta hakemat JSON-tiedot Suorituspalvelun tietoihin. "
+            + "Suorituspalvelu: {} hakemusta, Koostepalvelu: {} hakemusta.",
+        supaTiedot.size(),
+        koostepalveluTiedot.size());
+
+    Map<String, String> hakemusToKoskiJson =
+        koostepalveluTiedot.stream()
+            .filter(hakemus -> hakemus.getKoskiOpiskeluoikeudetJson() != null)
+            .collect(
+                Collectors.toMap(
+                    HakemusDTO::getHakemusoid,
+                    HakemusDTO::getKoskiOpiskeluoikeudetJson,
+                    (existing, replacement) -> replacement));
+
+    int updatedCount = 0;
+    int missingCount = 0;
+
+    for (HakemusDTO supaHakemus : supaTiedot) {
+      String koskiJson = hakemusToKoskiJson.get(supaHakemus.getHakemusoid());
+
+      if (koskiJson != null) {
+        supaHakemus.setKoskiOpiskeluoikeudetJson(koskiJson);
+        updatedCount++;
+        LOG.info("Lisättiin Koski JSON -tiedot hakemukselle {}", supaHakemus.getHakemusoid());
+      } else {
+        missingCount++;
+        // Todo, poistetaan lokitukset testauksen jälkeen, luultavasti käytännössä hyödyttömiä.
+        LOG.warn(
+            "Koski JSON -tietoja ei löytynyt Koostepalvelusta hakemukselle {}",
+            supaHakemus.getHakemusoid());
+      }
+    }
+
+    LOG.info(
+        "Koski JSON-tietojen yhdistämisen yhteenveto: "
+            + "päivitettyjä hakemuksia: {}, puuttuvia tietoja: {}",
+        updatedCount,
+        missingCount);
+  }
+
   private void combinePistetiedotWithHakemusDTOs(
       List<HakemusDTO> hakemukset, List<PistetietoWrapper> valintapisteet) {
     Map<String, PistetietoWrapper> pistetietoMap =
@@ -976,8 +1019,6 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
       List<PistetietoWrapper> pistetiedot =
           valintapisteService.findValintapisteetForHakemukset(supaHakemusOids).getRight();
       combinePistetiedotWithHakemusDTOs(hakemusDTOtSupasta, pistetiedot);
-      // Todo, Supasta tulleisiin HakemusDTOihin pitää vielä lisätä Koostepalvelun kautta toimitettu
-      // Koski-json
 
       LOG.info(
           "Saatiin Suorituspalvelusta tiedot, yhteensä {} hakemusta.",
@@ -985,6 +1026,8 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
       LaskeDTO tiedotKoostepalvelusta =
           this.koostepalveluAsyncResource.haeLahtotiedot(
               laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat);
+      combineKoskiJsonFromKoostepalvelutoSupaTiedot(
+          hakemusDTOtSupasta, tiedotKoostepalvelusta.getHakemus());
 
       // Vertailulokituksia Koostepalvelun ja Suorituspalvelun välillä, nämä voidaan poistaa
       // testausvaiheen jälkeen
