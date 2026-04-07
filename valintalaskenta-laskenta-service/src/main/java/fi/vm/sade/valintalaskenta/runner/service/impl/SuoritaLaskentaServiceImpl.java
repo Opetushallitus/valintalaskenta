@@ -563,14 +563,15 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
       return false;
     }
 
-    // Compare each row in the metatiedot
-    for (int i = 0; i < koosteMetatiedot.size(); i++) {
-      Map<String, String> koosteKoe = koosteMetatiedot.get(i);
-      Map<String, String> supaKoe = supaMetatiedot.get(i);
-      LOG.debug("Comparing row {}: Kooste {}, Supa {} ", i, koosteKoe, supaKoe);
-
-      // Compare maps by content instead of using equals() which is order-dependent
-      if (!mapsAreEqual(koosteKoe, supaKoe)) {
+    // Compare each row in the metatiedot, ignoring order
+    for (Map<String, String> koosteMap : koosteMetatiedot) {
+      Boolean anyMatch =
+          supaMetatiedot.stream().anyMatch(supaMap -> mapsAreEqual(koosteMap, supaMap));
+      if (!anyMatch) {
+        LOG.info(
+            "Ei löydetty vastaavaa arvoa Supasta! kooste {}, supaTiedot: {}",
+            koosteMap,
+            supaMetatiedot);
         return false;
       }
     }
