@@ -545,11 +545,11 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
   }
 
   /**
-   * Compares two lists of metatiedot maps for equality
+   * Compares two lists of metatiedot maps for equality, ignoring key order
    *
    * @param koosteMetatiedot Metatiedot from koostepalvelu
    * @param supaMetatiedot Metatiedot from suorituspalvelu
-   * @return true if both lists contain the same data, false otherwise
+   * @return true if both lists contain the same data (order-independent), false otherwise
    */
   private boolean metatiedotMatch(
       List<Map<String, String>> koosteMetatiedot, List<Map<String, String>> supaMetatiedot) {
@@ -568,12 +568,37 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
       Map<String, String> koosteKoe = koosteMetatiedot.get(i);
       Map<String, String> supaKoe = supaMetatiedot.get(i);
       LOG.debug("Comparing row {}: Kooste {}, Supa {} ", i, koosteKoe, supaKoe);
-      if (!koosteKoe.equals(supaKoe)) {
+
+      // Compare maps by content instead of using equals() which is order-dependent
+      if (!mapsAreEqual(koosteKoe, supaKoe)) {
         return false;
       }
     }
 
     return true;
+  }
+
+  /**
+   * Compares two maps for content equality, ignoring key order
+   *
+   * @param map1 First map to compare
+   * @param map2 Second map to compare
+   * @return true if maps contain the same key-value pairs, false otherwise
+   */
+  private boolean mapsAreEqual(Map<String, String> map1, Map<String, String> map2) {
+    if (map1 == null && map2 == null) {
+      return true;
+    }
+    if (map1 == null || map2 == null) {
+      return false;
+    }
+    if (map1.size() != map2.size()) {
+      return false;
+    }
+
+    // Check if all key-value pairs in map1 exist in map2
+    return map1.entrySet().stream()
+        .allMatch(entry -> entry.getValue().equals(map2.get(entry.getKey())));
   }
 
   /**
