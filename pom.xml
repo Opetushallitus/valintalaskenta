@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.10</version>
+        <version>3.5.12</version>
     </parent>
 
     <groupId>fi.vm.sade.valintaperusteet</groupId>
@@ -30,8 +30,8 @@
 
         <httpcomponents.version>4.5.14</httpcomponents.version>
         <modelmapper.version>3.2.6</modelmapper.version>
-        <spring.security.version>6.5.7</spring.security.version>
-        <jackson.version>2.19.4</jackson.version>
+        <spring.security.version>6.5.9</spring.security.version>
+        <jackson.version>2.21.2</jackson.version>
 
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
@@ -241,6 +241,11 @@
                 <version>${jackson.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>2.21</version>
+            </dependency>
+            <dependency>
                 <groupId>com.fasterxml.jackson.module</groupId>
                 <artifactId>jackson-module-parameter-names</artifactId>
                 <version>${jackson.version}</version>
@@ -307,6 +312,17 @@
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-frontend-jaxrs</artifactId>
                 <version>4.1.4</version>
+            </dependency>
+            <!-- java-casin transitiivisten depsujen päivitys -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-codec-http</artifactId>
+                <version>4.1.132.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-codec-http2</artifactId>
+                <version>4.1.132.Final</version>
             </dependency>
 
             <!-- Valintalaskennan käynnistys -->
