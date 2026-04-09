@@ -545,7 +545,7 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
   }
 
   /**
-   * Compares two lists of metatiedot maps for equality, ignoring key order
+   * Compares two lists of metatiedot maps for equality, ignoring key order and specific keys
    *
    * @param koosteMetatiedot Metatiedot from koostepalvelu
    * @param supaMetatiedot Metatiedot from suorituspalvelu
@@ -580,26 +580,47 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
   }
 
   /**
-   * Compares two maps for content equality, ignoring key order
+   * Compares two maps for content equality, ignoring key order and specified keys to ignore
    *
    * @param map1 First map to compare
    * @param map2 Second map to compare
-   * @return true if maps contain the same key-value pairs, false otherwise
+   * @return true if maps contain the same key-value pairs (excluding ignored keys), false otherwise
    */
   private boolean mapsAreEqual(Map<String, String> map1, Map<String, String> map2) {
+    final Set<String> keysToIgnore = Set.of("ROOLI");
+
     if (map1 == null && map2 == null) {
       return true;
     }
     if (map1 == null || map2 == null) {
       return false;
     }
-    if (map1.size() != map2.size()) {
+
+    // Filter out ignored keys before comparing
+    Map<String, String> filteredMap1 = filterOutIgnoredKeys(map1, keysToIgnore);
+    Map<String, String> filteredMap2 = filterOutIgnoredKeys(map2, keysToIgnore);
+
+    if (filteredMap1.size() != filteredMap2.size()) {
       return false;
     }
 
-    // Check if all key-value pairs in map1 exist in map2
-    return map1.entrySet().stream()
-        .allMatch(entry -> entry.getValue().equals(map2.get(entry.getKey())));
+    // Check if all key-value pairs in filteredMap1 exist in filteredMap2
+    return filteredMap1.entrySet().stream()
+        .allMatch(entry -> entry.getValue().equals(filteredMap2.get(entry.getKey())));
+  }
+
+  /**
+   * Filters out specified keys from a map
+   *
+   * @param map The map to filter
+   * @param keysToIgnore Set of keys to exclude
+   * @return A new map without the ignored keys
+   */
+  private Map<String, String> filterOutIgnoredKeys(
+      Map<String, String> map, Set<String> keysToIgnore) {
+    return map.entrySet().stream()
+        .filter(entry -> !keysToIgnore.contains(entry.getKey()))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   /**
