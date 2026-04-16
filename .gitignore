@@ -20,3 +20,6 @@ bower_components
 
 # tänne talletetaan esim. lokaalin setupin salasanat
 valintalaskenta-laskenta-service/src/test/resources/application-dev.properties
+
+# Claude
+.claude
