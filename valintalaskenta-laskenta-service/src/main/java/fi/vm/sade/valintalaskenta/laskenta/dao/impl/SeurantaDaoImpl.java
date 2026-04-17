@@ -412,12 +412,29 @@ public class SeurantaDaoImpl implements SeurantaDao {
     return this.transactionTemplate.execute(
         t -> {
           // haetaan hakukohteiden määrä
+          /*
           int noodillaAjossa =
               this.jdbcTemplate.queryForObject(
                   "SELECT count(1) "
                       + "FROM seuranta_laskenta_hakukohteet "
                       + "WHERE tila=? "
                       + "AND noodi_id=?",
+                  Integer.class,
+                  HakukohdeTila.KESKEN.toString(),
+                  noodiId);
+           */
+          int noodillaAjossa =
+              this.jdbcTemplate.queryForObject(
+                  """
+                        SELECT
+                            COUNT(CASE WHEN sl.tyyppi != 'VALINTARYHMA' THEN 1 END) +
+                            COUNT(DISTINCT CASE WHEN sl.tyyppi = 'VALINTARYHMA' THEN slh.laskenta_uuid END)
+                        AS laskennat_maara
+                        FROM seuranta_laskenta_hakukohteet slh
+                        JOIN seuranta_laskennat sl ON sl.uuid = slh.laskenta_uuid
+                        WHERE slh.tila = ?
+                          AND slh.noodi_id = ?;
+                  """,
                   Integer.class,
                   HakukohdeTila.KESKEN.toString(),
                   noodiId);
