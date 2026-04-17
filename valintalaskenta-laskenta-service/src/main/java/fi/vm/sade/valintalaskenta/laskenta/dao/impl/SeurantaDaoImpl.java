@@ -427,8 +427,8 @@ public class SeurantaDaoImpl implements SeurantaDao {
               this.jdbcTemplate.queryForObject(
                   """
                         SELECT
-                            COUNT(CASE WHEN sl.tyyppi != 'VALINTARYHMA' THEN 1 END) +
-                            COUNT(DISTINCT CASE WHEN sl.tyyppi = 'VALINTARYHMA' THEN slh.laskenta_uuid END)
+                            COUNT(*) FILTER (WHERE sl.tyyppi != 'VALINTARYHMA') +
+                            COUNT(DISTINCT slh.laskenta_uuid) FILTER (WHERE sl.tyyppi = 'VALINTARYHMA')
                         AS laskennat_maara
                         FROM seuranta_laskenta_hakukohteet slh
                         JOIN seuranta_laskennat sl ON sl.uuid = slh.laskenta_uuid
