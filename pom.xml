@@ -501,7 +501,7 @@
                                 <requireJavaVersion>
                                     <version>1.8</version>
                                 </requireJavaVersion>
-                                <dependencyConvergence />
+                                <dependencyConvergence/>
                             </rules>
                         </configuration>
                     </execution>
