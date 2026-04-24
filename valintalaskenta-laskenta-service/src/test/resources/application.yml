@@ -25,7 +25,6 @@ valintalaskenta-laskenta-service:
     driver: org.testcontainers.jdbc.ContainerDatabaseDriver
   organisaatio-service:
     url:
-  suoritusrekisteri-haku-oids:
 
 springdoc:
   show-actuator: false
