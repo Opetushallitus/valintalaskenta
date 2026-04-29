@@ -14,6 +14,7 @@ import fi.vm.sade.valintalaskenta.domain.dto.SuorituspalveluValintadataDTO;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaDto;
 import fi.vm.sade.valintalaskenta.domain.dto.seuranta.LaskentaTyyppi;
 import fi.vm.sade.valintalaskenta.domain.dto.valintapiste.PistetietoWrapper;
+import fi.vm.sade.valintalaskenta.laskenta.dao.SureHakuOidDao;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintapiste.ValintapisteService;
 import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.KoostepalveluAsyncResource;
@@ -51,13 +52,7 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
   private final ValintapisteService valintapisteService;
   private final CloudWatchClient cloudWatchClient;
   private final EcsTaskManager ecsTaskManager;
-  // Korkeakoulujen kevään 2025 ensimmäinen yhteishaku 1.2.246.562.29.00000000000000054530
-  // Korkeakoulujen kevään 2025 toinen yhteishaku 1.2.246.562.29.00000000000000054531
-  // Korkeakoulujen kevään 2026 ensimmäinen yhteishaku 1.2.246.562.29.00000000000000072413
-  // Korkeakoulujen yhteishaku syksy 2025 1.2.246.562.29.00000000000000069585
-  // Default
-  // "1.2.246.562.29.00000000000000054530,1.2.246.562.29.00000000000000054531,1.2.246.562.29.00000000000000072413,1.2.246.562.29.00000000000000069585"
-  final Set<String> hautJoilleKaytetaanSuoritusrekisterinTietoja;
+  private final SureHakuOidDao sureHakuOidDao;
 
   private final String environmentName;
 
@@ -79,9 +74,8 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
       ValintapisteService valintapisteService,
       CloudWatchClient cloudWatchClient,
       EcsTaskManager ecsTaskManager,
-      @Value("${environment.name}") String environmentName,
-      @Value("${valintalaskenta-laskenta-service.suoritusrekisteri-haku-oids}")
-          String suoritusrekisteriHakuOids) {
+      SureHakuOidDao sureHakuOidDao,
+      @Value("${environment.name}") String environmentName) {
     this.valintalaskentaResource = valintalaskentaResource;
     this.koostepalveluAsyncResource = koostepalveluAsyncResource;
     this.valintaperusteetAsyncResource = valintaperusteetAsyncResource;
@@ -89,16 +83,8 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
     this.valintapisteService = valintapisteService;
     this.cloudWatchClient = cloudWatchClient;
     this.ecsTaskManager = ecsTaskManager;
+    this.sureHakuOidDao = sureHakuOidDao;
     this.environmentName = environmentName;
-    if (suoritusrekisteriHakuOids == null || suoritusrekisteriHakuOids.isEmpty()) {
-      this.hautJoilleKaytetaanSuoritusrekisterinTietoja = Collections.emptySet();
-    } else {
-      Set<String> sureOids =
-          Arrays.stream(suoritusrekisteriHakuOids.split(","))
-              .filter(s -> !s.isEmpty())
-              .collect(Collectors.toSet());
-      this.hautJoilleKaytetaanSuoritusrekisterinTietoja = sureOids;
-    }
   }
 
   private static AuditSession laskentaAuditSession(LaskentaDto laskenta) {
@@ -1014,12 +1000,8 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
 
   private void suoritaLaskentaHakukohteelle(LaskentaDto laskenta, String hakukohdeOid) {
 
-    // OPHSUPA-325 Väliaikainen ohitus koekutsulaskentojen ajaksi: käytetään Suorituspalvelua vain
-    // 2026 perusopetuksen jälkeisen koulutuksen yhteishaulle.
-    // boolean kaytetaanUudenSuorituspalvelunTietoja =
-    //    laskenta.getHakuOid().equals("1.2.246.562.29.00000000000000075761");
     boolean kaytetaanUudenSuorituspalvelunTietoja =
-        !hautJoilleKaytetaanSuoritusrekisterinTietoja.contains(laskenta.getHakuOid());
+        !sureHakuOidDao.haeSureHakuOidit().contains(laskenta.getHakuOid());
 
     String tyyppi;
     boolean retryHakemuksetJaOppijat;

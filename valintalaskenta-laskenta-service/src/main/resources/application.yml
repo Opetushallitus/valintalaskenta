@@ -12,7 +12,6 @@ valintalaskenta-laskenta-service:
     driver: org.postgresql.Driver
   organisaatio-service:
     url:
-  suoritusrekisteri-haku-oids:
 
 springdoc:
   show-actuator: false

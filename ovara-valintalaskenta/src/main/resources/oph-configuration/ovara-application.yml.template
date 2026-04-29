@@ -29,7 +29,6 @@ valintalaskenta-laskenta-service:
   organisaatio-service:
     url: https://${host.virkailija}/organisaatio-service
   parallelism: {{valintalaskentalaskentaservice_parallelism}}
-  suoritusrekisteri-haku-oids: {{valintalaskentalaskentaservice_suoritusrekisteri_haku_oids}}
 
 aws:
   region: {{aws_region}}
