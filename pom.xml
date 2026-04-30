@@ -39,6 +39,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
+        <aws-advanced-jdbc-wrapper.version>3.3.0</aws-advanced-jdbc-wrapper.version>
     </properties>
 
     <dependencyManagement>
@@ -207,6 +208,11 @@
                 <artifactId>postgresql</artifactId>
                 <!-- versio 42.7.5 aiheuttaa tiettyjen laskentojen jumiutumisen, ennen päivitystä ks. tiketti OY-5125 testausohjeita varten -->
                 <version>42.7.3</version>
+            </dependency>
+            <dependency>
+                <groupId>software.amazon.jdbc</groupId>
+                <artifactId>aws-advanced-jdbc-wrapper</artifactId>
+                <version>${aws-advanced-jdbc-wrapper.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
