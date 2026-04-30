@@ -60,12 +60,20 @@ class OvaraDatabaseConfiguration extends AbstractJdbcConfiguration {
       @Value("${valintalaskenta-laskenta-service.postgresql.driver}") final String driverClassName,
       @Value("${valintalaskenta-laskenta-service.postgresql.idletimeoutminutes:10}")
           final String idleTimeout,
-      @Value("${valintalaskenta-laskenta-service.postgresql.minidle:0}") final String minIdle) {
+      @Value("${valintalaskenta-laskenta-service.postgresql.minidle:0}") final String minIdle,
+      @Value("${valintalaskenta-laskenta-service.postgresql.use-aws-jdbc-wrapper:false}")
+          final String useAwsJdbcWrapper) {
+    final String effectiveUrl =
+        "true".equals(useAwsJdbcWrapper)
+            ? url.replace("jdbc:postgresql:", "jdbc:aws-wrapper:postgresql:")
+            : url;
+    final String effectiveDriver =
+        "true".equals(useAwsJdbcWrapper) ? "software.amazon.jdbc.Driver" : driverClassName;
     final HikariConfig config = new HikariConfig();
     config.setPoolName("springHikariCP");
     config.setConnectionTestQuery("SELECT 1");
-    config.setJdbcUrl(url);
-    config.setDriverClassName(driverClassName);
+    config.setJdbcUrl(effectiveUrl);
+    config.setDriverClassName(effectiveDriver);
     config.setMaximumPoolSize(Integer.parseInt(maxPoolSize));
     config.setMaxLifetime(Long.parseLong(maxWait));
     config.setLeakDetectionThreshold(Long.parseLong(leaksThreshold));
@@ -73,7 +81,7 @@ class OvaraDatabaseConfiguration extends AbstractJdbcConfiguration {
     config.setMinimumIdle(Integer.parseInt(minIdle));
     config.setRegisterMbeans(false);
     final Properties dsProperties = new Properties();
-    dsProperties.setProperty("url", url);
+    dsProperties.setProperty("url", effectiveUrl);
     dsProperties.setProperty("user", user);
     dsProperties.setProperty("password", password);
     config.setDataSourceProperties(dsProperties);
