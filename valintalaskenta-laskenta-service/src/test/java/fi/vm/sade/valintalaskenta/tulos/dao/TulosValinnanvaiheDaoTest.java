@@ -44,7 +44,7 @@ public class TulosValinnanvaiheDaoTest extends AbstractIntegrationTest {
     Valinnanvaihe vv3 = luoValinnanVaiheAikaLeimalla("hk1", "vaihe3", 3);
     valinnanvaiheRepository.saveAll(List.of(vv1, vv2, vv3));
     // varmistetaan ajan kulu jotta testi on deterministinen
-    Thread.sleep(1L);
+    Thread.sleep(100L);
     Date timeNow = new Date();
     valinnanvaiheRepository.save(luoValinnanVaiheAikaLeimalla("hk1", "vaihe4", 4));
     Valinnanvaihe vv1haku2 = luoValinnanVaiheAikaLeimalla("hkhaku2", "vaihe1h2", 1);
@@ -70,7 +70,7 @@ public class TulosValinnanvaiheDaoTest extends AbstractIntegrationTest {
     Valinnanvaihe vv3 = luoValinnanVaiheAikaLeimalla("hk2", "vaihe1hk2", 1);
     valinnanvaiheRepository.saveAll(List.of(vv1, vv2, vv3));
     // varmistetaan ajan kulu jotta testi on deterministinen
-    Thread.sleep(1L);
+    Thread.sleep(100L);
     Date timeNow = new Date();
     valinnanvaiheRepository.save(luoValinnanVaiheAikaLeimalla("hk1", "vaihe3", 3));
     valinnanvaiheRepository.save(luoValinnanVaiheAikaLeimalla("hk2", "vaihe2hk2", 2));

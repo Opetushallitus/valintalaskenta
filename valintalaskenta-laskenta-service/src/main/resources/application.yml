@@ -10,6 +10,7 @@ valintalaskenta-laskenta-service:
     maxwait: 3000
     leakdetectionthresholdmillis: 1800000
     driver: org.postgresql.Driver
+    use-aws-jdbc-wrapper: false
   organisaatio-service:
     url:
 

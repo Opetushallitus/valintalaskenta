@@ -13,7 +13,7 @@ valintalaskenta:
 
 valintalaskenta-laskenta-service:
   postgresql:
-    url: jdbc:tc:postgresql:15.4:///test_database
+    url: jdbc:tc:postgresql:17.7:///test_database
     user: user
     password: password
     maxactive: 10
