@@ -1,0 +1,1 @@
+DROP INDEX IF EXISTS valintapiste_modified_at_idx;
