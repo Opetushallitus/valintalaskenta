@@ -15,6 +15,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import javax.sql.DataSource;
 import org.postgresql.util.PGobject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -34,7 +36,7 @@ import org.springframework.transaction.TransactionManager;
 @Configuration
 @Profile("ovara")
 class OvaraDatabaseConfiguration extends AbstractJdbcConfiguration {
-
+  private static final Logger LOG = LoggerFactory.getLogger(OvaraDatabaseConfiguration.class);
   private final ApplicationContext applicationContext;
 
   private static final List<Class<?>> JSON_CLASSES =
@@ -69,6 +71,8 @@ class OvaraDatabaseConfiguration extends AbstractJdbcConfiguration {
             : url;
     final String effectiveDriver =
         "true".equals(useAwsJdbcWrapper) ? "software.amazon.jdbc.Driver" : driverClassName;
+    LOG.info(
+        "Tietokantayhteys alustetaan osoitteeseen: {}, ajuri: {}", effectiveUrl, effectiveDriver);
     final HikariConfig config = new HikariConfig();
     config.setPoolName("springHikariCP");
     config.setConnectionTestQuery("SELECT 1");
