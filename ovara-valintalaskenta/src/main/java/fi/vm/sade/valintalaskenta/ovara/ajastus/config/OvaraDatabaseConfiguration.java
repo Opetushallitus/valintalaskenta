@@ -15,6 +15,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import javax.sql.DataSource;
 import org.postgresql.util.PGobject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -34,7 +36,7 @@ import org.springframework.transaction.TransactionManager;
 @Configuration
 @Profile("ovara")
 class OvaraDatabaseConfiguration extends AbstractJdbcConfiguration {
-
+  private static final Logger LOG = LoggerFactory.getLogger(OvaraDatabaseConfiguration.class);
   private final ApplicationContext applicationContext;
 
   private static final List<Class<?>> JSON_CLASSES =
@@ -60,12 +62,22 @@ class OvaraDatabaseConfiguration extends AbstractJdbcConfiguration {
       @Value("${valintalaskenta-laskenta-service.postgresql.driver}") final String driverClassName,
       @Value("${valintalaskenta-laskenta-service.postgresql.idletimeoutminutes:10}")
           final String idleTimeout,
-      @Value("${valintalaskenta-laskenta-service.postgresql.minidle:0}") final String minIdle) {
+      @Value("${valintalaskenta-laskenta-service.postgresql.minidle:0}") final String minIdle,
+      @Value("${valintalaskenta-laskenta-service.postgresql.use-aws-jdbc-wrapper:false}")
+          final String useAwsJdbcWrapper) {
+    final String effectiveUrl =
+        "true".equals(useAwsJdbcWrapper)
+            ? url.replace("jdbc:postgresql:", "jdbc:aws-wrapper:postgresql:")
+            : url;
+    final String effectiveDriver =
+        "true".equals(useAwsJdbcWrapper) ? "software.amazon.jdbc.Driver" : driverClassName;
+    LOG.info(
+        "Tietokantayhteys alustetaan osoitteeseen: {}, ajuri: {}", effectiveUrl, effectiveDriver);
     final HikariConfig config = new HikariConfig();
     config.setPoolName("springHikariCP");
     config.setConnectionTestQuery("SELECT 1");
-    config.setJdbcUrl(url);
-    config.setDriverClassName(driverClassName);
+    config.setJdbcUrl(effectiveUrl);
+    config.setDriverClassName(effectiveDriver);
     config.setMaximumPoolSize(Integer.parseInt(maxPoolSize));
     config.setMaxLifetime(Long.parseLong(maxWait));
     config.setLeakDetectionThreshold(Long.parseLong(leaksThreshold));
@@ -73,7 +85,7 @@ class OvaraDatabaseConfiguration extends AbstractJdbcConfiguration {
     config.setMinimumIdle(Integer.parseInt(minIdle));
     config.setRegisterMbeans(false);
     final Properties dsProperties = new Properties();
-    dsProperties.setProperty("url", url);
+    dsProperties.setProperty("url", effectiveUrl);
     dsProperties.setProperty("user", user);
     dsProperties.setProperty("password", password);
     config.setDataSourceProperties(dsProperties);

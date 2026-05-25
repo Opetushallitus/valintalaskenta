@@ -91,6 +91,7 @@ valintalaskenta-laskenta-service:
     maxlifetimemillis: 60000
     leakdetectionthresholdmillis: 1800000
     driver: org.postgresql.Driver
+    use-aws-jdbc-wrapper: {{valintalaskentalaskentaservice_db_use_aws_jdbc_wrapper | default('false')}}
   global:
     http:
       connectionTimeoutMillis: {{valintalaskentalaskentaservice_global_http_connectiontimeoutmillis}}
