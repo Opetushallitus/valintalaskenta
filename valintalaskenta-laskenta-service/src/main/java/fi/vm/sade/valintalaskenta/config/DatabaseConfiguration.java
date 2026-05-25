@@ -8,6 +8,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import fi.vm.sade.valintalaskenta.domain.valinta.FunktioTulosContainer;
 import fi.vm.sade.valintalaskenta.domain.valinta.JarjestyskriteeritulosContainer;
+import fi.vm.sade.valintalaskenta.domain.valinta.Jonosija;
 import fi.vm.sade.valintalaskenta.domain.valinta.SyotettyArvoContainer;
 import java.sql.SQLException;
 import java.util.*;
@@ -25,6 +26,7 @@ import org.springframework.data.convert.WritingConverter;
 import org.springframework.data.jdbc.core.convert.JdbcCustomConversions;
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
+import org.springframework.data.relational.core.mapping.event.AfterConvertCallback;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -95,6 +97,14 @@ class DatabaseConfiguration extends AbstractJdbcConfiguration {
   @Bean
   TransactionTemplate transactionTemplate(DataSourceTransactionManager transactionManager) {
     return new TransactionTemplate(transactionManager);
+  }
+
+  @Bean
+  AfterConvertCallback<Jonosija> jonosijaAfterConvert() {
+    return jonosija -> {
+      jonosija.markNotNew();
+      return jonosija;
+    };
   }
 
   @Override
