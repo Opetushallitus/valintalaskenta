@@ -14,6 +14,8 @@ public interface TulosValintakoeOsallistuminenDAO {
 
   List<ValintakoeOsallistuminen> findByHakutoiveet(List<String> hakukohdeOids);
 
+  List<ValintakoeOsallistuminen> findByHakutoiveetBatched(List<String> hakukohdeOids);
+
   List<ValintakoeOsallistuminen> findByHakuAndOsallistuminen(
       String hakuOid, Osallistuminen osallistuminen);
 
