@@ -67,6 +67,19 @@ public class ValintakoeResourceImpl {
   }
 
   @PreAuthorize(READ_UPDATE_CRUD)
+  @Operation(summary = "Hakee valintakoeosallistumiset hakukohteille OID:n perusteella (batched)")
+  @PostMapping(
+      value = "/hakutoive/batched",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  public List<ValintakoeOsallistuminenDTO> hakuByOidsBatched(
+      @RequestBody final List<String> hakukohdeOids) {
+    return modelMapper.mapList(
+        tulosService.haeValintakoeOsallistumisetByHakukohdesBatched(hakukohdeOids),
+        ValintakoeOsallistuminenDTO.class);
+  }
+
+  @PreAuthorize(READ_UPDATE_CRUD)
   @Operation(summary = "Hakee valintakoeosallistumiset hakijoille OID:n perusteella")
   @PostMapping(
       value = "/hakijat",

@@ -39,4 +39,21 @@ public class ValintakoeResourceImplTest {
     verify(serviceMock).haeValintakoeOsallistumisetByHakutoive(hakukohdeOid);
     verifyNoMoreInteractions(serviceMock);
   }
+
+  @Test
+  public void hakuByOidsBatched_delegatesToBatchedService() {
+    List<String> oids = List.of("hakukohde-A", "hakukohde-B");
+    when(osallistuminen1.getHakemusOid()).thenReturn("hakemus1Oid");
+    when(osallistuminen2.getHakemusOid()).thenReturn("hakemus2Oid");
+    when(serviceMock.haeValintakoeOsallistumisetByHakukohdesBatched(oids))
+        .thenReturn(List.of(osallistuminen1, osallistuminen2));
+
+    List<ValintakoeOsallistuminenDTO> result = resource.hakuByOidsBatched(oids);
+
+    assertEquals(2, result.size());
+    assertEquals("hakemus1Oid", result.get(0).getHakemusOid());
+    assertEquals("hakemus2Oid", result.get(1).getHakemusOid());
+    verify(serviceMock).haeValintakoeOsallistumisetByHakukohdesBatched(oids);
+    verifyNoMoreInteractions(serviceMock);
+  }
 }
