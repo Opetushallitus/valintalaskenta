@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TulosValintakoeOsallistuminenDAOImpl implements TulosValintakoeOsallistuminenDAO {
@@ -59,6 +60,7 @@ public class TulosValintakoeOsallistuminenDAOImpl implements TulosValintakoeOsal
   }
 
   @Override
+  @Transactional(readOnly = true)
   public List<ValintakoeOsallistuminen> findByHakutoiveetBatched(List<String> hakukohdeOids) {
     if (hakukohdeOids == null || hakukohdeOids.isEmpty()) {
       return List.of();
@@ -104,12 +106,11 @@ public class TulosValintakoeOsallistuminenDAOImpl implements TulosValintakoeOsal
           "SELECT * FROM valintakoe_valinnanvaihe WHERE hakutoive IN (:hIds)",
           Map.of("hIds", chunk),
           rs -> {
-            UUID id = (UUID) rs.getObject("id");
             ValintakoeValinnanvaihe vvv = mapVvv(rs);
             UUID parentId = (UUID) rs.getObject("hakutoive");
             Hakutoive parent = hakutoiveById.get(parentId);
             if (parent != null) parent.getValintakoeValinnanvaiheet().add(vvv);
-            vvvById.put(id, vvv);
+            vvvById.put(vvv.getId(), vvv);
           });
     }
 
@@ -159,6 +160,7 @@ public class TulosValintakoeOsallistuminenDAOImpl implements TulosValintakoeOsal
 
   private static ValintakoeValinnanvaihe mapVvv(ResultSet rs) throws SQLException {
     ValintakoeValinnanvaihe vvv = new ValintakoeValinnanvaihe();
+    vvv.setId((UUID) rs.getObject("id"));
     vvv.setValinnanvaiheOid(rs.getString("valinnanvaihe_oid"));
     vvv.setValinnanVaiheJarjestysluku(rs.getObject("valinnan_vaihe_jarjestysluku", Integer.class));
     Timestamp lastModified = rs.getTimestamp("last_modified");

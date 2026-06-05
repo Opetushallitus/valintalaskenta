@@ -17,8 +17,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * findByHakutoiveetBatched (4 batched IN queries) on a dataset large enough to make the difference
  * visible.
  *
- * <p>Dataset: 50 hakukohde OIDs × 2 VOs each = 100 VOs, each with 3 hakutoiveet × 2 valinnanvaiheet
- * × 3 valintakokeet. Old method issues ~1001 queries; new method issues 4.
+ * <p>Dataset: 200 hakukohde OIDs × 2 VOs each = 400 VOs, each with 3 hakutoiveet × 2
+ * valinnanvaiheet × 3 valintakokeet. Old method issues ~4001 queries; new method issues 4.
  *
  * <p>Uses TRUNCATE instead of deleteAll() to avoid the history trigger's clock-skew issue.
  */
@@ -37,10 +37,10 @@ public class TulosValintakoeOsallistuminenPerformanceTest extends AbstractIntegr
 
   @Test
   void findByHakutoiveetBatched_isFasterThanOldMethod_onLargeDataset() {
-    // 50 hakukohde OIDs × 2 VOs × 3 hakutoiveet × 2 valinnanvaiheet × 3 valintakokeet
-    // → old method: 1 + 100 + 300 + 600 = 1001 queries
+    // 200 hakukohde OIDs × 2 VOs × 3 hakutoiveet × 2 valinnanvaiheet × 3 valintakokeet
+    // → old method: 1 + 400 + 1200 + 2400 = 4001 queries
     // → new method: 4 queries
-    List<String> hakukohdeOids = insertLargeDataset(1000, 2, 3, 4, 3);
+    List<String> hakukohdeOids = insertLargeDataset(200, 2, 3, 2, 3);
 
     // Warm up both methods to avoid first-query overhead skewing results
     dao.findByHakutoiveet(List.of(hakukohdeOids.get(0)));
@@ -59,9 +59,12 @@ public class TulosValintakoeOsallistuminenPerformanceTest extends AbstractIntegr
         oldMs, newMs, (double) oldMs / Math.max(newMs, 1));
 
     assertEquals(oldResult.size(), newResult.size(), "Both methods must return the same VO count");
+    // Require ≥5× speedup AND a meaningful old baseline so the comparison isn't dominated by
+    // single-digit-ms timer noise on fast CI hardware.
     assertTrue(
-        newMs < oldMs,
-        "Batched method (%d ms) should be faster than N+1 method (%d ms)".formatted(newMs, oldMs));
+        oldMs > 100 && newMs * 5 < oldMs,
+        "Batched method (%d ms) should be ≥5× faster than N+1 method (%d ms)"
+            .formatted(newMs, oldMs));
   }
 
   @Test
