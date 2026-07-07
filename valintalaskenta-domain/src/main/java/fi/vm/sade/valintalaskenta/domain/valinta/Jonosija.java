@@ -2,13 +2,25 @@ package fi.vm.sade.valintalaskenta.domain.valinta;
 
 import java.util.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 
-public class Jonosija {
+// Implements Persistable jotta Spring Data JDBC osaa erottaa uuden ja olemassaolevan
+// entiteetin toisistaan, kun id on valmiiksi asetettu (ks. isNew/markNotNew alla).
+public class Jonosija implements Persistable<UUID> {
 
-  @Id private UUID id;
+  // UUID generoidaan Javassa eikä kannassa, jotta Spring Data JDBC voi tehdä
+  // INSERT:n ilman RETURNING *. Ilman tätä kanta generoi UUID:n ja ajuri joutuu
+  // lukemaan koko rivin (ml. isot JSONB-sarakkeet) takaisin jokaisen insertin jälkeen,
+  // mikä aiheuttaa Client:ClientWrite -odotuksen Aurorassa.
+  @Id private UUID id = UUID.randomUUID();
+
+  // Spring Data JDBC päättelee normaalisti INSERT vs UPDATE sen perusteella onko id null.
+  // Koska id on aina asetettu (ks. yllä), tarvitaan erillinen lippu kertomaan milloin
+  // kyseessä on uusi entiteetti. markNotNew() kutsutaan AfterConvertCallback:ssa kun
+  // entiteetti ladataan kannasta (DatabaseConfiguration).
+  @Transient private boolean isNew = true;
 
   private String hakemusOid;
 
@@ -33,16 +45,30 @@ public class Jonosija {
   @Column("funktio_tulokset")
   private FunktioTulosContainer funktioTulokset;
 
-  @ReadOnlyProperty private Date lastModified;
+  // @ReadOnlyProperty on tarkodeliberaattisesti poistettu: se pakottaisi Spring Data JDBC:n
+  // käyttämään RETURNING * myös lastModified:n takia. Arvo asetetaan alla konstruktorissa,
+  // mutta tietokanta ylikirjoittaa sen set_last_modified-triggerillä ennen insertiä.
+  private Date lastModified;
 
   public Jonosija() {
+    lastModified = new Date();
     syotetytArvot = new SyotettyArvoContainer();
     funktioTulokset = new FunktioTulosContainer();
     jarjestyskriteeritulokset = new JarjestyskriteeritulosContainer();
   }
 
+  @Override
   public UUID getId() {
     return this.id;
+  }
+
+  @Override
+  public boolean isNew() {
+    return isNew;
+  }
+
+  public void markNotNew() {
+    isNew = false;
   }
 
   public String getHakemusOid() {
