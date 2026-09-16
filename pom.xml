@@ -79,12 +79,12 @@
             <dependency>
                 <groupId>fi.vm.sade.valintaperusteet</groupId>
                 <artifactId>valintaperusteet-api</artifactId>
-                <version>8.2-SNAPSHOT</version>
+                <version>8.2-OY-5771-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade.valintaperusteet</groupId>
                 <artifactId>valintaperusteet-laskenta</artifactId>
-                <version>8.2-SNAPSHOT</version>
+                <version>8.2-OY-5571-SNAPSHOT</version>
                 <exclusions>
                     <!-- tämä sekoittaa spring data jdbc:n käynnistymisen -->
                     <exclusion>
