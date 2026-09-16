@@ -39,7 +39,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
-        <aws-advanced-jdbc-wrapper.version>3.3.0</aws-advanced-jdbc-wrapper.version>
+        <aws-advanced-jdbc-wrapper.version>4.4.0</aws-advanced-jdbc-wrapper.version>
     </properties>
 
     <dependencyManagement>
