@@ -189,12 +189,6 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>fi.vm.sade</groupId>
-            <artifactId>embedded-tomcat</artifactId>
-            <version>1.1-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>ch.qos.logback.access</groupId>
             <artifactId>logback-access-tomcat</artifactId>
         </dependency>
