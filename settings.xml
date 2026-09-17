@@ -3,6 +3,28 @@
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
                       http://maven.apache.org/xsd/settings-1.0.0.xsd">
 
+    <!--
+        Artifactory (artifactory.opintopolku.fi) on poistettu käytöstä, mutta riippuvuuksien
+        omat POMit (sijoittelu, valintaperusteet, java-utils, tarjonta) määrittelevät sen
+        edelleen repositoryksi. Ohjataan kyseiset repository-id:t Github Packagesiin.
+
+        Huom: fi.vm.sade.generic:build-parent (tarjonta-api:n parent) määrittelee lisäksi
+        joukon kolmannen osapuolen repositoryjä jo aiemmin kuolleilla palvelimilla
+        (artifactory.oph.ware.fi, penaali.hard.ware.fi): libs-3rd-party, cpdetector,
+        bedatadriven, vaadin-addons, shibboleth, atomikos, plugin-local-release, mysema,
+        com.springsource.repository.*. Niitä EI peilata tänne, koska kyseisiä artefakteja
+        ei ole Github Packagesissa. Nimet eivät resolvoidu DNS:ssä, joten ne epäonnistuvat
+        välittömästi ja tuottavat vain varoituksen.
+    -->
+    <mirrors>
+        <mirror>
+            <id>github</id>
+            <name>Github Packages instead of decommissioned Artifactory</name>
+            <url>https://maven.pkg.github.com/opetushallitus/*</url>
+            <mirrorOf>oph-sade-artifactory,oph-sade-artifactory-snapshots,oph-sade-artifactory-releases</mirrorOf>
+        </mirror>
+    </mirrors>
+
     <activeProfiles>
         <activeProfile>github</activeProfile>
     </activeProfiles>
