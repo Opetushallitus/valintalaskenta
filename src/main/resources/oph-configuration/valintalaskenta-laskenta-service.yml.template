@@ -92,6 +92,7 @@ valintalaskenta-laskenta-service:
     leakdetectionthresholdmillis: 1800000
     driver: org.postgresql.Driver
     use-aws-jdbc-wrapper: {{valintalaskentalaskentaservice_db_use_aws_jdbc_wrapper | default('false')}}
+    cluster-instance-host-pattern: "{{host_postgresql_valintalaskenta_instance_host_pattern | default('')}}"
   global:
     http:
       connectionTimeoutMillis: {{valintalaskentalaskentaservice_global_http_connectiontimeoutmillis}}

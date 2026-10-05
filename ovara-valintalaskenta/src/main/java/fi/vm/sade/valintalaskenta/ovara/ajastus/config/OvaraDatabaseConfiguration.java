@@ -64,13 +64,18 @@ class OvaraDatabaseConfiguration extends AbstractJdbcConfiguration {
           final String idleTimeout,
       @Value("${valintalaskenta-laskenta-service.postgresql.minidle:0}") final String minIdle,
       @Value("${valintalaskenta-laskenta-service.postgresql.use-aws-jdbc-wrapper:false}")
-          final String useAwsJdbcWrapper) {
+          final String useAwsJdbcWrapper,
+      @Value("${valintalaskenta-laskenta-service.postgresql.cluster-instance-host-pattern:}")
+          final String clusterInstanceHostPattern) {
+    final boolean useAwsWrapper = "true".equals(useAwsJdbcWrapper);
+    if (useAwsWrapper && clusterInstanceHostPattern.isBlank()) {
+      throw new IllegalStateException(
+          "Asetus valintalaskenta-laskenta-service.postgresql.cluster-instance-host-pattern on"
+              + " pakollinen, kun AWS JDBC -wrapper on käytössä (use-aws-jdbc-wrapper=true).");
+    }
     final String effectiveUrl =
-        "true".equals(useAwsJdbcWrapper)
-            ? url.replace("jdbc:postgresql:", "jdbc:aws-wrapper:postgresql:")
-            : url;
-    final String effectiveDriver =
-        "true".equals(useAwsJdbcWrapper) ? "software.amazon.jdbc.Driver" : driverClassName;
+        useAwsWrapper ? url.replace("jdbc:postgresql:", "jdbc:aws-wrapper:postgresql:") : url;
+    final String effectiveDriver = useAwsWrapper ? "software.amazon.jdbc.Driver" : driverClassName;
     LOG.info(
         "Tietokantayhteys alustetaan osoitteeseen: {}, ajuri: {}", effectiveUrl, effectiveDriver);
     final HikariConfig config = new HikariConfig();
@@ -88,6 +93,10 @@ class OvaraDatabaseConfiguration extends AbstractJdbcConfiguration {
     dsProperties.setProperty("url", effectiveUrl);
     dsProperties.setProperty("user", user);
     dsProperties.setProperty("password", password);
+    if (useAwsWrapper) {
+      LOG.info("Käytetään clusterInstanceHostPattern-arvoa: {}", clusterInstanceHostPattern);
+      dsProperties.setProperty("clusterInstanceHostPattern", clusterInstanceHostPattern);
+    }
     config.setDataSourceProperties(dsProperties);
     return new HikariDataSource(config);
   }
