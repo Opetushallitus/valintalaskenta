@@ -27,6 +27,14 @@ public class ValintakoeValinnanvaihe {
     this.valintakokeet.addAll(valintakokeet);
   }
 
+  public UUID getId() {
+    return id;
+  }
+
+  public void setId(UUID id) {
+    this.id = id;
+  }
+
   public String getValinnanvaiheOid() {
     return valinnanvaiheOid;
   }
