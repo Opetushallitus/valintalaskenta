@@ -19,7 +19,7 @@ import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintapiste.ValintapisteService;
 import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.KoostepalveluAsyncResource;
 import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.impl.LahtotiedotException;
-import fi.vm.sade.valintalaskenta.runner.resource.external.suorituspalvelu.impl.SuorituspalveluAsyncResourceImpl;
+import fi.vm.sade.valintalaskenta.runner.resource.external.suorituspalvelu.SuorituspalveluAsyncResource;
 import fi.vm.sade.valintalaskenta.runner.resource.external.valintaperusteet.ValintaperusteetAsyncResource;
 import fi.vm.sade.valintalaskenta.runner.service.EcsTaskManager;
 import fi.vm.sade.valintalaskenta.runner.service.SuoritaLaskentaService;
@@ -50,7 +50,7 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
   private final ValintalaskentaResourceImpl valintalaskentaResource;
   private final KoostepalveluAsyncResource koostepalveluAsyncResource;
   private final ValintaperusteetAsyncResource valintaperusteetAsyncResource;
-  private final SuorituspalveluAsyncResourceImpl suorituspalveluAsyncResource;
+  private final SuorituspalveluAsyncResource suorituspalveluAsyncResource;
   private final ValintapisteService valintapisteService;
   private final CloudWatchClient cloudWatchClient;
   private final EcsTaskManager ecsTaskManager;
@@ -72,7 +72,7 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
       ValintalaskentaResourceImpl valintalaskentaResource,
       KoostepalveluAsyncResource koostepalveluAsyncResource,
       ValintaperusteetAsyncResource valintaperusteetAsyncResource,
-      SuorituspalveluAsyncResourceImpl suorituspalveluAsyncResource,
+      SuorituspalveluAsyncResource suorituspalveluAsyncResource,
       ValintapisteService valintapisteService,
       CloudWatchClient cloudWatchClient,
       EcsTaskManager ecsTaskManager,
