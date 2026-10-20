@@ -4,11 +4,11 @@ import com.google.gson.reflect.TypeToken;
 import fi.vm.sade.valintalaskenta.domain.dto.SuorituspalveluValintadataDTO;
 import fi.vm.sade.valintalaskenta.runner.resource.external.RunnerRestCasClient;
 import fi.vm.sade.valintalaskenta.runner.resource.external.UrlConfiguration;
-import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.impl.LahtotiedotException;
 import fi.vm.sade.valintalaskenta.runner.resource.external.suorituspalvelu.SuorituspalveluAsyncResource;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -28,23 +28,18 @@ public class SuorituspalveluAsyncResourceImpl implements SuorituspalveluAsyncRes
   }
 
   @Override
-  public SuorituspalveluValintadataDTO haeValintaData(String hakuOid, String hakukohdeOid) {
+  public CompletableFuture<SuorituspalveluValintadataDTO> haeValintaData(
+      String hakuOid, String hakukohdeOid) {
     Map<String, Object> bodyMap = new HashMap<>();
     bodyMap.put("hakuOid", hakuOid);
     bodyMap.put("hakukohdeOid", hakukohdeOid);
     bodyMap.put("hakemusOids", java.util.Collections.emptyList());
 
-    try {
-      return httpClient
-          .post(
-              this.urlConfiguration.url("suorituspalvelu.valintalaskenta.valintadata"),
-              new TypeToken<SuorituspalveluValintadataDTO>() {},
-              bodyMap,
-              Collections.emptyMap(),
-              20 * 60 * 1000)
-          .get();
-    } catch (Exception e) {
-      throw new LahtotiedotException(e); // Todo, oma erottuva virheenkäsittely
-    }
+    return httpClient.post(
+        this.urlConfiguration.url("suorituspalvelu.valintalaskenta.valintadata"),
+        new TypeToken<SuorituspalveluValintadataDTO>() {},
+        bodyMap,
+        Collections.emptyMap(),
+        20 * 60 * 1000);
   }
 }

@@ -1,6 +1,8 @@
 package fi.vm.sade.valintalaskenta.runner.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyCollection;
@@ -25,9 +27,11 @@ import fi.vm.sade.valintalaskenta.laskenta.dao.SureHakuOidDao;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintapiste.ValintapisteService;
 import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.KoostepalveluAsyncResource;
+import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.impl.LahtotiedotException;
 import fi.vm.sade.valintalaskenta.runner.resource.external.suorituspalvelu.impl.SuorituspalveluAsyncResourceImpl;
 import fi.vm.sade.valintalaskenta.runner.resource.external.valintaperusteet.ValintaperusteetAsyncResource;
 import fi.vm.sade.valintalaskenta.runner.service.EcsTaskManager;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -87,19 +91,10 @@ public class SuoritaLaskentaServiceImplTest {
         .withTaskProtection(any());
     for (String hakukohdeOid : List.of(HAKUKOHDE_OID, HAKUKOHDE_OID_2)) {
       when(suorituspalveluAsyncResource.haeValintaData(SUPA_HAKU_OID, hakukohdeOid))
-          .thenReturn(
-              new SuorituspalveluValintadataDTO(List.of(hakemus(supaHakemusOid(hakukohdeOid)))));
+          .thenReturn(CompletableFuture.completedFuture(supanValintadata(hakukohdeOid)));
       when(koostepalveluAsyncResource.haeLahtotiedot(
               any(), eq(hakukohdeOid), anyBoolean(), anyBoolean()))
-          .thenReturn(
-              new LaskeDTO(
-                  "uuid",
-                  false,
-                  false,
-                  hakukohdeOid,
-                  List.of(hakemus(koosteHakemusOid(hakukohdeOid))),
-                  List.of(valintalaskentaaKayttavaPeruste()),
-                  Collections.emptyList()));
+          .thenReturn(CompletableFuture.completedFuture(koostepalvelunLahtotiedot(hakukohdeOid)));
     }
   }
 
@@ -109,6 +104,46 @@ public class SuoritaLaskentaServiceImplTest {
         laskenta(SUPA_HAKU_OID, LaskentaTyyppi.HAKU), List.of(HAKUKOHDE_OID), 1);
 
     assertEquals(List.of(supaHakemusOid(HAKUKOHDE_OID)), laskettujenHakemustenOidit());
+  }
+
+  @Test
+  public void lahtotiedotHaetaanSupastaJaKoostepalvelustaRinnakkain() {
+    // Supan vastaus valmistuu vasta, kun Koostepalvelua on kutsuttu. Jos Supan vastausta
+    // odotettaisiin ennen Koostepalvelun kutsua, laskenta jäisi jumiin.
+    CompletableFuture<Void> koostepalveluaKutsuttu = new CompletableFuture<>();
+    when(suorituspalveluAsyncResource.haeValintaData(SUPA_HAKU_OID, HAKUKOHDE_OID))
+        .thenReturn(koostepalveluaKutsuttu.thenApply(v -> supanValintadata(HAKUKOHDE_OID)));
+    when(koostepalveluAsyncResource.haeLahtotiedot(
+            any(), eq(HAKUKOHDE_OID), anyBoolean(), anyBoolean()))
+        .thenAnswer(
+            invocation -> {
+              koostepalveluaKutsuttu.complete(null);
+              return CompletableFuture.completedFuture(koostepalvelunLahtotiedot(HAKUKOHDE_OID));
+            });
+
+    assertTimeoutPreemptively(
+        Duration.ofSeconds(5),
+        () ->
+            service.suoritaLaskentaHakukohteille(
+                laskenta(SUPA_HAKU_OID, LaskentaTyyppi.HAKU), List.of(HAKUKOHDE_OID), 1));
+
+    assertEquals(List.of(supaHakemusOid(HAKUKOHDE_OID)), laskettujenHakemustenOidit());
+  }
+
+  @Test
+  public void laskentaEpaonnistuuKunSupanHakuEpaonnistuu() {
+    when(suorituspalveluAsyncResource.haeValintaData(SUPA_HAKU_OID, HAKUKOHDE_OID))
+        .thenReturn(CompletableFuture.failedFuture(new RuntimeException("Supa ei vastaa")));
+
+    LahtotiedotException e =
+        assertThrows(
+            LahtotiedotException.class,
+            () ->
+                service.suoritaLaskentaHakukohteille(
+                    laskenta(SUPA_HAKU_OID, LaskentaTyyppi.HAKU), List.of(HAKUKOHDE_OID), 1));
+
+    assertEquals("Supa ei vastaa", e.getMessage());
+    verify(valintalaskentaResource, never()).laskeKaikki(any());
   }
 
   @Test
@@ -175,6 +210,21 @@ public class SuoritaLaskentaServiceImplTest {
 
   private static String koosteHakemusOid(String hakukohdeOid) {
     return "kooste-" + hakukohdeOid;
+  }
+
+  private static SuorituspalveluValintadataDTO supanValintadata(String hakukohdeOid) {
+    return new SuorituspalveluValintadataDTO(List.of(hakemus(supaHakemusOid(hakukohdeOid))));
+  }
+
+  private static LaskeDTO koostepalvelunLahtotiedot(String hakukohdeOid) {
+    return new LaskeDTO(
+        "uuid",
+        false,
+        false,
+        hakukohdeOid,
+        List.of(hakemus(koosteHakemusOid(hakukohdeOid))),
+        List.of(valintalaskentaaKayttavaPeruste()),
+        Collections.emptyList());
   }
 
   private static HakemusDTO hakemus(String hakemusOid) {

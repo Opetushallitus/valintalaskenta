@@ -18,6 +18,7 @@ import fi.vm.sade.valintalaskenta.laskenta.dao.SureHakuOidDao;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintapiste.ValintapisteService;
 import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.KoostepalveluAsyncResource;
+import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.impl.LahtotiedotException;
 import fi.vm.sade.valintalaskenta.runner.resource.external.suorituspalvelu.impl.SuorituspalveluAsyncResourceImpl;
 import fi.vm.sade.valintalaskenta.runner.resource.external.valintaperusteet.ValintaperusteetAsyncResource;
 import fi.vm.sade.valintalaskenta.runner.service.EcsTaskManager;
@@ -25,6 +26,7 @@ import fi.vm.sade.valintalaskenta.runner.service.SuoritaLaskentaService;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
@@ -1011,8 +1013,14 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
           "Käytetään haun {} hakukohteelle {} Suorituspalvelun tietoja!",
           laskenta.getHakuOid(),
           hakukohdeOid);
-      SuorituspalveluValintadataDTO supastaHaetut =
+      // Käynnistetään haut Koostepalvelusta ja Suorituspalvelusta rinnakkain
+      CompletableFuture<LaskeDTO> koostepalvelustaHaettavat =
+          this.koostepalveluAsyncResource.haeLahtotiedot(
+              laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat);
+      CompletableFuture<SuorituspalveluValintadataDTO> supastaHaettavat =
           this.suorituspalveluAsyncResource.haeValintaData(laskenta.getHakuOid(), hakukohdeOid);
+
+      SuorituspalveluValintadataDTO supastaHaetut = odotaLahtotietoja(supastaHaettavat);
       List<HakemusDTO> hakemusDTOtSupasta = supastaHaetut.getValintaHakemukset();
       Set<String> supaHakemusOids =
           hakemusDTOtSupasta.stream().map(HakemusDTO::getHakemusoid).collect(Collectors.toSet());
@@ -1025,9 +1033,7 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
           laskenta.getHakuOid(),
           hakukohdeOid,
           supastaHaetut.getValintaHakemukset().size());
-      LaskeDTO tiedotKoostepalvelusta =
-          this.koostepalveluAsyncResource.haeLahtotiedot(
-              laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat);
+      LaskeDTO tiedotKoostepalvelusta = odotaLahtotietoja(koostepalvelustaHaettavat);
       combineKoskiJsonFromKoostepalvelutoSupaTiedot(
           hakemusDTOtSupasta, tiedotKoostepalvelusta.getHakemus());
 
@@ -1055,8 +1061,17 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
           "Käytetään haun {} hakukohteelle {} Suoritusrekisterin tietoja!",
           laskenta.getHakuOid(),
           hakukohdeOid);
-      return this.koostepalveluAsyncResource.haeLahtotiedot(
-          laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat);
+      return odotaLahtotietoja(
+          this.koostepalveluAsyncResource.haeLahtotiedot(
+              laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat));
+    }
+  }
+
+  private static <T> T odotaLahtotietoja(CompletableFuture<T> future) {
+    try {
+      return future.get();
+    } catch (Exception e) {
+      throw new LahtotiedotException(e);
     }
   }
 
