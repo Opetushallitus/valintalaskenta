@@ -7,6 +7,7 @@ import fi.vm.sade.valintalaskenta.runner.resource.external.RunnerRestCasClient;
 import fi.vm.sade.valintalaskenta.runner.resource.external.UrlConfiguration;
 import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.KoostepalveluAsyncResource;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class KoostepalveluAsyncResourceImpl implements KoostepalveluAsyncResourc
     this.urlConfiguration = UrlConfiguration.getInstance();
   }
 
-  public LaskeDTO haeLahtotiedot(
+  public CompletableFuture<LaskeDTO> haeLahtotiedot(
       LaskentaDto laskenta,
       String hakukohdeOid,
       boolean retryHakemuksetAndOppijat,
@@ -39,20 +40,14 @@ public class KoostepalveluAsyncResourceImpl implements KoostepalveluAsyncResourc
       parameters.put("valinnanvaihe", laskenta.getValinnanvaihe().get().toString());
     }
 
-    try {
-      return httpClient
-          .get(
-              this.urlConfiguration.url(
-                  "valintalaskentakoostepalvelu.lahtotiedot.baseurl",
-                  laskenta.getHakuOid(),
-                  hakukohdeOid,
-                  parameters),
-              new TypeToken<LaskeDTO>() {},
-              Collections.emptyMap(),
-              20 * 60 * 1000)
-          .get();
-    } catch (Exception e) {
-      throw new LahtotiedotException(e);
-    }
+    return httpClient.get(
+        this.urlConfiguration.url(
+            "valintalaskentakoostepalvelu.lahtotiedot.baseurl",
+            laskenta.getHakuOid(),
+            hakukohdeOid,
+            parameters),
+        new TypeToken<LaskeDTO>() {},
+        Collections.emptyMap(),
+        20 * 60 * 1000);
   }
 }

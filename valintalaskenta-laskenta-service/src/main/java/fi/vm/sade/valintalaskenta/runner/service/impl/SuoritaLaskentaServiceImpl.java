@@ -18,13 +18,15 @@ import fi.vm.sade.valintalaskenta.laskenta.dao.SureHakuOidDao;
 import fi.vm.sade.valintalaskenta.laskenta.resource.ValintalaskentaResourceImpl;
 import fi.vm.sade.valintalaskenta.laskenta.service.valintapiste.ValintapisteService;
 import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.KoostepalveluAsyncResource;
-import fi.vm.sade.valintalaskenta.runner.resource.external.suorituspalvelu.impl.SuorituspalveluAsyncResourceImpl;
+import fi.vm.sade.valintalaskenta.runner.resource.external.koostepalvelu.impl.LahtotiedotException;
+import fi.vm.sade.valintalaskenta.runner.resource.external.suorituspalvelu.SuorituspalveluAsyncResource;
 import fi.vm.sade.valintalaskenta.runner.resource.external.valintaperusteet.ValintaperusteetAsyncResource;
 import fi.vm.sade.valintalaskenta.runner.service.EcsTaskManager;
 import fi.vm.sade.valintalaskenta.runner.service.SuoritaLaskentaService;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
@@ -48,7 +50,7 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
   private final ValintalaskentaResourceImpl valintalaskentaResource;
   private final KoostepalveluAsyncResource koostepalveluAsyncResource;
   private final ValintaperusteetAsyncResource valintaperusteetAsyncResource;
-  private final SuorituspalveluAsyncResourceImpl suorituspalveluAsyncResource;
+  private final SuorituspalveluAsyncResource suorituspalveluAsyncResource;
   private final ValintapisteService valintapisteService;
   private final CloudWatchClient cloudWatchClient;
   private final EcsTaskManager ecsTaskManager;
@@ -70,7 +72,7 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
       ValintalaskentaResourceImpl valintalaskentaResource,
       KoostepalveluAsyncResource koostepalveluAsyncResource,
       ValintaperusteetAsyncResource valintaperusteetAsyncResource,
-      SuorituspalveluAsyncResourceImpl suorituspalveluAsyncResource,
+      SuorituspalveluAsyncResource suorituspalveluAsyncResource,
       ValintapisteService valintapisteService,
       CloudWatchClient cloudWatchClient,
       EcsTaskManager ecsTaskManager,
@@ -239,7 +241,7 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
                                     }
 
                                     try {
-                                      return this.koostepalveluAsyncResource.haeLahtotiedot(
+                                      return this.haeLahtotiedot(
                                           laskenta, hakukohdeOid, true, true);
                                     } catch (Exception e) {
                                       stopped.set(true);
@@ -998,10 +1000,82 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
         });
   }
 
-  private void suoritaLaskentaHakukohteelle(LaskentaDto laskenta, String hakukohdeOid) {
-
+  private LaskeDTO haeLahtotiedot(
+      LaskentaDto laskenta,
+      String hakukohdeOid,
+      boolean retryHakemuksetJaOppijat,
+      boolean withHakijaRyhmat) {
     boolean kaytetaanUudenSuorituspalvelunTietoja =
         !sureHakuOidDao.haeSureHakuOidit().contains(laskenta.getHakuOid());
+
+    if (kaytetaanUudenSuorituspalvelunTietoja) {
+      LOG.info(
+          "Käytetään haun {} hakukohteelle {} Suorituspalvelun tietoja!",
+          laskenta.getHakuOid(),
+          hakukohdeOid);
+      // Käynnistetään haut Koostepalvelusta ja Suorituspalvelusta rinnakkain
+      CompletableFuture<LaskeDTO> koostepalvelustaHaettavat =
+          this.koostepalveluAsyncResource.haeLahtotiedot(
+              laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat);
+      CompletableFuture<SuorituspalveluValintadataDTO> supastaHaettavat =
+          this.suorituspalveluAsyncResource.haeValintaData(laskenta.getHakuOid(), hakukohdeOid);
+
+      SuorituspalveluValintadataDTO supastaHaetut = odotaLahtotietoja(supastaHaettavat);
+      List<HakemusDTO> hakemusDTOtSupasta = supastaHaetut.getValintaHakemukset();
+      Set<String> supaHakemusOids =
+          hakemusDTOtSupasta.stream().map(HakemusDTO::getHakemusoid).collect(Collectors.toSet());
+      List<PistetietoWrapper> pistetiedot =
+          valintapisteService.findValintapisteetForHakemukset(supaHakemusOids).getRight();
+      combinePistetiedotWithHakemusDTOs(hakemusDTOtSupasta, pistetiedot);
+
+      LOG.info(
+          "Saatiin Suorituspalvelusta haun {} hakukohteelle {} tiedot, yhteensä {} hakemusta.",
+          laskenta.getHakuOid(),
+          hakukohdeOid,
+          supastaHaetut.getValintaHakemukset().size());
+      LaskeDTO tiedotKoostepalvelusta = odotaLahtotietoja(koostepalvelustaHaettavat);
+      combineKoskiJsonFromKoostepalvelutoSupaTiedot(
+          hakemusDTOtSupasta, tiedotKoostepalvelusta.getHakemus());
+
+      // Vertailulokituksia Koostepalvelun ja Suorituspalvelun välillä, nämä voidaan poistaa
+      // testausvaiheen jälkeen
+      vertaile(tiedotKoostepalvelusta.getHakemus(), supastaHaetut.getValintaHakemukset());
+      // vertaileHarkinnanvaraisuus(
+      //    tiedotKoostepalvelusta.getHakemus(), supastaHaetut.getValintaHakemukset());
+      vertaileAvainMetatiedot(
+          tiedotKoostepalvelusta.getHakemus(), supastaHaetut.getValintaHakemukset());
+      // logAvainMetatiedot(tiedotKoostepalvelusta.getHakemus(), "Koostepalvelu");
+      // logAvainMetatiedot(supastaHaetut.getValintaHakemukset(), "Supasta");
+
+      // Yhdistetään Supasta tulevat HakemusDTO:t Koostepalvelusta tuleviin lähtötietoihin.
+      return new LaskeDTO(
+          tiedotKoostepalvelusta.getUuid(),
+          tiedotKoostepalvelusta.isKorkeakouluhaku(),
+          tiedotKoostepalvelusta.isErillishaku(),
+          tiedotKoostepalvelusta.getHakukohdeOid(),
+          hakemusDTOtSupasta,
+          tiedotKoostepalvelusta.getValintaperuste(),
+          tiedotKoostepalvelusta.getHakijaryhmat());
+    } else {
+      LOG.info(
+          "Käytetään haun {} hakukohteelle {} Suoritusrekisterin tietoja!",
+          laskenta.getHakuOid(),
+          hakukohdeOid);
+      return odotaLahtotietoja(
+          this.koostepalveluAsyncResource.haeLahtotiedot(
+              laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat));
+    }
+  }
+
+  private static <T> T odotaLahtotietoja(CompletableFuture<T> future) {
+    try {
+      return future.get();
+    } catch (Exception e) {
+      throw new LahtotiedotException(e);
+    }
+  }
+
+  private void suoritaLaskentaHakukohteelle(LaskentaDto laskenta, String hakukohdeOid) {
 
     String tyyppi;
     boolean retryHakemuksetJaOppijat;
@@ -1036,55 +1110,8 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
         Optional.of(tyyppi));
     Instant lahtotiedotStart = Instant.now();
 
-    LaskeDTO kaytettavaLaskeDTO;
-
-    if (kaytetaanUudenSuorituspalvelunTietoja) {
-      LOG.info("Käytetään haulle {} Suorituspalvelun tietoja!", laskenta.getHakuOid());
-      SuorituspalveluValintadataDTO supastaHaetut =
-          this.suorituspalveluAsyncResource.haeValintaData(laskenta.getHakuOid(), hakukohdeOid);
-      List<HakemusDTO> hakemusDTOtSupasta = supastaHaetut.getValintaHakemukset();
-      Set<String> supaHakemusOids =
-          hakemusDTOtSupasta.stream().map(HakemusDTO::getHakemusoid).collect(Collectors.toSet());
-      List<PistetietoWrapper> pistetiedot =
-          valintapisteService.findValintapisteetForHakemukset(supaHakemusOids).getRight();
-      combinePistetiedotWithHakemusDTOs(hakemusDTOtSupasta, pistetiedot);
-
-      LOG.info(
-          "Saatiin Suorituspalvelusta tiedot, yhteensä {} hakemusta.",
-          supastaHaetut.getValintaHakemukset().size());
-      LaskeDTO tiedotKoostepalvelusta =
-          this.koostepalveluAsyncResource.haeLahtotiedot(
-              laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat);
-      combineKoskiJsonFromKoostepalvelutoSupaTiedot(
-          hakemusDTOtSupasta, tiedotKoostepalvelusta.getHakemus());
-
-      // Vertailulokituksia Koostepalvelun ja Suorituspalvelun välillä, nämä voidaan poistaa
-      // testausvaiheen jälkeen
-      vertaile(tiedotKoostepalvelusta.getHakemus(), supastaHaetut.getValintaHakemukset());
-      // vertaileHarkinnanvaraisuus(
-      //    tiedotKoostepalvelusta.getHakemus(), supastaHaetut.getValintaHakemukset());
-      vertaileAvainMetatiedot(
-          tiedotKoostepalvelusta.getHakemus(), supastaHaetut.getValintaHakemukset());
-      // logAvainMetatiedot(tiedotKoostepalvelusta.getHakemus(), "Koostepalvelu");
-      // logAvainMetatiedot(supastaHaetut.getValintaHakemukset(), "Supasta");
-
-      // Yhdistetään Supasta tulevat HakemusDTO:t Koostepalvelusta tuleviin lähtötietoihin.
-      kaytettavaLaskeDTO =
-          new LaskeDTO(
-              tiedotKoostepalvelusta.getUuid(),
-              tiedotKoostepalvelusta.isKorkeakouluhaku(),
-              tiedotKoostepalvelusta.isErillishaku(),
-              tiedotKoostepalvelusta.getHakukohdeOid(),
-              hakemusDTOtSupasta,
-              tiedotKoostepalvelusta.getValintaperuste(),
-              tiedotKoostepalvelusta.getHakijaryhmat());
-    } else {
-      LOG.info("Käytetään haulle {} Suoritusrekisterin tietoja!", laskenta.getHakuOid());
-      LaskeDTO tiedotKoostepalvelusta =
-          this.koostepalveluAsyncResource.haeLahtotiedot(
-              laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat);
-      kaytettavaLaskeDTO = tiedotKoostepalvelusta;
-    }
+    LaskeDTO kaytettavaLaskeDTO =
+        haeLahtotiedot(laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat);
 
     Instant laskeStart = Instant.now();
     LOG.info(
@@ -1093,9 +1120,7 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
             + ", start: "
             + lahtotiedotStart
             + ", end: "
-            + laskeStart
-            + ", kaytetaanSupanTietoja: "
-            + kaytetaanUudenSuorituspalvelunTietoja);
+            + laskeStart);
     laske.apply(kaytettavaLaskeDTO);
     this.tallennaJaLokitaMetriikat(
         Collections.singleton(hakukohdeOid),
