@@ -16,6 +16,9 @@ public class LaskeDTO {
   private final List<ValintaperusteetDTO> valintaperuste;
   private final List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat;
   private final boolean korkeakouluhaku;
+  // Kertoo, haettiinko lähtötietoihin Suoritusrekisterin tiedot. null = haettiin (vanha
+  // koostepalvelu, joka ei vielä aseta tietoa).
+  private final Boolean suoritusrekisterinTiedotHaettu;
 
   public LaskeDTO() {
     this.uuid = null;
@@ -25,6 +28,7 @@ public class LaskeDTO {
     this.hakijaryhmat = Collections.emptyList();
     this.korkeakouluhaku = false;
     this.erillishaku = false;
+    this.suoritusrekisterinTiedotHaettu = null;
   }
 
   public LaskeDTO(
@@ -42,6 +46,7 @@ public class LaskeDTO {
     this.hakijaryhmat = Collections.emptyList();
     this.korkeakouluhaku = korkeakouluhaku;
     this.erillishaku = erillishaku;
+    this.suoritusrekisterinTiedotHaettu = null;
   }
 
   public LaskeDTO(
@@ -52,6 +57,26 @@ public class LaskeDTO {
       List<HakemusDTO> hakemus,
       List<ValintaperusteetDTO> valintaperuste,
       List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat) {
+    this(
+        uuid,
+        korkeakouluhaku,
+        erillishaku,
+        hakukohdeOid,
+        hakemus,
+        valintaperuste,
+        hakijaryhmat,
+        null);
+  }
+
+  public LaskeDTO(
+      String uuid,
+      boolean korkeakouluhaku,
+      boolean erillishaku,
+      String hakukohdeOid,
+      List<HakemusDTO> hakemus,
+      List<ValintaperusteetDTO> valintaperuste,
+      List<ValintaperusteetHakijaryhmaDTO> hakijaryhmat,
+      Boolean suoritusrekisterinTiedotHaettu) {
     this.uuid = uuid;
     this.hakukohdeOid = hakukohdeOid;
     this.hakemus = hakemus != null ? hakemus : Collections.<HakemusDTO>emptyList();
@@ -63,6 +88,7 @@ public class LaskeDTO {
             : Collections.<ValintaperusteetHakijaryhmaDTO>emptyList();
     this.korkeakouluhaku = korkeakouluhaku;
     this.erillishaku = erillishaku;
+    this.suoritusrekisterinTiedotHaettu = suoritusrekisterinTiedotHaettu;
   }
 
   public String getUuid() {
@@ -91,6 +117,10 @@ public class LaskeDTO {
 
   public boolean isKorkeakouluhaku() {
     return korkeakouluhaku;
+  }
+
+  public Boolean getSuoritusrekisterinTiedotHaettu() {
+    return suoritusrekisterinTiedotHaettu;
   }
 
   public LaskeDTOSizes logSerializedSizes(Function<Object, Integer> sizeCounter) {

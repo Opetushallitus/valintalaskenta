@@ -227,6 +227,42 @@ public class SuoritaLaskentaServiceImplTest {
   }
 
   @Test
+  public void sureHaunLaskentaEpaonnistuuKunKoostepalveluEiHakenutSuorituksia() {
+    koostepalveluEiHakenutSuorituksia(List.of(HAKUKOHDE_OID));
+
+    assertThrows(
+        RuntimeException.class,
+        () ->
+            service.suoritaLaskentaHakukohteille(
+                laskenta(SURE_HAKU_OID, LaskentaTyyppi.HAKU), List.of(HAKUKOHDE_OID), 1));
+    verify(valintalaskentaResource, never()).laskeKaikki(any());
+  }
+
+  @Test
+  public void supaHaunLaskentaKayttaaSupanTietojaVaikkaSuorituksiaEiHaettu() {
+    koostepalveluEiHakenutSuorituksia(List.of(HAKUKOHDE_OID));
+
+    service.suoritaLaskentaHakukohteille(
+        laskenta(SUPA_HAKU_OID, LaskentaTyyppi.HAKU), List.of(HAKUKOHDE_OID), 1);
+
+    assertEquals(List.of(supaHakemusOid(HAKUKOHDE_OID)), laskettujenHakemustenOidit());
+  }
+
+  @Test
+  public void sureHaunValintaryhmalaskentaEpaonnistuuKunKoostepalveluEiHakenutSuorituksia() {
+    koostepalveluEiHakenutSuorituksia(List.of(HAKUKOHDE_OID, HAKUKOHDE_OID_2));
+
+    assertThrows(
+        RuntimeException.class,
+        () ->
+            service.suoritaLaskentaHakukohteille(
+                laskenta(SURE_HAKU_OID, LaskentaTyyppi.VALINTARYHMA),
+                List.of(HAKUKOHDE_OID, HAKUKOHDE_OID_2),
+                2));
+    verify(valintalaskentaResource, never()).valintaryhmaLaskenta(any(), anyList());
+  }
+
+  @Test
   public void valintaryhmalaskentaKirjaaVirheenKunSupanHakuEpaonnistuu() {
     when(suorituspalveluAsyncResource.haeValintaData(SUPA_HAKU_OID, HAKUKOHDE_OID_2))
         .thenReturn(CompletableFuture.failedFuture(new RuntimeException("Supa ei vastaa")));
@@ -276,6 +312,24 @@ public class SuoritaLaskentaServiceImplTest {
     assertTrue(juurisyy(e).getMessage().contains("löytyy jo avain PK_TESTI"));
     verify(valintalaskentaResource, never()).valintaryhmaLaskenta(any(), anyList());
     assertEquals(Map.of("virheet", 2.0), kirjattuMetriikka());
+  }
+
+  private void koostepalveluEiHakenutSuorituksia(List<String> hakukohdeOids) {
+    for (String hakukohdeOid : hakukohdeOids) {
+      when(koostepalveluAsyncResource.haeLahtotiedot(
+              any(), eq(hakukohdeOid), anyBoolean(), anyBoolean()))
+          .thenReturn(
+              CompletableFuture.completedFuture(
+                  new LaskeDTO(
+                      "uuid",
+                      false,
+                      false,
+                      hakukohdeOid,
+                      List.of(hakemus(koosteHakemusOid(hakukohdeOid))),
+                      List.of(valintalaskentaaKayttavaPeruste()),
+                      Collections.emptyList(),
+                      false)));
+    }
   }
 
   private Map<String, Double> kirjattuMetriikka() {

@@ -1037,15 +1037,17 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
       combineKoskiJsonFromKoostepalvelutoSupaTiedot(
           hakemusDTOtSupasta, tiedotKoostepalvelusta.getHakemus());
 
-      // Vertailulokituksia Koostepalvelun ja Suorituspalvelun välillä, nämä voidaan poistaa
-      // testausvaiheen jälkeen
-      vertaile(tiedotKoostepalvelusta.getHakemus(), supastaHaetut.getValintaHakemukset());
-      // vertaileHarkinnanvaraisuus(
-      //    tiedotKoostepalvelusta.getHakemus(), supastaHaetut.getValintaHakemukset());
-      vertaileAvainMetatiedot(
-          tiedotKoostepalvelusta.getHakemus(), supastaHaetut.getValintaHakemukset());
-      // logAvainMetatiedot(tiedotKoostepalvelusta.getHakemus(), "Koostepalvelu");
-      // logAvainMetatiedot(supastaHaetut.getValintaHakemukset(), "Supasta");
+      if (!Boolean.FALSE.equals(tiedotKoostepalvelusta.getSuoritusrekisterinTiedotHaettu())) {
+        // Vertailulokituksia Koostepalvelun ja Suorituspalvelun välillä, nämä voidaan poistaa
+        // testausvaiheen jälkeen
+        vertaile(tiedotKoostepalvelusta.getHakemus(), supastaHaetut.getValintaHakemukset());
+        // vertaileHarkinnanvaraisuus(
+        //    tiedotKoostepalvelusta.getHakemus(), supastaHaetut.getValintaHakemukset());
+        vertaileAvainMetatiedot(
+            tiedotKoostepalvelusta.getHakemus(), supastaHaetut.getValintaHakemukset());
+        // logAvainMetatiedot(tiedotKoostepalvelusta.getHakemus(), "Koostepalvelu");
+        // logAvainMetatiedot(supastaHaetut.getValintaHakemukset(), "Supasta");
+      }
 
       // Yhdistetään Supasta tulevat HakemusDTO:t Koostepalvelusta tuleviin lähtötietoihin.
       return new LaskeDTO(
@@ -1061,9 +1063,17 @@ public class SuoritaLaskentaServiceImpl implements SuoritaLaskentaService {
           "Käytetään haun {} hakukohteelle {} Suoritusrekisterin tietoja!",
           laskenta.getHakuOid(),
           hakukohdeOid);
-      return odotaLahtotietoja(
-          this.koostepalveluAsyncResource.haeLahtotiedot(
-              laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat));
+      LaskeDTO tiedotKoostepalvelusta =
+          odotaLahtotietoja(
+              this.koostepalveluAsyncResource.haeLahtotiedot(
+                  laskenta, hakukohdeOid, retryHakemuksetJaOppijat, withHakijaRyhmat));
+      if (Boolean.FALSE.equals(tiedotKoostepalvelusta.getSuoritusrekisterinTiedotHaettu())) {
+        throw new RuntimeException(
+            String.format(
+                "Haun %s hakukohteen %s laskenta käyttää Suoritusrekisterin tietoja, joita ei ole enää saatavilla. Laskentaa ei voida suorittaa.",
+                laskenta.getHakuOid(), hakukohdeOid));
+      }
+      return tiedotKoostepalvelusta;
     }
   }
 
